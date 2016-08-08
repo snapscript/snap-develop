@@ -1,0 +1,97 @@
+import io.IOException;
+import io.OutputStream;
+import net.InetSocketAddress;
+import http.request.RequestBuilder;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+
+
+
+var distributor = new SubscriptionDistributor();
+var handler = new SubscriptionHandler(distributor);
+var address = new InetSocketAddress(8111);
+var server = HttpServer.create(address, 0);
+server.createContext("/subscribe", handler);
+server.setExecutor(null); // creates a default executor
+server.start();
+sleep(1000000);
+
+trait Filter {
+   accept(req);
+}
+
+class QueryFilter with Filter {
+   var params;
+   new(params){
+      this.params = params;
+   }
+   accept(req){
+      // do some matching here
+      return true;
+   }
+}
+
+class Subscription {
+   var filter;
+   var address;
+   new(filter, address){
+      this.filter = filter;
+      this.address = address;
+   }
+   match(req){
+      if(filter.accept(req)){
+            return address;
+      }
+      return null;
+   }
+}
+
+class SubscriptionDistributor {
+   var subscriptions = [];
+   register(subscription){
+      subscriptions.add(subscription);
+   }
+}
+
+class SubscriptionHandler with HttpHandler {
+   var distributor;
+   
+   new(distributor){
+      this.distributor = distributor;
+   }
+   
+   handle(exchange) {
+      const target = exchange.getRequestURI();
+      println(target);
+      const query = target.getQuery();
+      const params = parse(query);
+      const filter = new QueryFilter(params);
+      const subscription = new Subscription("/", params);
+      distributor.register(subscription);
+      const message = "success";
+      exchange.sendResponseHeaders(200, message.length());
+      const output = exchange.getResponseBody();
+      output.write(message.getBytes());
+      output.close();
+   }
+   
+   parse(query){
+      var result = {:};
+      
+      if(query != null) {
+         var params = query.split('&');
+         for (var param in params) {
+            var pair = param.split("=");
+            if (pair.size()>1) {
+               result.put(pair[0], pair[1]);
+            }else{
+               result.put(pair[0], "");
+            }
+         }
+      }
+      return result;
+   }
+
+}
+

@@ -1,0 +1,52 @@
+#threads {
+    font-family: "Lucida Console", sans-serif; 
+    font-size: 0.9em;
+    background-color: #ffffff; 
+    border-radius: 4px;      
+ 	border-style: solid;
+    border-width: 1px;
+    border-color: #c0c0c0;
+    padding: 5px;
+    position: absolute;
+    padding: 2px;
+    top: 8px;
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+}
+.threadHighlight {
+  position:absolute;
+  background:rgba(255,215,0,0.3);
+  z-index:20
+}
+	
+.threadSuspended {
+    /*font-family: "Lucida Console", sans-serif; 
+    font-size: 1.2em;*/
+    font-size: 1.1em;    	
+	background-image: url('/img/toolbar/suspend_co.gif');	
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}
+
+.threadRunning {
+    /*font-family: "Lucida Console", sans-serif; 
+    font-size: 1.2em;*/
+    font-size: 1.1em;  
+	background-image: url('/img/toolbar/resume_co.gif');	
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}
+
+.threadTab {	
+	background-image: url('/img/toolbar/thread_obj.gif');	
+	background-position: left bottom;
+	background-repeat: no-repeat;
+	padding-top: 3px;
+	padding-bottom: 2px;
+	padding-left: 22px; /* Or size of icon + spacing */
+	margin-left: -10px;
+	z-index: 1009;
+}

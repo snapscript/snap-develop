@@ -1,0 +1,4 @@
+import test.UnitTestRunner;
+
+var runner = new UnitTestRunner();
+runner.run();

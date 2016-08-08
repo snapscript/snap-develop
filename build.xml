@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+   <property name="MAVEN_HOME" value="C:\Program Files\Maven\3.3.3" />
+   <property name="ANT_HOME" value="C:\Program Files\Ant\1.9.3" />
+   <property name="JAVA_HOME" value="C:\Program Files\Java\jdk1.8.0_60" />   
+   <exec executable="${MAVEN_HOME}\bin\mvn.cmd">
+      <arg value="clean" />
+      <arg value="install" />
+      <arg value="-DskipTests" />
+   </exec>
+   <delete file="../release/snapd.jar" />
+   <copy file="snap-develop/target/snap-develop-1.0-SNAPSHOT-jar-with-dependencies.jar" tofile="../release/snapd.jar" overwrite="true" />
+   <exec executable="${ANT_HOME}\bin\ant.bat">
+      <arg value="-f" />
+      <arg value="snap-service\build.xml" />
+   </exec>
+   <delete file="../release/snap.jar" />
+   <copy file="snap-service/jar/snap.jar" tofile="../release/snap.jar" overwrite="true" />
+   <exec executable="${JAVA_HOME}\bin\java.exe">
+      <arg value="-jar" />
+      <arg value="..\release\snapd.jar" />
+      <arg value="--mode=develop"/>
+      <arg value="--directory=snap-develop\work" />
+      <arg value="--port=4457"/>
+      <arg value="--verbose=true"/>  
+      <arg value="--agent-pool=6"/>      
+   </exec>        
+</project>

@@ -1,0 +1,792 @@
+/**
+ * This program displays a simulated solar system in 2 dimensions. Buttons along
+ * the top of the GUI allow the user to show or hide various physical properties
+ * of the planets. These properties are the acceleration and velocity vectors,
+ * the percent kinetic and potential energy, and the trajectory the planet has
+ * taken. In addition, two buttons allow the user to zoom in or out for better
+ * viewing. Finally, there is a sliding scale on the right of the GUI that
+ * allows the user to alter the mass of the sun.
+ * 
+ * To run the program, you first must compile it (javac SolarSystem.java), then
+ * you execute it using java SolarSystem <number of planets>.
+ * 
+ * @author Brett Kraabel
+ * @author us.geocities.com/brettkraabel
+ * @version 1.0
+ */
+import awt.BasicStroke;
+import awt.BorderLayout;
+import awt.Color;
+import awt.Container;
+import awt.Graphics;
+import awt.Graphics2D;
+import awt.event.ActionEvent;
+import awt.event.ActionListener;
+import awt.geom.AffineTransform;
+import awt.geom.Area;
+import awt.geom.Ellipse2D;
+import awt.geom.Ellipse2D$Double;
+import awt.geom.Ellipse2D$Float;
+import awt.geom.GeneralPath;
+import awt.geom.Line2D;
+import awt.geom.Line2D$Double;
+import awt.geom.Line2D$Float;
+import awt.geom.Rectangle2D;
+import awt.geom.Rectangle2D$Double;
+import util.Vector;
+
+import solarsystem.display.SkyPanel;
+import solarsystem.display.SkyFrame;
+import solarsystem.display.Coord;
+
+/**
+ * The interface host defines the interface needed for an object to serve as a
+ * host about which a satellite may orbit.
+ */
+trait Host {
+    /**
+     * The method getAbsPos calculates the absolute position of the Host. This
+     * is the position used to display the Host and is taken with respect to
+     * the upper left corner of the display.
+     * 
+     * @param mAxis The cartesian axis with respect to which the position is to
+     *               be calculated.
+     * @return double The absolute position of the Satellite with respect to
+     *         the given axis.
+     */
+    getAbsPos(mAxis);
+    /**
+     * The method getMass returns the mass of the Host in arbitrary units.
+     * 
+     * @return double
+     */
+    getMass();
+}
+/**
+ * The abstract class Satellite defines satellites that orbit about a Sun.
+ * 
+ * @see Sun
+ */
+class Satellite with Host{
+    /**
+     * The x and y coordinates of the Satellite's position.
+     */
+    var xPos = 0.0d;
+    var yPos = 0.0d;
+    /**
+     * The x and y components of the Satellite's velocity.
+     */
+    var xVel = 0.0d;
+    var yVel = 0.0d;
+    /**
+     * The x and y components of the Satellite's acceleration.
+     */
+    var xAcc = 0.0d;
+    var yAcc = 0.0d;
+    var dt = 0.0d;
+    /**
+     * The diameter of the Satellite.
+     */
+    var diameter;
+    /**
+     * The mass of the Satellite (arb. units).
+     */
+    var mass;
+    /**
+     * The color of the Satellite
+     */
+    var color;
+    /**
+     * The Host about which the Satellite orbits.
+     * 
+     * @see Host
+     */
+    var host;
+    /**
+     * Constructor for Satellite objects.
+     * 
+     * @param mDt The time increment for calculating the motion.
+     * @param mDiameter The diameter of the satellite (arb. units).
+     * @param mRadius The initial radius of the Satellite's orbit.
+     * @param mMass The mass of the Satellite (arb. units).
+     * @param mHost The Host about which the Satellite orbits.
+     * @see Host
+     */
+    new(mDt, mDiameter, mRadius, mColor, mMass, mHost){
+        dt = mDt;
+        diameter = mDiameter;
+        mass = mMass;
+        color = mColor;
+        host = mHost;
+        //
+        // The satellite's coordinates (xPos, yPos) relative to the
+        // coordinates of the host satellite.
+        //
+        xPos = Math.random()*mRadius;
+        yPos = Math.sqrt(mRadius*mRadius - xPos*xPos);
+        //
+        // Choose at random from the four Cartesian quadrants for the
+        // intial position.
+        //
+        if (probOneHalf())
+            xPos*= -1.0d;
+        if (probOneHalf())
+            yPos*= -1.0d;
+    }
+    /**
+     * The method probOneHalf returns true with probability 1/2, otherwise
+     * returns false.
+     * 
+     * @return boolean
+     */
+    probOneHalf() {
+        return Math.random() > 0.5;
+    }
+    /**
+     * The method getAbsPos calculates the absolute position of the Satellite.
+     * This is the position used to display the Satellite and is taken with
+     * respect to the upper left corner of the display.
+     * 
+     * @param mAxis The cartesian axis with respect to which the position is to
+     *               be calculated.
+     * @return double The absolute position of the Satellite with respect to
+     *         the given axis.
+     */
+    getAbsPos(mAxis) {
+        if (mAxis == Coord.X)
+            return xPos/SkyFrame.getScaleFactor() + host.getAbsPos(mAxis);
+        else
+            return yPos/SkyFrame.getScaleFactor() + host.getAbsPos(mAxis);
+    }
+    /**
+     * The getRelPosScaled calculate the relative position of the Satellite
+     * scaled by the scale factor of the SkyFrame.
+     * 
+     * @see SkyFrame
+     * @param mAxis The cartesian axis with respect to which the position is to
+     *               be calculated.
+     * @return double The relative position of the Satellite scaled and with
+     *          respect to the given axis.
+     */
+    getRelPosScaled(mAxis) {
+        if (mAxis == Coord.X)
+            return xPos/SkyFrame.getScaleFactor();
+        else
+            return yPos/SkyFrame.getScaleFactor();
+    }
+    /**
+     * The method getRelPosUnscaled calculates the relative position of the
+     * Satellite without scaling.
+     * 
+     * @param mAxis The cartesian axis with respect to which to calculate the
+     *               position.
+     * @return double The relative position of the Satellite with respect to
+     *         the given axis.
+     */
+    getRelPosUnscaled(mAxis) {
+      if (mAxis == Coord.X)
+            return xPos;
+        else
+            return yPos;
+    }
+    /**
+     * The method getTheta returns the angular position of the Satellite. The
+     * angle is measured clockwise from the positive horizontal axis, with the
+     * Sun at the origin.
+     * 
+     * @return double The angular position in radians.
+     */
+    getTheta() {
+        var theta = Math.atan(yPos/xPos);
+        if (xPos < 0)
+            theta = Math.PI + theta;
+        else if (xPos > 0 && yPos < 0)
+            theta = 2*Math.PI + theta;
+        return theta;
+    }
+    /**
+     * The method getVel calculates a Cartesian component of the Satellite's
+     * velocity (arb. units).
+     * 
+     * @param mAxis The cartesian component of the velocity to calculate.
+     * @return double A cartesian component of the velocity (arb. units).
+     */
+    getVel(mAxis) {
+        if (mAxis == Coord.X)
+            return xVel;
+        else
+            return yVel;
+    }
+    /**
+     * The method getAcc calculates a Cartesian component of the Satellite's
+     * acceleration (arb. units).
+     * 
+     * @param mAxis The cartesian component of the acceleration to calculate.
+     * @return double A cartesian component of the acceleration (arb. units).
+     */
+    getAcc(mAxis) {
+        if (mAxis == Coord.X)
+            return xAcc;
+        else
+            return yAcc;
+    }
+    /**
+     * The abstract method translate calculates the displacement of the
+     * Satellite as a function of time and updates the Satellite's coordinates
+     * xPos and yPos.
+     */
+    translate(){}
+    /**
+     * The method getDiameter returns the Satellite's diameter.
+     * 
+     * @return double.
+     */
+    getDiameter() {
+        return diameter;
+    }
+    /**
+     * The method getColor returns the Satellite's color.
+     * 
+     * @return Color
+     * @see Color
+     */
+    getColor() {
+      return color;
+    }
+    /**
+     * The method getMass returns the Satellite's mass (arb. units).
+     * 
+     * @return double
+     */
+    getMass() {
+      return mass;
+    }
+    /**
+     * The method draw displays the Satellite.
+     * 
+     * @param comp2D The Graphics2D object in which to display the Satellite.
+     * @see Graphics2D
+     */
+    draw(comp2D) {
+        var zoomedDiameter = diameter/SkyFrame.getScaleFactor();
+        var form = new Ellipse2D$Double((getAbsPos(Coord.X) - zoomedDiameter/2),
+                                  (getAbsPos(Coord.Y) - zoomedDiameter/2),
+                                  zoomedDiameter,
+                                  zoomedDiameter);
+        comp2D.setColor(color);
+        comp2D.fill(form);
+    }
+}
+/**
+ * Class Planet extends Satellite
+ * 
+ * @see Satellite and implements the planets that revolve about the Sun
+ * @see Sun. A Planet is given an initial position and velocity and follows
+ *      Newton's laws of motion.
+ */
+class Planet extends Satellite {
+    /**
+     * An array of int's used to indicate the previous positions of the
+     * planet. Used to plot the trajectory of the planet. The array is filled
+     * and the index of the current position is tracked.
+     */
+    var prevXPos;
+    var prevYPos;
+    /**
+     * Used to index into the position arrays to indicate the current position
+     * of the planet.
+     */
+    var currPosition = 0;
+    /**
+     * Counts the number of transaltions the Planet undergoes.
+     */
+    var count = 0;
+    /**
+     * Determines the number of translations between which the position of the
+     * Planet is recorded.
+     */
+    const recordPosition = 5;
+    /**
+     * Indicates when we must loop back to the beginning of the previous
+     * position array
+     */
+    var looped = false;
+    /**
+     * The maximum number of previous positions that are recorded.
+     */
+    const maxPrevPositions = 128;
+    /**
+     * Total energy of the planet.
+     */
+    var TE;
+    /**
+     * The actual number of moons orbiting around the planet.
+     */
+    var numOfMoons;
+    /**
+     * The maximum number of moons that may orbit around the planet.
+     */
+    const maxNumOfMoons = 4;
+    /**
+     * The array of moons that orbit around the planet.
+     */
+    var moon;
+    /**
+     * The panel in which the planet is displayed.
+     */
+    var hostPanel;
+    /**
+     * Constructor.
+     * 
+     * @param mDt The time increment for calculting the motion of the planet.
+     * @param mDiameter The diameter of the planet in pixels.
+     * @param mRadius The radius of the planet's orbit in pixels.
+     * @param mColor The color of the planet.
+     * @see Color
+     * @param mMass The planet's mass in arbitrary units.
+     * @param mHostPanel The panel in which the planet is displayed.
+     * @param mHost The Host object about which the planet orbits.
+     * @see Host
+     */
+    new(mDt, mDiameter, mRadius, mColor, mMass, mHostPanel, mHost) : 
+                     super(mDt, mDiameter, mRadius, mColor, mMass, mHost) {
+        hostPanel = mHostPanel;
+        prevXPos = new Integer[maxPrevPositions];
+        prevYPos = new Integer[maxPrevPositions];
+
+        for (var i = 0; i < maxPrevPositions; ++i){
+            prevXPos[i] = 0;
+            prevYPos[i] = 0;
+         }
+
+        numOfMoons = Math.round(Math.random()*maxNumOfMoons);
+
+        if (numOfMoons > 0) {
+            moon = new Moon[numOfMoons];
+            for (var i = 0; i < numOfMoons; ++i)
+                moon[i] = new Moon(dt, // Time increment for calculating motion.
+                                   Math.random()*6 + 3, // Moon's diameter.
+                                   diameter*(1 + 0.2*Math.random()),// Radius of orbit.
+                                   this); // Host about which moon orbits.
+        }
+
+        var distToHost = Math.sqrt(getRelPosUnscaled(Coord.X)*
+                                      getRelPosUnscaled(Coord.X) +
+                                      getRelPosUnscaled(Coord.Y)*
+                                      getRelPosUnscaled(Coord.Y));
+        //
+        // For calculating the force due to gravity, we set the universal
+        // gravitational constant to one (or incorporate it into the sun's
+        // mass).
+        //
+        var forceDueToGravity = host.getMass()*mass/
+                                  (distToHost*distToHost);
+        var theta = getTheta();
+        //
+        // The following formula for the velocity ensures that the
+        // planet's initial motion about the sun is circular.
+        //
+        yVel = Math.sqrt(host.getMass()/distToHost)*
+               Math.sin(theta + Math.PI/2);
+        xVel = Math.sqrt(host.getMass()/distToHost)*
+               Math.cos(theta + Math.PI/2);
+
+        xAcc = forceDueToGravity*Math.cos(theta + Math.PI)/mass;
+        yAcc = forceDueToGravity*Math.sin(theta + Math.PI)/mass;
+        //
+        // Record the initial total energy of planet.
+        //
+        TE = mass*(xVel*xVel + yVel*yVel)/2 +
+        mass*Math.sqrt(xAcc*xAcc + yAcc*yAcc)*distToHost;
+    }
+    /**
+     * The method translate calculates the motion of the planet by numerically
+     * integrating Newton's laws of motion.
+     */
+    translate() {
+        var force;
+        var distToHost;
+        var theta;
+
+        for (var i = 0; i < 1/dt; ++i) {
+            distToHost = Math.sqrt(getRelPosUnscaled(Coord.X) *
+                                   getRelPosUnscaled(Coord.X) +
+                                   getRelPosUnscaled(Coord.Y) *
+                                   getRelPosUnscaled(Coord.Y));
+
+            force = mass*host.getMass()/(distToHost*distToHost);
+            theta = getTheta();
+            //
+            // Calculate new acceleration.
+            //
+            xAcc = force*Math.cos(theta + Math.PI)/mass;
+            yAcc = force*Math.sin(theta + Math.PI)/mass;
+            //
+            // Calculate new position using the original velocity.
+            //
+            xPos+= xVel*dt + dt*dt*xAcc/2;
+            yPos+= yVel*dt + dt*dt*yAcc/2;
+            //
+            // Calculate new velocity.
+            //
+            xVel+= xAcc*dt;
+            yVel+= yAcc*dt;
+
+            if (hostPanel.showPos())
+                recordPosition();
+            //
+            // Translate the moons orbiting around the planet.
+            //
+            for (var j = 0; j < numOfMoons; ++j)
+                moon[j].translate();
+        }
+    }
+    /**
+     * The method recordPosition records the current position of the planet in
+     * the arrays prevXPos and prevYPos.
+     */
+    recordPosition() {
+        if (++count > (recordPosition/dt)) {
+            count = 0;
+            if (currPosition == maxPrevPositions) {
+                currPosition = 0;
+                looped = true;
+            }
+   
+            prevXPos[currPosition] = getRelPosUnscaled(Coord.X);
+            prevYPos[currPosition++] = getRelPosUnscaled(Coord.Y);
+        }
+    }
+    /**
+     * The method getKE returns the kinetic energy of the planet in arbitrary
+     * units.
+     */
+    getKE() {
+        return mass*(xVel*xVel + yVel*yVel)/2;
+    }
+    /**
+     * The method getPE returns the potential energy of the planet in
+     * arbitrary units.
+     */
+    getPE() {
+        return mass*Math.sqrt(xAcc*xAcc + yAcc*yAcc)*
+        Math.sqrt(xPos*xPos + yPos*yPos);
+    }
+    /**
+     * The method getTE returns the total energy of the planet in arbitrary
+     * units.
+     */
+    getTE() {
+        return TE;
+    }
+    /**
+     * The method draw displays the Planet in scaled units of pixels.
+     * 
+     * @param comp2D The Graphics2D object in which to display the planet.
+     * @see Graphics2D
+     */
+    draw(comp2D) {
+        var zoomedDiameter = diameter/SkyFrame.getScaleFactor();
+        //
+        // Draw the night-time semi-circle of the planet.
+        //
+        comp2D.setColor(Color.darkGray);
+        comp2D.fill(semiCircle(getAbsPos(Coord.X),
+            getAbsPos(Coord.Y),
+            zoomedDiameter,
+            getTheta() + 3*Math.PI/2));
+        //
+        // Draw the day-time semi-circle of the planet.
+        //
+        //comp2D.setColor(color);
+        comp2D.setColor(Color.white);
+        comp2D.fill(semiCircle(getAbsPos(Coord.X),
+            getAbsPos(Coord.Y),
+            zoomedDiameter,
+            getTheta() + Math.PI/2 ));
+        //
+        // Show previous positions of the planet if requested by hostPanel.
+        //
+        if (hostPanel.showPos())
+            drawPrevPositions(comp2D);
+        //
+        // Draw the moons orbiting around the planet.
+        //
+        for (var i = 0; i < numOfMoons; ++i)
+            moon[i].draw(comp2D);
+    }
+    /**
+     * The method drawPrevPositions draws the previous positions of the planet
+     * by placing dots to indicate it's path.
+     * 
+     * @param comp2D The Graphics2D object used for the display.
+     */
+    drawPrevPositions(comp2D) {
+        var end;
+        var x;
+        var y;
+        if (looped)
+            end = maxPrevPositions;
+        else
+            end = currPosition;
+
+        for (var i = 0; i < end; ++i) {
+            x = prevXPos[i]/SkyFrame.getScaleFactor() +
+               host.getAbsPos(Coord.X);
+            y = prevYPos[i]/SkyFrame.getScaleFactor() +
+               host.getAbsPos(Coord.Y);
+            comp2D.fill( new Ellipse2D$Float(x, y, 1, 1));
+        }
+    }
+    /**
+     * The method erasePrevPostions removes the dots indicating the previous
+     * position of the planet from the screen.
+     */
+    erasePrevPositions() {
+        looped = false;
+        currPosition = 0;
+        count = 0;
+    }
+    /**
+     * The method semiCircle is used to draw a day-time and night-time
+     * semi-circle of the planet with respect to the Host about which the
+     * planet orbits.
+     * 
+     * @param x The scaled horizontal positon of the planet with respect to
+     *           the Host about which the planet orbits.
+     * @param y The scaled vertical positon of the planet with respect to the
+     *           Host about which the planet orbits.
+     * @param dia The scaled diameter of the planet.
+     * @param theta The angular position of the planet.
+     * @return Area A semi-circular area used to draw the day-time or
+     *         night-time part of the planet.
+     */
+    semiCircle(x, y, dia, theta): Area {
+        var xp = x - dia/2;
+        var yp = y - dia/2;
+        var circle = new Ellipse2D$Double(xp, yp, dia, dia);
+        var rect = new Rectangle2D$Double(xp, yp, dia, dia/2);
+        var semiCircleArea = new Area(circle);
+        var rectArea = new Area(rect);
+        semiCircleArea.subtract(rectArea);
+        semiCircleArea.transform(AffineTransform.
+        getRotateInstance(theta, x, y));
+        return semiCircleArea;
+    }
+}
+/**
+ * The class Moon defines a moon which executes pure circular motion about it's
+ * host, so the formulas for calculating position are simplified compared to
+ * those used for calculating planetary motion about the sun.
+ * 
+ * @see Planet
+ */
+class Moon extends Satellite {
+    /**
+     * Constructor.
+     * 
+     * @param mDt The time increment used to integrate the equations of motion.
+     * @param mDiameter The diameter of the moon in pixels.
+     * @param mRadius The radius of the moon's orbit.
+     * @param mHost The host about which the moon orbits.
+     */
+    new(mDt, mDiameter, mRadius, mHost) :
+       super(mDt, mDiameter, mRadius, Color.lightGray, 1.0d, mHost){}
+    
+    /**
+     * The method translate calculates the motion of the moon. Since moons are
+     * only allowed to undergo circular motion, the calculation is simplified
+     * compared to planetary motion.
+     * 
+     * @see Planet
+     */
+    translate() {
+        var r;
+        var theta;
+        //
+        // Find radial position of moon.
+        //
+        r = Math.sqrt(getRelPosUnscaled(Coord.X)*getRelPosUnscaled(Coord.X) +
+                     getRelPosUnscaled(Coord.Y)*getRelPosUnscaled(Coord.Y));
+        //
+        // Calculate new angular position which is old old angular position
+        // plus speed multiplied by delta t. The number 1000 is an arbitrary
+        // number chosen to give the moons a convenient angular speed of orbit
+        // (it is not related to any othe part of the program).
+        //
+        theta = getTheta() + Math.sqrt(1000*host.getMass()/(r*r*r))*dt;
+        //
+        // Convert angular position to Cartesian coordiantes.
+        //
+        xPos = r*Math.cos(theta);
+        yPos = r*Math.sin(theta);
+    }
+}
+/**
+ * The class Sun extends Satellite
+ * 
+ * @see Satellite and defines the origin about which all planets orbit in the
+ *      solar system. It is yellow and has rays of random length eminatting from
+ *      it.
+ */
+class Sun extends Satellite {
+    /**
+     * Constructor.
+     * 
+     * @param mDiameter The Diameter of the sun in pixels.
+     * @param mMass The mass of the sun in arbitrary units.
+     * @param mXPos The position of the sun on the horizontal axis.
+     * @param mYPos  The position of the sun on the vertical axis.
+     */
+    new(mDiameter, mMass, mXPos, mYPos) :
+        super(1.0d, mDiameter, 0.0d, Color.yellow, mMass, null) {
+
+        xPos = mXPos;
+        yPos = mYPos;
+    }
+    /**
+     * The method getAbsPos returns the absolute position of the Sun in
+     * pixels.
+     * 
+     * @param mAxis
+     *           The cartesian axis of interest.
+     * @return double The absolute positon of the Sun in pixels.
+     */
+    getAbsPos(mAxis) {
+        if (mAxis == Coord.X)
+            return xPos;
+        else
+            return yPos;
+    }
+    /**
+     * The methos setMass allows the user to set the mass of the sun in order
+     * to observe the effects on planetary motion. The mass is measured in
+     * arbitray units.
+     * 
+     * @param newMass The new mass of the sun in arbitrary units.
+     */
+    setMass(newMass) {
+        diameter*=newMass/mass;
+        mass = newMass;
+    }
+    /**
+     * The method draw displays the Sun in scaled units of pixels.
+     * 
+     * @param comp2D The Graphics2D object in which to display the Sun.
+     * @see Graphics2D
+     */
+    draw(comp2D) {
+        super.draw(comp2D);
+
+        var pen = new BasicStroke(2F);
+        comp2D.setStroke(pen);
+
+        var xf;
+        var yf;
+
+        var zoomedDiameter = diameter/SkyFrame.getScaleFactor();
+        //
+        // Draw rays of sun.
+        //
+        for (var i = 0; i < 20; ++i) {
+           if (probOneHalf())
+               xf = xPos+ Math.random()*zoomedDiameter*0.5;
+           else
+               xf = xPos - Math.random()*zoomedDiameter*0.5;
+   
+           if (probOneHalf())
+               yf = yPos + Math.random()*zoomedDiameter*0.5;
+           else
+               yf = yPos - Math.random()*zoomedDiameter*0.5;
+   
+           var ray = new Line2D$Double(xPos, yPos, xf, yf);
+           comp2D.draw(ray);
+        }
+    }
+    
+    translate() {} // Sun does not move.
+}
+
+/**
+ * Class Stars defines a group of stars that are displayed at random locations.
+ * The stars are yellow circles that change diameter to simulate twinlking.
+ * 
+ */
+class Stars {
+    /**
+     * Coordinates of the stars relative to the Sun's position.
+     */
+    var xPos;
+    var yPos;
+    /**
+     * Initial diameter of the stars.
+     */
+    var diameter = 5.0d;
+    /**
+     * Number of stars.
+     */
+    var numOfStars;
+    /**
+     * The Sun at the center of the solar system.
+     */
+    var sun;
+    /**
+     * Constructor for creating a group of stars.
+     * 
+     * @param mNumOfStars The number of stars to create.
+     * @param maxRadius The maximum distance from the sun that a star may be
+     *                   positioned.
+     * @param minRadius The minimum distance from the sun that a star may be
+     *                   positioned.
+     * @param mSun The Sun object which defines the center of the solar system.
+     */
+    new(mNumOfStars, maxRadius, minRadius, mSun) {
+        numOfStars = Math.floor(mNumOfStars);
+        xPos = new Double[numOfStars];
+        yPos = new Double[numOfStars];
+        maxRadius = Math.abs(maxRadius);
+        minRadius = Math.abs(minRadius);
+        sun = mSun;
+
+        if (minRadius == 0)
+            minRadius += sun.getDiameter();
+        //
+        // Chose positions for each star at random between max and min radius.
+        //
+        for (var i = 0; i < numOfStars; ++i) {
+            xPos[i] = Math.random()*maxRadius;
+            var yMin = xPos[i] > minRadius ? 0 : Math.sqrt(minRadius*minRadius - xPos[i]*xPos[i]);
+            var yMax = Math.sqrt(maxRadius*maxRadius -
+            xPos[i]*xPos[i]);
+            yPos[i] = Math.random()*(yMax - yMin) + yMin;
+            if (Math.random() > 0.5)
+                xPos[i]*= -1;
+            if (Math.random() > 0.5)
+                yPos[i]*= -1;
+        }
+    }
+    /**
+     * The method draw displays the stars.
+     * 
+     * @param comp2D The Graphics2D object in which to display the stars.
+     */
+    draw(comp2D) {
+        comp2D.setColor(Color.yellow);
+
+        //
+        // Make stars twinkle by chosing random diameter for each star.
+        //
+
+        for (var i = 0; i < numOfStars; ++i) {
+            var actualDia = diameter*Math.random();
+            var starShape = new Ellipse2D$Double(xPos[i]/
+                                SkyFrame.getScaleFactor() +
+                                sun.getAbsPos(Coord.X),
+                                yPos[i]/SkyFrame.getScaleFactor() +
+                                sun.getAbsPos(Coord.Y),
+                                actualDia,
+                                actualDia);
+            comp2D.fill(starShape);
+        }
+    }
+}

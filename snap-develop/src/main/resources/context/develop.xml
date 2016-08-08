@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+  <bean id="Workspace" class="org.snapscript.develop.Workspace" init-method="create">
+    <constructor-arg value="${directory}" />
+  </bean>
+
+  <bean id="BackupManager" class="org.snapscript.develop.BackupManager">
+    <constructor-arg ref="ConsoleLogger" />
+    <constructor-arg ref="Workspace" />
+  </bean>
+
+  <bean id="ConfigurationReader" class="org.snapscript.develop.configuration.ConfigurationReader">
+    <constructor-arg ref="ConsoleLogger" />
+    <constructor-arg ref="Workspace" />
+  </bean>
+
+  <bean id="ConfigurationClassLoader" class="org.snapscript.develop.configuration.ConfigurationClassLoader">
+    <constructor-arg ref="ConfigurationReader" />
+  </bean>
+
+  <bean id="ProcessConfigurationLoader" class="org.snapscript.develop.configuration.ProcessConfigurationLoader">
+    <constructor-arg ref="ConfigurationReader" />
+  </bean>
+
+  <bean id="ConsoleLogger" class="org.snapscript.agent.ConsoleLogger">
+    <constructor-arg value="${verbose}" />
+  </bean>
+
+  <bean id="ProcessManager" class="org.snapscript.develop.ProcessManager">
+    <constructor-arg ref="ProcessConfigurationLoader" />
+    <constructor-arg ref="ConsoleLogger" />
+    <constructor-arg ref="Workspace" />
+    <constructor-arg value="${agent-port}" />
+    <constructor-arg value="${agent-pool}" />
+  </bean>
+
+  <bean id="ProcessServer" class="org.snapscript.develop.ProcessServer" init-method="start">
+    <constructor-arg ref="ProcessManager" />
+    <constructor-arg ref="WebServer" />
+  </bean>
+
+  <bean id="ConnectListener" class="org.snapscript.develop.ConnectListener">
+    <constructor-arg ref="ProjectBuilder" />
+  </bean>
+
+  <bean id="ContentTypeResolver" class="org.snapscript.develop.http.resource.ContentTypeResolver">
+    <constructor-arg>
+      <map>
+        <entry key=".*.vm" value="text/html" />
+        <entry key=".*.html" value="text/html" />
+        <entry key=".*.png" value="image/png" />
+        <entry key=".*.jpg" value="image/png" />
+        <entry key=".*.gif" value="image/gif" />
+        <entry key=".*.css" value="text/css" />
+        <entry key=".*.js" value="text/javascript" />
+        <entry key=".*.json" value="application/json" />
+        <entry key=".*.snap" value="text/plain" />
+      </map>
+    </constructor-arg>
+  </bean>
+
+  <bean id="FileManager" class="org.snapscript.develop.http.resource.FileManager">
+    <constructor-arg value="/resource" />
+  </bean>
+
+  <bean id="FileResolver" class="org.snapscript.develop.http.resource.FileResolver">
+    <constructor-arg ref="FileManager" />
+  </bean>
+
+  <bean id="VelocityEngine" class="org.apache.velocity.app.VelocityEngine" init-method="init">
+    <constructor-arg>
+      <props>
+        <prop key="runtime.log.logsystem.class">org.apache.velocity.runtime.log.Log4JLogChute</prop>
+        <prop key="runtime.log.logsystem.log4j.logger">root</prop>
+        <prop key="parser.pool.size">5</prop>
+      </props>
+    </constructor-arg>
+  </bean>
+
+  <bean id="TemplateEngine" class="org.snapscript.develop.http.resource.template.VelocityTemplateEngine">
+    <constructor-arg ref="VelocityEngine" />
+    <constructor-arg ref="FileResolver" />
+    <constructor-arg value="/" />
+    <constructor-arg value=".vm" />
+  </bean>
+
+  <bean id="TypeScriptCompiler" class="org.snapscript.develop.compile.TypeScriptCompiler">
+    <constructor-arg value="src/main/typescript/tsc.js" />
+    <constructor-arg value="C:/Program Files/nodejs/node.exe" />
+  </bean>
+
+  <bean id="TypeScriptResource" class="org.snapscript.develop.compile.TypeScriptResource">
+    <constructor-arg ref="TypeScriptCompiler" />
+    <constructor-arg ref="FileMatcher" />
+    <constructor-arg value="src/main/resources/resource/ts" />
+    <constructor-arg>
+      <list>
+        <value>src/main/resources/resource/js</value>
+        <value>target/classes/resource/js</value>
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <bean id="CompletionResource" class="org.snapscript.develop.complete.CompletionResource">
+    <constructor-arg ref="ProjectBuilder" />
+    <constructor-arg ref="ConfigurationClassLoader" />
+    <constructor-arg ref="ConsoleLogger" />
+  </bean>
+  
+  <bean id="TypeNodeResource" class="org.snapscript.develop.complete.TypeNodeResource">
+    <constructor-arg ref="ProjectBuilder" />
+    <constructor-arg ref="ConfigurationClassLoader" />
+    <constructor-arg ref="ConsoleLogger" />
+  </bean>
+  
+  <bean id="SourceFormatResource" class="org.snapscript.develop.complete.SourceFormatResource">
+    <constructor-arg ref="ProjectBuilder" />
+  </bean>
+
+  <bean id="ProjectBuilder" class="org.snapscript.develop.http.project.ProjectBuilder">
+    <constructor-arg ref="Workspace" />
+    <constructor-arg value="${project-mode}" />
+  </bean>
+
+  <bean id="ProjectResource" class="org.snapscript.develop.http.project.ProjectResource">
+    <constructor-arg ref="TemplateEngine" />
+    <constructor-arg value="project.vm" />
+  </bean>
+
+  <bean id="ProjectOpenDialog" class="org.snapscript.develop.http.project.ProjectOpenDialog">
+    <constructor-arg ref="ProjectBuilder" />
+    <constructor-arg ref="TemplateEngine" />
+    <constructor-arg value="start.vm" />
+  </bean>
+
+  <bean id="ProjectFileResource" class="org.snapscript.develop.http.project.ProjectFileResource">
+    <constructor-arg ref="ProjectBuilder" />
+    <constructor-arg ref="ContentTypeResolver" />
+  </bean>
+
+  <bean id="ProjectTreeResource" class="org.snapscript.develop.http.project.ProjectTreeResource">
+    <constructor-arg ref="ProjectBuilder" />
+  </bean>
+
+  <bean id="ProjectDisplayResource" class="org.snapscript.develop.http.project.ProjectDisplayResource">
+    <constructor-arg ref="ProjectBuilder" />
+    <constructor-arg value=".display" />
+  </bean>
+
+  <bean id="ProjectScriptService" class="org.snapscript.develop.http.project.ProjectScriptService">
+    <constructor-arg ref="ProjectBuilder" />
+    <constructor-arg ref="ConnectListener" />
+    <constructor-arg ref="ConfigurationClassLoader"/>
+    <constructor-arg ref="ConsoleLogger" />
+    <constructor-arg ref="ProcessManager" />
+    <constructor-arg ref="BackupManager"/>
+  </bean>
+
+  <bean id="ClassResourceLoader" class="org.snapscript.develop.http.loader.ClassResourceLoader">
+    <constructor-arg value="org.snapscript." />
+  </bean>
+
+  <bean id="ClassLoaderResource" class="org.snapscript.develop.http.loader.ClassLoaderResource">
+    <constructor-arg ref="ClassResourceLoader" />
+    <constructor-arg ref="ConsoleLogger" />
+    <constructor-arg value="${verbose}" />
+  </bean>
+
+  <bean id="RemoteProcessBuilder" class="org.snapscript.develop.http.loader.RemoteProcessBuilder" init-method="create">
+    <constructor-arg ref="ClassResourceLoader" />
+    <constructor-arg ref="Workspace" />
+  </bean>
+
+  <bean id="NotFoundResource" class="org.snapscript.develop.http.resource.StringResource">
+    <constructor-arg value="Resource could not be found!!" />
+    <constructor-arg value="text/plain; charset=UTF-8" />
+    <constructor-arg value="UTF-8" />
+    <constructor-arg value="NOT_FOUND" />
+  </bean>
+
+  <bean id="ResourceMatcher" class="org.snapscript.develop.http.resource.RegularExpressionMatcher">
+    <constructor-arg>
+      <map>
+        <entry key="/format.*" value-ref="SourceFormatResource" />
+        <entry key="/type.*" value-ref="TypeNodeResource" />        
+        <entry key="/complete.*" value-ref="CompletionResource" />
+        <entry key="/class/.*" value-ref="ClassLoaderResource" />
+        <entry key="/project/.*" value-ref="ProjectResource" />
+        <entry key="/display/.*" value-ref="ProjectDisplayResource" />
+        <entry key="/resource/.*" value-ref="ProjectFileResource" />
+        <entry key="/tree.*" value-ref="ProjectTreeResource" />
+        <entry key="/" value-ref="ProjectOpenDialog" />
+        <entry key="/.*.js" value-ref="TypeScriptResource" />
+      </map>
+    </constructor-arg>
+  </bean>
+
+  <bean id="FileMatcher" class="org.snapscript.develop.http.resource.FileMatcher">
+    <constructor-arg ref="FileResolver" />
+    <constructor-arg ref="ContentTypeResolver" />
+  </bean>
+
+  <bean id="CombinationMatcher" class="org.snapscript.develop.http.resource.CombinationMatcher">
+    <constructor-arg>
+      <list>
+        <ref bean="ResourceMatcher" />
+        <ref bean="FileMatcher" />
+      </list>
+    </constructor-arg>
+    <constructor-arg ref="NotFoundResource" />
+  </bean>
+
+  <bean id="ResourceContainer" class="org.snapscript.develop.http.resource.ResourceContainer">
+    <constructor-arg ref="CombinationMatcher" />
+  </bean>
+
+  <bean id="WebSocketRouter" class="org.simpleframework.http.socket.service.DirectRouter">
+    <constructor-arg ref="ProjectScriptService" />
+  </bean>
+
+  <bean id="WebSocketContainer" class="org.simpleframework.http.socket.service.RouterContainer">
+    <constructor-arg ref="ResourceContainer" />
+    <constructor-arg ref="WebSocketRouter" />
+    <constructor-arg value="2" />
+  </bean>
+
+  <bean id="WebContainer" class="org.snapscript.develop.http.WebContainer">
+    <constructor-arg ref="WebSocketContainer" />
+    <constructor-arg value="Snap/1.0" />
+  </bean>
+
+  <bean id="WebServer" class="org.snapscript.develop.http.WebServer">
+    <constructor-arg ref="WebContainer" />
+    <constructor-arg value="${port}" />
+  </bean>
+</beans>

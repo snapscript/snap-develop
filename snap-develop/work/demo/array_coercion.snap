@@ -1,0 +1,35 @@
+var x = new Byte[1][1];
+println(x.class.getType().getComponentType().getComponentType());
+println(x.class);
+println(x.class.getEntry());
+println(x.class.getEntry().getEntry());
+
+var s : String[][] = [['a','b'],[]];
+var i : Integer[][] = [['1','2', 3.0d, 11L],[2]];
+
+function(s);
+function(i);
+
+function function(s: String[][]){
+   for(var e in s){
+      function(e);
+   }
+}
+
+function function(s: String[]){
+   for(var e in s){
+      println("e=${e}");
+   }
+}
+
+function function(s: Float[][]){
+   for(var e in s){
+      function(e);
+   }
+}
+
+function function(s: Float[]){
+   for(var e in s){
+      println("e=${e}");
+   }
+}

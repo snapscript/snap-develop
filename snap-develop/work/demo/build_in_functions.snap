@@ -1,0 +1,16 @@
+println("x");
+print("xx");
+println(time());
+eval("blah('foo')");
+
+function blah(x){
+   println("blah("+x+")");
+}
+
+// this function should take priority
+function println(x){
+   System.out.println("new("+x+")");
+}
+
+printf("%s=%s%n", 1, 2);
+println("x"); 

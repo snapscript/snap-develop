@@ -1,0 +1,17 @@
+class Task with Runnable {
+   override run() {
+      System.err.println(Thread.currentThread().getName());
+   }
+}
+var task = new Task();
+var thread1 = new Thread(task);
+var thread2 = new Thread(task);
+var thread3 = new Thread(task);
+
+task.run();
+thread1.start();
+thread2.start();
+thread3.start();
+thread1.join();
+thread2.join();
+thread3.join();

@@ -1,0 +1,74 @@
+#explorer {
+	font-family: "Lucida Console", sans-serif;
+	overflow: scroll;
+	font-size: 0.9em;
+	background-color: #ffffff;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #c0c0c0;
+	padding: 5px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 8px;
+	left: 0;
+}
+
+.ui-menu {
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 12px;
+	font-color: #000000;
+	background-color: #f3f3f3;
+	-webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.4);
+	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.4);
+	padding: 1px;
+	width: 150px;
+	z-index: 3; /* over ext-wide titles */
+}
+
+.dropdown-menu {
+	display: block;
+}
+
+.menu-explore {
+	background-image: url('/img/toolbar/fldr_obj.gif') !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+}
+
+.menu-run {
+	background-image: url('/img/toolbar/nav_go.gif') !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+}
+
+.menu-stop {
+	background-image: url('/img/toolbar/rem_co.gif') !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+}
+
+.menu-save {
+	background-image: url('/img/toolbar/save_edit.gif') !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+}
+
+.menu-rename {
+	background-image: url('/img/toolbar/swap.gif') !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+}
+
+.menu-trash {
+	background-image: url('/img/toolbar/trash.gif') !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+}
+
+.menu-new {
+	background-image: url('/img/toolbar/new_con.gif') !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+}

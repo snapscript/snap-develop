@@ -1,0 +1,96 @@
+#runScript {
+	background-image: url('/img/toolbar/nav_go.gif');	
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px;
+}
+#resumeScript {
+	background-image: url('/img/toolbar/resume_co.gif');	
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px;
+}
+#stepInScript {
+	background-image: url('/img/toolbar/stepinto_co.gif');	
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px;
+}
+#stepOutScript {
+	background-image: url('/img/toolbar/stepreturn_co.gif');	
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px;
+}
+#stepOverScript {
+	background-image: url('/img/toolbar/stepover_co.gif');	
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px;   
+}
+#stopScript {
+	background-image: url('/img/toolbar/rem_co.gif');	
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px; 
+}
+#saveFile {
+	background-image: url('/img/toolbar/save_edit.gif');	
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px; 
+}
+#deleteFile {
+	background-image: url('/img/toolbar/trash.gif');	
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px;
+}
+#newFile {
+	background-image: url('/img/toolbar/new_con.gif');	
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px;  
+}
+#searchTypes {
+	background-image: url('/img/toolbar/insp_sbook.gif');	
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px; 
+}
+.toolbarTop {
+	padding: 8px;
+	height: 45px;
+    background-image: -webkit-linear-gradient(#f0f0f0, #dfdfdf);
+    background-image: -moz-linear-gradient(#f0f0f0, #dfdfdf);
+    background-image: -ms-linear-gradient(#f0f0f0, #dfdfdf);
+    background-image: -o-linear-gradient(#f0f0f0, #dfdfdf);
+    background-image: linear-gradient(#f0f0f0, #dfdfdf);
+    filter: progid: dximagetransform.microsoft.gradient(startColorstr='#fff0f0f0', endColorstr='#ffdfdfdf', GradientType=0);  
+}
+.toolbarSeparator {
+    border-left: 1px dotted #888888;
+    height: 18px;
+}
+#toolbarDebug {
+	opacity: 0.4;
+    filter: alpha(opacity=40); /* msie */
+}
+#toolbarLogoContainer {
+	height: 100%;
+	width: 150px;
+	z-index: 1000;
+}
+#toolbarLogo {
+	background-image: url('/img/logo.png');	
+	background-position: center;
+	background-repeat: no-repeat;	
+	max-width:100%;
+	max-height:100%;
+}
+#toolbarSwitch {
+	background-image: url('/img/toolbar/switch.gif');	
+	background-position: right center;
+	background-repeat: no-repeat;
+    padding: 12px;   
+}

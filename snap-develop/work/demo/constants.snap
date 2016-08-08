@@ -1,0 +1,4 @@
+module Constants{
+   const x = 11;
+   const y = 12;
+}

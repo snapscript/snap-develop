@@ -1,0 +1,11 @@
+enum X{
+   I(p(1,2));
+   var x;
+   new(y){   
+      this.x=y;
+   }
+   static p(a,b){
+      return "${a} ${b}";
+   }
+}
+System.out.println(X.I);

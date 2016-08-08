@@ -1,0 +1,21 @@
+
+
+@ManagedResource(description: "Some resource")
+module Mod{
+
+   @ManagedOperation(name: "resolve")
+   @ManagedOperationParameters(
+      values: [@ManagedOperationParameter(name: "text")]
+   )
+   resolve(text){
+      return text;
+   }
+}
+
+function testModuleAnnotations() {
+   var annotations = Mod.getAnnotations();
+   
+   assert annotations.length == 1;
+   assert annotations[0].name == 'ManagedResource';
+   assert annotations[0].getAttribute('description') == 'Some resource';
+}

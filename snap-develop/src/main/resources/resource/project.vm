@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>${project}</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<link href="/css/external/w2ui.min.css" rel="stylesheet">
+<link href="/css/external/font-awesome.min.css" rel="stylesheet">
+<link href="/css/external/bootstrap.min.css" rel="stylesheet">
+<link href="/css/external/jquery-ui.min.css" rel="stylesheet" />
+<link href="/css/external/fancytree.css" rel="stylesheet" />
+<link href="/css/splash.css" rel="stylesheet" />
+<link href="/css/console.css" rel="stylesheet" />
+<link href="/css/editor.css" rel="stylesheet" />
+<link href="/css/dialog.css" rel="stylesheet" />
+<link href="/css/tree.css" rel="stylesheet" />
+<link href="/css/breakpoints.css" rel="stylesheet" />
+<link href="/css/problems.css" rel="stylesheet" />
+<link href="/css/threads.css" rel="stylesheet" />
+<link href="/css/variables.css" rel="stylesheet" />
+<link href="/css/profiler.css" rel="stylesheet" />
+<link href="/css/debug.css" rel="stylesheet" />
+<link href="/css/toolbar.css" rel="stylesheet" />
+<link href="/css/alert.css" rel="stylesheet" />
+<link href="/css/project.css" rel="stylesheet" />
+<script src="/js/external/ace/ace.js"></script>
+<script src="/js/external/ace/ext-language_tools.js"></script>
+<script src="/js/external/jquery.js"></script>
+<script src="/js/external/jquery-ui.js"></script>
+<script src="/js/external/jquery-context-menu.js"></script>
+<script src="/js/external/bootstrap.min.js"></script>
+<script src="/js/external/spin.js"></script>
+<script src="/js/external/fancytree.js"></script>
+<script src="/js/external/w2ui.js"></script>
+<script src="/js/external/filesaver.js"></script>
+<script src="/js/module.js"></script>
+<script src="/js/spinner.js"></script>
+<script src="/js/editor.js"></script>
+<script src="/js/socket.js"></script>
+<script src="/js/console.js"></script>
+<script src="/js/tree.js"></script>
+<script src="/js/threads.js"></script>
+<script src="/js/debug.js"></script>
+<script src="/js/variables.js"></script>
+<script src="/js/dialog.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/history.js"></script>
+<script src="/js/problem.js"></script>
+<script src="/js/profiler.js"></script>
+<script src="/js/commands.js"></script>
+<script src="/js/explorer.js"></script>
+<script src="/js/alert.js"></script>
+</head>
+<body style="height: 100%; margin: 0; background-color: #ececec;">
+  <div id="mainLayout" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"></div>
+  <div id="overlay">
+    <!--div id="splash-square"><img src="/img/splash.png"></div-->
+    <div id="spin"></div>
+  </div>
+  <script type="text/javascript" src="/project.js"></script>
+</body>
+</html>
+

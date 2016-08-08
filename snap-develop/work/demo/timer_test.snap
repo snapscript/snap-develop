@@ -1,0 +1,36 @@
+function time(name, func: ()){
+   var s = System.currentTimeMillis();
+   func();
+   var f = System.currentTimeMillis();
+   println(name +": "+(f-s));
+}
+const ITERATIONS = 10000000;
+
+function test(i){
+   return i>0;
+}
+var expression = x->x>0;
+var compound = x->{return x>0;};
+
+time("var x = i>0", ->{
+   for(var i = 0; i < 10000000; i++){
+      var x =i >0;
+   
+   }
+});
+time("test(i)", ->{
+   for(var i = 0; i < 10000000; i++){
+      test(i);
+   }
+});
+time("expression(i)", ->{
+   for(var i = 0; i < 10000000; i++){
+      expression(i);
+   }
+});
+time("compound(i)", ->{
+   for(var i = 0; i < 10000000; i++){
+      compound(i);
+   }
+});
+sleep(10000);

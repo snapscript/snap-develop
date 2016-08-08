@@ -1,0 +1,778 @@
+/**
+ * This program displays a simulated solar system in 2 dimensions. Buttons along
+ * the top of the GUI allow the user to show or hide various physical properties
+ * of the planets. These properties are the acceleration and velocity vectors,
+ * the percent kinetic and potential energy, and the trajectory the planet has
+ * taken. In addition, two buttons allow the user to zoom in or out for better
+ * viewing. Finally, there is a sliding scale on the right of the GUI that
+ * allows the user to alter the mass of the sun.
+ * 
+ * To run the program, you first must compile it (javac SolarSystem.java), then
+ * you execute it using java SolarSystem <number of planets>.
+ * 
+ * @author Brett Kraabel
+ * @author us.geocities.com/brettkraabel
+ * @version 1.0
+ */
+import awt.BasicStroke;
+import awt.BorderLayout;
+import awt.Color;
+import awt.Container;
+import awt.Graphics;
+import awt.Graphics2D;
+import awt.event.ActionEvent;
+import awt.event.ActionListener;
+import awt.geom.AffineTransform;
+import awt.geom.Area;
+import awt.geom.Ellipse2D;
+import awt.geom.Ellipse2D$Double;
+import awt.geom.Ellipse2D$Float;
+import awt.geom.GeneralPath;
+import awt.geom.Line2D;
+import awt.geom.Line2D$Double;
+import awt.geom.Line2D$Float;
+import awt.geom.Rectangle2D;
+import awt.geom.Rectangle2D$Double;
+import util.Vector;
+
+import swing.JPanelInterface;
+import swing.JPanelAdapter;
+import swing.JButton;
+import swing.JFrame;
+import swing.JPanel;
+import swing.JSlider;
+import swing.event.ChangeEvent;
+import swing.event.ChangeListener;
+
+import solarsystem.model.Host;
+import solarsystem.model.Satellite;
+import solarsystem.model.Planet;
+import solarsystem.model.Moon;
+import solarsystem.model.Stars;
+import solarsystem.model.Sun;
+
+/**
+ * This class is used to make the spatial coordinates more transparent.
+ */
+class Coord {
+    /**
+    * X represents the horizontal dimension which is measured from LHS of
+    * GUI. Y represents the vertical dimension which is measured from top of
+    * GUI (i.e. Y increases as you go down).
+    */
+    static const X = 1;
+    static const Y = 0;
+}
+
+/**
+ * This class provides the frame that contains the GUI interface and the
+ * display.
+ */
+class SkyFrame with ChangeListener with ActionListener {
+    /**
+     * The panel that displays the solar system.
+     */
+    var skyPanel;
+    /**
+     * The range within which the user may modify the sun's mass.
+     */
+    static var maxSunMassMultiplier = 1.5d;
+    static var minSunMassMultiplier = 0.5d;
+    /**
+     * The initial mass of the sun (arbitrary units).
+     */
+    static var massOfSun = 1200;
+    /**
+     * The initial size of the frame in pixels.
+     */
+    static var xPixels = 1000;
+    static var yPixels = 1000;
+    /**
+     * The scale factor used to zoom in and out.
+     */
+    static var lengthScaleFactor = 1;
+    /**
+     * The maximum scale factor allowed for zooming out.
+     */
+    static var maxScaleFactor = 5;
+    /**
+     * The sun for the solar system.
+     * 
+     * @see Sun
+     */
+    var sun;
+    /**
+     * The slider that allows the user to modify the sun's mass.
+     * 
+     * @see JSlider
+     */
+    var slider;
+    /**
+     * Button that allows the user to zoom in (i.e. view the solar system in
+     * more detail).
+     */
+    var zoomIn;
+    /**
+     * Button that allows the user to zoom out (i.e. view the solar system in
+     * less detail.
+     */
+    var zoomOut;
+    /**
+     * Button that allows the user to display the acceleration vectors of each
+     * planet in the solar system.
+     */
+    var accButton;
+    /**
+     * Button that allows the user to display the velocity vectors of each
+     * planet in the solar system.
+     */
+    var velButton;
+    /**
+     * Button that allows the user to display the energy of each planet in the
+     * solar system.
+     */
+    var energyButton;
+    /**
+     * Button that allows the user to display the previous positions of each
+     * planet in the solar system.
+     */
+    var positionButton;
+    /**
+     * Button that allows the user to freeze the display of the solar system
+     * (i.e. stop the motion of the planets).
+     */
+    var freezeButton;
+    /**
+     * String to label button.
+     */
+    const zoomInString = "Zoom In";
+    const zoomOutString = "Zoom Out";
+    /**
+     * String to label button.
+     */
+    const showAcc = "Show Acceleration";
+    const hideAcc = "Hide Acceleration";
+    const showVel = "Show Velocity";
+    const hideVel = "Hide Velocity";
+    /**
+     * String to label button.
+     */
+    const showEnergy = "Show Energy";
+    const hideEnergy = "Hide Energy";
+    const showPos = "Trace Position";
+    const hidePos = "Hide Trace";
+    const freeze = "Freeze";
+    const unFreeze = "Unfreeze";
+    /**
+     * Panel in which to put the buttons.
+     * 
+     * @see JPanel
+     */
+    var buttonPanel;
+    var frame;
+    /**
+     * Constructs a frame containing the specified number of planets.
+     * 
+     * @param mNumberOfPlanets The number of planets in the solar system.
+     * @param dt The time differential for integrating the equations of
+     *            motion.
+     */
+    new(mNumberOfPlanets, dt) {
+       frame = new JFrame("Solar System");
+        sun = new Sun(75, 2000, xPixels/2, yPixels/2);
+
+        frame.setSize(xPixels, yPixels);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        skyPanel = new SkyPanel(dt, xPixels, yPixels, mNumberOfPlanets, sun);
+        skyPanel.panel.setBackground(Color.black);
+
+        var masterPanelLayout = new BorderLayout();
+        var pane = frame.getContentPane();
+        pane.setLayout(masterPanelLayout);
+        pane.add(skyPanel.panel, masterPanelLayout.CENTER);
+
+        slider = new JSlider(JSlider.VERTICAL,
+           (sun.getMass()*minSunMassMultiplier),
+           (sun.getMass()*maxSunMassMultiplier),
+           sun.getMass());
+        slider.setMajorTickSpacing((sun.getMass()*
+            (maxSunMassMultiplier -
+            minSunMassMultiplier)/20));
+        slider.setMinorTickSpacing((sun.getMass()*
+            (maxSunMassMultiplier -
+            minSunMassMultiplier)/40));
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+        slider.addChangeListener(this);
+        pane.add(slider, masterPanelLayout.EAST);
+
+        buttonPanel = new JPanel();
+        zoomIn = new JButton(zoomInString);
+        zoomIn.addActionListener(this);
+        zoomIn.setEnabled(false);
+        buttonPanel.add(zoomIn);
+
+        zoomOut = new JButton(zoomOutString);
+        zoomOut.addActionListener(this);
+        zoomOut.setEnabled(true);
+        buttonPanel.add(zoomOut);
+
+        accButton = new JButton(showAcc);
+        accButton.addActionListener(this);
+        buttonPanel.add(accButton);
+
+        velButton = new JButton(showVel);
+        velButton.addActionListener(this);
+        buttonPanel.add(velButton);
+
+        energyButton = new JButton(showEnergy);
+        energyButton.addActionListener(this);
+        buttonPanel.add(energyButton);
+
+        positionButton = new JButton(showPos);
+        positionButton.addActionListener(this);
+        buttonPanel.add(positionButton);
+
+        freezeButton = new JButton(freeze);
+        freezeButton.addActionListener(this);
+        buttonPanel.add(freezeButton);
+
+        pane.add(buttonPanel, masterPanelLayout.NORTH);
+
+        frame.setContentPane(pane);
+        frame.setVisible(true);
+        frame.setResizable(false);
+    }
+    /**
+     * The method actionPerformed implements the action called for by the
+     * user.
+     * 
+     * @param event An ActionEvent.
+     * @see ActionEvent
+     */
+    actionPerformed(event) {
+        var command = event.getActionCommand();
+
+        if (command.equals(zoomOutString)) {
+            zoomIn.setEnabled(true);
+            ++lengthScaleFactor;
+            energyButton.setEnabled(false);
+            skyPanel.displayEnergy(false);
+            skyPanel.populateStarGroup(lengthScaleFactor);
+            if (lengthScaleFactor > maxScaleFactor)
+                zoomOut.setEnabled(false);
+        }
+        else if (command.equals(zoomInString)) {
+            --lengthScaleFactor;
+            if (lengthScaleFactor == 1) {
+                zoomIn.setEnabled(false);
+                energyButton.setEnabled(true);
+                if (energyButton.getText().equals(hideEnergy))
+                   skyPanel.displayEnergy(true);
+            }
+            zoomOut.setEnabled(true);
+        }
+        else if (command.equals(showAcc)) {
+            skyPanel.displayAcc(true);
+            accButton.setText(hideAcc);
+        }
+        else if (command.equals(showVel)) {
+            skyPanel.displayVel(true);
+            velButton.setText(hideVel);
+        }
+        else if (command.equals(showEnergy)) {
+            skyPanel.displayEnergy(true);
+            energyButton.setText(hideEnergy);
+        }
+        else if (command.equals(showPos)) {
+            skyPanel.displayPos(true);
+            positionButton.setText(hidePos);
+        }
+        else if (command.equals(freeze)) {
+            skyPanel.setFreeze(true);
+            freezeButton.setText(unFreeze);
+        }
+        else if (command.equals(hideAcc)) {
+            skyPanel.displayAcc(false);
+            accButton.setText(showAcc);
+        }
+        else if (command.equals(hideVel)) {
+            skyPanel.displayVel(false);
+            velButton.setText(showVel);
+        }
+        else if (command.equals(hideEnergy)) {
+            skyPanel.displayEnergy(false);
+            energyButton.setText(showEnergy);
+        }
+        else if (command.equals(hidePos)) {
+            skyPanel.displayPos(false);
+            skyPanel.resetPos();
+            positionButton.setText(showPos);
+        }
+        else if (command.equals(unFreeze)) {
+            skyPanel.setFreeze(false);
+            freezeButton.setText(freeze);
+        }
+    }
+    /**
+     * Gets the current value of lengthScaleFactor used to calculate position
+     * of planets within the display.
+     */
+    static getScaleFactor() {
+        return lengthScaleFactor;
+    }
+    /**
+     * Gets the SkyPanel that displays the solar system.
+     * 
+     * @see SkyPanel
+     */
+    getPanel() {
+        return skyPanel.panel;
+    }
+    /**
+     * Changes the sun's mass according to the input from the slider.
+     * 
+     * @param event
+     *           ChangeEvent
+     * @see ChangeEvent
+     */
+    stateChanged(event) {
+        var source = event.getSource();
+        if (source.getValueIsAdjusting() != true)
+            sun.setMass(slider.getValue());
+    }
+}
+
+/**
+ * Contains the sun, planets and moons of the simulated solar system.
+ * 
+ * @see JPanel
+ */
+class SkyPanel with JPanelInterface {
+    /**
+     * The initial size of the panel in pixels
+     */
+    var xMaxPixels;
+    var xMinPixels;
+    var yMaxPixels;
+    var yMinPixels;
+    /**
+     * Minimum and maximum planet diameter in pixels.
+     */
+    var minPlanetDia = 20.0d;
+    var maxPlanetDia = 60.0d;
+    /**
+     * The maximum number of orbits allowed in solar system.
+     */
+    var numberOfPlanets;
+    /**
+     * Number of stars in the background.
+     */
+    var numStars = 30;
+    /**
+     * The maximum number of orbits (i.e. planets) allowed in the solar
+     * system.
+     */
+    var maxNumberOfOrbits;
+    /**
+     * A array indicating if orbit indexed is occupied by a planet.
+     */
+    var orbitOccupied;
+    /**
+     * An array of planet objects.
+     * 
+     * @see Planet
+     */
+    var planet;
+    /**
+     * Boolean variables indicating whether or not to display energy,
+     * velocity, acceleration or position. Variable freeze is set to true to
+     * stop the display from updating.
+     */
+    var displayEnergy = false;
+    var displayVel = false;
+    var displayAcc = false;
+    var displayPos = false;
+    var freeze = false;
+    /**
+     * A vector containing Stars objects.
+     * 
+     * @see Stars
+     */
+    var starGroup;
+    /**
+     * Sun object.
+     * 
+     * @see Sun
+     */
+    var sun;
+    var panel;
+    /**
+     * SkyPanel constructor. The constructor calculates the maximum number of
+     * planets that will be visible given mMaxXPosition, and then determines
+     * the maximum number of orbits that are needed. It then creates an array
+     * of planets and places each planet at random within the orbits. Finally,
+     * it creates a star group which is displayed for the default view of the
+     * solar system (more star groups are created as needed when/if the user
+     * zooms out for a wider view of the solar system).
+     * 
+     * @param dt Time increment for numerical integration of differential
+     *            equations of motion.
+     * @param mMaxXPosition Maximum value of X coordinate allowed (in pixels).
+     * @param mMaxYPosition Maximum value of Y coordinate allowed (in pixels).
+     * @param mNumberOfPlanets Number of planets in solar system.
+     * @param mSun Reference to Sun object of solar system.
+     * @see Sun
+     */
+    new(dt, mMaxXPosition, mMaxYPosition, mNumberOfPlanets, mSun){
+        panel = new JPanelAdapter(this);
+        xMinPixels = 0;
+        xMaxPixels = mMaxXPosition;
+        yMinPixels = 0;
+        yMaxPixels = mMaxYPosition;
+        numberOfPlanets = mNumberOfPlanets;
+        sun = mSun;
+
+        var numVisibleOrbits =((xMaxPixels/
+        sun.getAbsPos(Coord.X) -
+        sun.getDiameter()/2)/maxPlanetDia);
+
+        maxNumberOfOrbits = numVisibleOrbits > numberOfPlanets ? numVisibleOrbits : numberOfPlanets;
+
+        orbitOccupied = new Boolean[maxNumberOfOrbits];
+        for (var i = 0; i < maxNumberOfOrbits; ++i)
+            orbitOccupied[i] = false;
+
+        planet = new Planet[numberOfPlanets];
+
+        for (var i = 0; i < numberOfPlanets; ++i) {
+            var diameter = minPlanetDia + Math.random()*
+            (maxPlanetDia - minPlanetDia);
+            planet[i] = new Planet(dt, // Time increment for calculating motion.
+                                   diameter, // Diameter of planet
+                                   getUnoccupiedOrbit(), // Radius of orbit for planet
+                                   getColor(i), // Color of planet
+                                   diameter/maxPlanetDia, // Mass of planet
+                                   this, // Host panel
+                                   sun);
+        }
+
+        starGroup = new Vector(1);
+        populateStarGroup(1);
+    }
+
+    /**
+     * Creates a new star group if needed for the given lengthScaleFactor.
+     * 
+     * @param mLengthScaleFactor The scale factor which determines sizing and distances for
+     *                            positioning objects in display. This allows user to zoom in
+     *                            or out.
+     */
+    populateStarGroup(mLengthScaleFactor) {
+        //
+        // Check to see if we have already made a star group for
+        // this zoom factor.
+        //
+        if (starGroup.size() >= mLengthScaleFactor)
+            return;
+        //
+        // If not, make a new star group.
+        //
+
+        var stars = new Stars(numStars/SkyFrame.getScaleFactor(), // number of
+                                                                  // stars
+        SkyFrame.getScaleFactor()*(xMaxPixels -
+        sun.getAbsPos(Coord.X)), // maximum distance from sun
+                      (SkyFrame.getScaleFactor() - 1)*(xMaxPixels -
+                                                       sun.getAbsPos(Coord.X)), // minimum
+                                                                                 // distance
+                                                                                 // from
+                                                                                 // sun
+
+                      sun);
+        starGroup.addElement(stars);
+    }
+
+    /**
+     * Searches randomly among the allowed orbits until it finds an unoccupied
+     * orbit.
+     * 
+     * @return double The intial radius of the unoccupied orbit.
+     */
+    getUnoccupiedOrbit() {
+        var trialOrbitNum = (Math.random()*maxNumberOfOrbits);
+
+        while (true) {
+            if (!orbitOccupied[trialOrbitNum]) {
+                orbitOccupied[trialOrbitNum] = true;
+                break;
+            }
+            else
+                trialOrbitNum = (Math.random()*maxNumberOfOrbits);
+        }
+
+        return 1.5*sun.getDiameter() + trialOrbitNum*maxPlanetDia;
+    }
+
+    update(panel, comp) {
+      //paint(panel, comp);
+    }
+    
+    /**
+     * Repaints the display. This is the time critcal section.
+     * 
+     * @param comp A Graphics object.
+     * @see Graphics
+     */
+    paint(panel, comp) {
+        var comp2D = comp;
+
+        comp2D.setPaint(Color.black);      
+        comp2D.fillRect(0, 0, 1000, 1000);
+        sun.draw(comp2D);
+        //
+        // Only draw the star groups that are being displayed (i.e.
+        // are within the current scale factor).
+        //
+        for (var i = 0; i < SkyFrame.getScaleFactor(); ++i)
+            starGroup.get(i).draw(comp2D);
+
+        for (var i = 0; i < numberOfPlanets; ++i) {
+            if (!freeze)
+                planet[i].translate();
+            planet[i].draw(comp2D);
+            if (displayVel)
+                drawVelocityVector(comp2D, i);
+            if (displayAcc)
+                drawAccelerationVector(comp2D, i);
+            if (displayEnergy)
+                drawEnergy(comp2D, i);
+        }
+    }
+
+    /**
+     * Prints the kinetic energy of the planet indicated by the parameter i as
+     * a percent of the total energy (kinetic + potential) of the planet.
+     * 
+     * @param comp2D A 2D graphics object.
+     * @see Graphics2D
+     * @param i Index of planet for which to display the kinetic energy.
+     */
+    drawEnergy(comp2D, i) {
+        comp2D.setColor(Color.white);
+
+        //
+        // Print kinetic energy as percent of total energy.
+        //
+
+        var percentKE = Integer.toString((100*planet[i].getKE()/
+                                            (planet[i].getKE() +
+                                             planet[i].getPE())));
+        comp2D.drawString("KE% " + percentKE,
+                         planet[i].getAbsPos(Coord.X) + 50,
+                         planet[i].getAbsPos(Coord.Y) + 70);
+        //
+        // Print potential energy as percent of total energy.
+        //
+        var percentPE = Integer.toString((100*planet[i].getPE()/
+                                            (planet[i].getKE() +
+                                             planet[i].getPE())));
+        comp2D.drawString("PE% " + percentPE,
+                         planet[i].getAbsPos(Coord.X) + 50,
+                         planet[i].getAbsPos(Coord.Y) + 82);
+    }
+
+    /**
+     * Displays the velocity vector of the planet indexed by the parameter i.
+     * 
+     * @param comp2D A 2D graphics object.
+     * @see Graphics2D
+     * @param i Index of planet for which to display the kinetic energy.
+     */
+    drawVelocityVector(comp2D, i) {
+        var xPos = planet[i].getAbsPos(Coord.X);
+        var yPos = planet[i].getAbsPos(Coord.Y);
+        var xVel = xPos + 25*planet[i].getVel(Coord.X)/ SkyFrame.getScaleFactor();
+        var yVel = yPos + 25*planet[i].getVel(Coord.Y)/SkyFrame.getScaleFactor();
+
+        comp2D.setColor(Color.white);
+        comp2D.draw(new Line2D$Float(xPos, yPos, xVel, yVel));
+        drawArrow(comp2D, xPos, yPos, xVel, yVel);
+    }
+
+    /**
+     * Displays the acceleration vector for the planet indexed by the
+     * parameter i.
+     * 
+     * @param comp2D A 2D graphics object.
+     * @see Graphics2D
+     * @param i Index of planet for which to display the kinetic energy.
+     */
+    drawAccelerationVector(comp2D, i) {
+        var xPos = planet[i].getAbsPos(Coord.X);
+        var yPos = planet[i].getAbsPos(Coord.Y);
+        var xAcc = xPos + 2000*planet[i].getAcc(Coord.X)/ SkyFrame.getScaleFactor();
+        var yAcc = yPos + 2000*planet[i].getAcc(Coord.Y)/SkyFrame.getScaleFactor();
+
+        comp2D.setColor(Color.white);
+        comp2D.draw(new Line2D$Float(xPos,
+                   yPos,
+                   xAcc,
+                   yAcc));
+        drawArrow(comp2D,
+                  xPos,
+                  yPos,
+                  xAcc,
+                  yAcc);
+    }
+
+    /**
+     * Draws an arrow (vector) from (x0, y0) to (x1, y1).
+     * 
+     * @param comp2D A 2D graphics object.
+     * @see Graphics2D
+     * @param x0 X coordinate of base of arrow.
+     * @param y0 Y coordinate of base of arrow.
+     * @param x1 X coordinate of tip of arrow.
+     * @param y1 Y coordinate of tip of arrow.
+     */
+    drawArrow(comp2D, x0, y0, x1, y1) {
+        var dx = x1 - x0;
+        var dy = y1 - y0;
+        var r = Math.sqrt(dx*dx + dy*dy);
+        var len = 15/SkyFrame.getScaleFactor();
+        var x;
+        var y;
+        var numPts = 4;
+
+        x = new Integer[numPts];
+        y = new Integer[numPts];
+        x[0] = x1;
+        y[0] = y1;
+        x[1] = (x1 - len*dy/(2*r));
+        y[1] = (y1 + len*dx/(2*r));
+        x[2] = (x1 + len*dx/r);
+        y[2] = (y1 + len*dy/r);
+        x[3] = (x1 + len*dy/(2*r));
+        y[3] = (y1 - len*dx/(2*r));
+
+        var path = new GeneralPath(GeneralPath.WIND_EVEN_ODD, numPts);
+        path.moveTo(x[0], y[0]);
+        for (var i = 1; i < numPts; ++i)
+            path.lineTo(x[i], y[i]);
+        path.closePath();
+        comp2D.fill(path);
+    }
+    
+    /**
+     * The method getColor is used by the sattelites of the solar system to
+     * get their color.
+     * 
+     * @param i Integer that determines the color that is returned.
+     * @return Color
+     */
+    getColor(i) {
+        var color;
+        var j = i%8;
+      
+        if(j == 0) {
+          color = Color.red;
+        } else if(j == 1) {
+          color = Color.blue;
+        } else if(j == 2) {
+          color = Color.green;
+        }else if(j == 3) {
+          color = Color.pink;
+        }else if(j == 4) {
+          color = Color.orange;
+        }else if(j == 5) {
+          color = Color.cyan;
+        }else if(j == 6) {
+          color = Color.magenta;
+        }else if(j == 7) {
+          color = Color.lightGray;
+        } else {
+          color = Color.gray;
+        }
+        return color;
+    }
+
+    /**
+     * Set method to set variable displayAcc.
+     * 
+     * @param value Boolean value, true = display acceleration vector, false = do
+     *              not display acceleration vector.
+     */
+    displayAcc(value) {
+        displayAcc = value;
+    }
+
+    /**
+     * Set method to set variable displayVel.
+     * 
+     * @param value Boolean value, true = display velocity vector, false = do not
+     *               display velocity vector.
+     */
+    displayVel(value) {
+        displayVel = value;
+    }
+
+    /**
+     * Set method to set variable displayEnergy.
+     * 
+     * @param value Boolean value, true = display kinetic energy, false = do not
+     *               display kinetic energy.
+     */
+    displayEnergy(value){
+        displayEnergy = value;
+    }
+
+    /**
+     * Set method to set variable displayPos.
+     * 
+     * @param value Boolean value, true = display trace of spatial position,
+     *               false = do not display trace of spatial position.
+     */
+    displayPos(value) {
+        displayPos = value;
+    }
+
+    /**
+     * Get method to get the value of the variable displayPos.
+     * 
+     * @return displayPos Boolean value. true = diplay trace of previous
+     *         spatial positions of planets. false = do not display trace of
+     *         previous spatial positions of planets.
+     */
+    showPos() {
+        return displayPos;
+    }
+
+    /**
+     * Erases traces of previous spatial positions of planets.
+     */
+    resetPos() {
+        for (var i = 0; i < numberOfPlanets; ++i)
+            planet[i].erasePrevPositions();
+    }
+    /**
+     * A set method to set the variable freeze. true = do not translate
+     * planets. false = translate planets according to normal physical laws of
+     * motion.
+     */
+    setFreeze(value) {
+        freeze = value;
+    }
+
+    /**
+     * Get method to retrieve the maximum diameter allowed for planets. return
+     * double Maximum planet diameter (in pixels).
+     */
+    getMaxPlanetDiameter() {
+        return maxPlanetDia;
+    }
+}
+
+
+

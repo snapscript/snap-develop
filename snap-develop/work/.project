@@ -1,0 +1,31 @@
+<project>
+  <environment>
+    <variable name="PROJECT_ROOT">C:\Work\development\github\snapscript\develop\snap-develop\work</variable>
+  </environment>
+  <arguments>
+    <argument>-Xmx500m</argument>
+    <argument>-Xms10m</argument>
+    <argument>-XX:+UnlockCommercialFeatures</argument>
+    <argument>-XX:+FlightRecorder</argument>
+  </arguments>
+  <repository path="c:\temp\remote-repo">
+    <location name="central">http://repo1.maven.org/maven2</location>
+  </repository>
+  <dependencies>
+    <dependency>
+      <groupId>org.sonatype.aether</groupId>
+      <artifactId>aether-connector-file</artifactId>
+      <version>1.13.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.simpleframework</groupId>
+      <artifactId>simple-http</artifactId>
+      <version>6.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.5</version>
+    </dependency>
+  </dependencies>
+</project>

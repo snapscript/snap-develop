@@ -1,0 +1,48 @@
+import util.concurrent.ConcurrentHashMap as A;
+import util.concurrent.ConcurrentHashMap as B;
+import util.concurrent.ConcurrentHashMap as C;
+import util.concurrent.ConcurrentHashMap;
+
+class HashMap {
+   static dump() {
+      return "HashMap.dump()";
+   }
+}
+
+function testDefaultImportOverride() {
+   assert HashMap.dump() == "HashMap.dump()";
+}
+
+function testImportAlias() {
+   assert A.class == B.class;
+   assert B.class == C.class;
+   assert C.class == ConcurrentHashMap.class;   
+   assert A.name == 'ConcurrentHashMap';
+   assert B.name == 'ConcurrentHashMap';
+   assert C.name == 'ConcurrentHashMap';
+   assert ConcurrentHashMap.name == 'ConcurrentHashMap';   
+   
+   println(A.class);
+   println(B.class);
+   println(C.class);
+   println(ConcurrentHashMap.class);
+}
+
+import util.concurrent.ConcurrentHashMap as D;
+import util.concurrent.ConcurrentHashMap as E;
+import util.concurrent.ConcurrentHashMap;
+
+function testImportAsStatement() {
+   assert D.class == B.class;
+   assert E.class == C.class;
+   assert D.class == ConcurrentHashMap.class;   
+   assert D.name == 'ConcurrentHashMap';
+   assert E.name == 'ConcurrentHashMap';
+   
+   println(A.class);
+   println(B.class);
+   println(C.class);
+   println(D.class);
+   println(E.class);   
+   println(ConcurrentHashMap.class);
+}

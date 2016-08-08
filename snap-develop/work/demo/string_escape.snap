@@ -1,0 +1,3 @@
+var p="c:\\temp\\log.txt";
+var x=p.replace('\\', '/');
+println(x);

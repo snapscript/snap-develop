@@ -1,0 +1,15 @@
+//const text = String.class.getModule().getContext().getManager().getString("/algorithms/blah.json");
+var text = String.class.getModule().getContext().getManager().getString("/algorithms/large_file.json");
+
+for(var i in 0..9999) {
+   text += " ";
+   const start = System.currentTimeMillis();
+   const list = eval(text);
+
+   list.stream().forEach(entry -> println(entry.guid));
+   println(list.length);
+   
+   const finish = System.currentTimeMillis();
+   //println(map);
+   println(i+": "+(finish - start)+" len="+text.length);
+}

@@ -1,0 +1,12 @@
+class X{
+   var x;
+   new(x){
+      this.x=x;
+   }
+}
+var arr=new X[10][10];
+var x = new X(1);
+System.err.println(arr);
+
+var arr2 = new Integer[10];
+System.err.println(arr2); 

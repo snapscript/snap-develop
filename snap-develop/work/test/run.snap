@@ -1,0 +1,66 @@
+import util.concurrent.ScheduledThreadPoolExecutor;
+import find.FilePatternScanner;
+import core.PathConverter;
+import core.store.FileStore;
+import compile.StoreContext;
+import compile.ResourceCompiler;
+
+const threads = 10;
+
+function runTests(directory) {
+   const scanner = new FilePatternScanner(directory);
+   const scripts = scanner.scan("**/*_test.snap");
+   const converter = new PathConverter();
+   const root = new File(directory);
+   const store = new FileStore(root);
+   const executor = new ScheduledThreadPoolExecutor(threads);
+   const context = new StoreContext(store, executor);
+   const compiler = new ResourceCompiler(context);
+   var failures = 0;
+   var tests = 0;
+   
+   for(var script in scripts) {
+      var executable = compiler.compile(script);
+      var package = converter.createModule(script);
+
+      try {
+         tests++;
+         executable.execute();
+      }catch(e) {
+         System.err.println("Failure for ${script}");
+         failures++;
+      }
+      var registry = context.getRegistry();
+      var container = registry.getModule(package);
+      var tests = container.getFunctions();
+      var scope = container.getScope();
+      
+      for(var test in tests){
+         if(test.name.startsWith("test")) {
+            //executor.execute(-> {
+               timeTest(-> test.invocation.invoke(scope, scope), script, test.name);
+            //});
+         }
+      }
+   }
+   System.err.println();
+   System.err.println("TESTS ${tests} PASS ${tests - failures} FAILURES ${failures}");
+}
+
+function timeTest(func, script, name) {
+   var start = System.currentTimeMillis();
+   
+   try {
+      func();
+   } finally {
+      var finish = System.currentTimeMillis();
+      var duration = finish - start;
+      
+      System.err.println("${name}() in [${script}] in ${duration} ms");
+   }
+}
+
+const project = System.getenv("PROJECT_ROOT"); // .project file
+const directory = "${project}\\test";
+
+timeTest(-> runTests(directory), directory, "runTests"); 

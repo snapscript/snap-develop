@@ -1,0 +1,6 @@
+var x = 11;
+match(x){
+   case 11: println(11);
+   case 12: println("error");
+   default: println("default");
+}

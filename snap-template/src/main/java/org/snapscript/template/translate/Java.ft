@@ -1,0 +1,46 @@
+/*
+ * Modified: ${date?datetime}
+ */
+
+<#if package?exists>
+package ${package};
+</#if>
+
+import java.io.PrintWriter;
+import simple.http.serve.Context;
+import simple.page.BasicPage;
+import simple.page.Model;
+import simple.page.Page;
+
+<#list imports as import>
+import ${import};
+</#list>
+
+public class ${name} extends BasicPage implements Page {
+
+   public ${name}(Context context, String name) {
+      super(context, name);
+   }
+
+   <#list declarations as declaration>
+   ${declaration}
+   </#list>
+
+   public void write(PrintWriter out, Model model) throws Exception {
+      <#list contents as content>
+      ${content}
+      </#list>
+   }
+
+   <#if type?exists>
+   public String getContentType() {
+      return "${type}; charset=" + getCharset();
+   }
+   </#if>
+
+   <#if charset?exists>
+   public String getCharset() {
+      return "${charset}";
+   }
+   </#if>
+}
