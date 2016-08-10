@@ -15,9 +15,13 @@ class Y with X{
    }
 }
 class Z extends Y with X{
+   var v = AN_R+2; // non-static reference to static
    static const AN_R=THE_J-2;
    getR(){
       return AN_R;
+   }
+   getV(){
+      return v;
    }
 }
 
@@ -29,4 +33,5 @@ function testTraitConstants(){
    assert z.getJ() == 33+4+3;
    assert z.getB() ==3;
    assert z.getR()==33+4+3-2;
+   assert z.getV()==33+4+3;   
 }
