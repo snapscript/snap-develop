@@ -19,42 +19,42 @@ module Blah{
 }
 
 function testInstanceOf(){
-   assert "" ?= String;
-   assert {:} ?= Map;
-   assert new Task() ?=Runnable;
-   assert new PrintTask() ?=Runnable;
-   assert {} ?=Set;
-   assert []?=List;
-   assert []?=Collection;
-   assert []!?=Map;
-   assert ""!?=null;
-   assert null!?=null;   
-   assert null!?=String;   
-   assert new Blah.Foo()?=Blah.Foo;
-   assert new Blah.Foo()?=Runnable;
+   assert ""instanceof String;
+   assert {:} instanceof Map;
+   assert new Task() instanceof Runnable;
+   assert new PrintTask() instanceof Runnable;
+   assert {} instanceof Set;
+   assert []instanceof List;
+   assert []instanceof Collection;
+   assert []!instanceof Map;
+   assert ""!instanceof null;
+   assert null!instanceof null;   
+   assert null!instanceof String;   
+   assert new Blah.Foo()instanceof Blah.Foo;
+   assert new Blah.Foo() instanceof Runnable;
 }
 
 function testInstanceOfWithClass(){
-   assert "" ?= String.class;
-   assert {:} ?= Map.class;
-   assert new Task() ?=Runnable.class;
-   assert new PrintTask() ?=Runnable.class;
-   assert new PrintTask() ?=new Task().class;   
-   assert {} ?=Set.class;
-   assert []?=List.class;
-   assert []?=Collection.class;
-   assert []!?=Map.class;
-   assert []!?=null;
+   assert "" instanceof String.class;
+   assert {:} instanceof Map.class;
+   assert new Task() instanceof Runnable.class;
+   assert new PrintTask() instanceof Runnable.class;
+   assert new PrintTask() instanceof new Task().class;   
+   assert {} instanceof Set.class;
+   assert []instanceof List.class;
+   assert []instanceof Collection.class;
+   assert []!instanceof Map.class;
+   assert []!instanceof null;
 }
 
 function testInstanceOfWithArray(){
    var a = new Task[1];
    var b = new Integer[1];
    var c = new String[1][2];
-   assert a?=Task[];
-   assert b?=Integer[];
-   assert c?=String[][];
-   assert a?=Task[].class;
-   assert a!?=null;
-   assert null!?=Integer.class;
+   assert a instanceof Task[];
+   assert b instanceof Integer[];
+   assert c instanceof String[][];
+   assert a instanceof Task[].class;
+   assert a !instanceof null;
+   assert null!instanceof Integer.class;
 }

@@ -4,6 +4,7 @@ import core.PathConverter;
 import core.store.FileStore;
 import compile.StoreContext;
 import compile.ResourceCompiler;
+import concurrent.ConcurrentHashMap;
 
 const threads = 10;
 
@@ -16,7 +17,7 @@ function runTests(directory) {
    const executor = new ScheduledThreadPoolExecutor(threads);
    const context = new StoreContext(store, executor);
    const compiler = new ResourceCompiler(context);
-   var failures = 0;
+   const failures = new ConcurrentHashMap();
    var tests = 0;
    
    for(var script in scripts) {
@@ -28,7 +29,7 @@ function runTests(directory) {
          executable.execute();
       }catch(e) {
          System.err.println("Failure for ${script}");
-         failures++;
+         failures.put(script, e);
       }
       var registry = context.getRegistry();
       var container = registry.getModule(package);
@@ -44,7 +45,12 @@ function runTests(directory) {
       }
    }
    System.err.println();
-   System.err.println("TESTS ${tests} PASS ${tests - failures} FAILURES ${failures}");
+   System.err.println("TESTS ${tests} PASS ${tests - failures.size} FAILURES ${failures.size}");
+   
+   for(var failure in failures) {
+      System.err.println("FAIL: ${failure.key}");
+      failure.value.printStackTrace();
+   }
 }
 
 function timeTest(func, script, name) {

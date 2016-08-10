@@ -1,5 +1,9 @@
 class Foo{
 }
 
-class Foo{
+class Blah extends Foo{
 }
+var b = new Blah();
+
+println(b instanceof Foo.class);
+println(b instanceof Blah.class);
