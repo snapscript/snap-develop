@@ -35,6 +35,7 @@ function testInstanceOf(){
 }
 
 function testInstanceOfWithClass(){
+   assert new Task() !instanceof Object;
    assert new Task() !instanceof String.class;
    assert new Task() !instanceof String;
    assert "" instanceof String.class;
