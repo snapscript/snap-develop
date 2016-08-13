@@ -6,7 +6,7 @@ function fib(n) {
    }
    return fib(n-1) + fib(n-2);
 }
-var result = fib(40);
+var result = fib(30);
 System.out.println("fib(30)="+result);
 var stop =new Date().getTime();
 print((stop -start));

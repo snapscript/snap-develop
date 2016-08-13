@@ -19,6 +19,7 @@ function fibExec(times) {
 
 fibExec(1);
 fibExec(10);
+fibExec(30);
 fibExec(100);
 fibExec(1000);
 fibExec(10000);
