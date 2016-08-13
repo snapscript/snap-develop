@@ -2,7 +2,7 @@ class Foo{
 }
 
 class Blah extends Foo{
-   const var x;
+   const x;
    new(){
       x=2;
    }

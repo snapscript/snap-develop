@@ -27,6 +27,7 @@ import org.snapscript.core.Scope;
 import org.snapscript.core.ScopeMerger;
 import org.snapscript.core.Type;
 import org.snapscript.core.link.Package;
+import org.snapscript.core.link.PackageDefinition;
 import org.snapscript.core.link.PackageLinker;
 import org.snapscript.core.store.FileStore;
 import org.snapscript.core.store.Store;
@@ -77,8 +78,9 @@ public class ResourceTypeLoader {
          PackageLinker linker = context.getLinker();
          Package library = linker.link(current, lineSource, SCRIPT.name);
          Scope scope = merger.merge(model, current, resource);
+         PackageDefinition definition = library.define(scope);
          
-         library.compile(scope);
+         definition.compile(scope);
       } catch(Exception e) {
          logger.log("Error compiling " + resource, e);
          

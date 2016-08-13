@@ -53,3 +53,17 @@ function testWaitOutsideSynchronized() {
    }
    assert failure;
 }
+
+function testSynchronizeOnNull() {
+   var failure = false;
+   
+   try {
+      synchronized(null){
+         println("never");
+      }
+   }catch(e){
+      e.printStackTrace();
+      failure =true;
+   }
+   assert failure;
+}
