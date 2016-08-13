@@ -2,6 +2,10 @@ class Foo{
 }
 
 class Blah extends Foo{
+   const var x;
+   new(){
+      x=2;
+   }
 }
 var b = new Blah();
 

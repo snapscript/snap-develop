@@ -1,0 +1,14 @@
+class Blah{
+   toString(){
+      return 'blah';
+   }
+}
+
+function testSynchronized() {
+   var blah = new Blah();
+   synchronized(blah){
+      println(blah);
+      blah.wait(12);
+      println("done");
+   }
+}
