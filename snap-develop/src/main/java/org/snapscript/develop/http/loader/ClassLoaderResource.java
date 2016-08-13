@@ -45,6 +45,7 @@ public class ClassLoaderResource implements Resource {
       } else {
          response.setStatus(Status.OK);
          response.setContentType("application/octet-stream");
+         response.setContentLength(data.length);
          output.write(data);
       }
       output.close();
