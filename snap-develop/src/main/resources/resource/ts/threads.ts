@@ -154,9 +154,11 @@ function focusedThread() {
 }
 
 function clearFocusThread() {
+   clearVariables(); // clear the browse tree
    threadEditorFocus = {
       thread: null, 
       resource: null, 
+      change: -1,
       line: -1, 
       key: -1
    }; 

@@ -66,6 +66,7 @@ function showVariables() {
     w2ui['variables'].refresh();
 }
 function clearVariables() {
+    threadVariables = {};
     w2ui['variables'].records = [];
     w2ui['variables'].refresh();
 }

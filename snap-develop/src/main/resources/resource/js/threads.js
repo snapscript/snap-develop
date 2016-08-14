@@ -59,7 +59,7 @@ function showThreadBreakpointLine(threadScope) {
     }
 }
 function updateThreadPanels(threadScope) {
-    suspendedThreads[threadScope.thread] = threadScope;
+    suspendedThreads[threadScope.thread] = threadScope; // N.B update suspended threads before rendering
     showThreads();
     showVariables();
 }
@@ -137,9 +137,11 @@ function focusedThread() {
     return null;
 }
 function clearFocusThread() {
+    clearVariables(); // clear the browse tree
     threadEditorFocus = {
         thread: null,
         resource: null,
+        change: -1,
         line: -1,
         key: -1
     };
