@@ -38,28 +38,46 @@ function updateThreads(socket, type, text) {
   
    if(isThreadFocusResumed(threadScope)) {
       clearFocusThread(); // clear focus as it is a resume
+      updateThreadPanels(threadScope);
    } else {
       if(threadEditorFocus.thread == threadScope.thread) { // has the thread been suspended
          if(isThreadFocusUpdateNew(threadScope)) {
             updateFocusedThread(threadScope); // something new happened so focus editor
+            updateThreadPanels(threadScope);
          }
       } else {
          if(threadEditorFocus.thread == null) {  // we have to focus the thread
             focusThread(threadScope);
+            updateThreadPanels(threadScope);
          }
       }
    }
    suspendedThreads[threadScope.thread] = threadScope;
+   showThreadBreakpointLine(threadScope); // show breakpoint on editor
+} 
+
+function showThreadBreakpointLine(threadScope) { // show breakpoint if focused
+   var editorData = loadEditor();
+   
+   if(threadEditorFocus.thread == threadScope.thread) {
+      if(editorData.resource.filePath == threadScope.resource && threadScope.status == 'SUSPENDED') {
+         createEditorHighlight(threadScope.line, "threadHighlight");
+      }
+   }
+}
+
+function updateThreadPanels(threadScope){
+   suspendedThreads[threadScope.thread] = threadScope; // N.B update suspended threads before rendering
    showThreads();
    showVariables();
-} 
+}
 
 function updateFocusedThread(threadScope) {
    if(isThreadFocusLineChange(threadScope)) { // has the update resulted in a new line or resource
       if(isThreadFocusResourceChange(threadScope)) { // do we need to update the editor with a new resource
-         var resourcePathDetails = createResourcePath(threadScope.resource);
+            var resourcePathDetails = createResourcePath(threadScope.resource);
          
-         openTreeFile(resourcePathDetails.resourcePath, function(){
+            openTreeFile(resourcePathDetails.resourcePath, function(){
             updateThreadFocus(threadScope);
             showEditorLine(threadScope.line);
          });
@@ -76,9 +94,9 @@ function focusThread(threadScope) {
    var editorData = loadEditor();
    
    if(editorData.resource.filePath != threadScope.resource) { // do we need to change resource on hit of breakpoint
-      var resourcePathDetails = createResourcePath(threadScope.resource);
+         var resourcePathDetails = createResourcePath(threadScope.resource);
       
-      openTreeFile(resourcePathDetails.resourcePath, function(){
+         openTreeFile(resourcePathDetails.resourcePath, function(){
          updateThreadFocus(threadScope);
          showEditorLine(threadScope.line);
       });
@@ -98,7 +116,12 @@ function isThreadFocusResumed(threadScope) {
 function isThreadFocusUpdateNew(threadScope) { // have we got a new update
    if(threadEditorFocus.thread == threadScope.thread) { // is this a new update
       if(threadScope.status == 'SUSPENDED') {
-         return threadEditorFocus.key != threadScope.key
+         if(threadEditorFocus.key != threadScope.key) { // thread position change
+            return true;
+         }
+         if(threadEditorFocus.change != threadScope.change) { // thread variables change, e.g browse
+            return true;
+         }
       }
    }
    return false;
@@ -144,6 +167,7 @@ function updateThreadFocus(threadScope) {
          thread: threadScope.thread, 
          resource: threadScope.resource, 
          line: threadScope.line, 
+         change: threadScope.change,
          key: threadScope.key
       }; 
 } 
@@ -169,9 +193,8 @@ function showThreads() {
          var threadScope = suspendedThreads[threadName];
          var displayStyle = 'threadSuspended';
          
-         if(editorData.resource.filePath == threadScope.resource && threadScope.status == 'SUSPENDED') {
-            createEditorHighlight(threadScope.line, "threadHighlight");
-         }
+         showThreadBreakpointLine(threadScope);
+         
          if(threadScope.status != 'SUSPENDED') {
             displayStyle = 'threadRunning';
          }

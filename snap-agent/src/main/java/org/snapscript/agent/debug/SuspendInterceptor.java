@@ -96,7 +96,7 @@ public class SuspendInterceptor implements TraceListener {
       public void run() {
          try {
             while(active.get()) {
-               Thread.sleep(1000);
+               Thread.sleep(400);
                
                if(active.get()) {
                   ScopeEvent event = builder.suspendEvent();

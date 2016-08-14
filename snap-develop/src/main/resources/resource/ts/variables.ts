@@ -58,8 +58,8 @@ function showVariables() {
       if(variableExpandable == "true") {
          displayStyle = "variableNode";
       }
-      var displayValue = "<div class='variableData'>"+variable.value+"</div>";
-      var displayName = "<div title='"+variable.description+"' style='padding-left: " + 
+      var displayValue = "<div class='variableData'>"+escapeHtml(variable.value)+"</div>";
+      var displayName = "<div title='"+escapeHtml(variable.description)+"' style='padding-left: " + 
          (variable.depth * 20)+ 
          "px;'><div class='"+displayStyle+
          "'>"+variable.name+"</div></div>";

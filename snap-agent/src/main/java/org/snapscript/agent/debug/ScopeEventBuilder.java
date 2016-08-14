@@ -11,6 +11,7 @@ import org.snapscript.core.trace.TraceType;
 
 public class ScopeEventBuilder {
 
+   private final ScopeVariableTree blank;
    private final ScopeExtractor extractor;
    private final TraceType type;
    private final String process;
@@ -22,6 +23,7 @@ public class ScopeEventBuilder {
    private final int count;
    
    public ScopeEventBuilder(ScopeExtractor extractor, TraceType type, String process, String thread, String stack, String resource, int line, int depth, int count) {
+      this.blank = new ScopeVariableTree(Collections.EMPTY_MAP, -1);
       this.extractor = extractor;
       this.process = process;
       this.thread = thread;
@@ -34,16 +36,15 @@ public class ScopeEventBuilder {
    }
    
    public ScopeEvent suspendEvent() {
-      Map<String, Map<String, String>> variables = extractor.build();
+      ScopeVariableTree variables = extractor.build();
       String name = type.name();
-      
-      return new ScopeEvent(process, thread, stack, name, SUSPENDED, resource, line, depth, count, variables);
+ 
+      return new ScopeEvent(process, variables, thread, stack, name, SUSPENDED, resource, line, depth, count);
    }
    
    public ScopeEvent resumeEvent() {
-      Map<String, Map<String, String>> variables = Collections.emptyMap();
       String name = type.name();
       
-      return new ScopeEvent(process, thread, stack, name, RUNNING, resource, line, depth, count, variables);
+      return new ScopeEvent(process, blank, thread, stack, name, RUNNING, resource, line, depth, count);
    }
 }

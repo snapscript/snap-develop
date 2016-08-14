@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.snapscript.agent.debug.ScopeVariableTree;
+
 public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> {
 
    @Override
@@ -19,7 +21,6 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       byte[] array = message.getData();
       int length = message.getLength();
       int offset = message.getOffset();
-      Map<String, Map<String, String>> variables = new TreeMap<String, Map<String, String>>();
       ByteArrayInputStream buffer = new ByteArrayInputStream(array, offset, length);
       DataInputStream input = new DataInputStream(buffer);
       String process = input.readUTF();
@@ -31,7 +32,11 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       int line = input.readInt();
       int depth = input.readInt();
       int sequence = input.readInt();
+      int change = input.readInt();
       int count = input.readInt();
+
+      Map<String, Map<String, String>> variables = new TreeMap<String, Map<String, String>>();
+      ScopeVariableTree tree = new ScopeVariableTree(variables, change);
       
       for(int i = 0; i < count; i++) {
          Map<String, String> criteria = new HashMap<String, String>();
@@ -46,14 +51,15 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
          }
          variables.put(name, criteria);
       }
-      return new ScopeEvent(process, thread, stack, instruction, status, resource, line, depth, sequence, variables);
+      return new ScopeEvent(process, tree, thread, stack, instruction, status, resource, line, depth, sequence);
    }
 
    @Override
    public MessageEnvelope toMessage(ScopeEvent event) throws IOException {
       ByteArrayOutputStream buffer = new ByteArrayOutputStream();
       DataOutputStream output = new DataOutputStream(buffer);
-      Map<String, Map<String, String>> variables = event.getVariables();
+      ScopeVariableTree tree = event.getVariables();
+      Map<String, Map<String, String>> variables = tree.getVariables();
       Set<String> names = variables.keySet();
       String process = event.getProcess();
       String thread = event.getThread();
@@ -61,6 +67,7 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       String instruction = event.getInstruction();
       String status = event.getStatus();
       String resource = event.getResource();
+      int change = tree.getChange();
       int sequence = event.getKey();
       int line = event.getLine();
       int depth = event.getDepth();
@@ -75,6 +82,7 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       output.writeInt(line);
       output.writeInt(depth);
       output.writeInt(sequence);
+      output.writeInt(change);
       output.writeInt(count);
       
       for(String name : names) {

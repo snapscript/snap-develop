@@ -2,12 +2,14 @@ package org.snapscript.agent.event;
 
 import java.util.Map;
 
+import org.snapscript.agent.debug.ScopeVariableTree;
+
 public class ScopeEvent implements ProcessEvent {
    
    public static final String SUSPENDED = "SUSPENDED";
    public static final String RUNNING = "RUNNING";
 
-   private Map<String, Map<String, String>> variables;
+   private ScopeVariableTree variables;
    private String instruction;
    private String status;
    private String process;
@@ -18,7 +20,7 @@ public class ScopeEvent implements ProcessEvent {
    private int depth;
    private int key;
    
-   public ScopeEvent(String process, String thread, String stack, String instruction, String status, String resource, int line, int depth, int key, Map<String, Map<String, String>> variables) {
+   public ScopeEvent(String process, ScopeVariableTree variables, String thread, String stack, String instruction, String status, String resource, int line, int depth, int key) {
       this.variables = variables;
       this.instruction = instruction;
       this.resource = resource;
@@ -36,7 +38,7 @@ public class ScopeEvent implements ProcessEvent {
       return process;
    }
 
-   public Map<String, Map<String, String>> getVariables() {
+   public ScopeVariableTree getVariables() {
       return variables;
    }
 

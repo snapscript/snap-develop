@@ -31,19 +31,34 @@ function updateThreads(socket, type, text) {
     var editorData = loadEditor();
     if (isThreadFocusResumed(threadScope)) {
         clearFocusThread(); // clear focus as it is a resume
+        updateThreadPanels(threadScope);
     }
     else {
         if (threadEditorFocus.thread == threadScope.thread) {
             if (isThreadFocusUpdateNew(threadScope)) {
                 updateFocusedThread(threadScope); // something new happened so focus editor
+                updateThreadPanels(threadScope);
             }
         }
         else {
             if (threadEditorFocus.thread == null) {
                 focusThread(threadScope);
+                updateThreadPanels(threadScope);
             }
         }
     }
+    suspendedThreads[threadScope.thread] = threadScope;
+    showThreadBreakpointLine(threadScope); // show breakpoint on editor
+}
+function showThreadBreakpointLine(threadScope) {
+    var editorData = loadEditor();
+    if (threadEditorFocus.thread == threadScope.thread) {
+        if (editorData.resource.filePath == threadScope.resource && threadScope.status == 'SUSPENDED') {
+            createEditorHighlight(threadScope.line, "threadHighlight");
+        }
+    }
+}
+function updateThreadPanels(threadScope) {
     suspendedThreads[threadScope.thread] = threadScope;
     showThreads();
     showVariables();
@@ -89,7 +104,12 @@ function isThreadFocusResumed(threadScope) {
 function isThreadFocusUpdateNew(threadScope) {
     if (threadEditorFocus.thread == threadScope.thread) {
         if (threadScope.status == 'SUSPENDED') {
-            return threadEditorFocus.key != threadScope.key;
+            if (threadEditorFocus.key != threadScope.key) {
+                return true;
+            }
+            if (threadEditorFocus.change != threadScope.change) {
+                return true;
+            }
         }
     }
     return false;
@@ -129,6 +149,7 @@ function updateThreadFocus(threadScope) {
         thread: threadScope.thread,
         resource: threadScope.resource,
         line: threadScope.line,
+        change: threadScope.change,
         key: threadScope.key
     };
 }
@@ -149,9 +170,7 @@ function showThreads() {
         if (suspendedThreads.hasOwnProperty(threadName)) {
             var threadScope = suspendedThreads[threadName];
             var displayStyle = 'threadSuspended';
-            if (editorData.resource.filePath == threadScope.resource && threadScope.status == 'SUSPENDED') {
-                createEditorHighlight(threadScope.line, "threadHighlight");
-            }
+            showThreadBreakpointLine(threadScope);
             if (threadScope.status != 'SUSPENDED') {
                 displayStyle = 'threadRunning';
             }

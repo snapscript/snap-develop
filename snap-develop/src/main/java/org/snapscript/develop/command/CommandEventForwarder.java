@@ -3,6 +3,7 @@ package org.snapscript.develop.command;
 import java.util.Map;
 import java.util.Set;
 
+import org.snapscript.agent.debug.ScopeVariableTree;
 import org.snapscript.agent.event.BeginEvent;
 import org.snapscript.agent.event.ExitEvent;
 import org.snapscript.agent.event.PongEvent;
@@ -31,16 +32,19 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    @Override
    public void onScope(ProcessEventChannel channel, ScopeEvent event) throws Exception {
       if(filter.accept(event)) {
-         Map<String, Map<String, String>> variables = event.getVariables();
+         ScopeVariableTree tree = event.getVariables();
+         Map<String, Map<String, String>> variables = tree.getVariables();
+         String process = event.getProcess();
          String thread = event.getThread();
          String stack = event.getStack();
          String instruction = event.getInstruction();
          String status = event.getStatus();
          String resource = event.getResource();
+         int change = tree.getChange();
          int depth = event.getDepth();
          int line = event.getLine();
          int key = event.getKey();
-         client.sendScope(thread, stack, instruction, status, resource, line, depth, key, variables);
+         client.sendScope(process, variables, thread, stack, instruction, status, resource, line, depth, key, change);
       }
    }
    
