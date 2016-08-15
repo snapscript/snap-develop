@@ -138,6 +138,7 @@ function showStatus() {
             var displayName = "<div class='debugIdleRecord'>"+statusProcess+"</div>";
             var resourcePath = "";
             var status = "WAITING";
+            var active = "";
             var running = false;
             
             if(statusProcessInfo.resource != null) {
@@ -146,9 +147,11 @@ function showStatus() {
                if(statusFocus == statusProcess) {
                   displayName = "<div class='debugFocusRecord'>"+statusProcess+"</div>";
                   status = "DEBUGGING";
+                  active = "&nbsp;<input type='radio' checked>";
                } else {
                   displayName = "<div class='debugRecord'>"+statusProcess+"</div>";
                   status = "RUNNING";
+                  active = "&nbsp;<input type='radio'>";                  
                }
                resourcePath = resourcePathDetails.resourcePath;
                running = true;
@@ -156,6 +159,7 @@ function showStatus() {
             statusRecords.push({
                recid: statusIndex++,
                name: displayName,
+               active: active,
                process: statusProcess,
                status: status,
                running: running,

@@ -3,11 +3,27 @@ class Foo{
 
 class Blah extends Foo{
    const x;
-   new(){
-      x=2;
+   new():this(2){
+   
    }
+   new(x){
+      this.x=x;
+   }
+   toString(){
+      "x=${x}";
+   }
+   
 }
 var b = new Blah();
 
 println(b instanceof Foo.class);
 println(b instanceof Blah.class);
+
+var arr = [new Blah(22), new Blah(12), new String('xx')];
+function dump(a: Blah[]){
+   for(var x in a){
+      println(x);
+      println(x.class);
+   }
+}
+dump(arr);

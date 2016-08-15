@@ -1,14 +1,21 @@
 class Task with Runnable {
+   const name;
+   new(name){
+      this.name = name;
+   }
    override run() {
-      System.err.println(Thread.currentThread().getName());
+      const thread = Thread.currentThread().getName();
+      System.err.println("${thread}: ${name}");
    }
 }
-var task = new Task();
-var thread1 = new Thread(task);
-var thread2 = new Thread(task);
-var thread3 = new Thread(task);
+var task1 = new Task("task-1");
+var task2 = new Task("task-2");
+var task3 = new Task("task-3");
+var thread1 = new Thread(task1);
+var thread2 = new Thread(task2);
+var thread3 = new Thread(task3);
 
-task.run();
+task1.run();
 thread1.start();
 thread2.start();
 thread3.start();

@@ -194,11 +194,16 @@ function showThreads() {
       if (suspendedThreads.hasOwnProperty(threadName)) {
          var threadScope = suspendedThreads[threadName];
          var displayStyle = 'threadSuspended';
+         var active = "&nbsp;<input type='radio'>";
          
          showThreadBreakpointLine(threadScope);
          
          if(threadScope.status != 'SUSPENDED') {
             displayStyle = 'threadRunning';
+         } else {
+            if(threadEditorFocus.thread == threadScope.thread) {
+               active = "&nbsp;<input type='radio' checked>";
+            }
          }
          var displayName = "<div title='"+threadScope.stack+"' class='"+displayStyle+"'>"+threadName+"</div>";
          var resourcePathDetails = createResourcePath(threadScope.resource);
@@ -208,7 +213,7 @@ function showThreads() {
             name: displayName,
             thread: threadName,
             status: threadScope.status,
-            depth: threadScope.depth,
+            active: active,
             instruction: threadScope.instruction,
             variables: threadScope.variables,
             resource: threadScope.resource,
