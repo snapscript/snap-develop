@@ -160,7 +160,7 @@ function createExploreLayout() {
    setTimeout(function() {
       applyProjectTheme();
       activateTab("consoleTab", "exploreTabLayout"); 
-   }, 500); // update theme
+   }, 300); // update theme
 }
 
 
@@ -185,7 +185,7 @@ function createDebugLayout() {
          resizable : true,
          hidden: true,
          style : pstyle,
-         content : createExplorerContent() // explorer tree is hidden 
+         content: createExplorerContent()
       }, {
          type : 'main',
          size : '80%',
@@ -272,10 +272,10 @@ function createDebugLayout() {
                id : 'debugTab',
                caption : '<div class="debugTab">Debug&nbsp;&nbsp;</div>'
             }/*, {
-               id : 'explorerTab',
-               caption : '<div class="explorerTab">Explore</div>',
-               content : "<div style='overflow: scroll; font-family: monospace;' id='explore'>" + createExplorerContent() + "</div>" 
-            }*/ ],
+               id : 'browseTab',
+               caption : '<div class="browseTab">Browse</div>',
+               content : "<div style='overflow: scroll; font-family: monospace;' id='browse'>" + createExplorerContent() + "</div>" 
+            } */],
             onClick : function(event) {
                activateTab(event.target, "debugLeftTabLayout");
             }
@@ -360,7 +360,7 @@ function createDebugLayout() {
       activateTab("threadsTab", "debugLeftTabLayout");
       activateTab("variablesTab", "debugRightTabLayout");   
       activateTab("consoleTab", "debugBottomTabLayout");  
-   }, 500); // update theme
+   }, 300); // update theme
    
    
 }
@@ -763,10 +763,10 @@ function activateTab(tabName, layoutName) {
       w2ui[layoutName].refresh();
       $('#profiler').w2render('profiler');
       showVariables();
-   } else if(tabName == 'explorerTab'){
-      w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='explore'>" + createExplorerContent() + "</div>");
+   } else if(tabName == 'browseTab'){
+      w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='browse'>" + createExplorerContent() + "</div>");
       w2ui[layoutName].refresh();
-      $('#explore').w2render('explore');
+      $('#browse').w2render('browse');
    } else {
       w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='debug'></div>");
       w2ui[layoutName].refresh();
