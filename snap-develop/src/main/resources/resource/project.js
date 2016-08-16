@@ -144,7 +144,7 @@ function createExploreLayout() {
                caption : '<div class="consoleTab">Console</div>'
             }, {
                id : 'problemsTab',
-               caption : '<div class="errorTab">Problems</div>'
+               caption : '<div class="problemsTab">Problems</div>'
             }, {
                id : 'breakpointsTab',
                caption : '<div class="breakpointsTab">Breakpoints</div>'
@@ -347,8 +347,8 @@ function createDebugLayout() {
                id : 'consoleTab',
                caption : '<div class="consoleTab">Console</div>'
             }, {
-               id : 'errorTab',
-               caption : '<div class="errorTab">Problems</div>'
+               id : 'problemsTab',
+               caption : '<div class="problemsTab">Problems</div>'
             }, {
                id : 'profilerTab',
                caption : '<div class="profilerTab">Profiler</div>'
