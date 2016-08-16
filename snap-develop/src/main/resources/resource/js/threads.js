@@ -199,7 +199,6 @@ function showThreads() {
             });
         }
     }
-    w2ui['threads'].records = threadRecords;
-    w2ui['threads'].refresh();
+    updateTableRecords(threadRecords, 'threads'); // update if changed only
 }
 registerModule("threads", "Thread module: threads.js", createThreads, ["common", "socket", "explorer"]);

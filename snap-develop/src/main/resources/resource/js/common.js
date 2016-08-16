@@ -37,6 +37,42 @@ function decodeValue(value) {
     }
     return null;
 }
+function updateTableRecords(update, name) {
+    var current = w2ui[name].records; // find the table
+    if (update.length == current.length) {
+        var different = false;
+        for (var i = 0; i < update.length; i++) {
+            var currentRow = current[i];
+            var updateRow = update[i];
+            if (currentRow.length != updateRow.length) {
+                different = true;
+                break;
+            }
+            for (var currentColumn in currentRow) {
+                if (currentRow.hasOwnProperty(currentColumn)) {
+                    if (!updateRow.hasOwnProperty(currentColumn)) {
+                        different = true;
+                        break;
+                    }
+                    var currentCell = currentRow[currentColumn];
+                    var updateCell = updateRow[currentColumn];
+                    if (currentCell != updateCell) {
+                        different = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (different) {
+            w2ui[name].records = update;
+            w2ui[name].refresh();
+        }
+    }
+    else {
+        w2ui[name].records = update;
+        w2ui[name].refresh();
+    }
+}
 function escapeHtml(text) {
     return text
         .replace(/&/g, "&amp;")

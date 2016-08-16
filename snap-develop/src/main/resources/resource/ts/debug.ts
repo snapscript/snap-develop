@@ -171,8 +171,7 @@ function showStatus() {
          }
       }
    }
-   w2ui['debug'].records = statusRecords;
-   w2ui['debug'].refresh();
+   updateTableRecords(statusRecords, 'debug'); // update if changed only
 }
 
 registerModule("debug", "Debug module: debug.js", createStatus, [ "common", "socket", "tree", "threads" ]);
