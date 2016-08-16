@@ -759,8 +759,6 @@ function createDebugTab(){
 }
 
 function activateTab(tabName, layoutName) {
-   hideBrowseTree();
-   
    if (tabName == 'consoleTab') {
       w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='console'></div>");
       w2ui[layoutName].refresh();
@@ -776,6 +774,7 @@ function activateTab(tabName, layoutName) {
       $('#breakpoints').w2render('breakpoints');
       showEditorBreakpoints();
    } else if(tabName == 'threadsTab'){
+      hideBrowseTree(); // hide tree
       w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='threads'></div>");
       w2ui[layoutName].refresh();
       $('#threads').w2render('threads');
@@ -791,11 +790,13 @@ function activateTab(tabName, layoutName) {
       $('#profiler').w2render('profiler');
       showVariables();
    } else if(tabName == 'browseTab'){
+      hideBrowseTree(); // hide tree
       w2ui[layoutName].content('main', "<div style='overflow: hidden; font-family: monospace;' id='browse'><div id='browseParent'></div></div>");
       w2ui[layoutName].refresh();
       $('#browse').w2render('browse');
       showBrowseTree(); // hack to move tree
    } else {
+      hideBrowseTree(); // hide tree
       w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='debug'></div>");
       w2ui[layoutName].refresh();
       $('#debug').w2render('debug');
