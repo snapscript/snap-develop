@@ -3,7 +3,15 @@ function searchTypes() {
         var typesFound = findTypesMatching(text);
         var typeRows = [];
         for (var i = 0; i < typesFound.length; i++) {
-            var resourceLink = "/project/" + typesFound[i].project + "#" + typesFound[i].resource;
+            var debugToggle = ";debug";
+            var locationPath = window.document.location.pathname;
+            var locationHash = window.document.location.hash;
+            var debug = locationPath.indexOf(debugToggle, locationPath.length - debugToggle.length) !== -1;
+            var resourceLink = "/project/" + typesFound[i].project;
+            if (debug) {
+                resourceLink += debugToggle;
+            }
+            resourceLink += "#" + typesFound[i].resource;
             var typeCell = {
                 text: typesFound[i].name,
                 link: resourceLink,
