@@ -1,5 +1,15 @@
 #explorer {
 	font-family: "Lucida Console", sans-serif;
+	overflow: hidden;
+	font-size: 0.9em;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+#explorerParent {
+	font-family: "Lucida Console", sans-serif;
 	overflow: scroll;
 	font-size: 0.9em;
 	background-color: #ffffff;
@@ -12,6 +22,23 @@
 	right: 0;
 	bottom: 8px;
 	left: 0;
+}
+
+#browseParent { 
+	font-family: "Lucida Console", sans-serif;
+	overflow: scroll;	
+    font-size: 0.9em;   
+    background-color: #ffffff;
+    border-radius: 0px;    
+ 	border-style: solid;
+    border-width: 1px;
+    border-color: #c0c0c0;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+    padding: 5px;
 }
 
 .browseTab {	

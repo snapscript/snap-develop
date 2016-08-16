@@ -27,13 +27,37 @@ function applyProjectTheme() {
    });
 }
 
+function showBrowseTree() { // hack to render tree
+   // move the explorer
+   var newParent = document.getElementById('browseParent');
+   var oldParent = document.getElementById('explorerParent');
+
+   if(oldParent != null && newParent != null){
+      while (oldParent.childNodes.length > 0) {
+          newParent.appendChild(oldParent.childNodes[0]);
+      }
+   }
+}
+
+function hideBrowseTree() { // hack to render tree
+   // move the explorer
+   var newParent = document.getElementById('explorerParent');
+   var oldParent = document.getElementById('browseParent');
+
+   if(oldParent != null && newParent != null){
+      while (oldParent.childNodes.length > 0) {
+          newParent.appendChild(oldParent.childNodes[0]);
+      }
+   }
+}
+
 function createMainLayout() {
-   var locationPath = window.document.location.pathname;
    var debugToggle = ";debug";
-   var remainingPath = locationPath.slice(-debugToggle.length);
-   var debug = remainingPath == debugToggle; // true
+   var locationPath = window.document.location.pathname;
+   var locationHash = window.document.location.hash;
+   var debug = locationPath.indexOf(debugToggle, locationPath.length - debugToggle.length) !== -1;
    
-   if(debug) {
+   if (debug) {
       createDebugLayout(); // show debug layout
    } else {
       createExploreLayout();
@@ -264,18 +288,18 @@ function createDebugLayout() {
          resizable : false,
          name : 'tabs',
          tabs : {
-            active : 'threadsTab',
-            tabs : [  {
-               id : 'threadsTab',
-               caption : '<div class="threadTab">Threads</div>'
-            }, {
+            active : 'debugTab',
+            tabs : [ {
                id : 'debugTab',
                caption : '<div class="debugTab">Debug&nbsp;&nbsp;</div>'
-            }/*, {
+            }, {
+               id : 'threadsTab',
+               caption : '<div class="threadTab">Threads</div>'
+            },  {
                id : 'browseTab',
                caption : '<div class="browseTab">Browse</div>',
                content : "<div style='overflow: scroll; font-family: monospace;' id='browse'>" + createExplorerContent() + "</div>" 
-            } */],
+            } ],
             onClick : function(event) {
                activateTab(event.target, "debugLeftTabLayout");
             }
@@ -357,7 +381,7 @@ function createDebugLayout() {
    
    setTimeout(function() {
       applyProjectTheme();
-      activateTab("threadsTab", "debugLeftTabLayout");
+      activateTab("debugTab", "debugLeftTabLayout");
       activateTab("variablesTab", "debugRightTabLayout");   
       activateTab("consoleTab", "debugBottomTabLayout");  
    }, 300); // update theme
@@ -366,7 +390,7 @@ function createDebugLayout() {
 }
 
 function createExplorerContent() {
-   return "<div id='explorer'></div>";
+   return "<div id='explorerParent'><div id='explorer'></div></div>";
 }
 
 function createEditorContent() {
@@ -385,7 +409,7 @@ function createBottomStatusContent() {
 }
 
 function createTopMenuBar(){
-   var pstyle = 'background-color: #F5F6F7; overflow: hidden;';
+   var pstyle = 'background-color: #fafafa; overflow: hidden;';
    $('#topLayout').w2layout(
          {
             name : 'topLayout',
@@ -463,7 +487,8 @@ function createTopMenuBar(){
                             "        </select>\n"+
                             "   </td>"+
                             "   <td>&nbsp;&nbsp;</td>"+  
-                            "   <td><div id='toolbarSwitch' onclick='switchProject()'></div></td>"+     
+                            "   <td><div id='toolbarSwitchLayout' title='Switch Layout' onclick='switchLayout()'></div></td>"+                                
+                            "   <td><div id='toolbarSwitchProject' title='Switch Project' onclick='switchProject()'></div></td>"+     
                             "   <td>&nbsp;&nbsp;</td>"+                                 
                             "</tr>"+
                             "</table>"+
@@ -734,6 +759,8 @@ function createDebugTab(){
 }
 
 function activateTab(tabName, layoutName) {
+   hideBrowseTree();
+   
    if (tabName == 'consoleTab') {
       w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='console'></div>");
       w2ui[layoutName].refresh();
@@ -764,9 +791,10 @@ function activateTab(tabName, layoutName) {
       $('#profiler').w2render('profiler');
       showVariables();
    } else if(tabName == 'browseTab'){
-      w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='browse'>" + createExplorerContent() + "</div>");
+      w2ui[layoutName].content('main', "<div style='overflow: hidden; font-family: monospace;' id='browse'><div id='browseParent'></div></div>");
       w2ui[layoutName].refresh();
       $('#browse').w2render('browse');
+      showBrowseTree(); // hack to move tree
    } else {
       w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='debug'></div>");
       w2ui[layoutName].refresh();

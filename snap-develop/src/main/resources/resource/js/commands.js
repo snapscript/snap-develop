@@ -274,6 +274,19 @@ function attachProcess(process) {
     });
     socket.send("ATTACH:" + message); // attach to process
 }
+function switchLayout() {
+    var debugToggle = ";debug";
+    var locationPath = window.document.location.pathname;
+    var locationHash = window.document.location.hash;
+    var debug = locationPath.indexOf(debugToggle, locationPath.length - debugToggle.length) !== -1;
+    if (debug) {
+        var remainingPath = locationPath.substring(0, locationPath.length - debugToggle.length);
+        document.location = remainingPath + locationHash;
+    }
+    else {
+        document.location = locationPath + debugToggle + locationHash;
+    }
+}
 function switchProject() {
     document.location = "/";
 }
