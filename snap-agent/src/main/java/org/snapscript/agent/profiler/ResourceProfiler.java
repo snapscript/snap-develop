@@ -37,29 +37,33 @@ public class ResourceProfiler {
    
    public void enter(int line) {
       // thread local required, also recursion counter
-      if(times.length <= line) {
-         counts = copyOf(counts, line + 50);
-         times = copyOf(times, line + 50);
-         start = copyOf(start, line + 50);
-         visits = copyOf(visits, line + 50);
+      if(line >= 0) {
+         if(times.length <= line) {
+            counts = copyOf(counts, line + 50);
+            times = copyOf(times, line + 50);
+            start = copyOf(start, line + 50);
+            visits = copyOf(visits, line + 50);
+         }
+         int currentCount = counts[line]++;// we just entered an instruction
+     
+         if(currentCount == 0) {
+            start[line] = System.nanoTime(); // first instruction to enter
+         }
+         visits[line]++;
       }
-      int currentCount = counts[line]++;// we just entered an instruction
-  
-      if(currentCount == 0) {
-         start[line] = System.nanoTime(); // first instruction to enter
-      }
-      visits[line]++;
    }
 
    public void exit(int line) {
-      int currentCount = --counts[line]; // exit instruction
-
-      if(currentCount == 0) {
-         times[line] += (System.nanoTime() - start[line]);
-         start[line] = 0L; // reset as we are now at zero
-      }
-      if(line > max) {
-         max=line;
+      if(line >= 0) {
+         int currentCount = --counts[line]; // exit instruction
+   
+         if(currentCount == 0) {
+            times[line] += (System.nanoTime() - start[line]);
+            start[line] = 0L; // reset as we are now at zero
+         }
+         if(line > max) {
+            max=line;
+         }
       }
    }
    

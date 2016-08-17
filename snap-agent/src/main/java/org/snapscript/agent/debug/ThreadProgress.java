@@ -26,6 +26,8 @@ public class ThreadProgress {
          depth.getAndIncrement();
       } else if(trace == TraceType.INVOKE) {
          depth.getAndIncrement();
+      } else if(trace == TraceType.NATIVE) {
+         depth.getAndIncrement();
       }
    }
    
@@ -33,6 +35,8 @@ public class ThreadProgress {
       if(trace == TraceType.CONSTRUCT) {
          depth.getAndDecrement();
       } else if(trace == TraceType.INVOKE) {
+         depth.getAndDecrement();
+      } else if(trace == TraceType.NATIVE) {
          depth.getAndDecrement();
       }
    }

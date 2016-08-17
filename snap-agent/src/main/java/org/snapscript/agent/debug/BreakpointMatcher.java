@@ -50,10 +50,12 @@ public class BreakpointMatcher {
    
    public boolean match(String resource, int line) {
       if(line < matches.length) {
-         Set set = matches[line];
-      
-         if(set != null) {
-            return set.contains(resource);
+         if(line >= 0) {
+            Set set = matches[line];
+         
+            if(set != null) {
+               return set.contains(resource);
+            }
          }
       }
       return false;
