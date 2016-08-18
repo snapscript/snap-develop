@@ -1,26 +1,27 @@
-class Foo{
-   toString(){
-      "x=${x}";
-   }
+try {
+   throw true;
+}catch(e: Integer){
+   println("Integer");
+}catch(e: Boolean) {
+   println("Boolean");
+}catch(e: Exception){
+   println("Exception");
+}finally {
+   println("finally");
 }
-class Bar extends Foo{
-   const x;
-   const y;
-   new(x){
-      this.x=x;
-      this.y=x+2;
-   }
-   toString(){
-      "x=${x}";
-   }
+
+class Foo{}
+
+try {
+   throw new Foo();
+}catch(e: Integer){
+   println("Integer");
+}catch(e: Boolean) {
+   println("Boolean");
+}catch(e: Exception){
+   println("Exception");
+}catch(e){
+   println("Foo");
+}finally {
+   println("finally");
 }
-var f =new Foo();
-var start=System.currentTimeMillis();
-for(var i in 0..1000000){
-   new Bar(i);
-}
-var finish=System.currentTimeMillis();
-var duration=finish-start;
-var secs = duration/1000d;
-var times = 1000000d/secs;
-println("${times} per sec");
