@@ -18,7 +18,7 @@ function function(s: String[][]){
 
 function function(s: String[]){
    for(var e in s){
-      println("e=${e}");
+      println("string=${e}");
    }
 }
 
@@ -30,6 +30,6 @@ function function(s: Float[][]){
 
 function function(s: Float[]){
    for(var e in s){
-      println("e=${e}");
+      println("float=${e}");
    }
 }

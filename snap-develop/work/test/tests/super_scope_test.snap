@@ -1,14 +1,18 @@
 class Base with Runnable {
    static const BLAH = new Base(11);
    var x;
+   var a;
    new(x){
       println("Base.new(${x})");
+      this.a="a="+x;
       this.x=x;
    }
    
    dump(){
-      println("Base.dump(): x=${x}");
-      fun();
+      println("Base.dump(): x=${x} a=${a}");
+      // XXX TypeExtractor should not consider getHandle() it should be getType()
+      // XXX the VariableResolver needs to be getType
+      return fun(); // here Handle.getHandle() is wrong
    }
    fun() {
       println("Base.fun(): x=${x}");
@@ -29,34 +33,26 @@ class Nuh extends Base {
       super.dump();
    }
    fun() {
-      println("Nuh.fun(): a=${a} x=${x}");
+      return "Nuh.fun(): a=${a} x=${x}";
    }
    iterate(){
       for(var i in 0..5){
          fun();
       }
-     for(var i in 0..5){
+      for(var i in 0..5){
          dump();
       }
    }
    static get(){
       return INSTANCE;
    }
-   
-   
 }
-println("start");
-var a = Base.get();
-var b = Base.get();
-println(a.x);
-println(b.x);
-var x = Nuh.get();
-var y = Nuh.get();
-println(x.x);
-println(x.class);
-println(x.a);
-println(y.x);
-println(y.class);
-println(y.a);
-println("iterating");
-y.iterate();
+
+function testSuperScope(){
+   var g = Nuh.get().fun();
+   var x = Nuh.get().dump();
+   println("RESULT: "+g);
+   println("RESULT: "+x);
+   assert g == "Nuh.fun(): a=44 x=1";
+   assert x == "Nuh.fun(): a=44 x=1";
+}
