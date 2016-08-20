@@ -10,6 +10,17 @@ try {
    println("finally");
 }
 
+module Mod{
+   foo(){
+      try {
+         super.go();
+      }catch(e){
+         e.printStackTrace();
+      }
+   }
+}
+Mod.foo();
+
 class Foo{}
 
 try {
