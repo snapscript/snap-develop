@@ -2,10 +2,12 @@
 class Blah{
    var x;
    var y;
+   var f;
    new(x){
       assert this.class == Blah.class;
       this.x=x;
       this.y=x+2;
+      this.f = new Foo(this);
    }
    getX(){
       return this.x;
@@ -16,8 +18,20 @@ class Blah{
    getZ(){
       return this.getY()+2;
    }
+   getFoo(){
+      return f;
+   }
    toString(){
       return "x=${this.x} y=${this.y}";
+   }
+}
+class Foo{
+   var f;
+   new(f){
+      this.f=f;
+   }
+   getBlah(): Blah{
+      return f;
    }
 }
 
@@ -28,8 +42,15 @@ function testConstructorReference(){
    assert a.getX() == "a";
    assert a.getY() == "a2";
    assert a.getZ() == "a22";
+   assert a.getFoo().getBlah() == a;
+   assert a.getFoo().getBlah().getX() == "a";
+   assert a.getFoo().getBlah().getY() == "a2";
+   assert a.getFoo().getBlah().getZ() == "a22";
    assert b.getX() == 11;
    assert b.getY() == 13;
    assert b.getZ() == 15;
+   assert b.getFoo().getBlah() == b;
+   assert b.getFoo().getBlah().getX() == 11;
+   assert b.getFoo().getBlah().getY() == 13;
+   assert b.getFoo().getBlah().getZ() == 15;
 }
-
