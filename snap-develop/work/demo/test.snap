@@ -21,10 +21,17 @@ module Mod{
 }
 Mod.foo();
 
-class Foo{}
+class Foo{
+   new():super(){
+      println("Foo.new()");
+   }
+   new(x):this(){
+      println("Foo.new(x)");
+   } 
+}
 
 try {
-   throw new Foo();
+   throw new Foo(11);
 }catch(e: Integer){
    println("Integer");
 }catch(e: Boolean) {
