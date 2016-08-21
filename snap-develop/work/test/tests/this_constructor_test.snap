@@ -1,0 +1,35 @@
+
+class Blah{
+   var x;
+   var y;
+   new(x){
+      assert this.class == Blah.class;
+      this.x=x;
+      this.y=x+2;
+   }
+   getX(){
+      return this.x;
+   }
+   getY(){
+      return this.y;
+   }
+   getZ(){
+      return this.getY()+2;
+   }
+   toString(){
+      return "x=${this.x} y=${this.y}";
+   }
+}
+
+function testConstructorReference(){
+   var a = new Blah("a");
+   var b = new Blah(11);
+   
+   assert a.getX() == "a";
+   assert a.getY() == "a2";
+   assert a.getZ() == "a22";
+   assert b.getX() == 11;
+   assert b.getY() == 13;
+   assert b.getZ() == 15;
+}
+

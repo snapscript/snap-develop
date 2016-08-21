@@ -9,7 +9,7 @@
       <arg value="-DskipTests" />
    </exec>
    <delete file="../snap-release/snapd.jar" />
-   <copy file="snap-develop/target/snap-develop-1.0-SNAPSHOT-jar-with-dependencies.jar" tofile="../snap-release/snapd.jar" overwrite="true" />
+   <copy file="snap-develop/target/snap-develop-1.0-jar-with-dependencies.jar" tofile="../snap-release/snapd.jar" overwrite="true" />
    <exec executable="${ANT_HOME}\bin\ant.bat">
       <arg value="-f" />
       <arg value="snap-service\build.xml" />
