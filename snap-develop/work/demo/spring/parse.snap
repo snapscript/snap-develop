@@ -1,0 +1,57 @@
+import xml.parsers.DocumentBuilderFactory;
+import xml.parsers.DocumentBuilder;
+import io.File;
+
+/*
+
+{
+   "id": "foo",
+   "class": "blah",
+   "arguments": ["a", "b", "c"],
+   "properties": {
+      "far": "22",
+      "blah" "33",
+   }
+},
+
+
+*/
+function parse(doc){
+   var stream = DocumentBuilder.getModule().getContext().getManager().getInputStream(doc);
+	var factory = DocumentBuilderFactory.newInstance();
+	var builder = factory.newDocumentBuilder();
+	return builder.parse(stream);
+}
+
+var doc = parse("spring/spring.xml");
+var list = doc.getElementsByTagName("bean");
+var length = list.getLength();
+var map = [];
+
+for(var i = 0; i < length; i++){
+   var node = list.item(i);
+   var id = node.getAttributes().getNamedItem("id")?.getTextContent();
+   var name = node.getAttributes().getNamedItem("class")?.getTextContent();
+   var arguments = node.getElementsByTagName("constructor-arg");
+   var size = arguments.getLength();
+   var bean = {:};
+   bean.put("id", id);
+   bean.put("class", name);
+   bean.put("arguments", []);
+   bean.put("properties", {:});
+   map.add(bean);
+   
+   for(var j = 0; j < size; j++){
+      var arg = arguments.item(j);
+      var value = arg.getAttributes().getNamedItem("value")?.getTextContent();
+      var ref = arg.getAttributes().getNamedItem("ref")?.getTextContent();
+      if(value != null){
+         bean.arguments.add((c) -> value); // add a function 
+      }
+      if(ref != null) {
+         bean.arguments.add(c) -> c.get(ref)); // add a function to get 
+      }
+      
+   }
+}
+println(map);

@@ -44,3 +44,4 @@ c.fun1();
 System.err.println("------");
 var d = new D(11);
 d.fun2();
+println("done");

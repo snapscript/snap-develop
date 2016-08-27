@@ -1,45 +1,4 @@
-try {
-   throw true;
-}catch(e: Integer){
-   println("Integer");
-}catch(e: Boolean) {
-   println("Boolean");
-}catch(e: Exception){
-   println("Exception");
-}finally {
-   println("finally");
-}
+import org.apache.commons.lang3.StringUtils;
 
-module Mod{
-   foo(){
-      try {
-         super.go();
-      }catch(e){
-         e.printStackTrace();
-      }
-   }
-}
-Mod.foo();
-
-class Foo{
-   new():super(){
-      println("Foo.new()");
-   }
-   new(x):this(){
-      println("Foo.new(x)");
-   } 
-}
-
-try {
-   throw new Foo(11);
-}catch(e: Integer){
-   println("Integer");
-}catch(e: Boolean) {
-   println("Boolean");
-}catch(e: Exception){
-   println("Exception");
-}catch(e){
-   println("Foo");
-}finally {
-   println("finally");
-}
+var list = "1,2,3,4,5".split(",");
+println(StringUtils.join(list, "&x=", 0, list.length));
