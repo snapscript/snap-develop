@@ -2,6 +2,7 @@ var editorBreakpoints = {}; // spans multiple resources
 var editorMarkers = {};
 var editorResource = null;
 var editorText = null;
+var editorTheme = null;
 function createEditor() {
     window.setTimeout(showEditor, 400);
     createTermination(clearEditorHighlights); // create callback
@@ -402,10 +403,22 @@ function registerEditorBindings() {
         readOnly: true
     });
 }
+function setEditorTheme(theme) {
+    if (theme != null) {
+        var editor = ace.edit("editor");
+        if (editor != null) {
+            editor.setTheme(theme);
+        }
+        editorTheme = theme;
+    }
+}
 function showEditor() {
     var langTools = ace.require("ace/ext/language_tools");
     var editor = ace.edit("editor");
     var autoComplete = createEditorAutoComplete();
+    if (editorTheme != null) {
+        editor.setTheme(editorTheme);
+    }
     editor.completers = [autoComplete];
     editor.getSession().setMode("ace/mode/snapscript");
     editor.getSession().setTabSize(3);

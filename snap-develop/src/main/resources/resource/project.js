@@ -10,18 +10,21 @@ function changeProjectFont(){
 }
 
 function applyProjectTheme() {
-   $.get("/display/"+document.title, function(theme) {
+   $.get("/display/"+document.title, function(displayInfo) {
       //var theme = JSON.parse(response);
-      if(theme.font != null && theme.size != null) {
+      if(displayInfo.font != null && displayInfo.size != null) {
          var fontFamily = document.getElementById("fontFamily");
          var fontSize = document.getElementById("fontSize");
          
          if(fontSize != null) {
-            fontSize.value = theme.size + "px";
+            fontSize.value = displayInfo.size + "px";
          }
          if(fontFamily != null) {
-            fontFamily.value = theme.font;
+            fontFamily.value = displayInfo.font;
          }   
+         if(displayInfo.theme != null) {
+            setEditorTheme("ace/theme/" + displayInfo.theme.toLowerCase());
+         }
       }
       changeProjectFont();// update the fonts
    });

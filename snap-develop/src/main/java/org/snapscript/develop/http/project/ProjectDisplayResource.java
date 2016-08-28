@@ -25,7 +25,7 @@ public class ProjectDisplayResource implements Resource {
    private final Gson gson;
    
    public ProjectDisplayResource(ProjectBuilder builder, String theme) {
-      this.display = new ProjectDisplay(DEFAULT_FONT, DEFAULT_SIZE);
+      this.display = new ProjectDisplay(null, DEFAULT_FONT, DEFAULT_SIZE);
       this.persister = new Persister();
       this.gson = new Gson();
       this.builder = builder;
