@@ -3,6 +3,9 @@ class A {
    new(a){
       this.a=a;
    }
+   blah(){
+      return "A.blah(): a=${a}";
+   }
    fun1(){
       println("A.fun1(): a="+a);
    }
@@ -25,8 +28,17 @@ class B extends A {
       super.test();
    }
 }
+class C extends B{
+   new():super(1,2){}
+   func(){
+      return super.blah();
+   }
+}
 
 function testSuperScope(){ 
    var b = new B(1,2);
+   var c = new C();
    b.test();
+   
+   assert c.func() == "A.blah(): a=1";
 }
