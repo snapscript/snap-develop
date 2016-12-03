@@ -48,7 +48,7 @@ function showConsole() {
 	   var currentText = consoleElement.innerHTML;
 	   var consoleData =  consoleWindow[consoleProcess]; // is ther an update?
 	   
-	   if(currentText == "" || (consoleData != null && consoleData.update == true)) {
+	   if(consoleData != null && (currentText == "" || consoleData.update == true)) {
    		consoleData.update = false; // clear the update
    		
          for(var i = 0; i < consoleData.list.length; i++) {
