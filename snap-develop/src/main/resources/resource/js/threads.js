@@ -32,6 +32,7 @@ function updateThreads(socket, type, text) {
     if (isThreadFocusResumed(threadScope)) {
         clearFocusThread(); // clear focus as it is a resume
         updateThreadPanels(threadScope);
+        clearEditorHighlights(); // the thread has resumed so clear highlights
     }
     else {
         if (threadEditorFocus.thread == threadScope.thread) {
