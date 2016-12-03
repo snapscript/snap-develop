@@ -4,6 +4,8 @@ var threadEditorFocus = {};
 function createThreads() {
    createRoute("BEGIN", startThreads, clearThreads);
    createRoute("SCOPE", updateThreads, clearVariables);
+   createRoute("TERMINATE", deleteThreads);
+   createRoute("EXIT", deleteThreads);
 }
 
 function startThreads(socket, type, text) {
@@ -15,6 +17,14 @@ function startThreads(socket, type, text) {
    clearProfiler();
    clearThreads();
    $("#process").html("<i>&nbsp;RUNNING: " + message.resource + " ("+message.process+") "+message.duration+" milliseconds</i>");
+}
+
+function deleteThreads(socket, type, text) {
+   var terminateProcess = text;
+   
+   if(threadEditorFocus != null && threadEditorFocus.process == terminateProcess) { // clear if it dies
+      terminateThreads();
+   }
 }
 
 function terminateThreads() {
@@ -158,6 +168,7 @@ function clearFocusThread() {
    clearVariables(); // clear the browse tree
    threadEditorFocus = {
       thread: null, 
+      process: null,
       resource: null, 
       change: -1,
       line: -1, 
@@ -167,7 +178,8 @@ function clearFocusThread() {
 
 function updateThreadFocus(threadScope) {
    threadEditorFocus = {
-         thread: threadScope.thread, 
+         thread: threadScope.thread,
+         process: threadScope.process,
          resource: threadScope.resource, 
          line: threadScope.line, 
          change: threadScope.change,

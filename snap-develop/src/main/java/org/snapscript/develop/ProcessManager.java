@@ -116,7 +116,7 @@ public class ProcessManager {
       if(connection != null) {
          return connection.ping();
       }
-      return true;
+      return false;
    }
    
    public void start(int port) {
