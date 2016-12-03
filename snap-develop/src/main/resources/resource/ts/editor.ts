@@ -52,7 +52,9 @@ function createEditorHighlight(line, css) {
    var Range = ace.require('ace/range').Range;
    var session = editor.getSession();
 
-   clearEditorHighlight(line);
+   //clearEditorHighlight(line);
+   clearEditorHighlights(); // clear all highlights in editor
+   
    // session.addMarker(new Range(from, 0, to, 1), "errorMarker", "fullLine");
    var marker = session.addMarker(new Range(line - 1, 0, line - 1, 1), css, "fullLine");
    editorMarkers[line] = marker;
