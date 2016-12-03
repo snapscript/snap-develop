@@ -68,6 +68,27 @@ function createMainLayout() {
    } else {
       createExploreLayout();
    }
+   startResizePoller(); // dynamically resize the editor
+}
+
+function startResizePoller() { // because w2ui onResize not working
+   var editorWidth = 0;
+   var editorHeight = 0;
+   
+   setInterval(function() {
+      var editorElement = document.getElementById("editor");
+      
+      if(editorElement != null) {
+         var currentWidth = editorElement.offsetWidth;
+         var currentHeight = editorElement.offsetHeight;
+         
+         if(editorWidth != currentWidth || editorHeight != currentHeight) {
+            editorWidth = currentWidth;
+            editorHeight = currentHeight;
+            resizeEditor();
+         }
+      }
+   }, 100);
 }
 
 function createExploreLayout() {
@@ -114,16 +135,7 @@ function createExploreLayout() {
          resizable : true,
          overflow: 'auto',
          style : pstyle + 'border-bottom: 0px;',
-         content : createEditorContent(),
-         onResizing: function(target, data) {
-//            var topWidth = w2ui['editorLayout'].get('top').width;
-//            var topHeight = w2ui['editorLayout'].get('top').height;
-//            var mainWidth = w2ui['editorLayout'].get('main').width;
-//            var mainHeight = w2ui['editorLayout'].get('main').height;
-//            
-//            console.log("top: "+topWidth+"x"+topHeight);
-//            console.log("main: "+mainWidth+"x"+mainHeight);       
-         }
+         content : createEditorContent()
       }, {
          type : 'main',
          size : '40%',
@@ -247,16 +259,7 @@ function createDebugLayout() {
          resizable : true,
          overflow: 'auto',
          style : pstyle + 'border-bottom: 0px;',
-         content : createEditorContent(),
-         onResizing: function(target, data) {
-//            var topWidth = w2ui['debugEditorLayout'].get('top').width;
-//            var topHeight = w2ui['debugEditorLayout'].get('top').height;
-//            var mainWidth = w2ui['debugEditorLayout'].get('main').width;
-//            var mainHeight = w2ui['debugEditorLayout'].get('main').height;
-//            
-//            console.log("top: "+topWidth+"x"+topHeight);
-//            console.log("main: "+mainWidth+"x"+mainHeight);       
-         }         
+         content : createEditorContent()        
       }, {
          type : 'bottom',
          size : '25%',

@@ -150,6 +150,15 @@ function toggleEditorBreakpoint(row) {
     }
     showEditorBreakpoints();
 }
+function resizeEditor() {
+    var editor = ace.edit("editor");
+    var width = document.getElementById('editor').offsetWidth;
+    var height = document.getElementById('editor').offsetHeight;
+    console.log("Resize editor " + width + "x" + height);
+    editor.setAutoScrollEditorIntoView(true);
+    editor.resize(true);
+    //editor.focus();
+}
 function resetEditor() {
     var editor = ace.edit("editor");
     var session = editor.getSession();
@@ -423,6 +432,7 @@ function showEditor() {
     editor.getSession().setMode("ace/mode/snapscript");
     editor.getSession().setTabSize(3);
     editor.setReadOnly(true);
+    editor.setAutoScrollEditorIntoView(true);
     editor.getSession().setUseSoftTabs(true);
     editor.setShowPrintMargin(false);
     editor.setOptions({
