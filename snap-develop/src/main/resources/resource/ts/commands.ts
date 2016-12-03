@@ -248,7 +248,7 @@ function stepOverScript() {
          thread: threadScope.thread,
          type: "STEP_OVER"
       });
-      clearEditorHighlights() 
+      clearEditorHighlights();
       socket.send("STEP:" + message);
    }
 }
@@ -260,7 +260,7 @@ function stepInScript() {
          thread: threadScope.thread,
          type: "STEP_IN"
       });
-      clearEditorHighlights() 
+      clearEditorHighlights();
       socket.send("STEP:" + message);
    }
 }
@@ -272,7 +272,7 @@ function stepOutScript() {
          thread: threadScope.thread,
          type: "STEP_OUT"
       });
-      clearEditorHighlights() 
+      clearEditorHighlights(); 
       socket.send("STEP:" + message);
    }
 }
@@ -284,7 +284,7 @@ function resumeScript() {
          thread: threadScope.thread,
          type: "RUN"
       });
-      clearEditorHighlights() 
+      clearEditorHighlights(); 
       socket.send("STEP:" + message);
    }
 }
