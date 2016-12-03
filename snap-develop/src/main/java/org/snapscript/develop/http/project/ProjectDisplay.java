@@ -1,56 +1,66 @@
 package org.snapscript.develop.http.project;
 
-import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Path;
 import org.simpleframework.xml.Root;
-import org.simpleframework.xml.Text;
 
 @Root
 public class ProjectDisplay {
    
-   @Element
-   private String theme;
+   @Element(name="theme-name", required=false)
+   private String themeName;
+   
+   @Element(name="console-capacity", required=false)
+   private int consoleCapacity;
    
    @Path("font")
-   @Text
-   private String font;
+   @Element(name="font-family")
+   private String fontName;
 
    @Path("font")
-   @Attribute
-   private int size;
+   @Element(name="font-size")
+   private int fontSize;
    
    public ProjectDisplay(){
-      this(null, null, 0);
+      this(null, null, 0, 50000);
    }
    
-   public ProjectDisplay(String theme, String font, int size) {
-      this.theme = theme;
-      this.font = font;
-      this.size = size;
-   }
-   
-   public String getTheme() {
-      return theme;
-   }
-   
-   public void setTheme(String theme) {
-      this.theme = theme;
+   public ProjectDisplay(String themeName, String fontName, int fontSize, int consoleCapacity) {
+      this.consoleCapacity = consoleCapacity;
+      this.themeName = themeName;
+      this.fontName = fontName;
+      this.fontSize = fontSize;
    }
 
-   public String getFont() {
-      return font;
+   public String getThemeName() {
+      return themeName;
    }
 
-   public void setFont(String font) {
-      this.font = font;
+   public void setThemeName(String themeName) {
+      this.themeName = themeName;
    }
 
-   public int getSize() {
-      return size;
+   public int getConsoleCapacity() {
+      return consoleCapacity;
    }
 
-   public void setSize(int size) {
-      this.size = size;
-   } 
+   public void setConsoleCapacity(int consoleCapacity) {
+      this.consoleCapacity = consoleCapacity;
+   }
+
+   public String getFontName() {
+      return fontName;
+   }
+
+   public void setFontName(String fontName) {
+      this.fontName = fontName;
+   }
+
+   public int getFontSize() {
+      return fontSize;
+   }
+
+   public void setFontSize(int fontSize) {
+      this.fontSize = fontSize;
+   }
 }

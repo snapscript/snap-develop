@@ -12,18 +12,21 @@ function changeProjectFont(){
 function applyProjectTheme() {
    $.get("/display/"+document.title, function(displayInfo) {
       //var theme = JSON.parse(response);
-      if(displayInfo.font != null && displayInfo.size != null) {
+      if(displayInfo.fontName != null && displayInfo.fontSize != null) {
          var fontFamily = document.getElementById("fontFamily");
          var fontSize = document.getElementById("fontSize");
          
          if(fontSize != null) {
-            fontSize.value = displayInfo.size + "px";
+            fontSize.value = displayInfo.fontSize + "px";
          }
          if(fontFamily != null) {
-            fontFamily.value = displayInfo.font;
+            fontFamily.value = displayInfo.fontName;
          }   
-         if(displayInfo.theme != null) {
-            setEditorTheme("ace/theme/" + displayInfo.theme.toLowerCase());
+         if(displayInfo.themeName != null) {
+            setEditorTheme("ace/theme/" + displayInfo.themeName.toLowerCase());
+         }
+         if(displayInfo.consoleCapacity != null) {
+            updateConsoleCapacity(Math.max(displayInfo.consoleCapacity, 5000)); // don't allow stupidly small size
          }
       }
       changeProjectFont();// update the fonts

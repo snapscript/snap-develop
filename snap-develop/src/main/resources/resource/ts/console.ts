@@ -3,7 +3,7 @@ var consoleCapacity = 5000;
 var consoleProcess = null;
 
 function registerConsole() {
-   createRoute("STATUS", createConsole); // status of processes
+   createRoute("BEGIN", createConsole); 
 	createRoute('PRINT_ERROR', updateConsole);
 	createRoute('PRINT_OUTPUT', updateConsole);
    createRoute('TERMINATE', terminateConsole); // clear focus
@@ -18,6 +18,10 @@ function updateConsoleFont(fontFamily, fontSize) {
       consoleElement.style.fontFamily = fontFamily;
       consoleElement.style.fontSize = fontSize;
    }   
+}
+
+function updateConsoleCapacity(maxCapacity) {
+   consoleCapacity = maxCapacity;    
 }
 
 function terminateConsole(socket, type, text) {
@@ -89,29 +93,20 @@ function updateConsoleFocus(processToFocus) {
       clearConsole();
       consoleProcess = processToFocus;
       showConsole();
-   } 
+   }
 }
 
 function createConsole(socket, type, value) {
    var message = JSON.parse(value);
    var newProcess = message.process;
-   var newProcessFocus = "" + message.focus;
-   var newProcessRunning = "" + message.running;
-   
-   if(newProcessRunning == "true") {
-      var consoleData = consoleWindow[newProcess];
-      
-      if(consoleData == null) {
-         consoleData = {
-            list: [],
-            update: true
-         }
-         consoleWindow[newProcess] = consoleData;
-      }
-      if(newProcessFocus == "true") {
-         updateConsoleFocus(newProcess);
-      }
+   var consoleData = consoleWindow[newProcess];
+
+   consoleWindow[newProcess] = {
+      list: [],
+      size: 0,
+      update: true
    }
+   updateConsoleFocus(newProcess);
 }
 
 function updateConsole(socket, type, value) {
@@ -127,14 +122,20 @@ function updateConsole(socket, type, value) {
    if(consoleData == null) {
       consoleData = {
          list: [],
+         size: 0,
          update: true
       }
       consoleWindow[updateProcess] = consoleData;
    }
    consoleData.list.push(node); // put at the end, i.e index consoleWindow.length - 1
+   consoleData.size += updateText.length; // update the size of the console
 	
-	if(consoleData.list.length > consoleCapacity) {	
-	   consoleData.list.shift(); // remove from the start, i.e index 0
+	while(consoleData.list.length > 3 && consoleData.size > consoleCapacity) { // min of 3 nodes	
+      var removeNode = consoleData.list.shift(); // remove from the start, i.e index 0
+	   
+	   if(removeNode != null) {
+	      consoleData.size -= removeNode.text.length;
+	   }
 	}
 	consoleData.update = true;
 }
