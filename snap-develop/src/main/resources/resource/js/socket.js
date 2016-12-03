@@ -105,7 +105,12 @@ function openSocket() {
         var route = routes[type];
         if (route != undefined) {
             if (!subscription.panic) {
-                route(this, type, value);
+                for (var i = 0; i < route.length; i++) {
+                    var func = route[i];
+                    if (func != null) {
+                        func(this, type, value);
+                    }
+                }
             }
         }
         else {
@@ -121,10 +126,24 @@ function createRoute(code, method, failure) {
     }
     var route = routes[code];
     if (route == null) {
-        routes[code] = method; // perhaps we should disconnect on every new route?
-        createTermination(failure);
-        refreshSocket();
+        route = [];
+        routes[code] = route;
     }
+    if (method != null) {
+        var length = route.length;
+        var exists = false;
+        for (var i = 0; i < length; i++) {
+            var callback = route[i];
+            if (callback == method) {
+                exists = true;
+            }
+        }
+        if (!exists) {
+            route.push(method); // add a route listener
+        }
+    }
+    createTermination(failure);
+    refreshSocket();
 }
 function createTermination(failure) {
     if (failure != null) {

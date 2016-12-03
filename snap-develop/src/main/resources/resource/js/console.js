@@ -2,6 +2,7 @@ var consoleWindow = {};
 var consoleCapacity = 5000;
 var consoleProcess = null;
 function registerConsole() {
+    createRoute("STATUS", createConsole); // status of processes
     createRoute('PRINT_ERROR', updateConsole);
     createRoute('PRINT_OUTPUT', updateConsole);
     createRoute('TERMINATE', terminateConsole); // clear focus
@@ -78,6 +79,25 @@ function updateConsoleFocus(processToFocus) {
         clearConsole();
         consoleProcess = processToFocus;
         showConsole();
+    }
+}
+function createConsole(socket, type, value) {
+    var message = JSON.parse(value);
+    var newProcess = message.process;
+    var newProcessFocus = "" + message.focus;
+    var newProcessRunning = "" + message.running;
+    if (newProcessRunning == "true") {
+        var consoleData = consoleWindow[newProcess];
+        if (consoleData == null) {
+            consoleData = {
+                list: [],
+                update: true
+            };
+            consoleWindow[newProcess] = consoleData;
+        }
+        if (newProcessFocus == "true") {
+            updateConsoleFocus(newProcess);
+        }
     }
 }
 function updateConsole(socket, type, value) {

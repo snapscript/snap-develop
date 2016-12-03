@@ -126,7 +126,13 @@ function openSocket() {
       
       if(route != undefined) {
          if(!subscription.panic) { // this might cause problems with missing messages
-            route(this, type, value);
+            for(var i = 0; i < route.length; i++) {
+               var func = route[i];
+               
+               if(func != null) {
+                  func(this, type, value);
+               }
+            }
          }
       } else {
          console.log("No route defined for '" + type+ "' with '" + value + "'");
@@ -144,10 +150,26 @@ function createRoute(code, method, failure) {
    var route = routes[code];
    
    if(route == null) {
-      routes[code] = method; // perhaps we should disconnect on every new route?
-      createTermination(failure);
-      refreshSocket();
+      route = [];
+      routes[code] = route;
    }
+   if(method != null) {
+      var length = route.length;
+      var exists = false;
+      
+      for(var i = 0; i < length; i++) {
+         var callback = route[i];
+         
+         if(callback == method) { // don't add twice
+            exists = true;
+         }
+      }
+      if(!exists) {
+         route.push(method); // add a route listener
+      }
+   }
+   createTermination(failure);
+   refreshSocket();
 }
 
 function createTermination(failure) {
