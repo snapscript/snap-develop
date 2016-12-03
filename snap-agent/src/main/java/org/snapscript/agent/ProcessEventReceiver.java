@@ -9,6 +9,7 @@ import org.snapscript.agent.debug.ResumeType;
 import org.snapscript.agent.debug.SuspendController;
 import org.snapscript.agent.event.BreakpointsEvent;
 import org.snapscript.agent.event.BrowseEvent;
+import org.snapscript.agent.event.ExecuteData;
 import org.snapscript.agent.event.ExecuteEvent;
 import org.snapscript.agent.event.PingEvent;
 import org.snapscript.agent.event.ProcessEventAdapter;
@@ -17,13 +18,13 @@ import org.snapscript.agent.event.StepEvent;
 
 public class ProcessEventReceiver extends ProcessEventAdapter {
    
-   private final AtomicReference<String> reference;
+   private final AtomicReference<ExecuteData> reference;
    private final ConnectionChecker checker;
    private final ResourceExecutor executor;
    private final ProcessContext context;
    
    public ProcessEventReceiver(ProcessContext context, ConnectionChecker checker) throws Exception {
-      this.reference = new AtomicReference<String>();
+      this.reference = new AtomicReference<ExecuteData>();
       this.executor = new ResourceExecutor(context);
       this.checker = checker;
       this.context = context;
@@ -31,15 +32,16 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
 
    @Override
    public void onExecute(ProcessEventChannel channel, ExecuteEvent event) throws Exception {
-      String resource = event.getResource();
+      ExecuteData data = event.getData();
       
-      if(reference.compareAndSet(null, resource)) { // execute only once
+      if(reference.compareAndSet(null, data)) { // execute only once
          Map<String, Map<Integer, Boolean>> breakpoints = event.getBreakpoints();
          BreakpointMatcher matcher = context.getMatcher();
          ProcessStore store = context.getStore();
-         String target = event.getProcess();
          String actual = context.getProcess();
-         String project = event.getProject();
+         String target = data.getProcess();
+         String project = data.getProject();
+         String resource = data.getResource();
          
          if(!target.equals(actual)) {
             throw new IllegalArgumentException("Process '" +actual+ "' received event for '"+target+"'");
@@ -85,8 +87,16 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
 
    @Override
    public void onPing(ProcessEventChannel channel, PingEvent event) throws Exception {
-      String resource = reference.get();
-      checker.update(channel, event, resource);
+      ExecuteData data = reference.get();
+      
+      if(data != null) {
+         String project = data.getProject();
+         String resource = data.getResource();
+         
+         checker.update(channel, event, project, resource);
+      } else {
+         checker.update(channel, event, null, null); 
+      }
    }
 
    @Override

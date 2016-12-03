@@ -66,8 +66,8 @@ public class CommandClient {
       channel.send(message);
    }
    
-   public void sendStatus(String process, String system, String resource, long time, boolean running, boolean focus) throws Exception {
-      StatusCommand command = new StatusCommand(process, system, resource, time, running, focus);
+   public void sendStatus(String process, String system, String project, String resource, long time, boolean running, boolean focus) throws Exception {
+      StatusCommand command = new StatusCommand(process, system, project, resource, time, running, focus);
       String message = writer.write(command);
       channel.send(message);
    }

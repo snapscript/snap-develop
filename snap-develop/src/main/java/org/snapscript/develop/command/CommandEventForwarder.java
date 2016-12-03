@@ -108,18 +108,19 @@ public class CommandEventForwarder extends ProcessEventAdapter {
       String process = event.getProcess();
       String system = event.getSystem();
       long time = System.currentTimeMillis();
-      client.sendStatus(process, system, null, time, false, process.equals(focus)); // update clients on status
+      client.sendStatus(process, system, null, null, time, false, process.equals(focus)); // update clients on status
    }
    
    @Override
    public void onPong(ProcessEventChannel channel, PongEvent event) throws Exception {  
       String focus = filter.get();
+      String project = event.getProject();
       String process = event.getProcess();
       String system = event.getSystem();
       String resource = event.getResource();
       boolean running = event.isRunning();
       long time = System.currentTimeMillis();
-      client.sendStatus(process, system, resource, time, running, process.equals(focus)); // update clients on status
+      client.sendStatus(process, system, project, resource, time, running, process.equals(focus)); // update clients on status
    }
    
    @Override

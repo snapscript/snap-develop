@@ -60,13 +60,15 @@ function createStatusProcess(socket, type, text) {
     var processFocus = "" + message.focus;
     var processSystem = message.system;
     var processSystemTime = message.time;
+    var processProject = message.project;
     var processRunning = message.running == "true";
     statusProcesses[process] = {
         resource: processResource,
         system: processSystem,
         time: processSystemTime,
         running: processRunning,
-        focus: processFocus
+        focus: processFocus,
+        project: processProject
     };
     if (processFocus == "true") {
         updateStatusFocus(process);
@@ -119,38 +121,44 @@ function showStatus() {
         if (statusProcesses.hasOwnProperty(statusProcess)) {
             var statusProcessInfo = statusProcesses[statusProcess];
             if (statusProcessInfo != null) {
-                var displayName = "<div class='debugIdleRecord'>" + statusProcess + "</div>";
-                var resourcePath = "";
-                var status = "WAITING";
-                var active = "";
-                var running = false;
-                if (statusProcessInfo.resource != null) {
-                    var resourcePathDetails = createResourcePath(statusProcessInfo.resource);
-                    if (statusFocus == statusProcess) {
-                        displayName = "<div class='debugFocusRecord'>" + statusProcess + "</div>";
-                        status = "DEBUGGING";
-                        active = "&nbsp;<input type='radio' checked>";
+                var statusProject = statusProcessInfo.project;
+                if (statusProject == document.title || statusProject == null) {
+                    var displayName = "<div class='debugIdleRecord'>" + statusProcess + "</div>";
+                    var resourcePath = "";
+                    var status = "WAITING";
+                    var active = "";
+                    var running = false;
+                    if (statusProcessInfo.resource != null) {
+                        var resourcePathDetails = createResourcePath(statusProcessInfo.resource);
+                        if (statusFocus == statusProcess) {
+                            displayName = "<div class='debugFocusRecord'>" + statusProcess + "</div>";
+                            status = "DEBUGGING";
+                            active = "&nbsp;<input type='radio' checked>";
+                        }
+                        else {
+                            displayName = "<div class='debugRecord'>" + statusProcess + "</div>";
+                            status = "RUNNING";
+                            active = "&nbsp;<input type='radio'>";
+                        }
+                        resourcePath = resourcePathDetails.resourcePath;
+                        running = true;
                     }
-                    else {
-                        displayName = "<div class='debugRecord'>" + statusProcess + "</div>";
-                        status = "RUNNING";
-                        active = "&nbsp;<input type='radio'>";
-                    }
-                    resourcePath = resourcePathDetails.resourcePath;
-                    running = true;
+                    statusRecords.push({
+                        recid: statusIndex++,
+                        name: displayName,
+                        active: active,
+                        process: statusProcess,
+                        status: status,
+                        running: running,
+                        system: statusProcessInfo.system,
+                        resource: statusProcessInfo.resource,
+                        focus: statusFocus == statusProcess,
+                        script: resourcePath
+                    });
                 }
-                statusRecords.push({
-                    recid: statusIndex++,
-                    name: displayName,
-                    active: active,
-                    process: statusProcess,
-                    status: status,
-                    running: running,
-                    system: statusProcessInfo.system,
-                    resource: statusProcessInfo.resource,
-                    focus: statusFocus == statusProcess,
-                    script: resourcePath
-                });
+                else {
+                    console.log("Ignoring process " + statusProcess + " as it belongs to " + statusProject);
+                }
             }
         }
     }

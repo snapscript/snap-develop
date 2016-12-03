@@ -5,11 +5,13 @@ import java.util.Map;
 public class ExecuteEvent implements ProcessEvent {
 
    private Map<String, Map<Integer, Boolean>> breakpoints;
+   private ExecuteData data;
    private String project;
    private String resource;
    private String process;
    
    public ExecuteEvent(String process, String project, String resource, Map<String, Map<Integer, Boolean>> breakpoints) {
+      this.data = new ExecuteData(process, project, resource);
       this.breakpoints = breakpoints;
       this.project = project;
       this.resource = resource;
@@ -19,6 +21,10 @@ public class ExecuteEvent implements ProcessEvent {
    @Override
    public String getProcess() {
       return process;
+   }
+   
+   public ExecuteData getData() {
+      return data; 
    }
    
    public Map<String, Map<Integer, Boolean>> getBreakpoints() {

@@ -27,8 +27,8 @@ public class ConnectionChecker {
       this.system = system;
    }
    
-   public void update(ProcessEventChannel channel, PingEvent event, String resource) {
-      PongEvent pong = new PongEvent(process, system,  resource, resource != null);
+   public void update(ProcessEventChannel channel, PingEvent event, String project, String resource) {
+      PongEvent pong = new PongEvent(process, system,  project, resource, resource != null);
       
       try {
          long time = System.currentTimeMillis();

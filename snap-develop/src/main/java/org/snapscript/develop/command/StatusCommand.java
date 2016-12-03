@@ -2,6 +2,7 @@ package org.snapscript.develop.command;
 
 public class StatusCommand implements Command {
 
+   private String project;
    private String resource;
    private String process;
    private String system;
@@ -13,10 +14,11 @@ public class StatusCommand implements Command {
       super();
    }
    
-   public StatusCommand(String process, String system, String resource, long time, boolean running, boolean focus) {
+   public StatusCommand(String process, String system, String project, String resource, long time, boolean running, boolean focus) {
       this.running = running;
       this.process = process;
       this.resource = resource;
+      this.project = project;
       this.system = system;
       this.focus = focus;
       this.time = time;
@@ -30,6 +32,14 @@ public class StatusCommand implements Command {
       this.time = time;
    }
    
+   public String getProject() {
+      return project;
+   }
+
+   public void setProject(String project) {
+      this.project = project;
+   }
+
    public String getSystem() {
       return system;
    }
