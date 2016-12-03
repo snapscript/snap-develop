@@ -50,26 +50,26 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    
    @Override
    public void onWriteError(ProcessEventChannel channel, WriteErrorEvent event) throws Exception {   
-      if(filter.accept(event)) {
+      //if(filter.accept(event)) {
          String process = event.getProcess();
          byte[] array = event.getData();
          int length = event.getLength();
          int offset = event.getOffset();
          String text = TextEscaper.escape(array, offset, length);
          client.sendPrintError(process, text);
-      }
+      //}
    }
    
    @Override
    public void onWriteOutput(ProcessEventChannel channel, WriteOutputEvent event) throws Exception {  
-      if(filter.accept(event)) {
+      //if(filter.accept(event)) {
          String process = event.getProcess();
          byte[] array = event.getData();
          int length = event.getLength();
          int offset = event.getOffset();
          String text = TextEscaper.escape(array, offset, length);
          client.sendPrintOutput(process, text);
-      }
+      //}
    }
    
    @Override

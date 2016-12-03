@@ -49,7 +49,7 @@ for(var i = 0; i < length; i++){
          bean.arguments.add((c) -> value); // add a function 
       }
       if(ref != null) {
-         bean.arguments.add(c) -> c.get(ref)); // add a function to get 
+         //bean.arguments.add(c) -> c.get(ref)); // add a function to get 
       }
       
    }
