@@ -1,4 +1,4 @@
-var consoleWindow = {};
+var consoleTable = {};
 var consoleCapacity = 5000;
 var consoleProcess = null;
 function registerConsole() {
@@ -24,8 +24,9 @@ function terminateConsole(socket, type, text) {
     if (consoleProcess == terminateProcess) {
         showConsole();
     }
-    if (consoleWindow[terminateProcess] != null) {
-        delete consoleWindow[terminateProcess]; // remove the console process
+    var consoleData = consoleTable[terminateProcess];
+    if (consoleData != null) {
+        consoleData.valid = false; // means it should be terminated when unfocused
     }
 }
 function clearConsole() {
@@ -41,7 +42,7 @@ function showConsole() {
     var previous = null;
     if (consoleElement != null && consoleProcess != null) {
         var currentText = consoleElement.innerHTML;
-        var consoleData = consoleWindow[consoleProcess]; // is ther an update?
+        var consoleData = consoleTable[consoleProcess]; // is ther an update?
         if (consoleData != null && (currentText == "" || consoleData.update == true)) {
             consoleData.update = false; // clear the update
             for (var i = 0; i < consoleData.list.length; i++) {
@@ -79,19 +80,33 @@ function showConsole() {
 }
 function updateConsoleFocus(processToFocus) {
     if (consoleProcess != processToFocus) {
+        deleteAllInvalidConsoles(processToFocus); // delete only on a change of focus
         clearConsole();
         consoleProcess = processToFocus;
         showConsole();
     }
 }
+function deleteAllInvalidConsoles(processToKeep) {
+    var validConsoles = {};
+    for (var processName in consoleTable) {
+        if (consoleTable.hasOwnProperty(processName)) {
+            var consoleData = consoleTable[processName];
+            if (consoleData.valid || processName == processToKeep) {
+                validConsoles[processName] = consoleData;
+            }
+        }
+    }
+    consoleTable = validConsoles; // make sure expired consoles are removed
+}
 function createConsole(socket, type, value) {
     var message = JSON.parse(value);
     var newProcess = message.process;
-    var consoleData = consoleWindow[newProcess];
-    consoleWindow[newProcess] = {
+    var consoleData = consoleTable[newProcess];
+    consoleTable[newProcess] = {
         list: [],
         size: 0,
-        update: true
+        update: true,
+        valid: true
     };
     updateConsoleFocus(newProcess);
 }
@@ -103,16 +118,17 @@ function updateConsole(socket, type, value) {
         error: type == 'PRINT_ERROR',
         text: updateText
     };
-    var consoleData = consoleWindow[updateProcess];
+    var consoleData = consoleTable[updateProcess];
     if (consoleData == null) {
         consoleData = {
             list: [],
             size: 0,
-            update: true
+            update: true,
+            valid: true
         };
-        consoleWindow[updateProcess] = consoleData;
+        consoleTable[updateProcess] = consoleData;
     }
-    consoleData.list.push(node); // put at the end, i.e index consoleWindow.length - 1
+    consoleData.list.push(node); // put at the end, i.e index consoleTable.length - 1
     consoleData.size += updateText.length; // update the size of the console
     while (consoleData.list.length > 3 && consoleData.size > consoleCapacity) {
         var removeNode = consoleData.list.shift(); // remove from the start, i.e index 0
