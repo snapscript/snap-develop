@@ -46,6 +46,10 @@ function clearConsole() {
    consoleProcess = null;
 }
 
+/**
+ * This method can be very slow, we need to improve the merging of nodes
+ * so that concatenation reduces the overhead.
+ */
 function showConsole() {
 	var consoleElement = document.getElementById("console");
 	var consoleText = null;
@@ -128,6 +132,10 @@ function createConsole(socket, type, value) {
    updateConsoleFocus(newProcess);
 }
 
+/**
+ * This function should probably merge the nodes to some extent, it will improve
+ * the performance of the console rendering.
+ */
 function updateConsole(socket, type, value) {
    var offset = value.indexOf(':');
    var updateProcess = value.substring(0, offset)
