@@ -22,8 +22,7 @@ background-color: rgb(60, 76, 114);\
 color: black;\
 }\
 .ace-eclipse .ace_storage,\
-.ace-eclipse .ace_keyword,\
-.ace-eclipse .ace_variable {\
+.ace-eclipse .ace_keyword {\
 color: rgb(127, 0, 85);\
 font-weight: bold;\
 }\
@@ -33,9 +32,9 @@ color: rgb(88, 72, 246);\
 .ace-eclipse .ace_constant.ace_library {\
 color: rgb(6, 150, 14);\
 }\
-.ace-eclipse .ace_function {\
-color: rgb(60, 76, 114);\
-}\
+//.ace-eclipse .ace_function {\
+//color: rgb(60, 76, 114);\
+//}\
 .ace-eclipse .ace_string {\
 color: rgb(42, 0, 255);\
 }\
