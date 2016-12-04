@@ -9,12 +9,21 @@ function changeProjectFont(){
    }
 }
 
+function changeEditorTheme(){
+   var editorTheme = document.getElementById("editorTheme");
+   
+   if(editorTheme != null) {
+      setEditorTheme("ace/theme/" + editorTheme.options[editorTheme.selectedIndex].value.toLowerCase());
+   }
+}
+
 function applyProjectTheme() {
    $.get("/display/"+document.title, function(displayInfo) {
       //var theme = JSON.parse(response);
       if(displayInfo.fontName != null && displayInfo.fontSize != null) {
          var fontFamily = document.getElementById("fontFamily");
          var fontSize = document.getElementById("fontSize");
+         var editorTheme = document.getElementById("editorTheme");
          
          if(fontSize != null) {
             fontSize.value = displayInfo.fontSize + "px";
@@ -22,14 +31,15 @@ function applyProjectTheme() {
          if(fontFamily != null) {
             fontFamily.value = displayInfo.fontName;
          }   
-         if(displayInfo.themeName != null) {
-            setEditorTheme("ace/theme/" + displayInfo.themeName.toLowerCase());
+         if(editorTheme != null && displayInfo.themeName != null) {
+            editorTheme.value = displayInfo.themeName;
          }
          if(displayInfo.consoleCapacity != null) {
             updateConsoleCapacity(Math.max(displayInfo.consoleCapacity, 5000)); // don't allow stupidly small size
          }
       }
       changeProjectFont();// update the fonts
+      changeEditorTheme(); // change editor theme
    });
 }
 
@@ -461,17 +471,58 @@ function createTopMenuBar(){
                         + "</div>"
                }, {
                   type : 'main',
-                  size : '20%',
+                  size : '10%',
                   style : pstyle,
                   content : "<div class='toolbarTop'></div>"
                }, {
                   type : 'right',
-                  size : '40%',
+                  size : '50%',
                   style : pstyle,
                   content : "<div class='toolbarTop'>"+
                             "<table border='0' width='100%' cellpadding='0'>"+
                             "<tr>"+
                             "   <td  width='100%'></td>"+
+                            "   <td>"+
+                            "        <select class='styledSelect' id='editorTheme' size='1' onchange='changeEditorTheme()'>\n"+
+                            "          <option value='textmate' selected='selected'>&nbsp;Default</option>\n"+                            
+                            "          <option value='chrome'>&nbsp;Chrome</option>\n"+
+                            "          <option value='clouds'>&nbsp;Clouds</option>\n"+
+                            "          <option value='crimson_editor'>&nbsp;Crimson Editor</option>\n"+
+                            "          <option value='dawn'>&nbsp;Dawn</option>\n"+
+                            "          <option value='dreamweaver'>&nbsp;Dreamweaver</option>\n"+
+                            "          <option value='eclipse'>&nbsp;Eclipse</option>\n"+
+                            "          <option value='github'>&nbsp;GitHub</option>\n"+
+                            "          <option value='iplastic'>&nbsp;IPlastic</option>\n"+
+                            "          <option value='solarized_light'>&nbsp;Solarized Light</option>\n"+
+                            "          <option value='textmate'>&nbsp;TextMate</option>\n"+
+                            "          <option value='tomorrow'>&nbsp;Tomorrow</option>\n"+
+                            "          <option value='xcode'>&nbsp;XCode</option>\n"+
+                            "          <option value='kuroir'>&nbsp;Kuroir</option>\n"+
+                            "          <option value='katzenmilch'>&nbsp;KatzenMilch</option>\n"+
+                            "          <option value='sqlserver'>&nbsp;SQL Server</option>\n"+
+                            "          <option value='ambiance'>&nbsp;Ambiance</option>\n"+
+                            "          <option value='chaos'>&nbsp;Chaos</option>\n"+
+                            "          <option value='clouds_midnight'>&nbsp;Clouds Midnight</option>\n"+
+                            "          <option value='cobalt'>&nbsp;Cobalt</option>\n"+
+                            "          <option value='gruvbox'>&nbsp;Gruvbox</option>\n"+
+                            "          <option value='idle_fingers'>&nbsp;idle Fingers</option>\n"+
+                            "          <option value='kr_theme'>&nbsp;krTheme</option>\n"+
+                            "          <option value='merbivore'>&nbsp;Merbivore</option>\n"+
+                            "          <option value='merbivore_soft'>&nbsp;Merbivore Soft</option>\n"+
+                            "          <option value='mono_industrial'>&nbsp;Mono Industrial</option>\n"+
+                            "          <option value='monokai'>&nbsp;Monokai</option>\n"+
+                            "          <option value='pastel_on_dark'>&nbsp;Pastel on dark</option>\n"+
+                            "          <option value='solarized_dark'>&nbsp;Solarized Dark</option>\n"+
+                            "          <option value='terminal'>&nbsp;Terminal</option>\n"+
+                            "          <option value='tomorrow_night'>&nbsp;Tomorrow Night</option>\n"+
+                            "          <option value='tomorrow_night_blue'>&nbsp;Tomorrow Night Blue</option>\n"+
+                            "          <option value='tomorrow_night_bright'>&nbsp;Tomorrow Night Bright</option>\n"+
+                            "          <option value='tomorrow_night_eighties'>&nbsp;Tomorrow Night 80s</option>\n"+
+                            "          <option value='twilight'>&nbsp;Twilight</option>\n"+
+                            "          <option value='vibrant_ink'>&nbsp;Vibrant Ink</option>\n"+                              
+                            "        </select>\n"+
+                            "   </td>"+  
+                            "   <td>&nbsp;&nbsp;</td>"+                              
                             "   <td>"+
                             "        <select class='styledSelect' id='fontFamily' size='1' onchange='changeProjectFont()'>\n"+
                             "          <option value='Consolas' selected='selected'>&nbsp;Consolas</option>\n"+

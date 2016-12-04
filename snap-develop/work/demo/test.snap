@@ -1,4 +1,47 @@
 import org.apache.commons.lang3.StringUtils;
+import util.stream.Collectors;
 
-var list = "1,2,3,4,5".split(",");
-println(StringUtils.join(list, "&x=", 0, list.length));
+// var list = "1,2,3,4,5".split(",");
+// println(StringUtils.join(list, "&x=", 0, list.length));
+
+var source = "00:01:07,400-234-090\n00:05:01,701-080-080\n00:05:00,400-234-090";
+
+function parseLog(source) {
+   var func = x -> { 
+      var pair = x.split(",");
+      return {
+         number: pair[1], 
+         duration: pair[0]
+      };
+   };
+   return source.split("\n")
+      .stream()
+      .map(func)
+      .sorted((a, b) -> a.number.compareTo(b.number))
+      .collect(Collectors.toList());
+}
+
+function groupByNumber(result) {
+   var sum = {:};
+   var group = x -> {
+      var list = sum.get(x.number) ?? [];
+      
+      list.add(x.duration);
+      sum.put(x.number, list);
+   };
+   result.stream().forEach(group);
+   return sum;
+}
+
+function displayDurations(source) {
+   var result = parseLog(source);
+   var sum = groupByNumber(result);
+   
+   for(var entry in sum){
+      for(var duration in entry.value){
+         println("${entry.key} -> ${duration}");
+      }
+   }
+}
+
+displayDurations(source);
