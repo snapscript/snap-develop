@@ -25,6 +25,7 @@ color: black;\
 .ace-eclipse .ace_keyword,\
 .ace-eclipse .ace_variable {\
 color: rgb(127, 0, 85);\
+font-weight: bold;\
 }\
 .ace-eclipse .ace_constant.ace_buildin {\
 color: rgb(88, 72, 246);\
@@ -54,7 +55,7 @@ color: darkblue;\
 color: rgb(25, 118, 116);\
 }\
 .ace-eclipse .ace_type {\
-color: rgb(127, 0, 127);\
+//color: rgb(127, 0, 127);\
 }\
 .ace-eclipse .ace_xml-pe {\
 color: rgb(104, 104, 91);\

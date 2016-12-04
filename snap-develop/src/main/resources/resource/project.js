@@ -496,7 +496,6 @@ function createTopMenuBar(){
                             "          <option value='dreamweaver'>&nbsp;Dreamweaver</option>\n"+
                             "          <option value='eclipse'>&nbsp;Eclipse</option>\n"+
                             "          <option value='github'>&nbsp;GitHub</option>\n"+
-                            "          <option value='gruvbox'>&nbsp;Gruvbox</option>\n"+
                             "          <option value='kuroir'>&nbsp;Kuroir</option>\n"+
                             "          <option value='merbivore_soft'>&nbsp;Merbivore Soft</option>\n"+
                             "          <option value='merbivore'>&nbsp;Merbivore</option>\n"+

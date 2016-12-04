@@ -11,6 +11,8 @@ color: #AAA;\
 background: #fff;\
 color: #000;\
 }\
+.ace-github .ace_storage,\
+.ace-github .ace_variable, \
 .ace-github .ace_keyword {\
 font-weight: bold;\
 }\
