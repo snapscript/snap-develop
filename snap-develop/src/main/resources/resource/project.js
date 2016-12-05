@@ -152,6 +152,8 @@ function createExploreLayout() {
 
    // -- LAYOUT
    var pstyle = 'background-color: #F5F6F7; overflow: hidden;';
+   var tabCount = 
+      
    $('#mainLayout').w2layout({
       name : 'exploreMainLayout',
       padding : 0,
@@ -214,26 +216,36 @@ function createExploreLayout() {
             active : 'consoleTab',
             tabs : [ {
                id : 'consoleTab',
-               caption : '<div class="consoleTab">Console</div>'
+               caption : '<div class="consoleTab">Console</div>',
+               closable: false
             }, {
                id : 'problemsTab',
-               caption : '<div class="problemsTab">Problems</div>'
+               caption : '<div class="problemsTab">Problems</div>',
+               closable: false
             }, {
                id : 'breakpointsTab',
-               caption : '<div class="breakpointsTab">Breakpoints</div>'
+               caption : '<div class="breakpointsTab">Breakpoints</div>',
+               closable: false
             }, {
                id : 'threadsTab',
-               caption : '<div class="threadTab">Threads</div>'
+               caption : '<div class="threadTab">Threads</div>',
+               closable: false
             }, {
                id : 'variablesTab',
-               caption : '<div class="variableTab">Variables</div>'
+               caption : '<div class="variableTab">Variables</div>',
+               closable: false
             }, {
                id : 'profilerTab',
-               caption : '<div class="profilerTab">Profiler</div>'
+               caption : '<div class="profilerTab">Profiler</div>',
+               closable: false
             }, {
                id : 'debugTab',
-               caption : '<div class="debugTab">Debug&nbsp;&nbsp;</div>'
+               caption : '<div class="debugTab">Debug&nbsp;&nbsp;</div>',
+               closable: false
             } ],
+            onClose: function(event) {
+               console.log(event);
+            },
             onClick : function(event) {
                activateTab(event.target, "exploreTabLayout");
             }
@@ -355,14 +367,17 @@ function createDebugLayout() {
             active : 'debugTab',
             tabs : [ {
                id : 'debugTab',
-               caption : '<div class="debugTab">Debug&nbsp;&nbsp;</div>'
+               caption : '<div class="debugTab">Debug&nbsp;&nbsp;</div>',
+               closable: false
             }, {
                id : 'threadsTab',
-               caption : '<div class="threadTab">Threads</div>'
+               caption : '<div class="threadTab">Threads</div>',
+               closable: false
             },  {
                id : 'browseTab',
                caption : '<div class="browseTab">Browse</div>',
-               content : "<div style='overflow: scroll; font-family: monospace;' id='browse'>" + createExplorerContent() + "</div>" 
+               content : "<div style='overflow: scroll; font-family: monospace;' id='browse'>" + createExplorerContent() + "</div>",
+               closable: false 
             } ],
             onClick : function(event) {
                activateTab(event.target, "debugLeftTabLayout");
@@ -384,10 +399,12 @@ function createDebugLayout() {
             active : 'variablesTab',
             tabs : [ {
                id : 'variablesTab',
-               caption : '<div class="variableTab">Variables</div>'
+               caption : '<div class="variableTab">Variables</div>',
+               closable: false
             }, {
                id : 'breakpointsTab',
-               caption : '<div class="breakpointsTab">Breakpoints</div>'
+               caption : '<div class="breakpointsTab">Breakpoints</div>',
+               closable: false
             } ],
             onClick : function(event) {
                activateTab(event.target, "debugRightTabLayout");

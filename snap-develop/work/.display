@@ -1,10 +1,11 @@
 <project-display>
    <console-capacity>50000</console-capacity>
    <font>
-      <font-size>14</font-size>
-      <font-family>Consolas</font-family>
+      <font-size>13</font-size>
+      <font-family>Lucida Console</font-family>
    </font>
    <!--logo-image>/img/logo_grey_shade.png</logo-image-->
+   <theme-name>eclipse</theme-name>
    <!--theme-name>twilight</theme-name-->
    <!--theme-name>chrome</theme-name-->
    <!--theme-name>dawn</theme-name-->
