@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 public class ProjectDisplayResource implements Resource {
    
    private static final String DEFAULT_FONT = "Consolas";
+   private static final String DEFAULT_LOGO = "/img/logo_grey_shade.png";
    private static final int DEFAULT_SIZE = 14;
    private static final int DEFAULT_CAPACITY = 50000;
    
@@ -26,7 +27,7 @@ public class ProjectDisplayResource implements Resource {
    private final Gson gson;
    
    public ProjectDisplayResource(ProjectBuilder builder, String theme) {
-      this.display = new ProjectDisplay(null, DEFAULT_FONT, DEFAULT_SIZE, DEFAULT_CAPACITY);
+      this.display = new ProjectDisplay(null, DEFAULT_LOGO, DEFAULT_FONT, DEFAULT_SIZE, DEFAULT_CAPACITY);
       this.persister = new Persister();
       this.gson = new Gson();
       this.builder = builder;

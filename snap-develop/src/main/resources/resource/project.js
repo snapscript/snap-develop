@@ -17,6 +17,34 @@ function changeEditorTheme(){
    }
 }
 
+function toggleFullScreen() {
+   var perspective = determineProjectLayout();
+
+   if (perspective == "debug") {
+      var topPanel = w2ui['debugEditorLayout'].get("top");
+      var bottomPanel = w2ui['debugEditorLayout'].get("bottom");
+      
+      if(topPanel.hidden || bottomPanel.hidden) {
+         w2ui['debugEditorLayout'].show("top");
+         w2ui['debugEditorLayout'].show("bottom"); 
+      } else {
+         w2ui['debugEditorLayout'].hide("top");
+         w2ui['debugEditorLayout'].hide("bottom"); 
+      }
+   } else {
+      var leftPanel = w2ui['exploreMainLayout'].get("left");
+      var bottomPanel = w2ui['exploreEditorLayout'].get("bottom");
+      
+      if(leftPanel.hidden || bottomPanel.hidden) {
+         w2ui['exploreMainLayout'].show("left", true);
+         w2ui['exploreEditorLayout'].show("bottom");
+      } else {
+         w2ui['exploreMainLayout'].hide("left", true);
+         w2ui['exploreEditorLayout'].hide("bottom");
+      }
+   }
+}
+
 function applyProjectTheme() {
    $.get("/display/"+document.title, function(displayInfo) {
       //var theme = JSON.parse(response);
@@ -36,6 +64,14 @@ function applyProjectTheme() {
          }
          if(displayInfo.consoleCapacity != null) {
             updateConsoleCapacity(Math.max(displayInfo.consoleCapacity, 5000)); // don't allow stupidly small size
+         }
+         if(displayInfo.logoImage != null) {
+            var toolbarRow =  document.getElementById("toolbarRow"); // this is pretty rubbish, but it works!
+            
+            toolbarRow.insertCell(0).innerHTML = "<div class='toolbarSeparator'></div>";
+            toolbarRow.insertCell(0).innerHTML = "&nbsp;";
+            toolbarRow.insertCell(0).innerHTML = "&nbsp;";
+            toolbarRow.insertCell(0).innerHTML = "<div><img style='height: 25px; margin-top: -1px;' src='" + displayInfo.logoImage + "'></div>"; // /img/logo_grey_shade.png
          }
       }
       changeProjectFont();// update the fonts
@@ -67,13 +103,22 @@ function hideBrowseTree() { // hack to render tree
    }
 }
 
-function createMainLayout() {
+function determineProjectLayout() {
    var debugToggle = ";debug";
    var locationPath = window.document.location.pathname;
    var locationHash = window.document.location.hash;
    var debug = locationPath.indexOf(debugToggle, locationPath.length - debugToggle.length) !== -1;
    
-   if (debug) {
+   if(debug) {
+      return "debug";
+   }
+   return "explore";
+}
+
+function createMainLayout() {
+   var perspective = determineProjectLayout();
+   
+   if (perspective == "debug") {
       createDebugLayout(); // show debug layout
    } else {
       createExploreLayout();
@@ -140,14 +185,14 @@ function createExploreLayout() {
       name : 'exploreEditorLayout',
       padding : 0,
       panels : [ {
-         type : 'top',
+         type : 'main',
          size : '60%',
          resizable : true,
          overflow: 'auto',
          style : pstyle + 'border-bottom: 0px;',
          content : createEditorContent()
       }, {
-         type : 'main',
+         type : 'bottom',
          size : '40%',
          overflow: 'auto',         
          resizable : true,
@@ -206,7 +251,7 @@ function createExploreLayout() {
    
    w2ui['exploreMainLayout'].content('top', w2ui['topLayout']);
    w2ui['exploreMainLayout'].content('main', w2ui['exploreEditorLayout']);
-   w2ui['exploreEditorLayout'].content('main', w2ui['exploreTabLayout']);
+   w2ui['exploreEditorLayout'].content('bottom', w2ui['exploreTabLayout']);
    w2ui['exploreTabLayout'].refresh();
 
    setTimeout(function() {
@@ -440,9 +485,7 @@ function createTopMenuBar(){
                   style : pstyle,
                   content : "<div class='toolbarTop'>"
                         + "<table border='0'>"
-                        + "<tr>"
-                        + "   <td><div id='toolbarLogoContainer'><img style='height: 25px; margin-top: -1px;' src='/img/logo_grey_shade.png'></div></td>"
-                        + "   <td><div class='toolbarSeparator'></div></td>"                           
+                        + "<tr id='toolbarRow'>"                         
                         + "   <td>"
                         + "      <table id='toolbarNormal'>"
                         + "      <tr>"
@@ -541,6 +584,7 @@ function createTopMenuBar(){
                             "        </select>\n"+
                             "   </td>"+
                             "   <td>&nbsp;&nbsp;</td>"+  
+                            "   <td><div id='toolbarResize' title='Full Screen' onclick='toggleFullScreen()'></div></td>"+                               
                             "   <td><div id='toolbarSwitchLayout' title='Switch Layout' onclick='switchLayout()'></div></td>"+                                
                             "   <td><div id='toolbarSwitchProject' title='Switch Project' onclick='switchProject()'></div></td>"+     
                             "   <td>&nbsp;&nbsp;</td>"+                                 

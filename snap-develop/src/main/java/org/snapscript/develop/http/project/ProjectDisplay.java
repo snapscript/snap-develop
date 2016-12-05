@@ -10,6 +10,9 @@ public class ProjectDisplay {
    @Element(name="theme-name", required=false)
    private String themeName;
    
+   @Element(name="logo-image", required=false)
+   private String logoImage;
+   
    @Element(name="console-capacity", required=false)
    private int consoleCapacity;
    
@@ -22,11 +25,12 @@ public class ProjectDisplay {
    private int fontSize;
    
    public ProjectDisplay(){
-      this(null, null, 0, 50000);
+      this(null, null, null, 0, 50000);
    }
    
-   public ProjectDisplay(String themeName, String fontName, int fontSize, int consoleCapacity) {
+   public ProjectDisplay(String themeName, String logoImage, String fontName, int fontSize, int consoleCapacity) {
       this.consoleCapacity = consoleCapacity;
+      this.logoImage = logoImage;
       this.themeName = themeName;
       this.fontName = fontName;
       this.fontSize = fontSize;
@@ -38,6 +42,14 @@ public class ProjectDisplay {
 
    public void setThemeName(String themeName) {
       this.themeName = themeName;
+   }
+
+   public String getLogoImage() {
+      return logoImage;
+   }
+
+   public void setLogoImage(String logoImage) {
+      this.logoImage = logoImage;
    }
 
    public int getConsoleCapacity() {
