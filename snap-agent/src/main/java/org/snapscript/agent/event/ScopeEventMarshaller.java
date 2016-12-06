@@ -33,12 +33,17 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       int depth = input.readInt();
       int sequence = input.readInt();
       int change = input.readInt();
-      int count = input.readInt();
+      int evaluationCount = input.readInt();
+      int localCount = input.readInt();
 
-      Map<String, Map<String, String>> variables = new TreeMap<String, Map<String, String>>();
-      ScopeVariableTree tree = new ScopeVariableTree(variables, change);
+      Map<String, Map<String, String>> local = new TreeMap<String, Map<String, String>>();
+      Map<String, Map<String, String>> evaluation = new TreeMap<String, Map<String, String>>();
+      ScopeVariableTree tree = new ScopeVariableTree.Builder(change)
+         .withLocal(local)
+         .withEvaluation(evaluation)
+         .build();
       
-      for(int i = 0; i < count; i++) {
+      for(int i = 0; i < localCount; i++) {
          Map<String, String> criteria = new HashMap<String, String>();
          String name = input.readUTF();
          int size = input.readInt();
@@ -49,7 +54,20 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
             
             criteria.put(key, value);
          }
-         variables.put(name, criteria);
+         local.put(name, criteria);
+      }
+      for(int i = 0; i < evaluationCount; i++) {
+         Map<String, String> criteria = new HashMap<String, String>();
+         String name = input.readUTF();
+         int size = input.readInt();
+         
+         for(int j = 0; j < size; j++) {
+            String key = input.readUTF();
+            String value = input.readUTF();
+            
+            criteria.put(key, value);
+         }
+         evaluation.put(name, criteria);
       }
       return new ScopeEvent.Builder(process)
          .withVariables(tree)
@@ -70,8 +88,10 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       ByteArrayOutputStream buffer = new ByteArrayOutputStream();
       DataOutputStream output = new DataOutputStream(buffer);
       ScopeVariableTree tree = event.getVariables();
-      Map<String, Map<String, String>> variables = tree.getVariables();
-      Set<String> names = variables.keySet();
+      Map<String, Map<String, String>> local = tree.getLocal();
+      Map<String, Map<String, String>> evaluation = tree.getEvaluation();
+      Set<String> evaluationNames = evaluation.keySet();
+      Set<String> localNames = local.keySet();
       String process = event.getProcess();
       String thread = event.getThread();
       String stack = event.getStack();
@@ -82,7 +102,8 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       int sequence = event.getKey();
       int line = event.getLine();
       int depth = event.getDepth();
-      int count = variables.size();
+      int localCount = local.size();
+      int evaluationCount = evaluation.size();
       
       output.writeUTF(process);
       output.writeUTF(thread);
@@ -94,10 +115,26 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       output.writeInt(depth);
       output.writeInt(sequence);
       output.writeInt(change);
-      output.writeInt(count);
+      output.writeInt(localCount);
+      output.writeInt(evaluationCount);
       
-      for(String name : names) {
-         Map<String, String> criteria = variables.get(name);
+      for(String name : localNames) {
+         Map<String, String> criteria = local.get(name);
+         Set<String> keys = criteria.keySet();
+         int size = criteria.size();
+         
+         output.writeUTF(name);
+         output.writeInt(size);
+         
+         for(String key : keys) {
+            String value = criteria.get(key);
+            
+            output.writeUTF(key);
+            output.writeUTF(value);
+         }
+      }
+      for(String name : evaluationNames) {
+         Map<String, String> criteria = evaluation.get(name);
          Set<String> keys = criteria.keySet();
          int size = criteria.size();
          

@@ -34,6 +34,22 @@ public class ScopeNodeTraverser {
       return variables;
    }
    
+   public Map<String, Map<String, String>> expand(Set<String> expand, String expression) {
+      Map<String, Map<String, String>> variables = new HashMap<String, Map<String, String>>();
+      ScopeNodeBuilder builder = new ScopeNodeBuilder(variables, context);
+      ScopeNode node = new ScopeNodeTree(builder, scope);
+      
+      if(!expand.isEmpty()) {
+         for(String path : expand) {
+            String[] parts = path.split("\\.");
+            expand(node, parts, 0);
+         }
+      } else {
+         node.getNodes(); // expand root
+      }
+      return variables;
+   }
+   
    private void expand(ScopeNode node, String[] parts, int index) {
       List<ScopeNode> children = node.getNodes();
       String match = parts[index];

@@ -65,7 +65,5 @@ public class WriteErrorEvent implements ProcessEvent {
       public WriteErrorEvent build(){
          return new WriteErrorEvent(this);
       }
-
-      
    }
 }

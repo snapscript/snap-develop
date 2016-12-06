@@ -33,7 +33,8 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    public void onScope(ProcessEventChannel channel, ScopeEvent event) throws Exception {
       if(filter.accept(event)) {
          ScopeVariableTree tree = event.getVariables();
-         Map<String, Map<String, String>> variables = tree.getVariables();
+         Map<String, Map<String, String>> local = tree.getLocal();
+         Map<String, Map<String, String>> evaluation = tree.getEvaluation();
          String process = event.getProcess();
          String thread = event.getThread();
          String stack = event.getStack();
@@ -44,7 +45,7 @@ public class CommandEventForwarder extends ProcessEventAdapter {
          int depth = event.getDepth();
          int line = event.getLine();
          int key = event.getKey();
-         client.sendScope(process, variables, thread, stack, instruction, status, resource, line, depth, key, change);
+         client.sendScope(process, local, evaluation, thread, stack, instruction, status, resource, line, depth, key, change);
       }
    }
    

@@ -3,8 +3,6 @@ package org.snapscript.agent.debug;
 import static org.snapscript.agent.event.ScopeEvent.RUNNING;
 import static org.snapscript.agent.event.ScopeEvent.SUSPENDED;
 
-import java.util.Collections;
-
 import org.snapscript.agent.event.ScopeEvent;
 import org.snapscript.core.trace.TraceType;
 
@@ -22,7 +20,7 @@ public class ScopeEventBuilder {
    private final int count;
    
    public ScopeEventBuilder(ScopeExtractor extractor, TraceType type, String process, String thread, String stack, String resource, int line, int depth, int count) {
-      this.blank = new ScopeVariableTree(Collections.EMPTY_MAP, -1);
+      this.blank = ScopeVariableTree.EMPTY;
       this.extractor = extractor;
       this.process = process;
       this.thread = thread;
