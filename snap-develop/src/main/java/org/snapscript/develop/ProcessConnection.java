@@ -25,7 +25,12 @@ public class ProcessConnection {
 
    public boolean execute(String project, String path, Map<String, Map<Integer, Boolean>> breakpoints) {
       try {
-         ExecuteEvent event = new ExecuteEvent(process, project, path, breakpoints);
+         ExecuteEvent event = new ExecuteEvent.Builder(process)
+            .withProject(project)
+            .withResource(path)
+            .withBreakpoints(breakpoints)
+            .build();
+
          return channel.send(event);
       } catch (Exception e) {
          logger.log(process + ": Error occured sending execute event", e);
@@ -36,7 +41,10 @@ public class ProcessConnection {
    
    public boolean suspend(Map<String, Map<Integer, Boolean>> breakpoints) {
       try {
-         BreakpointsEvent event = new BreakpointsEvent(process, breakpoints);
+         BreakpointsEvent event = new BreakpointsEvent.Builder(process)
+            .withBreakpoints(breakpoints)
+            .build();
+         
          return channel.send(event);
       } catch (Exception e) {
          logger.log(process + ": Error occured sending suspend event", e);
@@ -47,7 +55,11 @@ public class ProcessConnection {
    
    public boolean browse(String thread, Set<String> expand) {
       try {
-         BrowseEvent event = new BrowseEvent(process, thread, expand);
+         BrowseEvent event = new BrowseEvent.Builder(process)
+            .withThread(thread)
+            .withExpand(expand)
+            .build();
+         
          return channel.send(event);
       } catch (Exception e) {
          logger.log(process + ": Error occured sending browse event", e);
@@ -58,7 +70,11 @@ public class ProcessConnection {
    
    public boolean step(String thread, int type) {
       try {
-         StepEvent event = new StepEvent(process, thread, type);
+         StepEvent event = new StepEvent.Builder(process)
+            .withThread(thread)
+            .withType(type)
+            .build();
+
          return channel.send(event);
       } catch (Exception e) {
          logger.log(process + ": Error occured sending step event", e);
@@ -67,9 +83,11 @@ public class ProcessConnection {
       }
    }
 
-   public boolean ping() {
+   public boolean ping(long time) {
       try {
-         PingEvent event = new PingEvent(process);
+         PingEvent event = new PingEvent.Builder(process)
+            .withTime(time)
+            .build();
          
          if(channel.send(event)) {
             logger.debug(process + ": Ping succeeded");

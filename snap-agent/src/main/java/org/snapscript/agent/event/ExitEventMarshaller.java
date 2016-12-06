@@ -20,7 +20,9 @@ public class ExitEventMarshaller implements ProcessEventMarshaller<ExitEvent> {
       String process = input.readUTF();
       long duration = input.readLong();
       
-      return new ExitEvent(process, duration);
+      return new ExitEvent.Builder(process)
+         .withDuration(duration)
+         .build();
       
    }
 

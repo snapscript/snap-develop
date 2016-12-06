@@ -1,17 +1,18 @@
 package org.snapscript.agent.event;
 
+import java.util.Collections;
 import java.util.Set;
 
 import org.snapscript.agent.profiler.ProfileResult;
 
 public class ProfileEvent implements ProcessEvent {
 
-   private Set<ProfileResult> results;
-   private String process;
+   private final Set<ProfileResult> results;
+   private final String process;
    
-   public ProfileEvent(String process, Set<ProfileResult> results) {
-      this.process = process;
-      this.results = results;
+   private ProfileEvent(Builder builder) {
+      this.results = Collections.unmodifiableSet(builder.results);
+      this.process = builder.process;
    }
 
    @Override
@@ -23,5 +24,27 @@ public class ProfileEvent implements ProcessEvent {
       return results;
    }
    
-   
+   public static class Builder {
+      
+      private Set<ProfileResult> results;
+      private String process;
+      
+      public Builder(String process) {
+         this.process = process;
+      }
+
+      public Builder withResults(Set<ProfileResult> results) {
+         this.results = results;
+         return this;
+      }
+
+      public Builder withProcess(String process) {
+         this.process = process;
+         return this;
+      }
+      
+      public ProfileEvent build(){
+         return new ProfileEvent(this);
+      }
+   }
 }

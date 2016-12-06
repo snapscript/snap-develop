@@ -38,12 +38,14 @@ public class ProcessAgent {
          ConsoleLogger logger = new ConsoleLogger(true);
          SystemValidator validator = new SystemValidator(context);
          ConnectionChecker checker = new ConnectionChecker(process, system);
-         RegisterEvent register = new RegisterEvent(process, system);
          ProcessEventReceiver listener = new ProcessEventReceiver(context, checker);
          ProcessEventTimer timer = new ProcessEventTimer(listener, logger);
          SocketEventClient client = new SocketEventClient(timer, logger);
          ProcessEventChannel channel = client.connect(host, port);
          SuspendInterceptor suspender = new SuspendInterceptor(channel, matcher, controller, process);
+         RegisterEvent register = new RegisterEvent.Builder(process)
+            .withSystem(system)
+            .build();
          
          interceptor.register(profiler);
          interceptor.register(suspender);

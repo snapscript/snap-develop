@@ -4,18 +4,18 @@ import java.util.Map;
 
 public class ExecuteEvent implements ProcessEvent {
 
-   private Map<String, Map<Integer, Boolean>> breakpoints;
-   private ExecuteData data;
-   private String project;
-   private String resource;
-   private String process;
+   private final Map<String, Map<Integer, Boolean>> breakpoints;
+   private final ExecuteData data;
+   private final String project;
+   private final String resource;
+   private final String process;
    
-   public ExecuteEvent(String process, String project, String resource, Map<String, Map<Integer, Boolean>> breakpoints) {
-      this.data = new ExecuteData(process, project, resource);
-      this.breakpoints = breakpoints;
-      this.project = project;
-      this.resource = resource;
-      this.process = process;
+   private ExecuteEvent(Builder builder) {
+      this.data = new ExecuteData(builder.process, builder.project, builder.resource);
+      this.breakpoints = builder.breakpoints;
+      this.project = builder.project;
+      this.resource = builder.resource;
+      this.process = builder.process;
    }
    
    @Override
@@ -37,5 +37,41 @@ public class ExecuteEvent implements ProcessEvent {
    
    public String getProject() {
       return project;
+   }
+   
+   public static class Builder {
+      
+      private Map<String, Map<Integer, Boolean>> breakpoints;
+      private String project;
+      private String resource;
+      private String process;
+      
+      public Builder(String process) {
+         this.process = process;
+      }
+
+      public Builder withBreakpoints(Map<String, Map<Integer, Boolean>> breakpoints) {
+         this.breakpoints = breakpoints;
+         return this;
+      }
+
+      public Builder withProject(String project) {
+         this.project = project;
+         return this;
+      }
+
+      public Builder withResource(String resource) {
+         this.resource = resource;
+         return this;
+      }
+
+      public Builder withProcess(String process) {
+         this.process = process;
+         return this;
+      }
+      
+      public ExecuteEvent build(){
+         return new ExecuteEvent(this);
+      }
    }
 }

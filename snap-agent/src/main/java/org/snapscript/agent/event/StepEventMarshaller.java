@@ -21,7 +21,10 @@ public class StepEventMarshaller implements ProcessEventMarshaller<StepEvent> {
       String thread = input.readUTF();
       int type = input.readInt();
       
-      return new StepEvent(process, thread, type);
+      return new StepEvent.Builder(process)
+         .withThread(thread)
+         .withType(type)
+         .build();
    }
 
    @Override

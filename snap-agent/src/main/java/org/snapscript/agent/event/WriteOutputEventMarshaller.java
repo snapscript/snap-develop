@@ -23,7 +23,11 @@ public class WriteOutputEventMarshaller implements ProcessEventMarshaller<WriteO
       
       input.readFully(chunk, 0, size);
       
-      return new WriteOutputEvent(process, chunk, 0, size);
+      return new WriteOutputEvent.Builder(process)
+         .withData(chunk)
+         .withOffset(0)
+         .withLength(size)
+         .build();
    }
 
    @Override

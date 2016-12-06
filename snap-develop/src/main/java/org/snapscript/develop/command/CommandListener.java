@@ -287,7 +287,9 @@ public class CommandListener {
       
       try {
          if(focus != null) {
-            if(!engine.ping(focus)) {
+            long time = System.currentTimeMillis();
+            
+            if(!engine.ping(focus, time)) {
                client.sendProcessTerminate(focus);
                filter.clear();
             }

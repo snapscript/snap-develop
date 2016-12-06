@@ -13,6 +13,7 @@ public class ProcessEventAdapter implements ProcessEventListener {
    public void onStep(ProcessEventChannel channel, StepEvent event) throws Exception {}
    public void onBrowse(ProcessEventChannel channel, BrowseEvent event) throws Exception {}
    public void onProfile(ProcessEventChannel channel, ProfileEvent event) throws Exception {}
+   public void onEvaluate(ProcessEventChannel channel, EvaluateEvent event) throws Exception {}
    public void onPing(ProcessEventChannel channel, PingEvent event) throws Exception {}
    public void onPong(ProcessEventChannel channel, PongEvent event) throws Exception {}
    public void onClose(ProcessEventChannel channel) throws Exception {}

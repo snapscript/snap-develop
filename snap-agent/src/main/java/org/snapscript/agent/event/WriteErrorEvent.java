@@ -2,16 +2,16 @@ package org.snapscript.agent.event;
 
 public class WriteErrorEvent implements ProcessEvent {
 
-   private String process;
-   private byte[] data;
-   private int offset;
-   private int length;
+   private final String process;
+   private final byte[] data;
+   private final int offset;
+   private final int length;
    
-   public WriteErrorEvent(String process, byte[] data, int offset, int length) {
-      this.offset = offset;
-      this.length = length;
-      this.process = process;
-      this.data = data;
+   public WriteErrorEvent(Builder builder) {
+      this.offset = builder.offset;
+      this.length = builder.length;
+      this.process = builder.process;
+      this.data = builder.data;
    }
    
    @Override
@@ -29,5 +29,43 @@ public class WriteErrorEvent implements ProcessEvent {
    
    public int getOffset() {
       return offset;
+   }
+   
+   public static class Builder {
+      
+      private String process;
+      private byte[] data;
+      private int offset;
+      private int length;
+      
+      public Builder(String process) {
+         this.process = process;
+      }
+
+      public Builder withProcess(String process) {
+         this.process = process;
+         return this;
+      }
+
+      public Builder withData(byte[] data) {
+         this.data = data;
+         return this;
+      }
+
+      public Builder withOffset(int offset) {
+         this.offset = offset;
+         return this;
+      }
+
+      public Builder withLength(int length) {
+         this.length = length;
+         return this;
+      }
+      
+      public WriteErrorEvent build(){
+         return new WriteErrorEvent(this);
+      }
+
+      
    }
 }

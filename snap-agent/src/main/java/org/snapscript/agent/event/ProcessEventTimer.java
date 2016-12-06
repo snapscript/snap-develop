@@ -179,6 +179,21 @@ public class ProcessEventTimer implements ProcessEventListener {
          logger.debug("onProfile(): took " + duration + " ms");
       }
    }
+   
+
+   @Override
+   public void onEvaluate(ProcessEventChannel channel, EvaluateEvent event) throws Exception {
+      long start = System.currentTimeMillis();
+      
+      try {
+         listener.onEvaluate(channel, event);
+      }finally {
+         long finish = System.currentTimeMillis();
+         long duration = finish - start;
+         
+         logger.debug("onEvaluate(): took " + duration + " ms");
+      }
+   }
 
    @Override
    public void onPing(ProcessEventChannel channel, PingEvent event) throws Exception {
@@ -221,5 +236,4 @@ public class ProcessEventTimer implements ProcessEventListener {
          logger.debug("onClose(): took " + duration + " ms");
       }
    }
-
 }

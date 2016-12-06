@@ -20,7 +20,9 @@ public class RegisterEventMarshaller implements ProcessEventMarshaller<RegisterE
       String process = input.readUTF();
       String system = input.readUTF();
       
-      return new RegisterEvent(process, system);
+      return new RegisterEvent.Builder(process)
+         .withSystem(system)
+         .build();
    }
 
    @Override

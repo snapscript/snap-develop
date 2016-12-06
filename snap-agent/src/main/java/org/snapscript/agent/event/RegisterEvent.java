@@ -2,12 +2,12 @@ package org.snapscript.agent.event;
 
 public class RegisterEvent implements ProcessEvent {
 
-   private String process;
-   private String system;
+   private final String process;
+   private final String system;
    
-   public RegisterEvent(String process, String system) {
-      this.process = process;
-      this.system = system;
+   private RegisterEvent(Builder builder) {
+      this.process = builder.process;
+      this.system = builder.system;
    }
    
    @Override
@@ -17,5 +17,29 @@ public class RegisterEvent implements ProcessEvent {
    
    public String getSystem() {
       return system;
+   }
+   
+   public static class Builder {
+      
+      private String process;
+      private String system;
+      
+      public Builder(String process) {
+         this.process = process;
+      }
+
+      public Builder withProcess(String process) {
+         this.process = process;
+         return this;
+      }
+
+      public Builder withSystem(String system) {
+         this.system = system;
+         return this;
+      }
+      
+      public RegisterEvent build(){
+         return new RegisterEvent(this);
+      }
    }
 }

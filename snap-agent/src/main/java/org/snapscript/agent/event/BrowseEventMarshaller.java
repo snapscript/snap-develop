@@ -28,7 +28,10 @@ public class BrowseEventMarshaller implements ProcessEventMarshaller<BrowseEvent
          String path = input.readUTF();
          expand.add(path);
       }
-      return new BrowseEvent(process, thread, expand);
+      return new BrowseEvent.Builder(process)
+         .withThread(thread)
+         .withExpand(expand)
+         .build();
    }
 
    @Override

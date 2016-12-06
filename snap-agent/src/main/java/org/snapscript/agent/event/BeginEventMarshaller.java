@@ -22,7 +22,11 @@ public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> 
       String resource = input.readUTF();
       long duration = input.readLong();
       
-      return new BeginEvent(process, project, resource, duration);
+      return new BeginEvent.Builder(process)
+         .withProject(project)
+         .withResource(resource)
+         .withDuration(duration)
+         .build();
    }
 
    @Override

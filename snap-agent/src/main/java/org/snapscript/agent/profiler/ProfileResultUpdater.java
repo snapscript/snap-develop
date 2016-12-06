@@ -38,7 +38,10 @@ public class ProfileResultUpdater implements Runnable {
          try {
             Thread.sleep(delay);
             Set<ProfileResult> results = profiler.lines(2000);
-            ProfileEvent event = new ProfileEvent(process, results);
+            ProfileEvent event = new ProfileEvent.Builder(process)
+               .withResults(results)
+               .build();
+            
             channel.send(event);
          }catch(Exception e) {
             e.printStackTrace();
@@ -47,6 +50,4 @@ public class ProfileResultUpdater implements Runnable {
          }
       }
    }
-   
-   
 }

@@ -38,7 +38,9 @@ public class ProfileEventMarshaller implements ProcessEventMarshaller<ProfileEve
          result.setTime(time);
          results.add(result);
       }
-      return new ProfileEvent(process, results);
+      return new ProfileEvent.Builder(process)
+         .withResults(results)
+         .build();
    }
 
    @Override

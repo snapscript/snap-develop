@@ -39,7 +39,11 @@ public class ExecuteEventMarshaller implements ProcessEventMarshaller<ExecuteEve
          }
          breakpoints.put(script, locations);
       }
-      return new ExecuteEvent(process, project, resource, breakpoints);
+      return new ExecuteEvent.Builder(process)
+         .withProject(project)
+         .withResource(resource)
+         .withBreakpoints(breakpoints)
+         .build();
    }
 
    @Override

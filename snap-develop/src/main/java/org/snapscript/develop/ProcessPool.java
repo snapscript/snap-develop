@@ -368,6 +368,7 @@ public class ProcessPool {
       private void ping() {
          String host = System.getProperty("os.name");
          Set<String> systems = connections.keySet();
+         long time = System.currentTimeMillis();
          
          try {
             List<ProcessConnection> active = new ArrayList<ProcessConnection>();
@@ -382,7 +383,7 @@ public class ProcessPool {
                   if(connection == null) {
                      break;
                   }
-                  if(connection.ping()) {
+                  if(connection.ping(time)) {
                      active.add(connection);
                   }
                }
@@ -407,7 +408,7 @@ public class ProcessPool {
                if(connection == null) {
                   break;
                }
-               if(connection.ping()) {
+               if(connection.ping(time)) {
                   active.add(connection);
                }
             }

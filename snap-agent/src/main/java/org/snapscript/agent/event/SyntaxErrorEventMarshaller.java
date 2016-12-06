@@ -22,7 +22,11 @@ public class SyntaxErrorEventMarshaller implements ProcessEventMarshaller<Syntax
       String description = input.readUTF();
       int line = input.readInt();
       
-      return new SyntaxErrorEvent(process, resource, description, line);
+      return new SyntaxErrorEvent.Builder(process)
+         .withResource(resource)
+         .withDescription(description)
+         .withLine(line)
+         .build();
    }
 
    @Override

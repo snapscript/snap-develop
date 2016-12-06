@@ -2,22 +2,18 @@ package org.snapscript.agent.event;
 
 public class PongEvent implements ProcessEvent {
 
-   private String project;
-   private String process;
-   private String resource;
-   private String system;
-   private boolean running;
-   
-   public PongEvent(String process, String system) {
-      this(process, system, null, null, false);
-   }
-   
-   public PongEvent(String process, String system, String project, String resource, boolean running) {
-      this.resource = resource;
-      this.process = process;
-      this.running = running;
-      this.project = project;
-      this.system = system;
+   private final String project;
+   private final String process;
+   private final String resource;
+   private final String system;
+   private final boolean running;
+
+   public PongEvent(Builder builder) {
+      this.resource = builder.resource;
+      this.process = builder.process;
+      this.running = builder.running;
+      this.project = builder.project;
+      this.system = builder.system;
    }
    
    @Override
@@ -39,5 +35,47 @@ public class PongEvent implements ProcessEvent {
    
    public boolean isRunning() {
       return running;
+   }
+   
+   public static class Builder {
+      
+      private String project;
+      private String process;
+      private String resource;
+      private String system;
+      private boolean running;
+   
+      public Builder(String process) {
+         this.process = process;
+      }
+
+      public Builder withProject(String project) {
+         this.project = project;
+         return this;
+      }
+
+      public Builder withProcess(String process) {
+         this.process = process;
+         return this;
+      }
+
+      public Builder withResource(String resource) {
+         this.resource = resource;
+         return this;
+      }
+
+      public Builder withSystem(String system) {
+         this.system = system;
+         return this;
+      }
+
+      public Builder withRunning(boolean running) {
+         this.running = running;
+         return this;
+      }
+      
+      public PongEvent build() {
+         return new PongEvent(this);
+      }
    }
 }

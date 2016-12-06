@@ -37,11 +37,21 @@ public class ProcessEventStream extends OutputStream {
    public void write(byte[] octets, int offset, int length) throws IOException {
       try {
          if(type == ProcessEventType.WRITE_ERROR) {
-            WriteErrorEvent event = new WriteErrorEvent(process, octets, offset, length);
+            WriteErrorEvent event = new WriteErrorEvent.Builder(process)
+               .withData(octets)
+               .withOffset(offset)
+               .withLength(length)
+               .build();
+
             channel.send(event);
             stream.write(octets, offset, length);
          } else {
-            WriteOutputEvent event = new WriteOutputEvent(process, octets, offset, length);
+            WriteOutputEvent event = new WriteOutputEvent.Builder(process)
+               .withData(octets)
+               .withOffset(offset)
+               .withLength(length)
+               .build();
+            
             channel.send(event);
             stream.write(octets, offset, length);
          }

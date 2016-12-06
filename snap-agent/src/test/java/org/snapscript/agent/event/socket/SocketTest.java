@@ -39,7 +39,9 @@ public class SocketTest extends TestCase {
       @Override
       public void onRegister(ProcessEventChannel channel, RegisterEvent event) throws Exception  {
          System.err.println("REGISTER: process=" + event.getProcess() + " name="+name);
-         channel.send(new ExitEvent("exit["+name+"]="+event.getProcess(), 0L));
+         channel.send(new ExitEvent.Builder("exit["+name+"]="+event.getProcess())
+            .withDuration(0L)
+            .build());
       }
       
       @Override
@@ -57,7 +59,9 @@ public class SocketTest extends TestCase {
       ProcessEventChannel channel = client.connect("localhost", 3344);
       
       for(int i = 0; i < 100; i++) {
-         channel.send(new RegisterEvent("blah-" + i, System.getProperty("os.name")));
+         channel.send(new RegisterEvent.Builder("blah-" + i)
+            .withSystem(System.getProperty("os.name"))
+            .build());
       }
       ProcessEventStream stream = new ProcessEventStream(ProcessEventType.WRITE_ERROR, channel, System.err, "XXX");
       PrintStream printer = new PrintStream(stream, true, "UTF-8");

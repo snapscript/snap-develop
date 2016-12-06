@@ -37,7 +37,9 @@ public class BreakpointsEventMarshaller implements ProcessEventMarshaller<Breakp
          }
          breakpoints.put(script, locations);
       }
-      return new BreakpointsEvent(process, breakpoints);
+      return new BreakpointsEvent.Builder(process)
+         .withBreakpoints(breakpoints)
+         .build();
    }
 
    @Override

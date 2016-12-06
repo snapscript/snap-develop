@@ -110,11 +110,11 @@ public class ProcessManager {
       return true;
    }
    
-   public boolean ping(String process) {
+   public boolean ping(String process, long time) {
       ProcessConnection connection = connections.get(process);
       
       if(connection != null) {
-         return connection.ping();
+         return connection.ping(time);
       }
       return false;
    }

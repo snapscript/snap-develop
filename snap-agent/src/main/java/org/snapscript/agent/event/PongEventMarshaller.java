@@ -24,9 +24,17 @@ public class PongEventMarshaller implements ProcessEventMarshaller<PongEvent> {
          String project = input.readUTF();
          String resource = input.readUTF();
          
-         return new PongEvent(process, system, project, resource, true);
+         return new PongEvent.Builder(process)
+            .withSystem(system)
+            .withProject(project)
+            .withResource(resource)
+            .withRunning(true)
+            .build();
       }
-      return new PongEvent(process, system);
+      return new PongEvent.Builder(process)
+         .withSystem(system)
+         .withRunning(false)
+         .build();
    }
 
    @Override

@@ -2,15 +2,16 @@ package org.snapscript.agent.event;
 
 public class SyntaxErrorEvent implements ProcessEvent {
 
-   private String description;
-   private String resource;
-   private String process;
-   private int line;
+   private final String description;
+   private final String resource;
+   private final String process;
+   private final int line;
    
-   public SyntaxErrorEvent(String process, String resource, String description, int line) {
-      this.process = process;
-      this.resource = resource;
-      this.line = line;
+   private SyntaxErrorEvent(Builder builder) {
+      this.description = builder.description;
+      this.process = builder.process;
+      this.resource = builder.resource;
+      this.line = builder.line;
    }
    
    @Override
@@ -28,5 +29,43 @@ public class SyntaxErrorEvent implements ProcessEvent {
 
    public int getLine() {
       return line;
+   }
+   
+   public static class Builder {
+      
+      private String description;
+      private String resource;
+      private String process;
+      private int line;
+      
+      public Builder(String process) {
+         this.process = process;
+      }
+
+      public Builder withDescription(String description) {
+         this.description = description;
+         return this;
+      }
+
+      public Builder withResource(String resource) {
+         this.resource = resource;
+         return this;
+      }
+
+      public Builder withProcess(String process) {
+         this.process = process;
+         return this;
+      }
+
+      public Builder withLine(int line) {
+         this.line = line;
+         return this;
+      }
+      
+      public SyntaxErrorEvent build(){
+         return new SyntaxErrorEvent(this);
+      }
+      
+      
    }
 }

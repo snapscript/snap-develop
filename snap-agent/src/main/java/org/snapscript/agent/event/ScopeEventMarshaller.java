@@ -51,7 +51,18 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
          }
          variables.put(name, criteria);
       }
-      return new ScopeEvent(process, tree, thread, stack, instruction, status, resource, line, depth, sequence);
+      return new ScopeEvent.Builder(process)
+         .withVariables(tree)
+         .withThread(thread)
+         .withStack(stack)
+         .withInstruction(instruction)
+         .withStatus(status)
+         .withResource(resource)
+         .withLine(line)
+         .withDepth(depth)
+         .withKey(sequence)
+         .build();
+      
    }
 
    @Override

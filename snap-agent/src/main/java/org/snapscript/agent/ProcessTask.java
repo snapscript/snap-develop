@@ -39,8 +39,13 @@ public class ProcessTask implements Runnable {
          ResourceCompiler compiler = context.getCompiler();
          Executable executable = compiler.compile(resource);
          long middle = System.nanoTime();
-         BeginEvent event = new BeginEvent(process, project, resource, TimeUnit.NANOSECONDS.toMillis(middle-start));
          ProfileResultUpdater updater = new ProfileResultUpdater(profiler, client);
+         BeginEvent event = new BeginEvent.Builder(process)
+            .withProject(project)
+            .withResource(resource)
+            .withDuration(TimeUnit.NANOSECONDS.toMillis(middle-start))
+            .build();
+         
          client.send(event);
          
          try {
@@ -59,12 +64,20 @@ public class ProcessTask implements Runnable {
                SortedSet<ProfileResult> lines = profiler.lines(200);
                System.err.flush();
                System.out.flush();
-               ProfileEvent profileEvent = new ProfileEvent(process, lines);
+               
+               ProfileEvent profileEvent = new ProfileEvent.Builder(process)
+                  .withResults(lines)
+                  .build();
+               
                client.send(profileEvent);
                Thread.sleep(2000);
                System.err.close();
                System.out.close();
-               ExitEvent exitEvent = new ExitEvent(process, TimeUnit.NANOSECONDS.toMillis(stop-middle));
+               
+               ExitEvent exitEvent = new ExitEvent.Builder(process)
+                  .withDuration(TimeUnit.NANOSECONDS.toMillis(stop-middle))
+                  .build();
+               
                client.send(exitEvent);
             } catch(Exception e) {
                e.printStackTrace();
