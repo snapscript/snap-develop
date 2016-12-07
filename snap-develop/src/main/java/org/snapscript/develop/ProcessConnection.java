@@ -6,6 +6,7 @@ import java.util.Set;
 import org.snapscript.agent.ConsoleLogger;
 import org.snapscript.agent.event.BreakpointsEvent;
 import org.snapscript.agent.event.BrowseEvent;
+import org.snapscript.agent.event.EvaluateEvent;
 import org.snapscript.agent.event.ExecuteEvent;
 import org.snapscript.agent.event.PingEvent;
 import org.snapscript.agent.event.ProcessEventChannel;
@@ -65,6 +66,22 @@ public class ProcessConnection {
          logger.log(process + ": Error occured sending browse event", e);
          close();
          throw new IllegalStateException("Could not browse '" + thread + "' for '" + process + "'", e);
+      }
+   }
+   
+   public boolean evaluate(String thread, String expression, Set<String> expand) {
+      try {
+         EvaluateEvent event = new EvaluateEvent.Builder(process)
+            .withThread(thread)
+            .withExpression(expression)
+            .withExpand(expand)
+            .build();
+         
+         return channel.send(event);
+      } catch (Exception e) {
+         logger.log(process + ": Error occured sending evaluate event", e);
+         close();
+         throw new IllegalStateException("Could not evaluate '" + expression + "' on '" + thread + "' for '" + process + "'", e);
       }
    }
    

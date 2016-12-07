@@ -53,6 +53,9 @@ function newFileTreeDialog(resourceDetails, foldersOnly, saveCallback) {
 function newDirectoryTreeDialog(resourceDetails, foldersOnly, saveCallback) {
     createProjectDialog(resourceDetails, foldersOnly, saveCallback, "New Directory");
 }
+function evaluateExpressionDialog() {
+    createGridDialog(function (x) { return []; }, "Evaluate Expression");
+}
 function createProjectDialog(resourceDetails, foldersOnly, saveCallback, dialogTitle) {
     createTreeDialog(resourceDetails, foldersOnly, saveCallback, dialogTitle, "/" + document.title);
 }
@@ -252,6 +255,87 @@ function createListDialog(listFunction, dialogTitle) {
         w2popup.close();
     });
     $("#dialogCancel").click(function () {
+        w2popup.close();
+    });
+}
+function createGridDialog(listFunction, dialogTitle) {
+    w2popup.open({
+        title: dialogTitle,
+        body: '<div id="dialogContainerBig">' +
+            '   <div id="dialog"></div>' +
+            '</div>' +
+            '<div id="dialogPath" onkeydown="return submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>',
+        buttons: '<button id="dialogEvaluate" class="btn">Evaluate</button>',
+        width: 700,
+        height: 400,
+        overflow: 'hidden',
+        color: '#333',
+        speed: '0.0',
+        opacity: '0.0',
+        modal: false,
+        showClose: true,
+        showMax: true,
+        onOpen: function (event) {
+            setTimeout(function () {
+                $('#dialog').w2grid({
+                    recordTitles: false,
+                    name: 'evaluation',
+                    columns: [{
+                            field: 'name',
+                            caption: 'Name',
+                            size: '40%',
+                            sortable: false
+                        }, {
+                            field: 'value',
+                            caption: 'Value',
+                            size: '30%',
+                            sortable: false
+                        }, {
+                            field: 'type',
+                            caption: 'Type',
+                            size: '30%'
+                        }],
+                    onClick: function (event) {
+                        var grid = this;
+                        event.onComplete = function () {
+                            var sel = grid.getSelection();
+                            if (sel.length == 1) {
+                                var record = grid.get(sel[0]);
+                                toggleExpandEvaluation(record.path, "THE EXPRESSION");
+                            }
+                            grid.selectNone();
+                            grid.refresh();
+                        };
+                    }
+                });
+                setTimeout(function () {
+                    showVariables();
+                }, 200);
+            }, 200);
+        },
+        onClose: function (event) {
+            w2ui['evaluation'].destroy(); // destroy grid so you can recreate it
+            //$("#dialog").remove(); // delete the element
+            clearEvaluation();
+        },
+        onMax: function (event) {
+            event.onComplete = function () {
+                w2ui['evaluation'].refresh(); // resize
+            };
+        },
+        onMin: function (event) {
+            event.onComplete = function () {
+                w2ui['evaluation'].refresh(); // resize
+            };
+        },
+        onKeydown: function (event) {
+            console.log('keydown');
+        }
+    });
+    $("#dialogSave").click(function () {
+        w2popup.close();
+    });
+    $("#dialogEvaluate").click(function () {
         w2popup.close();
     });
 }

@@ -9,6 +9,7 @@ import org.snapscript.agent.debug.ResumeType;
 import org.snapscript.agent.debug.SuspendController;
 import org.snapscript.agent.event.BreakpointsEvent;
 import org.snapscript.agent.event.BrowseEvent;
+import org.snapscript.agent.event.EvaluateEvent;
 import org.snapscript.agent.event.ExecuteData;
 import org.snapscript.agent.event.ExecuteEvent;
 import org.snapscript.agent.event.PingEvent;
@@ -83,6 +84,16 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
       Set<String> expand = event.getExpand();
       
       controller.browse(expand, thread);
+   }
+   
+   @Override
+   public void onEvaluate(ProcessEventChannel channel, EvaluateEvent event) throws Exception {
+      SuspendController controller = context.getController();
+      String thread = event.getThread();
+      String expression = event.getExpression();
+      Set<String> expand = event.getExpand();
+      
+      controller.evaluate(expand, thread, expression);
    }
 
    @Override

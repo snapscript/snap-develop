@@ -17,6 +17,10 @@ function changeEditorTheme(){
    }
 }
 
+function evaluateExpression() {
+   evaluateExpressionDialog();
+}
+
 function toggleFullScreen() {
    var perspective = determineProjectLayout();
 
@@ -523,6 +527,7 @@ function createTopMenuBar(){
                         + "         <td><div id='stepInScript' onclick='stepInScript()' title='Step In'></div></td>" 
                         + "         <td><div id='stepOutScript' onclick='stepOutScript()' title='Step Out'></div></td>" 
                         + "         <td><div id='stepOverScript' onclick='stepOverScript()' title='Step Over'></div></td>" 
+                        + "         <td><div id='evaluateExpression' onclick='evaluateExpression()' title='Evaluate Expression'></div></td>"                         
                         + "      </tr>"
                         + "      </table>"
                         + "   </td>"

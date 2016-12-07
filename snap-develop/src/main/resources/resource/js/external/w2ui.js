@@ -4965,7 +4965,9 @@ w2utils.keyboard = (function (obj) {
             var eventData = this.trigger({ phase: 'before', target: this.name, type: 'destroy' });
             if (eventData.isCancelled === true) return;
             // remove events
-            $(window).off('resize', this.tmp_resize);
+            if (this.tmp_resize) { // niall https://github.com/vitmalina/w2ui/issues/659
+               $(window).off('resize', this.tmp_resize);
+            }
             // clean up
             if (typeof this.toolbar == 'object' && this.toolbar.destroy) this.toolbar.destroy();
             if ($(this.box).find('#grid_'+ this.name +'_body').length > 0) {

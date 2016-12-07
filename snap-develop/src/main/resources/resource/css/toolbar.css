@@ -58,6 +58,12 @@
 	background-repeat: no-repeat;
     padding: 12px; 
 }
+#evaluateExpression {
+	background-image: url('/img/toolbar/watchlist_view.gif');	
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px; 
+}
 .toolbarTop {
 	padding: 8px;
 	height: 45px;

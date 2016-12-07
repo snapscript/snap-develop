@@ -4,7 +4,9 @@ import static org.snapscript.agent.event.ProcessEventType.SCOPE;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInput;
 import java.io.DataInputStream;
+import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,6 +17,12 @@ import java.util.TreeMap;
 import org.snapscript.agent.debug.ScopeVariableTree;
 
 public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> {
+   
+   private final ScopeMapMarshaller marshaller;
+   
+   public ScopeEventMarshaller() {
+      this.marshaller = new ScopeMapMarshaller();
+   }
 
    @Override
    public ScopeEvent fromMessage(MessageEnvelope message) throws IOException {
@@ -33,42 +41,14 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       int depth = input.readInt();
       int sequence = input.readInt();
       int change = input.readInt();
-      int evaluationCount = input.readInt();
-      int localCount = input.readInt();
-
-      Map<String, Map<String, String>> local = new TreeMap<String, Map<String, String>>();
-      Map<String, Map<String, String>> evaluation = new TreeMap<String, Map<String, String>>();
+      Map<String, Map<String, String>> local = marshaller.readMap(input);
+      Map<String, Map<String, String>> evaluation = marshaller.readMap(input);
+      
       ScopeVariableTree tree = new ScopeVariableTree.Builder(change)
          .withLocal(local)
          .withEvaluation(evaluation)
          .build();
-      
-      for(int i = 0; i < localCount; i++) {
-         Map<String, String> criteria = new HashMap<String, String>();
-         String name = input.readUTF();
-         int size = input.readInt();
-         
-         for(int j = 0; j < size; j++) {
-            String key = input.readUTF();
-            String value = input.readUTF();
-            
-            criteria.put(key, value);
-         }
-         local.put(name, criteria);
-      }
-      for(int i = 0; i < evaluationCount; i++) {
-         Map<String, String> criteria = new HashMap<String, String>();
-         String name = input.readUTF();
-         int size = input.readInt();
-         
-         for(int j = 0; j < size; j++) {
-            String key = input.readUTF();
-            String value = input.readUTF();
-            
-            criteria.put(key, value);
-         }
-         evaluation.put(name, criteria);
-      }
+     
       return new ScopeEvent.Builder(process)
          .withVariables(tree)
          .withThread(thread)
@@ -90,8 +70,6 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       ScopeVariableTree tree = event.getVariables();
       Map<String, Map<String, String>> local = tree.getLocal();
       Map<String, Map<String, String>> evaluation = tree.getEvaluation();
-      Set<String> evaluationNames = evaluation.keySet();
-      Set<String> localNames = local.keySet();
       String process = event.getProcess();
       String thread = event.getThread();
       String stack = event.getStack();
@@ -102,8 +80,6 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       int sequence = event.getKey();
       int line = event.getLine();
       int depth = event.getDepth();
-      int localCount = local.size();
-      int evaluationCount = evaluation.size();
       
       output.writeUTF(process);
       output.writeUTF(thread);
@@ -115,42 +91,57 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       output.writeInt(depth);
       output.writeInt(sequence);
       output.writeInt(change);
-      output.writeInt(localCount);
-      output.writeInt(evaluationCount);
-      
-      for(String name : localNames) {
-         Map<String, String> criteria = local.get(name);
-         Set<String> keys = criteria.keySet();
-         int size = criteria.size();
-         
-         output.writeUTF(name);
-         output.writeInt(size);
-         
-         for(String key : keys) {
-            String value = criteria.get(key);
-            
-            output.writeUTF(key);
-            output.writeUTF(value);
-         }
-      }
-      for(String name : evaluationNames) {
-         Map<String, String> criteria = evaluation.get(name);
-         Set<String> keys = criteria.keySet();
-         int size = criteria.size();
-         
-         output.writeUTF(name);
-         output.writeInt(size);
-         
-         for(String key : keys) {
-            String value = criteria.get(key);
-            
-            output.writeUTF(key);
-            output.writeUTF(value);
-         }
-      }
+      marshaller.writeMap(output, local);
+      marshaller.writeMap(output, evaluation);
       output.flush();
       
       byte[] array = buffer.toByteArray();
       return new MessageEnvelope(process, SCOPE.code, array, 0, array.length);
+   }
+   
+   private static class ScopeMapMarshaller {
+      
+      public Map<String, Map<String, String>> readMap(DataInput input) throws IOException {
+         Map<String, Map<String, String>> map = new TreeMap<String, Map<String, String>>();
+         int count = input.readInt();
+         
+         for(int i = 0; i < count; i++) {
+            Map<String, String> criteria = new HashMap<String, String>();
+            String name = input.readUTF();
+            int size = input.readInt();
+            
+            for(int j = 0; j < size; j++) {
+               String key = input.readUTF();
+               String value = input.readUTF();
+               
+               criteria.put(key, value);
+            }
+            map.put(name, criteria);
+         }
+         return map;
+      }
+      
+      public void writeMap(DataOutput output, Map<String, Map<String, String>> map) throws IOException {
+         Set<String> names = map.keySet();
+         int count = map.size();
+         
+         output.writeInt(count);
+         
+         for(String name : names) {
+            Map<String, String> criteria = map.get(name);
+            Set<String> keys = criteria.keySet();
+            int size = criteria.size();
+            
+            output.writeUTF(name);
+            output.writeInt(size);
+            
+            for(String key : keys) {
+               String value = criteria.get(key);
+               
+               output.writeUTF(key);
+               output.writeUTF(value);
+            }
+         }
+      }
    }
 }

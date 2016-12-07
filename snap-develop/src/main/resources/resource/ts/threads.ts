@@ -198,6 +198,17 @@ function focusedThreadVariables() {
    return {};
 }
 
+function focusedThreadEvaluation() {
+   if(threadEditorFocus.thread != null) {
+      var threadScope = suspendedThreads[threadEditorFocus.thread];
+      
+      if(threadScope != null) {
+         return threadScope.evaluation;
+      }
+   }
+   return {};
+}
+
 function showThreads() {
    var editorData = loadEditor();
    var threadRecords = [];

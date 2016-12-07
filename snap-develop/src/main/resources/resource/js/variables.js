@@ -1,4 +1,5 @@
 var threadVariables = {};
+var threadEvaluation = {};
 function toggleExpandVariable(name) {
     var threadScope = focusedThread();
     var expandPath = name + ".*"; // this ensures they sort in sequence with '.' notation, e.g blah.foo.*
@@ -29,8 +30,43 @@ function toggleExpandVariable(name) {
         browseScriptVariables(variablesPaths);
     }
 }
+function toggleExpandEvaluation(name, expression) {
+    var threadScope = focusedThread();
+    var expandPath = name + ".*"; // this ensures they sort in sequence with '.' notation, e.g blah.foo.*
+    var removePrefix = name + ".";
+    if (threadScope != null) {
+        var variablesPaths = threadEvaluation[threadScope.thread];
+        if (variablesPaths == null) {
+            variablesPaths = [];
+            threadEvaluation[threadScope.thread] = variablesPaths;
+        }
+        var removePaths = [];
+        for (var i = 0; i < variablesPaths.length; i++) {
+            var currentPath = variablesPaths[i];
+            if (currentPath.startsWith(removePrefix)) {
+                removePaths.push(currentPath); // remove variable
+            }
+        }
+        for (var i = 0; i < removePaths.length; i++) {
+            var removePath = removePaths[i];
+            var removeIndex = variablesPaths.indexOf(removePath);
+            if (removeIndex != -1) {
+                variablesPaths.splice(removeIndex, 1); // remove variable
+            }
+        }
+        if (removePaths.length == 0) {
+            variablesPaths.push(expandPath); // add variable
+        }
+        browseScriptEvaluation(variablesPaths, expression);
+    }
+}
 function showVariables() {
-    var threadVariables = focusedThreadVariables();
+    var localVariables = focusedThreadVariables();
+    var evaluationVariables = focusedThreadEvaluation();
+    showVariablesGrid(localVariables, 'variables');
+    showVariablesGrid(evaluationVariables, 'evaluation');
+}
+function showVariablesGrid(threadVariables, gridName) {
     var sortedNames = [];
     var variableRecords = [];
     var variableIndex = 1;
@@ -62,8 +98,16 @@ function showVariables() {
             expandable: variableExpandable == "true"
         });
     }
-    w2ui['variables'].records = variableRecords;
-    w2ui['variables'].refresh();
+    var variableGrid = w2ui[gridName];
+    if (variableGrid != null) {
+        variableGrid.records = variableRecords;
+        variableGrid.refresh();
+    }
+}
+function clearEvaluation() {
+    threadEvaluation = {};
+    //   w2ui['evaluation'].records = [];
+    //   w2ui['evaluation'].refresh();
 }
 function clearVariables() {
     threadVariables = {};

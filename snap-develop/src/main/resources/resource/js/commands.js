@@ -271,6 +271,17 @@ function browseScriptVariables(variables) {
         socket.send("BROWSE:" + message);
     }
 }
+function browseScriptEvaluation(variables, expression) {
+    var threadScope = focusedThread();
+    if (threadScope != null) {
+        var message = JSON.stringify({
+            thread: threadScope.thread,
+            expression: expression,
+            expand: variables
+        });
+        socket.send("EVALUATE:" + message);
+    }
+}
 function attachProcess(process) {
     var statusFocus = currentStatusFocus(); // what is the current focus
     var editorData = loadEditor();

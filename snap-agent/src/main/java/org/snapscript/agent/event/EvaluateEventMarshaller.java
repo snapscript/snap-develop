@@ -7,6 +7,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class EvaluateEventMarshaller implements ProcessEventMarshaller<EvaluateEvent> {
 
@@ -15,13 +17,22 @@ public class EvaluateEventMarshaller implements ProcessEventMarshaller<EvaluateE
       byte[] array = message.getData();
       int length = message.getLength();
       int offset = message.getOffset();
+      Set<String> expand = new HashSet<String>();
       ByteArrayInputStream buffer = new ByteArrayInputStream(array, offset, length);
       DataInputStream input = new DataInputStream(buffer);
       String process = input.readUTF();
       String expression = input.readUTF();
-
+      String thread = input.readUTF();
+      int count = input.readInt();
+      
+      for(int i = 0; i < count; i++) {
+         String path = input.readUTF();
+         expand.add(path);
+      }
       return new EvaluateEvent.Builder(process)
          .withExpression(expression)
+         .withThread(thread)
+         .withExpand(expand)
          .build();
    }
 
@@ -29,11 +40,20 @@ public class EvaluateEventMarshaller implements ProcessEventMarshaller<EvaluateE
    public MessageEnvelope toMessage(EvaluateEvent event) throws IOException {
       ByteArrayOutputStream buffer = new ByteArrayOutputStream();
       DataOutputStream output = new DataOutputStream(buffer);
+      Set<String> expand = event.getExpand();
       String expression = event.getExpression();
       String process = event.getProcess();
+      String thread = event.getThread();
+      int count = expand.size();
       
       output.writeUTF(process);
       output.writeUTF(expression);
+      output.writeUTF(thread);
+      output.writeInt(count);
+      
+      for(String name : expand) {
+         output.writeUTF(name);
+      }
       output.flush();
       
       byte[] array = buffer.toByteArray();

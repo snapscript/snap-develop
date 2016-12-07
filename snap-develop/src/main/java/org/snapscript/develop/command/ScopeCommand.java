@@ -4,6 +4,7 @@ import java.util.Map;
 
 public class ScopeCommand implements Command {
    
+   private Map<String, Map<String, String>> evaluation;
    private Map<String, Map<String, String>> variables;
    private String process;
    private String instruction;
@@ -20,10 +21,11 @@ public class ScopeCommand implements Command {
       super();
    }
 
-   public ScopeCommand(String process, Map<String, Map<String, String>> variables, String thread, String stack, String instruction, String status, String resource, int line, int depth, int key, int change) {
+   public ScopeCommand(String process, Map<String, Map<String, String>> variables, Map<String, Map<String, String>> evaluation, String thread, String stack, String instruction, String status, String resource, int line, int depth, int key, int change) {
       this.process = process;
       this.variables = variables;
       this.instruction = instruction;
+      this.evaluation = evaluation;
       this.change = change;
       this.thread = thread;
       this.resource = resource;
@@ -42,6 +44,14 @@ public class ScopeCommand implements Command {
       this.variables = variables;
    }
 
+   public Map<String, Map<String, String>> getEvaluation() {
+      return evaluation;
+   }
+
+   public void setEvaluation(Map<String, Map<String, String>> evaluation) {
+      this.evaluation = evaluation;
+   }
+   
    public String getProcess() {
       return process;
    }

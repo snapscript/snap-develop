@@ -198,6 +198,8 @@ public class SocketEventServer implements ProcessEventChannel {
                   listener.onStep(this, (StepEvent)event);
                } else if(event instanceof BrowseEvent) {
                   listener.onBrowse(this, (BrowseEvent)event);
+               } else if(event instanceof EvaluateEvent) {
+                  listener.onEvaluate(this, (EvaluateEvent)event);                  
                } else if(event instanceof ProfileEvent) {
                   listener.onProfile(this, (ProfileEvent)event);
                } else if(event instanceof EvaluateEvent) {

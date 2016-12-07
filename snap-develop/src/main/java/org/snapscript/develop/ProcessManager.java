@@ -10,6 +10,7 @@ import org.snapscript.agent.event.ProcessEventListener;
 import org.snapscript.agent.event.StepEvent;
 import org.snapscript.develop.command.BreakpointsCommand;
 import org.snapscript.develop.command.BrowseCommand;
+import org.snapscript.develop.command.EvaluateCommand;
 import org.snapscript.develop.command.ExecuteCommand;
 import org.snapscript.develop.command.StepCommand;
 import org.snapscript.develop.configuration.ProcessConfiguration;
@@ -78,6 +79,18 @@ public class ProcessManager {
          Set<String> expand = command.getExpand();
          String thread = command.getThread();
          return connection.browse(thread, expand);
+      }
+      return true;
+   }
+   
+   public boolean evaluate(EvaluateCommand command, String process) {
+      ProcessConnection connection = connections.get(process);
+      
+      if(connection != null) {
+         Set<String> expand = command.getExpand();
+         String expression = command.getExpression();
+         String thread = command.getThread();
+         return connection.evaluate(thread, expression, expand);
       }
       return true;
    }

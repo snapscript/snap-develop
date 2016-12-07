@@ -268,6 +268,18 @@ public class CommandListener {
       }
    }
    
+   public void onEvaluate(EvaluateCommand command) {
+      String focus = filter.get();
+      
+      try {
+         if(focus != null) {
+            engine.evaluate(command, focus);
+         }
+      } catch(Exception e) {
+         logger.log("Error browsing variables for process " + focus, e);
+      }
+   }
+   
    public void onStop(StopCommand command) {
       String focus = filter.get();
       

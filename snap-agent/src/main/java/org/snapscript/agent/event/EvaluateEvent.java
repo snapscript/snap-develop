@@ -1,13 +1,17 @@
 package org.snapscript.agent.event;
 
+import java.util.Set;
+
 public class EvaluateEvent implements ProcessEvent {
 
+   private final Set<String> expand;
    private final String expression;
    private final String process;
    private final String thread;
    
    private EvaluateEvent(Builder builder) {
       this.expression = builder.expression;
+      this.expand = builder.expand;
       this.process = builder.process;
       this.thread = builder.thread;
    }
@@ -17,6 +21,10 @@ public class EvaluateEvent implements ProcessEvent {
       return process;
    }
    
+   public Set<String> getExpand() {
+      return expand;
+   }
+
    public String getExpression() {
       return expression;
    }
@@ -27,6 +35,7 @@ public class EvaluateEvent implements ProcessEvent {
 
    public static class Builder {
       
+      private Set<String> expand;
       private String expression;
       private String process;
       private String thread;
@@ -35,6 +44,11 @@ public class EvaluateEvent implements ProcessEvent {
          this.process = process;
       }
 
+      public Builder withExpand(Set<String> expand) {
+         this.expand = expand;
+         return this;
+      }
+      
       public Builder withThread(String thread) {
          this.thread = thread;
          return this;

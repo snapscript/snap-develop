@@ -25,7 +25,8 @@ public enum CommandType {
    PROFILE(ProfileCommandMarshaller.class, ProfileCommand.class, PROCESS),
    STATUS(StatusCommandMarshaller.class, StatusCommand.class, PROCESS),
    ATTACH(AttachCommandMarshaller.class, AttachCommand.class, CLIENT),
-   ALERT(AlertCommandMarshaller.class, AlertCommand.class, ENGINE);
+   ALERT(AlertCommandMarshaller.class, AlertCommand.class, ENGINE),
+   EVALUATE(EvaluateCommandMarshaller.class, EvaluateCommand.class, CLIENT);
    
    public final Class<? extends CommandMarshaller> marshaller;
    public final Class<? extends Command> command;
