@@ -317,6 +317,7 @@ function createGridDialog(listFunction, dialogTitle) {
             w2ui['evaluation'].destroy(); // destroy grid so you can recreate it
             //$("#dialog").remove(); // delete the element
             clearEvaluation();
+            browseScriptEvaluation([], "THE EXPRESSION"); // clear the variables
         },
         onMax: function (event) {
             event.onComplete = function () {
