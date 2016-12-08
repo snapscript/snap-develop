@@ -90,7 +90,8 @@ public class ProcessManager {
          Set<String> expand = command.getExpand();
          String expression = command.getExpression();
          String thread = command.getThread();
-         return connection.evaluate(thread, expression, expand);
+         boolean refresh = command.isRefresh();
+         return connection.evaluate(thread, expression, refresh, expand);
       }
       return true;
    }

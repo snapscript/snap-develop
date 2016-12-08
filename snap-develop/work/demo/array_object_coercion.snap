@@ -6,6 +6,10 @@ class Score with Comparable {
    compareTo(other){
       return Double.compare(score, other.score);
    }
+   test(){
+      println("score=${this}");
+      return this;
+   }
    toString(){
       return "${score}";
    }

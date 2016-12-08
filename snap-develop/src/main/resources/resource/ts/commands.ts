@@ -304,13 +304,14 @@ function browseScriptVariables(variables) {
    }
 }
 
-function browseScriptEvaluation(variables, expression) {
+function browseScriptEvaluation(variables, expression, refresh) {
    var threadScope = focusedThread();
    if (threadScope != null) {
        var message = JSON.stringify({
            thread: threadScope.thread,
            expression: expression,
-           expand: variables
+           expand: variables,
+           refresh: refresh
        });
        socket.send("EVALUATE:" + message);
    }

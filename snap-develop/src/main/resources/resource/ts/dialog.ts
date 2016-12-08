@@ -339,7 +339,7 @@ function createGridDialog(listFunction, dialogTitle) { // listFunction(token): [
          w2ui['evaluation'].destroy(); // destroy grid so you can recreate it
          //$("#dialog").remove(); // delete the element
          clearEvaluation();
-         browseScriptEvaluation([], ""); // clear the variables
+         browseScriptEvaluation([], "", true); // clear the variables
       },
       onMax : function(event) {
          event.onComplete = function() {
@@ -359,7 +359,7 @@ function createGridDialog(listFunction, dialogTitle) { // listFunction(token): [
       var text = $("#dialogPath").html();
       var expression = text.replace("<br>", "");
       
-      browseScriptEvaluation([], expression); // clear the variables
+      browseScriptEvaluation([], expression, true); // clear the variables
    });
 }
 

@@ -9,6 +9,8 @@ import org.snapscript.core.ExpressionEvaluator;
 import org.snapscript.core.Scope;
 
 public class ExpressionProcessor {
+   
+   private static final Object NULL_VALUE = new Object();
 
    private final Map<String, Object> results; // holds only one expression
    private final Context context;
@@ -21,29 +23,55 @@ public class ExpressionProcessor {
    }
    
    public Object evaluate(String expression) {
-      if(expression == null) {
+      return evaluate(expression, false);
+   }
+   
+   public Object evaluate(String expression, boolean refresh) {
+      if(refresh) {
          results.clear();
-         return null;
       }
-      int length = expression.length();
-      
-      if(length == 0) {
+      if(!accept(expression)) {
          results.clear();
          return null;
       }
       if(!results.containsKey(expression)) { // only evaluate once
-         results.clear(); // clear all expression when changed
+         Object result = execute(expression);
          
-         try {
-            ExpressionEvaluator evaluator = context.getEvaluator();
-            Object result =  evaluator.evaluate(scope, expression);
+         results.clear(); // clear all expression when changed
+         results.put(expression, result); // represents null
+      }
+      Object result = results.get(expression);
+      
+      if(result != NULL_VALUE) {
+         return result;
+      }
+      return null;
+   }
+   
+   private Object execute(String expression) {
+      try {
+         ExpressionEvaluator evaluator = context.getEvaluator();
+         Object result =  evaluator.evaluate(scope, expression);
 
-            results.put(expression, result);
-         } catch(Exception e) {
-            results.put(expression, e);
-            e.printStackTrace();
+         if(result == null) {
+            return NULL_VALUE; // this is a special 'null' value
+         } 
+         return result;
+      } catch(Exception cause) {
+         cause.printStackTrace();
+         return cause;
+      }
+   }
+   
+   private boolean accept(String expression) {
+      if(expression != null) {
+         String token = expression.trim();
+         int length = token.length();
+         
+         if(length > 0) {
+            return true; 
          }
       }
-      return results.get(expression);
+      return false;        
    }
 }

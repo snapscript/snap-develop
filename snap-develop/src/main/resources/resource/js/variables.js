@@ -9,7 +9,7 @@ function toggleExpandVariable(name) {
 function toggleExpandEvaluation(name, expression) {
     var variablePaths = expandVariableTree(name, expandEvaluationHistory);
     if (variablePaths != null) {
-        browseScriptEvaluation(variablePaths, expression);
+        browseScriptEvaluation(variablePaths, expression, false);
     }
 }
 function expandVariableTree(name, variableHistory) {

@@ -23,6 +23,7 @@ public class EvaluateEventMarshaller implements ProcessEventMarshaller<EvaluateE
       String process = input.readUTF();
       String expression = input.readUTF();
       String thread = input.readUTF();
+      boolean refresh = input.readBoolean();
       int count = input.readInt();
       
       for(int i = 0; i < count; i++) {
@@ -31,6 +32,7 @@ public class EvaluateEventMarshaller implements ProcessEventMarshaller<EvaluateE
       }
       return new EvaluateEvent.Builder(process)
          .withExpression(expression)
+         .withRefresh(refresh)
          .withThread(thread)
          .withExpand(expand)
          .build();
@@ -44,11 +46,13 @@ public class EvaluateEventMarshaller implements ProcessEventMarshaller<EvaluateE
       String expression = event.getExpression();
       String process = event.getProcess();
       String thread = event.getThread();
+      boolean refresh = event.isRefresh();
       int count = expand.size();
       
       output.writeUTF(process);
       output.writeUTF(expression);
       output.writeUTF(thread);
+      output.writeBoolean(refresh);
       output.writeInt(count);
       
       for(String name : expand) {

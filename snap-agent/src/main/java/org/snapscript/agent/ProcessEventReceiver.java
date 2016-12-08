@@ -92,8 +92,9 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
       String thread = event.getThread();
       String expression = event.getExpression();
       Set<String> expand = event.getExpand();
+      boolean refresh = event.isRefresh();
       
-      controller.evaluate(expand, thread, expression);
+      controller.evaluate(expand, thread, expression, refresh);
    }
 
    @Override

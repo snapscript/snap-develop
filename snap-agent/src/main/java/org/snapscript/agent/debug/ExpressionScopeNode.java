@@ -11,11 +11,13 @@ public class ExpressionScopeNode implements ScopeNode {
    private final ScopeNodeBuilder builder;
    private final List<ScopeNode> nodes;
    private final String expression;
+   private final boolean refresh;
    
-   public ExpressionScopeNode(ScopeNodeBuilder builder, ExpressionProcessor processor, VariableNameEncoder encoder, String expression) {
+   public ExpressionScopeNode(ScopeNodeBuilder builder, ExpressionProcessor processor, VariableNameEncoder encoder, String expression, boolean refresh) {
       this.nodes = new ArrayList<ScopeNode>();
       this.expression = expression;
       this.processor = processor;
+      this.refresh = refresh;
       this.encoder = encoder;
       this.builder = builder;
    }
@@ -38,7 +40,7 @@ public class ExpressionScopeNode implements ScopeNode {
    @Override
    public List<ScopeNode> getNodes() {
       if(nodes.isEmpty()) {
-         Object object = processor.evaluate(expression);
+         Object object = processor.evaluate(expression, refresh);
          
          if(object != null) {
             String path = encoder.encode(expression);

@@ -69,11 +69,12 @@ public class ProcessConnection {
       }
    }
    
-   public boolean evaluate(String thread, String expression, Set<String> expand) {
+   public boolean evaluate(String thread, String expression, boolean refresh, Set<String> expand) {
       try {
          EvaluateEvent event = new EvaluateEvent.Builder(process)
             .withThread(thread)
             .withExpression(expression)
+            .withRefresh(refresh)
             .withExpand(expand)
             .build();
          

@@ -72,14 +72,14 @@ public class SuspendController {
       }
    }
    
-   public void evaluate(Set<String> expand, String thread, String expression) {
+   public void evaluate(Set<String> expand, String thread, String expression, boolean refresh) {
       Object lock = locks.get(thread);
       ScopeBrowser browser = browsers.get(thread);
       
       synchronized(lock) {
          try {
             if(browser != null) {
-               browser.evaluate(expand, expression);
+               browser.evaluate(expand, expression, refresh);
             }
          }catch(Exception e) {
             throw new IllegalStateException("Could not evaluate '" + expression + "' for thread '" + thread + "'", e);

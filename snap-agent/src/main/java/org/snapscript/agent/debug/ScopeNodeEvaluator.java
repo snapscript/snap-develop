@@ -15,15 +15,15 @@ public class ScopeNodeEvaluator {
    private final Context context;
    
    public ScopeNodeEvaluator(Context context, Scope scope) {
-      this.processor = new ExpressionProcessor(context, scope);
+      this.processor = new ExpressionProcessor(context, scope); // this keeps expression cache
       this.encoder = new VariableNameEncoder();
       this.context = context;
    }
    
-   public Map<String, Map<String, String>> expand(Set<String> expand, String expression) {
+   public Map<String, Map<String, String>> expand(Set<String> expand, String expression, boolean refresh) {
       Map<String, Map<String, String>> variables = new HashMap<String, Map<String, String>>();
       ScopeNodeBuilder builder = new ScopeNodeBuilder(variables, context);
-      ScopeNode node = new ExpressionScopeNode(builder, processor, encoder, expression);
+      ScopeNode node = new ExpressionScopeNode(builder, processor, encoder, expression, refresh);
       
       if(!expand.isEmpty()) {
          for(String path : expand) {
