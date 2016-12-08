@@ -812,8 +812,9 @@ function createThreadsTab(){
             if (sel.length == 1) {
                var record = grid.get(sel[0]);
                openTreeFile(record.script, function(){
-                  updateThreadFocus(record.thread, record.line, record.key);
+                  updateThreadFocusByName(record.thread);
                   showEditorLine(record.line);  
+                  showThreads();
                });
             }
             grid.selectNone();

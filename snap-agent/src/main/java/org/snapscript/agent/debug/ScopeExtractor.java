@@ -12,6 +12,7 @@ import org.snapscript.core.Scope;
 public class ScopeExtractor implements ScopeBrowser {
 
    private final AtomicReference<String> evaluate;
+   private final ScopeNodeEvaluator evaluator;
    private final ScopeNodeTraverser traverser;
    private final AtomicInteger counter;
    private final Set<String> watch;
@@ -19,6 +20,7 @@ public class ScopeExtractor implements ScopeBrowser {
    
    public ScopeExtractor(Context context, Scope scope) {
       this.traverser = new ScopeNodeTraverser(context, scope);
+      this.evaluator = new ScopeNodeEvaluator(context, scope);
       this.evaluate = new AtomicReference<String>();
       this.watch = new CopyOnWriteArraySet<String>();
       this.local = new CopyOnWriteArraySet<String>();
@@ -28,7 +30,7 @@ public class ScopeExtractor implements ScopeBrowser {
    public ScopeVariableTree build() {
       String expression = evaluate.get();
       Map<String, Map<String, String>> variables = traverser.expand(local);
-      Map<String, Map<String, String>> evaluation = traverser.expand(watch, expression);
+      Map<String, Map<String, String>> evaluation = evaluator.expand(watch, expression);
       int change = counter.get(); 
       
       return new ScopeVariableTree.Builder(change)

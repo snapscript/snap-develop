@@ -8,20 +8,22 @@ import java.util.Set;
 import org.snapscript.core.Context;
 import org.snapscript.core.Scope;
 
-public class ScopeNodeTraverser {
-   
+public class ScopeNodeEvaluator {
+
+   private final ExpressionProcessor processor; 
+   private final VariableNameEncoder encoder;
    private final Context context;
-   private final Scope scope;
    
-   public ScopeNodeTraverser(Context context, Scope scope) {
+   public ScopeNodeEvaluator(Context context, Scope scope) {
+      this.processor = new ExpressionProcessor(context, scope);
+      this.encoder = new VariableNameEncoder();
       this.context = context;
-      this.scope = scope;
    }
    
-   public Map<String, Map<String, String>> expand(Set<String> expand) {
+   public Map<String, Map<String, String>> expand(Set<String> expand, String expression) {
       Map<String, Map<String, String>> variables = new HashMap<String, Map<String, String>>();
       ScopeNodeBuilder builder = new ScopeNodeBuilder(variables, context);
-      ScopeNode node = new ScopeNodeTree(builder, scope);
+      ScopeNode node = new ExpressionScopeNode(builder, processor, encoder, expression);
       
       if(!expand.isEmpty()) {
          for(String path : expand) {
@@ -36,7 +38,7 @@ public class ScopeNodeTraverser {
 
    private void expand(ScopeNode node, String[] parts, int index) {
       List<ScopeNode> children = node.getNodes();
-      String match = parts[index];
+      String match = encoder.decode(parts[index]);
       
       for(ScopeNode child : children) {
          String name = child.getName();

@@ -1,64 +1,47 @@
 var expandVariableHistory = {};
 var expandEvaluationHistory = {};
 function toggleExpandVariable(name) {
-    var threadScope = focusedThread();
-    var expandPath = name + ".*"; // this ensures they sort in sequence with '.' notation, e.g blah.foo.*
-    var removePrefix = name + ".";
-    if (threadScope != null) {
-        var variablesPaths = expandVariableHistory[threadScope.thread];
-        if (variablesPaths == null) {
-            variablesPaths = [];
-            expandVariableHistory[threadScope.thread] = variablesPaths;
-        }
-        var removePaths = [];
-        for (var i = 0; i < variablesPaths.length; i++) {
-            var currentPath = variablesPaths[i];
-            if (currentPath.startsWith(removePrefix)) {
-                removePaths.push(currentPath); // remove variable
-            }
-        }
-        for (var i = 0; i < removePaths.length; i++) {
-            var removePath = removePaths[i];
-            var removeIndex = variablesPaths.indexOf(removePath);
-            if (removeIndex != -1) {
-                variablesPaths.splice(removeIndex, 1); // remove variable
-            }
-        }
-        if (removePaths.length == 0) {
-            variablesPaths.push(expandPath); // add variable
-        }
-        browseScriptVariables(variablesPaths);
+    var variablePaths = expandVariableTree(name, expandVariableHistory);
+    if (variablePaths != null) {
+        browseScriptVariables(variablePaths);
     }
 }
 function toggleExpandEvaluation(name, expression) {
+    var variablePaths = expandVariableTree(name, expandEvaluationHistory);
+    if (variablePaths != null) {
+        browseScriptEvaluation(variablePaths, expression);
+    }
+}
+function expandVariableTree(name, variableHistory) {
     var threadScope = focusedThread();
     var expandPath = name + ".*"; // this ensures they sort in sequence with '.' notation, e.g blah.foo.*
     var removePrefix = name + ".";
     if (threadScope != null) {
-        var variablesPaths = expandEvaluationHistory[threadScope.thread];
-        if (variablesPaths == null) {
-            variablesPaths = [];
-            expandEvaluationHistory[threadScope.thread] = variablesPaths;
+        var variablePaths = variableHistory[threadScope.thread];
+        if (variablePaths == null) {
+            variablePaths = [];
+            variableHistory[threadScope.thread] = variablePaths;
         }
         var removePaths = [];
-        for (var i = 0; i < variablesPaths.length; i++) {
-            var currentPath = variablesPaths[i];
+        for (var i = 0; i < variablePaths.length; i++) {
+            var currentPath = variablePaths[i];
             if (currentPath.startsWith(removePrefix)) {
                 removePaths.push(currentPath); // remove variable
             }
         }
         for (var i = 0; i < removePaths.length; i++) {
             var removePath = removePaths[i];
-            var removeIndex = variablesPaths.indexOf(removePath);
+            var removeIndex = variablePaths.indexOf(removePath);
             if (removeIndex != -1) {
-                variablesPaths.splice(removeIndex, 1); // remove variable
+                variablePaths.splice(removeIndex, 1); // remove variable
             }
         }
         if (removePaths.length == 0) {
-            variablesPaths.push(expandPath); // add variable
+            variablePaths.push(expandPath); // add variablePaths}
         }
-        browseScriptEvaluation(variablesPaths, expression);
+        return variablePaths;
     }
+    return null;
 }
 function showVariables() {
     var localVariables = focusedThreadVariables();

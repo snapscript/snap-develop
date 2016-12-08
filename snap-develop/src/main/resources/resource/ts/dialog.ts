@@ -284,7 +284,7 @@ function createGridDialog(listFunction, dialogTitle) { // listFunction(token): [
             '   <div id="dialog"></div>'+
             '</div>'+
             '<div id="dialogPath" onkeydown="return submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>',
-      buttons : '<button id="dialogEvaluate" class="btn">Evaluate</button>',
+      buttons : '<button id="dialogSave" class="btn">Evaluate</button>',
       width : 700,
       height : 400,
       overflow : 'hidden',
@@ -320,7 +320,10 @@ function createGridDialog(listFunction, dialogTitle) { // listFunction(token): [
                      var sel = grid.getSelection();
                      if (sel.length == 1) {
                         var record = grid.get(sel[0]);
-                        toggleExpandEvaluation(record.path, "THE EXPRESSION");
+                        var text = $("#dialogPath").html();
+                        var expression = text.replace("<br>", "");
+                        
+                        toggleExpandEvaluation(record.path, expression);
                      }
                      grid.selectNone();
                      grid.refresh();
@@ -336,7 +339,7 @@ function createGridDialog(listFunction, dialogTitle) { // listFunction(token): [
          w2ui['evaluation'].destroy(); // destroy grid so you can recreate it
          //$("#dialog").remove(); // delete the element
          clearEvaluation();
-         browseScriptEvaluation([], "THE EXPRESSION"); // clear the variables
+         browseScriptEvaluation([], ""); // clear the variables
       },
       onMax : function(event) {
          event.onComplete = function() {
@@ -353,10 +356,10 @@ function createGridDialog(listFunction, dialogTitle) { // listFunction(token): [
       }
    });
    $("#dialogSave").click(function() {
-      w2popup.close();
-   });
-   $("#dialogEvaluate").click(function() {
-      w2popup.close();
+      var text = $("#dialogPath").html();
+      var expression = text.replace("<br>", "");
+      
+      browseScriptEvaluation([], expression); // clear the variables
    });
 }
 

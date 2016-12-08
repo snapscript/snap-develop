@@ -49,15 +49,37 @@ function updateThreads(socket, type, text) {
                 updateThreadPanels(threadScope);
             }
         }
+        else if (threadEditorFocus.thread == null) {
+            focusThread(threadScope);
+            updateThreadPanels(threadScope);
+        }
         else {
-            if (threadEditorFocus.thread == null) {
-                focusThread(threadScope);
+            var currentScope = suspendedThreads[threadScope.thread];
+            if (isThreadScopeDifferent(currentScope, threadScope)) {
                 updateThreadPanels(threadScope);
             }
         }
     }
     suspendedThreads[threadScope.thread] = threadScope;
     showThreadBreakpointLine(threadScope); // show breakpoint on editor
+}
+function isThreadScopeDifferent(leftScope, rightScope) {
+    if (leftScope != null && rightScope != null) {
+        if (leftScope.thread != rightScope.thread) {
+            return true;
+        }
+        if (leftScope.status != rightScope.status) {
+            return true;
+        }
+        if (leftScope.resource != rightScope.resource) {
+            return true;
+        }
+        if (leftScope.line != rightScope.line) {
+            return true;
+        }
+        return false;
+    }
+    return leftScope != rightScope;
 }
 function showThreadBreakpointLine(threadScope) {
     var editorData = loadEditor();
@@ -165,6 +187,10 @@ function updateThreadFocus(threadScope) {
         change: threadScope.change,
         key: threadScope.key
     };
+}
+function updateThreadFocusByName(threadName) {
+    var threadScope = suspendedThreads[threadName];
+    updateThreadFocus(threadScope);
 }
 function focusedThreadVariables() {
     if (threadEditorFocus.thread != null) {
