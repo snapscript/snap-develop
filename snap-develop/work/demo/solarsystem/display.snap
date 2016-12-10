@@ -25,14 +25,9 @@ import awt.event.ActionListener;
 import awt.geom.AffineTransform;
 import awt.geom.Area;
 import awt.geom.Ellipse2D;
-import awt.geom.Ellipse2D$Double;
-import awt.geom.Ellipse2D$Float;
 import awt.geom.GeneralPath;
 import awt.geom.Line2D;
-import awt.geom.Line2D$Double;
-import awt.geom.Line2D$Float;
 import awt.geom.Rectangle2D;
-import awt.geom.Rectangle2D$Double;
 import util.Vector;
 
 import swing.JPanelInterface;
@@ -597,7 +592,7 @@ class SkyPanel with JPanelInterface {
         var yVel = yPos + 25*planet[i].getVel(Coord.Y)/SkyFrame.getScaleFactor();
 
         comp2D.setColor(Color.white);
-        comp2D.draw(new Line2D$Float(xPos, yPos, xVel, yVel));
+        comp2D.draw(new Line2D.Float(xPos, yPos, xVel, yVel));
         drawArrow(comp2D, xPos, yPos, xVel, yVel);
     }
 
@@ -616,7 +611,7 @@ class SkyPanel with JPanelInterface {
         var yAcc = yPos + 2000*planet[i].getAcc(Coord.Y)/SkyFrame.getScaleFactor();
 
         comp2D.setColor(Color.white);
-        comp2D.draw(new Line2D$Float(xPos,
+        comp2D.draw(new Line2D.Float(xPos,
                    yPos,
                    xAcc,
                    yAcc));
@@ -773,6 +768,7 @@ class SkyPanel with JPanelInterface {
         return maxPlanetDia;
     }
 }
+
 
 
 

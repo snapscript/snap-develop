@@ -15,6 +15,7 @@ class Point {
       return "("+x+","+y+")";
    }
 }
+
 for(var n in 0..20) {
    var start = System.currentTimeMillis();
    var list = new Point[10000];

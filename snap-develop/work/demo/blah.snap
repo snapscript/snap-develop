@@ -20,6 +20,10 @@ class Foo {
    toString() {
       return text;
    }
+   
+   // // this is an inner class
+   // static class Foo{
+   // }
 }
 println(Foo);
 

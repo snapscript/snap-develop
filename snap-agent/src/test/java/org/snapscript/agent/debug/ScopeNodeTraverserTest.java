@@ -138,7 +138,7 @@ public class ScopeNodeTraverserTest extends TestCase {
    private static Instance createInstanceScope(Map<String, Object> values, String name) {
       Model model = new MapModel(Collections.EMPTY_MAP);
       Scope scope = new ModelScope(model, null);
-      Type type = new ScopeType(null, name, -1);
+      Type type = new ScopeType(null, null, name, -1);
       Instance instance = new PrimitiveInstance(null, model, scope, type);
       List<Property> properties = type.getProperties();
       State state = instance.getState();

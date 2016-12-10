@@ -1,46 +1,56 @@
 import util.stream.Collectors;
 
-// var list = "1,2,3,4,5".split(",");
-// println(StringUtils.join(list, "&x=", 0, list.length));
-
-var source = "00:01:07,400-234-090\n00:05:01,701-080-080\n00:05:00,400-234-090";
-
-function parseLog(source) {
-   var func = x -> { 
-      var pair = x.split(",");
-      return {
-         number: pair[1], 
-         duration: pair[0]
-      };
-   };
-   return source.split("\n")
-      .stream()
-      .map(func)
-      .sorted((a, b) -> a.number.compareTo(b.number))
-      .collect(Collectors.toList());
+enum Color{
+   RED,
+   BLUE,
+   GREEN;
+   toString(){
+      return this.name;
+   }
 }
+println(Color.RED.name);
+println(Color.values);
+Color.values.stream().forEach(x->println(x.name));
 
-function groupByNumber(result) {
-   var sum = {:};
-   var group = x -> {
-      var list = sum.get(x.number) ?? [];
-      
-      list.add(x.duration);
-      sum.put(x.number, list);
-   };
-   result.stream().forEach(group);
-   return sum;
-}
 
-function displayDurations(source) {
-   var result = parseLog(source);
-   var sum = groupByNumber(result);
+class Table {
+
+   const list;
+   new(){
+      this.list =[];
+   }
+   create(key, cells){
+      var r: Row = new StringRow(key,cells);
+      list.add(r);
+   }
+   dump(){
+      for(var row in list){
+         row.dump();
+      }
+   }
+
+   trait Row{
+      dump();
+   }
    
-   for(var entry in sum){
-      for(var duration in entry.value){
-         println("${entry.key} -> ${duration}");
+   class StringRow with Row {
+      const key;
+      const cells;
+      new(key, cells){
+         this.key = key;
+         this.cells = cells;
+      }
+      dump(){
+         for(var cell in cells){
+            print("[${cell}]");
+         }
+         println();
       }
    }
 }
 
-displayDurations(source);
+var table = new Table();
+table.create("a", [1,2,3,4,5]);
+table.create("b", ['a','b','c','d']);
+table.create("c", ['X','Y','Z']);
+table.dump();

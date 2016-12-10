@@ -25,14 +25,9 @@ import awt.event.ActionListener;
 import awt.geom.AffineTransform;
 import awt.geom.Area;
 import awt.geom.Ellipse2D;
-import awt.geom.Ellipse2D$Double;
-import awt.geom.Ellipse2D$Float;
 import awt.geom.GeneralPath;
 import awt.geom.Line2D;
-import awt.geom.Line2D$Double;
-import awt.geom.Line2D$Float;
 import awt.geom.Rectangle2D;
-import awt.geom.Rectangle2D$Double;
 import util.Vector;
 
 import solarsystem.display.SkyPanel;
@@ -269,7 +264,7 @@ class Satellite with Host{
      */
     draw(comp2D) {
         var zoomedDiameter = diameter/SkyFrame.getScaleFactor();
-        var form = new Ellipse2D$Double((getAbsPos(Coord.X) - zoomedDiameter/2),
+        var form = new Ellipse2D.Double((getAbsPos(Coord.X) - zoomedDiameter/2),
                                   (getAbsPos(Coord.Y) - zoomedDiameter/2),
                                   zoomedDiameter,
                                   zoomedDiameter);
@@ -536,7 +531,7 @@ class Planet extends Satellite {
                host.getAbsPos(Coord.X);
             y = prevYPos[i]/SkyFrame.getScaleFactor() +
                host.getAbsPos(Coord.Y);
-            comp2D.fill( new Ellipse2D$Float(x, y, 1, 1));
+            comp2D.fill( new Ellipse2D.Float(x, y, 1, 1));
         }
     }
     /**
@@ -565,8 +560,8 @@ class Planet extends Satellite {
     semiCircle(x, y, dia, theta): Area {
         var xp = x - dia/2;
         var yp = y - dia/2;
-        var circle = new Ellipse2D$Double(xp, yp, dia, dia);
-        var rect = new Rectangle2D$Double(xp, yp, dia, dia/2);
+        var circle = new Ellipse2D.Double(xp, yp, dia, dia);
+        var rect = new Rectangle2D.Double(xp, yp, dia, dia/2);
         var semiCircleArea = new Area(circle);
         var rectArea = new Area(rect);
         semiCircleArea.subtract(rectArea);
@@ -700,7 +695,7 @@ class Sun extends Satellite {
            else
                yf = yPos - Math.random()*zoomedDiameter*0.5;
    
-           var ray = new Line2D$Double(xPos, yPos, xf, yf);
+           var ray = new Line2D.Double(xPos, yPos, xf, yf);
            comp2D.draw(ray);
         }
     }
@@ -780,7 +775,7 @@ class Stars {
 
         for (var i = 0; i < numOfStars; ++i) {
             var actualDia = diameter*Math.random();
-            var starShape = new Ellipse2D$Double(xPos[i]/
+            var starShape = new Ellipse2D.Double(xPos[i]/
                                 SkyFrame.getScaleFactor() +
                                 sun.getAbsPos(Coord.X),
                                 yPos[i]/SkyFrame.getScaleFactor() +
