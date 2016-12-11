@@ -54,7 +54,7 @@ public class InstanceScopeNode implements ScopeNode {
          State state = scope.getState();
          Set<String> names = state.getNames();
          Type type = scope.getType();
-         Set<Type> types = extractor.traverse(type);
+         Set<Type> types = extractor.findHierarchy(type);
          
          if(!names.isEmpty() && !types.isEmpty()) {
             Set<String> include = new HashSet<String>();

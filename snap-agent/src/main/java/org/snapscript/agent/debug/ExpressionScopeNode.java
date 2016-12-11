@@ -9,12 +9,10 @@ public class ExpressionScopeNode implements ScopeNode {
    private final ExpressionProcessor processor;
    private final VariableNameEncoder encoder;
    private final ScopeNodeBuilder builder;
-   private final List<ScopeNode> nodes;
    private final String expression;
    private final boolean refresh;
    
    public ExpressionScopeNode(ScopeNodeBuilder builder, ExpressionProcessor processor, VariableNameEncoder encoder, String expression, boolean refresh) {
-      this.nodes = new ArrayList<ScopeNode>();
       this.expression = expression;
       this.processor = processor;
       this.refresh = refresh;
@@ -39,16 +37,21 @@ public class ExpressionScopeNode implements ScopeNode {
 
    @Override
    public List<ScopeNode> getNodes() {
-      if(nodes.isEmpty()) {
-         Object object = processor.evaluate(expression, refresh);
+      Object object = processor.evaluate(expression, refresh);
+      
+      if(expression != null) {
+         String token = expression.trim();
+         int length = token.length();
          
-         if(object != null) {
+         if(length > 0) { // make sure something is evaluated
             String path = encoder.encode(expression);
-            ScopeNode node = builder.createNode(path, expression, object, 1);
-            
-            return Collections.singletonList(node);
+            ScopeNode node = builder.createNode(path, expression, object, 0);
+         
+            if(node != null) {
+               return Collections.singletonList(node);
+            }
          }
       }
-      return nodes;
+      return Collections.emptyList();
    }
 }

@@ -48,6 +48,8 @@ class Table {
       }
    }
 }
+println(Table.Row.class);
+println(Table.StringRow.class);
 
 var table = new Table();
 table.create("a", [1,2,3,4,5]);

@@ -78,9 +78,12 @@ function showVariablesGrid(threadVariables, gridName) {
       var variableName = sortedNames[i];
       var variable = threadVariables[variableName];
       var variableExpandable = "" + variable.expandable;
+      var variableRoot = variable.depth == 0; // style the root differently
       var displayStyle = "variableLeaf";
 
-      if(variableExpandable == "true") {
+      if(variableRoot) {
+         displayStyle = "variableExpression";
+      }else if(variableExpandable == "true") {
          displayStyle = "variableNode";
       }
       var displayValue = "<div class='variableData'>"+escapeHtml(variable.value)+"</div>";

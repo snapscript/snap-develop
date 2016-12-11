@@ -22,7 +22,15 @@
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */
 }	
-
+.variableExpression {	
+    /*font-family: "Lucida Console", sans-serif; 
+    font-size: 1.2em;*/
+    font-size: 1.1em;  		
+	background-image: url('/img/toolbar/variable_tab.gif');	
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}
 .variableLeaf  {
 	/*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
