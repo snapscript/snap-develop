@@ -48,7 +48,7 @@ public class ArrayScopeNode implements ScopeNode {
                   Object value = Array.get(object, i);
                   
                   if(value != null) {
-                     ScopeNode node = builder.createNode(path + ".[" + i + "]", "[" + i + "]", value, depth);
+                     ScopeNode node = builder.createNode(path + ".[" + i + "]", "[" + i + "]", value, 0, depth);
                      
                      if(node != null) {
                         nodes.add(node);

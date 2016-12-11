@@ -22,6 +22,33 @@
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */
 }	
+.variableNodePrivate {	
+    /*font-family: "Lucida Console", sans-serif; 
+    font-size: 1.2em;*/
+    font-size: 1.1em;  		
+	background-image: url('/img/toolbar/red_dot.gif');	
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}	
+.variableNodePublic {	
+    /*font-family: "Lucida Console", sans-serif; 
+    font-size: 1.2em;*/
+    font-size: 1.1em;  		
+	background-image: url('/img/toolbar/green_dot.gif');	
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}
+.variableNodeProtected {	
+    /*font-family: "Lucida Console", sans-serif; 
+    font-size: 1.2em;*/
+    font-size: 1.1em;  		
+	background-image: url('/img/toolbar/yellow_dot.gif');	
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}
 .variableExpression {	
     /*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/

@@ -8,8 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.snapscript.core.index.ModifierConverter;
+
 public class ObjectScopeNode implements ScopeNode {
    
+   private final ModifierConverter converter;
    private final ScopeNodeBuilder builder;
    private final List<ScopeNode> nodes;
    private final Object object;
@@ -18,6 +21,7 @@ public class ObjectScopeNode implements ScopeNode {
    private final int depth;
    
    public ObjectScopeNode(ScopeNodeBuilder builder, Object object, String path, String name, int depth) {
+      this.converter = new ModifierConverter();
       this.nodes = new ArrayList<ScopeNode>();
       this.builder = builder;
       this.object = object;
@@ -53,7 +57,8 @@ public class ObjectScopeNode implements ScopeNode {
                try {
                   Field field = fields.get(name);
                   Object value = field.get(object);
-                  ScopeNode node = builder.createNode(path + "." + name, name, value, depth);
+                  int modifiers = converter.convert(field);
+                  ScopeNode node = builder.createNode(path + "." + name, name, value, modifiers, depth);
                   
                   if(node != null) {
                      nodes.add(node);

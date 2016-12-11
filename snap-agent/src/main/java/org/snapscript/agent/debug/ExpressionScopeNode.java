@@ -45,7 +45,7 @@ public class ExpressionScopeNode implements ScopeNode {
          
          if(length > 0) { // make sure something is evaluated
             String path = encoder.encode(expression);
-            ScopeNode node = builder.createNode(path, expression, object, 0);
+            ScopeNode node = builder.createNode(path, expression, object, 0, 0);
          
             if(node != null) {
                return Collections.singletonList(node);

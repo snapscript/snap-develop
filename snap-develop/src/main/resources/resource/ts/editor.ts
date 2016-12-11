@@ -546,6 +546,7 @@ function showEditor() {
       editor.setTheme(editorTheme);
    }
    editor.completers = [autoComplete];
+   //setEditorTheme("eclipse"); // set the default to eclipse
    editor.getSession().setMode("ace/mode/snapscript");
    editor.getSession().setTabSize(3);
    editor.setReadOnly(true);

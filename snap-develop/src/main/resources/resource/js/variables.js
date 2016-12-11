@@ -46,10 +46,10 @@ function expandVariableTree(name, variableHistory) {
 function showVariables() {
     var localVariables = focusedThreadVariables();
     var evaluationVariables = focusedThreadEvaluation();
-    showVariablesGrid(localVariables, 'variables');
-    showVariablesGrid(evaluationVariables, 'evaluation');
+    showVariablesGrid(localVariables, 'variables', false);
+    showVariablesGrid(evaluationVariables, 'evaluation', true);
 }
-function showVariablesGrid(threadVariables, gridName) {
+function showVariablesGrid(threadVariables, gridName, expressions) {
     var sortedNames = [];
     var variableRecords = [];
     var variableIndex = 1;
@@ -64,12 +64,27 @@ function showVariablesGrid(threadVariables, gridName) {
         var variable = threadVariables[variableName];
         var variableExpandable = "" + variable.expandable;
         var variableRoot = variable.depth == 0; // style the root differently
+        var variableProperty = "" + variable.property;
+        var variableModifiers = variable.modifiers;
         var displayStyle = "variableLeaf";
-        if (variableRoot) {
+        if (variableRoot && expressions) {
             displayStyle = "variableExpression";
         }
-        else if (variableExpandable == "true") {
-            displayStyle = "variableNode";
+        else {
+            if (variableProperty == "true") {
+                if (variableModifiers.indexOf("[private]") != -1) {
+                    displayStyle = "variableNodePrivate";
+                }
+                else if (variableModifiers.indexOf("[protected]") != -1) {
+                    displayStyle = "variableNodeProtected";
+                }
+                else if (variableModifiers.indexOf("[public]") != -1) {
+                    displayStyle = "variableNodePublic";
+                }
+                else {
+                    displayStyle = "variableNode"; // default
+                }
+            }
         }
         var displayValue = "<div class='variableData'>" + escapeHtml(variable.value) + "</div>";
         var displayName = "<div title='" + escapeHtml(variable.description) + "' style='padding-left: " +

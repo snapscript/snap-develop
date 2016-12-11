@@ -47,7 +47,8 @@ public class ScopeNodeTree implements ScopeNode {
                
                if(value != null) {
                   Object object = value.getValue();
-                  ScopeNode node = builder.createNode(name, name, object, 0);
+                  int modifiers = value.getModifiers();
+                  ScopeNode node = builder.createNode(name, name, object, modifiers, 0);
                   
                   if(node != null) {
                      nodes.add(node);

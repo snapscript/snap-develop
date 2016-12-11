@@ -15,7 +15,7 @@ Color.values.stream().forEach(x->println(x.name));
 
 class Table {
 
-   const list;
+   private const list;
    new(){
       this.list =[];
    }

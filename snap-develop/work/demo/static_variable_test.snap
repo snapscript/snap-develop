@@ -1,5 +1,5 @@
 class Test{
-   static const LIST = [1,2,3,4];
+   private static const LIST = [1,2,3,4];
    static var count = 0;
    static inc(){
       return count++;
@@ -7,8 +7,8 @@ class Test{
    static at(index){
       return LIST[index];
    }
-   var x;
-   var y;
+   private var x;
+   private var y;
    new(x,y){
       this.x=x;
       this.y=y;

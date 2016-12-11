@@ -24,7 +24,7 @@ public class ScopeNodeBuilder {
       this.context = context;
    }
 
-   public ScopeNode createNode(String path, String name, Object object, int depth) {
+   public ScopeNode createNode(String path, String name, Object object, int modifiers, int depth) {
       if(object != null) {
          ProxyWrapper wrapper = context.getWrapper();
          
@@ -33,7 +33,7 @@ public class ScopeNodeBuilder {
          }
          if(object instanceof Instance) {
             Instance instance = (Instance)object;
-            ValueData data = builder.createScope(name, instance, depth);
+            ValueData data = builder.createScope(name, instance, modifiers, depth);
             Map<String, String> map = data.getData();
             
             variables.put(path, map); // put the type rather than value
@@ -44,26 +44,26 @@ public class ScopeNodeBuilder {
          
          if(!checker.isPrimitive(type)) { 
             if(type.isArray()) {
-               ValueData data = builder.createArray(name, object, depth);
+               ValueData data = builder.createArray(name, object, modifiers, depth);
                Map<String, String> map = data.getData();
                
                variables.put(path, map); // type rather than value
                return new ArrayScopeNode(this, object, path, name, depth + 1);
             } else {
-               ValueData data = builder.createObject(name, object, depth);
+               ValueData data = builder.createObject(name, object, modifiers, depth);
                Map<String, String> map = data.getData();
                
                variables.put(path, map); // type rather than value
                return new ObjectScopeNode(this, object, path, name, depth + 1);
             }
          } else {
-            ValueData data = builder.createPrimitive(name, object, depth);
+            ValueData data = builder.createPrimitive(name, object, modifiers, depth);
             Map<String, String> map = data.getData();
             
             variables.put(path, map);
          }
       } else {
-         ValueData data = builder.createNull(name, object, depth);
+         ValueData data = builder.createNull(name, object, modifiers, depth);
          Map<String, String> map = data.getData();
          
          variables.put(path, map);

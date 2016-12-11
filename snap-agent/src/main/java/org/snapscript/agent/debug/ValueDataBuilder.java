@@ -20,11 +20,11 @@ public class ValueDataBuilder {
       this.limit = limit;
    }
 
-   public ValueData createNull(String key, Object value, int depth) {
-      return new ValueData(key, "", "null", "null", false, depth);
+   public ValueData createNull(String key, Object value, int modifiers, int depth) {
+      return new ValueData(key, "", "null", "null", false, modifiers, depth);
    }
    
-   public ValueData createArray(String key, Object value, int depth) {
+   public ValueData createArray(String key, Object value, int modifiers, int depth) {
       StringBuilder dimensions = new StringBuilder();
       Class type = value.getClass();
       Class entry = type.getComponentType();
@@ -60,10 +60,10 @@ public class ValueDataBuilder {
       if(length > limit) {
          text = text.substring(0, limit) + "..."; // truncate value
       }
-      return new ValueData(key, name + dimensions, "", text, true, depth);
+      return new ValueData(key, name + dimensions, "", text, true, modifiers, depth);
    }
    
-   public ValueData createObject(String key, Object value, int depth) {
+   public ValueData createObject(String key, Object value, int modifiers, int depth) {
       Class type = value.getClass();
       String name = type.getSimpleName();
       String text = String.valueOf(value);
@@ -72,10 +72,10 @@ public class ValueDataBuilder {
       if(length > limit) {
          text = text.substring(0, limit) + "..."; // truncate value
       }
-      return new ValueData(key, name, "", text, true, depth);
+      return new ValueData(key, name, "", text, true, modifiers, depth);
    }
    
-   public ValueData createPrimitive(String key, Object value, int depth) {
+   public ValueData createPrimitive(String key, Object value, int modifiers,int depth) {
       Class type = value.getClass();
       String name = type.getSimpleName();
       String text = String.valueOf(value);
@@ -84,13 +84,13 @@ public class ValueDataBuilder {
       if(length > limit) {
          text = text.substring(0, limit) + "..."; // truncate value
       }
-      return new ValueData(key, name, text, text, false, depth);
+      return new ValueData(key, name, text, text, false, modifiers, depth);
    }
    
-   public ValueData createScope(String key, Object value, int depth) {
+   public ValueData createScope(String key, Object value, int modifiers, int depth) {
       Instance instance = (Instance)value;
       Type type = instance.getType();
       String name = type.getName();
-      return new ValueData(key, name, "", "", true, depth);
+      return new ValueData(key, name, "", "", true, modifiers, depth);
    }
 }
