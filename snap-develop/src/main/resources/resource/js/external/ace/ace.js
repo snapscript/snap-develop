@@ -34,6 +34,9 @@
  * @param payload a function to call with (require, exports, module) params
  */
 
+var aceDefine = null;
+var aceRequire = null;
+
 (function() {
 
 var ACE_NAMESPACE = "ace";
@@ -63,6 +66,9 @@ var define = function(module, deps, payload) {
         define.modules[module] = null;
     }
 };
+
+// just make sure its not overwritten
+aceDefine = define;
 
 define.modules = {};
 define.payloads = {};
@@ -95,6 +101,8 @@ var require = function(module, callback) {
         return require.original.apply(this, arguments);
     return packagedModule;
 };
+
+aceRequire = require;
 
 var normalizeModule = function(parentId, moduleName) {
     // normalize plugin requires

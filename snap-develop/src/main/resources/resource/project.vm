@@ -48,6 +48,7 @@
 <script src="/js/profiler.js"></script>
 <script src="/js/commands.js"></script>
 <script src="/js/explorer.js"></script>
+<script src="/js/link.js"></script>
 <script src="/js/alert.js"></script>
 </head>
 <body style="height: 100%; margin: 0; background-color: #ececec;">

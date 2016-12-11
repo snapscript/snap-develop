@@ -3,6 +3,7 @@ var editorMarkers = {};
 var editorResource = null;
 var editorText = null;
 var editorTheme = null;
+var editorCurrentTokens = {}; // current editor hyperlinks
 function createEditor() {
     window.setTimeout(showEditor, 400);
     createTermination(clearEditorHighlights); // create callback
@@ -244,6 +245,34 @@ function resolveEditorMode(resource) {
     }
     return null;
 }
+function indexEditorTokens(text, resource) {
+    var token = resource.toLowerCase();
+    var functionRegex = /(function|static|public|private|abstract|override|)\s+([a-z][a-zA-Z0-9]*)\s*\(/g;
+    var variableRegex = /(var|const)\s+([a-z][a-zA-Z0-9]*)/g;
+    var classRegex = /(class|trait|enum)\s+([A-Z][a-zA-Z0-9]*)/g;
+    var tokenList = {};
+    if (token.endsWith(".snap")) {
+        var lines = text.split(/\r?\n/);
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i];
+            indexEditorLine(line, i + 1, functionRegex, tokenList, ["%s("]);
+            indexEditorLine(line, i + 1, variableRegex, tokenList, ["%s."]);
+            indexEditorLine(line, i + 1, classRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s"]);
+        }
+    }
+    editorCurrentTokens = tokenList; // keep these tokens for indexing
+}
+function indexEditorLine(line, number, expression, tokenList, templates) {
+    var tokens = expression.exec(line);
+    if (tokens != null && tokens.length > 0) {
+        var indexToken = tokens[2];
+        for (var i = 0; i < templates.length; i++) {
+            var template = templates[i];
+            var indexKey = template.replace("%s", indexToken);
+            tokenList[indexKey] = number; // save the line number
+        }
+    }
+}
 function updateEditor(text, resource) {
     var editor = ace.edit("editor");
     var session = editor.getSession();
@@ -267,6 +296,7 @@ function updateEditor(text, resource) {
     editorText = text;
     window.location.hash = editorResource.projectPath; // update # anchor
     highlightProblems(); // higlight problems on this resource
+    indexEditorTokens(text, resource); // create some tokens we can link to dynamically
     if (resource != null) {
         var breakpoints = editorBreakpoints[editorResource.filePath];
         if (breakpoints != null) {
@@ -455,10 +485,36 @@ function showEditor() {
         toggleEditorBreakpoint(row);
         e.stop();
     });
+    createEditorLinks(editor, validEditorLink, openEditorLink); // link.js
     registerEditorBindings();
     changeProjectFont(); // project.js update font
     scrollEditorToTop();
     finishedLoading();
+}
+function validEditorLink(string, col) {
+    var match;
+    var regExp = /\w+\s*\.|new\s+\w+\s*\(|\w+\s*\(|:\s*\w+|extends\s+\w+|with\s+\w+/g;
+    regExp.lastIndex = 0;
+    string.replace(regExp, function (str) {
+        var offset = arguments[arguments.length - 2];
+        var length = str.length;
+        if (offset <= col && offset + length >= col) {
+            var line = editorCurrentTokens[str];
+            if (line != null) {
+                match = {
+                    start: offset,
+                    value: str
+                };
+            }
+        }
+    });
+    return match;
+}
+function openEditorLink(event) {
+    var line = editorCurrentTokens[event.value];
+    if (line != null) {
+        showEditorLine(line);
+    }
 }
 function updateEditorFont(fontFamily, fontSize) {
     var langTools = ace.require("ace/ext/language_tools");
