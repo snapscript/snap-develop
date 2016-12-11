@@ -575,7 +575,7 @@ function showEditor() {
    registerEditorBindings();
    changeProjectFont(); // project.js update font
    scrollEditorToTop();
-   finishedLoading();
+   LoadSpinner.finish();
 }
 
 function validEditorLink(string, col) { // see link.js (http://jsbin.com/jehopaja/4/edit?html,output)
@@ -644,4 +644,4 @@ function updateEditorFont(fontFamily, fontSize) {
     });
 }
 
-registerModule("editor", "Editor module: editor.js", createEditor, [ "common", "spinner", "tree" ]);
+ModuleSystem.registerModule("editor", "Editor module: editor.js", createEditor, [ "common", "spinner", "tree" ]);

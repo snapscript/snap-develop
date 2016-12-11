@@ -11,7 +11,7 @@ function startThreads(socket, type, text) {
     suspendedThreads = {};
     clearFocusThread();
     clearVariables();
-    clearProfiler();
+    Profiler.clearProfiler();
     clearThreads();
     $("#process").html("<i>&nbsp;RUNNING: " + message.resource + " (" + message.process + ") " + message.duration + " milliseconds</i>");
 }
@@ -98,7 +98,7 @@ function updateFocusedThread(threadScope) {
     if (isThreadFocusLineChange(threadScope)) {
         if (isThreadFocusResourceChange(threadScope)) {
             var resourcePathDetails = createResourcePath(threadScope.resource);
-            openTreeFile(resourcePathDetails.resourcePath, function () {
+            FileExplorer.openTreeFile(resourcePathDetails.resourcePath, function () {
                 updateThreadFocus(threadScope);
                 showEditorLine(threadScope.line);
             });
@@ -116,7 +116,7 @@ function focusThread(threadScope) {
     var editorData = loadEditor();
     if (editorData.resource.filePath != threadScope.resource) {
         var resourcePathDetails = createResourcePath(threadScope.resource);
-        openTreeFile(resourcePathDetails.resourcePath, function () {
+        FileExplorer.openTreeFile(resourcePathDetails.resourcePath, function () {
             updateThreadFocus(threadScope);
             showEditorLine(threadScope.line);
         });
@@ -247,4 +247,4 @@ function showThreads() {
     }
     updateTableRecords(threadRecords, 'threads'); // update if changed only
 }
-registerModule("threads", "Thread module: threads.js", createThreads, ["common", "socket", "explorer"]);
+ModuleSystem.registerModule("threads", "Thread module: threads.js", createThreads, ["common", "socket", "explorer"]);

@@ -119,4 +119,4 @@ function clearVariables() {
    w2ui['variables'].refresh();
 }
 
-registerModule("variables", "Variables module: variables.js", null, [ "common" ]);
+ModuleSystem.registerModule("variables", "Variables module: variables.js", null, [ "common" ]);

@@ -85,4 +85,4 @@ function currentTime() {
     var date = new Date();
     return date.getTime();
 }
-registerModule("common", "Common module: common.js", null, []);
+ModuleSystem.registerModule("common", "Common module: common.js", null, []);

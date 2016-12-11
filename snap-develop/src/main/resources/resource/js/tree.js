@@ -144,4 +144,4 @@ function createResourcePath(path) {
     //console.log("createResourcePath(" + path + "): " + currentPathText);
     return currentPathDetails;
 }
-registerModule("tree", "Tree module: tree.js", null, ["common"]);
+ModuleSystem.registerModule("tree", "Tree module: tree.js", null, ["common"]);

@@ -70,7 +70,7 @@ function openSocket() {
    socket.onopen = function() {
       attempts = 1;
       connections++;
-      hideSpinner(); // on hide overlay
+      LoadSpinner.hide(); // on hide overlay
       console.log("Socket connected to '" + subscription.address + "'");
    };
 
@@ -84,7 +84,7 @@ function openSocket() {
             callback(); // disconnected
          }
       }
-      showSpinner();
+      LoadSpinner.show();
       console.log("Error connecting to '" + subscription.address + "'");
    };
 
@@ -106,7 +106,7 @@ function openSocket() {
             callback(); // disconnected
          }
       }
-      showSpinner(); // on disconnect show spinner
+      LoadSpinner.show(); // on disconnect show spinner
       console.log("Connection closed to '" + subscription.address + "' reconnecting in " + interval + " ms");
    };
 
@@ -137,7 +137,7 @@ function openSocket() {
       } else {
          console.log("No route defined for '" + type+ "' with '" + value + "'");
       }
-      hideSpinner(); // hide the spinner
+      LoadSpinner.hide(); // hide the spinner
    };
 }
 
@@ -190,4 +190,4 @@ function createTermination(failure) {
    }
 }
 
-registerModule("socket", "Socket subscription module: socket.js", startSocket, []);
+ModuleSystem.registerModule("socket", "Socket subscription module: socket.js", startSocket, []);

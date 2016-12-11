@@ -1,3 +1,63 @@
+var LinkIndexer;
+(function (LinkIndexer) {
+    var FUNCTION_REGEX = /(function|static|public|private|abstract|override|)\s+([a-z][a-zA-Z0-9]*)\s*\(/g;
+    var VARIABLE_REGEX = /(var|const)\s+([a-z][a-zA-Z0-9]*)/g;
+    var TYPE_REGEX = /(class|trait|enum)\s+([A-Z][a-zA-Z0-9]*)/g;
+    var IMPORT_REGEX = /import\s+([a-z][a-zA-Z0-9\.]*)\.([A-Z][a-zA-Z]*)/g;
+    var FUNCTION_TEMPLATES = ["%s("];
+    var VARIABLE_TEMPLATES = ["%s.", "%s=", "%s =", "%s<", "%s <", "%s>", "%s >", "%s!", "%s !", "%s-", "%s -", "%s+", "%s +", "%s*", "%s *", "%s%", "%s %", "%s/", "%s /"];
+    var TYPE_TEMPLATES = ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s", ".%s;", " as %s", "%s["];
+    var IMPORT_TEMPLATES = ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s", ".%s;", " as %s", "%s["];
+    var tokens = [];
+    function indexEditorTokens(text, resource) {
+        var token = resource.toLowerCase();
+        var tokenList = {};
+        if (token.endsWith(".snap")) {
+            var lines = text.split(/\r?\n/);
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i];
+                indexEditorLine(line, i + 1, FUNCTION_REGEX, tokenList, FUNCTION_TEMPLATES, false);
+                indexEditorLine(line, i + 1, VARIABLE_REGEX, tokenList, VARIABLE_TEMPLATES, false);
+                indexEditorLine(line, i + 1, IMPORT_REGEX, tokenList, IMPORT_TEMPLATES, true);
+                indexEditorLine(line, i + 1, TYPE_REGEX, tokenList, TYPE_TEMPLATES, false);
+            }
+        }
+        editorCurrentTokens = tokenList; // keep these tokens for indexing
+        if (editorFocusToken != null) {
+            var focusToken = editorCurrentTokens[editorFocusToken];
+            if (focusToken != null) {
+                setTimeout(function () {
+                    showEditorLine(focusToken.line); // focus on the line there was a token
+                }, 100);
+                editorFocusToken = null; // clear for next open
+            }
+        }
+    }
+    function indexEditorLine(line, number, expression, tokenList, templates, external) {
+        expression.lastIndex = 0; // you have to reset regex to its start position
+        var tokens = expression.exec(line);
+        if (tokens != null && tokens.length > 0) {
+            var resourceToken = tokens[1]; // only for 'import' which is external
+            var indexToken = tokens[2];
+            for (var i = 0; i < templates.length; i++) {
+                var template = templates[i];
+                var indexKey = template.replace("%s", indexToken);
+                if (external) {
+                    tokenList[indexKey] = {
+                        resource: "/" + resourceToken.replace(".", "/") + ".snap",
+                        line: number // save the line number
+                    };
+                }
+                else {
+                    tokenList[indexKey] = {
+                        resource: null,
+                        line: number // save the line number
+                    };
+                }
+            }
+        }
+    }
+})(LinkIndexer || (LinkIndexer = {}));
 function createEditorLinks(editor, customMatchFunction, customOpenFunction) {
     aceDefine("hoverlink", [], function (require, exports, module) {
         "use strict";

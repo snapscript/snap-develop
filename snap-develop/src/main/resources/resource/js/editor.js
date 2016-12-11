@@ -514,7 +514,7 @@ function showEditor() {
     registerEditorBindings();
     changeProjectFont(); // project.js update font
     scrollEditorToTop();
-    finishedLoading();
+    LoadSpinner.finish();
 }
 function validEditorLink(string, col) {
     var tokenPatterns = [
@@ -575,4 +575,4 @@ function updateEditorFont(fontFamily, fontSize) {
         fontSize: fontSize
     });
 }
-registerModule("editor", "Editor module: editor.js", createEditor, ["common", "spinner", "tree"]);
+ModuleSystem.registerModule("editor", "Editor module: editor.js", createEditor, ["common", "spinner", "tree"]);

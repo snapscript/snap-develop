@@ -17,7 +17,7 @@ function func(x: Integer[]){
 
 function func(x: String[]){
    println("String[]"+x);
-}
+} 
 
 // annotation Path {
 //    attribute value = 34;

@@ -381,4 +381,4 @@ function submitDialog(e) {
    }
 }
 
-registerModule("dialog", "Dialog module: dialog.js", null, [ "common", "tree" ]);
+ModuleSystem.registerModule("dialog", "Dialog module: dialog.js", null, [ "common", "tree" ]);

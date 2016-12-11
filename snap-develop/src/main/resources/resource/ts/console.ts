@@ -168,4 +168,4 @@ function updateConsole(socket, type, value) {
 	consoleData.update = true;
 }
 
-registerModule("console", "Console module: console.js", registerConsole, ["common", "socket"]);
+ModuleSystem.registerModule("console", "Console module: console.js", registerConsole, ["common", "socket"]);

@@ -30,4 +30,4 @@ function showProjectDialog() {
    "Open Project", "Open", "");
 }
 
-registerModule("start", "Start module: start.js", showProjectDialog, [ "common", "dialog", "tree", "spinner" ]);
+ModuleSystem.registerModule("start", "Start module: start.js", showProjectDialog, [ "common", "dialog", "tree", "spinner" ]);

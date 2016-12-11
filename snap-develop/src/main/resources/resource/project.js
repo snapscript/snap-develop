@@ -645,7 +645,7 @@ function createProblemsTab(){
             var sel = grid.getSelection();
             if (sel.length == 1) {
                var record = grid.get(sel[0]);
-               openTreeFile(record.script, function(){}); // open resource
+               FileExplorer.openTreeFile(record.script, function(){}); // open resource
             }
             grid.selectNone();
             grid.refresh();
@@ -720,7 +720,7 @@ function createProfilerTab(){
             var sel = grid.getSelection();
             if (sel.length == 1) {
                var record = grid.get(sel[0]);
-               openTreeFile(record.script, function() {
+               FileExplorer.openTreeFile(record.script, function() {
                   showEditorLine(record.line);  
                }); 
             }
@@ -754,7 +754,7 @@ function createBreakpointsTab(){
             var sel = grid.getSelection();
             if (sel.length == 1) {
                var record = grid.get(sel[0]);
-               openTreeFile(record.script, function() {
+               FileExplorer.openTreeFile(record.script, function() {
                   showEditorLine(record.line);  
                }); 
             }
@@ -811,7 +811,7 @@ function createThreadsTab(){
             var sel = grid.getSelection();
             if (sel.length == 1) {
                var record = grid.get(sel[0]);
-               openTreeFile(record.script, function(){
+               FileExplorer.openTreeFile(record.script, function(){
                   updateThreadFocusByName(record.thread);
                   showEditorLine(record.line);  
                   showThreads();
@@ -867,7 +867,7 @@ function createDebugTab(){
                var record = grid.get(sel[0]);
                
                if(record.running) {
-                  openTreeFile(record.script, function() {
+                  FileExplorer.openTreeFile(record.script, function() {
                      attachProcess(record.process);
                   });
                }
@@ -926,4 +926,4 @@ function activateTab(tabName, layoutName) {
 }
 
 
-registerModule("project", "Project module: project.js", createMainLayout, [ "common", "socket", "console", "problem", "editor", "spinner", "tree", "threads" ]);
+ModuleSystem.registerModule("project", "Project module: project.js", createMainLayout, [ "common", "socket", "console", "problem", "editor", "spinner", "tree", "threads" ]);

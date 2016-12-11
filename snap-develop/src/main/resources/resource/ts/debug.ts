@@ -102,7 +102,7 @@ function updateStatusFocus(process) {
       $("#process").html("<i>&nbsp;RUNNING: " + statusInfo.resource + " ("+process+")</i>");
    }
    if(statusFocus != process) {
-      clearProfiler(); // profiler does not apply
+      Profiler.clearProfiler(); // profiler does not apply
       clearThreads(); // race condition here
       clearVariables();
    }
@@ -182,4 +182,4 @@ function showStatus() {
    updateTableRecords(statusRecords, 'debug'); // update if changed only
 }
 
-registerModule("debug", "Debug module: debug.js", createStatus, [ "common", "socket", "tree", "threads" ]);
+ModuleSystem.registerModule("debug", "Debug module: debug.js", createStatus, [ "common", "socket", "tree", "threads" ]);

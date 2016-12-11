@@ -169,7 +169,7 @@ function deleteFile(resourceDetails) {
         var editorData = loadEditor();
         var editorResource = editorData.resource;
         var message = "Delete resource " + editorResource.filePath;
-        createConfirmAlert("Delete File", message, "Delete", "Cancel", function () {
+        Alerts.createConfirmAlert("Delete File", message, "Delete", "Cancel", function () {
             var message = JSON.stringify({
                 project: document.title,
                 resource: resourceDetails.filePath
@@ -310,4 +310,4 @@ function switchLayout() {
 function switchProject() {
     document.location = "/";
 }
-registerModule("commands", "Commands module: commands.js", null, ["common", "editor", "tree", "threads"]);
+ModuleSystem.registerModule("commands", "Commands module: commands.js", null, ["common", "editor", "tree", "threads"]);
