@@ -4,6 +4,7 @@ var editorResource = null;
 var editorText = null;
 var editorTheme = null;
 var editorCurrentTokens = {}; // current editor hyperlinks
+var editorFocusToken = null; // token to focus on editor load
 function createEditor() {
     window.setTimeout(showEditor, 400);
     createTermination(clearEditorHighlights); // create callback
@@ -250,26 +251,49 @@ function indexEditorTokens(text, resource) {
     var functionRegex = /(function|static|public|private|abstract|override|)\s+([a-z][a-zA-Z0-9]*)\s*\(/g;
     var variableRegex = /(var|const)\s+([a-z][a-zA-Z0-9]*)/g;
     var classRegex = /(class|trait|enum)\s+([A-Z][a-zA-Z0-9]*)/g;
+    var importRegex = /import\s+([a-z][a-zA-Z0-9\.]*)\.([A-Z][a-zA-Z]*)/g;
     var tokenList = {};
     if (token.endsWith(".snap")) {
         var lines = text.split(/\r?\n/);
         for (var i = 0; i < lines.length; i++) {
             var line = lines[i];
-            indexEditorLine(line, i + 1, functionRegex, tokenList, ["%s("]);
-            indexEditorLine(line, i + 1, variableRegex, tokenList, ["%s."]);
-            indexEditorLine(line, i + 1, classRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s"]);
+            indexEditorLine(line, i + 1, functionRegex, tokenList, ["%s("], false);
+            indexEditorLine(line, i + 1, variableRegex, tokenList, ["%s."], false);
+            indexEditorLine(line, i + 1, importRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s"], true);
+            indexEditorLine(line, i + 1, classRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s"], false);
         }
     }
     editorCurrentTokens = tokenList; // keep these tokens for indexing
+    if (editorFocusToken != null) {
+        var focusToken = editorCurrentTokens[editorFocusToken];
+        if (focusToken != null) {
+            setTimeout(function () {
+                showEditorLine(focusToken.line); // focus on the line there was a token
+            }, 100);
+            editorFocusToken = null; // clear for next open
+        }
+    }
 }
-function indexEditorLine(line, number, expression, tokenList, templates) {
+function indexEditorLine(line, number, expression, tokenList, templates, external) {
     var tokens = expression.exec(line);
     if (tokens != null && tokens.length > 0) {
+        var resourceToken = tokens[1]; // only for 'import' which is external
         var indexToken = tokens[2];
         for (var i = 0; i < templates.length; i++) {
             var template = templates[i];
             var indexKey = template.replace("%s", indexToken);
-            tokenList[indexKey] = number; // save the line number
+            if (external) {
+                tokenList[indexKey] = {
+                    resource: "/" + resourceToken.replace(".", "/") + ".snap",
+                    line: number // save the line number
+                };
+            }
+            else {
+                tokenList[indexKey] = {
+                    resource: null,
+                    line: number // save the line number
+                };
+            }
         }
     }
 }
@@ -296,7 +320,6 @@ function updateEditor(text, resource) {
     editorText = text;
     window.location.hash = editorResource.projectPath; // update # anchor
     highlightProblems(); // higlight problems on this resource
-    indexEditorTokens(text, resource); // create some tokens we can link to dynamically
     if (resource != null) {
         var breakpoints = editorBreakpoints[editorResource.filePath];
         if (breakpoints != null) {
@@ -309,6 +332,7 @@ function updateEditor(text, resource) {
             }
         }
     }
+    indexEditorTokens(text, resource); // create some tokens we can link to dynamically
     $("#currentFile").html("File:&nbsp;" + editorResource.projectPath + "&nbsp;&nbsp;");
 }
 function isEditorChanged() {
@@ -499,8 +523,8 @@ function validEditorLink(string, col) {
         var offset = arguments[arguments.length - 2];
         var length = str.length;
         if (offset <= col && offset + length >= col) {
-            var line = editorCurrentTokens[str];
-            if (line != null) {
+            var indexToken = editorCurrentTokens[str];
+            if (indexToken != null) {
                 match = {
                     start: offset,
                     value: str
@@ -511,9 +535,15 @@ function validEditorLink(string, col) {
     return match;
 }
 function openEditorLink(event) {
-    var line = editorCurrentTokens[event.value];
-    if (line != null) {
-        showEditorLine(line);
+    var indexToken = editorCurrentTokens[event.value];
+    if (indexToken != null) {
+        if (indexToken.resource != null) {
+            editorFocusToken = event.value;
+            window.location.hash = indexToken.resource;
+        }
+        else {
+            showEditorLine(indexToken.line);
+        }
     }
 }
 function updateEditorFont(fontFamily, fontSize) {
