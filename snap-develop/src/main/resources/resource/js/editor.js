@@ -259,8 +259,8 @@ function indexEditorTokens(text, resource) {
             var line = lines[i];
             indexEditorLine(line, i + 1, functionRegex, tokenList, ["%s("], false);
             indexEditorLine(line, i + 1, variableRegex, tokenList, ["%s."], false);
-            indexEditorLine(line, i + 1, importRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s"], true);
-            indexEditorLine(line, i + 1, classRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s"], false);
+            indexEditorLine(line, i + 1, importRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s", ".%s;", " as %s"], true);
+            indexEditorLine(line, i + 1, classRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s", ".%s;", " as %s"], false);
         }
     }
     editorCurrentTokens = tokenList; // keep these tokens for indexing
@@ -516,23 +516,37 @@ function showEditor() {
     finishedLoading();
 }
 function validEditorLink(string, col) {
-    var match;
-    var regExp = /\w+\s*\.|new\s+\w+\s*\(|\w+\s*\(|:\s*\w+|extends\s+\w+|with\s+\w+/g;
-    regExp.lastIndex = 0;
-    string.replace(regExp, function (str) {
-        var offset = arguments[arguments.length - 2];
-        var length = str.length;
-        if (offset <= col && offset + length >= col) {
-            var indexToken = editorCurrentTokens[str];
-            if (indexToken != null) {
-                match = {
-                    start: offset,
-                    value: str
-                };
+    var tokenPatterns = [
+        "\\.[A-Z][a-zA-Z0-9]*;",
+        "\\sas\\s+[A-Z][a-zA-Z0-9]*;",
+        "[a-zA-Z][a-zA-Z0-9]*\\s*\\.",
+        "new\\s+[A-Z][a-zA-Z0-9]*\\s*\\(",
+        "[a-zA-Z][a-zA-Z0-9]*\\s*\\(",
+        ":\\s*[A-Z][a-zA-Z0-9]*",
+        "extends\\s+[A-Z][a-zA-Z0-9]*",
+        "with\\s+[A-Z][a-zA-Z0-9]*" // implements trait
+    ];
+    for (var i = 0; i < tokenPatterns.length; i++) {
+        var regExp = new RegExp(tokenPatterns[i], 'g'); // 'g'
+        var matchFound = null;
+        string.replace(regExp, function (str) {
+            var offset = arguments[arguments.length - 2];
+            var length = str.length;
+            if (offset <= col && offset + length >= col) {
+                var indexToken = editorCurrentTokens[str];
+                if (indexToken != null) {
+                    matchFound = {
+                        start: offset,
+                        value: str
+                    };
+                }
             }
+        });
+        if (matchFound != null) {
+            return matchFound;
         }
-    });
-    return match;
+    }
+    return null;
 }
 function openEditorLink(event) {
     var indexToken = editorCurrentTokens[event.value];

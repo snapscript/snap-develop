@@ -295,8 +295,8 @@ function indexEditorTokens(text, resource) { // create dynamic hyperlinks
          
          indexEditorLine(line, i+1, functionRegex, tokenList, ["%s("], false);
          indexEditorLine(line, i+1, variableRegex, tokenList, ["%s."], false);         
-         indexEditorLine(line, i+1, importRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s"], true);  
-         indexEditorLine(line, i+1, classRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s"], false); 
+         indexEditorLine(line, i+1, importRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s", ".%s;", " as %s"], true);  
+         indexEditorLine(line, i+1, classRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s", ".%s;", " as %s"], false); 
       }
    }
    editorCurrentTokens = tokenList; // keep these tokens for indexing
@@ -578,24 +578,39 @@ function showEditor() {
 }
 
 function validEditorLink(string, col) { // see link.js (http://jsbin.com/jehopaja/4/edit?html,output)
-   var match;
-   var regExp = /\w+\s*\.|new\s+\w+\s*\(|\w+\s*\(|:\s*\w+|extends\s+\w+|with\s+\w+/g;
-   regExp.lastIndex = 0;
-   string.replace(regExp, function(str) {
-       var offset = arguments[arguments.length - 2];
-       var length = str.length;
-       if (offset <= col && offset + length >= col) {
-          var indexToken = editorCurrentTokens[str];
-          
-          if(indexToken != null) {
-             match = {
-                start: offset,
-                value: str
-             };
+   var tokenPatterns = [
+      "\\.[A-Z][a-zA-Z0-9]*;", // import type
+      "\\sas\\s+[A-Z][a-zA-Z0-9]*;", // import alias
+      "[a-zA-Z][a-zA-Z0-9]*\\s*\\.", // variable or type reference
+      "new\\s+[A-Z][a-zA-Z0-9]*\\s*\\(", // constructor call
+      "[a-zA-Z][a-zA-Z0-9]*\\s*\\(", // function or constructor call
+      ":\\s*[A-Z][a-zA-Z0-9]*", // type constraint
+      "extends\\s+[A-Z][a-zA-Z0-9]*", // super class
+      "with\\s+[A-Z][a-zA-Z0-9]*" // implements trait
+   ];
+   for(var i = 0; i < tokenPatterns.length; i++) {
+      var regExp = new RegExp(tokenPatterns[i], 'g'); // 'g'
+      var matchFound = null;
+      
+      string.replace(regExp, function(str) {
+          var offset = arguments[arguments.length - 2];
+          var length = str.length;
+          if (offset <= col && offset + length >= col) {
+             var indexToken = editorCurrentTokens[str];
+             
+             if(indexToken != null) {
+                matchFound = {
+                   start: offset,
+                   value: str
+                };
+             }
           }
-       }
-   });
-   return match;
+      });
+      if(matchFound != null) {
+         return matchFound;
+      }
+   }
+   return null;
 }
 
 function openEditorLink(event) {
