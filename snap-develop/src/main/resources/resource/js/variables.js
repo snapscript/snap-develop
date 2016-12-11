@@ -90,12 +90,12 @@ function showVariablesGrid(threadVariables, gridName, expressions) {
         var displayName = "<div title='" + escapeHtml(variable.description) + "' style='padding-left: " +
             (variable.depth * 20) +
             "px;'><div class='" + displayStyle +
-            "'>" + variable.name + "</div></div>";
+            "'>" + escapeHtml(variable.name) + "</div></div>";
         variableRecords.push({
             recid: variableIndex++,
             path: variableName,
             name: displayName,
-            value: variable.value,
+            value: displayValue,
             type: variable.type,
             expandable: variableExpandable == "true"
         });

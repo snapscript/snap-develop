@@ -69,8 +69,9 @@
 }
 
 .variableData {  
-    font-family: "Lucida Console", sans-serif; 
-    font-size: 1.2em;  	
+	/*font-family: "Lucida Console", sans-serif; 
+    font-size: 1.2em;*/	
+    font-size: 1em
 }
 .variableTab {	
 	background-image: url('/img/toolbar/variable_tab.gif');	

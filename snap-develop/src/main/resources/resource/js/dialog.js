@@ -211,7 +211,7 @@ function createListDialog(listFunction, dialogTitle) {
             setTimeout(function () {
                 $('#dialogPath').on('change keyup paste', function () {
                     var text = $("#dialogPath").html();
-                    var expression = text.replace("<br>", "");
+                    var expression = clearHtml(text);
                     var list = listFunction(expression);
                     var content = "<table class='dialogListTable' width='100%'>";
                     for (var i = 0; i < list.length; i++) {
@@ -302,7 +302,7 @@ function createGridDialog(listFunction, dialogTitle) {
                             if (sel.length == 1) {
                                 var record = grid.get(sel[0]);
                                 var text = $("#dialogPath").html();
-                                var expression = text.replace("<br>", "");
+                                var expression = clearHtml(text);
                                 toggleExpandEvaluation(record.path, expression);
                             }
                             grid.selectNone();
@@ -337,7 +337,7 @@ function createGridDialog(listFunction, dialogTitle) {
     });
     $("#dialogSave").click(function () {
         var text = $("#dialogPath").html();
-        var expression = text.replace("<br>", "");
+        var expression = clearHtml(text);
         browseScriptEvaluation([], expression, true); // clear the variables
     });
 }

@@ -95,6 +95,14 @@ function escapeHtml(text) {
         .replace(/'/g, "&#039;");
 }
 
+
+function clearHtml(text) {
+   return text
+         .replace(/<br>/g, "")
+         .replace(/&nbsp;/g, "")
+         .replace(/&amp;/g, "&");        
+}
+
 function currentTime() {
    var date = new Date()
    return date.getTime();
