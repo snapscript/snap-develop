@@ -71,4 +71,3 @@ function testInnerInnerClass(){
    assert b instanceof Runnable;
    assert b.name == 'some name';
 }
-testInnerInnerClass();
