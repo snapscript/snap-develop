@@ -258,7 +258,7 @@ function indexEditorTokens(text, resource) {
         for (var i = 0; i < lines.length; i++) {
             var line = lines[i];
             indexEditorLine(line, i + 1, functionRegex, tokenList, ["%s("], false);
-            indexEditorLine(line, i + 1, variableRegex, tokenList, ["%s."], false);
+            indexEditorLine(line, i + 1, variableRegex, tokenList, ["%s.", "%s=", "%s =", "%s<", "%s <", "%s>", "%s >", "%s!", "%s !", "%s-", "%s -", "%s+", "%s +", "%s*", "%s *", "%s%", "%s %", "%s/", "%s /"], false);
             indexEditorLine(line, i + 1, importRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s", ".%s;", " as %s", "%s["], true);
             indexEditorLine(line, i + 1, classRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s", ".%s;", " as %s", "%s["], false);
         }
@@ -521,6 +521,7 @@ function validEditorLink(string, col) {
         "\\.[A-Z][a-zA-Z0-9]*;",
         "\\sas\\s+[A-Z][a-zA-Z0-9]*;",
         "[a-zA-Z][a-zA-Z0-9]*\\s*\\.",
+        "[a-z][a-zA-Z0-9]*\\s*[=|<|>|!|\-|\+|\*|\\/|%]",
         "new\\s+[A-Z][a-zA-Z0-9]*\\s*\\(",
         "[a-zA-Z][a-zA-Z0-9]*\\s*\\(",
         "[A-Z][a-zA-Z0-9]*\\s*\\[",

@@ -294,7 +294,7 @@ function indexEditorTokens(text, resource) { // create dynamic hyperlinks
          var line = lines[i];
          
          indexEditorLine(line, i+1, functionRegex, tokenList, ["%s("], false);
-         indexEditorLine(line, i+1, variableRegex, tokenList, ["%s."], false);         
+         indexEditorLine(line, i+1, variableRegex, tokenList, ["%s.", "%s=", "%s =", "%s<", "%s <", "%s>", "%s >", "%s!", "%s !", "%s-", "%s -", "%s+", "%s +", "%s*", "%s *", "%s%", "%s %", "%s/", "%s /"], false);     
          indexEditorLine(line, i+1, importRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s", ".%s;", " as %s", "%s["], true);  
          indexEditorLine(line, i+1, classRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s", ".%s;", " as %s", "%s["], false); 
       }
@@ -583,6 +583,7 @@ function validEditorLink(string, col) { // see link.js (http://jsbin.com/jehopaj
       "\\.[A-Z][a-zA-Z0-9]*;", // import type
       "\\sas\\s+[A-Z][a-zA-Z0-9]*;", // import alias
       "[a-zA-Z][a-zA-Z0-9]*\\s*\\.", // variable or type reference
+      "[a-z][a-zA-Z0-9]*\\s*[=|<|>|!|\-|\+|\*|\\/|%]", // variable operation
       "new\\s+[A-Z][a-zA-Z0-9]*\\s*\\(", // constructor call
       "[a-zA-Z][a-zA-Z0-9]*\\s*\\(", // function or constructor call
       "[A-Z][a-zA-Z0-9]*\\s*\\[", // type array reference
