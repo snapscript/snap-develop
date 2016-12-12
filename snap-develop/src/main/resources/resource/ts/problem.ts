@@ -70,12 +70,13 @@ function highlightProblems(){
    var editorResource = editorData.resource;
    
    if(editorResource != null) {
-      clearEditorHighlights();
+      //clearEditorHighlights(); this makes breakpoints jitter
       
       if (currentProblems.hasOwnProperty(editorResource.resourcePath)) {
          var problemInfo = currentProblems[editorResource.resourcePath];
          
          if(problemInfo != null) {
+            clearEditorHighlights(); // clear if the resource is focused
             createEditorHighlight(problemInfo.line, "problemHighlight");
          }
       }
