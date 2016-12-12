@@ -312,7 +312,8 @@ function defaultScene(){
                new Camera(new Vec(3.0, 2.0, 4.0), new Vec(-1.0, 0.5, 0.0))
     );
 }
-
+// debug time: 50853
+// run time: 43702, 44691, 44092
 function start(path) {
     var rayTracer = new RayTracer();
     var image = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
