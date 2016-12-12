@@ -64,6 +64,11 @@ function exploreDirectory(resourcePath) {
         socket.send("EXPLORE:" + message);
     }
 }
+function pingProcess() {
+    if (isSocketOpen()) {
+        socket.send("PING:" + document.title);
+    }
+}
 function renameFile(resourcePath) {
     var originalFile = resourcePath.filePath;
     renameFileTreeDialog(resourcePath, true, function (resourceDetails) {

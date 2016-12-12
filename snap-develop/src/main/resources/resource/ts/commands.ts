@@ -74,6 +74,12 @@ function exploreDirectory(resourcePath) {
    }
 }
 
+function pingProcess() {
+   if(isSocketOpen()) {
+      socket.send("PING:" + document.title);
+   }
+}
+
 function renameFile(resourcePath) {
    var originalFile = resourcePath.filePath;
    

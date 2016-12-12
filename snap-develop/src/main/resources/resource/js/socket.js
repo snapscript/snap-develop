@@ -14,6 +14,12 @@ function refreshSocket() {
         socket.close();
     }
 }
+function isSocketOpen() {
+    if (socket != null) {
+        return socket.readyState == 1;
+    }
+    return false;
+}
 function createSubscription() {
     var host = window.document.location.hostname;
     var port = window.document.location.port;

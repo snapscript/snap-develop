@@ -294,6 +294,24 @@ public class CommandListener {
       }
    }
    
+   public void onPing(PingCommand command) {
+      String focus = filter.get();
+      
+      try {
+         if(focus != null) {
+            long time = System.currentTimeMillis();
+            
+            if(!engine.ping(focus, time)) {
+               client.sendProcessTerminate(focus);
+               filter.clear();
+            }
+         }
+         engine.register(forwarder); // make sure we are registered
+      } catch(Exception e) {
+         logger.log("Error pinging process " + focus, e);
+      }
+   }
+   
    public void onPing() {
       String focus = filter.get();
       

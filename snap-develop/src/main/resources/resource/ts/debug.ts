@@ -31,6 +31,7 @@ function refreshStatusProcesses() {
    if(expiryCount > 0) {
       showStatus(); // something expired!
    }
+   pingProcess(); // this will force a STATUS event
 }
 
 function findStatusWaitingProcessSystem() {

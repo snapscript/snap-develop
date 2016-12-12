@@ -47,6 +47,8 @@ public class CommandController implements FrameListener {
                listener.onEvaluate((EvaluateCommand)command);
             } else if(command instanceof RenameCommand) {
                listener.onRename((RenameCommand)command);
+            } else if(command instanceof PingCommand) {
+               listener.onPing((PingCommand)command);
             } 
          } else if(type == FrameType.PONG){
             listener.onPing();
