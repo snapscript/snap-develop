@@ -2,13 +2,14 @@ package org.snapscript.agent.debug;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.snapscript.core.TypeTraverser;
 import org.snapscript.core.Scope;
 import org.snapscript.core.State;
 import org.snapscript.core.Type;
+import org.snapscript.core.TypeTraverser;
 import org.snapscript.core.Value;
 import org.snapscript.core.define.Instance;
 import org.snapscript.core.property.Property;
@@ -52,11 +53,11 @@ public class InstanceScopeNode implements ScopeNode {
    public List<ScopeNode> getNodes() {
       if(nodes.isEmpty()) {
          State state = scope.getState();
-         Set<String> names = state.getNames();
+         Iterator<String> names = state.iterator();
          Type type = scope.getType();
          Set<Type> types = extractor.findHierarchy(type);
          
-         if(!names.isEmpty() && !types.isEmpty()) {
+         if(!names.hasNext() && !types.isEmpty()) {
             Set<String> include = new HashSet<String>();
             
             for(Type base : types) {
@@ -67,9 +68,9 @@ public class InstanceScopeNode implements ScopeNode {
                   include.add(name);
                }
             }
-            for(String name : names) {
+            for(String name : state) {
                if(include.contains(name)) {
-                  Value value = state.getValue(name); 
+                  Value value = state.get(name); 
                   Object object = value.getValue();
                   int modifiers = value.getModifiers();
                   ScopeNode node = builder.createNode(path + "." + name, name, object, modifiers, depth);
