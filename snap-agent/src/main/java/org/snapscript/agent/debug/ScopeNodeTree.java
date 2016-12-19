@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.snapscript.core.Scope;
-import org.snapscript.core.Value;
 import org.snapscript.core.State;
+import org.snapscript.core.Value;
 
 public class ScopeNodeTree implements ScopeNode {
    
@@ -39,17 +39,20 @@ public class ScopeNodeTree implements ScopeNode {
    public List<ScopeNode> getNodes() {
       if(nodes.isEmpty()) {
          State state = scope.getState();
-
-         for(String name : state) {
-            Value value = state.get(name);
-            
-            if(value != null) {
-               Object object = value.getValue();
-               int modifiers = value.getModifiers();
-               ScopeNode node = builder.createNode(name, name, object, modifiers, 0);
+         Set<String> names = state.getNames();
+         
+         if(!names.isEmpty()) {
+            for(String name : names) {
+               Value value = state.getValue(name);
                
-               if(node != null) {
-                  nodes.add(node);
+               if(value != null) {
+                  Object object = value.getValue();
+                  int modifiers = value.getModifiers();
+                  ScopeNode node = builder.createNode(name, name, object, modifiers, 0);
+                  
+                  if(node != null) {
+                     nodes.add(node);
+                  }
                }
             }
          }

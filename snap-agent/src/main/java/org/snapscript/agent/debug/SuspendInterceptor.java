@@ -8,7 +8,7 @@ import org.snapscript.agent.event.ScopeEvent;
 import org.snapscript.core.Context;
 import org.snapscript.core.Module;
 import org.snapscript.core.Scope;
-import org.snapscript.core.thread.ThreadStack;
+import org.snapscript.core.error.ThreadStack;
 import org.snapscript.core.trace.Trace;
 import org.snapscript.core.trace.TraceListener;
 import org.snapscript.core.trace.TraceType;

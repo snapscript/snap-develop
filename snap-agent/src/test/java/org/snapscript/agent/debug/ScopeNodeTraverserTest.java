@@ -18,11 +18,11 @@ import junit.framework.TestCase;
 
 import org.snapscript.core.MapModel;
 import org.snapscript.core.Model;
-import org.snapscript.core.ProgramScope;
+import org.snapscript.core.ModelScope;
 import org.snapscript.core.Reference;
 import org.snapscript.core.Scope;
-import org.snapscript.core.Type;
 import org.snapscript.core.State;
+import org.snapscript.core.Type;
 import org.snapscript.core.define.Instance;
 import org.snapscript.core.define.PrimitiveInstance;
 import org.snapscript.core.function.AccessorProperty;
@@ -123,23 +123,23 @@ public class ScopeNodeTraverserTest extends TestCase {
    
    private static Scope createRootScope(Map<String, Object> values) {
       Model model = new MapModel(Collections.EMPTY_MAP);
-      Scope scope = new ProgramScope(null, null, null, model, 1);
+      Scope scope = new ModelScope(model, null);
       State state = scope.getState();
       Set<String> keys = values.keySet();
       
       for(String key : keys) {
          Object value = values.get(key);
          Reference reference = new Reference(value);
-         state.add(key, reference);
+         state.addValue(key, reference);
       }
       return scope;
    }
    
    private static Instance createInstanceScope(Map<String, Object> values, String name) {
       Model model = new MapModel(Collections.EMPTY_MAP);
-      Scope scope = new ProgramScope(null, null, null, model, 1);
-      Type type = new ScopeType(null, null, null, name, -1);
-      Instance instance = new PrimitiveInstance(null, null, model, scope, type, 1);
+      Scope scope = new ModelScope(model, null);
+      Type type = new ScopeType(null, null, name, -1);
+      Instance instance = new PrimitiveInstance(null, model, scope, type);
       List<Property> properties = type.getProperties();
       State state = instance.getState();
       Set<String> keys = values.keySet();
@@ -149,7 +149,7 @@ public class ScopeNodeTraverserTest extends TestCase {
          Property property = new AccessorProperty(key, null, null, null, 0);
          Reference reference = new Reference(value);
          properties.add(property);
-         state.add(key, reference);
+         state.addValue(key, reference);
       }
       return instance;
    }
