@@ -1,6 +1,7 @@
 package org.snapscript.agent.debug;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -39,11 +40,12 @@ public class ScopeNodeTree implements ScopeNode {
    public List<ScopeNode> getNodes() {
       if(nodes.isEmpty()) {
          State state = scope.getState();
-         Set<String> names = state.getNames();
+         Iterator<String> names = state.iterator();
          
-         if(!names.isEmpty()) {
-            for(String name : names) {
-               Value value = state.getValue(name);
+         if(names.hasNext()) {
+            while(names.hasNext()) {
+               String name = names.next();
+               Value value = state.get(name);
                
                if(value != null) {
                   Object object = value.getValue();
