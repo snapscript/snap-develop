@@ -1,58 +1,11 @@
 import util.stream.Collectors;
 
-enum Color{
-   RED,
-   BLUE,
-   GREEN;
-   toString(){
-      return this.name;
-   }
+for(var x in 0..10){
+   println(x);
 }
-println(Color.RED.name);
-println(Color.values);
-Color.values.stream().forEach(x->println(x.name));
+println("----");
 
-
-class Table {
-
-   private const list;
-   new(){
-      this.list =[];
-   }
-   create(key, cells){
-      var r: Row = new StringRow(key,cells);
-      list.add(r);
-   }
-   dump(){
-      for(var row in list){
-         row.dump();
-      }
-   }
-
-   trait Row{
-      dump();
-   }
-   
-   class StringRow with Row {
-      const key;
-      const cells;
-      new(key, cells){
-         this.key = key;
-         this.cells = cells;
-      }
-      dump(){
-         for(var cell in cells){
-            print("[${cell}]");
-         }
-         println();
-      }
-   }
+for(var x in 10..0){
+   println(x);
+   x=5;
 }
-println(Table.Row.class);
-println(Table.StringRow.class);
-
-var table = new Table();
-table.create("a", [1,2,3,4,5]);
-table.create("b", ['a','b','c','d']);
-table.create("c", ['X','Y','Z']);
-table.dump();
