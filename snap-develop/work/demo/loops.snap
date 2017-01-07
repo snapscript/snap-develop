@@ -43,3 +43,7 @@ for(var i in 0..1000){
    x++;
    eval("println(x)");
 }
+loop{
+   println(x++);
+   if(x>2000)break;
+}
