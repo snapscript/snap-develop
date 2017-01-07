@@ -1,11 +1,10 @@
 import util.stream.Collectors;
 
-for(var x in 0..10){
-   println(x);
-}
-println("----");
 
-for(var x in 10..0){
+var x = 10;
+function x(){
    println(x);
-   x=5;
+   var x = 22;
+   println(x);
 }
+x();
