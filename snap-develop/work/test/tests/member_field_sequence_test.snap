@@ -10,7 +10,9 @@ class Point{
    }
 }
 class Line{
-   const a:Point,b:Point;
+   @RandomAnnotation(name: 'points', description: 'start and end')
+   private const a:Point,b:Point;
+   @RandomAnnotation(name: 'color', description: 'the color of the line')
    const color;
    new(a: Point,b: Point, color){
       this.color = color;
@@ -62,4 +64,25 @@ function testFieldSequence(){
    assert s.y.class == String.class;
    assert s.x.class == String.class;
    assert s.get() == "11,22,blah";
+}
+
+function testFieldSequenceAnnotations() {
+   var map = {:};
+   Line.class.getProperties()
+               .stream()
+               .forEach(x -> map.put(x.name, x.annotations));
+   println(map);
+   println(map.a[0]);
+   
+   assert map.a[0].name == "RandomAnnotation";
+   assert map.a[0].getAttribute("name") == "points";
+   assert map.a[0].getAttribute("description") == "start and end";   
+   
+   assert map.b[0].name == "RandomAnnotation";
+   assert map.b[0].getAttribute("name") == "points";
+   assert map.b[0].getAttribute("description") == "start and end";
+   
+   assert map.color[0].name == "RandomAnnotation";
+   assert map.color[0].getAttribute("name") == "color";
+   assert map.color[0].getAttribute("description") == "the color of the line";
 }
