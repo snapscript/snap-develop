@@ -8,3 +8,15 @@ function x(){
    println(x);
 }
 x();
+
+class Foo{
+   var x=10,y;
+   new(x,y){
+      this.x=x;
+      this.y=y;
+   }
+   do(){
+      println("${x}${y}");
+   }
+}
+new Foo(1,2).do();
