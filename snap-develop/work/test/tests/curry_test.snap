@@ -1,6 +1,16 @@
 
 module Curry {
 
+   class Foo{
+      var x;
+      new(x){
+         this.x=x;
+      }
+      next(){
+         return (y) -> x+y;
+      }
+   }
+
    func(x){
       return (y) -> x+y;
    }
@@ -10,6 +20,10 @@ module Curry {
          (y) -> x+y,
          (y) -> x+y
       ];
+   }
+   
+   funcFoo(x){
+      return new Foo(x);
    }
    
    arr(x...){
@@ -38,15 +52,20 @@ module Curry {
 //  [func(1)[2](2)] --> function-curry
 //
    
+   
+// function-invocation: <function>+'('<function-argumemt>')'*(<function-remainder>)
+// function-remainder: {'('<function-argument>')'|'['<array-index>']'
 
 function testCurry() {
    var add1 = Curry.func(1)(2);
    //var add2 = Curry.funcArr(5)[1](2); // not working right now
+   var add3 = Curry.funcFoo(2).next()(2); // this does not step in !!!
    var val = Curry.arr(1,2,3,4)[1];
    
    assert val == 2;
    assert add1 == 3;
    //assert add2 == 7;
+   assert add3 == 4;
    
    var fail = false;
    try {
@@ -57,3 +76,5 @@ function testCurry() {
    }
    assert fail;
 }
+
+testCurry();
