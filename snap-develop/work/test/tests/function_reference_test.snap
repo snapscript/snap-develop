@@ -1,0 +1,93 @@
+
+class Foo {
+
+   var x,y;
+   new(x,y){
+      this.x=x;
+      this.y=y;
+   }
+
+   func(a){
+      return "func(${a}):${x},${y}";
+   }
+   
+   func(a,b){
+      return "func(${a},${b}):${x},${y}";
+   }
+   
+   func(a,b,c){
+      return "func(${a},${b},${c}):${x},${y}";
+   }
+}
+
+module Mod {
+
+   blah(a){
+      return "blah(${a})";
+   }
+   
+   blah(a,b){
+      return "blah(${a},${b})";
+   }
+}
+
+function testErrorFunctionReference() {
+   var fail = false;
+   var str = "hello";
+   var foo = new Foo(22,3);
+   var func1 = foo::duh;
+   var func2 = str::duh;
+   
+   try {
+      func1(11);   
+   } catch(e){
+      e.printStackTrace();
+      fail = true;
+   }
+   assert fail;
+   fail = false;
+   
+   try {
+      func2(11);   
+   } catch(e){
+      e.printStackTrace();
+      fail = true;
+   }
+   assert fail;
+}
+
+
+function testModuleFunctionReference(){
+   const blah = Mod::blah;
+   
+   println(blah(1));
+   println(blah(1,3));
+   
+   assert blah(1) == "blah(1)";
+   assert blah(1,3) == "blah(1,3)";
+}
+
+
+function testNativeFunctionReference(){
+   const str = "hello";
+   const substring = str::substring;
+   
+   println(substring(1));
+   println(substring(1,3));
+   
+   assert substring(1) == "ello";
+   assert substring(1,3) == "el";
+}
+
+function testFunctionReference(){
+   const foo = new Foo(22,3);
+   const func = foo::func;
+   
+   println(func(1));
+   println(func(1,2));
+   println(func(1,2,3));
+   
+   assert func(1) == "func(1):22,3";
+   assert func(1,2) == "func(1,2):22,3";
+   assert func(1,2,3) == "func(1,2,3):22,3";   
+}
