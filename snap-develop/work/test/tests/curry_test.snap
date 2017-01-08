@@ -31,40 +31,15 @@ module Curry {
    }
 }
 
-//
-// CALLS SHOULD BE POSSIBLE ANYWHERE!
-//
-// <function-invocation>(<arguments>)
-// "function-call" <array>|<(<arguments>)
-
-//FUNCTION_INVOCATION("function-invocation", "<function>+('('<function-argument-list>')')"), // what about func(2)[3](x,y);
-//FUNCTION_ARRAY_INVOCATION("function-array-invocation", "<array-index>('('<function-argument-list>')')"),
-//FUNCTION_INVOCATION_LIST("function-invocation-list", "{<function-invocation><function-array-invocation>}"),
-
-// function-handle:= {<function-invocation>|<array-index>|<function-invocation-list>|<function>}
-// function-invocation-list:= <function-handle>+'('<function-argument-list>')'
-
-
-//  func(1)[2](2)
-//
-//  [func(1)] --> function-call
-//  [func(1)[2]] --> array-index
-//  [func(1)[2](2)] --> function-curry
-//
-   
-   
-// function-invocation: <function>+'('<function-argumemt>')'*(<function-remainder>)
-// function-remainder: {'('<function-argument>')'|'['<array-index>']'
-
 function testCurry() {
    var add1 = Curry.func(1)(2);
-   //var add2 = Curry.funcArr(5)[1](2); // not working right now
+   var add2 = Curry.funcArr(5)[1](2);
    var add3 = Curry.funcFoo(2).next()(2); // this does not step in !!!
    var val = Curry.arr(1,2,3,4)[1];
    
    assert val == 2;
    assert add1 == 3;
-   //assert add2 == 7;
+   assert add2 == 7;
    assert add3 == 4;
    
    var fail = false;
@@ -76,5 +51,3 @@ function testCurry() {
    }
    assert fail;
 }
-
-testCurry();
