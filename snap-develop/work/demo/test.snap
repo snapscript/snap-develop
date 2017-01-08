@@ -1,17 +1,2 @@
-class Point{
-  private var x,y;
-
-  new(x, y) {
-     this.x = x;
-     this.y = y;
-  }
-}
-var start = System.currentTimeMillis();
-var l = [];
-for(var i in 0..100000){
-   var x = new Point(i,i);
-   //l.add(x);
-   l[i]=x;
-}
-var end = System.currentTimeMillis();
-System.err.println(end-start);
+var f = (x,y)->x+y;
+f(1,2);
