@@ -35,15 +35,18 @@ module Curry {
 function testCurry() {
    var f = Curry.func(1);
    f(2);
+   var list = [f];
    var add1 = Curry.func(1)(2);
    var add2 = Curry.funcArr(5)[1](2);
    var add3 = Curry.funcFoo(2).next()(2); // this does not step in !!!
+   var add4 = list[0](4); // call array reference
    var val = Curry.arr(1,2,3,4)[1];
    
    assert val == 2;
    assert add1 == 3;
    assert add2 == 7;
    assert add3 == 4;
+   assert add4 == 5;
    
    var fail = false;
    try {
@@ -54,4 +57,3 @@ function testCurry() {
    }
    assert fail;
 }
-testCurry();
