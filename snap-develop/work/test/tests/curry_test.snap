@@ -12,6 +12,7 @@ module Curry {
    }
 
    func(x){
+      println("func(${x})");
       return (y) -> x+y;
    }
    
@@ -53,3 +54,4 @@ function testCurry() {
    }
    assert fail;
 }
+testCurry();
