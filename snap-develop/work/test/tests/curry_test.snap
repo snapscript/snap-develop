@@ -1,0 +1,37 @@
+
+module Curry {
+
+   func(x){
+      return (y) -> x+y;
+   }
+   
+   funcArr(x){
+      return [
+         (y) -> x+y,
+         (y) -> x+y
+      ];
+   }
+   
+   arr(x...){
+      return x;
+   }
+}
+
+function testCurry() {
+   var add1 = Curry.func(1)(2);
+   //var add2 = Curry.funcArr(5)[1](2); // not working right now
+   var val = Curry.arr(1,2,3,4)[1];
+   
+   assert val == 2;
+   assert add1 == 3;
+   //assert add2 == 7;
+   
+   var fail = false;
+   try {
+      Curry.arr(1,2,3)(2); // this did not return a closure
+   }catch(e){
+      e.printStackTrace();
+      fail = true;
+   }
+   assert fail;
+}

@@ -1,22 +1,17 @@
-import util.stream.Collectors;
+class Point{
+  private var x,y;
 
-
-var x = 10;
-function x(){
-   println(x);
-   var x = 22;
-   println(x);
+  new(x, y) {
+     this.x = x;
+     this.y = y;
+  }
 }
-x();
-
-class Foo{
-   var x=10,y;
-   new(x,y){
-      this.x=x;
-      this.y=y;
-   }
-   do(){
-      println("${x}${y}");
-   }
+var start = System.currentTimeMillis();
+var l = [];
+for(var i in 0..100000){
+   var x = new Point(i,i);
+   //l.add(x);
+   l[i]=x;
 }
-new Foo(1,2).do();
+var end = System.currentTimeMillis();
+System.err.println(end-start);

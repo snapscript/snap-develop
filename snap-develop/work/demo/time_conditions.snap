@@ -5,7 +5,12 @@ function time(name, func){
    println(name +": "+(f-s));
 }
 const ITERATIONS = 10000000;
-
+/*
+if{}: 2626
+if: 2408
+if{}: 2432
+if: 2353
+*/
 time("if{}",->{
    var x=0;
    for(var i in 0..10000000){

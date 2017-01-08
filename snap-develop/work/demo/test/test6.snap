@@ -44,8 +44,9 @@ function checkResult(sum) {
 }
 
 var n = 100000;
-var array = makeArrayOfPoints(n);
 var start = System.currentTimeMillis();
+var array = makeArrayOfPoints(n);
+var middle = System.currentTimeMillis();
 
 for(var i = 0; i < 5; i++) {
   var sum = sumArrayOfPoints(array);
@@ -54,4 +55,4 @@ for(var i = 0; i < 5; i++) {
 
 var end = System.currentTimeMillis();
 
-System.err.println("Time to sum: " + (end - start));
+System.err.println("Time to sum: " + (end - middle) + " make: " + (middle - start));
