@@ -31,6 +31,36 @@ module Mod {
    }
 }
 
+module Calc{
+   sub(x,y){
+      return x-y;
+   }
+   mul(x,y){
+      return x*y;
+   }
+   mul(x,y,z){
+      return x*y*z;
+   }
+}
+
+function testMixAndMatchFunctions() {
+   var f = [
+      (x,y)->x+y,
+      (x,y,z)->x+y+z,
+      Calc::sub,
+      Calc::mul
+   ];
+   assert 3 == f[0](1,2);
+   assert 6 == f[1](1,2,3);
+   assert 1 == f[2](3,2);
+   assert 4 == f[3](2,2);
+   assert 8 == f[3](2,2,2);
+}
+
+var p = System.err::println;
+
+p("hello");
+
 function testFunctionalInterface() {
    var set = new TreeSet(Double::compare);
    var list = [];
