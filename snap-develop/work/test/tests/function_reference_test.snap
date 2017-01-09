@@ -31,6 +31,24 @@ module Mod {
    }
 }
 
+function testFunctionalInterface() {
+   var set = new TreeSet(Double::compare);
+   var list = [];
+   
+   set.add(2);
+   set.add(1);
+   set.add(3);
+   
+   for(var entry in set){
+      list.add(entry);
+   }
+   println(list);
+   
+   assert list[0] == 1;
+   assert list[1] == 2;
+   assert list[2] == 3;
+}
+
 function testErrorFunctionReference() {
    var fail = false;
    var str = "hello";
@@ -91,3 +109,4 @@ function testFunctionReference(){
    assert func(1,2) == "func(1,2):22,3";
    assert func(1,2,3) == "func(1,2,3):22,3";   
 }
+
