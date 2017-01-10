@@ -17,7 +17,7 @@ public class WebServer {
    private final Connection connection;
    
    public WebServer(Container container, int port) throws IOException {
-      this.server = new ContainerSocketProcessor(container, 2);
+      this.server = new ContainerSocketProcessor(container, 10);
       this.connection = new SocketConnection(server);
       this.address = new InetSocketAddress(port);
    }

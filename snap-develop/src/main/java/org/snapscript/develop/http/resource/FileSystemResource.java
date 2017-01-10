@@ -6,6 +6,7 @@ import static org.simpleframework.http.Status.OK;
 
 import java.io.OutputStream;
 
+import org.simpleframework.http.Protocol;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
@@ -32,10 +33,9 @@ public class FileSystemResource implements Resource {
       FileContent content = fileCompressor.compress(request);
       OutputStream output = response.getOutputStream();
       String type = content.getType();
+      String path = content.getPath();
       String encoding = content.getEncoding();
       byte[] data = content.getData();
-      
-      String path = content.getPath();
       double ratio = content.getCompression();
       long time = content.getDuration();
       
@@ -48,6 +48,7 @@ public class FileSystemResource implements Resource {
       if(encoding != null){
          response.setValue(CONTENT_ENCODING, encoding);
       }
+      response.setContentLength(data.length);
       output.write(data);
       output.close();
    }
