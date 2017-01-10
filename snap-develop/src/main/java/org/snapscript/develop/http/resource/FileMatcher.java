@@ -5,15 +5,18 @@ import java.io.InputStream;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
+import org.snapscript.agent.ConsoleLogger;
 
 public class FileMatcher implements ResourceMatcher {
    
    private final ContentTypeResolver typeResolver;
    private final FileResolver fileResolver;
+   private final ConsoleLogger logger;
    
-   public FileMatcher(FileResolver fileResolver, ContentTypeResolver typeResolver) {
+   public FileMatcher(FileResolver fileResolver, ContentTypeResolver typeResolver, ConsoleLogger logger) {
       this.fileResolver = fileResolver;
       this.typeResolver = typeResolver;
+      this.logger = logger;
    }
 
    @Override
@@ -23,7 +26,7 @@ public class FileMatcher implements ResourceMatcher {
       InputStream stream = fileResolver.resolveStream(target);
       
       if(stream != null) {
-         return new FileSystemResource(fileResolver, typeResolver);
+         return new FileSystemResource(fileResolver, typeResolver, logger);
       }
       return null;
    }

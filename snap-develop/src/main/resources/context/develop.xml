@@ -200,6 +200,7 @@
   <bean id="FileMatcher" class="org.snapscript.develop.http.resource.FileMatcher">
     <constructor-arg ref="FileResolver" />
     <constructor-arg ref="ContentTypeResolver" />
+    <constructor-arg ref="ConsoleLogger" />    
   </bean>
 
   <bean id="CombinationMatcher" class="org.snapscript.develop.http.resource.CombinationMatcher">

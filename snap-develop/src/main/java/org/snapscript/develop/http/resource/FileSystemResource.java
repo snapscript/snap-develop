@@ -1,51 +1,54 @@
 package org.snapscript.develop.http.resource;
 
+import static org.simpleframework.http.Protocol.CONTENT_ENCODING;
 import static org.simpleframework.http.Protocol.CONTENT_TYPE;
 import static org.simpleframework.http.Status.OK;
 
-import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
+import org.snapscript.agent.ConsoleLogger;
 
 public class FileSystemResource implements Resource {
 
-   private final ContentTypeResolver typeResolver;
-   private final FileResolver fileResolver;
+   private final FileContentCompressor fileCompressor;
+   private final ConsoleLogger logger;
    private final Status status;
 
-   public FileSystemResource(FileResolver fileResolver, ContentTypeResolver typeResolver) {
-      this(fileResolver, typeResolver, OK);
+   public FileSystemResource(FileResolver fileResolver, ContentTypeResolver typeResolver, ConsoleLogger logger) {
+      this(fileResolver, typeResolver, logger, OK);
    }
 
-   public FileSystemResource(FileResolver fileResolver, ContentTypeResolver typeResolver, Status status) {
-      this.fileResolver = fileResolver;
-      this.typeResolver = typeResolver;
+   public FileSystemResource(FileResolver fileResolver, ContentTypeResolver typeResolver, ConsoleLogger logger, Status status) {
+      this.fileCompressor = new FileContentCompressor(fileResolver, typeResolver);
+      this.logger = logger;
       this.status = status;
    }
 
    @Override
    public void handle(Request request, Response response) throws Exception {
-      Path path = request.getPath();
-      String target = path.getPath();
-      String type = typeResolver.resolveType(target);
-      InputStream input = fileResolver.resolveStream(target);
+      FileContent content = fileCompressor.compress(request);
       OutputStream output = response.getOutputStream();
-
+      String type = content.getType();
+      String encoding = content.getEncoding();
+      byte[] data = content.getData();
+      
+      String path = content.getPath();
+      double ratio = content.getCompression();
+      long time = content.getDuration();
+      
+      logger.debug(path + " ratio=" + ratio + "% time=" + time + "ms");
+      
       response.setCode(status.code);
       response.setDescription(status.description);
       response.setValue(CONTENT_TYPE, type);
       
-      byte[] block = new byte[1024];
-      int count = 0;
-      
-      while((count = input.read(block)) != -1) {
-         output.write(block, 0, count);
+      if(encoding != null){
+         response.setValue(CONTENT_ENCODING, encoding);
       }
-      input.close();
+      output.write(data);
       output.close();
    }
 }
