@@ -1,3 +1,4 @@
+import util.stream.Collectors;
 
 class Foo {
 
@@ -43,6 +44,29 @@ module Calc{
    }
 }
 
+function testStreamsWithFunctionReference(){
+   var l = ["true", "false", "true", "false", "false"];
+   var f = Boolean::parseBoolean;
+   
+   assert l[0] == 'true';
+   assert l[1] == 'false';
+   assert l[2] == 'true';
+   assert l[3] == 'false';
+   assert l[4] == 'false';   
+      
+   var s = l.stream()
+            .map(f)
+            .collect(Collectors.toList());
+           
+   println(s);         
+       
+   assert s[0] == true;
+   assert s[1] == false;
+   assert s[2] == true;
+   assert s[3] == false;
+   assert s[4] == false;  
+}
+
 function testMixAndMatchFunctions() {
    var f = [
       (x,y)->x+y,
@@ -55,11 +79,12 @@ function testMixAndMatchFunctions() {
    assert 1 == f[2](3,2);
    assert 4 == f[3](2,2);
    assert 8 == f[3](2,2,2);
+
+   var p = System.err::println;
+
+   assert p("hello") == null;
 }
 
-var p = System.err::println;
-
-p("hello");
 
 function testFunctionalInterface() {
    var set = new TreeSet(Double::compare);
