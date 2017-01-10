@@ -24,7 +24,8 @@ module SolarSystem {
      * The time increment for numerical integration of differential equations
      * governing motion in the solar system.
      */
-    const dt = 0.05d;
+    const dt = 0.5d;
+    //const dt = 0.05d;
     //const dt = 0.005d;
     
     /**
