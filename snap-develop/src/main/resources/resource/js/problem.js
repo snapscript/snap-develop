@@ -27,12 +27,13 @@ function refreshProblems() {
 }
 function showProblems() {
     var problemRecords = [];
+    var problemIndex = 1;
     for (var currentProblem in currentProblems) {
         if (currentProblems.hasOwnProperty(currentProblem)) {
             var problemInfo = currentProblems[currentProblem];
             if (problemInfo != null) {
                 problemRecords.push({
-                    recid: 1,
+                    recid: problemIndex++,
                     line: problemInfo.line,
                     location: "Line " + problemInfo.line,
                     resource: problemInfo.resource.filePath,
