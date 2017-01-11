@@ -17,13 +17,13 @@ import org.snapscript.develop.http.loader.RemoteProcessLauncher;
 
 public class ProcessLauncher {
    
+   private final ProcessNameGenerator generator;
    private final ProcessEventChannel channel;
    private final ConsoleLogger logger;
-   private final AtomicLong counter;
    private final Workspace workspace;
    
    public ProcessLauncher(ProcessEventChannel channel, ConsoleLogger logger, Workspace workspace) {
-      this.counter = new AtomicLong();
+      this.generator = new ProcessNameGenerator();
       this.workspace = workspace;
       this.channel = channel;
       this.logger = logger;
@@ -31,12 +31,10 @@ public class ProcessLauncher {
 
    public ProcessDefinition launch(ProcessConfiguration configuration) throws Exception {
       int remote = channel.port();
-      long sequence = counter.getAndIncrement();
-      long time = System.currentTimeMillis();
       int httpPort = configuration.getPort();
+      String name = generator.generate();
       String port = String.valueOf(remote);
       String home = System.getProperty("java.home");
-      String name = String.format("agent-%s%s", sequence, time);
       String java = String.format("%s%sbin%s/java", home, File.separatorChar, File.separatorChar);
       String resources = String.format("http://localhost:%s/resource/", httpPort);
       String classes = String.format("http://localhost:%s/class/", httpPort);
