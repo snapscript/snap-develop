@@ -40,6 +40,7 @@ function showProblems() {
       	if(problemInfo != null) {
       	   problemRecords.push({ 
       		   recid: 1,
+      		   line: problemInfo.line,
       		   location: "Line " + problemInfo.line, 
                resource: problemInfo.resource.filePath, // /blah/file.snap 
                description: problemInfo.message, 

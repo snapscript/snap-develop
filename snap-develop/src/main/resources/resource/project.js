@@ -645,7 +645,9 @@ function createProblemsTab(){
             var sel = grid.getSelection();
             if (sel.length == 1) {
                var record = grid.get(sel[0]);
-               FileExplorer.openTreeFile(record.script, function(){}); // open resource
+               FileExplorer.openTreeFile(record.script, function() {
+                  showEditorLine(record.line);  
+               });
             }
             grid.selectNone();
             grid.refresh();
