@@ -1,97 +1,109 @@
 import io.IOException;
-import io.OutputStream;
 import net.InetSocketAddress;
-import http.request.RequestBuilder;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+import net.SocketAddress;
+import util.concurrent.CountDownLatch;
+import org.simpleframework.http.Status;
+import org.simpleframework.http.Protocol;
+import org.simpleframework.http.core.Container;
+import org.simpleframework.http.core.ContainerSocketProcessor;
+import org.simpleframework.transport.SocketProcessor;
+import org.simpleframework.transport.connect.Connection;
+import org.simpleframework.transport.connect.SocketConnection;
 
+module Server {
 
-
-var distributor = new SubscriptionDistributor();
-var handler = new SubscriptionHandler(distributor);
-var address = new InetSocketAddress(8111);
-var server = HttpServer.create(address, 0);
-server.createContext("/subscribe", handler);
-server.setExecutor(null); // creates a default executor
-server.start();
-sleep(1000000);
-
-trait Filter {
-   accept(req);
-}
-
-class QueryFilter with Filter {
-   var params;
-   new(params){
-      this.params = params;
+   /**
+    * Create a new HTTP server listening on the specified
+    * port. Handlers are registered with a regular expression.
+    *
+    * @param port the port to listen to
+    */
+   public create(port): RequestDispatcher {
+      return new RequestDispatcher(port);
    }
-   accept(req){
-      // do some matching here
-      return true;
-   }
-}
 
-class Subscription {
-   var filter;
-   var address;
-   new(filter, address){
-      this.filter = filter;
-      this.address = address;
-   }
-   match(req){
-      if(filter.accept(req)){
-            return address;
-      }
-      return null;
-   }
-}
-
-class SubscriptionDistributor {
-   var subscriptions = [];
-   register(subscription){
-      subscriptions.add(subscription);
-   }
-}
-
-class SubscriptionHandler with HttpHandler {
-   var distributor;
-   
-   new(distributor){
-      this.distributor = distributor;
-   }
-   
-   handle(exchange) {
-      const target = exchange.getRequestURI();
-      println(target);
-      const query = target.getQuery();
-      const params = parse(query);
-      const filter = new QueryFilter(params);
-      const subscription = new Subscription("/", params);
-      distributor.register(subscription);
-      const message = "success";
-      exchange.sendResponseHeaders(200, message.length());
-      const output = exchange.getResponseBody();
-      output.write(message.getBytes());
-      output.close();
-   }
-   
-   parse(query){
-      var result = {:};
+   class RequestDispatcher {
+      private const router;
+      private const server;
+      private const address;
+      private const connection;
       
-      if(query != null) {
-         var params = query.split('&');
-         for (var param in params) {
-            var pair = param.split("=");
-            if (pair.size()>1) {
-               result.put(pair[0], pair[1]);
-            }else{
-               result.put(pair[0], "");
+      new(port){
+         this.router = new RequestRouter();
+         this.server = new ContainerSocketProcessor(router, 10);
+         this.connection = new SocketConnection(server);
+         this.address = new InetSocketAddress(port);
+      }
+      
+      register(pattern, handler: (req, resp)){
+         router.register(pattern, handler);
+         return this;
+      }
+   
+      start(){
+         connection.connect(address);
+         return this;
+      }
+      
+      stop(){
+         connection.close();
+         return this;
+      }
+   }
+   
+   class RequestRouter with Container {
+      private const handlers;
+      
+      new(){
+         this.handlers ={:};
+      }
+      
+      register(pattern, handler: (req, resp)){
+         handlers.put(pattern, handler);
+      }
+      
+      resolve(path) {
+         for(var entry in handlers){
+            if(path.matches(entry.key)){
+               return entry.value;
             }
          }
+         return (req, resp)->{
+            var output = resp.getPrintStream();
+            
+            resp.setStatus(Status.NOT_FOUND);
+            resp.setValue(Protocol.CONTENT_TYPE, "text/plain");
+            output.println("Resource ${path} not found");
+            output.close();
+         };
       }
-      return result;
+      
+      handle(req, resp){
+         var path = req.getPath();
+         var normal = path.getPath();
+         var output = resp.getPrintStream();
+
+         try {
+            var handler = resolve(normal);
+            resp.setStatus(Status.OK);
+            handler(req,resp);
+         }catch(cause){
+            resp.setStatus(Status.INTERNAL_SERVER_ERROR);
+            resp.setValue(Protocol.CONTENT_TYPE, "text/plain");
+            cause.printStackTrace(output);
+            cause.printStackTrace();
+            output.close();
+         }finally{
+            resp.close();
+         }
+      }
    }
-
 }
+// function start(port) {
+//    Server.create(port).register("/x.*", (req, resp)->{
+//       resp.getPrintStream().println("Hello");
+//    }).start();
+// }
 
+// start(8911);
+// sleep(10000000);

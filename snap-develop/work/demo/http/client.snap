@@ -20,7 +20,7 @@ module Client{
     *
     * @param address the URL
     */
-   get(address) {
+   public get(address): RequestBuilder {
       return new RequestBuilder(Method.GET, address);
    }
    
@@ -30,7 +30,7 @@ module Client{
     *
     * @param address the URL
     */
-   post(address){
+   public post(address): RequestBuilder{
       return new RequestBuilder(Method.POST, address);
    }
    
@@ -40,7 +40,7 @@ module Client{
     *
     * @param address the URL
     */
-   put(address){
+   public put(address): RequestBuilder{
       return new RequestBuilder(Method.PUT, address);
    }
    
@@ -50,7 +50,7 @@ module Client{
     *
     * @param address the URL
     */
-   delete(address){
+   public delete(address): RequestBuilder{
       return new RequestBuilder(Method.DELETE, address);
    }
    
@@ -60,8 +60,38 @@ module Client{
     *
     * @param address the URL
     */   
-   head(address){
+   public head(address): RequestBuilder{
       return new RequestBuilder(Method.HEAD, address);
+   }
+      
+   class Response {
+      const status;
+      const header;
+      const data;
+      
+      new(status, data, header){
+         this.status = status;
+         this.data = data;
+         this.header = header;
+      }
+      getStatus(){
+         return status;
+      }
+      
+      getBody(){
+         return data;
+      }
+      
+      getHeader(){
+         return header;
+      }
+      
+      getText(){
+         return new String(data, "UTF-8");
+      }
+      override toString(){
+         return header;
+      }
    }
    
    class RequestBuilder {
@@ -70,18 +100,13 @@ module Client{
       var target;
       var type;
       var body;
-      var func;
       var method;
-   
-      new(method, address): 
-         this(method, address, conn ->{}){}
-
-      new(method, address, func){
+      
+      new(method, address){
          this.connection = new Connection(this);
          this.target = new URL(address);
          this.method = method;
          this.headers = {};
-         this.func = func;
       }
       
       withType(type){
@@ -181,41 +206,9 @@ module Client{
             }
          }
          var text = "${header}\r\n";
-         return new ClientResponse(status,content,text);
+         return new Response(status,content,text);
       }
    }
-   
-   class Response {
-      const status;
-      const header;
-      const data;
-      
-      new(status, data, header){
-         this.status = status;
-         this.data = data;
-         this.header = header;
-      }
-      getStatus(){
-         return status;
-      }
-      
-      getBody(){
-         return data;
-      }
-      
-      getHeader(){
-         return header;
-      }
-      
-      getText(){
-         return new String(data, "UTF-8");
-      }
-      override toString(){
-         return header;
-      }
-   }
-   
-   
    
 }
 
