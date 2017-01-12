@@ -80,6 +80,8 @@ function highlightProblems(){
          if(problemInfo != null) {
             clearEditorHighlights(); // clear if the resource is focused
             createEditorHighlight(problemInfo.line, "problemHighlight");
+         } else {
+            clearEditorHighlights(); // clear if the resource is focused
          }
       }
    }

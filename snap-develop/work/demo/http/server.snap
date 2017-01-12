@@ -1,7 +1,7 @@
 import io.IOException;
 import net.InetSocketAddress;
 import net.SocketAddress;
-import util.concurrent.CountDownLatch;
+import http.type.TypeResolver;
 import org.simpleframework.http.Status;
 import org.simpleframework.http.Protocol;
 import org.simpleframework.http.core.Container;
@@ -84,8 +84,11 @@ module Server {
          var output = resp.getPrintStream();
 
          try {
+            var type = TypeResolver.resolve(normal);
             var handler = resolve(normal);
+            
             resp.setStatus(Status.OK);
+            resp.setValue(Protocol.CONTENT_TYPE, type);
             handler(req,resp);
          }catch(cause){
             resp.setStatus(Status.INTERNAL_SERVER_ERROR);
