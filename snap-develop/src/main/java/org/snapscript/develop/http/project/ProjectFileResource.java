@@ -7,6 +7,7 @@ import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
+import org.snapscript.agent.ConsoleLogger;
 import org.snapscript.core.Reserved;
 import org.snapscript.develop.http.resource.ContentTypeResolver;
 import org.snapscript.develop.http.resource.Resource;
@@ -15,10 +16,12 @@ public class ProjectFileResource implements Resource {
    
    private final ContentTypeResolver resolver;
    private final ProjectBuilder builder;
+   private final ConsoleLogger logger;
    
-   public ProjectFileResource(ProjectBuilder builder, ContentTypeResolver resolver){
+   public ProjectFileResource(ProjectBuilder builder, ContentTypeResolver resolver, ConsoleLogger logger){
       this.resolver = resolver;
       this.builder = builder;
+      this.logger = logger;
    }
 
    @Override
@@ -28,9 +31,11 @@ public class ProjectFileResource implements Resource {
       Project project = builder.createProject(path);
       ProjectFileSystem fileSystem = project.getFileSystem();
       String type = resolver.resolveType(projectPath);
+      String method = request.getMethod();
       
       response.setStatus(Status.OK);
       response.setContentType(type);
+      logger.debug(method + ": " + path);
       
       try {
          byte[] resource = fileSystem.readAsByteArray(projectPath);
@@ -43,7 +48,6 @@ public class ProjectFileResource implements Resource {
          response.setStatus(Status.NOT_FOUND);
          
          if(projectPath.endsWith(Reserved.SCRIPT_EXTENSION)){
-            response.setStatus(Status.OK); // just to display .snap comment
             out.println("// No source found for " + projectPath);
          }
          out.close();

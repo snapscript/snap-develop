@@ -1,6 +1,6 @@
 import util.concurrent.ScheduledThreadPoolExecutor;
 import find.FilePatternScanner;
-import core.PathConverter;
+import core.FilePathConverter;
 import core.store.FileStore;
 import compile.StoreContext;
 import compile.ResourceCompiler;
@@ -11,7 +11,7 @@ const threads = 10;
 function runTests(directory) {
    const scanner = new FilePatternScanner(directory);
    const scripts = scanner.scan("**/*_test.snap");
-   const converter = new PathConverter();
+   const converter = new FilePathConverter();
    const root = new File(directory);
    const store = new FileStore(root);
    const executor = new ScheduledThreadPoolExecutor(threads);
@@ -58,6 +58,8 @@ function timeTest(func, script, name) {
    
    try {
       func();
+   }catch(e){
+      e.printStackTrace();
    } finally {
       var finish = System.currentTimeMillis();
       var duration = finish - start;

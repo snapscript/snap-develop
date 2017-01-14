@@ -19,6 +19,7 @@ import org.snapscript.compile.StoreContext;
 import org.snapscript.compile.StringCompiler;
 import org.snapscript.core.Context;
 import org.snapscript.core.EmptyModel;
+import org.snapscript.core.FilePathConverter;
 import org.snapscript.core.Model;
 import org.snapscript.core.Module;
 import org.snapscript.core.ModuleRegistry;
@@ -46,7 +47,7 @@ public class ResourceTypeLoader {
    
    public ResourceTypeLoader(ConfigurationClassLoader loader, ConsoleLogger logger) {
       this.executor = new ClassPathExecutor(loader, 6);
-      this.converter = new PathConverter();
+      this.converter = new FilePathConverter();
       this.logger = logger;
    }
    

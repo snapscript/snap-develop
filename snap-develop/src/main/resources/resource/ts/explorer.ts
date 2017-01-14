@@ -26,10 +26,14 @@ module FileExplorer {
       if(filePath.endsWith(".json") || filePath.endsWith(".js")) { // is it json or javascript
          $.get(resourcePath, function(response) {
             handleOpenTreeFile(resourcePath, afterLoad, response);
-         }, "text");
+         }, "text").fail(function() {
+            handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath);
+         });
       } else {
          $.get(resourcePath, function(response) {
             handleOpenTreeFile(resourcePath, afterLoad, response);
+         }).fail(function() {
+            handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath);
          });
       }
    }

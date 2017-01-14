@@ -8,6 +8,7 @@ import org.snapscript.compile.ResourceCompiler;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
 import org.snapscript.core.ExpressionEvaluator;
+import org.snapscript.core.FilePathConverter;
 import org.snapscript.core.Model;
 import org.snapscript.core.PathConverter;
 import org.snapscript.core.store.Store;
@@ -16,7 +17,7 @@ public class ScriptService {
 
    public static void main(String[] options) throws Exception {
       CommandLineParser parser = new CommandLineParser();
-      PathConverter converter = new PathConverter();
+      PathConverter converter = new FilePathConverter();
       CommandLine line = parser.parse(options);
       Store store = line.getStore();
       String evaluate = line.getEvaluation();

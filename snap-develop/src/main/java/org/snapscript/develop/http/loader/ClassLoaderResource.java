@@ -13,14 +13,8 @@ public class ClassLoaderResource implements Resource {
    
    private final ClassResourceLoader loader;
    private final ConsoleLogger logger;
-   private final boolean verbose;
 
    public ClassLoaderResource(ClassResourceLoader loader, ConsoleLogger logger) {
-      this(loader, logger, false);
-   }
-   
-   public ClassLoaderResource(ClassResourceLoader loader, ConsoleLogger logger, boolean verbose) {
-      this.verbose = verbose;
       this.logger = logger;
       this.loader = loader;
    }
@@ -32,10 +26,9 @@ public class ClassLoaderResource implements Resource {
       String normal = path.getPath(1); // /com/example/SomeClass.class
       PrintStream output = response.getPrintStream();
       byte[] data = loader.loadClass(normal); 
+
+      logger.debug(method + ": " + normal);
       
-      if(verbose) {
-         logger.log(method + ": " + normal);
-      }
       if(data == null) {
          response.setStatus(Status.NOT_FOUND);
          response.setContentType("text/plain");

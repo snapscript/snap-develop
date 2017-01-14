@@ -138,6 +138,7 @@
   <bean id="ProjectFileResource" class="org.snapscript.develop.http.project.ProjectFileResource">
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="ContentTypeResolver" />
+    <constructor-arg ref="ConsoleLogger"/>
   </bean>
 
   <bean id="ProjectTreeResource" class="org.snapscript.develop.http.project.ProjectTreeResource">
@@ -165,7 +166,6 @@
   <bean id="ClassLoaderResource" class="org.snapscript.develop.http.loader.ClassLoaderResource">
     <constructor-arg ref="ClassResourceLoader" />
     <constructor-arg ref="ConsoleLogger" />
-    <constructor-arg value="${verbose}" />
   </bean>
 
   <bean id="RemoteProcessBuilder" class="org.snapscript.develop.http.loader.RemoteProcessBuilder" init-method="create">
