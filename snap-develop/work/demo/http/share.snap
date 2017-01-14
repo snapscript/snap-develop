@@ -1,0 +1,92 @@
+import org.simpleframework.http.Status;
+import http.Server;
+
+class FileSystem {
+   
+   const root;
+   new(root){
+      this.root = root;
+   }
+
+   handle(req, resp){
+      var path = req.getPath();
+      var normal = path.getPath();
+      var stream = resp.getPrintStream();
+      var file = new File(root, normal);
+    
+      println(req);
+    
+      if(file.isDirectory()){
+         handleDirectory(req, resp,file);
+      } else {
+         handleFile(req, resp, file);
+      }
+      resp.close();
+   }
+   
+   handleDirectory(req, resp, file){
+      var path = req.getPath();
+      var directory = path.getDirectory();
+      var segments = path.getSegments();
+      var stream = resp.getPrintStream();
+      var list = file.listFiles();
+      var current = "/";
+      
+      resp.setStatus(Status.OK);
+      resp.setValue("Content-Type", "text/html");
+      
+      stream.println("<html>
+         <head>      
+         <title>${file}</title>
+         </head>
+         <body>
+         <h1>Index of ${file.name}</h1>");
+      
+      for(var segment in segments){
+         stream.println("<a href='${current}${segment}/'>${segment}</a>&nbsp;&gt;&nbsp;");
+         current += "${segment}/";
+      }
+      stream.println("<hr>
+         <table border='0'>
+         <tr>
+         <td><b>File</b></td>
+         <td><b>Size</b></td>
+         </tr>
+         <tr>
+         <td><a href='..'>..</a><td>
+         <td></td>
+         </tr>");
+      
+      for(var file in list){
+         var suffix = file.isDirectory() ? "/" : "";
+         var prefix = directory == "/" ? "" : directory;
+         stream.println("<tr>
+            <td><a href='${prefix}${file.name}${suffix}'>${file.name}${suffix}</a></td>
+            <td>${file.lastModified}</td>
+            </tr>");
+      }
+      stream.println("</table>
+         <hr>
+         </body>
+         </head>");
+         
+   }
+   
+   handleFile(req, resp, file){
+      var output = resp.getOutputStream();
+      var input = new FileInputStream(file);
+      var chunk = new Byte[1024];
+      var count = 0;
+      
+      while((count = input.read(chunk)) !=-1){
+         output.write(chunk,0,count);
+      }
+      output.close();
+   }
+}
+
+var root = new File("c:\\temp");
+var system = new FileSystem(root);
+
+Server.create(8911).register("/.*", system::handle).start();
+sleep(100000000);

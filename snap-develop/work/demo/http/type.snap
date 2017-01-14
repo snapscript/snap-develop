@@ -8,7 +8,9 @@ module TypeResolver {
       'css': 'text/css',
       'js': 'text/javascript',
       'json': 'application/json',
-      'snap': 'text/plain'
+      'snap': 'text/plain',
+      'xml': 'text/xml',
+      'java': 'text/plain'
    };
    
    resolve(path){

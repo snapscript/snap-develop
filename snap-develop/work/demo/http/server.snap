@@ -81,7 +81,7 @@ module Server {
       handle(req, resp){
          var path = req.getPath();
          var normal = path.getPath();
-         var output = resp.getPrintStream();
+         var output = resp.getPrintStream(8192);
 
          try {
             var type = TypeResolver.resolve(normal);
@@ -93,6 +93,7 @@ module Server {
          }catch(cause){
             resp.setStatus(Status.INTERNAL_SERVER_ERROR);
             resp.setValue(Protocol.CONTENT_TYPE, "text/plain");
+            resp.reset();
             cause.printStackTrace(output);
             cause.printStackTrace();
             output.close();

@@ -27,19 +27,25 @@ src.findFiles(file -> file.isDirectory())
    
 function build(path, name, sources){
    println("${path}: ${name} -> ${sources}");
-   var prefix = new File(path.getAbsolutePath().replace("C:\\Work\\development\\snapscript\\snap-develop\\snap-develop\\src\\main\\java", "c:\\temp\\develop"));
-   prefix.getParentFile().mkdirs();
-   var file = new File("${prefix}.snap");
-   var writer = new FileWriter(file);
    
    for(var source in sources){
+      if(source.getAbsolutePath().indexOf("C:\\Work\\development\\snapscript\\snap-develop\\snap-develop\\src\\main\\java\\org\\snapscript") == -1){
+         throw "Invalid source";
+      }
+      var result = new File(source.getAbsolutePath()
+         .replace("C:\\Work\\development\\snapscript\\snap-develop\\snap-develop\\src\\main\\java\\org\\snapscript", "c:\\temp\\develop")
+         .replace(".java", ".snap"));
+         
+      result.getParentFile().mkdirs();
+      System.err.println(result);
+      var writer = new FileWriter(result);
       var file = new File(source).readText();
       var data = refactor(file);
       writer.write(data.source);
       writer.write("\r\n");
+      writer.flush();
+      writer.close();
    }
-   writer.flush();
-   writer.close();
 }
 
 function refactor(source){
@@ -56,17 +62,20 @@ function gatherImports(source){
       line = replaceTokens(line);
       if(!done){
          var importPattern = Pattern.compile("import\\s*(.*);.*");
-         var typePattern = Pattern.compile(".*(class|enum|interface)\\s+(\\w+).*");
+         var typePattern = Pattern.compile(".*(class|enum|interface|trait)\\s+(\\w+).*");
          var importMatcher = importPattern.matcher(line);
          var typeMatcher = typePattern.matcher(line);
-         if(importMatcher.matches()){
-            imports.add(importMatcher.group(1));
-         } 
+         // if(importMatcher.matches()){
+         //    imports.add(importMatcher.group(1));
+         // } 
          if(typeMatcher.matches()){
             type = typeMatcher.group(2);
             builder.append(line);
             builder.append("\r\n");
             done = true;
+         }else {
+            builder.append(line);
+            builder.append("\r\n");
          }
       } else {
          line = line.replace(type+"(", "new(");
