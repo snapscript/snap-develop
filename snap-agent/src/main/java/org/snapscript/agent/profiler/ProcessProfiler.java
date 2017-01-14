@@ -10,7 +10,7 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.snapscript.core.Module;
+import org.snapscript.core.Path;
 import org.snapscript.core.Scope;
 import org.snapscript.core.trace.Trace;
 import org.snapscript.core.trace.TraceListener;
@@ -57,23 +57,23 @@ public class ProcessProfiler implements TraceListener {
    
    @Override
    public void before(Scope scope, Trace trace) {
-      Module module = trace.getModule();
-      String resource = module.getPath();
+      Path path = trace.getPath();
+      String resource = path.getPath();
       ResourceProfiler profiler = profilers.get(resource);
       int line = trace.getLine();
       
       if(profiler == null) {
-         String path = resource;
+         String local = resource;
          
-         if(!path.endsWith(SCRIPT_EXTENSION)) { // a.b.c
-            path = path.replace('.', '/'); // a/b/c
-            path = path + SCRIPT_EXTENSION; // a/b/c.snap
+         if(!local.endsWith(SCRIPT_EXTENSION)) { // a.b.c
+            local = local.replace('.', '/'); // a/b/c
+            local = local + SCRIPT_EXTENSION; // a/b/c.snap
          }
-         if(!path.startsWith("/")) {
-            path = "/" + path; // /a/b/c.snap
+         if(!local.startsWith("/")) {
+            local = "/" + local; // /a/b/c.snap
          }
-         if(resources.add(path)) {
-            profiler = new ResourceProfiler(path);
+         if(resources.add(local)) {
+            profiler = new ResourceProfiler(local);
             profilers.put(resource, profiler);
             resources.add(resource);
          }
@@ -85,8 +85,8 @@ public class ProcessProfiler implements TraceListener {
 
    @Override
    public void after(Scope scope, Trace trace) {
-      Module module = trace.getModule();
-      String resource = module.getPath();
+      Path path = trace.getPath();
+      String resource = path.getPath();
       ResourceProfiler profiler = profilers.get(resource);
       int line = trace.getLine();
       

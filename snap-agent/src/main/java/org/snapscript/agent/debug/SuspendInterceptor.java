@@ -7,6 +7,7 @@ import org.snapscript.agent.event.ProcessEventChannel;
 import org.snapscript.agent.event.ScopeEvent;
 import org.snapscript.core.Context;
 import org.snapscript.core.Module;
+import org.snapscript.core.Path;
 import org.snapscript.core.Scope;
 import org.snapscript.core.error.ThreadStack;
 import org.snapscript.core.trace.Trace;
@@ -35,8 +36,9 @@ public class SuspendInterceptor implements TraceListener {
    public void before(Scope scope, Trace trace) {
       ThreadProgress progress = monitor.get();
       TraceType type = trace.getType();
-      Module module = trace.getModule();
-      String resource = module.getPath();
+      Module module = scope.getModule();
+      Path source = trace.getPath();
+      String resource = source.getPath();
       int line = trace.getLine();
       
       if(matcher.match(resource, line) || progress.suspend(type)) { 

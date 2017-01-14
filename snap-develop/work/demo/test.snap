@@ -1,3 +1,5 @@
-import foo.Bar;
+import test.Blah;
+import test.Foo;
 
-println(new Bar());
+println(new Foo("xx"));
+println(new Blah(1,2));

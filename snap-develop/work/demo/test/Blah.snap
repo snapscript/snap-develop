@@ -1,0 +1,11 @@
+
+class Blah{
+   const x,y;
+   new(x,y){
+      this.x=x;
+      this.y=y;
+   }
+   toString(){
+      "${x},${y}";
+   }
+}

@@ -23,6 +23,7 @@ import org.snapscript.core.FilePathConverter;
 import org.snapscript.core.Model;
 import org.snapscript.core.Module;
 import org.snapscript.core.ModuleRegistry;
+import org.snapscript.core.Path;
 import org.snapscript.core.PathConverter;
 import org.snapscript.core.Scope;
 import org.snapscript.core.ScopeMerger;
@@ -68,6 +69,7 @@ public class ResourceTypeLoader {
       ScopeMerger merger = new ScopeMerger(context);
       ModuleRegistry registry = context.getRegistry();
       String current = converter.createModule(resource);
+      Path path = converter.createPath(resource);
       String lines[] = source.split("\\r?\\n");
       
       try {
@@ -77,11 +79,11 @@ public class ResourceTypeLoader {
             lineSource = excludeLine(lines, line);
          }
          PackageLinker linker = context.getLinker();
-         Package library = linker.link(current, lineSource, SCRIPT.name);
-         Scope scope = merger.merge(model, current, resource);
+         Package library = linker.link(path, lineSource, SCRIPT.name);
+         Scope scope = merger.merge(model, current, path);
          PackageDefinition definition = library.define(scope);
          
-         definition.compile(scope);
+         definition.compile(scope, null); // this might be wrong, maybe null
       } catch(Exception e) {
          logger.log("Error compiling " + resource, e);
          

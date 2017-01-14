@@ -83,10 +83,10 @@ public class TypeNode {
    
    public String getResource() {
       if(Module.class.isInstance(value)) {
-         return ((Module)value).getPath();
+         return ((Module)value).getPath().getPath();
       }
       if(Type.class.isInstance(value)) {
-         return ((Type)value).getModule().getPath();
+         return ((Type)value).getModule().getPath().getPath();
       }
       return null;
    }

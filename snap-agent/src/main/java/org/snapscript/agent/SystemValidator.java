@@ -1,5 +1,6 @@
 package org.snapscript.agent;
 
+import org.snapscript.core.Path;
 import org.snapscript.core.link.PackageLinker;
 
 public class SystemValidator {
@@ -30,7 +31,7 @@ public class SystemValidator {
       PackageLinker linker = context.getLinker();
       
       try {
-         linker.link("/internalPrivateScript.snap", SOURCE, "script");
+         linker.link(new Path("/internalPrivateScript.snap"), SOURCE, "script");
       }catch(Exception e) {
          e.printStackTrace();
       }
