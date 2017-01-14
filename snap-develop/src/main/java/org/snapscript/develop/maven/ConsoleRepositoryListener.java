@@ -1,10 +1,10 @@
 package org.snapscript.develop.maven;
 
 import org.snapscript.agent.ConsoleLogger;
-import org.sonatype.aether.AbstractRepositoryListener;
 import org.sonatype.aether.RepositoryEvent;
+import org.sonatype.aether.RepositoryListener;
 
-public class ConsoleRepositoryListener extends AbstractRepositoryListener {
+public class ConsoleRepositoryListener implements RepositoryListener {
 
    private ConsoleLogger logger;
 
@@ -95,6 +95,16 @@ public class ConsoleRepositoryListener extends AbstractRepositoryListener {
    @Override
    public void metadataResolving(RepositoryEvent event) {
       logger.debug("Resolving metadata " + event.getMetadata() + " from " + event.getRepository());
+   }
+
+   @Override
+   public void metadataDownloading(RepositoryEvent event) {
+      logger.debug("Metadata downloading " + event.getMetadata() + " from " + event.getRepository());
+   }
+
+   @Override
+   public void metadataDownloaded(RepositoryEvent event) {
+      logger.debug("Metadata downloaded " + event.getMetadata() + " from " + event.getRepository());
    }
 
 }

@@ -6,7 +6,6 @@ import static org.simpleframework.http.Status.OK;
 
 import java.io.OutputStream;
 
-import org.simpleframework.http.Protocol;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;

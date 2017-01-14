@@ -1,26 +1,40 @@
-module Calc{
-   sub(x,y){
-      return x-y;
+
+class ConnectListener {
+
+   const builder;
+   
+   new(builder: ProjectBuilder) {
+      this.builder = builder;
    }
-   mul(x,y){
-      return x*y;
-   }
-   mul(x,y,z){
-      return x*y*z;
+   
+   connect(listener: CommandListener, path: Path) {
+      var script = CommandLineArgument.SCRIPT.getValue();
+      
+      if(script != null) {
+         try {
+            var project = builder.createProject(path);
+            var projectPath = project.getProjectPath();
+            var projectName = project.getProjectName();
+            var file = new File(projectPath, "/" + script);
+            var input = new FileInputStream(file);
+            var buffer = new ByteArrayOutputStream();
+            var chunk = new Byte[1024];
+            var count = 0;
+            
+            while((count = input.read(chunk))!=-1) {
+               buffer.write(chunk, 0, count);
+            }
+            input.close();
+            buffer.close();
+            
+            var source = buffer.toString("UTF-8");
+            var system = System.getProperty("os.name");
+            var command = new ExecuteCommand(projectName, system, script, source, {});
+            
+            listener.onExecute(command);
+         } catch(e) {
+            e.printStackTrace();
+         }
+      }
    }
 }
-var f = [
-   (x,y)->x+y,
-   (x,y,z)->x+y+z,
-   Calc::sub,
-   Calc::mul
-];
-assert 3 == f[0](1,2);
-assert 6 == f[1](1,2,3);
-assert 1 == f[2](3,2);
-assert 4 == f[3](2,2);
-assert 8 == f[3](2,2,2);
-
-var p = System.err::println;
-
-p("hello");

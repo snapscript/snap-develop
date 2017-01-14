@@ -7,11 +7,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.snapscript.agent.ConsoleLogger;
-import org.sonatype.aether.transfer.AbstractTransferListener;
 import org.sonatype.aether.transfer.TransferEvent;
+import org.sonatype.aether.transfer.TransferListener;
 import org.sonatype.aether.transfer.TransferResource;
 
-public class ConsoleTransferListener extends AbstractTransferListener {
+public class ConsoleTransferListener implements TransferListener {
 
    private Map<TransferResource, Long> downloads; 
    private ConsoleLogger logger;
@@ -21,6 +21,11 @@ public class ConsoleTransferListener extends AbstractTransferListener {
       this.logger = logger;
    }
 
+   @Override
+   public void transferStarted(TransferEvent event) {
+      logger.log("Transfer started");
+   }
+   
    @Override
    public void transferInitiated(TransferEvent event) {
       String message = event.getRequestType() == TransferEvent.RequestType.PUT ? "Uploading" : "Downloading";
@@ -99,9 +104,8 @@ public class ConsoleTransferListener extends AbstractTransferListener {
       Exception exception = event.getException();
       logger.log("Transfer corrupted", exception);
    }
-
+   
    private long toKB(long bytes) {
       return (bytes + 1023) / 1024;
    }
-
 }
