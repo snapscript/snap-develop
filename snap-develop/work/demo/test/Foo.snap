@@ -1,3 +1,4 @@
+
 class Foo{
    var text;
    new(text){
