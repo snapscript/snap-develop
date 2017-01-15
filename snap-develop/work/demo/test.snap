@@ -1,9 +1,10 @@
 import test.Blah.Bar;
-//import test.Blah;
-import test.Foo2;
+import test.Blah;
+import test.Foo;
 import test.*;
 
-println(new Foo("xx"));
-println(new Blah(1,2));
-println(new Blah.Bar("X"));
-println(System.getProperties()['os.name']);
+for(var i in 0..90000000){
+   new Foo("xx");
+   new Blah(1,2);
+   new Blah.Bar("X");
+}

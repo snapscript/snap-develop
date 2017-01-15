@@ -3,7 +3,7 @@
   <groupId>org.snapscript</groupId>
   <artifactId>snap-develop</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
+  <version>1.0.2</version>
   <url>http://www.snapscript.org</url>
   <dependencies>
     <dependency>
@@ -44,12 +44,12 @@
     <dependency>
       <groupId>org.apache.maven.wagon</groupId>
       <artifactId>wagon-provider-api</artifactId>
-      <version>1.0</version>
+      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.wagon</groupId>
       <artifactId>wagon-http-lightweight</artifactId>
-      <version>1.0</version>
+      <version>1.0.2</version>
       <exclusions>
         <exclusion>
           <groupId>org.apache.maven.wagon</groupId>
@@ -60,27 +60,27 @@
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-compile</artifactId>
-      <version>1.0</version>
+      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-parse</artifactId>
-      <version>1.0</version>
+      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-agent</artifactId>
-      <version>1.0</version>
+      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-service</artifactId>
-      <version>1.0</version>
+      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-graphics</artifactId>
-      <version>1.0</version>
+      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.simpleframework</groupId>
