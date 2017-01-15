@@ -18,3 +18,10 @@ match(z.class){
    case Y: println("Y");
    case Z: println("Z");
 }
+
+
+// function Spa(){
+//    println("Spa");
+//    new FileOutputStream(new File("c:\\ss\\ss"));
+// }
+// Spa();

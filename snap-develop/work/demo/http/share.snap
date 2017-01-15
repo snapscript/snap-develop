@@ -1,4 +1,5 @@
 import org.simpleframework.http.Status;
+import text.SimpleDateFormat;
 import http.Server;
 
 class FileSystem {
@@ -51,19 +52,23 @@ class FileSystem {
          <table border='0'>
          <tr>
          <td><b>File</b></td>
-         <td><b>Size</b></td>
+         <td><b>Modified</b></td>
          </tr>
          <tr>
          <td><a href='..'>..</a><td>
          <td></td>
          </tr>");
+         
+      var format = new SimpleDateFormat('yyyy-MM-dd HH:mm:ss');
       
       for(var file in list){
          var suffix = file.isDirectory() ? "/" : "";
          var prefix = directory == "/" ? "" : directory;
+         var date = format.format(file.lastModified);
+         
          stream.println("<tr>
             <td><a href='${prefix}${file.name}${suffix}'>${file.name}${suffix}</a></td>
-            <td>${file.lastModified}</td>
+            <td>${date}</td>
             </tr>");
       }
       stream.println("</table>
