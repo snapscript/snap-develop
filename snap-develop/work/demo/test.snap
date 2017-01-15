@@ -4,3 +4,4 @@ import test.*;
 
 println(new Foo("xx"));
 println(new Blah(1,2));
+println(System.getProperties()['os.name']);

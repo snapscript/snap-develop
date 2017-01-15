@@ -40,7 +40,8 @@ class FileSystem {
          <title>${file}</title>
          </head>
          <body>
-         <h1>Index of ${file.name}</h1>");
+         <h1>Index of ${path.path == '/' ? '/' : file.name}</h1>
+         <a href='/'>/</a>&nbsp;&gt;&nbsp;");
       
       for(var segment in segments){
          stream.println("<a href='${current}${segment}/'>${segment}</a>&nbsp;&gt;&nbsp;");
