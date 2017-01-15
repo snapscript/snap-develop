@@ -1,6 +1,6 @@
 <project>
   <environment>
-    <variable name="PROJECT_ROOT">C:\Work\development\github\snap-develop\snap-develop\work</variable>
+    <variable name="PROJECT_ROOT">C:\Work\development\snapscript\snap-develop\snap-develop\work</variable>
   </environment>
   <arguments>
     <argument>-Xmx500m</argument>

@@ -1,10 +1,12 @@
-import test.Blah.Bar;
-import test.Blah;
-import test.Foo;
+// import test.Blah.Bar;
+// import test.Blah;
+// import test.Foo;
 import test.*;
 
+println("hello".substring(0,1));
+println("xX");
 for(var i in 0..90000000){
-   new Foo("xx");
-   new Blah(1,2);
-   new Blah.Bar("X");
+   println(new Foo("xx"));
+   println(new Blah(1,2));
+   println(new Blah.Bar("X"));
 }

@@ -8,7 +8,7 @@ function testImports(){
    println(hex);
    println(oct);
    
-   assert oct == 377;
+   assert oct == '377';
    assert hex == 'ff';
    assert max(22,1) == 22;
    assert max(3, 22) == 22;

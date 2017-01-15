@@ -21,6 +21,9 @@ function runTests(directory) {
    var tests = 0;
    
    for(var script in scripts) {
+      println("${directory}/${script}");
+   }
+   for(var script in scripts) {
       var executable = compiler.compile(script);
       var package = converter.createModule(script);
 
@@ -38,9 +41,14 @@ function runTests(directory) {
       
       for(var test in tests){
          if(test.name.startsWith("test")) {
-            //executor.execute(-> {
-               timeTest(-> test.invocation.invoke(scope, scope), script, test.name);
-            //});
+            timeTest(-> {
+               try {
+                  test.invocation.invoke(scope, scope);
+               }catch(e) {
+                  System.err.println("Failure for ${script} method ${test.name}()");
+                  failures.put(script, e);
+               }
+            }, script, test.name);
          }
       }
    }
@@ -58,8 +66,6 @@ function timeTest(func, script, name) {
    
    try {
       func();
-   }catch(e){
-      e.printStackTrace();
    } finally {
       var finish = System.currentTimeMillis();
       var duration = finish - start;

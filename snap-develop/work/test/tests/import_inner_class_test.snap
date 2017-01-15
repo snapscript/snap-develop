@@ -11,3 +11,5 @@ function testImportInnerClass() {
    assert new Line2D.Float(2,3,4,5).getX2() == 4;
    assert new Line2D.Float(2,3,4,5).getY2() == 5;   
 }
+
+testImportInnerClass();
