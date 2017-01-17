@@ -59,4 +59,21 @@ public class ProjectFileSystem {
       return buffer.toByteArray();
    }
    
+   
+   public ProjectFile readFile(String path) throws Exception {
+      long time = System.currentTimeMillis();
+      File sourcePath = project.getSourcePath();
+      File rootPath = project.getProjectPath();
+      String realPath = path.replace('/', File.separatorChar);
+      File sourceFile = new File(sourcePath, realPath);
+      File projectFile = new File(rootPath, realPath);
+      
+      if(sourceFile.exists()) {
+         return new ProjectFile(this, path, sourceFile, time);
+      } else if(projectFile.exists()) {
+         return new ProjectFile(this, path, projectFile, time);
+      }          
+      return new ProjectFile(this, path, null, time);
+   }
+   
 }

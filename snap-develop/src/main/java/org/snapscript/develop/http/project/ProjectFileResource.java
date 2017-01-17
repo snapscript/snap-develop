@@ -15,12 +15,12 @@ import org.snapscript.develop.http.resource.Resource;
 public class ProjectFileResource implements Resource {
    
    private final ContentTypeResolver resolver;
-   private final ProjectBuilder builder;
+   private final ProjectFileCache cache;
    private final ConsoleLogger logger;
    
    public ProjectFileResource(ProjectBuilder builder, ContentTypeResolver resolver, ConsoleLogger logger){
+      this.cache = new ProjectFileCache(builder);
       this.resolver = resolver;
-      this.builder = builder;
       this.logger = logger;
    }
 
@@ -28,8 +28,8 @@ public class ProjectFileResource implements Resource {
    public void handle(Request request, Response response) throws Throwable {
       Path path = request.getPath(); 
       String projectPath = path.getPath(2); // /<project-name>/<project-path> or /default/blah.snap
-      Project project = builder.createProject(path);
-      ProjectFileSystem fileSystem = project.getFileSystem();
+      ProjectFile projectFile = cache.getFile(path);
+      OutputStream stream = response.getOutputStream();
       String type = resolver.resolveType(projectPath);
       String method = request.getMethod();
       
@@ -38,11 +38,10 @@ public class ProjectFileResource implements Resource {
       logger.debug(method + ": " + path);
       
       try {
-         byte[] resource = fileSystem.readAsByteArray(projectPath);
-         OutputStream out = response.getOutputStream();
+         byte[] resource = projectFile.getByteArray();
          
-         out.write(resource);
-         out.close();
+         stream.write(resource);
+         stream.close();
       }catch(Exception e) {
          PrintStream out = response.getPrintStream();
          response.setStatus(Status.NOT_FOUND);
