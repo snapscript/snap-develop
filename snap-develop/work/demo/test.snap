@@ -5,8 +5,22 @@ import test.*;
 
 println("hello".substring(0,1));
 println("xX");
-for(var i in 0..90000000){
-   println(new Foo("xx"));
-   println(new Blah(1,2));
-   println(new Blah.Bar("X"));
+
+var list =[];
+
+for(var x in 1..10)
+   list.add(new Thread(->{
+      for(var i in 0..9){
+         println(new Foo("xx"));
+         println(new Blah(1,2));
+         println(new Blah.Bar("X"));
+      }
+   }));
+
+
+for(var thread in list){
+   thread.start();
+}
+for(var thread in list){
+   thread.join();
 }
