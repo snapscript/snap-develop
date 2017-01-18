@@ -1,28 +1,3 @@
-import awt.Canvas;
-import awt.Color;
-import awt.Dimension;
-import awt.Graphics2D;
-import awt.event.WindowAdapter;
-import awt.event.WindowEvent;
-import awt.image.BufferStrategy;
-import awt.Graphics;
-import awt.Rectangle;
-import awt.event.KeyListener; 
-import awt.event.KeyEvent;
-import awt.Graphics;
-import awt.Image;
-import awt.GraphicsConfiguration;
-import awt.GraphicsEnvironment;
-import awt.Image;
-import awt.Transparency;
-import awt.image.BufferedImage;
-import io.IOException;
-import util.HashMap;
-import util.ArrayList;
-import net.URL;
-import swing.JFrame;
-import swing.JPanel;
-import imageio.ImageIO;
 
 /**
  * An entity representing a shot fired by the player's ship
