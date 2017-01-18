@@ -640,7 +640,7 @@ function updateEditorFont(fontFamily, fontSize) {
    editor.completers = [autoComplete];
    editor.setOptions({
       enableBasicAutocompletion: true,
-      fontFamily: fontFamily,
+      fontFamily: "'"+fontFamily+"',monospace",
       fontSize: fontSize
     });
 }

@@ -587,8 +587,9 @@ function createTopMenuBar(){
                             "          <option value='Consolas' selected='selected'>&nbsp;Consolas</option>\n"+
                             "          <option value='Lucida Console'>&nbsp;Lucida Console</option>\n"+
                             "          <option value='Courier New'>&nbsp;Courier New</option>\n"+       
-                            "          <option value='Courier'>&nbsp;Courier</option>\n"+                                 
-                            "          <option value='Monaco'>&nbsp;Monaco</option>\n"+                               
+                            "          <option value='Courier'>&nbsp;Courier</option>\n"+    
+                            "          <option value='Menlo'>&nbsp;Menlo</option>\n"+                              
+                            "          <option value='Monaco'>&nbsp;Monaco</option>\n"+   
                             "        </select>\n"+
                             "   </td>"+  
                             "   <td>&nbsp;&nbsp;</td>"+  
