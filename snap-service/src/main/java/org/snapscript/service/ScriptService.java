@@ -2,6 +2,9 @@ package org.snapscript.service;
 
 import static org.snapscript.core.Reserved.DEFAULT_PACKAGE;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
 import org.snapscript.compile.Compiler;
 import org.snapscript.compile.Executable;
 import org.snapscript.compile.ResourceCompiler;
@@ -29,7 +32,8 @@ public class ScriptService {
          System.err.println("Neither --evaluate or --script have been specified");
          System.exit(0);
       }
-      Context context = new StoreContext(store);
+      Executor executor = new ScheduledThreadPoolExecutor(6);
+      Context context = new StoreContext(store, executor);
       Compiler compiler = new ResourceCompiler(context);
       Executable executable = null;
       
