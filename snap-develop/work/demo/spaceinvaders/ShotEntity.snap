@@ -1,0 +1,90 @@
+import awt.Canvas;
+import awt.Color;
+import awt.Dimension;
+import awt.Graphics2D;
+import awt.event.WindowAdapter;
+import awt.event.WindowEvent;
+import awt.image.BufferStrategy;
+import awt.Graphics;
+import awt.Rectangle;
+import awt.event.KeyListener; 
+import awt.event.KeyEvent;
+import awt.Graphics;
+import awt.Image;
+import awt.GraphicsConfiguration;
+import awt.GraphicsEnvironment;
+import awt.Image;
+import awt.Transparency;
+import awt.image.BufferedImage;
+import io.IOException;
+import util.HashMap;
+import util.ArrayList;
+import net.URL;
+import swing.JFrame;
+import swing.JPanel;
+import imageio.ImageIO;
+
+/**
+ * An entity representing a shot fired by the player's ship
+ */
+class ShotEntity extends Entity {
+   /** The vertical speed at which the players shot moves */
+   var moveSpeed = -300.0;
+   /** The game in which this entity exists */
+   var game;
+   /** True if this shot has been "used", i.e. its hit something */
+   var used = false;
+   
+   /**
+    * Create a new shot from the player
+    * 
+    * @param game The game in which the shot has been created
+    * @param sprite The sprite representing this shot
+    * @param x The initial x location of the shot
+    * @param y The initial y location of the shot
+    */
+   new(game, sprite, x, y) : super(sprite,x,y) {
+      this.game = game;
+      this.dy = moveSpeed;
+   }
+
+   /**
+    * Request that this shot moved based on time elapsed
+    * 
+    * @param delta The time that has elapsed since last move
+    */
+   move(delta) {
+      // proceed with normal move
+      super.move(delta);
+      
+      // if we shot off the screen, remove ourselfs
+      if (y < -100) {
+         game.removeEntity(this);
+      }
+   }
+   
+   /**
+    * Notification that this shot has collided with another
+    * entity
+    * 
+    * @parma other The other entity with which we've collided
+    */
+   collidedWith(other) {
+      // prevents double kills, if we've already hit something,
+      // don't collide
+      if (used) {
+         return;
+      }
+      
+      // if we've hit an alien, kill it!
+      if (other.class == AlienEntity) {
+         // remove the affected entities
+         game.removeEntity(this);
+         game.removeEntity(other);
+         
+         // notify the game that the alien has been killed
+         game.notifyAlienKilled();
+         used = true;
+      }
+   }
+}
