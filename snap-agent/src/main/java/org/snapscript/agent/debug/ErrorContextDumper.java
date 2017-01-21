@@ -13,6 +13,9 @@ import org.snapscript.core.Module;
 import org.snapscript.core.Path;
 import org.snapscript.core.Scope;
 import org.snapscript.core.State;
+import org.snapscript.core.error.InternalErrorBuilder;
+import org.snapscript.core.error.InternalError;
+import org.snapscript.core.stack.ThreadStack;
 import org.snapscript.core.trace.Trace;
 
 public class ErrorContextDumper extends TraceAdapter {
@@ -29,6 +32,7 @@ public class ErrorContextDumper extends TraceAdapter {
    public void error(Scope scope, Trace trace, Exception cause) {
       Module module = scope.getModule();
       Context context = module.getContext();
+      ThreadStack stack = context.getStack();
       State state = scope.getState();
       Iterator<String> iterator = state.iterator();
       
@@ -36,6 +40,7 @@ public class ErrorContextDumper extends TraceAdapter {
          Set<String> expand = new HashSet<String>();
          StringWriter builder = new StringWriter();
          PrintWriter writer = new PrintWriter(builder);
+         InternalErrorBuilder converter = new InternalErrorBuilder(stack, true);
          ScopeNodeTraverser traverser = new ScopeNodeTraverser(context, scope); 
          
          while(iterator.hasNext()) {
@@ -45,8 +50,9 @@ public class ErrorContextDumper extends TraceAdapter {
          Map<String, Map<String, String>> variables = traverser.expand(expand);
          Path path = trace.getPath();
          int line = trace.getLine();
+         InternalError exception = converter.create(cause);
          String descripton = createDescription(cause, path, line);
-         String error = createException(cause, INDENT);
+         String error = createException(exception, INDENT);
          String data = createVariables(variables, INDENT);
          
          writer.print(descripton);
@@ -106,12 +112,21 @@ public class ErrorContextDumper extends TraceAdapter {
       return builder.toString();
    }
    
-   private String createException(Exception cause, String indent) {
+   private String createException(InternalError error, String indent) {
       StringWriter builder = new StringWriter();
       PrintWriter writer = new PrintWriter(builder);
       
-      cause.printStackTrace(writer);
-      writer.flush();
+      Object cause = error.getValue();
+      
+      if(Throwable.class.isInstance(cause)) {
+         Throwable throwable = (Throwable)cause;
+      
+         throwable.printStackTrace(writer);
+         writer.flush();
+      } else {
+         error.printStackTrace(writer);
+         writer.flush();
+      }
       
       String text = builder.toString();
       String[] lines = text.split("\\r?\\n");
