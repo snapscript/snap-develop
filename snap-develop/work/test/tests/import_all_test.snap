@@ -1,9 +1,0 @@
-import lang.reflect.*;
-
-function testImportAll(){
-   println(Field.class.getName());
-   println(Field.class.getModule().getName());
-   
-   assert Field.class.getModule().getName() == "lang.reflect";
-   assert Field.class.getName() == "Field";
-}

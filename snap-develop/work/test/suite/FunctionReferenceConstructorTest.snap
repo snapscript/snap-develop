@@ -1,0 +1,73 @@
+import test.TestCase;
+
+class Foo {
+   var a,b;
+   new():this(1){
+   }
+   new(a):this(a,2){
+   }
+   new(a,b){
+      this.a=a; 
+      this.b=b;
+   }
+   toString(){
+      return "${a},${b}";
+   }
+}
+
+module Create {
+
+   create0(a){
+      a();
+   }
+
+   create1(a) {
+      a('create1');
+   }
+
+   create2(a) {
+      a('create1', 'create2');
+   }
+}
+
+class FunctionReferenceConstructorTest with TestCase {
+
+   testFunctionalCreation() {
+      var res1 = Create.create0(Foo::new);
+      var res2 = Create.create1(Foo::new);
+      var res3 = Create.create2(Foo::new);
+      
+      println(res1);
+      println(res2);
+      println(res3);
+      
+      assert res1.toString() == "1,2";
+      assert res2.toString() == "create1,2";
+      assert res3.toString() == "create1,create2";
+   }
+   
+   testFunctionalNativeCreation() {
+      var func = String::new;
+      var compare = Double::compare;
+      var set = TreeSet::new;
+      
+      assert func() == '';
+      assert func('hello') == 'hello';
+      
+      var s = set(compare);
+      var l = [];
+      
+      s.add(2);
+      s.add(1);
+      s.add(3);
+      
+      for(var entry in s){
+         l.add(entry);
+      }
+      println(l);
+      
+      assert l[0] == 1;
+      assert l[1] == 2;
+      assert l[2] == 3;
+   }
+}

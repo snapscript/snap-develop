@@ -9,7 +9,7 @@ import org.snapscript.core.Context;
 import org.snapscript.core.Module;
 import org.snapscript.core.Path;
 import org.snapscript.core.Scope;
-import org.snapscript.core.error.ThreadStack;
+import org.snapscript.core.stack.ThreadStack;
 import org.snapscript.core.trace.Trace;
 import org.snapscript.core.trace.TraceListener;
 import org.snapscript.core.trace.TraceType;

@@ -1,6 +1,6 @@
 package org.snapscript.agent.debug;
 
-import org.snapscript.core.error.ThreadStack;
+import org.snapscript.core.stack.ThreadStack;
 
 public class ThreadStackGenerator {
 
