@@ -85,14 +85,14 @@ public class ResourceTypeLoader {
          
          definition.compile(scope, null); // this might be wrong, maybe null
       } catch(Exception e) {
-         logger.log("Error compiling " + resource, e);
+         logger.info("Error compiling " + resource, e);
          
          try {
             String importSource = createImports(lines);
             Executable executable = compiler.compile(importSource);
             executable.execute();
          }catch(Exception fatal) {
-            logger.log("Error compiling imports for " + resource, fatal);
+            logger.info("Error compiling imports for " + resource, fatal);
          }
       }
       List<Module> modules = registry.getModules();

@@ -77,7 +77,7 @@ public class UserExpressionParser {
             TypeNode type = types.get(constraint);
             
             if(type != null){
-               logger.log("match was " + constraint);
+               logger.info("match was " + constraint);
                return type;
             }
          }

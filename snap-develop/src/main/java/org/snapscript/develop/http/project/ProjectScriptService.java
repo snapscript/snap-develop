@@ -54,10 +54,10 @@ public class ProjectScriptService implements Service {
             channel.register(commandController);
             listener.connect(commandListener, path); // if there is a script then execute it
          } catch(Exception e) {
-            logger.log("Could not connect " + path, e);
+            logger.info("Could not connect " + path, e);
          }
       }catch(Exception e){
-         logger.log("Error connecting " + path, e);
+         logger.info("Error connecting " + path, e);
       }
       
    }

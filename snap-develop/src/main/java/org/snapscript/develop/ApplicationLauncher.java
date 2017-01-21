@@ -6,7 +6,7 @@ import java.util.Set;
 import org.snapscript.develop.http.project.ProjectMode;
 import org.snapscript.service.ScriptService;
 
-//--mode=develop --directory=work --port=4457 --agent-pool=4 --agent-port=4456 --verbose=false
+//--mode=develop --directory=work --port=4457 --agent-pool=4 --agent-port=4456 --log-level=DEBUG
 public class ApplicationLauncher {
    
    private static final String PROJECT_MODE = "project-mode";

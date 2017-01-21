@@ -23,7 +23,7 @@ public class ConsoleTransferListener implements TransferListener {
 
    @Override
    public void transferStarted(TransferEvent event) {
-      logger.log("Transfer started");
+      logger.info("Transfer started");
    }
    
    @Override
@@ -32,7 +32,7 @@ public class ConsoleTransferListener implements TransferListener {
       String repository = event.getResource().getRepositoryUrl();
       String name = event.getResource().getResourceName();
       
-      logger.log(message + ": " + repository + name);
+      logger.info(message + ": " + repository + name);
    }
 
    @Override
@@ -84,7 +84,7 @@ public class ConsoleTransferListener implements TransferListener {
          String location = resource.getRepositoryUrl();
          String name = resource.getResourceName();
          
-         logger.log(type + ": " + location + name + " (" + len + throughput + ")");
+         logger.info(type + ": " + location + name + " (" + len + throughput + ")");
       }
    }
 
@@ -92,7 +92,7 @@ public class ConsoleTransferListener implements TransferListener {
    public void transferFailed(TransferEvent event) {
       Exception exception = event.getException();
       transferCompleted(event);
-      logger.log("Transfer failed", exception);
+      logger.info("Transfer failed", exception);
    }
 
    private void transferCompleted(TransferEvent event) {
@@ -102,7 +102,7 @@ public class ConsoleTransferListener implements TransferListener {
    @Override
    public void transferCorrupted(TransferEvent event) {
       Exception exception = event.getException();
-      logger.log("Transfer corrupted", exception);
+      logger.info("Transfer corrupted", exception);
    }
    
    private long toKB(long bytes) {

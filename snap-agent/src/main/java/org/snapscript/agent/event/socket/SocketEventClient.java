@@ -71,7 +71,7 @@ public class SocketEventClient {
             producer.produce(event);
             return true;
          } catch(Exception e) {
-            logger.log(process + ": Error sending event", e);
+            logger.info(process + ": Error sending event", e);
             close();
          }
          return false;
@@ -118,7 +118,7 @@ public class SocketEventClient {
                }
             }
          }catch(Exception e) {
-            logger.log("Error processing events", e);
+            logger.info("Error processing events", e);
          } finally {
             close();
          }
@@ -129,7 +129,7 @@ public class SocketEventClient {
          try {
             return socket.getLocalPort();
          } catch(Exception e) {
-            logger.log("Error getting local port", e);
+            logger.info("Error getting local port", e);
          }
          return -1;
       }
@@ -142,7 +142,7 @@ public class SocketEventClient {
             }
             socket.close();
          } catch(Exception e) {
-            logger.log("Error closing client connection", e);
+            logger.info("Error closing client connection", e);
          }
       }
    }

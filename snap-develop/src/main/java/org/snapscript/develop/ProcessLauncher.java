@@ -31,6 +31,7 @@ public class ProcessLauncher {
    public ProcessDefinition launch(ProcessConfiguration configuration) throws Exception {
       int remote = channel.port();
       int httpPort = configuration.getPort();
+      String level = logger.getLevel();
       String name = generator.generate();
       String port = String.valueOf(remote);
       String home = System.getProperty("java.home");
@@ -55,6 +56,7 @@ public class ProcessLauncher {
       command.add("org.snapscript.");
       command.add(resources);
       command.add(name);
+      command.add(level);
       command.add(port);
 
       ProcessBuilder builder = new ProcessBuilder(command);
@@ -65,7 +67,7 @@ public class ProcessLauncher {
       }
       File directory = workspace.create(RemoteProcessBuilder.TEMP_PATH);
       
-      logger.log(name + ": " +command);
+      logger.info(name + ": " +command);
       builder.directory(directory);
       builder.redirectErrorStream(true);
       
@@ -91,7 +93,7 @@ public class ProcessLauncher {
             printer.println(dependency);
          }
          printer.close();
-         logger.log("Created " + classPathFile);
+         logger.info("Created " + classPathFile);
       } else if(projectFile.exists()) {
          long projectFileChange = projectFile.lastModified();
          long classPathFileChange = classPathFile.lastModified();
@@ -104,7 +106,7 @@ public class ProcessLauncher {
                printer.println(dependency);
             }
             printer.close();
-            logger.log("Updated " + classPathFile + " from " + projectFile);
+            logger.info("Updated " + classPathFile + " from " + projectFile);
          }
       }
       return classPathFile.getCanonicalPath();

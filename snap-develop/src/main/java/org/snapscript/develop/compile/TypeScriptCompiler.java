@@ -103,14 +103,14 @@ public class TypeScriptCompiler {
       private final ConsoleLogger logger;
       
       public CompilerListener() {
-         this.logger = new ConsoleLogger(true);
+         this.logger = new ConsoleLogger();
       }
 
       @Override
       public void onUpdate(String process, String text) {
          try {
             String line = text.trim();
-            logger.log(process + ": " + line);
+            logger.info(process + ": " + line);
          }catch(Exception e) {
             e.printStackTrace();
          }
@@ -120,7 +120,7 @@ public class TypeScriptCompiler {
       public void onUpdate(String process, String text, Throwable cause) {
          try {
             String line = text.trim();
-            logger.log(process + ": " + line, cause);
+            logger.info(process + ": " + line, cause);
          }catch(Exception e) {
             e.printStackTrace();
          }

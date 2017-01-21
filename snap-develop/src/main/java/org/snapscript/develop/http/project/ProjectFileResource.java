@@ -35,8 +35,10 @@ public class ProjectFileResource implements Resource {
       
       response.setStatus(Status.OK);
       response.setContentType(type);
-      logger.debug(method + ": " + path);
       
+      if(logger.isTrace()) {
+         logger.trace(method + ": " + path);
+      }
       try {
          byte[] resource = projectFile.getByteArray();
          

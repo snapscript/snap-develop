@@ -3,6 +3,7 @@ package org.snapscript.agent;
 import java.net.URI;
 
 import org.snapscript.agent.debug.BreakpointMatcher;
+import org.snapscript.agent.debug.ErrorContextDumper;
 import org.snapscript.agent.debug.SuspendController;
 import org.snapscript.agent.debug.SuspendInterceptor;
 import org.snapscript.agent.event.ProcessEventChannel;
@@ -16,12 +17,14 @@ public class ProcessAgent {
 
    private final ProcessContext context;
    private final String process;
+   private final String level;
    private final URI root;
    private final int port;
 
-   public ProcessAgent(URI root, String process, int port) {
+   public ProcessAgent(URI root, String process, String level, int port) {
       this.context = new ProcessContext(root, process, port);
       this.process = process;
+      this.level = level;
       this.root = root;
       this.port = port;
    }
@@ -35,7 +38,8 @@ public class ProcessAgent {
       String host = root.getHost();
       
       try {
-         ConsoleLogger logger = new ConsoleLogger(true);
+         ConsoleLogger logger = new ConsoleLogger(level);
+         ErrorContextDumper dumper = new ErrorContextDumper(logger);
          SystemValidator validator = new SystemValidator(context);
          ConnectionChecker checker = new ConnectionChecker(process, system);
          ProcessEventReceiver listener = new ProcessEventReceiver(context, checker);
@@ -49,6 +53,7 @@ public class ProcessAgent {
          
          interceptor.register(profiler);
          interceptor.register(suspender);
+         interceptor.register(dumper);
          channel.send(register); // send the initial register event
          validator.validate();
          checker.start();

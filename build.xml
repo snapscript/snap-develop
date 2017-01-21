@@ -22,7 +22,7 @@
       <arg value="--mode=develop"/>
       <arg value="--directory=snap-develop\work" />
       <arg value="--port=4457"/>
-      <arg value="--verbose=false"/>  
+      <arg value="--log-level=DEBUG"/>  
       <arg value="--agent-pool=6"/>      
    </exec>        
 </project>

@@ -11,10 +11,9 @@ import org.snapscript.core.Path;
 import org.snapscript.core.Scope;
 import org.snapscript.core.stack.ThreadStack;
 import org.snapscript.core.trace.Trace;
-import org.snapscript.core.trace.TraceListener;
 import org.snapscript.core.trace.TraceType;
 
-public class SuspendInterceptor implements TraceListener {
+public class SuspendInterceptor extends TraceAdapter {
 
    private final ProcessEventChannel channel;
    private final ThreadProgressLocal monitor;

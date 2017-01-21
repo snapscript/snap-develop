@@ -79,7 +79,7 @@ public class CompletionMatcher {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.log("Time taken to find tokens " + duration);
+         logger.info("Time taken to find tokens " + duration);
       }
    }
    

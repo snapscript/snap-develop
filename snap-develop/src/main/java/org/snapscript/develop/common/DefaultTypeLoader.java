@@ -295,7 +295,7 @@ public class DefaultTypeLoader {
          }
          types.putAll(cache);   
       } catch(Exception e) {
-         logger.log("Error creating default types", e);
+         logger.info("Error creating default types", e);
       }
       return types;
    }

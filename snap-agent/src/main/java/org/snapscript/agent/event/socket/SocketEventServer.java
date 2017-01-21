@@ -88,7 +88,7 @@ public class SocketEventServer implements ProcessEventChannel {
          try {
             int port = server.getLocalPort();
             
-            logger.log("agent-port="+port);
+            logger.info("agent-port="+port);
             
             while(true) {
                Socket socket = server.accept();
@@ -105,7 +105,7 @@ public class SocketEventServer implements ProcessEventChannel {
                }
             }
          }catch(Exception e) {
-            logger.log("Error listening for connections", e);
+            logger.info("Error listening for connections", e);
          }
       }
       
@@ -118,7 +118,7 @@ public class SocketEventServer implements ProcessEventChannel {
             Thread thread = factory.newThread(this);
             thread.start();
          }catch(Exception e){
-            logger.log("Error starting acceptor", e);
+            logger.info("Error starting acceptor", e);
          }
       }
       
@@ -126,7 +126,7 @@ public class SocketEventServer implements ProcessEventChannel {
          try {
             server.close();
          }catch(Exception e){
-            logger.log("Error closing acceptor", e);
+            logger.info("Error closing acceptor", e);
          }
       }
    }
@@ -154,7 +154,7 @@ public class SocketEventServer implements ProcessEventChannel {
             producer.produce(event);
             return true;
          } catch(Exception e) {
-            logger.log(process + ": Error sending event", e);
+            logger.info(process + ": Error sending event", e);
             receivers.remove(process);
             close();
          }
@@ -207,7 +207,7 @@ public class SocketEventServer implements ProcessEventChannel {
                }
             }
          }catch(Exception e) {
-            logger.log("Error listening for events", e);
+            logger.info("Error listening for events", e);
          }finally {
             close();
          }
@@ -220,7 +220,7 @@ public class SocketEventServer implements ProcessEventChannel {
                thread.start();
             }
          }catch(Exception e) {
-            logger.log("Could not start server", e);
+            logger.info("Could not start server", e);
          }
       }
       
@@ -229,7 +229,7 @@ public class SocketEventServer implements ProcessEventChannel {
          try {
             return socket.getLocalPort();
          } catch(Exception e) {
-            logger.log("Error getting local port", e);
+            logger.info("Error getting local port", e);
          }
          return -1;
       }
@@ -242,7 +242,7 @@ public class SocketEventServer implements ProcessEventChannel {
             }
             socket.close();
          } catch(Exception e) {
-            logger.log("Error closing socket", e);
+            logger.info("Error closing socket", e);
          }
       }
    }

@@ -84,7 +84,7 @@ public class ProcessPool {
          launch(); // start a process straight away
          return connection;
       }catch(Exception e){
-         logger.log("Could not acquire process for '" +system+ "'", e);
+         logger.info("Could not acquire process for '" +system+ "'", e);
       }
       return null;
    }
@@ -93,7 +93,7 @@ public class ProcessPool {
       try {
          listeners.add(listener);
       }catch(Exception e){
-         logger.log("Could not register process listener", e);
+         logger.info("Could not register process listener", e);
       }
    }
    
@@ -101,7 +101,7 @@ public class ProcessPool {
       try {
          listeners.remove(listener);
       }catch(Exception e){
-         logger.log("Could not remove process listener", e);
+         logger.info("Could not remove process listener", e);
       }
    }
    
@@ -111,7 +111,7 @@ public class ProcessPool {
          server.start();
          pinger.start(port);
       } catch(Exception e) {
-         logger.log("Could not start pool on port " + port, e);
+         logger.info("Could not start pool on port " + port, e);
       }
    }
    
@@ -120,7 +120,7 @@ public class ProcessPool {
          Thread thread = factory.newThread(starter);
          thread.start();
       } catch(Exception e) {
-         logger.log("Could not launch process", e);
+         logger.info("Could not launch process", e);
       }
    }
    
@@ -149,7 +149,7 @@ public class ProcessPool {
             try {
                listener.onRegister(channel, event);
             } catch(Exception e) {
-               logger.log(process + ": Exception processing exit event", e);
+               logger.info(process + ": Exception processing exit event", e);
                listeners.remove(listener);
             }
          }
@@ -163,7 +163,7 @@ public class ProcessPool {
             try {
                listener.onExit(channel, event);
             } catch(Exception e) {
-               logger.log(process + ": Exception processing exit event", e);
+               logger.info(process + ": Exception processing exit event", e);
                listeners.remove(listener);
             }
          }
@@ -177,7 +177,7 @@ public class ProcessPool {
             try {
                listener.onWriteError(channel, event);
             } catch(Exception e) {
-               logger.log(process + ": Exception processing write error event", e);
+               logger.info(process + ": Exception processing write error event", e);
                listeners.remove(listener);
             }
          }
@@ -191,7 +191,7 @@ public class ProcessPool {
             try {
                listener.onWriteOutput(channel, event);
             } catch(Exception e) {
-               logger.log(process + ": Exception processing write output event", e);
+               logger.info(process + ": Exception processing write output event", e);
                listeners.remove(listener);
             }
          }
@@ -205,7 +205,7 @@ public class ProcessPool {
             try {
                listener.onSyntaxError(channel, event);
             } catch(Exception e) {
-               logger.log(process + ": Exception processing syntax error event", e);
+               logger.info(process + ": Exception processing syntax error event", e);
                listeners.remove(listener);
             }
          }
@@ -219,7 +219,7 @@ public class ProcessPool {
             try {
                listener.onBegin(channel, event);
             } catch(Exception e) {
-               logger.log(process + ": Exception processing begin event", e);
+               logger.info(process + ": Exception processing begin event", e);
                listeners.remove(listener);
             }
          }
@@ -233,7 +233,7 @@ public class ProcessPool {
             try {
                listener.onProfile(channel, event);
             } catch(Exception e) {
-               logger.log(process + ": Exception processing profile event", e);
+               logger.info(process + ": Exception processing profile event", e);
                listeners.remove(listener);
             }
          }
@@ -247,7 +247,7 @@ public class ProcessPool {
             try {
                listener.onPong(channel, event);
             } catch(Exception e) {
-               logger.log(process + ": Exception processing pong event", e);
+               logger.info(process + ": Exception processing pong event", e);
                listeners.remove(listener);
             }
          }
@@ -261,7 +261,7 @@ public class ProcessPool {
             try {
                listener.onScope(channel, event);
             } catch(Exception e) {
-               logger.log(process + ": Exception processing scope event", e);
+               logger.info(process + ": Exception processing scope event", e);
                listeners.remove(listener);
             }
          }
@@ -281,7 +281,7 @@ public class ProcessPool {
          try {
             pinger.launch();
          }catch(Exception e) {
-            logger.log("Error starting agent", e);
+            logger.info("Error starting agent", e);
          }
       }
    }
@@ -319,7 +319,7 @@ public class ProcessPool {
                Thread.sleep(frequency);
                ping();
             }catch(Exception e) {
-               logger.log("Error pinging agents", e);
+               logger.info("Error pinging agents", e);
             }
          }
       }
@@ -337,7 +337,7 @@ public class ProcessPool {
                return true;
             }
          }catch(Exception e) {
-            logger.log("Error launching agent", e);
+            logger.info("Error launching agent", e);
          }
          return false;
       }
@@ -360,7 +360,7 @@ public class ProcessPool {
                return true;
             }
          }catch(Exception e) {
-            logger.log("Error killing agent", e);
+            logger.info("Error killing agent", e);
          }
          return false;
       }
@@ -414,7 +414,7 @@ public class ProcessPool {
             }
             running.addAll(active);
          }catch(Exception e){
-            logger.log("Error pinging agents", e);
+            logger.info("Error pinging agents", e);
          }
       }
    }

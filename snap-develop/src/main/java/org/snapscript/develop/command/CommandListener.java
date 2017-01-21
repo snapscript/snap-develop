@@ -70,7 +70,7 @@ public class CommandListener {
             }
          }
       } catch(Exception e) {
-         logger.log("Error exploring directory " + resource, e);
+         logger.info("Error exploring directory " + resource, e);
       }
    }
    
@@ -114,7 +114,7 @@ public class CommandListener {
             }
          }
       } catch(Exception e) {
-         logger.log("Error saving " + resource, e);
+         logger.info("Error saving " + resource, e);
       }
    }
    
@@ -145,7 +145,7 @@ public class CommandListener {
             }
          } 
       } catch(Exception e) {
-         logger.log("Error renaming " + from, e);
+         logger.info("Error renaming " + from, e);
       }
    }   
    
@@ -175,7 +175,7 @@ public class CommandListener {
             client.sendSyntaxError(resource, description, time, line);
          }
       } catch(Exception e) {
-         logger.log("Error executing " + resource, e);
+         logger.info("Error executing " + resource, e);
       }
    }
    
@@ -203,7 +203,7 @@ public class CommandListener {
          engine.breakpoints(command, process);
          engine.register(forwarder); // make sure we are registered
       } catch(Exception e) {
-         logger.log("Error attaching to process " + process, e);
+         logger.info("Error attaching to process " + process, e);
       }
    }
    
@@ -216,7 +216,7 @@ public class CommandListener {
             engine.step(command, focus);
          }
       } catch(Exception e) {
-         logger.log("Error stepping through " + thread +" in process " + focus, e);
+         logger.info("Error stepping through " + thread +" in process " + focus, e);
       }
    }
    
@@ -240,7 +240,7 @@ public class CommandListener {
             }
          }
       } catch(Exception e) {
-         logger.log("Error deleting " + resource, e);
+         logger.info("Error deleting " + resource, e);
       }
    }
    
@@ -252,7 +252,7 @@ public class CommandListener {
             engine.breakpoints(command, focus);
          }
       } catch(Exception e){
-         logger.log("Error setting breakpoints for process " + focus, e);
+         logger.info("Error setting breakpoints for process " + focus, e);
       }
    }
    
@@ -264,7 +264,7 @@ public class CommandListener {
             engine.browse(command, focus);
          }
       } catch(Exception e) {
-         logger.log("Error browsing variables for process " + focus, e);
+         logger.info("Error browsing variables for process " + focus, e);
       }
    }
    
@@ -276,7 +276,7 @@ public class CommandListener {
             engine.evaluate(command, focus);
          }
       } catch(Exception e) {
-         logger.log("Error browsing variables for process " + focus, e);
+         logger.info("Error browsing variables for process " + focus, e);
       }
    }
    
@@ -290,7 +290,7 @@ public class CommandListener {
             filter.clear();
          }
       } catch(Exception e) {
-         logger.log("Error stopping process " + focus, e);
+         logger.info("Error stopping process " + focus, e);
       }
    }
    
@@ -308,7 +308,7 @@ public class CommandListener {
          }
          engine.register(forwarder); // make sure we are registered
       } catch(Exception e) {
-         logger.log("Error pinging process " + focus, e);
+         logger.info("Error pinging process " + focus, e);
       }
    }
    
@@ -350,7 +350,7 @@ public class CommandListener {
             client.sendSyntaxError(path,description,  time, line);
          }
       } catch(Exception e) {
-         logger.log("Error pinging process " + focus, e);
+         logger.info("Error pinging process " + focus, e);
       }
    }
    
@@ -359,7 +359,7 @@ public class CommandListener {
          //client.sendProcessTerminate();
          engine.remove(forwarder);
       } catch(Exception e) {
-         logger.log("Error removing listener", e);
+         logger.info("Error removing listener", e);
       }
    }
 }

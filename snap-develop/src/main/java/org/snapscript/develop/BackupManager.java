@@ -110,7 +110,7 @@ public class BackupManager {
             return backupIterator.next();
          }
       } catch(Exception e) {
-         logger.log("Could not find backup from " + file, e);
+         logger.info("Could not find backup from " + file, e);
       }
       return null;
    }
@@ -145,7 +145,7 @@ public class BackupManager {
          Collections.reverse(backupHistory);
          return backupHistory;
       } catch(Exception e) {
-         logger.log("Could not find backup from " + file, e);
+         logger.info("Could not find backup from " + file, e);
       }
       return Collections.emptyList();
    }
@@ -163,7 +163,7 @@ public class BackupManager {
          input.close();
          output.close();
       } catch(Exception e) {
-         logger.log("Could not backup " + from + " to " + to);
+         logger.info("Could not backup " + from + " to " + to);
       }
    }
    
@@ -187,7 +187,7 @@ public class BackupManager {
             }
          }
       } catch(Exception e) {
-         logger.log("Could not delete " + file);
+         logger.info("Could not delete " + file);
       }
    }
    
@@ -204,7 +204,7 @@ public class BackupManager {
          input.close();
          return digest.digest();
       } catch(Exception e) {
-         logger.log("Could not get MD5 digest of " + file);
+         logger.info("Could not get MD5 digest of " + file);
       }
       return new byte[]{};
    }
@@ -217,7 +217,7 @@ public class BackupManager {
          encoder.write(content);
          encoder.close();
       } catch(Exception e) {
-         logger.log("Could not save " + file);
+         logger.info("Could not save " + file);
       }
    }
    

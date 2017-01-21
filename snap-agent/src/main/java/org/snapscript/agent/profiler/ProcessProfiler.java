@@ -10,12 +10,12 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.snapscript.agent.debug.TraceAdapter;
 import org.snapscript.core.Path;
 import org.snapscript.core.Scope;
 import org.snapscript.core.trace.Trace;
-import org.snapscript.core.trace.TraceListener;
 
-public class ProcessProfiler implements TraceListener {
+public class ProcessProfiler extends TraceAdapter {
    
    private final Map<String, ResourceProfiler> profilers;
    private final Set<String> resources;

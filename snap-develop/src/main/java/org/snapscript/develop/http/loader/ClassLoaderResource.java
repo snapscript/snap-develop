@@ -27,8 +27,9 @@ public class ClassLoaderResource implements Resource {
       PrintStream output = response.getPrintStream();
       byte[] data = loader.loadClass(normal); 
 
-      logger.debug(method + ": " + normal);
-      
+      if(logger.isTrace()) {
+         logger.trace(method + ": " + normal);
+      }
       if(data == null) {
          response.setStatus(Status.NOT_FOUND);
          response.setContentType("text/plain");

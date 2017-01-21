@@ -19,37 +19,73 @@ public class ConsoleLogger {
    private final LogDispatcher dispatcher;
    private final DateFormatter formatter;
    private final PrintStream logger;
-   private final boolean verbose;
+   private final LogLevel level;
    
    public ConsoleLogger() {
-      this(false);
+      this(null);
    }
    
-   public ConsoleLogger(boolean verbose) {
+   public ConsoleLogger(String level) {
       this.dispatcher = new LogDispatcher(EVENT_LIMIT);
       this.formatter = new DateFormatter(TIME_FORMAT);
+      this.level = LogLevel.resolveLevel(level);
       this.logger = System.out;
-      this.verbose = verbose;
+   }
+   
+   public String getLevel() {
+      return level.name();
+   }
+   
+   public boolean isTrace() {
+      return level.isDebug();
+   }
+   
+   public boolean isDebug() {
+      return level.isDebug();
+   }
+   
+   public void trace(String message) {
+      if(level.isTrace()) {
+         log(message);
+      }
+   }
+   
+   public void trace(String message, Throwable cause) {
+      if(level.isTrace()) {
+         log(message, cause);
+      }
    }
    
    public void debug(String message) {
-      if(verbose) {
+      if(level.isDebug()) {
          log(message);
       }
    }
    
    public void debug(String message, Throwable cause) {
-      if(verbose) {
+      if(level.isDebug()) {
          log(message, cause);
       }
    }
    
-   public void log(String message) {
+   public void info(String message) {
+      if(level.isInfo()) {
+         log(message);
+      }
+   }
+   
+   public void info(String message, Throwable cause) {
+      if(level.isInfo()) {
+         log(message, cause);
+      }
+   }
+   
+   private void log(String message) {
       LogEvent event = new LogEvent(message, null);
       dispatcher.log(event);
    }
    
-   public void log(String message, Throwable cause) {
+   private void log(String message, Throwable cause) {
       LogEvent event = new LogEvent(message, cause);
       dispatcher.log(event);
    }
@@ -65,6 +101,47 @@ public class ConsoleLogger {
       @Override
       public DateFormat initialValue(){
          return new SimpleDateFormat(format);
+      }
+   }
+   
+   private enum LogLevel {
+      TRACE(0),
+      DEBUG(1),
+      INFO(2);
+      
+      private final int level;
+      
+      private LogLevel(int level){
+         this.level = level;
+      }
+      
+      public boolean isTrace(){
+         return level <= TRACE.level;
+      }
+      
+      public boolean isDebug(){
+         return level <= DEBUG.level;
+      }
+      
+      public boolean isInfo(){
+         return level <= INFO.level;
+      }
+      
+      public static LogLevel resolveLevel(String token){
+         if(token != null) {
+            String match = token.trim();
+            LogLevel[] levels = values();
+            
+            for(LogLevel level : levels){
+               String name = level.name();
+               
+               if(name.equalsIgnoreCase(match)) {
+                  return level;
+               }
+            }
+         }
+         return LogLevel.INFO;
+         
       }
    }
    
@@ -135,7 +212,7 @@ public class ConsoleLogger {
          if(cause != null) {
             logger.print(date + " ["+name+"] " + message);
             
-            if(verbose) {
+            if(level.isDebug()) {
                logger.print(": ");
                cause.printStackTrace(logger);
             } else {
