@@ -2,6 +2,18 @@ import test.TestCaseRunner;
 
 const project = System.getenv("PROJECT_ROOT"); // .project file
 const directory = "${project}\\test";
-const runner = new TestCaseRunner(directory);
 
-runner.runTests();
+function main(directory) {
+   const time = System.currentTimeMillis();
+   const runner = new TestCaseRunner(directory);
+   
+   try {
+      runner.runTests();
+   }finally {
+      const finish = System.currentTimeMillis();
+      const duration = finish - time;
+      
+      println("TIME ${duration} ms");
+   }
+}
+main(directory);
