@@ -212,7 +212,7 @@ public class ConsoleLogger {
          if(cause != null) {
             logger.print(date + " ["+name+"] " + message);
             
-            if(level.isDebug()) {
+            if(level.isTrace()) {
                logger.print(": ");
                cause.printStackTrace(logger);
             } else {
