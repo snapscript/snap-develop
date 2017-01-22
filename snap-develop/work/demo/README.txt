@@ -1,1 +1,1 @@
-Make sure TreeSet(Double::compare) works
+synchronized(x) needs to used a cached proxy
