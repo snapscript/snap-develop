@@ -22,7 +22,6 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    
    private final CommandFilter filter;
    private final CommandClient client;
-
    
    public CommandEventForwarder(CommandClient client, CommandFilter filter) {
       this.filter = filter;

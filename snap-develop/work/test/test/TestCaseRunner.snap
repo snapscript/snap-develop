@@ -1,6 +1,7 @@
 import util.concurrent.ScheduledThreadPoolExecutor;
 import util.concurrent.ConcurrentHashMap;
 import util.concurrent.CopyOnWriteArraySet;
+import util.concurrent.LinkedBlockingQueue;
 import compile.StoreContext;
 import compile.ResourceCompiler;
 import core.FilePathConverter;
@@ -21,9 +22,10 @@ class TestCaseRunner {
       const converter = new FilePathConverter();
       const root = new File(directory);
       const store = new FileStore(root);
-      const executor = new ScheduledThreadPoolExecutor(10);
+      const executor = new ScheduledThreadPoolExecutor(20);
       const failures = new ConcurrentHashMap();
       const complete = new CopyOnWriteArraySet();
+      const tasks = new LinkedBlockingQueue();
       const model = new EmptyModel();
       
       for(var script in scripts) {
@@ -32,24 +34,34 @@ class TestCaseRunner {
          const file = new File(directory, script);
          
          if(file.exists()) {
-            const evaluator = context.getEvaluator();
-            const registry = context.getRegistry();
-            const package = converter.createModule(script);
-            const executable = compiler.compile(script);
-            
-            try {
-               const name = file.getName().replace(".snap", "");
+            //const task = executor.submit(-> {
+               const evaluator = context.getEvaluator();
+               const registry = context.getRegistry();
+               const package = converter.createModule(script);
+               const executable = compiler.compile(script);
                
-               executable.execute();
-               evaluator.evaluate(model, "new ${name}().runTests()", package)
-                  .stream()
-                  .forEach(test -> complete.add(test));
-            }catch(e){
-               println("Failure for ${script}");
-               failures.put(script, e);
-            }
+               try {
+                  const name = file.getName().replace(".snap", "");
+                  
+                  executable.execute();
+                  evaluator.evaluate(model, "new ${name}().runTests()", package)
+                     .stream()
+                     .forEach(test -> complete.add(test));
+               }catch(e){
+                  println("Failure for ${script}");
+                  failures.put(script, e);
+               }
+            // }, null);
+            
+            // if(tasks.size > 10){
+            //    tasks.take().get();
+            // }
+            // tasks.offer(task);
          }
       }
+      // while(!tasks.isEmpty()) {
+      //    tasks.take().get();
+      // }
       for(var failure in failures) {
          println("FAIL: ${failure.key}");
          failure.value.printStackTrace();

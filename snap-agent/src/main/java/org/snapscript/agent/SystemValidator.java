@@ -22,8 +22,10 @@ public class SystemValidator {
    "println(InternalTypeForScriptAgent.ARR);";
    
    private final ProcessContext context;
+   private final Path path;
    
    public SystemValidator(ProcessContext context) {
+      this.path = new Path("/internalPrivateScript.snap");
       this.context = context;
    }
 
@@ -31,7 +33,7 @@ public class SystemValidator {
       PackageLinker linker = context.getLinker();
       
       try {
-         linker.link(new Path("/internalPrivateScript.snap"), SOURCE, "script");
+         linker.link(path, SOURCE, "script");
       }catch(Exception e) {
          e.printStackTrace();
       }
