@@ -56,7 +56,7 @@ public class ProcessEventStream extends OutputStream {
             stream.write(octets, offset, length);
          }
       }catch(Exception e) {
-         throw new IOException("Error sending write event", e);
+         throw new IOException("Error sending write event");
       }
    }
    

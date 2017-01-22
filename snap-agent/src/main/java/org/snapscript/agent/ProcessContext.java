@@ -31,8 +31,12 @@ public class ProcessContext {
    }
    
    public ProcessContext(URI root, String process, int port, int threads) {
+      this(root, process, port, threads, 0);
+   }
+   
+   public ProcessContext(URI root, String process, int port, int threads, int stack) {
       this.store = new ProcessStore(root);
-      this.executor = new ThreadPool(4);
+      this.executor = new ThreadPool(threads, stack);
       this.context = new StoreContext(store, executor);
       this.compiler = new ResourceCompiler(context);
       this.controller = new SuspendController();

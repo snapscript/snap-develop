@@ -117,8 +117,10 @@ public class ProcessPool {
    
    public void launch() { // launch a new process!!
       try {
-         Thread thread = factory.newThread(starter);
-         thread.start();
+         if(capacity > 0){
+            Thread thread = factory.newThread(starter);
+            thread.start();
+         }
       } catch(Exception e) {
          logger.info("Could not launch process", e);
       }

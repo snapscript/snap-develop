@@ -22,7 +22,15 @@ public class ProcessAgent {
    private final int port;
 
    public ProcessAgent(URI root, String process, String level, int port) {
-      this.context = new ProcessContext(root, process, port);
+      this(root, process, level, port, 0);
+   }
+   
+   public ProcessAgent(URI root, String process, String level, int port, int threads) {
+      this(root, process, level, port, threads, 0);
+   }
+   
+   public ProcessAgent(URI root, String process, String level, int port, int threads, int stack) {
+      this.context = new ProcessContext(root, process, port, threads, stack);
       this.process = process;
       this.level = level;
       this.root = root;
