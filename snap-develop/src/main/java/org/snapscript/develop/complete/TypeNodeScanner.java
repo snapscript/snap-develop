@@ -74,7 +74,9 @@ public class TypeNodeScanner {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("Took " + duration + " ms to compile project " + name);
+         if(logger.isDebug()) {
+            logger.debug("Took " + duration + " ms to compile project " + name);
+         }
       }
    }
    
@@ -105,8 +107,9 @@ public class TypeNodeScanner {
          }
          String source = FileReader.readText(file);
          
-         logger.debug("Compiling " + resourcePath + " in project " + reference);
-         
+         if(logger.isTrace()) {
+            logger.trace("Compiling " + resourcePath + " in project " + reference);
+         }
          return finder.parse(root, name, resourcePath, source);
       }
    }

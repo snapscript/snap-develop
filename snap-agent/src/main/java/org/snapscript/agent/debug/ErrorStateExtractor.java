@@ -18,13 +18,13 @@ import org.snapscript.core.error.InternalError;
 import org.snapscript.core.stack.ThreadStack;
 import org.snapscript.core.trace.Trace;
 
-public class ErrorContextDumper extends TraceAdapter {
+public class ErrorStateExtractor extends TraceAdapter {
    
    private static final String INDENT = "   ";
 
    private final ConsoleLogger logger;
    
-   public ErrorContextDumper(ConsoleLogger logger) {
+   public ErrorStateExtractor(ConsoleLogger logger) {
       this.logger = logger;
    }
 
@@ -48,10 +48,11 @@ public class ErrorContextDumper extends TraceAdapter {
             expand.add(name+".*");
          }
          Map<String, Map<String, String>> variables = traverser.expand(expand);
+         Thread thread = Thread.currentThread();
          Path path = trace.getPath();
          int line = trace.getLine();
          InternalError exception = converter.create(cause);
-         String descripton = createDescription(cause, path, line);
+         String descripton = createDescription(cause, thread, path, line);
          String error = createException(exception, INDENT);
          String data = createVariables(variables, INDENT);
          
@@ -64,15 +65,20 @@ public class ErrorContextDumper extends TraceAdapter {
       }
    }
    
-   private String createDescription(Exception cause, Path path, int line) {
+   private String createDescription(Exception cause, Thread thread, Path path, int line) {
       StringWriter builder = new StringWriter();
       PrintWriter writer = new PrintWriter(builder);
       
-      writer.print("ERROR: ");
+      writer.print("ERROR: '");
       writer.print(path);
-      writer.print(" at line ");
+      writer.print("' at line ");
       writer.print(line);
-      writer.print(" [");
+      writer.print(" on thread '");
+      
+      String name = thread.getName();
+      
+      writer.print(name);
+      writer.print("' [");
       writer.print(cause);
       writer.println("]");
       writer.flush();

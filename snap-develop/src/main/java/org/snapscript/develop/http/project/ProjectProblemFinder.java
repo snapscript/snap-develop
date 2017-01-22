@@ -78,8 +78,9 @@ public class ProjectProblemFinder {
          }
          String source = FileReader.readText(file);
          
-         logger.debug("Compiling " + resourcePath + " in project " + reference);
-         
+         if(logger.isTrace()) {
+            logger.trace("Compiling " + resourcePath + " in project " + reference);
+         }
          return finder.parse(name, resourcePath, source);
       }
    }
