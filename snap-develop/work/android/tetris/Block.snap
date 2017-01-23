@@ -1,0 +1,90 @@
+
+class Block with Externalizable {
+
+   // cell status values (outer):
+   static const CELL_EMPTY = 0;
+   static const CELL_DYNAMIC = 1;
+
+   static random = new Random();
+
+   // current block state:
+   var shape = 0;
+   var frame = 0;
+   var topLeft = new Point(Model.NUM_COLS / 2, 0);
+   var color;
+   
+   new(nShape, blockColor) {
+      this.shape = nShape;
+      this.color = blockColor;
+   }
+   
+   override readExternal(input) {
+      shape = input.readInt();
+      frame = input.readInt();
+      topLeft = new Point(input.readInt(), input.readInt());
+      color = BlockColor.valueOf(input.readUTF());
+   }
+
+   override writeExternal(output) {
+      output.writeInt(shape);
+      output.writeInt(frame);
+      output.writeInt(topLeft.getX());
+      output.writeInt(topLeft.getY());
+      output.writeUTF(color.name());
+   }
+
+   getFrame() {
+      return frame;
+   }
+
+   getColor() {
+      return color.color;
+   }
+
+   getStaticValue() {
+      return color.value;
+   }
+
+   static getColorForStaticValue(b) {
+      for (var item in BlockColor.values) {
+         if (b == item.value) {
+            return item.color;
+         }
+      }
+      return -1; // color is not found
+   }
+
+   setState(frame, topLeft) {
+      this.frame = frame;
+      this.topLeft = topLeft;
+   }
+
+   getFramesCount() {
+      return Shape.values[shape].getFrameCount();
+   }
+
+   getShape(nFrame) {
+      return Shape.values[shape].getFrame(nFrame).get();
+   }
+
+   getShapeWidth(nFrame) {
+      return Shape.values[shape].getFrame(nFrame).getWidth();
+   }
+
+   static createBlock() {
+      synchronized(this){
+         // generate random number:
+         var indexShape = random.nextInt(Shape.values().length);
+         var blockColor = BlockColor.value[random.nextInt(BlockColor.values.length)];
+         var result = new Block(indexShape, blockColor);
+         // Set to the middle
+         result.topLeft.setX(result.topLeft.getX() - Shape.values[indexShape].getStartMiddleX());
+   
+         return result;
+      }
+   }
+
+   getTopLeft() {
+      return this.topLeft;
+   }
+}

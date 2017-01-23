@@ -1,0 +1,41 @@
+
+import android.view.MotionEvent;
+import android.view.View;
+
+class GameController with View.OnTouchListener {
+   
+   const activity;
+   
+   new(activity){
+      this.activity = activity;
+   }
+   
+   override onTouch(view, event) {
+      var model = activity.getModel();
+      if (model.isGameOver() || model.isGameBeforeStart()) {
+         activity.startNewGame();
+         return true;
+      } else if (model.isGameActive()) {
+         var direction = activity.getDirection(v, event);
+         switch (direction) {
+         case 0: // left
+            activity.doMove(Move.LEFT);
+            break;
+         case 1: // rotate
+            activity.doMove(Move.ROTATE);
+            break;
+         case 2: // down
+            activity.doMove(Move.DOWN);
+            break;
+         case 3: // right
+            activity.doMove(Move.RIGHT);
+            break;
+         }
+         return true;
+      } else {
+         // Paused state
+         activity.activateGame();
+         return true;
+      }
+   }
+}

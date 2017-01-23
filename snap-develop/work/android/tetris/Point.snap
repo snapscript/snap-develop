@@ -1,0 +1,30 @@
+
+class Point {
+	var x;
+	var y;
+	
+	new(point) :
+	   this(point.x, point.y){}
+
+	new(x, y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	getX() {
+		return x;
+	}
+
+	getY() {
+		return y;
+	}
+	
+	setX(x) {
+		this.x = x;
+	}
+	
+	setY(y) {
+		this.y = y;
+	}
+
+}

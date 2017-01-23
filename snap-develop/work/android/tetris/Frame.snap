@@ -1,0 +1,28 @@
+
+class Frame {
+   
+   const data;
+   const width;
+   
+   new(width) {
+      this.data = [];
+      this.width = width;
+   }
+   
+   getWidth(){
+      return width;
+   }
+
+   add(rowStr) {
+      const row = new Byte[rowStr.length];
+      for (var i = 0; i < rowStr.length; i++) {
+         row[i] = Byte.valueOf("" + rowStr.charAt(i));
+      }
+      data.add(row);
+      return this;
+   }
+
+   get() {
+      return data.toArray(result);
+   }
+}

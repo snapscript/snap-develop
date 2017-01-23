@@ -16,6 +16,7 @@ import org.snapscript.agent.event.PingEvent;
 import org.snapscript.agent.event.ProcessEventAdapter;
 import org.snapscript.agent.event.ProcessEventChannel;
 import org.snapscript.agent.event.StepEvent;
+import org.snapscript.core.Model;
 
 public class ProcessEventReceiver extends ProcessEventAdapter {
    
@@ -24,9 +25,9 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
    private final ResourceExecutor executor;
    private final ProcessContext context;
    
-   public ProcessEventReceiver(ProcessContext context, ConnectionChecker checker) throws Exception {
+   public ProcessEventReceiver(ProcessContext context, ConnectionChecker checker, Model model) throws Exception {
       this.reference = new AtomicReference<ExecuteData>();
-      this.executor = new ResourceExecutor(context);
+      this.executor = new ResourceExecutor(context, model);
       this.checker = checker;
       this.context = context;
    }

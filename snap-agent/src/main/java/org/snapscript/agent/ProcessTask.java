@@ -12,6 +12,7 @@ import org.snapscript.agent.profiler.ProfileResult;
 import org.snapscript.agent.profiler.ProfileResultUpdater;
 import org.snapscript.compile.Executable;
 import org.snapscript.compile.ResourceCompiler;
+import org.snapscript.core.Model;
 
 public class ProcessTask implements Runnable {
    
@@ -19,12 +20,14 @@ public class ProcessTask implements Runnable {
    private final ProcessContext context;
    private final String resource;
    private final String project;
+   private final Model model;
    
-   public ProcessTask(ProcessEventChannel client, ProcessContext context, String project, String resource) {
+   public ProcessTask(ProcessEventChannel client, ProcessContext context, Model model, String project, String resource) {
       this.client = client;
       this.resource = resource;
       this.project = project;
       this.context = context;
+      this.model = model;
    }
    
    @Override
@@ -51,7 +54,7 @@ public class ProcessTask implements Runnable {
          try {
             updater.start(process); // start sending profile events!!!
             middle = System.nanoTime();
-            executable.execute(); // execute the script
+            executable.execute(model); // execute the script
          } catch(Throwable e) {
             e.printStackTrace();
          }finally {

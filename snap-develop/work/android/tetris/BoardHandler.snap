@@ -1,0 +1,33 @@
+
+import tetris.snap.MessageHandler;
+import tetris.snap.MessageListener;
+
+import android.os.Message;
+
+class BoardHandler with MessageListener {
+
+   const handler;
+   const owner;
+
+   new(owner) {
+      this.handler = new MessageHandler(this);
+      this.owner = owner;
+   }
+
+   override handleMessage(msg) {
+      if (null == owner.getModel()) {
+         return;
+      }
+      if (owner.getModel().isGameOver()) {
+         owner.getGame().endGame();
+      }
+      if (owner.getModel().isGameActive()) {
+         owner.setGameCommandWithDelay(Move.DOWN);
+      }
+   }
+
+   sleep(delayMillis) {
+      handler.removeMessages(0);
+      handler.sendMessageDelayed(handler.obtainMessage(0), delayMillis);
+   }
+}

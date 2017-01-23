@@ -1,0 +1,18 @@
+
+class Dimension {
+	const width;
+	const height;
+	
+	new(width, height) {
+		this.width = width;
+		this.height = height;
+	}
+
+	getWidth() {
+		return width;
+	}
+
+	getHeight() {
+		return height;
+	}
+}

@@ -11,6 +11,8 @@ import org.snapscript.agent.event.ProcessEventTimer;
 import org.snapscript.agent.event.RegisterEvent;
 import org.snapscript.agent.event.socket.SocketEventClient;
 import org.snapscript.agent.profiler.ProcessProfiler;
+import org.snapscript.core.EmptyModel;
+import org.snapscript.core.Model;
 import org.snapscript.core.trace.TraceInterceptor;
 
 public class ProcessAgent {
@@ -18,6 +20,7 @@ public class ProcessAgent {
    private final ProcessContext context;
    private final String process;
    private final String level;
+   private final Model model;
    private final URI root;
    private final int port;
 
@@ -31,6 +34,7 @@ public class ProcessAgent {
    
    public ProcessAgent(URI root, String process, String level, int port, int threads, int stack) {
       this.context = new ProcessContext(root, process, port, threads, stack);
+      this.model = new EmptyModel();
       this.process = process;
       this.level = level;
       this.root = root;
@@ -38,6 +42,10 @@ public class ProcessAgent {
    }
    
    public void start() throws Exception {
+      start(model);
+   }
+   
+   public void start(Model model) throws Exception {
       BreakpointMatcher matcher = context.getMatcher();
       SuspendController controller = context.getController();
       TraceInterceptor interceptor = context.getInterceptor();
@@ -50,7 +58,7 @@ public class ProcessAgent {
          ErrorStateExtractor extractor = new ErrorStateExtractor(logger);
          SystemValidator validator = new SystemValidator(context);
          ConnectionChecker checker = new ConnectionChecker(process, system);
-         ProcessEventReceiver listener = new ProcessEventReceiver(context, checker);
+         ProcessEventReceiver listener = new ProcessEventReceiver(context, checker, model);
          ProcessEventTimer timer = new ProcessEventTimer(listener, logger);
          SocketEventClient client = new SocketEventClient(timer, logger);
          ProcessEventChannel channel = client.connect(host, port);
