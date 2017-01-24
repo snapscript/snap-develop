@@ -1,0 +1,142 @@
+
+import org.snapscript.tetris.snap.Panel;
+import org.snapscript.tetris.snap.PanelListener;
+
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+
+class Board with PanelListener {
+
+	const DELAY = 400;
+	const BLOCK_OFFSET = 2;
+	const FRAME_OFFSET_BASE = 10;
+
+	var redrawHandler = new BoardHandler(this);
+	const paint = new Paint();
+
+	var width;
+	var height;
+	var cellSize;
+	var frameOffset;
+	var model;
+	var lastMove = 0;
+	var game;
+	var panel;
+	
+	new(panel) {
+	   this.panel = panel;
+	}
+	
+	getModel(){
+	   return model;
+	}
+
+	setModel(model) {
+		this.model = model;
+	}
+	
+	getPanel(){
+	   return panel;
+	}
+	
+	getGame(){
+	   return game;
+	}
+
+	setGame(game) {
+		this.game = game;
+	}
+
+	setGameCommand(move) {
+		if (null == model || !model.isGameActive()) {
+			return;
+		}
+		if (Move.DOWN.equals(move)) {
+			model.genereteNewField(move);
+			panel.invalidate();
+			return;
+		}
+		setGameCommandWithDelay(move);
+	}
+
+	setGameCommandWithDelay(move) {
+		var now = System.currentTimeMillis();
+
+		if (now - lastMove > DELAY) {
+			model.genereteNewField(move);
+			panel.invalidate();
+			lastMove = now;
+		}
+		redrawHandler.sleep(DELAY);
+	}
+
+	drawCell(canvas, row, col) {
+		var nStatus = model.getCellStatus(row, col);
+
+		if (Block.CELL_EMPTY != nStatus) {
+			var color = Block.CELL_DYNAMIC == nStatus ? model
+					.getActiveBlockColor() : Block
+					.getColorForStaticValue(nStatus);
+			drawCell(canvas, col, row, color);
+		}
+	}
+
+	drawCell(canvas, x, y, colorFG) {
+		paint.setColor(colorFG);
+		var top = frameOffset.getHeight() + y * cellSize.getHeight()
+				+ BLOCK_OFFSET;
+		var left = frameOffset.getWidth() + x * cellSize.getWidth()
+				+ BLOCK_OFFSET;
+		var bottom = frameOffset.getHeight() + (y + 1) * cellSize.getHeight()
+				- BLOCK_OFFSET;
+		var right = frameOffset.getWidth() + (x + 1) * cellSize.getWidth()
+				- BLOCK_OFFSET;
+		var rect = new RectF(left, top, right, bottom);
+
+		canvas.drawRoundRect(rect, 4, 4, paint);
+	}
+
+	override onDraw(canvas) {
+		drawFrame(canvas);
+		if (null == model) {
+			return;
+		}
+
+		// draw all the cells:
+		for (var i = 0; i < Model.NUM_ROWS; i++) {
+			for (var j = 0; j < Model.NUM_COLS; j++) {
+				drawCell(canvas, i, j);
+			}
+		}
+	}
+
+	drawFrame(canvas) {
+		try {
+			var input = game.getAssets().open("frame.png");
+			var bitmap = BitmapFactory.decodeStream(input);
+			canvas.drawBitmap(bitmap, 0, 0, paint);
+		} catch (ex) {
+			Log.e("asset", "can't open asset bitmap", ex);
+		}
+		paint.setColor(Color.LTGRAY);
+		canvas.drawRect(frameOffset.getWidth(), frameOffset.getHeight(), width
+				- frameOffset.getWidth(), height - frameOffset.getHeight(),
+				paint);
+	}
+
+	override onSizeChanged(w, h, oldw, oldh) {
+		width = w;
+		height = h;
+		var cellWidth = (width - 2 * FRAME_OFFSET_BASE) / Model.NUM_COLS;
+		var cellHeight = (height - 2 * FRAME_OFFSET_BASE) / Model.NUM_ROWS;
+		var n = Math.min(cellWidth, cellHeight);
+
+		this.cellSize = new Dimension(n, n);
+
+		var offsetX = (w - Model.NUM_COLS * n) / 2;
+		var offsetY = (h - Model.NUM_ROWS * n) / 2;
+		this.frameOffset = new Dimension(offsetX, offsetY);
+	}
+}
