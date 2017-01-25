@@ -1,3 +1,4 @@
+
 #runScript {
 	background-image: url('/img/toolbar/nav_go.gif');	
 	background-position: center;
@@ -77,6 +78,14 @@
 .toolbarSeparator {
     border-left: 1px dotted #888888;
     height: 18px;
+}
+.toolbarCheveron {
+	background-image: url('/img/chevron-rounded-outline-grey.png');	
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 15px;
+	height: 45px;
+    padding: 12px; 
 }
 #toolbarDebug {
 	opacity: 0.4;

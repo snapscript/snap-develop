@@ -170,7 +170,7 @@ function createExploreLayout() {
          type : 'left',
          size : '20%',
          resizable : true,
-         style : pstyle,
+         style : pstyle ,
          content : createExplorerContent() // explorer tree         
       }, {
          type : 'main',
@@ -186,7 +186,6 @@ function createExploreLayout() {
       } ]
    });
 
-   var pstyle = 'background-color: #F5F6F7; overflow: hidden;';
    $('').w2layout({
       name : 'exploreEditorLayout',
       padding : 0,
@@ -206,6 +205,30 @@ function createExploreLayout() {
       } ]
    });
 
+//   $('').w2layout({
+//      name : 'exploreTreeLayout',
+//      padding : 0,
+//      panels : [ {
+//         type : 'main',
+//         size : '100%',
+//         style : pstyle + 'border-top: 0px;',
+//         resizable : false,
+//         name : 'tabs',
+//         tabs : {
+//            active : 'browseTab',
+//            tabs : [ {
+//               id : 'browseTab',
+//               caption : '<div class="browseTab">Browse</div>',
+//               content : "<div style='overflow: scroll; font-family: monospace;' id='browse'>" + createExplorerContent() + "</div>",
+//               closable: false 
+//            } ],
+//            onClick : function(event) {
+//               activateTab(event.target, "exploreTreeLayout");
+//            }
+//         }
+//      } ]
+//   });
+   
    
    $('').w2layout({
       name : 'exploreTabLayout',
@@ -266,13 +289,16 @@ function createExploreLayout() {
    createThreadsTab();
    
    w2ui['exploreMainLayout'].content('top', w2ui['topLayout']);
+   //w2ui['exploreMainLayout'].content('left', w2ui['exploreTreeLayout']);
    w2ui['exploreMainLayout'].content('main', w2ui['exploreEditorLayout']);
    w2ui['exploreEditorLayout'].content('bottom', w2ui['exploreTabLayout']);
    w2ui['exploreTabLayout'].refresh();
+   //w2ui['exploreTreeLayout'].refresh();
 
    setTimeout(function() {
       applyProjectTheme();
       activateTab("consoleTab", "exploreTabLayout"); 
+      //activateTab("browseTab", "exploreTreeLayout"); 
    }, 300); // update theme
 }
 
@@ -312,8 +338,6 @@ function createDebugLayout() {
          content : createBottomStatusContent()
       } ]
    });
-
-
 
    $('').w2layout({
       name : 'debugEditorLayout',
