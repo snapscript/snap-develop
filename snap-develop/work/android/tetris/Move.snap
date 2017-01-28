@@ -1,7 +1,0 @@
-
-enum Move {
-   LEFT, 
-   RIGHT, 
-   ROTATE, 
-   DOWN
-}

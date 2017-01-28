@@ -17,6 +17,7 @@ import org.snapscript.agent.event.BrowseEvent;
 import org.snapscript.agent.event.EvaluateEvent;
 import org.snapscript.agent.event.ExecuteEvent;
 import org.snapscript.agent.event.ExitEvent;
+import org.snapscript.agent.event.FaultEvent;
 import org.snapscript.agent.event.PingEvent;
 import org.snapscript.agent.event.PongEvent;
 import org.snapscript.agent.event.ProcessEvent;
@@ -204,6 +205,8 @@ public class SocketEventServer implements ProcessEventChannel {
                   listener.onProfile(this, (ProfileEvent)event);
                } else if(event instanceof EvaluateEvent) {
                   listener.onEvaluate(this, (EvaluateEvent)event);
+               } else if(event instanceof FaultEvent) {
+                  listener.onFault(this, (FaultEvent)event);
                }
             }
          }catch(Exception e) {

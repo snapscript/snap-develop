@@ -14,6 +14,7 @@ public interface ProcessEventListener {
    void onBrowse(ProcessEventChannel channel, BrowseEvent event) throws Exception;
    void onProfile(ProcessEventChannel channel, ProfileEvent event) throws Exception;
    void onEvaluate(ProcessEventChannel channel, EvaluateEvent event) throws Exception;
+   void onFault(ProcessEventChannel channel, FaultEvent event) throws Exception;
    void onPing(ProcessEventChannel channel, PingEvent event) throws Exception;
    void onPong(ProcessEventChannel channel, PongEvent event) throws Exception;
    void onClose(ProcessEventChannel channel) throws Exception;

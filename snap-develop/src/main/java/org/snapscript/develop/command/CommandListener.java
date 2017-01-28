@@ -33,7 +33,7 @@ public class CommandListener {
    public CommandListener(ProcessManager engine, ProjectProblemFinder compiler, TypeNodeScanner loader, FrameChannel channel, ConsoleLogger logger, BackupManager manager, Path path, File root, String project) {
       this.filter = new CommandFilter();
       this.client = new CommandClient(channel, project);
-      this.forwarder = new CommandEventForwarder(client, filter);
+      this.forwarder = new CommandEventForwarder(client, filter, logger);
       this.finder = new ProblemFinder();
       this.compiler = compiler;
       this.manager = manager;

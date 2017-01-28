@@ -6,12 +6,14 @@ public class WriteErrorEvent implements ProcessEvent {
    private final byte[] data;
    private final int offset;
    private final int length;
+   private final boolean flush;
    
    public WriteErrorEvent(Builder builder) {
       this.offset = builder.offset;
       this.length = builder.length;
       this.process = builder.process;
       this.data = builder.data;
+      this.flush = builder.flush;
    }
    
    @Override
@@ -31,12 +33,17 @@ public class WriteErrorEvent implements ProcessEvent {
       return offset;
    }
    
+   public boolean isFlush() {
+      return flush;
+   }
+   
    public static class Builder {
       
       private String process;
       private byte[] data;
       private int offset;
       private int length;
+      private boolean flush;
       
       public Builder(String process) {
          this.process = process;
@@ -59,6 +66,11 @@ public class WriteErrorEvent implements ProcessEvent {
 
       public Builder withLength(int length) {
          this.length = length;
+         return this;
+      }
+      
+      public Builder withFlush(boolean flush) {
+         this.flush = flush;
          return this;
       }
       

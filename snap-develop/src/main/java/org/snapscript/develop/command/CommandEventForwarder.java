@@ -3,9 +3,11 @@ package org.snapscript.develop.command;
 import java.util.Map;
 import java.util.Set;
 
+import org.snapscript.agent.ConsoleLogger;
 import org.snapscript.agent.debug.ScopeVariableTree;
 import org.snapscript.agent.event.BeginEvent;
 import org.snapscript.agent.event.ExitEvent;
+import org.snapscript.agent.event.FaultEvent;
 import org.snapscript.agent.event.PongEvent;
 import org.snapscript.agent.event.ProcessEventAdapter;
 import org.snapscript.agent.event.ProcessEventChannel;
@@ -16,14 +18,17 @@ import org.snapscript.agent.event.SyntaxErrorEvent;
 import org.snapscript.agent.event.WriteErrorEvent;
 import org.snapscript.agent.event.WriteOutputEvent;
 import org.snapscript.agent.profiler.ProfileResult;
+import org.snapscript.develop.FaultLogger;
 import org.snapscript.develop.common.TextEscaper;
 
 public class CommandEventForwarder extends ProcessEventAdapter {
    
    private final CommandFilter filter;
    private final CommandClient client;
+   private final FaultLogger logger;
    
-   public CommandEventForwarder(CommandClient client, CommandFilter filter) {
+   public CommandEventForwarder(CommandClient client, CommandFilter filter, ConsoleLogger logger) {
+      this.logger = new FaultLogger(logger);
       this.filter = filter;
       this.client = client;
    } 
@@ -45,6 +50,20 @@ public class CommandEventForwarder extends ProcessEventAdapter {
          int line = event.getLine();
          int key = event.getKey();
          client.sendScope(process, local, evaluation, thread, stack, instruction, status, resource, line, depth, key, change);
+      }
+   }
+   
+   @Override
+   public void onFault(ProcessEventChannel channel, FaultEvent event) throws Exception {
+      if(filter.accept(event)) {
+         ScopeVariableTree tree = event.getVariables();
+         Map<String, Map<String, String>> local = tree.getLocal();
+         String process = event.getProcess();
+         String thread = event.getThread();
+         String cause = event.getCause();
+         String resource = event.getResource();
+         int line = event.getLine();
+         logger.log(process, local, resource, thread, cause, line);
       }
    }
    

@@ -13,6 +13,7 @@ import org.snapscript.agent.event.BrowseEvent;
 import org.snapscript.agent.event.EvaluateEvent;
 import org.snapscript.agent.event.ExecuteEvent;
 import org.snapscript.agent.event.ExitEvent;
+import org.snapscript.agent.event.FaultEvent;
 import org.snapscript.agent.event.PingEvent;
 import org.snapscript.agent.event.PongEvent;
 import org.snapscript.agent.event.ProcessEvent;
@@ -115,12 +116,29 @@ public class SocketEventClient {
                   listener.onEvaluate(this, (EvaluateEvent)event);                  
                } else if(event instanceof ProfileEvent) {
                   listener.onProfile(this, (ProfileEvent)event);
+               } else if(event instanceof FaultEvent) {
+                  listener.onFault(this, (FaultEvent)event);
                }
             }
          }catch(Exception e) {
             logger.info("Error processing events", e);
          } finally {
             close();
+         }
+      }
+      
+      @Override
+      public void close() {
+         try {
+            ProcessEventProducer producer = connection.getProducer();
+            
+            if(open.compareAndSet(true, false)) {
+               listener.onClose(this);
+               producer.close();
+            }
+            socket.close();
+         } catch(Exception e) {
+            logger.info("Error closing client connection", e);
          }
       }
       
@@ -132,18 +150,6 @@ public class SocketEventClient {
             logger.info("Error getting local port", e);
          }
          return -1;
-      }
-      
-      @Override
-      public void close() {
-         try {
-            if(open.compareAndSet(true, false)) {
-               listener.onClose(this);
-            }
-            socket.close();
-         } catch(Exception e) {
-            logger.info("Error closing client connection", e);
-         }
       }
    }
 }

@@ -3,7 +3,7 @@ package org.snapscript.agent;
 import java.net.URI;
 
 import org.snapscript.agent.debug.BreakpointMatcher;
-import org.snapscript.agent.debug.ErrorStateExtractor;
+import org.snapscript.agent.debug.FaultContextExtractor;
 import org.snapscript.agent.debug.SuspendController;
 import org.snapscript.agent.debug.SuspendInterceptor;
 import org.snapscript.agent.event.ProcessEventChannel;
@@ -55,7 +55,6 @@ public class ProcessAgent {
       
       try {
          ConsoleLogger logger = new ConsoleLogger(level);
-         ErrorStateExtractor extractor = new ErrorStateExtractor(logger);
          SystemValidator validator = new SystemValidator(context);
          ConnectionChecker checker = new ConnectionChecker(process, system);
          ProcessEventReceiver listener = new ProcessEventReceiver(context, checker, model);
@@ -63,6 +62,7 @@ public class ProcessAgent {
          SocketEventClient client = new SocketEventClient(timer, logger);
          ProcessEventChannel channel = client.connect(host, port);
          SuspendInterceptor suspender = new SuspendInterceptor(channel, matcher, controller, process);
+         FaultContextExtractor extractor = new FaultContextExtractor(channel, logger, process);
          RegisterEvent register = new RegisterEvent.Builder(process)
             .withSystem(system)
             .build();

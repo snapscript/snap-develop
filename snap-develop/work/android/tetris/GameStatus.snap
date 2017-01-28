@@ -1,7 +1,0 @@
-
-enum GameStatus {
-   BEFORE_START, 
-   ACTIVE, 
-   PAUSED, 
-   OVER;
-}

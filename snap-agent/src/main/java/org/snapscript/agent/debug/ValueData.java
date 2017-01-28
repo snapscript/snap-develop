@@ -66,6 +66,12 @@ public class ValueData {
          if(ModifierType.isPublic(modifiers)) {
             builder.append("[public]");
          }
+         if(ModifierType.isConstant(modifiers)) {
+            builder.append("[const]");
+         }
+         if(ModifierType.isVariable(modifiers)) {
+            builder.append("[var]");
+         }
       }
       return builder.toString();
    }

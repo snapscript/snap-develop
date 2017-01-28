@@ -1,17 +1,20 @@
 package org.snapscript.agent.event;
 
+
 public class WriteOutputEvent implements ProcessEvent {
 
    private final String process;
    private final byte[] data;
    private final int offset;
    private final int length;
+   private final boolean flush;
    
    public WriteOutputEvent(Builder builder) {
       this.offset = builder.offset;
       this.length = builder.length;
       this.process = builder.process;
       this.data = builder.data;
+      this.flush = builder.flush;
    }
    
    @Override
@@ -31,12 +34,17 @@ public class WriteOutputEvent implements ProcessEvent {
       return offset;
    }
    
+   public boolean isFlush() {
+      return flush;
+   }
+   
    public static class Builder {
       
       private String process;
       private byte[] data;
       private int offset;
       private int length;
+      private boolean flush;
       
       public Builder(String process) {
          this.process = process;
@@ -48,7 +56,8 @@ public class WriteOutputEvent implements ProcessEvent {
       }
 
       public Builder withData(byte[] data) {
-         this.data = data;
+         this.data = new byte[data.length];
+         System.arraycopy(data, 0, this.data, 0, data.length);
          return this;
       }
 
@@ -59,6 +68,11 @@ public class WriteOutputEvent implements ProcessEvent {
 
       public Builder withLength(int length) {
          this.length = length;
+         return this;
+      }
+      
+      public Builder withFlush(boolean flush) {
+         this.flush = flush;
          return this;
       }
       

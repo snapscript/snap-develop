@@ -1,5 +1,6 @@
 package org.snapscript.agent;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -11,12 +12,14 @@ import org.snapscript.agent.event.WriteOutputEvent;
 
 public class ProcessEventStream extends OutputStream {
 
+   private final ByteArrayOutputStream buffer;
    private final ProcessEventChannel channel;
    private final ProcessEventType type;
    private final PrintStream stream;
    private final String process;
    
    public ProcessEventStream(ProcessEventType type, ProcessEventChannel channel, PrintStream stream, String process) {
+      this.buffer = new ByteArrayOutputStream();
       this.process = process;
       this.channel = channel;
       this.stream = stream;
@@ -36,27 +39,41 @@ public class ProcessEventStream extends OutputStream {
    @Override
    public void write(byte[] octets, int offset, int length) throws IOException {
       try {
+         buffer.write(octets, offset, length);
+         stream.write(octets, offset, length);
+      }catch(Exception e) {
+         throw new IOException("Error sending write event");
+      }
+   }
+   
+   @Override
+   public void flush() throws IOException {
+      try {
+         byte[] octets = buffer.toByteArray();
+         
          if(type == ProcessEventType.WRITE_ERROR) {
             WriteErrorEvent event = new WriteErrorEvent.Builder(process)
                .withData(octets)
-               .withOffset(offset)
-               .withLength(length)
+               .withOffset(0)
+               .withLength(octets.length)
                .build();
-
+   
             channel.send(event);
-            stream.write(octets, offset, length);
+            stream.flush();
          } else {
             WriteOutputEvent event = new WriteOutputEvent.Builder(process)
                .withData(octets)
-               .withOffset(offset)
-               .withLength(length)
+               .withOffset(0)
+               .withLength(octets.length)
                .build();
             
             channel.send(event);
-            stream.write(octets, offset, length);
+            stream.flush();
          }
       }catch(Exception e) {
          throw new IOException("Error sending write event");
+      } finally {
+         buffer.reset();
       }
    }
    

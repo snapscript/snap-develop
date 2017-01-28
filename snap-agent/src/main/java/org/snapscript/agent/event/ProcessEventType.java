@@ -15,7 +15,8 @@ public enum ProcessEventType {
    START(BeginEventMarshaller.class, BeginEvent.class, 12),
    BROWSE(BrowseEventMarshaller.class, BrowseEvent.class, 13),
    PROFILE(ProfileEventMarshaller.class, ProfileEvent.class, 14),
-   EVALUATE(EvaluateEventMarshaller.class, EvaluateEvent.class, 15);
+   EVALUATE(EvaluateEventMarshaller.class, EvaluateEvent.class, 15),
+   FAULT(FaultEventMarshaller.class, FaultEvent.class, 16);
    
    public final Class<? extends ProcessEventMarshaller> marshaller;
    public final Class<? extends ProcessEvent> event;

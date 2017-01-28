@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.snapscript.agent.ConsoleLogger;
 import org.snapscript.agent.event.BeginEvent;
 import org.snapscript.agent.event.ExitEvent;
+import org.snapscript.agent.event.FaultEvent;
 import org.snapscript.agent.event.PongEvent;
 import org.snapscript.agent.event.ProcessEventAdapter;
 import org.snapscript.agent.event.ProcessEventChannel;
@@ -264,6 +265,20 @@ public class ProcessPool {
                listener.onScope(channel, event);
             } catch(Exception e) {
                logger.info(process + ": Exception processing scope event", e);
+               listeners.remove(listener);
+            }
+         }
+      }
+      
+      @Override
+      public void onFault(ProcessEventChannel channel, FaultEvent event) throws Exception {
+         String process = event.getProcess();
+         
+         for(ProcessEventListener listener : listeners) {
+            try {
+               listener.onFault(channel, event);
+            } catch(Exception e) {
+               logger.info(process + ": Exception processing fault event", e);
                listeners.remove(listener);
             }
          }

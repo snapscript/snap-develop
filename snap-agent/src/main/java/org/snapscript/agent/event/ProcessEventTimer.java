@@ -194,6 +194,20 @@ public class ProcessEventTimer implements ProcessEventListener {
          logger.debug("onEvaluate(): took " + duration + " ms");
       }
    }
+   
+   @Override
+   public void onFault(ProcessEventChannel channel, FaultEvent event) throws Exception {
+      long start = System.currentTimeMillis();
+      
+      try {
+         listener.onFault(channel, event);
+      }finally {
+         long finish = System.currentTimeMillis();
+         long duration = finish - start;
+         
+         logger.debug("onFault(): took " + duration + " ms");
+      }
+   }
 
    @Override
    public void onPing(ProcessEventChannel channel, PingEvent event) throws Exception {
