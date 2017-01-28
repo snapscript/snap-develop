@@ -3,12 +3,11 @@ import android.graphics.Point;
 
 class SpecialElement extends GameElement {
    // maximum duration to display clock in snake moves
-   var maxDuration;
+   var maxDuration = 0;
 
    // counter
-   var counter;
-
-   var hasExpired;
+   var counter = 0;
+   var hasExpired = false;
 
    new(fieldDimensions, snake, radius, maxDuration): super(radius) {
          newRandomLocation(fieldDimensions, snake);

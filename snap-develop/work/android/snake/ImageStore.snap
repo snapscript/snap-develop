@@ -1,0 +1,11 @@
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+module ImageStore {
+
+   loadImage(resource) {
+      var stream = this.getResource(resource);
+      return BitmapFactory.decodeStream(stream);
+   }
+}
