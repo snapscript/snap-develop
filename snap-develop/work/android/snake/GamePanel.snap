@@ -27,15 +27,16 @@ class GamePanel with Panel {
    var thread;
    var paint;
    var tickCounter;
-   var directionsQueue;
+   var directionsQueue = 0;
    var fieldDimensions;
-   var cellsDiameter, cellsRadius;
+   var cellsDiameter = 0;
+   var cellsRadius = 0;
    var snake;
    var apple;
    var specialElement;
    var highScoreKey = "highScore";
-   var highScore;
-   var highScoreUpdated;
+   var highScore = 0;
+   var highScoreUpdated = false;
 
    var borderCell, snakeCell, snakeShieldedCell;
    var greenAppleCell, redAppleCell, yellowAppleCell;

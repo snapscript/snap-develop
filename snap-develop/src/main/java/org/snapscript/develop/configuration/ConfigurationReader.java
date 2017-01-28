@@ -110,15 +110,17 @@ public class ConfigurationReader {
       
          try {
             RepositoryClient client = repository.getClient(factory);
-            
-            for(DependencyDefinition dependency : dependencies) {
-               List<File> matches = client.resolve(dependency.groupId, dependency.artifactId, dependency.version);
-               
-               for(File match : matches) {
-                  if(!match.exists()) {
-                     throw new IllegalStateException("Could not resolve file " + match);
+
+            if(dependencies != null) {
+               for (DependencyDefinition dependency : dependencies) {
+                  List<File> matches = client.resolve(dependency.groupId, dependency.artifactId, dependency.version);
+
+                  for (File match : matches) {
+                     if (!match.exists()) {
+                        throw new IllegalStateException("Could not resolve file " + match);
+                     }
+                     files.add(match);
                   }
-                  files.add(match);
                }
             }
          } catch(Exception e) {

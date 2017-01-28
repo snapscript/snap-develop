@@ -1,4 +1,4 @@
-
+// https://github.com/ferrolho/android-snake
 var panel = new GamePanel(context);
 agent.onStart(panel);
 sleep(Integer.MAX_VALUE);

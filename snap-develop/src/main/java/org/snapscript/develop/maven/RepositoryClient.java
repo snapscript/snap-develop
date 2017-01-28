@@ -43,7 +43,11 @@ public class RepositoryClient {
       List<File> files = cache.get(key);
       
       if(files == null) {
-         files = download(groupId, artifactId, version);
+         try {
+            files = download(groupId, artifactId, version);
+         } catch(Exception e) {
+            throw new IllegalStateException("Could not resolve '" + key + "'", e);
+         }
          cache.put(key, files);
       }
       return files;
@@ -70,7 +74,7 @@ public class RepositoryClient {
       for (ArtifactResult artifactResult : artifactResults) {
          File localFile = artifactResult.getArtifact().getFile();
          File canonicalFile = localFile.getCanonicalFile();
-         
+
          files.add(canonicalFile);
       }
       return files;

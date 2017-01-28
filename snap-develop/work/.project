@@ -1,6 +1,7 @@
 <project>
   <environment>
-    <variable name="PROJECT_ROOT">C:\Work\development\snapscript\snap-develop\snap-develop\work</variable>
+    <!--variable name="PROJECT_ROOT">C:\Work\development\snapscript\snap-develop\snap-develop\work</variable-->
+    <variable name="PROJECT_ROOT">/Users/niallg/Work/development/snapscript/snap-develop/snap-develop/work</variable>
   </environment>
   <arguments>
     <argument>-Xmx500m</argument>
@@ -8,16 +9,11 @@
     <argument>-XX:+UnlockCommercialFeatures</argument>
     <argument>-XX:+FlightRecorder</argument>
   </arguments>
-  <repository path="c:\temp\remote-repo">
+  <repository path="/tmp/test-repo">
     <location name="central">http://repo1.maven.org/maven2</location>
   </repository>
   <dependencies>
-    <dependency>
-      <groupId>org.sonatype.aether</groupId>
-      <artifactId>aether-connector-file</artifactId>
-      <version>1.13.1</version>
-    </dependency>
-    <dependency>
+    <!--dependency>
       <groupId>org.simpleframework</groupId>
       <artifactId>simple-http</artifactId>
       <version>6.0.1</version>
@@ -31,6 +27,6 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.4</version>
-    </dependency>
+    </dependency-->
   </dependencies>
 </project>

@@ -35,7 +35,7 @@ public class ProcessLauncher {
       String name = generator.generate();
       String port = String.valueOf(remote);
       String home = System.getProperty("java.home");
-      String java = String.format("%s%sbin%s/java", home, File.separatorChar, File.separatorChar);
+      String java = String.format("%s%sbin%sjava", home, File.separatorChar, File.separatorChar);
       String resources = String.format("http://localhost:%s/resource/", httpPort);
       String classes = String.format("http://localhost:%s/class/", httpPort);
       Map<String, String> variables = configuration.getVariables();

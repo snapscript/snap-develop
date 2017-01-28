@@ -1,10 +1,10 @@
 package org.snapscript.agent.event;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.snapscript.common.ThreadBuilder;
 import org.snapscript.common.ThreadPool;
 
 public class ProcessEventProducer {
@@ -16,8 +16,8 @@ public class ProcessEventProducer {
    
    public ProcessEventProducer(MessageEnvelopeWriter writer) {
       this.marshallers = new ConcurrentHashMap<Class, ProcessEventMarshaller>();
+      this.executor = new ProcessEventExecutor();
       this.latch = new CountDownLatch(1);
-      this.executor = new ThreadPool(1);
       this.writer = writer;
    }
    

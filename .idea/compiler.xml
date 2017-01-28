@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="snap-agent" />
+        <module name="snap-develop" />
+        <module name="snap-graphics" />
+        <module name="snap-service" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="snap" target="1.6" />
+      <module name="snap-agent" target="1.6" />
+      <module name="snap-develop" target="1.6" />
+      <module name="snap-graphics" target="1.6" />
+      <module name="snap-service" target="1.6" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
