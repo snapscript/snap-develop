@@ -128,6 +128,16 @@ public class SocketEventClient {
       }
       
       @Override
+      public int port() throws Exception {
+         try {
+            return socket.getLocalPort();
+         } catch(Exception e) {
+            logger.info("Error getting local port", e);
+         }
+         return -1;
+      }
+      
+      @Override
       public void close() {
          try {
             ProcessEventProducer producer = connection.getProducer();
@@ -140,16 +150,6 @@ public class SocketEventClient {
          } catch(Exception e) {
             logger.info("Error closing client connection", e);
          }
-      }
-      
-      @Override
-      public int port() throws Exception {
-         try {
-            return socket.getLocalPort();
-         } catch(Exception e) {
-            logger.info("Error getting local port", e);
-         }
-         return -1;
       }
    }
 }

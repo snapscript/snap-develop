@@ -240,8 +240,11 @@ public class SocketEventServer implements ProcessEventChannel {
       @Override
       public void close() {
          try {
+            ProcessEventProducer producer = connection.getProducer();
+            
             if(open.compareAndSet(true, false)) {
                listener.onClose(this);
+               producer.close();
             }
             socket.close();
          } catch(Exception e) {
