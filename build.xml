@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
-   <property name="MAVEN_HOME" value="C:\Program Files\Maven\3.3.3" />
-   <property name="ANT_HOME" value="C:\Program Files\Ant\1.9.3" />
-   <property name="JAVA_HOME" value="C:\Program Files\Java\jdk1.8.0_60" />   
-   <exec executable="${MAVEN_HOME}\bin\mvn.cmd">
+<project> 
+   <property file="build.properties"/>
+   <echo message="${build.version}"/>
+   <echo message="${maven.home}"/>
+   <echo message="${java.home}"/>
+   <echo message="${ant.home}"/>
+   <exec executable="${maven.home}\bin\mvn.cmd">
       <arg value="clean" />
       <arg value="install" />
       <arg value="-DskipTests" />
    </exec>
    <delete file="../snap-release/snapd.jar" />
-   <copy file="snap-develop/target/snap-develop-1.0.2-jar-with-dependencies.jar" tofile="../snap-release/snapd.jar" overwrite="true" />
-   <exec executable="${ANT_HOME}\bin\ant.bat">
+   <copy file="snap-develop/target/snap-develop-${build.version}-jar-with-dependencies.jar" tofile="../snap-release/snapd.jar" overwrite="true" />
+   <copy file="snap-agent/target/snap-agent-${build.version}-jar-with-dependencies.jar" tofile="../snap-release/snapa.jar" overwrite="true" />
+   <exec executable="${ant.home}\bin\ant.bat">
       <arg value="-f" />
       <arg value="snap-service\build.xml" />
    </exec>
    <delete file="../snap-release/snap.jar" />
    <copy file="snap-service/jar/snap.jar" tofile="../snap-release/snap.jar" overwrite="true" />
-   <exec executable="${JAVA_HOME}\bin\java.exe">
+   <exec executable="${java.home}\bin\java.exe">
       <arg value="-jar" />
       <arg value="..\snap-release\snapd.jar" />
       <arg value="--mode=develop"/>

@@ -231,7 +231,7 @@ function runScript() {
          breakpoints : editorData.breakpoints,
          project : document.title,
          resource : editorData.resource.filePath,
-         //system: waitingProcessSystem,
+         system: waitingProcessSystem,
          source : editorData.source,
       });
       socket.send("EXECUTE:" + message);
