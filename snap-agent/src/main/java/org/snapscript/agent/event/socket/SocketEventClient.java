@@ -7,35 +7,16 @@ import java.net.Socket;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.snapscript.agent.ConsoleLogger;
-import org.snapscript.agent.event.BeginEvent;
-import org.snapscript.agent.event.BreakpointsEvent;
-import org.snapscript.agent.event.BrowseEvent;
-import org.snapscript.agent.event.EvaluateEvent;
-import org.snapscript.agent.event.ExecuteEvent;
-import org.snapscript.agent.event.ExitEvent;
-import org.snapscript.agent.event.FaultEvent;
-import org.snapscript.agent.event.PingEvent;
-import org.snapscript.agent.event.PongEvent;
-import org.snapscript.agent.event.ProcessEvent;
-import org.snapscript.agent.event.ProcessEventChannel;
-import org.snapscript.agent.event.ProcessEventConnection;
-import org.snapscript.agent.event.ProcessEventConsumer;
-import org.snapscript.agent.event.ProcessEventListener;
-import org.snapscript.agent.event.ProcessEventProducer;
-import org.snapscript.agent.event.ProfileEvent;
-import org.snapscript.agent.event.RegisterEvent;
-import org.snapscript.agent.event.ScopeEvent;
-import org.snapscript.agent.event.StepEvent;
-import org.snapscript.agent.event.SyntaxErrorEvent;
-import org.snapscript.agent.event.WriteErrorEvent;
-import org.snapscript.agent.event.WriteOutputEvent;
+import org.snapscript.agent.event.*;
 
 public class SocketEventClient {
    
    private final ProcessEventListener listener;
+   private final ProcessEventExecutor executor;
    private final ConsoleLogger logger;
    
    public SocketEventClient(ProcessEventListener listener, ConsoleLogger logger) throws IOException {
+      this.executor = new ProcessEventExecutor();
       this.listener = listener;
       this.logger = logger;
    }
@@ -58,7 +39,7 @@ public class SocketEventClient {
       private final Socket socket;
       
       public SocketConnection(Socket socket, InputStream input, OutputStream output) throws IOException {
-         this.connection = new ProcessEventConnection(input, output);
+         this.connection = new ProcessEventConnection(executor, input, output);
          this.open = new AtomicBoolean(true);
          this.socket = socket;
       }

@@ -41,11 +41,11 @@ public class ProcessAgent {
       this.port = port;
    }
    
-   public void start() throws Exception {
-      start(model);
+   public void start(ProcessMode mode) throws Exception {
+      start(mode, model);
    }
    
-   public void start(Model model) throws Exception {
+   public void start(ProcessMode mode, Model model) throws Exception {
       BreakpointMatcher matcher = context.getMatcher();
       SuspendController controller = context.getController();
       TraceInterceptor interceptor = context.getInterceptor();
@@ -57,7 +57,7 @@ public class ProcessAgent {
          ConsoleLogger logger = new ConsoleLogger(level);
          SystemValidator validator = new SystemValidator(context);
          ConnectionChecker checker = new ConnectionChecker(process, system);
-         ProcessEventReceiver listener = new ProcessEventReceiver(context, checker, model);
+         ProcessEventReceiver listener = new ProcessEventReceiver(context, mode, checker, model);
          ProcessEventTimer timer = new ProcessEventTimer(listener, logger);
          SocketEventClient client = new SocketEventClient(timer, logger);
          ProcessEventChannel channel = client.connect(host, port);

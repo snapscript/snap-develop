@@ -6,6 +6,7 @@ module ImageStore {
 
    loadImage(resource) {
       var stream = this.getResource(resource);
+      println("Loaded ${resource}");
       return BitmapFactory.decodeStream(stream);
    }
 }

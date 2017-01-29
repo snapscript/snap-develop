@@ -18,16 +18,18 @@ public class ProcessTask implements Runnable {
    
    private final ProcessEventChannel client;
    private final ProcessContext context;
+   private final ProcessMode mode;
    private final String resource;
    private final String project;
    private final Model model;
    
-   public ProcessTask(ProcessEventChannel client, ProcessContext context, Model model, String project, String resource) {
+   public ProcessTask(ProcessEventChannel client, ProcessContext context, ProcessMode mode, Model model, String project, String resource) {
       this.client = client;
       this.resource = resource;
       this.project = project;
       this.context = context;
       this.model = model;
+      this.mode = mode;
    }
    
    @Override
@@ -85,13 +87,17 @@ public class ProcessTask implements Runnable {
             } catch(Exception e) {
                e.printStackTrace();
             } finally {
-               System.exit(0); // shutdown when finished  
+               if(!mode.isAsync()) {
+                  System.exit(0); // shutdown when finished
+               }
             }
          }
       } catch (Exception e) {
          System.err.println(ExceptionBuilder.build(e));
       } finally {
-         System.exit(0); // shutdown when finished  
+         if(!mode.isAsync()) {
+            System.exit(0); // shutdown when finished
+         }
       }
    }
 }

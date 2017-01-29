@@ -3,6 +3,9 @@ package org.snapscript.develop;
 import java.net.URI;
 
 import org.snapscript.agent.ProcessAgent;
+import org.snapscript.agent.ProcessMode;
+
+import static org.snapscript.agent.ProcessMode.ATTACHED;
 
 public class ProcessRunner {
 
@@ -17,6 +20,6 @@ public class ProcessRunner {
    
    public static void start(URI resources, String process, String level, int port) throws Exception {
       ProcessAgent agent = new ProcessAgent(resources, process, level, port);
-      agent.start();
+      agent.start(ATTACHED);
    }
 }

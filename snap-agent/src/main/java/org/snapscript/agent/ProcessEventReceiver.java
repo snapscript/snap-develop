@@ -1,22 +1,14 @@
 package org.snapscript.agent;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.snapscript.agent.debug.BreakpointMatcher;
 import org.snapscript.agent.debug.ResumeType;
 import org.snapscript.agent.debug.SuspendController;
-import org.snapscript.agent.event.BreakpointsEvent;
-import org.snapscript.agent.event.BrowseEvent;
-import org.snapscript.agent.event.EvaluateEvent;
-import org.snapscript.agent.event.ExecuteData;
-import org.snapscript.agent.event.ExecuteEvent;
-import org.snapscript.agent.event.PingEvent;
-import org.snapscript.agent.event.ProcessEventAdapter;
-import org.snapscript.agent.event.ProcessEventChannel;
-import org.snapscript.agent.event.StepEvent;
+import org.snapscript.agent.event.*;
 import org.snapscript.core.Model;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ProcessEventReceiver extends ProcessEventAdapter {
    
@@ -25,9 +17,9 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
    private final ResourceExecutor executor;
    private final ProcessContext context;
    
-   public ProcessEventReceiver(ProcessContext context, ConnectionChecker checker, Model model) throws Exception {
+   public ProcessEventReceiver(ProcessContext context, ProcessMode mode, ConnectionChecker checker, Model model) throws Exception {
       this.reference = new AtomicReference<ExecuteData>();
-      this.executor = new ResourceExecutor(context, model);
+      this.executor = new ResourceExecutor(context, mode, model);
       this.checker = checker;
       this.context = context;
    }

@@ -14,10 +14,10 @@ public class ProcessEventProducer {
    private final CountDownLatch latch;
    private final Executor executor;
    
-   public ProcessEventProducer(MessageEnvelopeWriter writer) {
+   public ProcessEventProducer(ProcessEventExecutor executor, MessageEnvelopeWriter writer) {
       this.marshallers = new ConcurrentHashMap<Class, ProcessEventMarshaller>();
-      this.executor = new ProcessEventExecutor();
       this.latch = new CountDownLatch(1);
+      this.executor = executor;
       this.writer = writer;
    }
    

@@ -8,10 +8,12 @@ public class ProcessEventConnection {
 
    private final MessageEnvelopReader consumer;
    private final MessageEnvelopeWriter producer;
+   private final ProcessEventExecutor executor;
    
-   public ProcessEventConnection(InputStream input, OutputStream output) {
+   public ProcessEventConnection(ProcessEventExecutor executor, InputStream input, OutputStream output) {
       this.consumer = new MessageEnvelopReader(input);
       this.producer = new MessageEnvelopeWriter(output);
+      this.executor = executor;
    }
    
    public ProcessEventConsumer getConsumer() throws IOException {
@@ -19,7 +21,7 @@ public class ProcessEventConnection {
    }
    
    public ProcessEventProducer getProducer() throws IOException {
-      return new ProcessEventProducer(producer);
+      return new ProcessEventProducer(executor, producer);
       
    }
 }
