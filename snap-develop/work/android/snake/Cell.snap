@@ -7,7 +7,7 @@ class Cell extends GameElement {
    }
 
    new(cell) :super(cell.radius){
-      this.x = cell.y;
+      this.x = cell.x;
       this.y = cell.y;
    }
 }

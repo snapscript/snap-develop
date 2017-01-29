@@ -30,6 +30,9 @@
     <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-component-annotations:1.5.5" level="project" />
     <orderEntry type="library" name="Maven: org.apache.maven.wagon:wagon-provider-api:2.10" level="project" />
     <orderEntry type="library" name="Maven: org.apache.maven.wagon:wagon-http-lightweight:2.10" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.maven.wagon:wagon-http-shared:2.10" level="project" />
+    <orderEntry type="library" name="Maven: org.jsoup:jsoup:1.7.2" level="project" />
+    <orderEntry type="library" name="Maven: commons-io:commons-io:2.2" level="project" />
     <orderEntry type="library" name="Maven: org.snapscript:snap-compile:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.snapscript:snap-tree:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.snapscript:snap-core:1.0.2" level="project" />
