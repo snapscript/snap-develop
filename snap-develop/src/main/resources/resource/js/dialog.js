@@ -6,7 +6,7 @@ function openAlertDialog(message) {
             '       <div style="display: inline-block;">' + message + '</div>' +
             '    </div>' +
             '</div>',
-        buttons: '<button class="btn" onclick="w2popup.close();">Close</button>',
+        buttons: '<button class="btn dialogButton" onclick="w2popup.close();">Close</button>',
         width: 500,
         height: 300,
         overflow: 'hidden',
@@ -71,7 +71,7 @@ function createTreeDialog(resourceDetails, foldersOnly, saveCallback, dialogTitl
             '</div>' +
             '<div id="dialogFolder">' + dialogExpandPath + '</div>' +
             '<div id="dialogFile" onkeydown="return submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>',
-        buttons: '<button id="dialogSave" class="btn">Save</button><button id="dialogCancel" class="btn">Cancel</button>',
+        buttons: '<button id="dialogSave" class="btn dialogButton">Save</button><button id="dialogCancel" class="btn dialogButton">Cancel</button>',
         width: 500,
         height: 400,
         overflow: 'hidden',
@@ -147,7 +147,7 @@ function createTreeOpenDialog(openCallback, closeCallback, dialogTitle, buttonTe
             '   <div id="dialog"></div>' +
             '</div>' +
             '<div id="dialogPath" onkeydown="return submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>',
-        buttons: '<button id="dialogSave" class="btn">' + buttonText + '</button>',
+        buttons: '<button id="dialogSave" class="btn dialogButton">' + buttonText + '</button>',
         width: 500,
         height: 400,
         overflow: 'hidden',
@@ -197,7 +197,7 @@ function createListDialog(listFunction, dialogTitle) {
             '   <div id="dialog"></div>' +
             '</div>' +
             '<div id="dialogPath" onkeydown="return submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>',
-        buttons: '<button id="dialogSave" class="btn">Cancel</button>',
+        buttons: '<button id="dialogSave" class="btn dialogButton">Cancel</button>',
         width: 600,
         height: 400,
         overflow: 'hidden',
@@ -265,7 +265,7 @@ function createGridDialog(listFunction, dialogTitle) {
             '   <div id="dialog"></div>' +
             '</div>' +
             '<div id="dialogPath" onkeydown="return submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>',
-        buttons: '<button id="dialogSave" class="btn">Evaluate</button>',
+        buttons: '<button id="dialogSave" class="btn dialogButton">Evaluate</button>',
         width: 700,
         height: 400,
         overflow: 'hidden',

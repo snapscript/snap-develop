@@ -1,5 +1,7 @@
 package org.snapscript.develop;
 
+import java.net.InetSocketAddress;
+
 import org.snapscript.develop.http.WebServer;
 
 public class ProcessServer {
@@ -14,15 +16,17 @@ public class ProcessServer {
    
    public void start() {
       try {
-         int port = server.start();
-         String project = String.format("http://localhost:%s/", port);
+         InetSocketAddress address = server.start();
+         int port = address.getPort();
+         String host = address.getHostString();
+         String project = String.format("http://%s:%s/", host, port);
          String script = CommandLineArgument.SCRIPT.getValue();
             
          if(script != null) {
             engine.launch(); // start a new process
          }
          System.err.println(project);
-         engine.start(port);
+         engine.start(host, port);
       } catch(Exception e) {
          e.printStackTrace();
       }

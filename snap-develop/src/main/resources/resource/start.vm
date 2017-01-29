@@ -3,7 +3,7 @@
 <head>
 <title>${root}</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<link href="/css/external/w2ui.min.css" rel="stylesheet">
+<link href="/css/external/w2ui.flat.css" rel="stylesheet">
 <link href="/css/external/font-awesome.min.css" rel="stylesheet">
 <link href="/css/external/bootstrap.min.css" rel="stylesheet">
 <link href="/css/external/jquery-ui.min.css" rel="stylesheet" />

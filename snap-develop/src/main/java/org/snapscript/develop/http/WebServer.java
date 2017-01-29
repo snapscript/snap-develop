@@ -13,22 +13,32 @@ import org.simpleframework.transport.connect.SocketConnection;
 public class WebServer {
 
    private final SocketProcessor server;
-   private final SocketAddress address;
    private final Connection connection;
+   private final WebAddress address;
    
    public WebServer(Container container, int port) throws IOException {
       this.server = new ContainerSocketProcessor(container, 10);
       this.connection = new SocketConnection(server);
-      this.address = new InetSocketAddress(port);
+      this.address = new WebAddress(port);
    }
 
-   public int start() throws IOException {
+   public InetSocketAddress start() throws IOException {
 	   try {
-		   InetSocketAddress local = (InetSocketAddress)connection.connect(address);
-		   return local.getPort();
+	      InetSocketAddress external = address.getExternalAddress();
+	      InetSocketAddress internal = address.getLocalAddress();
+         InetSocketAddress local = (InetSocketAddress)connection.connect(internal);
+         String host = external.getHostString();
+         int port = local.getPort();
+         
+         return new InetSocketAddress(host, port);
 	   } catch (IOException ex) {
-		   System.err.println("Failed to connect to: " + address);
-		   throw ex;
+	      try {
+	         SocketAddress local = address.getLocalAddress();
+            return (InetSocketAddress)connection.connect(local);
+	      }catch(Exception e) {
+	         System.err.println("Failed to connect to: " + address);
+		      throw ex;
+	      }
 	   }
    }
 

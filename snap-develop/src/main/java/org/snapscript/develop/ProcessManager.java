@@ -133,10 +133,11 @@ public class ProcessManager {
       return false;
    }
    
-   public void start(int port) {
+   public void start(String host, int port) {
       loader.load(configuration);
+      configuration.setHost(host);
       configuration.setPort(port);
-      pool.start(port);
+      pool.start(host, port);
    }
    
    public void launch() {

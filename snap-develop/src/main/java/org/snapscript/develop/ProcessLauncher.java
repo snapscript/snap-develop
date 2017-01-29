@@ -31,13 +31,14 @@ public class ProcessLauncher {
    public ProcessDefinition launch(ProcessConfiguration configuration) throws Exception {
       int remote = channel.port();
       int httpPort = configuration.getPort();
+      String httpHost = configuration.getHost();
       String level = logger.getLevel();
       String name = generator.generate();
       String port = String.valueOf(remote);
       String home = System.getProperty("java.home");
       String java = String.format("%s%sbin%sjava", home, File.separatorChar, File.separatorChar);
-      String resources = String.format("http://localhost:%s/resource/", httpPort);
-      String classes = String.format("http://localhost:%s/class/", httpPort);
+      String resources = String.format("http://%s:%s/resource/", httpHost, httpPort);
+      String classes = String.format("http://%s:%s/class/", httpHost, httpPort);
       Map<String, String> variables = configuration.getVariables();
       List<String> arguments = configuration.getArguments();
       String launcher = RemoteProcessLauncher.class.getCanonicalName();

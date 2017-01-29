@@ -1,3 +1,6 @@
+.dialogButton {
+	border-radius: 0px !important;
+}
 #dialogContainer {
     padding: 5px;
     position: absolute;

@@ -13,8 +13,8 @@ public class ConsoleConnector {
       try {
          ProcessEventStream errorAdapter = new ProcessEventStream(WRITE_ERROR, channel, System.err, process);
          ProcessEventStream outputAdapter = new ProcessEventStream(WRITE_OUTPUT, channel, System.out, process);
-         PrintStream outputStream = new PrintStream(outputAdapter, false, "UTF-8");
-         PrintStream errorStream = new PrintStream(errorAdapter, false, "UTF-8");
+         PrintStream outputStream = new PrintStream(outputAdapter, true, "UTF-8");
+         PrintStream errorStream = new PrintStream(errorAdapter, true, "UTF-8");
          
          // redirect all output to the streams
          System.setOut(outputStream);

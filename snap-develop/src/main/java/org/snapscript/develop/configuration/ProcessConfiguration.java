@@ -10,6 +10,7 @@ public class ProcessConfiguration {
    private Map<String, String> variables;
    private List<String> arguments;
    private String classPath;
+   private String host;
    private int port;
    
    public ProcessConfiguration() {
@@ -39,6 +40,14 @@ public class ProcessConfiguration {
 
    public void setClassPath(String classPath) {
       this.classPath = classPath;
+   }
+   
+   public String getHost() {
+      return host;
+   }
+
+   public void setHost(String host) {
+      this.host = host;
    }
    
    public int getPort() {

@@ -106,11 +106,11 @@ public class ProcessPool {
       }
    }
    
-   public void start(int port) { // http://host:port/project
+   public void start(String host, int port) { // http://host:port/project
       try {
          manager.start();
          server.start();
-         pinger.start(port);
+         pinger.start(host, port);
       } catch(Exception e) {
          logger.info("Could not start pool on port " + port, e);
       }
@@ -313,10 +313,11 @@ public class ProcessPool {
          this.frequency = frequency;
       }
       
-      public void start(int port) {
+      public void start(String host, int port) {
          if(listen.compareAndSet(0, port)) {
             Thread thread = factory.newThread(this);
             
+            configuration.setHost(host);
             configuration.setPort(port);
             thread.start();
          }

@@ -595,11 +595,6 @@ function createTopMenuBar(){
                             "          <option value='sqlserver'>&nbsp;SQL Server</option>\n"+
                             "          <option value='terminal'>&nbsp;Terminal</option>\n"+
                             "          <option value='textmate'>&nbsp;TextMate</option>\n"+
-                            "          <option value='tomorrow_night_blue'>&nbsp;Tomorrow Night Blue</option>\n"+
-                            "          <option value='tomorrow_night_bright'>&nbsp;Tomorrow Night Bright</option>\n"+
-                            "          <option value='tomorrow_night_eighties'>&nbsp;Tomorrow Night 80s</option>\n"+
-                            "          <option value='tomorrow_night'>&nbsp;Tomorrow Night</option>\n"+
-                            "          <option value='tomorrow'>&nbsp;Tomorrow</option>\n"+
                             "          <option value='twilight'>&nbsp;Twilight</option>\n"+
                             "          <option value='vibrant_ink'>&nbsp;Vibrant Ink</option>\n"+  
                             "          <option value='xcode'>&nbsp;XCode</option>\n"+                            
