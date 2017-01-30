@@ -26,7 +26,7 @@ class GamePanel with Panel {
    var context;
    var thread;
    var paint;
-   var tickCounter;
+   var tickCounter = 0;
    var directionsQueue = 0;
    var fieldDimensions;
    var cellsDiameter = 0;
@@ -128,7 +128,7 @@ class GamePanel with Panel {
    /**
       * Game update method.
       */
-   override onUpdate(frame, canvas) {
+   override onUpdate(frame) {
       // increment tick counter
       tickCounter++;
 

@@ -16,7 +16,7 @@ import android.graphics.Color;
 
 class GamePanel with Panel {
 
-   static const Y_DOWN_ACCELERATE = 9.0f;
+   static const Y_DOWN_ACCELERATE = 12.0f; // gravity
 
    var context;
    var gameStatus;
@@ -102,7 +102,7 @@ class GamePanel with Panel {
       birdWidth2 = birdHeight * 1.1f;
       birdHeight2 = birdWidth;
       birdY = landY / 2 - birdHeight;
-      birdJump = birdHeight * 0.6f;
+      birdJump = birdHeight * 0.9f; // bird jump height
 
       pipeGap = landY / 5;
       minPipeHeight = pipeGap * 0.5f;
@@ -156,6 +156,8 @@ class GamePanel with Panel {
       tutorialBitmap = ImageStore.loadImage("/flappybird/resources/tutorial.png");
       titleBitmap = ImageStore.loadImage("/flappybird/resources/title.png");
       gameOverBitmap = ImageStore.loadImage("/flappybird/resources/game_over.png");
+      bird.get(0);
+      scores.get(0);
    }
 
    override onDestroyed(frame) {
@@ -244,7 +246,7 @@ class GamePanel with Panel {
       return false;
    }
 
-   onUpdate(frame, canvas) {
+   onUpdate(frame) {
       if (gameStatus == GameStatus.RUNNING) {
          birdDownDis += Y_DOWN_ACCELERATE;
          birdY += birdDownDis;
