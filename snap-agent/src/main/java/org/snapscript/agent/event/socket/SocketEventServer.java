@@ -7,6 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -42,7 +43,18 @@ public class SocketEventServer implements ProcessEventChannel {
       }
       return channel.send(event);
    }
-   
+
+   @Override
+   public boolean sendAsync(ProcessEvent event) throws Exception {
+      String process = event.getProcess();
+      ProcessEventChannel channel = receivers.get(process);
+
+      if(channel == null) {
+         throw new IllegalArgumentException("No channel for " + process);
+      }
+      return channel.sendAsync(event);
+   }
+
    @Override
    public int port() throws Exception {
       return acceptor.port();
@@ -138,6 +150,21 @@ public class SocketEventServer implements ProcessEventChannel {
          } catch(Exception e) {
             logger.info(process + ": Error sending event", e);
             receivers.remove(process);
+            close();
+         }
+         return false;
+      }
+
+      @Override
+      public boolean sendAsync(ProcessEvent event) throws Exception {
+         ProcessEventProducer producer = connection.getProducer();
+         String process = event.getProcess();
+
+         try {
+            Future<Boolean> future = producer.produceAsync(event);
+            return future.get();
+         } catch(Exception e) {
+            logger.info(process + ": Error sending event", e);
             close();
          }
          return false;

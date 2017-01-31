@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.snapscript.agent.ConsoleLogger;
@@ -52,6 +53,21 @@ public class SocketEventClient {
          try {
             producer.produce(event);
             return true;
+         } catch(Exception e) {
+            logger.info(process + ": Error sending event", e);
+            close();
+         }
+         return false;
+      }
+
+      @Override
+      public boolean sendAsync(ProcessEvent event) throws Exception {
+         ProcessEventProducer producer = connection.getProducer();
+         String process = event.getProcess();
+
+         try {
+            Future<Boolean> future = producer.produceAsync(event);
+            return future.get();
          } catch(Exception e) {
             logger.info(process + ": Error sending event", e);
             close();

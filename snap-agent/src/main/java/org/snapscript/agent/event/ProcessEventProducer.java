@@ -11,42 +11,37 @@ public class ProcessEventProducer {
    
    private final Map<Class, ProcessEventMarshaller> marshallers;
    private final MessageEnvelopeWriter writer;
-   private final CountDownLatch latch;
    private final Executor executor;
    
    public ProcessEventProducer(ProcessEventExecutor executor, MessageEnvelopeWriter writer) {
       this.marshallers = new ConcurrentHashMap<Class, ProcessEventMarshaller>();
-      this.latch = new CountDownLatch(1);
       this.executor = executor;
       this.writer = writer;
    }
    
    public void produce(ProcessEvent event) throws Exception {
       SendTask task = new SendTask(event);
-      executor.execute(task);
+      //executor.execute(task);
+      task.call();
+   }
+
+   public Future<Boolean> produceAsync(ProcessEvent event) throws Exception {
+      SendTask task = new SendTask(event);
+      FutureTask<Boolean> future = new FutureTask<Boolean>(task);
+
+      executor.execute(future);
+      return future;
    }
    
    public void close() throws Exception {
-      CloseTask task = new CloseTask(latch);
-      executor.execute(task);
-      latch.await(); // make sure all events are flushed
+      SendTask task = new SendTask(null);
+      FutureTask<Boolean> future = new FutureTask<Boolean>(task);
+
+      executor.execute(future);
+      future.get();
    }
    
-   private class CloseTask implements Runnable {
-      
-      private final CountDownLatch latch;
-      
-      public CloseTask(CountDownLatch latch) {
-         this.latch = latch;
-      }
-      
-      @Override
-      public void run() {
-         latch.countDown();
-      }
-   }
-   
-   private class SendTask implements Runnable {
+   private class SendTask implements Callable<Boolean> {
       
       private final ProcessEvent event;
       
@@ -55,25 +50,24 @@ public class ProcessEventProducer {
       }
       
       @Override
-      public void run() {
-         try {
+      public Boolean call() throws Exception {
+         if(event != null) {
             Class type = event.getClass();
-            
-            if(!marshallers.containsKey(type)) {
+
+            if (!marshallers.containsKey(type)) {
                ProcessEventType[] events = ProcessEventType.values();
-               
-               for(ProcessEventType event : events) {
+
+               for (ProcessEventType event : events) {
                   ProcessEventMarshaller marshaller = event.marshaller.newInstance();
                   marshallers.put(event.event, marshaller);
                }
             }
             ProcessEventMarshaller marshaller = marshallers.get(type);
             MessageEnvelope message = marshaller.toMessage(event);
-            
+
             writer.write(message);
-         } catch(Exception e) {
-            return;
          }
+         return true;
       }
    }
 }

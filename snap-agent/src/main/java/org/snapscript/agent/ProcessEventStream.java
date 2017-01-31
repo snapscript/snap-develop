@@ -58,7 +58,7 @@ public class ProcessEventStream extends OutputStream {
                .withLength(octets.length)
                .build();
    
-            channel.send(event);
+            channel.sendAsync(event);
             stream.flush();
          } else {
             WriteOutputEvent event = new WriteOutputEvent.Builder(process)
@@ -67,7 +67,7 @@ public class ProcessEventStream extends OutputStream {
                .withLength(octets.length)
                .build();
             
-            channel.send(event);
+            channel.sendAsync(event);
             stream.flush();
          }
       }catch(Exception e) {
