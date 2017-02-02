@@ -19,8 +19,8 @@ public class ConsoleConnector {
    public ConsoleConnector(ProcessEventChannel channel, String process) throws Exception {
       this.errorAdapter = new ProcessEventStream(WRITE_ERROR, channel, System.err, process);
       this.outputAdapter = new ProcessEventStream(WRITE_OUTPUT, channel, System.out, process);
-      this.output = new ConsoleStream(outputAdapter, true, "UTF-8");
-      this.error = new ConsoleStream(errorAdapter, true, "UTF-8");
+      this.output = new ConsoleStream(outputAdapter, System.out, true, "UTF-8");
+      this.error = new ConsoleStream(errorAdapter, System.err, true, "UTF-8");
    }
 
    public void connect() {
@@ -35,11 +35,16 @@ public class ConsoleConnector {
    
    private static class ConsoleStream extends PrintStream {
       
-      public ConsoleStream(OutputStream out, boolean autoFlush, String encoding) throws UnsupportedEncodingException {
+      private final PrintStream stream;
+      
+      public ConsoleStream(OutputStream out, PrintStream stream, boolean autoFlush, String encoding) throws UnsupportedEncodingException {
          super(out, autoFlush, encoding);
+         this.stream = stream;
       }
 
       @Override
-      public void close(){} // do not allow android to close
+      public void close(){
+         stream.close(); // do not allow android to close event stream
+      } 
    }
 }
