@@ -1,11 +1,11 @@
 package org.snapscript.agent.event;
 
 import java.util.Map;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.snapscript.common.ThreadBuilder;
-import org.snapscript.common.ThreadPool;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 public class ProcessEventProducer {
    

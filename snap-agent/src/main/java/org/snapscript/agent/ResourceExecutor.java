@@ -4,6 +4,7 @@ import java.util.concurrent.ThreadFactory;
 
 import org.snapscript.agent.event.ProcessEventChannel;
 import org.snapscript.common.ThreadBuilder;
+import org.snapscript.core.Console;
 import org.snapscript.core.Model;
 
 public class ResourceExecutor {
@@ -20,11 +21,16 @@ public class ResourceExecutor {
       this.mode = mode;
    }
 
-   public void execute(ProcessEventChannel channel, String project, String resource) throws Exception {
+   public void execute(ProcessEventChannel channel, String process, String project, String resource) throws Exception {
+      ConsoleConnector connector = new ConsoleConnector(channel, process);
       ProcessTask task = new ProcessTask(channel, context, mode, model, project, resource);
       
       if(resource != null) {
          Thread thread = factory.newThread(task);
+         Console console = connector.connect();
+         ProcessConsole delegate = context.getConsole();
+         
+         delegate.update(console);
          thread.start();
       }
    }

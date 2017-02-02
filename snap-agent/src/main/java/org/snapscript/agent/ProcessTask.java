@@ -35,7 +35,6 @@ public class ProcessTask implements Runnable {
    @Override
    public void run() {
       String process = context.getProcess();
-      ConsoleConnector.connect(client, process);
       
       // start and listen for the socket close
       long start = System.nanoTime();

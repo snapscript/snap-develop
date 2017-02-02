@@ -42,7 +42,7 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
          }
          matcher.update(breakpoints);
          store.update(project); // XXX rubbish
-         executor.execute(channel, project, resource);
+         executor.execute(channel, actual, project, resource);
       }
    }
    

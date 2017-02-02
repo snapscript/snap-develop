@@ -21,6 +21,7 @@ public class ProcessContext {
    private final ProcessProfiler profiler;
    private final BreakpointMatcher matcher;
    private final StoreContext context;
+   private final ProcessConsole console;
    private final ProcessStore store;
    private final Executor executor;
    private final Model model;
@@ -36,8 +37,9 @@ public class ProcessContext {
    
    public ProcessContext(URI root, String process, int port, int threads, int stack) {
       this.store = new ProcessStore(root);
+      this.console = new ProcessConsole();
       this.executor = new ThreadPool(threads, stack);
-      this.context = new StoreContext(store, executor);
+      this.context = new StoreContext(store, executor, console);
       this.compiler = new ResourceCompiler(context);
       this.controller = new SuspendController();
       this.matcher = new BreakpointMatcher();
@@ -68,6 +70,10 @@ public class ProcessContext {
    
    public SuspendController getController() {
       return controller;
+   }
+   
+   public ProcessConsole getConsole() {
+      return console;
    }
    
    public ProcessStore getStore() {
