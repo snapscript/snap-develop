@@ -200,7 +200,7 @@ function createEditorTab() {
          var tabResource = sortedNames[i];
          var nextTab = tabResources[tabResource];
          
-         nextTab.closable = sortedNames.length > 2; // if only one tab make sure it cannot be closed
+         nextTab.closable = sortedNames.length > 1; // if only one tab make sure it cannot be closed
          sortedTabs[i] = nextTab;
       }
       tabs.tabs = sortedTabs;
@@ -219,7 +219,15 @@ function activateAnyEditorTab(resource) {
       for(var i = 0; i < tabList.length; i++) {
          var nextTab = tabList[i];
          
-         if(nextTab != null && nextTab.id != 'editTab' && nextTab.id != resource) {
+         if(nextTab != null && nextTab.id == resource) {
+            nextTab.id = 'editTab'; // make sure not to enable, bit of a hack
+            nextTab.closable = true;
+         }
+      }
+      for(var i = 0; i < tabList.length; i++) {
+         var nextTab = tabList[i];
+         
+         if(nextTab != null && nextTab.id != 'editTab') {
             tabs.active = nextTab.id;
             tabs.closable = false;
             FileExplorer.openTreeFile(nextTab.id, function(){}); // browse style makes no difference here
