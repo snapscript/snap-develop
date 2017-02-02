@@ -200,9 +200,7 @@ function createEditorTab() {
          var tabResource = sortedNames[i];
          var nextTab = tabResources[tabResource];
          
-         if(i == 0) {
-            nextTab.closable = false;
-         }
+         nextTab.closable = sortedNames.length > 2; // if only one tab make sure it cannot be closed
          sortedTabs[i] = nextTab;
       }
       tabs.tabs = sortedTabs;
@@ -211,18 +209,19 @@ function createEditorTab() {
    }
 }
 
-function activateAnyEditorTab() {
+function activateAnyEditorTab(resource) {
    var layout = findActiveEditorLayout();
    var tabs = findActiveEditorTabLayout();
    
    if(tabs != null) {
       var tabList = tabs.tabs;
-      
+
       for(var i = 0; i < tabList.length; i++) {
          var nextTab = tabList[i];
          
-         if(nextTab != null && nextTab.id != 'editTab') {
+         if(nextTab != null && nextTab.id != 'editTab' && nextTab.id != resource) {
             tabs.active = nextTab.id;
+            tabs.closable = false;
             FileExplorer.openTreeFile(nextTab.id, function(){}); // browse style makes no difference here
             break;
          }
@@ -366,7 +365,7 @@ function createExploreLayout() {
                FileExplorer.openTreeFile(event.target, function(){});
             },
             onClose : function(event) {
-               activateAnyEditorTab();
+               activateAnyEditorTab(event.target);
             }
          }
       } ]
@@ -546,7 +545,7 @@ function createDebugLayout() {
                FileExplorer.openTreeFile(event.target, function(){});
             },
             onClose : function(event) {
-               activateAnyEditorTab();
+               activateAnyEditorTab(event.target);
             }
          }
       } ]
@@ -1127,7 +1126,7 @@ function activateTab(tabName, layoutName, containsBrowse, containsEditor, browse
       w2ui[layoutName].refresh();
       $('#debug').w2render('debug');
       showStatus();
-   } else {
+   } else { // editor is always the default as it contains file names
       w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>");
       w2ui[layoutName].refresh();
       $('#edit').w2render('edit');
