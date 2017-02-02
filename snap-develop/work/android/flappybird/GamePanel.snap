@@ -16,7 +16,6 @@ import android.graphics.Color;
 
 class GamePanel with Panel {
 
-   static const Y_DOWN_ACCELERATE = 12.0f; // gravity
 
    var context;
    var gameStatus;
@@ -77,7 +76,7 @@ class GamePanel with Panel {
 
       initResources();
 
-      var isSpeedMode = true; // increase the speed
+      var isSpeedMode = false; // increase the speed
       if (isSpeedMode) {
          speedX = 20;
          scoreIncrease = 2;
