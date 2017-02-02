@@ -83,26 +83,163 @@ function applyProjectTheme() {
    });
 }
 
-function showBrowseTree() { // hack to render tree
-   // move the explorer
-   var newParent = document.getElementById('browseParent');
-   var oldParent = document.getElementById('explorerParent');
-
-   if(oldParent != null && newParent != null){
-      while (oldParent.childNodes.length > 0) {
-          newParent.appendChild(oldParent.childNodes[0]);
+function showBrowseTreeContent(containsBrowse) { // hack to render tree
+   if(containsBrowse) {
+      // move the explorer
+      var newParent = document.getElementById('browseParent');
+      var oldParent = document.getElementById('browseParentHidden');
+   
+      if(oldParent != null && newParent != null){
+         while (oldParent.childNodes.length > 0) {
+             newParent.appendChild(oldParent.childNodes[0]);
+         }
       }
    }
 }
 
-function hideBrowseTree() { // hack to render tree
-   // move the explorer
-   var newParent = document.getElementById('explorerParent');
-   var oldParent = document.getElementById('browseParent');
+function hideBrowseTreeContent(containsBrowse) { // hack to render tree
+   if(containsBrowse) {
+      // move the explorer
+      var newParent = document.getElementById('browseParentHidden');
+      var oldParent = document.getElementById('browseParent');
+   
+      if(oldParent != null && newParent != null){
+         while (oldParent.childNodes.length > 0) {
+             newParent.appendChild(oldParent.childNodes[0]);
+         }
+      }
+   }
+}
 
-   if(oldParent != null && newParent != null){
-      while (oldParent.childNodes.length > 0) {
-          newParent.appendChild(oldParent.childNodes[0]);
+function showEditorContent(containsEditor) { // hack to render editor
+   if(containsEditor) {
+      // move the explorer
+      var newParent = document.getElementById('editParent');
+      var oldParent = document.getElementById('editParentHidden');
+   
+      if(oldParent != null && newParent != null){
+         while (oldParent.childNodes.length > 0) {
+             newParent.appendChild(oldParent.childNodes[0]);
+         }
+      }
+      updateEditorTabName();
+   }
+}
+
+function updateEditorTabName() {
+   var editorData = loadEditor();
+   var editorFileName = document.getElementById("editFileName");
+   
+   if(editorFileName != null){
+      var editorData = loadEditor();
+      
+      if(editorData != null && editorData.resource != null) {
+         editorFileName.innerHTML = "<span title='" + editorData.resource.resourcePath +"'>&nbsp;" + editorData.resource.fileName + "&nbsp;</span>";
+      }
+   }
+}
+
+function findActiveEditorLayout() {
+   var tabs = w2ui['exploreEditorTabLayout'];
+
+   if(tabs == null) {
+      return w2ui['debugEditorTabLayout'];
+   }
+   return tabs;
+}
+
+function findActiveEditorTabLayout() {
+   var tabs = findActiveEditorLayout();
+   
+   if(tabs != null) {
+      return tabs.panels[0].tabs;
+   }
+   return null;
+}
+
+function createEditorTab() {
+   var layout = findActiveEditorLayout();
+   var tabs = findActiveEditorTabLayout();
+   var editorData = loadEditor();
+   
+   if(tabs != null && editorData != null && editorData.resource != null) {
+      var tabList = tabs.tabs;
+      var tabResources = {};
+      
+      for(var i = 0; i < tabList.length; i++) {
+         var nextTab = tabList[i];
+         
+         if(nextTab != null && nextTab.id != 'editTab') {
+            tabResources[nextTab.id] = {
+               id : nextTab.id,
+               caption : nextTab.caption.replace('id="editFileName"', "").replace("id='editFileName'", ""),
+               content : "",
+               closable: true,
+               active: false
+            }
+         }
+      }
+      tabResources[editorData.resource.resourcePath] = { 
+         id : editorData.resource.resourcePath,
+         caption : "<div class='editTab' id='editFileName'><span title='" + editorData.resource.resourcePath +"'>&nbsp;" + editorData.resource.fileName + "&nbsp;</span></div>",
+         content : "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
+         closable: true,
+         active: true
+      };
+      var sortedNames = [];
+      var sortedTabs = [];
+      
+      for (var tabResource in tabResources) {
+         if (tabResources.hasOwnProperty(tabResource)) {
+            sortedNames.push(tabResource); // add a '.' to ensure dot notation sorts e.g x.y.z
+         }
+      }
+      sortedNames.sort();
+      
+      for(var i = 0; i < sortedNames.length; i++) {
+         var tabResource = sortedNames[i];
+         var nextTab = tabResources[tabResource];
+         
+         if(i == 0) {
+            nextTab.closable = false;
+         }
+         sortedTabs[i] = nextTab;
+      }
+      tabs.tabs = sortedTabs;
+      tabs.active = editorData.resource.resourcePath;
+      activateTab(editorData.resource.resourcePath, layout.name, false, true, ""); // browse style makes no difference here
+   }
+}
+
+function activateAnyEditorTab() {
+   var layout = findActiveEditorLayout();
+   var tabs = findActiveEditorTabLayout();
+   
+   if(tabs != null) {
+      var tabList = tabs.tabs;
+      
+      for(var i = 0; i < tabList.length; i++) {
+         var nextTab = tabList[i];
+         
+         if(nextTab != null && nextTab.id != 'editTab') {
+            tabs.active = nextTab.id;
+            FileExplorer.openTreeFile(nextTab.id, function(){}); // browse style makes no difference here
+            break;
+         }
+      }
+   }
+}
+
+function hideEditorContent(containsEditor) { // hack to render editor
+   if(containsEditor) {
+      // move the editor
+      var newParent = document.getElementById('editParentHidden');
+      var oldParent = document.getElementById('editParent');
+   
+      if(oldParent != null && newParent != null){
+         while (oldParent.childNodes.length > 0) {
+             newParent.appendChild(oldParent.childNodes[0]);
+         }
       }
    }
 }
@@ -156,7 +293,6 @@ function createExploreLayout() {
 
    // -- LAYOUT
    var pstyle = 'background-color: #F5F6F7; overflow: hidden;';
-   var tabCount = 
       
    $('#mainLayout').w2layout({
       name : 'exploreMainLayout',
@@ -170,9 +306,14 @@ function createExploreLayout() {
          type : 'left',
          size : '20%',
          resizable : true,
-         style : pstyle ,
-         content : createExplorerContent() // explorer tree         
-      }, {
+         style : pstyle      
+      },{
+         type : 'right',
+         size : '20%',
+         resizable : true,
+         hidden: true,
+         style : pstyle
+      },{
          type : 'main',
          size : '80%',
          resizable : true,
@@ -194,8 +335,7 @@ function createExploreLayout() {
          size : '60%',
          resizable : true,
          overflow: 'auto',
-         style : pstyle + 'border-bottom: 0px;',
-         content : createEditorContent()
+         style : pstyle + 'border-bottom: 0px;'
       }, {
          type : 'bottom',
          size : '40%',
@@ -204,34 +344,60 @@ function createExploreLayout() {
          style : pstyle + 'border-top: 0px;'
       } ]
    });
-
-//   $('').w2layout({
-//      name : 'exploreTreeLayout',
-//      padding : 0,
-//      panels : [ {
-//         type : 'main',
-//         size : '100%',
-//         style : pstyle + 'border-top: 0px;',
-//         resizable : false,
-//         name : 'tabs',
-//         tabs : {
-//            active : 'browseTab',
-//            tabs : [ {
-//               id : 'browseTab',
-//               caption : '<div class="browseTab">Browse</div>',
-//               content : "<div style='overflow: scroll; font-family: monospace;' id='browse'>" + createExplorerContent() + "</div>",
-//               closable: false 
-//            } ],
-//            onClick : function(event) {
-//               activateTab(event.target, "exploreTreeLayout");
-//            }
-//         }
-//      } ]
-//   });
-   
    
    $('').w2layout({
-      name : 'exploreTabLayout',
+      name : 'exploreEditorTabLayout',
+      padding : 0,
+      panels : [ {
+         type : 'main',
+         size : '100%',
+         style : pstyle + 'border-top: 0px;',
+         resizable : false,
+         name : 'editTabs',
+         tabs : {
+            active : 'editTab',
+            tabs : [ {
+               id : 'editTab',
+               caption : '<div class="editTab" id="editFileName">Edit</div>',
+               content : "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
+               closable: true 
+            } ],
+            onClick : function(event) {
+               FileExplorer.openTreeFile(event.target, function(){});
+            },
+            onClose : function(event) {
+               activateAnyEditorTab();
+            }
+         }
+      } ]
+   });
+
+   $('').w2layout({
+      name : 'exploreLeftTabLayout',
+      padding : 0,
+      panels : [ {
+         type : 'main',
+         size : '100%',
+         style : pstyle + 'border-top: 0px;',
+         resizable : false,
+         name : 'tabs',
+         tabs : {
+            active : 'browseTab',
+            tabs : [ {
+               id : 'browseTab',
+               caption : '<div class="browseTab">Browse</div>',
+               content : "<div style='overflow: scroll; font-family: monospace;' id='browse'><div id='browseParent'><div id='explorer'></div></div></div>",
+               closable: false 
+            } ],
+            onClick : function(event) {
+               activateTab(event.target, "exploreLeftTabLayout", true, false, "style='right: 0px;'");
+            }
+         }
+      } ]
+   });
+   
+   $('').w2layout({
+      name : 'exploreBottomTabLayout',
       padding : 0,
       panels : [ {
          type : 'main',
@@ -274,7 +440,7 @@ function createExploreLayout() {
                console.log(event);
             },
             onClick : function(event) {
-               activateTab(event.target, "exploreTabLayout");
+               activateTab(event.target, "exploreBottomTabLayout", false, false, "style='right: 0px;'");
             }
          }
       } ]
@@ -289,16 +455,19 @@ function createExploreLayout() {
    createThreadsTab();
    
    w2ui['exploreMainLayout'].content('top', w2ui['topLayout']);
-   //w2ui['exploreMainLayout'].content('left', w2ui['exploreTreeLayout']);
+   w2ui['exploreMainLayout'].content('left', w2ui['exploreLeftTabLayout']);
    w2ui['exploreMainLayout'].content('main', w2ui['exploreEditorLayout']);
-   w2ui['exploreEditorLayout'].content('bottom', w2ui['exploreTabLayout']);
-   w2ui['exploreTabLayout'].refresh();
-   //w2ui['exploreTreeLayout'].refresh();
+   w2ui['exploreEditorLayout'].content('main', w2ui['exploreEditorTabLayout']);
+   w2ui['exploreEditorLayout'].content('bottom', w2ui['exploreBottomTabLayout']);
+   w2ui['exploreEditorTabLayout'].refresh();
+   w2ui['exploreBottomTabLayout'].refresh();
+   w2ui['exploreLeftTabLayout'].refresh();
 
    setTimeout(function() {
       applyProjectTheme();
-      activateTab("consoleTab", "exploreTabLayout"); 
-      //activateTab("browseTab", "exploreTreeLayout"); 
+      activateTab("consoleTab", "exploreBottomTabLayout", false, false, "style='right: 0px;'"); 
+      activateTab("browseTab", "exploreLeftTabLayout", true, false, "style='right: 0px;'"); 
+      activateTab("editTab", "exploreEditorTabLayout", false, true, "style='right: 0px;'"); 
    }, 300); // update theme
 }
 
@@ -318,13 +487,6 @@ function createDebugLayout() {
          size : '40px',
          resizable : false,
          style : pstyle
-      }, {
-         type : 'left',
-         size : '20%',
-         resizable : true,
-         hidden: true,
-         style : pstyle,
-         content: createExplorerContent()
       }, {
          type : 'main',
          size : '80%',
@@ -353,14 +515,40 @@ function createDebugLayout() {
          size : '50%',
          resizable : true,
          overflow: 'auto',
-         style : pstyle + 'border-bottom: 0px;',
-         content : createEditorContent()        
+         style : pstyle + 'border-bottom: 0px;'      
       }, {
          type : 'bottom',
          size : '25%',
          overflow: 'auto',         
          resizable : true,
          style : pstyle + 'border-top: 0px;'
+      } ]
+   });
+   
+   $('').w2layout({
+      name : 'debugEditorTabLayout',
+      padding : 0,
+      panels : [ {
+         type : 'main',
+         size : '100%',
+         style : pstyle + 'border-top: 0px;',
+         resizable : false,
+         name : 'editTabs',
+         tabs : {
+            active : 'editTab',
+            tabs : [ {
+               id : 'editTab',
+               caption : '<div class="editTab" id="editFileName">Edit</div>',
+               content : "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
+               closable: true 
+            } ],
+            onClick : function(event) {
+               FileExplorer.openTreeFile(event.target, function(){});
+            },
+            onClose : function(event) {
+               activateAnyEditorTab();
+            }
+         }
       } ]
    });
    
@@ -404,11 +592,11 @@ function createDebugLayout() {
             },  {
                id : 'browseTab',
                caption : '<div class="browseTab">Browse</div>',
-               content : "<div style='overflow: scroll; font-family: monospace;' id='browse'>" + createExplorerContent() + "</div>",
+               content : "<div style='overflow: scroll; font-family: monospace;' id='browse'><div id='browseParent'></div></div>",
                closable: false 
             } ],
             onClick : function(event) {
-               activateTab(event.target, "debugLeftTabLayout");
+               activateTab(event.target, "debugLeftTabLayout", true, false, "");
             }
          }
       } ]
@@ -435,7 +623,7 @@ function createDebugLayout() {
                closable: false
             } ],
             onClick : function(event) {
-               activateTab(event.target, "debugRightTabLayout");
+               activateTab(event.target, "debugRightTabLayout", false, false, "");
             }
          }
       } ]
@@ -463,7 +651,7 @@ function createDebugLayout() {
                caption : '<div class="profilerTab">Profiler</div>'
             } ],
             onClick : function(event) {
-               activateTab(event.target, "debugBottomTabLayout");
+               activateTab(event.target, "debugBottomTabLayout", false, false, "");
             }
          }
       } ]
@@ -479,10 +667,12 @@ function createDebugLayout() {
    
    w2ui['debugMainLayout'].content('top', w2ui['topLayout']);
    w2ui['debugMainLayout'].content('main', w2ui['debugEditorLayout']);
+   w2ui['debugEditorLayout'].content('main', w2ui['debugEditorTabLayout']);
    w2ui['debugEditorLayout'].content('top', w2ui['debugTopTabSplit']);
    w2ui['debugTopTabSplit'].content('left', w2ui['debugLeftTabLayout']);
    w2ui['debugTopTabSplit'].content('main', w2ui['debugRightTabLayout']);
    w2ui['debugEditorLayout'].content('bottom', w2ui['debugBottomTabLayout']);  
+   w2ui['debugEditorTabLayout'].refresh();
    w2ui['debugTopTabSplit'].refresh();
    w2ui['debugLeftTabLayout'].refresh();
    w2ui['debugRightTabLayout'].refresh();   
@@ -490,20 +680,13 @@ function createDebugLayout() {
    
    setTimeout(function() {
       applyProjectTheme();
-      activateTab("debugTab", "debugLeftTabLayout");
-      activateTab("variablesTab", "debugRightTabLayout");   
-      activateTab("consoleTab", "debugBottomTabLayout");  
+      activateTab("debugTab", "debugLeftTabLayout", true, false, "");
+      activateTab("variablesTab", "debugRightTabLayout", false, false, "");   
+      activateTab("consoleTab", "debugBottomTabLayout", false, false, "");  
+      activateTab("editTab", "debugEditorTabLayout", false, true, "");  
    }, 300); // update theme
    
    
-}
-
-function createExplorerContent() {
-   return "<div id='explorerParent'><div id='explorer'></div></div>";
-}
-
-function createEditorContent() {
-   return "<div id='editor'></div>";
 }
 
 function createBottomStatusContent() {
@@ -901,7 +1084,10 @@ function createDebugTab(){
    });
 }
 
-function activateTab(tabName, layoutName) {
+function activateTab(tabName, layoutName, containsBrowse, containsEditor, browseStyle) {
+   hideBrowseTreeContent(containsBrowse); // hide tree
+   hideEditorContent(containsEditor); // hide tree
+   
    if (tabName == 'consoleTab') {
       w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='console'></div>");
       w2ui[layoutName].refresh();
@@ -917,7 +1103,6 @@ function activateTab(tabName, layoutName) {
       $('#breakpoints').w2render('breakpoints');
       showEditorBreakpoints();
    } else if(tabName == 'threadsTab'){
-      hideBrowseTree(); // hide tree
       w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='threads'></div>");
       w2ui[layoutName].refresh();
       $('#threads').w2render('threads');
@@ -933,17 +1118,20 @@ function activateTab(tabName, layoutName) {
       $('#profiler').w2render('profiler');
       showVariables();
    } else if(tabName == 'browseTab'){
-      hideBrowseTree(); // hide tree
-      w2ui[layoutName].content('main', "<div style='overflow: hidden; font-family: monospace;' id='browse'><div id='browseParent'></div></div>");
+      w2ui[layoutName].content('main', "<div style='overflow: hidden; font-family: monospace;' id='browse'><div id='browseParent' "+browseStyle+"></div></div>");
       w2ui[layoutName].refresh();
       $('#browse').w2render('browse');
-      showBrowseTree(); // hack to move tree
-   } else {
-      hideBrowseTree(); // hide tree
+      showBrowseTreeContent(containsBrowse); // hack to move tree
+   } else if(tabName == 'debugTab'){
       w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='debug'></div>");
       w2ui[layoutName].refresh();
       $('#debug').w2render('debug');
       showStatus();
+   } else {
+      w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>");
+      w2ui[layoutName].refresh();
+      $('#edit').w2render('edit');
+      showEditorContent(containsEditor);
    }
 }
 

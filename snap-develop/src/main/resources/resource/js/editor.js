@@ -334,6 +334,7 @@ function updateEditor(text, resource) {
         }
     }
     indexEditorTokens(text, resource); // create some tokens we can link to dynamically
+    createEditorTab(); // update the tab name
     $("#currentFile").html("File:&nbsp;" + editorResource.projectPath + "&nbsp;&nbsp;");
 }
 function isEditorChanged() {

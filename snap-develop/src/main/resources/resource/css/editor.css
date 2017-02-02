@@ -16,7 +16,7 @@
 	border-width: 1px;
 	border-color: #c0c0c0;
 	position: absolute;
-	top: 0px;
+	top: 8px;
 	right: 8px;
 	bottom: 8px;
 	left: 8px;
@@ -26,6 +26,21 @@
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
+}
+
+#edit {
+	overflow: hidden !important;
+}
+
+.editTab {	
+	background-image: url('/img/toolbar/write_obj.gif');	
+	background-position: left bottom;
+	background-repeat: no-repeat;
+	padding-top: 3px;
+	padding-bottom: 2px;
+	padding-left: 22px; /* Or size of icon + spacing */
+	margin-left: -10px;
+	z-index: 1009;
 }
 
 .typeNode {
