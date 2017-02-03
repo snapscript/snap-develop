@@ -157,6 +157,59 @@ function findActiveEditorTabLayout() {
    return null;
 }
 
+function deleteEditorTab(resource) {
+   var layout = findActiveEditorLayout();
+   var tabs = findActiveEditorTabLayout();
+   
+   if(tabs != null && resource != null) {
+      var removeTab = tabs.get(resource);
+      
+      if(removeTab.closable) {
+         tabs.remove(resource); // remove the tab
+         
+         if(removeTab.active) {
+            activateAnyEditorTab(resource); // if it was active then activate another
+         }
+      }
+   }
+}
+
+function renameEditorTab(from, to) {
+   var layout = findActiveEditorLayout();
+   var tabs = findActiveEditorTabLayout();
+   var editorData = loadEditor();
+   
+   if(tabs != null && from != null && to != null) {
+      var tabList = tabs.tabs;
+      var count = 0;
+      
+      for(var i = 0; i < tabList.length; i++) {
+         var nextTab = tabList[i];
+         
+         if(nextTab != null && nextTab.id == from) {
+            var newTab = JSON.parse(JSON.stringify(nextTab)); // clone the tab
+            var toPath = createResourcePath(to);
+            var fromPath = createResourcePath(from);
+
+            tabs.remove(nextTab.id); // remove the tab
+
+            if(nextTab.active) {
+               FileExplorer.openTreeFile(toPath.resourcePath, function(){}); // browse style makes no difference here
+            } else {
+               var fileNameReplace = new RegExp(fromPath.fileName, "g");
+               var filePathReplace = new RegExp(fromPath.resourcePath, "g");
+               
+               newTab.caption = newTab.caption.replace(fileNameReplace, toPath.fileName).replace(filePathReplace, toPath.resourcePath); // rename the tab
+               newTab.text = newTab.text.replace(fileNameReplace, toPath.fileName).replace(filePathReplace, toPath.resourcePath); // rename the tab
+               newTab.id = toPath.resourcePath;
+               tabs.add(newTab);
+            }
+            break;
+         }
+      }
+   }
+}
+
 function createEditorTab() {
    var layout = findActiveEditorLayout();
    var tabs = findActiveEditorTabLayout();
@@ -209,7 +262,7 @@ function createEditorTab() {
    }
 }
 
-function activateAnyEditorTab(resource) {
+function activateAnyEditorTab(resourcePathDeleted) {
    var layout = findActiveEditorLayout();
    var tabs = findActiveEditorTabLayout();
    
@@ -219,7 +272,7 @@ function activateAnyEditorTab(resource) {
       for(var i = 0; i < tabList.length; i++) {
          var nextTab = tabList[i];
          
-         if(nextTab != null && nextTab.id == resource) {
+         if(nextTab != null && nextTab.id == resourcePathDeleted) {
             nextTab.id = 'editTab'; // make sure not to enable, bit of a hack
             nextTab.closable = true;
          }

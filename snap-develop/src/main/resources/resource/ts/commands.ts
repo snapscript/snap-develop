@@ -90,6 +90,7 @@ function renameFile(resourcePath) {
          to: resourceDetails.filePath
       });
       socket.send("RENAME:" + message);
+      renameEditorTab(resourcePath.resourcePath, resourceDetails.resourcePath); // rename tabs if open
    });
 }
 
@@ -207,6 +208,7 @@ function deleteFile(resourceDetails) {
                if(editorData.resource != null && editorData.resource.resourcePath == resourceDetails.resourcePath) { // delete focused file
                   resetEditor();
                }
+               deleteEditorTab(resourceDetails.resourcePath); // rename tabs if open
             },
             function(){});
    }
