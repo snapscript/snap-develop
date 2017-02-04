@@ -226,15 +226,13 @@ function deleteDirectory(resourceDetails) {
 }
 
 function runScript() {
-   var waitingProcessSystem = findStatusWaitingProcessSystem();
    saveFileWithAction(function() {
       var editorData = loadEditor();
       var message = JSON.stringify({
          breakpoints : editorData.breakpoints,
          project : document.title,
          resource : editorData.resource.filePath,
-         system: waitingProcessSystem,
-         source : editorData.source,
+         source : editorData.source
       });
       socket.send("EXECUTE:" + message);
    }, true); // save editor

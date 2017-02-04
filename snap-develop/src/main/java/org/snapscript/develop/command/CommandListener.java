@@ -183,21 +183,21 @@ public class CommandListener {
       String process = command.getProcess();
       
       try {
-         String focus = filter.get();
+         String focus = filter.getFocus();
          
          if(focus == null) { // not focused
             if(command.isFocus()) {
-               filter.attach(process);
+               filter.setFocus(process);
             }
          } else if(process.equals(focus)) { // focused
             if(command.isFocus()) {
-               filter.attach(process); // accept messages from this process
+               filter.setFocus(process); // accept messages from this process
             } else {
-               filter.clear(); // clear the focus
+               filter.clearFocus(); // clear the focus
             }
          } else {
             if(command.isFocus()) {
-               filter.attach(process);
+               filter.setFocus(process);
             }
          }
          engine.breakpoints(command, process);
@@ -209,7 +209,7 @@ public class CommandListener {
    
    public void onStep(StepCommand command) {
       String thread = command.getThread();
-      String focus = filter.get();
+      String focus = filter.getFocus();
             
       try {
          if(focus != null) {
@@ -245,7 +245,7 @@ public class CommandListener {
    }
    
    public void onBreakpoints(BreakpointsCommand command) {
-      String focus = filter.get();
+      String focus = filter.getFocus();
       
       try {
          if(focus != null) {
@@ -257,7 +257,7 @@ public class CommandListener {
    }
    
    public void onBrowse(BrowseCommand command) {
-      String focus = filter.get();
+      String focus = filter.getFocus();
       
       try {
          if(focus != null) {
@@ -269,7 +269,7 @@ public class CommandListener {
    }
    
    public void onEvaluate(EvaluateCommand command) {
-      String focus = filter.get();
+      String focus = filter.getFocus();
       
       try {
          if(focus != null) {
@@ -281,13 +281,13 @@ public class CommandListener {
    }
    
    public void onStop(StopCommand command) {
-      String focus = filter.get();
+      String focus = filter.getFocus();
       
       try {
          if(focus != null) {
             engine.stop(focus);
             client.sendProcessTerminate(focus);
-            filter.clear();
+            filter.clearFocus();
          }
       } catch(Exception e) {
          logger.info("Error stopping process " + focus, e);
@@ -295,7 +295,7 @@ public class CommandListener {
    }
    
    public void onPing(PingCommand command) {
-      String focus = filter.get();
+      String focus = filter.getFocus();
       
       try {
          if(focus != null) {
@@ -303,7 +303,7 @@ public class CommandListener {
             
             if(!engine.ping(focus, time)) {
                client.sendProcessTerminate(focus);
-               filter.clear();
+               filter.clearFocus();
             }
          }
          engine.register(forwarder); // make sure we are registered
@@ -313,7 +313,7 @@ public class CommandListener {
    }
    
    public void onPing() {
-      String focus = filter.get();
+      String focus = filter.getFocus();
       
       try {
          if(focus != null) {
@@ -321,7 +321,7 @@ public class CommandListener {
             
             if(!engine.ping(focus, time)) {
                client.sendProcessTerminate(focus);
-               filter.clear();
+               filter.clearFocus();
             }
          }
          engine.register(forwarder); // make sure we are registered

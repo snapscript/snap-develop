@@ -43,8 +43,8 @@ public class ProcessManager {
    }
    
    public boolean execute(ExecuteCommand command, ProcessEventFilter filter) { 
-      String system = command.getSystem();
-      ProcessConnection connection = pool.acquire(system);
+      String focus = filter.getFocus();
+      ProcessConnection connection = pool.acquire(focus);
       
       if(connection != null) {
          Map<String, Map<Integer, Boolean>> breakpoints = command.getBreakpoints();
@@ -53,7 +53,7 @@ public class ProcessManager {
          String process = connection.toString();
          
          if(filter != null) {
-            filter.update(process);
+            filter.setFocus(process);
          }
          connections.put(process, connection);
          
@@ -126,11 +126,11 @@ public class ProcessManager {
    
    public boolean ping(String process, long time) {
       ProcessConnection connection = connections.get(process);
-      
+
       if(connection != null) {
          return connection.ping(time);
-      }
-      return false;
+      } 
+      return pool.ping(process, time); // the process might not be active
    }
    
    public void start(String host, int port) {

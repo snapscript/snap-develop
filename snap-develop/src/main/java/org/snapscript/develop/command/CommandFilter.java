@@ -13,20 +13,16 @@ public class CommandFilter implements ProcessEventFilter {
       this.attachment = new AtomicReference<String>();
    }
    
-   public String get(){
+   public String getFocus(){
       return attachment.get();
    }
 
    @Override
-   public void update(String process) {
+   public void setFocus(String process) {
       attachment.set(process);
    }
    
-   public void attach(String process) {
-      attachment.set(process);
-   }
-   
-   public boolean accept(ProcessEvent event) {
+   public boolean isFocused(ProcessEvent event) {
       String process = event.getProcess();
       String focus = attachment.get();
       
@@ -36,7 +32,7 @@ public class CommandFilter implements ProcessEventFilter {
       return false;
    }
    
-   public void clear() {
+   public void clearFocus() {
       attachment.set(null);
    }
 

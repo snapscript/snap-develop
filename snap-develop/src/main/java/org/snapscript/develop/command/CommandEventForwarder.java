@@ -35,7 +35,7 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    
    @Override
    public void onScope(ProcessEventChannel channel, ScopeEvent event) throws Exception {
-      if(filter.accept(event)) {
+      if(filter.isFocused(event)) {
          ScopeVariableTree tree = event.getVariables();
          Map<String, Map<String, String>> local = tree.getLocal();
          Map<String, Map<String, String>> evaluation = tree.getEvaluation();
@@ -55,7 +55,7 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    
    @Override
    public void onFault(ProcessEventChannel channel, FaultEvent event) throws Exception {
-      if(filter.accept(event)) {
+      if(filter.isFocused(event)) {
          ScopeVariableTree tree = event.getVariables();
          Map<String, Map<String, String>> local = tree.getLocal();
          String process = event.getProcess();
@@ -93,7 +93,7 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    
    @Override
    public void onSyntaxError(ProcessEventChannel channel, SyntaxErrorEvent event) throws Exception {
-      if(filter.accept(event)) {
+      if(filter.isFocused(event)) {
          String description = event.getDescription();
          String resource = event.getResource();
          int line = event.getLine();
@@ -104,7 +104,7 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    
    @Override
    public void onBegin(ProcessEventChannel channel, BeginEvent event) throws Exception {
-      if(filter.accept(event)) {
+      if(filter.isFocused(event)) {
          String process = event.getProcess();
          String resource = event.getResource();
          long duration = event.getDuration();
@@ -114,7 +114,7 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    
    @Override
    public void onProfile(ProcessEventChannel channel, ProfileEvent event) throws Exception {
-      if(filter.accept(event)) {
+      if(filter.isFocused(event)) {
          String process = event.getProcess();
          Set<ProfileResult> results = event.getResults();
          client.sendProfile(process, results);
@@ -123,7 +123,7 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    
    @Override
    public void onRegister(ProcessEventChannel channel, RegisterEvent event) throws Exception {  
-      String focus = filter.get();
+      String focus = filter.getFocus();
       String process = event.getProcess();
       String system = event.getSystem();
       long time = System.currentTimeMillis();
@@ -132,13 +132,14 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    
    @Override
    public void onPong(ProcessEventChannel channel, PongEvent event) throws Exception {  
-      String focus = filter.get();
+      String focus = filter.getFocus();
       String project = event.getProject();
       String process = event.getProcess();
       String system = event.getSystem();
       String resource = event.getResource();
       boolean running = event.isRunning();
       long time = System.currentTimeMillis();
+      System.err.println("focus=["+focus+"] process=["+process+"]");
       client.sendStatus(process, system, project, resource, time, running, process.equals(focus)); // update clients on status
    }
    
@@ -150,7 +151,7 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    
    @Override
    public void onClose(ProcessEventChannel channel) throws Exception { 
-      String focus = filter.get();
+      String focus = filter.getFocus();
       if(focus != null) {
          client.sendProcessTerminate(focus); 
       }

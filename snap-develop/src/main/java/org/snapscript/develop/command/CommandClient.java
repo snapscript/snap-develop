@@ -70,7 +70,7 @@ public class CommandClient {
    public void sendStatus(String process, String system, String project, String resource, long time, boolean running, boolean focus) throws Exception {
       StatusCommand command = new StatusCommand(process, system, project, resource, time, running, focus);
       String message = writer.write(command);
-      
+
       channel.send(message);
    }
    

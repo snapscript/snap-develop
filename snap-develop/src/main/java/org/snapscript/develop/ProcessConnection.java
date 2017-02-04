@@ -108,7 +108,7 @@ public class ProcessConnection {
             .build();
          
          if(channel.send(event)) {
-            logger.debug(process + ": Ping succeeded");
+            logger.trace(process + ": Ping succeeded");
             return true;
          }
          logger.info(process + ": Ping failed");
@@ -126,6 +126,10 @@ public class ProcessConnection {
       } catch (Exception e) {
          logger.info(process + ": Error occured closing channel", e);
       }
+   }
+
+   public String getProcess() {
+      return process;
    }
    
    @Override

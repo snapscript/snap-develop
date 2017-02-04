@@ -8,7 +8,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.snapscript.agent.ConsoleLogger;
@@ -26,18 +25,19 @@ import org.snapscript.agent.event.SyntaxErrorEvent;
 import org.snapscript.agent.event.WriteErrorEvent;
 import org.snapscript.agent.event.WriteOutputEvent;
 import org.snapscript.agent.event.socket.SocketEventServer;
-import org.snapscript.common.Cache;
-import org.snapscript.common.LeastRecentlyUsedCache;
 import org.snapscript.common.ThreadBuilder;
 import org.snapscript.develop.configuration.ProcessConfiguration;
 
 public class ProcessPool {
-
-   private final Cache<String, BlockingQueue<ProcessConnection>> connections;
+   
+   private static final long DEFAULT_WAIT_TIME = 10000;
+   private static final long DEFAULT_PING_FREQUENCY = 5000;
+   
    private final BlockingQueue<ProcessConnection> running;
    private final Set<ProcessEventListener> listeners;
    private final ProcessConfiguration configuration;
    private final ProcessEventInterceptor interceptor;
+   private final ProcessConnectionPool connections;
    private final ProcessAgentStarter starter;
    private final ProcessLauncher launcher;
    private final ProcessAgentPinger pinger;
@@ -49,11 +49,11 @@ public class ProcessPool {
    private final int capacity;
    
    public ProcessPool(ProcessConfiguration configuration, ConsoleLogger logger, Workspace workspace, int port, int capacity) throws IOException {
-      this(configuration, logger, workspace, port, capacity, 5000);
+      this(configuration, logger, workspace, port, capacity, DEFAULT_PING_FREQUENCY);
    }
    
    public ProcessPool(ProcessConfiguration configuration, ConsoleLogger logger, Workspace workspace, int port, int capacity, long frequency) throws IOException {
-      this.connections = new LeastRecentlyUsedCache<String, BlockingQueue<ProcessConnection>>();
+      this.connections = new ProcessConnectionPool(logger);
       this.listeners = new CopyOnWriteArraySet<ProcessEventListener>();
       this.running = new LinkedBlockingQueue<ProcessConnection>();
       this.interceptor = new ProcessEventInterceptor(listeners);
@@ -69,23 +69,21 @@ public class ProcessPool {
       this.logger = logger;
    }
    
-   public ProcessConnection acquire(String system) {
+   public ProcessConnection acquire(String process) {
       try {
-         BlockingQueue<ProcessConnection> pool = connections.fetch(system);
-         
-         if(pool == null) {
-            throw new IllegalArgumentException("No pool of type '" + system + "'");
-         }
-         ProcessConnection connection = pool.poll(10, TimeUnit.SECONDS); // take a process from the pool
+         ProcessConnection connection = connections.acquire(DEFAULT_WAIT_TIME, process); // take a process from the pool
          
          if(connection == null) {
-            throw new IllegalStateException("No agent of type " + system + " as pool is empty");
+            if(process == null) {
+               throw new IllegalStateException("No agent found as pool is empty");
+            }
+            throw new IllegalStateException("No agent '" + process + "' as pool is empty");
          }
          running.offer(connection);
          launch(); // start a process straight away
          return connection;
       }catch(Exception e){
-         logger.info("Could not acquire process for '" +system+ "'", e);
+         logger.info("Could not acquire process", e);
       }
       return null;
    }
@@ -104,6 +102,23 @@ public class ProcessPool {
       }catch(Exception e){
          logger.info("Could not remove process listener", e);
       }
+   }
+   
+   public boolean ping(String process, long time) {
+      try {
+         ProcessConnection connection = connections.acquire(0, process); // take a process from the pool
+         
+         if(connection != null) {
+            if(connection.ping(time)) {
+               connections.register(connection); // add back if ping succeeded
+               return true;
+            }
+            connection.close();
+         }
+      }catch(Exception e) {
+         logger.info("Could not ping '" + process + "'", e);
+      }
+      return false;
    }
    
    public void start(String host, int port) { // http://host:port/project
@@ -138,16 +153,9 @@ public class ProcessPool {
       @Override
       public void onRegister(ProcessEventChannel channel, RegisterEvent event) throws Exception {
          String process = event.getProcess();
-         String system = event.getSystem();
          ProcessConnection connection = new ProcessConnection(channel, logger, process);
-         BlockingQueue<ProcessConnection> pool = connections.fetch(system);
-         
-         if(pool == null) {
-            pool = new LinkedBlockingQueue<ProcessConnection>();
-            connections.cache(system, pool);
-         }
-         pool.offer(connection);
-         
+         connections.register(connection);
+
          for(ProcessEventListener listener : listeners) {
             try {
                listener.onRegister(channel, event);
@@ -327,13 +335,6 @@ public class ProcessPool {
       public void run() {
          while(true) {
             try {
-               String host = System.getProperty("os.name");
-               BlockingQueue<ProcessConnection> pool = connections.fetch(host);
-               
-               if(pool == null) {
-                  pool = new LinkedBlockingQueue<ProcessConnection>();
-                  connections.cache(host, pool);
-               }
                Thread.sleep(frequency);
                ping();
             }catch(Exception e) {
@@ -362,12 +363,10 @@ public class ProcessPool {
       
       public boolean kill() {
          try {
-            String system = System.getProperty("os.name"); // kill a host agent
             int port = listen.get();
 
             if(port != 0) {
-               BlockingQueue<ProcessConnection> pool = connections.fetch(system);
-               ProcessConnection connection = pool.poll();
+               ProcessConnection connection = connections.acquire(0);
 
                if(connection != null) {
                   String name = connection.toString();
@@ -384,31 +383,25 @@ public class ProcessPool {
       }
       
       private void ping() {
-         String host = System.getProperty("os.name");
-         Set<String> systems = connections.keySet();
          long time = System.currentTimeMillis();
          
          try {
             List<ProcessConnection> active = new ArrayList<ProcessConnection>();
             int require = capacity;
-            
-            for(String system : systems) {
-               BlockingQueue<ProcessConnection> available = connections.fetch(system);
+
+            while(!connections.isEmpty()) {
+               ProcessConnection connection = connections.acquire(0);
                
-               while(!connections.isEmpty()) {
-                  ProcessConnection connection = available.poll();
-                  
-                  if(connection == null) {
-                     break;
-                  }
-                  if(connection.ping(time)) {
-                     active.add(connection);
-                  }
+               if(connection == null) {
+                  break;
                }
-               available.addAll(active);
+               if(connection.ping(time)) {
+                  active.add(connection);
+               }
             }
-            BlockingQueue<ProcessConnection> available = connections.fetch(host);
-            int pool = available.size();
+            connections.register(active);
+
+            int pool = connections.size();
             int remaining = require - pool; 
             
             if(remaining > 0) {

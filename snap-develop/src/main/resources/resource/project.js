@@ -1135,6 +1135,8 @@ function createDebugTab(){
                   FileExplorer.openTreeFile(record.script, function() {
                      attachProcess(record.process);
                   });
+               } else {
+                  attachProcess(record.process);
                }
             }
             grid.selectNone();

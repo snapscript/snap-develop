@@ -34,21 +34,6 @@ function refreshStatusProcesses() {
    pingProcess(); // this will force a STATUS event
 }
 
-function findStatusWaitingProcessSystem() {
-   for (var statusProcess in statusProcesses) {
-      if (statusProcesses.hasOwnProperty(statusProcess)) {
-         var statusProcessInfo = statusProcesses[statusProcess];
-         
-         if(statusProcessInfo != null) {
-            if(!statusProcessInfo.running) {
-               return statusProcessInfo.system;
-            }
-         }
-      }
-   }
-   return "Windows 7"; // this is a hack
-}
-
 function terminateStatusProcess(socket, type, text) {
    if(text != null) {
       statusProcesses[text] = null;
@@ -142,26 +127,27 @@ function showStatus() {
             
             if(statusProject == document.title || statusProject == null) {
                var displayName = "<div class='debugIdleRecord'>"+statusProcess+"</div>";
-               var resourcePath = "";
                var status = "WAITING";
-               var active = "";
+               var active = "&nbsp;<input type='radio'>"; ;
+               var resourcePath = "";
                var running = false;
                
+               if(statusFocus == statusProcess) {
+                  active = "&nbsp;<input type='radio' checked>";
+               }
                if(statusProcessInfo.resource != null) {
                   var resourcePathDetails = createResourcePath(statusProcessInfo.resource);
                   
                   if(statusFocus == statusProcess) {
                      displayName = "<div class='debugFocusRecord'>"+statusProcess+"</div>";
                      status = "DEBUGGING";
-                     active = "&nbsp;<input type='radio' checked>";
                   } else {
                      displayName = "<div class='debugRecord'>"+statusProcess+"</div>";
-                     status = "RUNNING";
-                     active = "&nbsp;<input type='radio'>";                  
+                     status = "RUNNING";               
                   }
                   resourcePath = resourcePathDetails.resourcePath;
                   running = true;
-               }
+               } 
                statusRecords.push({
                   recid: statusIndex++,
                   name: displayName,

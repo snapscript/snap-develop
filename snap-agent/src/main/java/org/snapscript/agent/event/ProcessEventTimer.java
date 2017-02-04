@@ -22,7 +22,7 @@ public class ProcessEventTimer implements ProcessEventListener {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("onExit(): took " + duration + " ms");
+         logger.trace("onExit(): took " + duration + " ms");
       }
    }
 
@@ -36,7 +36,7 @@ public class ProcessEventTimer implements ProcessEventListener {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("onExecute(): took " + duration + " ms");
+         logger.trace("onExecute(): took " + duration + " ms");
       }
    }
 
@@ -50,7 +50,7 @@ public class ProcessEventTimer implements ProcessEventListener {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("onWriteError(): took " + duration + " ms");
+         logger.trace("onWriteError(): took " + duration + " ms");
       }
    }
 
@@ -64,7 +64,7 @@ public class ProcessEventTimer implements ProcessEventListener {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("onWriteOutput(): took " + duration + " ms");
+         logger.trace("onWriteOutput(): took " + duration + " ms");
       }
    }
 
@@ -78,7 +78,7 @@ public class ProcessEventTimer implements ProcessEventListener {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("onRegister(): took " + duration + " ms");
+         logger.trace("onRegister(): took " + duration + " ms");
       }
    }
 
@@ -92,7 +92,7 @@ public class ProcessEventTimer implements ProcessEventListener {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("onSyntaxError(): took " + duration + " ms");
+         logger.trace("onSyntaxError(): took " + duration + " ms");
       }
    }
 
@@ -106,7 +106,7 @@ public class ProcessEventTimer implements ProcessEventListener {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("onScope(): took " + duration + " ms");
+         logger.trace("onScope(): took " + duration + " ms");
       }
    }
 
@@ -120,7 +120,7 @@ public class ProcessEventTimer implements ProcessEventListener {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("onBreakpoints(): took " + duration + " ms");
+         logger.trace("onBreakpoints(): took " + duration + " ms");
       }
    }
 
@@ -134,7 +134,7 @@ public class ProcessEventTimer implements ProcessEventListener {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("onBegin(): took " + duration + " ms");
+         logger.trace("onBegin(): took " + duration + " ms");
       }
    }
 
@@ -148,7 +148,7 @@ public class ProcessEventTimer implements ProcessEventListener {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("onStep(): took " + duration + " ms");
+         logger.trace("onStep(): took " + duration + " ms");
       }
    }
 
@@ -162,7 +162,7 @@ public class ProcessEventTimer implements ProcessEventListener {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("onBrowse(): took " + duration + " ms");
+         logger.trace("onBrowse(): took " + duration + " ms");
       }
    }
 
@@ -176,7 +176,7 @@ public class ProcessEventTimer implements ProcessEventListener {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("onProfile(): took " + duration + " ms");
+         logger.trace("onProfile(): took " + duration + " ms");
       }
    }
    
@@ -191,7 +191,7 @@ public class ProcessEventTimer implements ProcessEventListener {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("onEvaluate(): took " + duration + " ms");
+         logger.trace("onEvaluate(): took " + duration + " ms");
       }
    }
    
@@ -205,7 +205,7 @@ public class ProcessEventTimer implements ProcessEventListener {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("onFault(): took " + duration + " ms");
+         logger.trace("onFault(): took " + duration + " ms");
       }
    }
 
@@ -219,7 +219,7 @@ public class ProcessEventTimer implements ProcessEventListener {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("onPing(): took " + duration + " ms");
+         logger.trace("onPing(): took " + duration + " ms");
       }
    }
 
@@ -233,7 +233,7 @@ public class ProcessEventTimer implements ProcessEventListener {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("onPong(): took " + duration + " ms");
+         logger.trace("onPong(): took " + duration + " ms");
       }
    }
 
@@ -247,7 +247,7 @@ public class ProcessEventTimer implements ProcessEventListener {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("onClose(): took " + duration + " ms");
+         logger.trace("onClose(): took " + duration + " ms");
       }
    }
 }
