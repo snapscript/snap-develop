@@ -1,6 +1,5 @@
 package org.snapscript.agent.log;
 
-import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.ArrayBlockingQueue;

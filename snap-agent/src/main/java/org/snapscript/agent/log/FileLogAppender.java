@@ -3,7 +3,6 @@ package org.snapscript.agent.log;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FileLogAppender {
 

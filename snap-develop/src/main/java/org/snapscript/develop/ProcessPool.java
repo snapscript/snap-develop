@@ -41,6 +41,7 @@ public class ProcessPool {
    private final ProcessAgentStarter starter;
    private final ProcessLauncher launcher;
    private final ProcessAgentPinger pinger;
+   private final ProcessNameFilter filter;
    private final SocketEventServer server;
    private final ConsoleManager manager;
    private final ProcessListener listener;
@@ -61,6 +62,7 @@ public class ProcessPool {
       this.launcher = new ProcessLauncher(server, logger, workspace);
       this.pinger = new ProcessAgentPinger(frequency);
       this.starter = new ProcessAgentStarter(pinger);
+      this.filter = new ProcessNameGenerator();
       this.listener = new ProcessListener(logger);
       this.manager = new ConsoleManager(listener, frequency);
       this.factory = new ThreadBuilder();
@@ -366,7 +368,7 @@ public class ProcessPool {
             int port = listen.get();
 
             if(port != 0) {
-               ProcessConnection connection = connections.acquire(0);
+               ProcessConnection connection = connections.acquire(filter);
 
                if(connection != null) {
                   String name = connection.toString();

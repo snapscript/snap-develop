@@ -50,6 +50,30 @@ public class ProcessConnectionPool {
       return acquire(wait);
    }
    
+   public ProcessConnection acquire(ProcessNameFilter filter) {
+      try {
+         if(filter != null) {
+            int count = 10 * pool.size();
+            
+            while(count-- > 0) {
+               ProcessConnection connection = pool.poll(5, TimeUnit.MILLISECONDS); // take a process from the pool
+               
+               if(connection != null) {
+                  String name = connection.getProcess();
+                  
+                  if(filter.accept(name)) { 
+                     return connection; // if there is a match then return it
+                  }
+                  pool.offer(connection);
+               }
+            }
+         }
+      }catch(Exception e){
+         logger.info("Could not acquire process", e);
+      }
+      return null;
+   }
+   
    public void register(ProcessConnection connection) {
       pool.offer(connection);
       
