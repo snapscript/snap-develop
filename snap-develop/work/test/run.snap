@@ -8,7 +8,11 @@ function main(directory) {
    const runner = new TestCaseRunner(directory);
    
    try {
-      runner.runTests();
+      if(!runner.runTests()) {
+         println("FAILURE");
+      } else {
+         println("SUCCESS");
+      }
    }finally {
       const finish = System.currentTimeMillis();
       const duration = finish - time;

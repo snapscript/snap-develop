@@ -139,7 +139,6 @@ public class CommandEventForwarder extends ProcessEventAdapter {
       String resource = event.getResource();
       boolean running = event.isRunning();
       long time = System.currentTimeMillis();
-      System.err.println("focus=["+focus+"] process=["+process+"]");
       client.sendStatus(process, system, project, resource, time, running, process.equals(focus)); // update clients on status
    }
    

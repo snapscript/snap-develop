@@ -18,7 +18,9 @@ module Mod {
 class ModuleImportTest with TestCase {
 
    testModuleImport(){
+      println("Before Mod.getM()");
       var m = Mod.getM();
+      println("After Mod.getM()");
       m.put("x", "y");
       m.put("a", "b");
       println(m);
@@ -39,6 +41,7 @@ class ModuleImportTest with TestCase {
       
       var failure = false;
       try {
+         println("Checking M.class");
          println(M.class);
       } catch(e){
          e.printStackTrace();

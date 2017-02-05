@@ -1119,7 +1119,7 @@ function createDebugTab(){
          resizable : true
       },{
          field : 'active',
-         caption : 'Active',
+         caption : 'Focus',
          size : '10%',
          sortable : false,
          resizable : true
