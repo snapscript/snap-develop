@@ -9,10 +9,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.snapscript.agent.ConsoleLogger;
 import org.snapscript.agent.event.FaultEvent;
 import org.snapscript.agent.event.FaultEventMarshaller;
 import org.snapscript.agent.event.ProcessEventChannel;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.core.Context;
 import org.snapscript.core.Module;
 import org.snapscript.core.Path;
@@ -27,10 +27,10 @@ public class FaultContextExtractor extends TraceAdapter {
 
    private final ProcessEventChannel channel;
    private final AtomicInteger counter;
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    private final String process;
    
-   public FaultContextExtractor(ProcessEventChannel channel, ConsoleLogger logger, String process) {
+   public FaultContextExtractor(ProcessEventChannel channel, ProcessLogger logger, String process) {
       this.counter = new AtomicInteger();
       this.channel = channel;
       this.logger = logger;

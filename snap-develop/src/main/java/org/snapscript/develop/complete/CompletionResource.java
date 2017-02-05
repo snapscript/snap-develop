@@ -6,7 +6,7 @@ import java.util.Map;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.configuration.ConfigurationClassLoader;
 import org.snapscript.develop.http.project.Project;
 import org.snapscript.develop.http.project.ProjectBuilder;
@@ -22,7 +22,7 @@ public class CompletionResource implements Resource {
    private final ProjectBuilder builder;
    private final Gson gson;
    
-   public CompletionResource(ProjectBuilder builder, ConfigurationClassLoader loader, ConsoleLogger logger) {
+   public CompletionResource(ProjectBuilder builder, ConfigurationClassLoader loader, ProcessLogger logger) {
       this.completer = new CompletionProcessor(loader, logger);
       this.gson = new Gson();
       this.builder = builder;

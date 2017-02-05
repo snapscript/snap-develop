@@ -11,8 +11,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.snapscript.agent.ConsoleLogger;
 import org.snapscript.agent.event.*;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.ThreadBuilder;
 
 public class SocketEventServer implements ProcessEventChannel {
@@ -21,10 +21,10 @@ public class SocketEventServer implements ProcessEventChannel {
    private final ProcessEventListener listener;
    private final ProcessEventExecutor executor;
    private final SocketAcceptor acceptor;
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    private final ThreadFactory factory;
    
-   public SocketEventServer(ProcessEventListener listener, ConsoleLogger logger, int port) throws IOException {
+   public SocketEventServer(ProcessEventListener listener, ProcessLogger logger, int port) throws IOException {
       this.receivers = new ConcurrentHashMap<String, ProcessEventChannel>();
       this.executor = new ProcessEventExecutor();
       this.acceptor = new SocketAcceptor(port);

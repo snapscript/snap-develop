@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ConsoleLog;
+import org.snapscript.agent.log.ProcessLog;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.ConsoleListener;
 import org.snapscript.develop.ConsoleManager;
 
@@ -100,10 +102,12 @@ public class TypeScriptCompiler {
    
    private static class CompilerListener implements ConsoleListener {
       
-      private final ConsoleLogger logger;
+      private final ProcessLogger logger;
+      private final ProcessLog log;
       
       public CompilerListener() {
-         this.logger = new ConsoleLogger();
+         this.log = new ConsoleLog();
+         this.logger = new ProcessLogger(log);
       }
 
       @Override

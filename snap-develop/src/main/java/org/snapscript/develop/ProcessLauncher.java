@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.snapscript.agent.ConsoleLogger;
 import org.snapscript.agent.event.ProcessEventChannel;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.configuration.Configuration;
 import org.snapscript.develop.configuration.ProcessConfiguration;
 import org.snapscript.develop.http.loader.RemoteProcessBuilder;
@@ -18,10 +18,10 @@ public class ProcessLauncher {
    
    private final ProcessNameGenerator generator;
    private final ProcessEventChannel channel;
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    private final Workspace workspace;
    
-   public ProcessLauncher(ProcessEventChannel channel, ConsoleLogger logger, Workspace workspace) {
+   public ProcessLauncher(ProcessEventChannel channel, ProcessLogger logger, Workspace workspace) {
       this.generator = new ProcessNameGenerator();
       this.workspace = workspace;
       this.channel = channel;

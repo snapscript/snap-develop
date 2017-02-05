@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.core.PrimitivePromoter;
 import org.snapscript.core.Type;
 import org.snapscript.core.function.Function;
@@ -24,7 +24,7 @@ public class CompletionTypeResolver {
    private final ResourceTypeLoader compiler;
    private final DefaultTypeLoader loader;
    
-   public CompletionTypeResolver(ConfigurationClassLoader loader, ConsoleLogger logger) {
+   public CompletionTypeResolver(ConfigurationClassLoader loader, ProcessLogger logger) {
       this.compiler = new ResourceTypeLoader(loader, logger);
       this.loader = new DefaultTypeLoader(logger);
       this.promoter = new PrimitivePromoter();

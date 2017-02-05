@@ -3,7 +3,7 @@ package org.snapscript.develop.complete;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.configuration.ConfigurationClassLoader;
 import org.snapscript.parse.Grammar;
 import org.snapscript.parse.GrammarCompiler;
@@ -19,7 +19,7 @@ public class CompletionCompiler {
    private final GrammarIndexer indexer;
    private final CompletionMatcher matcher;
 
-   public CompletionCompiler(ConfigurationClassLoader loader, ConsoleLogger logger) {
+   public CompletionCompiler(ConfigurationClassLoader loader, ProcessLogger logger) {
       this.grammars = new LinkedHashMap<String, Grammar>();      
       this.resolver = new GrammarResolver(grammars);
       this.indexer = new GrammarIndexer();

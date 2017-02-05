@@ -1,13 +1,13 @@
 package org.snapscript.agent.event;
 
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 
 public class ProcessEventTimer implements ProcessEventListener {
    
    private final ProcessEventListener listener;
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    
-   public ProcessEventTimer(ProcessEventListener listener, ConsoleLogger logger) {
+   public ProcessEventTimer(ProcessEventListener listener, ProcessLogger logger) {
       this.listener = listener;
       this.logger = logger;
    }

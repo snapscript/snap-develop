@@ -4,7 +4,6 @@ import java.io.PrintStream;
 
 import junit.framework.TestCase;
 
-import org.snapscript.agent.ConsoleLogger;
 import org.snapscript.agent.ProcessEventStream;
 import org.snapscript.agent.event.ExitEvent;
 import org.snapscript.agent.event.ProcessEventAdapter;
@@ -12,6 +11,9 @@ import org.snapscript.agent.event.ProcessEventChannel;
 import org.snapscript.agent.event.ProcessEventType;
 import org.snapscript.agent.event.RegisterEvent;
 import org.snapscript.agent.event.WriteErrorEvent;
+import org.snapscript.agent.log.ConsoleLog;
+import org.snapscript.agent.log.ProcessLog;
+import org.snapscript.agent.log.ProcessLogger;
 
 public class SocketTest extends TestCase {
 
@@ -51,7 +53,8 @@ public class SocketTest extends TestCase {
    }
    
    public void testSocket() throws Exception {
-      ConsoleLogger logger = new ConsoleLogger();
+      ProcessLog log = new ConsoleLog();
+      ProcessLogger logger = new ProcessLogger(log);
       SocketEventServer server = new SocketEventServer(new DemoListener("server-listener"), logger, 3344);
       SocketEventClient client = new SocketEventClient(new DemoListener("client-listener"), logger);
       

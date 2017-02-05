@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.simpleframework.http.Path;
 import org.simpleframework.http.socket.FrameChannel;
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.BackupManager;
 import org.snapscript.develop.ProcessManager;
 import org.snapscript.develop.common.Problem;
@@ -23,14 +23,14 @@ public class CommandListener {
    private final CommandFilter filter;
    private final CommandClient client;
    private final ProcessManager engine;
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    private final ProblemFinder finder;
    private final BackupManager manager;
    private final String project;
    private final File root;
    private final Path path;
    
-   public CommandListener(ProcessManager engine, ProjectProblemFinder compiler, TypeNodeScanner loader, FrameChannel channel, ConsoleLogger logger, BackupManager manager, Path path, File root, String project) {
+   public CommandListener(ProcessManager engine, ProjectProblemFinder compiler, TypeNodeScanner loader, FrameChannel channel, ProcessLogger logger, BackupManager manager, Path path, File root, String project) {
       this.filter = new CommandFilter();
       this.client = new CommandClient(channel, project);
       this.forwarder = new CommandEventForwarder(client, filter, logger);

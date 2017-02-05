@@ -1,7 +1,7 @@
 //import com.google.gson.Gson;
 
-//var text = String.class.getModule().getContext().getManager().getString("/algorithms/blah.json");
-var text = String.class.getModule().getContext().getManager().getString("/algorithms/large_file.json");
+var text = String.class.getModule().getContext().getManager().getString("/algorithms/blah.json");
+//var text = String.class.getModule().getContext().getManager().getString("/algorithms/large_file.json");
 //var gson = new Gson();
 
 //for(var i in 0..100) {

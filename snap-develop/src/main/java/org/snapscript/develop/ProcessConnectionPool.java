@@ -5,14 +5,14 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 
 public class ProcessConnectionPool {
 
    private final BlockingQueue<ProcessConnection> pool;
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    
-   public ProcessConnectionPool(ConsoleLogger logger){
+   public ProcessConnectionPool(ProcessLogger logger){
       this.pool = new LinkedBlockingQueue<ProcessConnection>();
       this.logger = logger;
    }

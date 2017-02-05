@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Set;
 
 import org.simpleframework.http.Path;
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.common.FileAction;
 import org.snapscript.develop.common.FileProcessor;
 import org.snapscript.develop.common.FileReader;
@@ -16,13 +16,13 @@ public class ProjectProblemFinder {
    private final FileProcessor<Problem> processor;
    private final FileAction<Problem> action;
    private final ProjectBuilder builder;
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    
-   public ProjectProblemFinder(ProjectBuilder builder, ConsoleLogger logger) {
+   public ProjectProblemFinder(ProjectBuilder builder, ProcessLogger logger) {
       this(builder, logger, 10);
    }
    
-   public ProjectProblemFinder(ProjectBuilder builder, ConsoleLogger logger, int threads) {
+   public ProjectProblemFinder(ProjectBuilder builder, ProcessLogger logger, int threads) {
       this.action = new CompileAction(builder, logger);
       this.processor = new FileProcessor<Problem>(action, threads);
       this.builder = builder;
@@ -55,9 +55,9 @@ public class ProjectProblemFinder {
    
       private final ProjectBuilder builder;
       private final ProblemFinder finder;
-      private final ConsoleLogger logger;
+      private final ProcessLogger logger;
       
-      public CompileAction(ProjectBuilder builder, ConsoleLogger logger) {
+      public CompileAction(ProjectBuilder builder, ProcessLogger logger) {
          this.finder = new ProblemFinder();
          this.builder = builder;
          this.logger = logger;

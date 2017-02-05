@@ -2,7 +2,7 @@ package org.snapscript.develop.maven;
 
 import org.apache.maven.repository.internal.DefaultServiceLocator;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.connector.file.FileRepositoryConnectorFactory;
@@ -14,9 +14,9 @@ import org.sonatype.aether.spi.connector.RepositoryConnectorFactory;
 
 public class RepositoryFactory {
 
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
 
-   public RepositoryFactory(ConsoleLogger logger) {
+   public RepositoryFactory(ProcessLogger logger) {
       this.logger = logger;
    }
 

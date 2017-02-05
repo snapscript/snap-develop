@@ -9,6 +9,7 @@ public enum CommandLineArgument {
    MODE("mode", "develop", "Mode to start on", "(develop|debug|run)"),
    DIRECTORY("directory", "work", "Directory used for sources", ".*"),
    VERBOSE("log-level", "INFO", "Level of logging", "(TRACE|DEBUG|INFO)"),
+   LOG("log-file", "log/snapd.log", "Log file to use", ".+"),
    SCRIPT("script", null, "Script to launch", ".*.snap");
    
    public final String description;

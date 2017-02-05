@@ -7,7 +7,7 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.http.socket.Session;
 import org.simpleframework.http.socket.service.Service;
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.BackupManager;
 import org.snapscript.develop.ConnectListener;
 import org.snapscript.develop.ProcessManager;
@@ -23,10 +23,10 @@ public class ProjectScriptService implements Service {
    private final ConnectListener listener;
    private final ProjectBuilder builder;
    private final ProcessManager engine;
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    private final BackupManager manager;
    
-   public ProjectScriptService(ProcessManager engine, ConnectListener listener, ConfigurationClassLoader loader, ConsoleLogger logger, ProjectBuilder builder, BackupManager manager) {
+   public ProjectScriptService(ProcessManager engine, ConnectListener listener, ConfigurationClassLoader loader, ProcessLogger logger, ProjectBuilder builder, BackupManager manager) {
       this.compiler = new ProjectProblemFinder(builder, logger);
       this.loader = new TypeNodeScanner(builder, loader, logger);
       this.manager = manager;

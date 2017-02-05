@@ -5,15 +5,15 @@ import java.io.StringWriter;
 import java.util.Map;
 import java.util.Set;
 
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 
 public class FaultLogger {
    
    private static final String INDENT = "   ";
 
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    
-   public FaultLogger(ConsoleLogger logger) {
+   public FaultLogger(ProcessLogger logger) {
       this.logger = logger;
    }
    

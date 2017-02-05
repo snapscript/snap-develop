@@ -7,12 +7,12 @@
   </bean>
 
   <bean id="BackupManager" class="org.snapscript.develop.BackupManager">
-    <constructor-arg ref="ConsoleLogger" />
+    <constructor-arg ref="ProcessLogger" />
     <constructor-arg ref="Workspace" />
   </bean>
 
   <bean id="ConfigurationReader" class="org.snapscript.develop.configuration.ConfigurationReader">
-    <constructor-arg ref="ConsoleLogger" />
+    <constructor-arg ref="ProcessLogger" />
     <constructor-arg ref="Workspace" />
   </bean>
 
@@ -23,14 +23,19 @@
   <bean id="ProcessConfigurationLoader" class="org.snapscript.develop.configuration.ProcessConfigurationLoader">
     <constructor-arg ref="ConfigurationReader" />
   </bean>
+  
+  <bean id="ProcessLog" class="org.snapscript.agent.log.FileLog">
+    <constructor-arg value="${log-file}" />
+  </bean>
 
-  <bean id="ConsoleLogger" class="org.snapscript.agent.ConsoleLogger">
+  <bean id="ProcessLogger" class="org.snapscript.agent.log.ProcessLogger">
+    <constructor-arg ref="ProcessLog"/>
     <constructor-arg value="${log-level}" />
   </bean>
 
   <bean id="ProcessManager" class="org.snapscript.develop.ProcessManager">
     <constructor-arg ref="ProcessConfigurationLoader" />
-    <constructor-arg ref="ConsoleLogger" />
+    <constructor-arg ref="ProcessLogger" />
     <constructor-arg ref="Workspace" />
     <constructor-arg value="${agent-port}" />
     <constructor-arg value="${agent-pool}" />
@@ -106,13 +111,13 @@
   <bean id="CompletionResource" class="org.snapscript.develop.complete.CompletionResource">
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="ConfigurationClassLoader" />
-    <constructor-arg ref="ConsoleLogger" />
+    <constructor-arg ref="ProcessLogger" />
   </bean>
   
   <bean id="TypeNodeResource" class="org.snapscript.develop.complete.TypeNodeResource">
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="ConfigurationClassLoader" />
-    <constructor-arg ref="ConsoleLogger" />
+    <constructor-arg ref="ProcessLogger" />
   </bean>
   
   <bean id="SourceFormatResource" class="org.snapscript.develop.complete.SourceFormatResource">
@@ -138,7 +143,7 @@
   <bean id="ProjectFileResource" class="org.snapscript.develop.http.project.ProjectFileResource">
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="ContentTypeResolver" />
-    <constructor-arg ref="ConsoleLogger"/>
+    <constructor-arg ref="ProcessLogger"/>
   </bean>
 
   <bean id="ProjectTreeResource" class="org.snapscript.develop.http.project.ProjectTreeResource">
@@ -154,7 +159,7 @@
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="ConnectListener" />
     <constructor-arg ref="ConfigurationClassLoader"/>
-    <constructor-arg ref="ConsoleLogger" />
+    <constructor-arg ref="ProcessLogger" />
     <constructor-arg ref="ProcessManager" />
     <constructor-arg ref="BackupManager"/>
   </bean>
@@ -165,7 +170,7 @@
 
   <bean id="ClassLoaderResource" class="org.snapscript.develop.http.loader.ClassLoaderResource">
     <constructor-arg ref="ClassResourceLoader" />
-    <constructor-arg ref="ConsoleLogger" />
+    <constructor-arg ref="ProcessLogger" />
   </bean>
 
   <bean id="RemoteProcessBuilder" class="org.snapscript.develop.http.loader.RemoteProcessBuilder" init-method="create">
@@ -200,7 +205,7 @@
   <bean id="FileMatcher" class="org.snapscript.develop.http.resource.FileMatcher">
     <constructor-arg ref="FileResolver" />
     <constructor-arg ref="ContentTypeResolver" />
-    <constructor-arg ref="ConsoleLogger" />    
+    <constructor-arg ref="ProcessLogger" />    
   </bean>
 
   <bean id="CombinationMatcher" class="org.snapscript.develop.http.resource.CombinationMatcher">

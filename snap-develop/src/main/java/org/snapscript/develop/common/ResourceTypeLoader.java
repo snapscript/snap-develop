@@ -12,7 +12,7 @@ import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.compile.Compiler;
 import org.snapscript.compile.Executable;
 import org.snapscript.compile.StoreContext;
@@ -43,10 +43,10 @@ public class ResourceTypeLoader {
    private static final String IMPORT_PATTERN = "^import (.*);.*";
    
    private final PathConverter converter;
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    private final Executor executor;
    
-   public ResourceTypeLoader(ConfigurationClassLoader loader, ConsoleLogger logger) {
+   public ResourceTypeLoader(ConfigurationClassLoader loader, ProcessLogger logger) {
       this.executor = new ClassPathExecutor(loader, 6);
       this.converter = new FilePathConverter();
       this.logger = logger;

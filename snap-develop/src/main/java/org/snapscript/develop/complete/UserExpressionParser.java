@@ -15,14 +15,14 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.common.TypeNode;
 
 public class UserExpressionParser {
 
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    
-   public UserExpressionParser(ConsoleLogger logger) {
+   public UserExpressionParser(ProcessLogger logger) {
       this.logger = logger;
    }
 

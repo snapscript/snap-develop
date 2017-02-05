@@ -10,6 +10,9 @@ import org.snapscript.agent.event.ProcessEventChannel;
 import org.snapscript.agent.event.ProcessEventTimer;
 import org.snapscript.agent.event.RegisterEvent;
 import org.snapscript.agent.event.socket.SocketEventClient;
+import org.snapscript.agent.log.ConsoleLog;
+import org.snapscript.agent.log.ProcessLog;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.agent.profiler.ProcessProfiler;
 import org.snapscript.core.EmptyModel;
 import org.snapscript.core.Model;
@@ -54,7 +57,8 @@ public class ProcessAgent {
       String host = root.getHost();
       
       try {
-         ConsoleLogger logger = new ConsoleLogger(level);
+         ProcessLog log = new ConsoleLog();
+         ProcessLogger logger = new ProcessLogger(log, level);
          SystemValidator validator = new SystemValidator(context);
          ConnectionChecker checker = new ConnectionChecker(process, system);
          ProcessEventReceiver listener = new ProcessEventReceiver(context, mode, checker, model);

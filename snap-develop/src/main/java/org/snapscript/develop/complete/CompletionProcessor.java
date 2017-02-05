@@ -3,7 +3,7 @@ package org.snapscript.develop.complete;
 import java.io.File;
 import java.util.Map;
 
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.configuration.ConfigurationClassLoader;
 import org.snapscript.develop.http.project.Project;
 
@@ -11,7 +11,7 @@ public class CompletionProcessor {
    
    private final CompletionCompiler builder;
    
-   public CompletionProcessor(ConfigurationClassLoader loader, ConsoleLogger logger) {
+   public CompletionProcessor(ConfigurationClassLoader loader, ProcessLogger logger) {
       this.builder = new CompletionCompiler(loader, logger);
    }
 

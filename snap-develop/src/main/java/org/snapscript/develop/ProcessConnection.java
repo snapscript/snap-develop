@@ -3,7 +3,6 @@ package org.snapscript.develop;
 import java.util.Map;
 import java.util.Set;
 
-import org.snapscript.agent.ConsoleLogger;
 import org.snapscript.agent.event.BreakpointsEvent;
 import org.snapscript.agent.event.BrowseEvent;
 import org.snapscript.agent.event.EvaluateEvent;
@@ -11,14 +10,15 @@ import org.snapscript.agent.event.ExecuteEvent;
 import org.snapscript.agent.event.PingEvent;
 import org.snapscript.agent.event.ProcessEventChannel;
 import org.snapscript.agent.event.StepEvent;
+import org.snapscript.agent.log.ProcessLogger;
 
 public class ProcessConnection {
 
    private final ProcessEventChannel channel;
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    private final String process;
 
-   public ProcessConnection(ProcessEventChannel channel, ConsoleLogger logger, String process) {
+   public ProcessConnection(ProcessEventChannel channel, ProcessLogger logger, String process) {
       this.channel = channel;
       this.process = process;
       this.logger = logger;

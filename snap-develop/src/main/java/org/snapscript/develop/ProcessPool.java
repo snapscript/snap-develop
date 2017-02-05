@@ -10,7 +10,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.snapscript.agent.ConsoleLogger;
 import org.snapscript.agent.event.BeginEvent;
 import org.snapscript.agent.event.ExitEvent;
 import org.snapscript.agent.event.FaultEvent;
@@ -25,6 +24,7 @@ import org.snapscript.agent.event.SyntaxErrorEvent;
 import org.snapscript.agent.event.WriteErrorEvent;
 import org.snapscript.agent.event.WriteOutputEvent;
 import org.snapscript.agent.event.socket.SocketEventServer;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.ThreadBuilder;
 import org.snapscript.develop.configuration.ProcessConfiguration;
 
@@ -44,15 +44,15 @@ public class ProcessPool {
    private final SocketEventServer server;
    private final ConsoleManager manager;
    private final ProcessListener listener;
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    private final ThreadFactory factory;
    private final int capacity;
    
-   public ProcessPool(ProcessConfiguration configuration, ConsoleLogger logger, Workspace workspace, int port, int capacity) throws IOException {
+   public ProcessPool(ProcessConfiguration configuration, ProcessLogger logger, Workspace workspace, int port, int capacity) throws IOException {
       this(configuration, logger, workspace, port, capacity, DEFAULT_PING_FREQUENCY);
    }
    
-   public ProcessPool(ProcessConfiguration configuration, ConsoleLogger logger, Workspace workspace, int port, int capacity, long frequency) throws IOException {
+   public ProcessPool(ProcessConfiguration configuration, ProcessLogger logger, Workspace workspace, int port, int capacity, long frequency) throws IOException {
       this.connections = new ProcessConnectionPool(logger);
       this.listeners = new CopyOnWriteArraySet<ProcessEventListener>();
       this.running = new LinkedBlockingQueue<ProcessConnection>();

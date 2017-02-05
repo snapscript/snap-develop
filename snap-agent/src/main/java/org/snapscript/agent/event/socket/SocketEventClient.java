@@ -7,16 +7,16 @@ import java.net.Socket;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.snapscript.agent.ConsoleLogger;
 import org.snapscript.agent.event.*;
+import org.snapscript.agent.log.ProcessLogger;
 
 public class SocketEventClient {
    
    private final ProcessEventListener listener;
    private final ProcessEventExecutor executor;
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    
-   public SocketEventClient(ProcessEventListener listener, ConsoleLogger logger) throws IOException {
+   public SocketEventClient(ProcessEventListener listener, ProcessLogger logger) throws IOException {
       this.executor = new ProcessEventExecutor();
       this.listener = listener;
       this.logger = logger;

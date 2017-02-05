@@ -6,15 +6,15 @@ import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.http.resource.Resource;
 
 public class ClassLoaderResource implements Resource {
    
    private final ClassResourceLoader loader;
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
 
-   public ClassLoaderResource(ClassResourceLoader loader, ConsoleLogger logger) {
+   public ClassLoaderResource(ClassResourceLoader loader, ProcessLogger logger) {
       this.logger = logger;
       this.loader = loader;
    }

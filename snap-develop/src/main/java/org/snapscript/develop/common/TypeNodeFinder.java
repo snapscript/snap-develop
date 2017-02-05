@@ -6,14 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.configuration.ConfigurationClassLoader;
 
 public class TypeNodeFinder {
 
    private final ResourceTypeLoader compiler;
    
-   public TypeNodeFinder(ConfigurationClassLoader loader, ConsoleLogger logger) {
+   public TypeNodeFinder(ConfigurationClassLoader loader, ProcessLogger logger) {
       this.compiler = new ResourceTypeLoader(loader, logger);
    }
    

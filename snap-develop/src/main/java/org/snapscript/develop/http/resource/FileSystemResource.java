@@ -9,19 +9,19 @@ import java.io.OutputStream;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 
 public class FileSystemResource implements Resource {
 
    private final FileContentCompressor fileCompressor;
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    private final Status status;
 
-   public FileSystemResource(FileResolver fileResolver, ContentTypeResolver typeResolver, ConsoleLogger logger) {
+   public FileSystemResource(FileResolver fileResolver, ContentTypeResolver typeResolver, ProcessLogger logger) {
       this(fileResolver, typeResolver, logger, OK);
    }
 
-   public FileSystemResource(FileResolver fileResolver, ContentTypeResolver typeResolver, ConsoleLogger logger, Status status) {
+   public FileSystemResource(FileResolver fileResolver, ContentTypeResolver typeResolver, ProcessLogger logger, Status status) {
       this.fileCompressor = new FileContentCompressor(fileResolver, typeResolver);
       this.logger = logger;
       this.status = status;

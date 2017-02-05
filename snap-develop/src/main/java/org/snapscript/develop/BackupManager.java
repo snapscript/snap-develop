@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 
 public class BackupManager {
    
@@ -25,11 +25,11 @@ public class BackupManager {
    private static final String DATE_PATTERN = "^.*\\.\\d\\d\\d\\d_\\d\\d_\\d\\d_\\d\\d_\\d\\d_\\d\\d_\\d\\d\\d$";
    private static final long BACKUP_EXPIRY = 5 * 24 * 60 * 60 * 1000;
    
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    private final Workspace workspace;
    private final DateFormat format;
    
-   public BackupManager(ConsoleLogger logger,Workspace workspace) {
+   public BackupManager(ProcessLogger logger,Workspace workspace) {
       this.format = new SimpleDateFormat(DATE_FORMAT);
       this.workspace = workspace;
       this.logger = logger;

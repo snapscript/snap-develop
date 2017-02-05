@@ -108,7 +108,7 @@ import java.util.Vector;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
 import org.snapscript.core.Type;
@@ -258,11 +258,11 @@ public class DefaultTypeLoader {
    };
 
    private final Map<String, TypeNode> cache;
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    private final Context context;
    private final Store store;
    
-   public DefaultTypeLoader(ConsoleLogger logger) {
+   public DefaultTypeLoader(ProcessLogger logger) {
       this.cache = new ConcurrentHashMap<String, TypeNode>();
       this.store = new ClassPathStore();
       this.context = new StoreContext(store);

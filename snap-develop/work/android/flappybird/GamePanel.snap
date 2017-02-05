@@ -16,7 +16,8 @@ import android.graphics.Color;
 
 class GamePanel with Panel {
 
-
+   static const Y_DOWN_ACCELERATE = 12.0;
+   
    var context;
    var gameStatus;
    var random;

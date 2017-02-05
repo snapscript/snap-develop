@@ -3,14 +3,14 @@ package org.snapscript.develop;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 
 public class ProcessListener implements ConsoleListener {
    
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    private final Pattern pattern;
    
-   public ProcessListener(ConsoleLogger logger) {
+   public ProcessListener(ProcessLogger logger) {
       this.pattern = Pattern.compile("^([ |\\t]+).*", Pattern.DOTALL);
       this.logger = logger;
    }

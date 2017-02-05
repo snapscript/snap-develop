@@ -3,7 +3,6 @@ package org.snapscript.develop.command;
 import java.util.Map;
 import java.util.Set;
 
-import org.snapscript.agent.ConsoleLogger;
 import org.snapscript.agent.debug.ScopeVariableTree;
 import org.snapscript.agent.event.BeginEvent;
 import org.snapscript.agent.event.ExitEvent;
@@ -17,6 +16,7 @@ import org.snapscript.agent.event.ScopeEvent;
 import org.snapscript.agent.event.SyntaxErrorEvent;
 import org.snapscript.agent.event.WriteErrorEvent;
 import org.snapscript.agent.event.WriteOutputEvent;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.agent.profiler.ProfileResult;
 import org.snapscript.develop.FaultLogger;
 import org.snapscript.develop.common.TextEscaper;
@@ -27,7 +27,7 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    private final CommandClient client;
    private final FaultLogger logger;
    
-   public CommandEventForwarder(CommandClient client, CommandFilter filter, ConsoleLogger logger) {
+   public CommandEventForwarder(CommandClient client, CommandFilter filter, ProcessLogger logger) {
       this.logger = new FaultLogger(logger);
       this.filter = filter;
       this.client = client;

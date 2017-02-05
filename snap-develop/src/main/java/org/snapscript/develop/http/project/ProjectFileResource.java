@@ -7,7 +7,7 @@ import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.core.Reserved;
 import org.snapscript.develop.http.resource.ContentTypeResolver;
 import org.snapscript.develop.http.resource.Resource;
@@ -16,9 +16,9 @@ public class ProjectFileResource implements Resource {
    
    private final ContentTypeResolver resolver;
    private final ProjectFileCache cache;
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    
-   public ProjectFileResource(ProjectBuilder builder, ContentTypeResolver resolver, ConsoleLogger logger){
+   public ProjectFileResource(ProjectBuilder builder, ContentTypeResolver resolver, ProcessLogger logger){
       this.cache = new ProjectFileCache(builder);
       this.resolver = resolver;
       this.logger = logger;

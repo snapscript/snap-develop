@@ -19,7 +19,7 @@ import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.core.Validate;
 import org.simpleframework.xml.util.Dictionary;
 import org.simpleframework.xml.util.Entry;
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.Workspace;
 import org.snapscript.develop.maven.RepositoryClient;
 import org.snapscript.develop.maven.RepositoryFactory;
@@ -34,7 +34,7 @@ public class ConfigurationReader {
    private final Persister persister;
    private final Workspace workspace;
    
-   public ConfigurationReader(ConsoleLogger logger, Workspace workspace) {
+   public ConfigurationReader(ProcessLogger logger, Workspace workspace) {
       this.reference = new AtomicReference<Configuration>();
       this.factory = new RepositoryFactory(logger);
       this.filter = new ConfigurationFilter();

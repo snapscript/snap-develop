@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.snapscript.agent.ConsoleLogger;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.core.FilePathConverter;
 import org.snapscript.core.ModifierType;
 import org.snapscript.core.PathConverter;
@@ -33,9 +33,9 @@ public class CompletionMatcher {
    private final UserExpressionParser parser;
    private final CompletionTypeResolver resolver;
    private final PathConverter converter;
-   private final ConsoleLogger logger;
+   private final ProcessLogger logger;
    
-   public CompletionMatcher(GrammarResolver resolver, GrammarIndexer indexer, ConfigurationClassLoader loader, ConsoleLogger logger) {
+   public CompletionMatcher(GrammarResolver resolver, GrammarIndexer indexer, ConfigurationClassLoader loader, ProcessLogger logger) {
       this.extractor = new SourceContextExtractor(resolver, indexer);
       this.parser = new UserExpressionParser(logger);
       this.resolver = new CompletionTypeResolver(loader, logger);

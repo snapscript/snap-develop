@@ -1,4 +1,4 @@
-package org.snapscript.agent;
+package org.snapscript.agent.log;
 
 import java.io.PrintStream;
 import java.text.DateFormat;
@@ -11,25 +11,25 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.snapscript.common.ThreadBuilder;
 
-public class ConsoleLogger {
+public class ProcessLogger {
    
    private static final String TIME_FORMAT = "HH:mm:ss";
    private static final int EVENT_LIMIT = 10000;
    
    private final LogDispatcher dispatcher;
    private final DateFormatter formatter;
-   private final PrintStream logger;
+   private final ProcessLog logger;
    private final LogLevel level;
    
-   public ConsoleLogger() {
-      this(null);
+   public ProcessLogger(ProcessLog logger) {
+      this(logger, null);
    }
    
-   public ConsoleLogger(String level) {
+   public ProcessLogger(ProcessLog logger, String level) {
       this.dispatcher = new LogDispatcher(EVENT_LIMIT);
       this.formatter = new DateFormatter(TIME_FORMAT);
       this.level = LogLevel.resolveLevel(level);
-      this.logger = System.out;
+      this.logger = logger;
    }
    
    public String getLevel() {
@@ -209,17 +209,26 @@ public class ConsoleLogger {
          DateFormat format = formatter.get();
          String date = format.format(time);
          
-         if(cause != null) {
-            logger.print(date + " ["+name+"] " + message);
+         if(message != null) {
+            StringBuilder builder = new StringBuilder();
             
-            if(level.isTrace()) {
-               logger.print(": ");
-               cause.printStackTrace(logger);
+            builder.append(date);
+            builder.append(" [");
+            builder.append(name);
+            builder.append("] ");
+            builder.append(message);
+            
+            if(cause != null) {
+               if(level.isTrace()) {
+                  logger.log(builder, cause);
+               } else {
+                  builder.append(": ");
+                  builder.append(cause);
+                  logger.log(builder);
+               }
             } else {
-               logger.println(": " + cause);
+               logger.log(builder);
             }
-         } else {
-            logger.println(date + " ["+name+"] " + message);
          }
       }
       
