@@ -22,6 +22,7 @@ class GamePanel with Panel {
    static const YELLOW_APPLE_PERCENTAGE = 5;
    static const CLOCK_PERCENTAGE = 2;
    static const SHIELD_PERCENTAGE = 1;
+   static const IMAGE_SIZE = "medium";
 
    var context;
    var thread;
@@ -41,7 +42,8 @@ class GamePanel with Panel {
    var borderCell, snakeCell, snakeShieldedCell;
    var greenAppleCell, redAppleCell, yellowAppleCell;
    var clockCell, shieldCell;
-
+   var rate;
+   
    new(context) {
       // save context (necessary to save high score)
       this.context = context;
@@ -56,11 +58,6 @@ class GamePanel with Panel {
       loadBitmaps();
    }
 
-   override onCreated(frame) {
-      // initialize game
-      onStart(frame);
-   }
-
    override onChanged(frame, i, i2, i3) {
    }
 
@@ -69,16 +66,16 @@ class GamePanel with Panel {
    }
 
    loadBitmaps() {
-      borderCell = ImageStore.loadImage("/snake/resources/border_cell.png");
-      snakeCell = ImageStore.loadImage("/snake/resources/snake_cell.png");
-      snakeShieldedCell = ImageStore.loadImage("/snake/resources/snake_shielded_cell.png");
+      borderCell = ImageStore.loadImage("/snake/resources/${IMAGE_SIZE}/border_cell.png");
+      snakeCell = ImageStore.loadImage("/snake/resources/${IMAGE_SIZE}/snake_cell.png");
+      snakeShieldedCell = ImageStore.loadImage("/snake/resources/${IMAGE_SIZE}/snake_shielded_cell.png");
 
-      greenAppleCell = ImageStore.loadImage("/snake/resources/green_apple_cell.png");
-      redAppleCell = ImageStore.loadImage("/snake/resources/red_apple_cell.png");
-      yellowAppleCell = ImageStore.loadImage("/snake/resources/yellow_apple_cell.png");
+      greenAppleCell = ImageStore.loadImage("/snake/resources/${IMAGE_SIZE}/green_apple_cell.png");
+      redAppleCell = ImageStore.loadImage("/snake/resources/${IMAGE_SIZE}/red_apple_cell.png");
+      yellowAppleCell = ImageStore.loadImage("/snake/resources/${IMAGE_SIZE}/yellow_apple_cell.png");
 
-      clockCell = ImageStore.loadImage("/snake/resources/clock_cell.png");
-      shieldCell = ImageStore.loadImage("/snake/resources/shield_cell.png");
+      clockCell = ImageStore.loadImage("/snake/resources/${IMAGE_SIZE}/clock_cell.png");
+      shieldCell = ImageStore.loadImage("/snake/resources/${IMAGE_SIZE}/shield_cell.png");
    }
 
    /**
@@ -91,7 +88,7 @@ class GamePanel with Panel {
    /**
       * Game initialize method.
       */
-   override onStart(frame) {
+   override onStart(frame, rate) {
       // reset tick counter
       tickCounter = 0;
 
@@ -112,8 +109,9 @@ class GamePanel with Panel {
       println("Field Dimensions: " + fieldWidth + "x" + fieldHeight);
 
       // create snake
-      snake = new Snake(cellsRadius, (borderCell != null && snakeCell != null && greenAppleCell != null));
-
+      this.snake = new Snake(cellsRadius, (borderCell != null && snakeCell != null && greenAppleCell != null), rate);
+      this.rate = rate;
+      
       // create apple
       generateNewApple();
 
@@ -128,12 +126,12 @@ class GamePanel with Panel {
    /**
       * Game update method.
       */
-   override onUpdate(frame) {
+   override onUpdate(frame, rate) {
       // increment tick counter
       tickCounter++;
 
       // update clock counter
-      if (tickCounter % FrameThread.getFps() == 0)
+      if (tickCounter % rate == 0)
          snake.updateClock();
 
       // update snake
@@ -196,7 +194,7 @@ class GamePanel with Panel {
       // if snake is dead
       if (snake.isDead()) {
          println("Starting new game");
-         onStart(frame);
+         onStart(frame, rate);
       } else {
          var direction = directionsQueue.isEmpty() ? snake.getDirection() : directionsQueue.getLast();
 

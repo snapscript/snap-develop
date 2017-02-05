@@ -21,24 +21,26 @@ import org.snapscript.core.trace.TraceInterceptor;
 public class ProcessAgent {
 
    private final ProcessContext context;
+   private final String system;
    private final String process;
    private final String level;
    private final Model model;
    private final URI root;
    private final int port;
 
-   public ProcessAgent(URI root, String process, String level, int port) {
-      this(root, process, level, port, 0);
+   public ProcessAgent(URI root, String system, String process, String level, int port) {
+      this(root, system, process, level, port, 0);
    }
    
-   public ProcessAgent(URI root, String process, String level, int port, int threads) {
-      this(root, process, level, port, threads, 0);
+   public ProcessAgent(URI root,String system,  String process, String level, int port, int threads) {
+      this(root, system, process, level, port, threads, 0);
    }
    
-   public ProcessAgent(URI root, String process, String level, int port, int threads, int stack) {
+   public ProcessAgent(URI root, String system, String process, String level, int port, int threads, int stack) {
       this.context = new ProcessContext(root, process, port, threads, stack);
       this.model = new EmptyModel();
       this.process = process;
+      this.system = system;
       this.level = level;
       this.root = root;
       this.port = port;
@@ -53,7 +55,6 @@ public class ProcessAgent {
       SuspendController controller = context.getController();
       TraceInterceptor interceptor = context.getInterceptor();
       ProcessProfiler profiler = context.getProfiler();
-      String system = System.getProperty("os.name");
       String host = root.getHost();
       
       try {

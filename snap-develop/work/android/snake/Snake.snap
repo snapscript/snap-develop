@@ -10,7 +10,6 @@ class Snake {
       * Speed will be increased in equal steps until full speed is not reached.
       */
    static const SPEED_STEPS = 30;
-   static const SLOWED_TIME_MOVE_DELAY = FrameThread.getFps() / 5;
 
    var cells;
    var previousTail;
@@ -34,9 +33,11 @@ class Snake {
    var score;
 
    var useBitmaps = false;
+   var rate = 0;
 
-   new(radius, useBitmaps) {
+   new(radius, useBitmaps, rate) {
          this.radius = radius;
+         this.rate = rate;
 
          // clear cells container
          cells = new LinkedList();
@@ -45,8 +46,8 @@ class Snake {
          cells.addLast(new Cell(2, 2, radius));
          cells.addLast(new Cell(1, 2, radius));
 
-         var initialMoveDelay = SLOWED_TIME_MOVE_DELAY;
-         var moveDelay = SLOWED_TIME_MOVE_DELAY;
+         var initialMoveDelay = rate / 5;
+         var moveDelay = rate / 4;
          
          finalMoveDelay = initialMoveDelay / 3;
          moveDelayInc = (initialMoveDelay - finalMoveDelay) / SPEED_STEPS;
@@ -156,7 +157,7 @@ class Snake {
    startClock() {
          if (!timeSlowed)
             savedDelay = moveDelay;
-         moveDelay = SLOWED_TIME_MOVE_DELAY;
+         moveDelay = rate / 5;
 
          clockCounter = Clock.getEffectDuration();
          timeSlowed = true;

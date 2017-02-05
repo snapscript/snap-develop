@@ -38,8 +38,10 @@ public class ConnectionChecker {
       try {
          long time = System.currentTimeMillis();
          
+         if(!channel.send(pong)) {
+            System.exit(0);// send a pong event
+         }
          update.set(time);
-         channel.send(pong); // send a pong event
       } catch(Exception e) {
          e.printStackTrace();
          System.exit(0);

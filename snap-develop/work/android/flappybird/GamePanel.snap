@@ -16,7 +16,8 @@ import android.graphics.Color;
 
 class GamePanel with Panel {
 
-   static const Y_DOWN_ACCELERATE = 12.0;
+   static const Y_DOWN_ACCELERATE = 0.2f;
+   static const Y_JUMP_THRUST = 0.7f;
    
    var context;
    var gameStatus;
@@ -88,7 +89,7 @@ class GamePanel with Panel {
    }
    
 
-   override onStart(frame) {
+   override onStart(frame, rate) {
       var w = frame.getWidth();
       var h = frame.getHeight();
 
@@ -102,7 +103,7 @@ class GamePanel with Panel {
       birdWidth2 = birdHeight * 1.1f;
       birdHeight2 = birdWidth;
       birdY = landY / 2 - birdHeight;
-      birdJump = birdHeight * 0.9f; // bird jump height
+      birdJump = birdHeight * Y_JUMP_THRUST; // bird jump height
 
       pipeGap = landY / 5;
       minPipeHeight = pipeGap * 0.5f;
@@ -246,9 +247,9 @@ class GamePanel with Panel {
       return false;
    }
 
-   onUpdate(frame) {
+   onUpdate(frame, rate) {
       if (gameStatus == GameStatus.RUNNING) {
-         birdDownDis += Y_DOWN_ACCELERATE;
+         birdDownDis += (birdHeight * Y_DOWN_ACCELERATE);
          birdY += birdDownDis;
          if (birdY < -birdHeight) {
             birdY = -birdHeight;
@@ -262,7 +263,7 @@ class GamePanel with Panel {
          }
          if (dieOutsidePipe) {
             if (birdY + birdHeight2 < landY) {
-               birdDownDis += Y_DOWN_ACCELERATE;
+               birdDownDis += (birdHeight * Y_DOWN_ACCELERATE);
                birdY += birdDownDis;
             }
             if (birdY + birdHeight2 >= landY) {
@@ -276,7 +277,7 @@ class GamePanel with Panel {
                mCurUpPipeHeight = upPipeHeight2;
             }
             if (birdY + birdHeight < mCurUpPipeHeight + pipeGap) {
-               birdDownDis += Y_DOWN_ACCELERATE;
+               birdDownDis += (birdHeight * Y_DOWN_ACCELERATE);
                birdY += birdDownDis;
             }
             if (birdY + birdHeight2 > mCurUpPipeHeight + pipeGap) {
