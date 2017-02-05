@@ -1,0 +1,14 @@
+import test.suite.DeviceTest;
+import test.suite.MathTest;
+import test.suite.ThreadTest;
+
+class TestSuite {
+
+   static suite() {
+      return [
+         DeviceTest.class,
+         MathTest.class,
+         ThreadTest.class
+      ];
+   }
+}
