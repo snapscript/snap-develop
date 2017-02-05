@@ -10,12 +10,10 @@ public class ProcessEventConnection {
    private final ProcessEventExecutor executor;
    private final MessageEnvelopReader consumer;
    private final MessageEnvelopeWriter producer;
-   private final MessageConnection connection;
 
-   public ProcessEventConnection(ProcessEventExecutor executor, InputStream input, OutputStream output) {
-      this.connection = new MessageConnection(input, output);
-      this.consumer = new MessageEnvelopReader(input, connection);
-      this.producer = new MessageEnvelopeWriter(output, connection);
+   public ProcessEventConnection(ProcessEventExecutor executor, InputStream input, OutputStream output, Closeable closeable) {
+      this.consumer = new MessageEnvelopReader(input, closeable);
+      this.producer = new MessageEnvelopeWriter(output, closeable);
       this.executor = executor;
    }
 
@@ -25,23 +23,5 @@ public class ProcessEventConnection {
 
    public ProcessEventProducer getProducer() throws IOException {
       return new ProcessEventProducer(executor, producer);
-   }
-
-   private static class MessageConnection implements Closeable {
-
-      private final OutputStream output;
-      private final InputStream input;
-
-      public MessageConnection(InputStream input, OutputStream output) {
-         this.output = output;
-         this.input = input;
-      }
-
-      @Override
-      public void close() throws IOException {
-         input.close();
-         output.close();
-      }
-
    }
 }

@@ -40,7 +40,7 @@ public class SocketEventClient {
       private final Socket socket;
       
       public SocketConnection(Socket socket, InputStream input, OutputStream output) throws IOException {
-         this.connection = new ProcessEventConnection(executor, input, output);
+         this.connection = new ProcessEventConnection(executor, input, output, socket);
          this.open = new AtomicBoolean(true);
          this.socket = socket;
       }
