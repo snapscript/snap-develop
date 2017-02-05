@@ -59,6 +59,7 @@ public class FileLog implements ProcessLog{
          appender.append(text, cause);
       }catch(Exception e) {
          logger.log("Could not append to " + file, e);
+         appender.close();
       }
    }
 

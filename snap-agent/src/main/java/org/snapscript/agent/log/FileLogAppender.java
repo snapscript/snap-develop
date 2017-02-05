@@ -20,31 +20,39 @@ public class FileLogAppender {
       this.file = file;
    }
    
-   public void append(Object text) throws Exception {
+   public void append(Object text) {
       append(text, null);
    }
    
-   public void append(Object text, Throwable cause) throws Exception {
-      if(!file.exists() || writer == null) {
-         appender = new FileWriter(file, append);
-         writer = new PrintWriter(appender);
+   public void append(Object text, Throwable cause) {
+      try {
+         if(!file.exists() || writer == null || writer.checkError()) {
+            appender = new FileWriter(file, append);
+            writer = new PrintWriter(appender);
+         }
+         writer.print(text);
+        
+         if(cause != null) {
+            writer.print(": ");
+            cause.printStackTrace(writer);
+         } else {
+            writer.println();
+         }
+         writer.flush();
+      }catch(Exception e) {
+         throw new IllegalStateException("Could not write to file '" + file + "'", e);
       }
-      writer.print(text);
-     
-      if(cause != null) {
-         writer.print(": ");
-         cause.printStackTrace(writer);
-      } else {
-         writer.println();
-      }
-      writer.flush();
    }
    
-   public void close() throws Exception {
-      if(writer != null) {
-         writer.flush();
-         writer.close();
-         writer = null;
+   public void close() {
+      try {
+         if(writer != null) {
+            writer.flush();
+            writer.close();
+            writer = null;
+         }
+      }catch(Exception e) {
+         throw new IllegalStateException("Could not close file '" + file + "'", e);
       }
    }
 }
