@@ -261,12 +261,16 @@ class Game  {
          // both entities that the collision has occured
          for (var p=0;p<entities.size();p++) {
             for (var s=p+1;s<entities.size();s++) {
-               var me = entities.get(p);
-               var him = entities.get(s);
+               try {
+                  var me = entities.get(p);
+                  var him = entities.get(s);
                
-               if (me.collidesWith(him)) {
-                  me.collidedWith(him);
-                  him.collidedWith(me);
+                  if (me.collidesWith(him)) {
+                     me.collidedWith(him);
+                     him.collidedWith(me);
+                  }
+               }catch(e){
+                  // avoid clear
                }
             }
          }

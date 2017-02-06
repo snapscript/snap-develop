@@ -19,7 +19,7 @@ import util.Arrays;
 import util.Map;
 import util.concurrent.ConcurrentHashMap;
 import util.Random;
-
+ 
 class Game {
 
     var board;
