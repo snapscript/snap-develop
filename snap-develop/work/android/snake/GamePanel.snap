@@ -6,6 +6,7 @@ import android.game.R;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -42,6 +43,7 @@ class GamePanel with Panel {
    var borderCell, snakeCell, snakeShieldedCell;
    var greenAppleCell, redAppleCell, yellowAppleCell;
    var clockCell, shieldCell;
+   var board;
    var rate;
    
    new(context) {
@@ -364,9 +366,9 @@ class GamePanel with Panel {
       // draw background
       drawBackground(frame, canvas);
 
-      // draw board limits
-      drawBoardLimits(frame, canvas);
-
+      // draw border
+      drawBoardBorder(frame, canvas);
+      
       // draw apple
       drawApple(frame, canvas);
 
@@ -382,6 +384,19 @@ class GamePanel with Panel {
       // if snake is dead
       if (snake.isDead())
          drawGameOverMessage(frame, canvas);
+   }
+   
+   drawBoardBorder(frame, canvas) {
+      if(board == null) {
+         var width = frame.getWidth();
+         var height = frame.getHeight();
+         var bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888); // this creates a MUTABLE bitmap
+         var canvas = new Canvas(bitmap);
+         
+         drawBoardLimits(frame, canvas);
+         board = bitmap; // cache background
+      }
+      canvas.drawBitmap(board, 0, 0, paint); // draw cache image
    }
 
    drawBackground(frame, canvas) {
@@ -404,7 +419,7 @@ class GamePanel with Panel {
 
    drawBoardLimits(frame, canvas) {
       paint.setColor(Color.DKGRAY);
-
+      
       // draw top  and bottom border
       for (var i = 0; i < fieldDimensions.x; i++) {
          drawCell(canvas, borderCell, i, 0);
