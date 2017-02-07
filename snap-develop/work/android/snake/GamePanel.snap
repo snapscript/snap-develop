@@ -43,7 +43,7 @@ class GamePanel with Panel {
    var borderCell, snakeCell, snakeShieldedCell;
    var greenAppleCell, redAppleCell, yellowAppleCell;
    var clockCell, shieldCell;
-   var board;
+   var border;
    var rate;
    
    new(context) {
@@ -387,16 +387,16 @@ class GamePanel with Panel {
    }
    
    drawBoardBorder(frame, canvas) {
-      if(board == null) {
+      if(border == null) {
          var width = frame.getWidth();
          var height = frame.getHeight();
          var bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888); // this creates a MUTABLE bitmap
          var canvas = new Canvas(bitmap);
          
          drawBoardLimits(frame, canvas);
-         board = bitmap; // cache background
+         border = bitmap; // cache background
       }
-      canvas.drawBitmap(board, 0, 0, paint); // draw cache image
+      canvas.drawBitmap(border, 0, 0, paint); // draw cache image
    }
 
    drawBackground(frame, canvas) {
