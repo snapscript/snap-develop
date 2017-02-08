@@ -13,7 +13,6 @@ extends
 finally
 for
 if
-instanceof
 import
 in
 loop
