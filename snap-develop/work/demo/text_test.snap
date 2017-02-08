@@ -1,7 +1,11 @@
-module Mod{
-   foo(x){
-      x++;
-   }
+
+function foo(){
+   return "x";
 }
 
-Mod.foo("x");
+function bar(){
+   return null;
+}
+
+println(foo()?.toUpperCase());
+println(bar()?.toUpperCase());
