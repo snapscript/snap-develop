@@ -972,11 +972,16 @@ function createProfilerTab(){
       }, {
          field : 'count',
          caption : 'Count',
-         size : '15%'
+         size : '10%'
       }, {
          field : 'duration',
          caption : 'Duration',
-         size : '15%',
+         size : '10%',
+         sortable : false
+      },{
+         field : 'average',
+         caption : 'Average',
+         size : '10%',
          sortable : false
       }],
       onClick : function(event) {

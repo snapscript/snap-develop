@@ -31,7 +31,8 @@ module Profiler {
          var resourcePath = createResourcePath(profileRecord.resource);
          var displayName = "<div class='profilerRecord'>"+resourcePath.projectPath+"</div>";
          var percentageBar = "<div style='padding: 2px;'><div style='height: 10px; background: #C61414; width: "+profilerWidths[i]+"%;'></div></div>";
-         
+         var averageTime = (profileRecord.count / profileRecord.time) / 1000; // average time in seconds
+
          profilerRecords.push({
             recid: profilerIndex++,
             resource: displayName,
@@ -39,6 +40,7 @@ module Profiler {
             duration: profileRecord.time,
             line: profileRecord.line,
             count: profileRecord.count,
+            average: averageTime.toFixed(5),
             script: resourcePath.resourcePath
          });
       }
