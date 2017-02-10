@@ -25,6 +25,8 @@ public class ApplicationLauncher {
          System.out.println("--" + name + "=" + value);
          System.setProperty(name, value); // make available to configuration
       }
+      System.setProperty("java.awt.headless", "true");
+
       if(commands.containsKey(MODE_ARGUMENT)) { // is there a mode setting
          mode = commands.get(MODE_ARGUMENT);
       }
