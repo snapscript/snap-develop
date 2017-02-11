@@ -237,8 +237,11 @@ class Game  {
          // Get hold of a graphics context for the accelerated 
          // surface and blank it out
          var g = strategy.getDrawGraphics();
-         g.setColor(Color.black);
-         g.fillRect(0,0,800,600);
+         var stars = SpriteStore.getSprite("/spaceinvaders/resources/stars.png");
+         
+         stars.draw(g,0,0);
+         //g.setColor(Color.black);
+         //g.fillRect(0,0,800,600);
          
          // cycle round asking each entity to move itself
          if (!waitingForKeyPress) {
