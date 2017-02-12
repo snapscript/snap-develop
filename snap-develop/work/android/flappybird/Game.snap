@@ -1,3 +1,18 @@
 
-var panel = new GamePanel(context);
-game.start(panel, 20); // 20 frames per second
+/**
+ * The entry point into the game. We'll simply create an
+ * instance of class which will start the display and game
+ * loop.
+ */
+function start() {
+   var p = new GamePanel(context);
+
+   // Start the game at 20 frames per second
+   try {
+      game.start(p, 20);
+   } catch(e) {
+      e.printStackTrace();
+   }
+}
+   
+start();
