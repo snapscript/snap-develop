@@ -37,6 +37,6 @@ public class RegisterEventMarshaller implements ProcessEventMarshaller<RegisterE
       output.flush();
       
       byte[] array = buffer.toByteArray();
-      return new MessageEnvelope(process, REGISTER.code, array, 0, array.length);
+      return new MessageEnvelope(REGISTER.code, array, 0, array.length);
    }
 }

@@ -79,7 +79,7 @@ public class ExecuteEventMarshaller implements ProcessEventMarshaller<ExecuteEve
       }
       output.flush();
       byte[] array = buffer.toByteArray();
-      return new MessageEnvelope(process, EXECUTE.code, array, 0, array.length);
+      return new MessageEnvelope(EXECUTE.code, array, 0, array.length);
    }
 
 }

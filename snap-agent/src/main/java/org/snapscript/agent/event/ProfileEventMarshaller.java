@@ -67,6 +67,6 @@ public class ProfileEventMarshaller implements ProcessEventMarshaller<ProfileEve
       }
       output.flush();
       byte[] array = buffer.toByteArray();
-      return new MessageEnvelope(process, PROFILE.code, array, 0, array.length);
+      return new MessageEnvelope(PROFILE.code, array, 0, array.length);
    }
 }

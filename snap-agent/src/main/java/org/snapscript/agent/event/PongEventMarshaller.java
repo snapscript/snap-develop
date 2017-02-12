@@ -59,7 +59,7 @@ public class PongEventMarshaller implements ProcessEventMarshaller<PongEvent> {
       output.flush();
       
       byte[] array = buffer.toByteArray();
-      return new MessageEnvelope(process, PONG.code, array, 0, array.length);
+      return new MessageEnvelope(PONG.code, array, 0, array.length);
    }
 }
 

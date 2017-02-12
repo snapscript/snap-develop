@@ -45,7 +45,7 @@ public class SyntaxErrorEventMarshaller implements ProcessEventMarshaller<Syntax
       output.flush();
       
       byte[] array = buffer.toByteArray();
-      return new MessageEnvelope(process, SYNTAX_ERROR.code, array, 0, array.length);
+      return new MessageEnvelope(SYNTAX_ERROR.code, array, 0, array.length);
    }
 }
 

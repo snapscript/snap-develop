@@ -75,6 +75,6 @@ public class FaultEventMarshaller implements ProcessEventMarshaller<FaultEvent> 
       output.flush();
       
       byte[] array = buffer.toByteArray();
-      return new MessageEnvelope(process, FAULT.code, array, 0, array.length);
+      return new MessageEnvelope(FAULT.code, array, 0, array.length);
    }
 }

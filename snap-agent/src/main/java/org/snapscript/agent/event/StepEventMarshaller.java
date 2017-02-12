@@ -41,7 +41,7 @@ public class StepEventMarshaller implements ProcessEventMarshaller<StepEvent> {
       output.flush();
       
       byte[] array = buffer.toByteArray();
-      return new MessageEnvelope(process, STEP.code, array, 0, array.length);
+      return new MessageEnvelope(STEP.code, array, 0, array.length);
    }
 
 }

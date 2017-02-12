@@ -1,8 +1,11 @@
 package org.snapscript.develop.http.resource;
 
+import static org.simpleframework.http.Method.CONNECT;
+
 import java.util.Map;
 import java.util.Set;
 
+import org.simpleframework.http.Method;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
@@ -32,6 +35,11 @@ public class RegularExpressionMatcher implements ResourceMatcher {
    public synchronized Resource match(Request request, Response response) {
       Path path = request.getPath();
       String target = path.getPath();
+      String method = request.getMethod();
+      
+      if(method.equals(CONNECT)) { // connect uses domain:port rather than path
+         target = request.getTarget();
+      }
       Resource resource = cache.get(target);
 
       if (resource == null) {

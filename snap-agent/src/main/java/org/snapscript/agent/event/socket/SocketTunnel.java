@@ -1,5 +1,6 @@
 package org.snapscript.agent.event.socket;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
@@ -7,6 +8,8 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
+
+import org.snapscript.agent.log.ProcessLogger;
 
 public class SocketTunnel {
 
@@ -20,13 +23,17 @@ public class SocketTunnel {
    "Date: %s\r\n"+
    "\r\n";
 
+   private final ByteArrayOutputStream buffer;
+   private final ProcessLogger logger;
    private final DateFormat format;
    private final TimeZone zone;
    private final int connect;
    
-   public SocketTunnel(int connect) {
+   public SocketTunnel(ProcessLogger logger, int connect) {
+      this.buffer = new ByteArrayOutputStream();
       this.format = new SimpleDateFormat(FORMAT);
       this.zone = TimeZone.getTimeZone(TIME_ZONE);
+      this.logger = logger;
       this.connect = connect;
    }
    
@@ -60,9 +67,15 @@ public class SocketTunnel {
          if(count != TERMINAL[seek++]) {
             seek = 0;
          }
+         buffer.write(count);
+         
          if(seek == TERMINAL.length) {
             break;
          }
       }
+      String header = buffer.toString("UTF-8");
+      
+      buffer.reset();
+      logger.trace(header);
    }
 }

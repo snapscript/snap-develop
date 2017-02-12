@@ -10,7 +10,7 @@ import org.snapscript.agent.event.ProcessEventChannel;
 import org.snapscript.common.ThreadBuilder;
 
 public class ConnectionChecker {
-
+   
    private final ThreadFactory factory;
    private final HealthChecker checker;
    private final AtomicBoolean active;
@@ -39,12 +39,12 @@ public class ConnectionChecker {
          long time = System.currentTimeMillis();
          
          if(!channel.send(pong)) {
-            System.exit(0);// send a pong event
+            ProcessTerminator.terminate("Ping failed for " + process);
          }
          update.set(time);
       } catch(Exception e) {
          e.printStackTrace();
-         System.exit(0);
+         ProcessTerminator.terminate("Ping failed for " + process + " with " + e);
       }
    }
    
@@ -79,7 +79,7 @@ public class ConnectionChecker {
          } catch(Exception e) {
             e.printStackTrace();
          } finally {
-            System.exit(0);
+            ProcessTerminator.terminate("Connection checker timeout elapsed");
          }
       }
    }

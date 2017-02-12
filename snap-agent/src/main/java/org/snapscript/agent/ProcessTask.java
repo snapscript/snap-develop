@@ -87,7 +87,7 @@ public class ProcessTask implements Runnable {
                e.printStackTrace();
             } finally {
                if(!mode.isAsync()) {
-                  System.exit(0); // shutdown when finished
+                  ProcessTerminator.terminate("Task has finished executing"); // shutdown when finished
                }
             }
          }
@@ -95,7 +95,7 @@ public class ProcessTask implements Runnable {
          System.err.println(ExceptionBuilder.build(e));
       } finally {
          if(!mode.isAsync()) {
-            System.exit(0); // shutdown when finished
+            ProcessTerminator.terminate("Task has finished executing"); // shutdown when finished
          }
       }
    }

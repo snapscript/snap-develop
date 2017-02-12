@@ -61,6 +61,6 @@ public class EvaluateEventMarshaller implements ProcessEventMarshaller<EvaluateE
       output.flush();
       
       byte[] array = buffer.toByteArray();
-      return new MessageEnvelope(process, EVALUATE.code, array, 0, array.length);
+      return new MessageEnvelope(EVALUATE.code, array, 0, array.length);
    }
 }

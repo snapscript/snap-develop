@@ -91,6 +91,6 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       output.flush();
       
       byte[] array = buffer.toByteArray();
-      return new MessageEnvelope(process, SCOPE.code, array, 0, array.length);
+      return new MessageEnvelope(SCOPE.code, array, 0, array.length);
    }
 }

@@ -45,6 +45,6 @@ public class WriteOutputEventMarshaller implements ProcessEventMarshaller<WriteO
       output.flush();
       
       byte[] array = buffer.toByteArray();
-      return new MessageEnvelope(process, WRITE_OUTPUT.code, array, 0, array.length);
+      return new MessageEnvelope(WRITE_OUTPUT.code, array, 0, array.length);
    }
 }

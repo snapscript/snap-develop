@@ -59,7 +59,7 @@ public class SocketTest extends TestCase {
       SocketEventClient client = new SocketEventClient(new DemoListener("client-listener"), logger);
       
       server.start();
-      ProcessEventChannel channel = client.connect("localhost", 3344);
+      ProcessEventChannel channel = client.connect("localhost", 3344, 3345);
       
       for(int i = 0; i < 100; i++) {
          channel.send(new RegisterEvent.Builder("blah-" + i)

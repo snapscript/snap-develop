@@ -1,10 +1,12 @@
 package org.snapscript.develop.http.resource;
 
+import static org.simpleframework.http.Method.CONNECT;
 import static org.simpleframework.http.Protocol.DATE;
 import static org.simpleframework.http.Status.OK;
 
 import java.io.IOException;
 
+import org.simpleframework.http.Method;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
@@ -41,7 +43,8 @@ public class ResourceContainer implements Container {
    @Override
    public void handle(Request request, Response response) {
       long time = System.currentTimeMillis();
-
+      String method = request.getMethod();
+      
       try {
          Resource resource = matcher.match(request, response);
 
@@ -62,7 +65,9 @@ public class ResourceContainer implements Container {
          }
       } finally {
          try {
-            response.close();
+            if(!method.equals(CONNECT)) {
+               response.close();
+            }
          } catch (IOException ignore) {
             LOG.info("Could not close response", ignore);
          }

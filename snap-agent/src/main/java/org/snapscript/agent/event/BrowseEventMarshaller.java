@@ -53,7 +53,7 @@ public class BrowseEventMarshaller implements ProcessEventMarshaller<BrowseEvent
       output.flush();
       
       byte[] array = buffer.toByteArray();
-      return new MessageEnvelope(process, BROWSE.code, array, 0, array.length);
+      return new MessageEnvelope(BROWSE.code, array, 0, array.length);
    }
 
 }

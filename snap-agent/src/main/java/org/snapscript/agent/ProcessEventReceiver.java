@@ -106,6 +106,6 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
 
    @Override
    public void onClose(ProcessEventChannel channel) throws Exception {
-      System.exit(0);
+      ProcessTerminator.terminate("Close event received");
    }
 }

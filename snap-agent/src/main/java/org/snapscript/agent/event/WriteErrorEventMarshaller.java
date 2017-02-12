@@ -45,6 +45,6 @@ public class WriteErrorEventMarshaller implements ProcessEventMarshaller<WriteEr
       output.flush();
       
       byte[] array = buffer.toByteArray();
-      return new MessageEnvelope(process, WRITE_ERROR.code, array, 0, array.length);
+      return new MessageEnvelope(WRITE_ERROR.code, array, 0, array.length);
    }
 }

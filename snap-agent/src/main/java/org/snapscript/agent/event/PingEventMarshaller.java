@@ -37,6 +37,6 @@ public class PingEventMarshaller implements ProcessEventMarshaller<PingEvent> {
       output.flush();
       
       byte[] array = buffer.toByteArray();
-      return new MessageEnvelope(process, PING.code, array, 0, array.length);
+      return new MessageEnvelope(PING.code, array, 0, array.length);
    }
 }

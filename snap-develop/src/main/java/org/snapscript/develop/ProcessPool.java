@@ -10,6 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.simpleframework.transport.Channel;
 import org.snapscript.agent.event.BeginEvent;
 import org.snapscript.agent.event.ExitEvent;
 import org.snapscript.agent.event.FaultEvent;
@@ -23,10 +24,10 @@ import org.snapscript.agent.event.ScopeEvent;
 import org.snapscript.agent.event.SyntaxErrorEvent;
 import org.snapscript.agent.event.WriteErrorEvent;
 import org.snapscript.agent.event.WriteOutputEvent;
-import org.snapscript.agent.event.socket.SocketEventServer;
 import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.ThreadBuilder;
 import org.snapscript.develop.configuration.ProcessConfiguration;
+import org.snapscript.develop.tunnel.ProcessEventRouter;
 
 public class ProcessPool {
    
@@ -39,10 +40,10 @@ public class ProcessPool {
    private final ProcessEventInterceptor interceptor;
    private final ProcessConnectionPool connections;
    private final ProcessAgentStarter starter;
+   private final ProcessEventRouter router;
    private final ProcessLauncher launcher;
    private final ProcessAgentPinger pinger;
    private final ProcessNameFilter filter;
-   private final SocketEventServer server;
    private final ConsoleManager manager;
    private final ProcessListener listener;
    private final ProcessLogger logger;
@@ -58,8 +59,8 @@ public class ProcessPool {
       this.listeners = new CopyOnWriteArraySet<ProcessEventListener>();
       this.running = new LinkedBlockingQueue<ProcessConnection>();
       this.interceptor = new ProcessEventInterceptor(listeners);
-      this.server = new SocketEventServer(interceptor, logger, port);
-      this.launcher = new ProcessLauncher(server, logger, workspace);
+      this.router = new ProcessEventRouter(interceptor, logger, port);
+      this.launcher = new ProcessLauncher(router, logger, workspace);
       this.pinger = new ProcessAgentPinger(frequency);
       this.starter = new ProcessAgentStarter(pinger);
       this.filter = new ProcessNameGenerator();
@@ -123,10 +124,17 @@ public class ProcessPool {
       return false;
    }
    
+   public void connect(Channel channel) {
+      try {
+         router.connect(channel);
+      } catch(Exception e) {
+         logger.info("Could not connect channel", e);
+      }
+   }
+   
    public void start(String host, int port) { // http://host:port/project
       try {
          manager.start();
-         server.start();
          pinger.start(host, port);
       } catch(Exception e) {
          logger.info("Could not start pool on port " + port, e);

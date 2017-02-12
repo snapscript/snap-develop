@@ -45,6 +45,6 @@ public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> 
       output.flush();
       
       byte[] array = buffer.toByteArray();
-      return new MessageEnvelope(process, START.code, array, 0, array.length);
+      return new MessageEnvelope(START.code, array, 0, array.length);
    }
 }

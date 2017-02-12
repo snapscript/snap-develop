@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.simpleframework.transport.Channel;
 import org.snapscript.agent.event.ProcessEventFilter;
 import org.snapscript.agent.event.ProcessEventListener;
 import org.snapscript.agent.event.StepEvent;
@@ -28,6 +29,10 @@ public class ProcessManager {
       this.configuration = new ProcessConfiguration();
       this.pool = new ProcessPool(configuration, logger, workspace, port, capacity);
       this.loader = loader;
+   }
+   
+   public void connect(Channel channel) {
+      pool.connect(channel);
    }
    
    public void register(ProcessEventListener listener) {

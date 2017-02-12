@@ -184,6 +184,10 @@
     <constructor-arg value="UTF-8" />
     <constructor-arg value="NOT_FOUND" />
   </bean>
+  
+  <bean id="ProcessTunnelResource" class="org.snapscript.develop.tunnel.ProcessTunnelResource">
+    <constructor-arg ref="ProcessManager"/>
+  </bean>
 
   <bean id="ResourceMatcher" class="org.snapscript.develop.http.resource.RegularExpressionMatcher">
     <constructor-arg>
@@ -198,6 +202,7 @@
         <entry key="/tree.*" value-ref="ProjectTreeResource" />
         <entry key="/" value-ref="ProjectOpenDialog" />
         <entry key="/.*.js" value-ref="TypeScriptResource" />
+        <entry key=".*:\d+" value-ref="ProcessTunnelResource"/>
       </map>
     </constructor-arg>
   </bean>

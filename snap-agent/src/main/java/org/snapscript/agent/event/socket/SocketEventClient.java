@@ -7,7 +7,29 @@ import java.net.Socket;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.snapscript.agent.event.*;
+import org.snapscript.agent.event.BeginEvent;
+import org.snapscript.agent.event.BreakpointsEvent;
+import org.snapscript.agent.event.BrowseEvent;
+import org.snapscript.agent.event.EvaluateEvent;
+import org.snapscript.agent.event.ExecuteEvent;
+import org.snapscript.agent.event.ExitEvent;
+import org.snapscript.agent.event.FaultEvent;
+import org.snapscript.agent.event.PingEvent;
+import org.snapscript.agent.event.PongEvent;
+import org.snapscript.agent.event.ProcessEvent;
+import org.snapscript.agent.event.ProcessEventChannel;
+import org.snapscript.agent.event.ProcessEventConnection;
+import org.snapscript.agent.event.ProcessEventConsumer;
+import org.snapscript.agent.event.ProcessEventExecutor;
+import org.snapscript.agent.event.ProcessEventListener;
+import org.snapscript.agent.event.ProcessEventProducer;
+import org.snapscript.agent.event.ProfileEvent;
+import org.snapscript.agent.event.RegisterEvent;
+import org.snapscript.agent.event.ScopeEvent;
+import org.snapscript.agent.event.StepEvent;
+import org.snapscript.agent.event.SyntaxErrorEvent;
+import org.snapscript.agent.event.WriteErrorEvent;
+import org.snapscript.agent.event.WriteOutputEvent;
 import org.snapscript.agent.log.ProcessLogger;
 
 public class SocketEventClient {
@@ -22,15 +44,23 @@ public class SocketEventClient {
       this.logger = logger;
    }
    
-   public ProcessEventChannel connect(String host, int port) throws Exception {
-      Socket socket = new Socket(host, port);
-      InputStream input = socket.getInputStream();
-      OutputStream output = socket.getOutputStream();
-      SocketConnection connection = new SocketConnection(socket, input, output);
-   
-      socket.setSoTimeout(10000);
-      connection.start();
-      return connection;
+   public ProcessEventChannel connect(String host, int eventPort, int httpPort) throws Exception {
+      try {
+         Socket socket = new Socket(host, eventPort);
+         SocketTunnel tunnel = new SocketTunnel(logger, httpPort);
+         InputStream input = socket.getInputStream();
+         OutputStream output = socket.getOutputStream();
+         SocketConnection connection = new SocketConnection(socket, input, output);
+      
+         if(eventPort == httpPort) {
+            tunnel.tunnel(socket); // do the tunnel handshake
+         }
+         socket.setSoTimeout(10000);
+         connection.start();
+         return connection;
+      }catch(Exception e) {
+         throw new IllegalStateException("Could not connect to " + host + ":" + eventPort, e);
+      }
    }
 
    private class SocketConnection extends Thread implements ProcessEventChannel {

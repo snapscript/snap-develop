@@ -38,6 +38,6 @@ public class ExitEventMarshaller implements ProcessEventMarshaller<ExitEvent> {
       output.flush();
       
       byte[] array = buffer.toByteArray();
-      return new MessageEnvelope(process, EXIT.code, array, 0, array.length);
+      return new MessageEnvelope(EXIT.code, array, 0, array.length);
    }
 }

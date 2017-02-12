@@ -71,6 +71,6 @@ public class BreakpointsEventMarshaller implements ProcessEventMarshaller<Breakp
       }
       output.flush();
       byte[] array = buffer.toByteArray();
-      return new MessageEnvelope(process, BREAKPOINTS.code, array, 0, array.length);
+      return new MessageEnvelope(BREAKPOINTS.code, array, 0, array.length);
    }
 }
