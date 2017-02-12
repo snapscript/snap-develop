@@ -1,5 +1,7 @@
 package org.snapscript.agent.event;
 
+import java.io.Closeable;
+import java.io.OutputStream;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,10 +15,10 @@ public class ProcessEventProducer {
    private final MessageEnvelopeWriter writer;
    private final Executor executor;
    
-   public ProcessEventProducer(ProcessEventExecutor executor, MessageEnvelopeWriter writer) {
+   public ProcessEventProducer(OutputStream stream, Closeable closeable, Executor executor) {
       this.marshallers = new ConcurrentHashMap<Class, ProcessEventMarshaller>();
+      this.writer = new MessageEnvelopeWriter(stream, closeable);
       this.executor = executor;
-      this.writer = writer;
    }
    
    public void produce(ProcessEvent event) throws Exception {

@@ -1,8 +1,11 @@
 package org.snapscript.agent.event;
 
 import java.io.Closeable;
+import java.io.DataOutput;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 
 public class MessageEnvelopeWriter {
 
@@ -14,21 +17,25 @@ public class MessageEnvelopeWriter {
       this.closeable = closeable;
    }
    
-   public synchronized void write(MessageEnvelope message) throws Exception {
-      String agent = message.getProcess();
+   public synchronized void write(MessageEnvelope message) throws IOException {
+      write(message, stream);
+      stream.flush();
+   }
+   
+   public static void write(MessageEnvelope message, DataOutput output) throws IOException {
       byte[] array = message.getData();
       int length = message.getLength();
       int offset = message.getOffset();
       int type = message.getCode();
+      long check = MessageChecker.check(array, offset, length);
       
-      stream.writeUTF(agent);
-      stream.writeInt(type);
-      stream.writeInt(length);
-      stream.write(array, offset, length);
-      stream.flush();
+      output.writeInt(length); // length of the payload
+      output.writeInt(type);
+      output.writeLong(check);
+      output.write(array, offset, length);
    }
    
-   public synchronized void close() throws Exception {
+   public synchronized void close() throws IOException {
       try {
          stream.flush();
       }finally {

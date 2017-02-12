@@ -1,16 +1,18 @@
 package org.snapscript.agent.event;
 
+import java.io.Closeable;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ProcessEventConsumer {
    
    private final Map<Integer, ProcessEventMarshaller> marshallers;
-   private final MessageEnvelopReader reader;
+   private final MessageEnvelopeReader reader;
 
-   public ProcessEventConsumer(MessageEnvelopReader reader) {
+   public ProcessEventConsumer(InputStream stream, Closeable closeable) {
       this.marshallers = new HashMap<Integer, ProcessEventMarshaller>();
-      this.reader = reader;
+      this.reader = new MessageEnvelopeReader(stream, closeable);
    }
    
    public ProcessEvent consume() throws Exception {

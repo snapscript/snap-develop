@@ -106,11 +106,13 @@ public class ProcessEventRouter implements MessageEnvelopeProcessor, ProcessEven
       }
       int code = message.getCode();
       ProcessEventMarshaller marshaller = marshallers.get(code);
+
       if(marshaller == null) {
          throw new IllegalStateException("Could not find marshaller for " + code);
       }
       ProcessEvent event = marshaller.fromMessage(message);
       String process = event.getProcess();
+      
       channels.put(process, channel);
       
       if(event instanceof ExitEvent) {

@@ -8,20 +8,24 @@ import java.io.OutputStream;
 public class ProcessEventConnection {
 
    private final ProcessEventExecutor executor;
-   private final MessageEnvelopReader consumer;
-   private final MessageEnvelopeWriter producer;
+   private final ProcessEventConsumer consumer;
+   private final ProcessEventProducer producer;
 
    public ProcessEventConnection(ProcessEventExecutor executor, InputStream input, OutputStream output, Closeable closeable) {
-      this.consumer = new MessageEnvelopReader(input, closeable);
-      this.producer = new MessageEnvelopeWriter(output, closeable);
+      this.consumer = new ProcessEventConsumer(input, closeable);
+      this.producer = new ProcessEventProducer(output, closeable, executor);
       this.executor = executor;
    }
 
    public ProcessEventConsumer getConsumer() throws IOException {
-      return new ProcessEventConsumer(consumer);
+      return consumer;
    }
 
    public ProcessEventProducer getProducer() throws IOException {
-      return new ProcessEventProducer(executor, producer);
+      return producer;
+   }
+   
+   public ProcessEventExecutor getExecutor() throws IOException {
+      return executor;
    }
 }

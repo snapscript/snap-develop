@@ -26,24 +26,24 @@ public class ProcessAgent {
    private final String level;
    private final Model model;
    private final URI root;
-   private final int port;
+   private final int eventPort;
 
-   public ProcessAgent(URI root, String system, String process, String level, int port) {
-      this(root, system, process, level, port, 0);
+   public ProcessAgent(URI root, String system, String process, String level, int eventPort) {
+      this(root, system, process, level, eventPort, 0);
    }
    
-   public ProcessAgent(URI root,String system,  String process, String level, int port, int threads) {
-      this(root, system, process, level, port, threads, 0);
+   public ProcessAgent(URI root,String system,  String process, String level, int eventPort, int threads) {
+      this(root, system, process, level, eventPort, threads, 0);
    }
    
-   public ProcessAgent(URI root, String system, String process, String level, int port, int threads, int stack) {
-      this.context = new ProcessContext(root, process, port, threads, stack);
+   public ProcessAgent(URI root, String system, String process, String level, int eventPort, int threads, int stack) {
+      this.context = new ProcessContext(root, process, eventPort, threads, stack);
       this.model = new EmptyModel();
+      this.eventPort = eventPort;
       this.process = process;
       this.system = system;
       this.level = level;
       this.root = root;
-      this.port = port;
    }
    
    public void start(ProcessMode mode) throws Exception {
@@ -56,6 +56,7 @@ public class ProcessAgent {
       TraceInterceptor interceptor = context.getInterceptor();
       ProcessProfiler profiler = context.getProfiler();
       String host = root.getHost();
+      int httpPort = root.getPort();
       
       try {
          ProcessLog log = new ConsoleLog();
@@ -65,7 +66,7 @@ public class ProcessAgent {
          ProcessEventReceiver listener = new ProcessEventReceiver(context, mode, checker, model);
          ProcessEventTimer timer = new ProcessEventTimer(listener, logger);
          SocketEventClient client = new SocketEventClient(timer, logger);
-         ProcessEventChannel channel = client.connect(host, port);
+         ProcessEventChannel channel = client.connect(host, eventPort, httpPort);
          SuspendInterceptor suspender = new SuspendInterceptor(channel, matcher, controller, process);
          FaultContextExtractor extractor = new FaultContextExtractor(channel, logger, process);
          RegisterEvent register = new RegisterEvent.Builder(process)
