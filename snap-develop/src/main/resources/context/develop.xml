@@ -37,7 +37,6 @@
     <constructor-arg ref="ProcessConfigurationLoader" />
     <constructor-arg ref="ProcessLogger" />
     <constructor-arg ref="Workspace" />
-    <constructor-arg value="${agent-port}" />
     <constructor-arg value="${agent-pool}" />
   </bean>
 

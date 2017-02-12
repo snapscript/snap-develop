@@ -24,10 +24,10 @@ public class ProcessManager {
    private final ProcessConfigurationLoader loader;
    private final ProcessPool pool;
 
-   public ProcessManager(ProcessConfigurationLoader loader, ProcessLogger logger, Workspace workspace, int port, int capacity) throws Exception {
+   public ProcessManager(ProcessConfigurationLoader loader, ProcessLogger logger, Workspace workspace, int capacity) throws Exception {
       this.connections = new ConcurrentHashMap<String, ProcessConnection>();
       this.configuration = new ProcessConfiguration();
-      this.pool = new ProcessPool(configuration, logger, workspace, port, capacity);
+      this.pool = new ProcessPool(configuration, logger, workspace, capacity);
       this.loader = loader;
    }
    

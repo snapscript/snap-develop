@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.snapscript.agent.ProcessMode;
 import org.snapscript.agent.event.ProcessEventChannel;
 import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.configuration.Configuration;
@@ -29,16 +30,15 @@ public class ProcessLauncher {
    }
 
    public ProcessDefinition launch(ProcessConfiguration configuration) throws Exception {
-      int remote = channel.port();
-      int httpPort = configuration.getPort();
-      String httpHost = configuration.getHost();
+      int port = configuration.getPort();
+      String host = configuration.getHost();
       String level = logger.getLevel();
       String name = generator.generate();
-      String port = String.valueOf(remote);
+      String mode = ProcessMode.ATTACHED.name();
       String home = System.getProperty("java.home");
       String java = String.format("%s%sbin%sjava", home, File.separatorChar, File.separatorChar);
-      String resources = String.format("http://%s:%s/resource/", httpHost, httpPort);
-      String classes = String.format("http://%s:%s/class/", httpHost, httpPort);
+      String resources = String.format("http://%s:%s/resource/", host, port);
+      String classes = String.format("http://%s:%s/class/", host, port);
       Map<String, String> variables = configuration.getVariables();
       List<String> arguments = configuration.getArguments();
       String launcher = RemoteProcessLauncher.class.getCanonicalName();
@@ -58,7 +58,7 @@ public class ProcessLauncher {
       command.add(resources);
       command.add(name);
       command.add(level);
-      command.add(port);
+      command.add(mode);
 
       ProcessBuilder builder = new ProcessBuilder(command);
       

@@ -1,4 +1,4 @@
-package org.snapscript.agent.event.socket;
+package org.snapscript.agent.event.client;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,34 +32,32 @@ import org.snapscript.agent.event.WriteErrorEvent;
 import org.snapscript.agent.event.WriteOutputEvent;
 import org.snapscript.agent.log.ProcessLogger;
 
-public class SocketEventClient {
+public class ProcessEventClient {
    
    private final ProcessEventListener listener;
    private final ProcessEventExecutor executor;
    private final ProcessLogger logger;
    
-   public SocketEventClient(ProcessEventListener listener, ProcessLogger logger) throws IOException {
+   public ProcessEventClient(ProcessEventListener listener, ProcessLogger logger) throws IOException {
       this.executor = new ProcessEventExecutor();
       this.listener = listener;
       this.logger = logger;
    }
    
-   public ProcessEventChannel connect(String host, int eventPort, int httpPort) throws Exception {
+   public ProcessEventChannel connect(String host, int port) throws Exception {
       try {
-         Socket socket = new Socket(host, eventPort);
-         SocketTunnel tunnel = new SocketTunnel(logger, httpPort);
+         Socket socket = new Socket(host, port);
+         ProcessEventTunnel tunnel = new ProcessEventTunnel(logger, port);
          InputStream input = socket.getInputStream();
          OutputStream output = socket.getOutputStream();
          SocketConnection connection = new SocketConnection(socket, input, output);
       
-         if(eventPort == httpPort) {
-            tunnel.tunnel(socket); // do the tunnel handshake
-         }
+         tunnel.tunnel(socket); // do the tunnel handshake
          socket.setSoTimeout(10000);
          connection.start();
          return connection;
       }catch(Exception e) {
-         throw new IllegalStateException("Could not connect to " + host + ":" + eventPort, e);
+         throw new IllegalStateException("Could not connect to " + host + ":" + port, e);
       }
    }
 
@@ -152,16 +150,6 @@ public class SocketEventClient {
          } finally {
             close();
          }
-      }
-      
-      @Override
-      public int port() throws Exception {
-         try {
-            return socket.getLocalPort();
-         } catch(Exception e) {
-            logger.info("Error getting local port", e);
-         }
-         return -1;
       }
       
       @Override

@@ -41,20 +41,18 @@ public class ProcessEventRouter implements MessageEnvelopeProcessor, ProcessEven
    private final ProcessLogger logger;
    private final Executor executor;
    private final Reactor reactor;
-   private final int port;
    
-   public ProcessEventRouter(ProcessEventListener listener, ProcessLogger logger, int port) throws IOException {
-      this(listener, logger, port, 5);
+   public ProcessEventRouter(ProcessEventListener listener, ProcessLogger logger) throws IOException {
+      this(listener, logger, 5);
    }
 
-   public ProcessEventRouter(ProcessEventListener listener, ProcessLogger logger, int port, int threads) throws IOException {
+   public ProcessEventRouter(ProcessEventListener listener, ProcessLogger logger, int threads) throws IOException {
       this.marshallers = new ConcurrentHashMap<Integer, ProcessEventMarshaller>();
       this.channels = new ConcurrentHashMap<String, ProcessEventChannel>();
       this.executor = new ThreadPool(threads);
       this.reactor = new ExecutorReactor(executor);
       this.listener = listener;
       this.logger = logger;
-      this.port = port;
    }
    
    public void connect(Channel channel) throws Exception {
@@ -87,11 +85,6 @@ public class ProcessEventRouter implements MessageEnvelopeProcessor, ProcessEven
    @Override
    public void close() throws Exception {
       return;
-   }
-
-   @Override
-   public int port() throws Exception {
-      return port;
    }
    
    @Override

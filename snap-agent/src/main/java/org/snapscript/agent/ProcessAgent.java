@@ -9,7 +9,7 @@ import org.snapscript.agent.debug.SuspendInterceptor;
 import org.snapscript.agent.event.ProcessEventChannel;
 import org.snapscript.agent.event.ProcessEventTimer;
 import org.snapscript.agent.event.RegisterEvent;
-import org.snapscript.agent.event.socket.SocketEventClient;
+import org.snapscript.agent.event.client.ProcessEventClient;
 import org.snapscript.agent.log.ConsoleLog;
 import org.snapscript.agent.log.ProcessLog;
 import org.snapscript.agent.log.ProcessLogger;
@@ -26,20 +26,18 @@ public class ProcessAgent {
    private final String level;
    private final Model model;
    private final URI root;
-   private final int eventPort;
 
-   public ProcessAgent(URI root, String system, String process, String level, int eventPort) {
-      this(root, system, process, level, eventPort, 0);
+   public ProcessAgent(URI root, String system, String process, String level) {
+      this(root, system, process, level, 0);
    }
    
-   public ProcessAgent(URI root,String system,  String process, String level, int eventPort, int threads) {
-      this(root, system, process, level, eventPort, threads, 0);
+   public ProcessAgent(URI root,String system,  String process, String level, int threads) {
+      this(root, system, process, level, threads, 0);
    }
    
-   public ProcessAgent(URI root, String system, String process, String level, int eventPort, int threads, int stack) {
-      this.context = new ProcessContext(root, process, eventPort, threads, stack);
+   public ProcessAgent(URI root, String system, String process, String level, int threads, int stack) {
+      this.context = new ProcessContext(root, process, threads, stack);
       this.model = new EmptyModel();
-      this.eventPort = eventPort;
       this.process = process;
       this.system = system;
       this.level = level;
@@ -56,7 +54,7 @@ public class ProcessAgent {
       TraceInterceptor interceptor = context.getInterceptor();
       ProcessProfiler profiler = context.getProfiler();
       String host = root.getHost();
-      int httpPort = root.getPort();
+      int port = root.getPort();
       
       try {
          ProcessLog log = new ConsoleLog();
@@ -65,8 +63,8 @@ public class ProcessAgent {
          ConnectionChecker checker = new ConnectionChecker(process, system);
          ProcessEventReceiver listener = new ProcessEventReceiver(context, mode, checker, model);
          ProcessEventTimer timer = new ProcessEventTimer(listener, logger);
-         SocketEventClient client = new SocketEventClient(timer, logger);
-         ProcessEventChannel channel = client.connect(host, eventPort, httpPort);
+         ProcessEventClient client = new ProcessEventClient(timer, logger);
+         ProcessEventChannel channel = client.connect(host, port);
          SuspendInterceptor suspender = new SuspendInterceptor(channel, matcher, controller, process);
          FaultContextExtractor extractor = new FaultContextExtractor(channel, logger, process);
          RegisterEvent register = new RegisterEvent.Builder(process)

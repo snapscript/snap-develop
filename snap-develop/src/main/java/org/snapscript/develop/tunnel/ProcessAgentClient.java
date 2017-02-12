@@ -6,7 +6,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.simpleframework.transport.Channel;
-import org.snapscript.agent.event.MessageEnvelopeWriter;
 import org.snapscript.agent.event.ProcessEvent;
 import org.snapscript.agent.event.ProcessEventChannel;
 import org.snapscript.agent.event.ProcessEventProducer;
@@ -64,10 +63,5 @@ public class ProcessAgentClient implements ProcessEventChannel {
       } catch(Exception e) {
          logger.info("Error closing socket", e);
       } 
-   }
-
-   @Override
-   public int port() throws Exception {
-      return 0;
    }
 }

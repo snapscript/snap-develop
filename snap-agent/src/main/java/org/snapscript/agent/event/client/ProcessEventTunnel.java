@@ -1,4 +1,4 @@
-package org.snapscript.agent.event.socket;
+package org.snapscript.agent.event.client;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -11,7 +11,7 @@ import java.util.TimeZone;
 
 import org.snapscript.agent.log.ProcessLogger;
 
-public class SocketTunnel {
+public class ProcessEventTunnel {
 
    private static final int[] TERMINAL = {'\r', '\n', '\r', '\n'};
    private static final String CHARSET = "UTF-8";
@@ -29,7 +29,7 @@ public class SocketTunnel {
    private final TimeZone zone;
    private final int connect;
    
-   public SocketTunnel(ProcessLogger logger, int connect) {
+   public ProcessEventTunnel(ProcessLogger logger, int connect) {
       this.buffer = new ByteArrayOutputStream();
       this.format = new SimpleDateFormat(FORMAT);
       this.zone = TimeZone.getTimeZone(TIME_ZONE);

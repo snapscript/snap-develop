@@ -50,16 +50,16 @@ public class ProcessPool {
    private final ThreadFactory factory;
    private final int capacity;
    
-   public ProcessPool(ProcessConfiguration configuration, ProcessLogger logger, Workspace workspace, int port, int capacity) throws IOException {
-      this(configuration, logger, workspace, port, capacity, DEFAULT_PING_FREQUENCY);
+   public ProcessPool(ProcessConfiguration configuration, ProcessLogger logger, Workspace workspace, int capacity) throws IOException {
+      this(configuration, logger, workspace, capacity, DEFAULT_PING_FREQUENCY);
    }
    
-   public ProcessPool(ProcessConfiguration configuration, ProcessLogger logger, Workspace workspace, int port, int capacity, long frequency) throws IOException {
+   public ProcessPool(ProcessConfiguration configuration, ProcessLogger logger, Workspace workspace, int capacity, long frequency) throws IOException {
       this.connections = new ProcessConnectionPool(logger);
       this.listeners = new CopyOnWriteArraySet<ProcessEventListener>();
       this.running = new LinkedBlockingQueue<ProcessConnection>();
       this.interceptor = new ProcessEventInterceptor(listeners);
-      this.router = new ProcessEventRouter(interceptor, logger, port);
+      this.router = new ProcessEventRouter(interceptor, logger);
       this.launcher = new ProcessLauncher(router, logger, workspace);
       this.pinger = new ProcessAgentPinger(frequency);
       this.starter = new ProcessAgentStarter(pinger);
