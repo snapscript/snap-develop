@@ -9,16 +9,20 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
+import org.snapscript.agent.log.ProcessLogger;
+
 public class ProcessEventProducer {
    
    private final Map<Class, ProcessEventMarshaller> marshallers;
    private final MessageEnvelopeWriter writer;
+   private final ProcessLogger logger;
    private final Executor executor;
    
-   public ProcessEventProducer(OutputStream stream, Closeable closeable, Executor executor) {
+   public ProcessEventProducer(ProcessLogger logger, OutputStream stream, Closeable closeable, Executor executor) {
       this.marshallers = new ConcurrentHashMap<Class, ProcessEventMarshaller>();
       this.writer = new MessageEnvelopeWriter(stream, closeable);
       this.executor = executor;
+      this.logger = logger;
    }
    
    public void produce(ProcessEvent event) throws Exception {
@@ -35,12 +39,35 @@ public class ProcessEventProducer {
       return future;
    }
    
-   public void close() throws Exception {
-      SendTask task = new SendTask(null);
+   public void close(String reason) throws Exception {
+      CloseTask task = new CloseTask(reason);
       FutureTask<Boolean> future = new FutureTask<Boolean>(task);
 
       executor.execute(future);
       future.get();
+   }
+   
+   private class CloseTask implements Callable<Boolean> {
+      
+      private final Exception cause;
+      private final String reason;
+      
+      public CloseTask(String reason) {
+         this.cause = new Exception("Closing connection: " + reason);
+         this.reason = reason;
+      }
+      
+      @Override
+      public Boolean call() throws Exception {
+         try {
+            logger.info("Closing connection: " + reason);
+            cause.printStackTrace();
+            writer.close();
+         }catch(Exception e) {
+            throw new IllegalStateException("Could not close writer: " + reason);
+         }
+         return true;
+      }
    }
    
    private class SendTask implements Callable<Boolean> {
@@ -53,14 +80,6 @@ public class ProcessEventProducer {
       
       @Override
       public Boolean call() throws Exception {
-         if(event == null) { // close event
-            writer.close();
-            return true;
-         }
-         return write();
-      }
-   
-      public Boolean write() throws Exception {
          Class type = event.getClass();
    
          if (!marshallers.containsKey(type)) {

@@ -116,7 +116,7 @@ public class ProcessPool {
                connections.register(connection); // add back if ping succeeded
                return true;
             }
-            connection.close();
+            connection.close(process + " Ping did not succeed");
          }
       }catch(Exception e) {
          logger.info("Could not ping '" + process + "'", e);
@@ -381,8 +381,12 @@ public class ProcessPool {
                if(connection != null) {
                   String name = connection.toString();
                   
-                  logger.debug(name + ": Killing process");
-                  connection.close();
+                  try {
+                     logger.debug(name + ": Killing process");
+                     connection.close(name + ": Killing process due to over capacity");
+                  }catch(Exception e) {
+                     logger.info("Error killing agent " + name, e);
+                  }
                }
                return true;
             }

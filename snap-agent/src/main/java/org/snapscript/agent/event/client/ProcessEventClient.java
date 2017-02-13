@@ -68,7 +68,7 @@ public class ProcessEventClient {
       private final Socket socket;
       
       public SocketConnection(Socket socket, InputStream input, OutputStream output) throws IOException {
-         this.connection = new ProcessEventConnection(executor, input, output, socket);
+         this.connection = new ProcessEventConnection(logger, executor, input, output, socket);
          this.open = new AtomicBoolean(true);
          this.socket = socket;
       }
@@ -83,7 +83,7 @@ public class ProcessEventClient {
             return true;
          } catch(Exception e) {
             logger.info(process + ": Error sending event", e);
-            close();
+            close(process + ": Error sending event " +event + ": " + e);
          }
          return false;
       }
@@ -97,8 +97,8 @@ public class ProcessEventClient {
             Future<Boolean> future = producer.produceAsync(event);
             return future.get();
          } catch(Exception e) {
-            logger.info(process + ": Error sending event", e);
-            close();
+            logger.info(process + ": Error sending async event", e);
+            close(process + ": Error sending async event " +event + ": " + e);
          }
          return false;
       }
@@ -147,19 +147,20 @@ public class ProcessEventClient {
             }
          }catch(Exception e) {
             logger.info("Error processing events", e);
+            close("Error in event loop: " + e);
          } finally {
-            close();
+            close("Event loop has finished");
          }
       }
       
       @Override
-      public void close() {
+      public void close(String reason) {
          try {
             ProcessEventProducer producer = connection.getProducer();
             
             if(open.compareAndSet(true, false)) {
                listener.onClose(this);
-               producer.close();
+               producer.close(reason);
             }
             socket.close();
          } catch(Exception e) {

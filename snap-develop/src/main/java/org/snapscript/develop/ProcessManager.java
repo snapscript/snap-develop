@@ -140,7 +140,7 @@ public class ProcessManager implements ProcessAgentController {
       ProcessConnection connection = connections.remove(process);
       
       if(connection != null) {
-         connection.close();
+         connection.close(process + ": Explicit stop requested");
       }
       return true;
    }

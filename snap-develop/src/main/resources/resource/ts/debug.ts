@@ -82,7 +82,6 @@ function currentStatusFocus() {
 function updateStatusFocus(process) {
    var statusInfo = statusProcesses[process];
    
-   if(statusInfo != null){
       $("#toolbarDebug").css('opacity', '1.0');
       $("#toolbarDebug").css('filter', 'alpha(opacity=100)'); // msie
       $("#process").html("<i>&nbsp;RUNNING: " + statusInfo.resource + " ("+process+")</i>");
@@ -91,6 +90,7 @@ function updateStatusFocus(process) {
       Profiler.clearProfiler(); // profiler does not apply
       clearThreads(); // race condition here
       clearVariables();
+      clearEditorHighlights(); // the thread has resumed so clear highlights
    }
    updateConsoleFocus(process); // clear console if needed
    statusFocus = process;

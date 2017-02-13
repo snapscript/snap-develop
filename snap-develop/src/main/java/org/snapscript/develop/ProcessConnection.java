@@ -35,7 +35,7 @@ public class ProcessConnection {
          return channel.send(event);
       } catch (Exception e) {
          logger.info(process + ": Error occured sending execute event", e);
-         close();
+         close(process + ": Error occured sending execute event: " + e);
          throw new IllegalStateException("Could not execute script '" + path + "' for '" + process + "'", e);
       }
    }
@@ -49,7 +49,7 @@ public class ProcessConnection {
          return channel.send(event);
       } catch (Exception e) {
          logger.info(process + ": Error occured sending suspend event", e);
-         close();
+         close(process + ": Error occured sending suspend event: " + e);
          throw new IllegalStateException("Could not set breakpoints '" + breakpoints + "' for '" + process + "'", e);
       }
    }
@@ -64,7 +64,7 @@ public class ProcessConnection {
          return channel.send(event);
       } catch (Exception e) {
          logger.info(process + ": Error occured sending browse event", e);
-         close();
+         close(process + ": Error occured sending browse event: " + e);
          throw new IllegalStateException("Could not browse '" + thread + "' for '" + process + "'", e);
       }
    }
@@ -81,7 +81,7 @@ public class ProcessConnection {
          return channel.send(event);
       } catch (Exception e) {
          logger.info(process + ": Error occured sending evaluate event", e);
-         close();
+         close(process + ": Error occured sending evaluate event: " + e);
          throw new IllegalStateException("Could not evaluate '" + expression + "' on '" + thread + "' for '" + process + "'", e);
       }
    }
@@ -96,7 +96,7 @@ public class ProcessConnection {
          return channel.send(event);
       } catch (Exception e) {
          logger.info(process + ": Error occured sending step event", e);
-         close();
+         close(process + ": Error occured sending step event: " + e);
          throw new IllegalStateException("Could not resume script thread '" + thread + "' for '" + process + "'", e);
       }
    }
@@ -114,15 +114,15 @@ public class ProcessConnection {
          logger.info(process + ": Ping failed");
       } catch (Exception e) {
          logger.info(process + ": Error occured sending ping event", e);
-         close();
+         close(process + ": Error occured sending ping event: " + e);
       }
       return false;
    }
    
-   public void close() {
+   public void close(String reason) {
       try {
-         logger.info(process + ": Closing connection");
-         channel.close();
+         logger.info(process + ": Closing connection: " +reason);
+         channel.close(process + ": Closing connection: " +reason);
       } catch (Exception e) {
          logger.info(process + ": Error occured closing channel", e);
       }

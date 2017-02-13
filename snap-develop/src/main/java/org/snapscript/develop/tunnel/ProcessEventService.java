@@ -67,7 +67,7 @@ public class ProcessEventService implements MessageEnvelopeProcessor, ProcessEve
    }
 
    @Override
-   public void close() throws Exception {
+   public void close(String reason) throws Exception {
       return;
    }
    

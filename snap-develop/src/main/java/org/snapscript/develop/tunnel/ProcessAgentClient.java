@@ -20,7 +20,7 @@ public class ProcessAgentClient implements ProcessEventChannel {
    
    public ProcessAgentClient(ProcessLogger logger, Executor executor, Channel channel) {
       this.stream = new ChannelOutputStream(channel);
-      this.producer = new ProcessEventProducer(stream, stream, executor);
+      this.producer = new ProcessEventProducer(logger, stream, stream, executor);
       this.open = new AtomicBoolean(true);
       this.logger = logger;
    }
@@ -34,7 +34,7 @@ public class ProcessAgentClient implements ProcessEventChannel {
          return true;
       } catch(Exception e) {
          logger.info(process + ": Error sending event", e);
-         close();
+         close(process + ": Error sending event " + event + ": " +e);
       }
       return false;
    }
@@ -48,18 +48,17 @@ public class ProcessAgentClient implements ProcessEventChannel {
          return future.get();
       } catch(Exception e) {
          logger.info(process + ": Error sending event", e);
-         close();
+         close(process + ": Error sending async event " + event + ": " +e);
       }
       return false;
    }
 
    @Override
-   public void close() throws Exception {
+   public void close(String reason) throws Exception {
       try {
          if(open.compareAndSet(true, false)) {
-            producer.close();
+            producer.close(reason);
          }
-         producer.close();
       } catch(Exception e) {
          logger.info("Error closing socket", e);
       } 
