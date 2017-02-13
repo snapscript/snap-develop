@@ -82,6 +82,7 @@ function currentStatusFocus() {
 function updateStatusFocus(process) {
    var statusInfo = statusProcesses[process];
    
+   if(statusInfo != null && statusInfo.resource != null){
       $("#toolbarDebug").css('opacity', '1.0');
       $("#toolbarDebug").css('filter', 'alpha(opacity=100)'); // msie
       $("#process").html("<i>&nbsp;RUNNING: " + statusInfo.resource + " ("+process+")</i>");
