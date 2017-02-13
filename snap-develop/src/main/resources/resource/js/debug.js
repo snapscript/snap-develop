@@ -78,11 +78,16 @@ function updateStatusFocus(process) {
         $("#toolbarDebug").css('filter', 'alpha(opacity=100)'); // msie
         $("#process").html("<i>&nbsp;RUNNING: " + statusInfo.resource + " (" + process + ")</i>");
     }
+    else {
+        $("#toolbarDebug").css('opacity', '0.4');
+        $("#toolbarDebug").css('filter', 'alpha(opacity=40)'); // msie
+        $("#process").html("");
+        clearEditorHighlights(); // focus lost so clear breakpoints
+    }
     if (statusFocus != process) {
         Profiler.clearProfiler(); // profiler does not apply
         clearThreads(); // race condition here
         clearVariables();
-        clearEditorHighlights(); // the thread has resumed so clear highlights
     }
     updateConsoleFocus(process); // clear console if needed
     statusFocus = process;
