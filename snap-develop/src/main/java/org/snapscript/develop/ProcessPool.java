@@ -27,7 +27,7 @@ import org.snapscript.agent.event.WriteOutputEvent;
 import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.ThreadBuilder;
 import org.snapscript.develop.configuration.ProcessConfiguration;
-import org.snapscript.develop.tunnel.ProcessEventRouter;
+import org.snapscript.develop.tunnel.ProcessEventService;
 
 public class ProcessPool {
    
@@ -40,7 +40,7 @@ public class ProcessPool {
    private final ProcessEventInterceptor interceptor;
    private final ProcessConnectionPool connections;
    private final ProcessAgentStarter starter;
-   private final ProcessEventRouter router;
+   private final ProcessEventService router;
    private final ProcessLauncher launcher;
    private final ProcessAgentPinger pinger;
    private final ProcessNameFilter filter;
@@ -59,7 +59,7 @@ public class ProcessPool {
       this.listeners = new CopyOnWriteArraySet<ProcessEventListener>();
       this.running = new LinkedBlockingQueue<ProcessConnection>();
       this.interceptor = new ProcessEventInterceptor(listeners);
-      this.router = new ProcessEventRouter(interceptor, logger);
+      this.router = new ProcessEventService(interceptor, logger);
       this.launcher = new ProcessLauncher(router, logger, workspace);
       this.pinger = new ProcessAgentPinger(frequency);
       this.starter = new ProcessAgentStarter(pinger);

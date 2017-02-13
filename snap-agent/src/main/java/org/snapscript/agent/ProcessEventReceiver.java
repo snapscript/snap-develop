@@ -12,14 +12,12 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class ProcessEventReceiver extends ProcessEventAdapter {
    
-   private final AtomicReference<ExecuteData> reference;
    private final ConnectionChecker checker;
-   private final ResourceExecutor executor;
+   private final ProcessResourceExecutor executor;
    private final ProcessContext context;
    
-   public ProcessEventReceiver(ProcessContext context, ProcessMode mode, ConnectionChecker checker, Model model) throws Exception {
-      this.reference = new AtomicReference<ExecuteData>();
-      this.executor = new ResourceExecutor(context, mode, model);
+   public ProcessEventReceiver(ProcessContext context, ProcessMode mode, ConnectionChecker checker, ProcessResourceExecutor executor, Model model) throws Exception {
+      this.executor = executor;
       this.checker = checker;
       this.context = context;
    }
@@ -27,23 +25,20 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
    @Override
    public void onExecute(ProcessEventChannel channel, ExecuteEvent event) throws Exception {
       ExecuteData data = event.getData();
+      Map<String, Map<Integer, Boolean>> breakpoints = event.getBreakpoints();
+      BreakpointMatcher matcher = context.getMatcher();
+      ProcessStore store = context.getStore();
+      String actual = context.getProcess();
+      String target = data.getProcess();
+      String project = data.getProject();
+      String resource = data.getResource();
       
-      if(reference.compareAndSet(null, data)) { // execute only once
-         Map<String, Map<Integer, Boolean>> breakpoints = event.getBreakpoints();
-         BreakpointMatcher matcher = context.getMatcher();
-         ProcessStore store = context.getStore();
-         String actual = context.getProcess();
-         String target = data.getProcess();
-         String project = data.getProject();
-         String resource = data.getResource();
-         
-         if(!target.equals(actual)) {
-            throw new IllegalArgumentException("Process '" +actual+ "' received event for '"+target+"'");
-         }
-         matcher.update(breakpoints);
-         store.update(project); // XXX rubbish
-         executor.execute(channel, actual, project, resource);
+      if(!target.equals(actual)) {
+         throw new IllegalArgumentException("Process '" +actual+ "' received event for '"+target+"'");
       }
+      matcher.update(breakpoints);
+      store.update(project); // XXX rubbish
+      executor.execute(channel, actual, project, resource);
    }
    
    @Override
@@ -92,7 +87,7 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
 
    @Override
    public void onPing(ProcessEventChannel channel, PingEvent event) throws Exception {
-      ExecuteData data = reference.get();
+      ExecuteData data = executor.get();
       
       if(data != null) {
          String project = data.getProject();

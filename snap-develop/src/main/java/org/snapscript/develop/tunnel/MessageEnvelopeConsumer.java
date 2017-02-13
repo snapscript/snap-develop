@@ -13,12 +13,12 @@ public class MessageEnvelopeConsumer {
    private final int HEADER_LENGTH = 16; // int,int,long
    
    private ProcessEventChannel channel;
-   private ProcessEventRouter router;
+   private ProcessEventService router;
    private byte[] buffer;
    private int remaining;
    private int count;
    
-   public MessageEnvelopeConsumer(ProcessEventRouter router, ProcessLogger logger, Executor executor, Channel channel) {
+   public MessageEnvelopeConsumer(ProcessEventService router, ProcessLogger logger, Executor executor, Channel channel) {
       this.channel = new ProcessAgentClient(logger, executor, channel);
       this.buffer = new byte[1024];
       this.router = router;

@@ -11,6 +11,7 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.transport.ByteWriter;
 import org.simpleframework.transport.Channel;
+import org.snapscript.agent.event.ProcessEventListener;
 import org.snapscript.develop.ProcessManager;
 import org.snapscript.develop.http.resource.Resource;
 
@@ -24,9 +25,11 @@ public class ProcessTunnelResource implements Resource {
          "Server: Server/1.0\r\n" +
          "\r\n";
    
+   private final ProcessEventListener listener; // used when an event executes itself
    private final ProcessManager manager;
    
    public ProcessTunnelResource(ProcessManager manager) throws IOException {
+      this.listener = new ProcessAgentBeginListener(manager);
       this.manager = manager;
    }
 
@@ -43,7 +46,7 @@ public class ProcessTunnelResource implements Resource {
          
          writer.write(data);
          writer.flush();
-         manager.connect(channel); // establish the connection
+         manager.connect(listener, channel); // establish the connection
       } else {
          PrintStream stream = response.getPrintStream();
          

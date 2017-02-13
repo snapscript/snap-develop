@@ -25,7 +25,7 @@ import org.snapscript.agent.log.ConsoleLog;
 import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.ThreadPool;
 import org.snapscript.develop.tunnel.MessageEnvelopeCollector;
-import org.snapscript.develop.tunnel.ProcessEventRouter;
+import org.snapscript.develop.tunnel.ProcessEventService;
 
 public class MessageEnvelopeCollectorTest extends TestCase {
    
@@ -35,7 +35,7 @@ public class MessageEnvelopeCollectorTest extends TestCase {
       ProcessLogger logger = new ProcessLogger(log, "TRACE");
       ProcessEventAdapter adapter = new ProcessEventAdapter();
       ProcessEventTimer timer = new ProcessEventTimer(adapter, logger);
-      ProcessEventRouter router = new ProcessEventRouter(timer, logger, 7878);
+      ProcessEventService router = new ProcessEventService(timer, logger, 7878);
       ByteArrayOutputStream stream = new ByteArrayOutputStream();
       StreamEventWriter writer = new StreamEventWriter(stream);
       PingEvent event = new PingEvent.Builder("agent-123456789")

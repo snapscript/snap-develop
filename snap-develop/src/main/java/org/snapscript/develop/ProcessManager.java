@@ -17,7 +17,7 @@ import org.snapscript.develop.command.StepCommand;
 import org.snapscript.develop.configuration.ProcessConfiguration;
 import org.snapscript.develop.configuration.ProcessConfigurationLoader;
 
-public class ProcessManager {
+public class ProcessManager implements ProcessAgentController {
    
    private final Map<String, ProcessConnection> connections; // active processes
    private final ProcessConfiguration configuration;
@@ -31,7 +31,8 @@ public class ProcessManager {
       this.loader = loader;
    }
    
-   public void connect(Channel channel) {
+   public void connect(ProcessEventListener listener, Channel channel) {
+      pool.register(listener);
       pool.connect(channel);
    }
    
@@ -42,7 +43,7 @@ public class ProcessManager {
    public void remove(ProcessEventListener listener) {
       pool.remove(listener);
    }
-   
+
    public boolean execute(ExecuteCommand command) {
       return execute(command, null);
    }
@@ -120,6 +121,21 @@ public class ProcessManager {
       return true;
    }
    
+   @Override
+   public boolean start(String process) { // move from waiting to running, used by agent
+      if(!connections.containsKey(process)) {
+         ProcessConnection connection = pool.acquire(process);
+         
+         if(connection != null) {
+            connections.put(process, connection);
+            return true;
+         }
+         return false;
+      }
+      return true; // already started
+   }
+   
+   @Override
    public boolean stop(String process) {
       ProcessConnection connection = connections.remove(process);
       
@@ -129,6 +145,7 @@ public class ProcessManager {
       return true;
    }
    
+   @Override
    public boolean ping(String process, long time) {
       ProcessConnection connection = connections.get(process);
 

@@ -18,7 +18,7 @@ public class MessageEnvelopeCollector implements Operation {
    private final Reactor reactor;
    private final Channel channel;
    
-   public MessageEnvelopeCollector(ProcessEventRouter router, ProcessLogger logger, Reactor reactor, Executor executor, Channel channel) {
+   public MessageEnvelopeCollector(ProcessEventService router, ProcessLogger logger, Reactor reactor, Executor executor, Channel channel) {
       this.consumer = new MessageEnvelopeConsumer(router, logger, executor, channel);
       this.reactor = reactor;
       this.channel = channel;

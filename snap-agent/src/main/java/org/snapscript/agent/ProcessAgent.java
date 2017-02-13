@@ -44,11 +44,11 @@ public class ProcessAgent {
       this.root = root;
    }
    
-   public void start(ProcessMode mode) throws Exception {
-      start(mode, model);
+   public ProcessAgentService start(ProcessMode mode) throws Exception {
+      return start(mode, model);
    }
    
-   public void start(ProcessMode mode, Model model) throws Exception {
+   public ProcessAgentService start(ProcessMode mode, Model model) throws Exception {
       BreakpointMatcher matcher = context.getMatcher();
       SuspendController controller = context.getController();
       TraceInterceptor interceptor = context.getInterceptor();
@@ -61,7 +61,8 @@ public class ProcessAgent {
          ProcessLogger logger = new ProcessLogger(log, level);
          SystemValidator validator = new SystemValidator(context);
          ConnectionChecker checker = new ConnectionChecker(process, system);
-         ProcessEventReceiver listener = new ProcessEventReceiver(context, mode, checker, model);
+         ProcessResourceExecutor executor = new ProcessResourceExecutor(context, mode, model);
+         ProcessEventReceiver listener = new ProcessEventReceiver(context, mode, checker, executor, model);
          ProcessEventTimer timer = new ProcessEventTimer(listener, logger);
          ProcessEventClient client = new ProcessEventClient(timer, logger);
          ProcessEventChannel channel = client.connect(host, port);
@@ -77,8 +78,10 @@ public class ProcessAgent {
          channel.send(register); // send the initial register event
          validator.validate();
          checker.start();
+         
+         return new ProcessAgentService(context, channel, executor, mode, model);
       } catch (Exception e) {
-         e.printStackTrace();
+         throw new IllegalStateException("Could not start process '" + process+ "'", e);
       }
    }
 }
