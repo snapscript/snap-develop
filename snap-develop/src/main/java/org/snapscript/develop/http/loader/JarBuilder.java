@@ -14,7 +14,7 @@ public class JarBuilder {
       this.loader = loader;
    }
 
-   protected byte[] createJar(String mainClass, String... resources) throws Exception {
+   public byte[] createJar(String mainClass, String... resources) throws Exception {
       Manifest manifest = new Manifest();
       manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
       manifest.getMainAttributes().put(Attributes.Name.MAIN_CLASS, mainClass);

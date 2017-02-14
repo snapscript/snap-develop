@@ -66,7 +66,6 @@ public class ProcessLauncher {
          Map<String, String> environment = builder.environment();
          environment.putAll(variables);
       }
-
       
       logger.info(name + ": " +command);
       builder.directory(directory);
