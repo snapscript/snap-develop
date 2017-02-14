@@ -1,7 +1,10 @@
 package org.snapscript.agent.event;
 
+import org.snapscript.agent.ProcessMode;
+
 public class BeginEvent implements ProcessEvent {
 
+   private final ProcessMode mode;
    private final String resource;
    private final String process;
    private final String project;
@@ -12,6 +15,11 @@ public class BeginEvent implements ProcessEvent {
       this.project = builder.project;
       this.resource = builder.resource;
       this.duration = builder.duration;
+      this.mode = builder.mode;
+   }
+   
+   public ProcessMode getMode() {
+      return mode;
    }
 
    public String getResource() {
@@ -32,6 +40,7 @@ public class BeginEvent implements ProcessEvent {
 
    public static class Builder {
       
+      private ProcessMode mode;
       private String resource;
       private String process;
       private String project;
@@ -39,6 +48,11 @@ public class BeginEvent implements ProcessEvent {
       
       public Builder(String process){
          this.process = process;
+      }
+      
+      public Builder withMode(ProcessMode mode) {
+         this.mode = mode;
+         return this;
       }
 
       public Builder withResource(String resource) {

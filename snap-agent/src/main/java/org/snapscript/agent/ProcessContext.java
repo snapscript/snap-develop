@@ -22,19 +22,20 @@ public class ProcessContext {
    private final BreakpointMatcher matcher;
    private final StoreContext context;
    private final ProcessStore store;
+   private final ProcessMode mode;
    private final Executor executor;
    private final Model model;
    private final String process;
 
-   public ProcessContext(URI root, String process, int port) {
-      this(root, process, port, 4);
+   public ProcessContext(ProcessMode mode, URI root, String process, int port) {
+      this(mode, root, process, port, 4);
    }
    
-   public ProcessContext(URI root, String process, int port, int threads) {
-      this(root, process, port, threads, 0);
+   public ProcessContext(ProcessMode mode, URI root, String process, int port, int threads) {
+      this(mode, root, process, port, threads, 0);
    }
    
-   public ProcessContext(URI root, String process, int port, int threads, int stack) {
+   public ProcessContext(ProcessMode mode, URI root, String process, int port, int threads, int stack) {
       this.store = new ProcessStore(root);
       this.executor = new ThreadPool(threads, stack);
       this.context = new StoreContext(store, executor);
@@ -44,6 +45,11 @@ public class ProcessContext {
       this.profiler = new ProcessProfiler();
       this.model = new EmptyModel();
       this.process = process;
+      this.mode = mode;
+   }
+   
+   public ProcessMode getMode() {
+      return mode;
    }
    
    public PackageLinker getLinker() {

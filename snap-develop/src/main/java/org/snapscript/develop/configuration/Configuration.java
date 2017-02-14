@@ -8,6 +8,8 @@ public interface Configuration {
 
    String PROJECT_FILE = ".project";
    String CLASSPATH_FILE = ".classpath";
+   String TEMP_PATH = ".temp";
+   String JAR_FILE = "agent.jar";
    
    Map<String, String> getVariables();
    List<File> getDependencies();

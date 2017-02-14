@@ -26,13 +26,14 @@ public class CamundaScriptTask {
       Map<String, Object> state = new HashMap<String, Object>();
       MapModel model = new MapModel(state);
       ProcessAgent agent = new ProcessAgent(
+            ProcessMode.DETACHED,
             URI.create(URL), 
             "Camunda 2.0", 
             context.getProcessInstanceId(),
             "DEBUG");
       
       state.put("context", context);
-      ProcessAgentService service = agent.start(ProcessMode.ATTACHED, model);
+      ProcessAgentService service = agent.start(model);
       service.createBreakpoint(RESOURCE, 1);
       service.execute(PROJECT, RESOURCE);
    }

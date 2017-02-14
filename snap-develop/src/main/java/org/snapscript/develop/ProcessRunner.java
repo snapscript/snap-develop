@@ -12,14 +12,14 @@ public class ProcessRunner {
       URI resources = URI.create(list[0]);
       String process = list[1];
       String level = list[2];
-      String mode = list[3];
+      String type = list[3];
+      ProcessMode mode = ProcessMode.resolveMode(type);
       
-      start(resources, system, process, level, mode);
+      start(mode, resources, system, process, level);
    }
    
-   public static void start(URI resources, String system, String process, String level, String type) throws Exception {
-      ProcessAgent agent = new ProcessAgent(resources, system, process, level);
-      ProcessMode mode = ProcessMode.resolveMode(type);
-      agent.start(mode);
+   public static void start(ProcessMode mode, URI resources, String system, String process, String level) throws Exception {
+      ProcessAgent agent = new ProcessAgent(mode, resources, system, process, level);
+      agent.start();
    }
 }

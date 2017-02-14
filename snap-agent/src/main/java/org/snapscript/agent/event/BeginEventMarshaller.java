@@ -8,6 +8,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import org.snapscript.agent.ProcessMode;
+
 public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> {
 
    @Override
@@ -20,12 +22,15 @@ public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> 
       String process = input.readUTF();
       String project = input.readUTF();
       String resource = input.readUTF();
+      String type = input.readUTF();
+      ProcessMode mode = ProcessMode.resolveMode(type);
       long duration = input.readLong();
       
       return new BeginEvent.Builder(process)
          .withProject(project)
          .withResource(resource)
          .withDuration(duration)
+         .withMode(mode)
          .build();
    }
 
@@ -33,14 +38,17 @@ public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> 
    public MessageEnvelope toMessage(BeginEvent event) throws IOException {
       ByteArrayOutputStream buffer = new ByteArrayOutputStream();
       DataOutputStream output = new DataOutputStream(buffer);
+      ProcessMode mode = event.getMode();
       String process = event.getProcess();
       String project = event.getProject();
       String resource = event.getResource();
+      String type = mode.name();
       long duration = event.getDuration();
       
       output.writeUTF(process);
       output.writeUTF(project);
       output.writeUTF(resource);
+      output.writeUTF(type);
       output.writeLong(duration);
       output.flush();
       

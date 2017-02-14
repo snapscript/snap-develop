@@ -1,5 +1,6 @@
 package org.snapscript.develop.tunnel;
 
+import org.snapscript.agent.ProcessMode;
 import org.snapscript.agent.event.BeginEvent;
 import org.snapscript.agent.event.ExitEvent;
 import org.snapscript.agent.event.ProcessEventAdapter;
@@ -21,6 +22,10 @@ public class ProcessAgentBeginListener extends ProcessEventAdapter {
 
    public void onExit(ProcessEventChannel channel, ExitEvent event) {
       String process = event.getProcess();
-      controller.stop(process);
+      ProcessMode mode = event.getMode();
+      
+      if(!mode.isAsync()) {
+         controller.stop(process);
+      }
    }
 }

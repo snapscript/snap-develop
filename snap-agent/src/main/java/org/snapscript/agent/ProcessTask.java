@@ -47,6 +47,7 @@ public class ProcessTask implements Runnable {
          BeginEvent event = new BeginEvent.Builder(process)
             .withProject(project)
             .withResource(resource)
+            .withMode(context.getMode())
             .withDuration(TimeUnit.NANOSECONDS.toMillis(middle-start))
             .build();
          
@@ -80,6 +81,7 @@ public class ProcessTask implements Runnable {
                
                ExitEvent exitEvent = new ExitEvent.Builder(process)
                   .withDuration(TimeUnit.NANOSECONDS.toMillis(stop-middle))
+                  .withMode(context.getMode())
                   .build();
                
                client.send(exitEvent);

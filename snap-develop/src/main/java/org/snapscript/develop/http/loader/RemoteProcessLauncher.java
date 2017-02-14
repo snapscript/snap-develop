@@ -22,7 +22,7 @@ public class RemoteProcessLauncher {
       
       start(classes, type, dependencies, prefix, arguments);
    }
-   
+
    public static void start(URI classes, String name, String dependencies, String prefix, String[] arguments) throws Exception {
       ClassLoader parent = load(dependencies);
       URL[] path = new URL[]{classes.toURL()};

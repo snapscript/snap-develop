@@ -8,6 +8,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import org.snapscript.agent.ProcessMode;
+
 public class ExitEventMarshaller implements ProcessEventMarshaller<ExitEvent> {
 
    @Override
@@ -18,10 +20,13 @@ public class ExitEventMarshaller implements ProcessEventMarshaller<ExitEvent> {
       ByteArrayInputStream buffer = new ByteArrayInputStream(array, offset, length);
       DataInputStream input = new DataInputStream(buffer);
       String process = input.readUTF();
+      String type = input.readUTF();
+      ProcessMode mode = ProcessMode.resolveMode(type);
       long duration = input.readLong();
       
       return new ExitEvent.Builder(process)
          .withDuration(duration)
+         .withMode(mode)
          .build();
       
    }
@@ -30,10 +35,13 @@ public class ExitEventMarshaller implements ProcessEventMarshaller<ExitEvent> {
    public MessageEnvelope toMessage(ExitEvent value) throws IOException {
       ByteArrayOutputStream buffer = new ByteArrayOutputStream();
       DataOutputStream output = new DataOutputStream(buffer);
+      ProcessMode mode = value.getMode();
       String process = value.getProcess();
+      String type = mode.name();
       long duration = value.getDuration();
       
       output.writeUTF(process);
+      output.writeUTF(type);
       output.writeLong(duration);
       output.flush();
       

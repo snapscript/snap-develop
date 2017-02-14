@@ -60,7 +60,7 @@ public class ProcessPool {
       this.running = new LinkedBlockingQueue<ProcessConnection>();
       this.interceptor = new ProcessEventInterceptor(listeners);
       this.router = new ProcessEventService(interceptor, logger);
-      this.launcher = new ProcessLauncher(router, logger, workspace);
+      this.launcher = new ProcessLauncher(logger, workspace);
       this.pinger = new ProcessAgentPinger(frequency);
       this.starter = new ProcessAgentStarter(pinger);
       this.filter = new ProcessNameGenerator();

@@ -1,13 +1,21 @@
 package org.snapscript.agent.event;
 
+import org.snapscript.agent.ProcessMode;
+
 public class ExitEvent implements ProcessEvent {
 
+   private final ProcessMode mode;
    private final String process;
    private final long duration;
 
    private ExitEvent(Builder builder) {
       this.duration = builder.duration;
       this.process = builder.process;
+      this.mode = builder.mode;
+   }
+   
+   public ProcessMode getMode() {
+      return mode;
    }
    
    @Override
@@ -21,11 +29,17 @@ public class ExitEvent implements ProcessEvent {
 
    public static class Builder {
       
+      private ProcessMode mode;
       private String process;
       private long duration;
       
       public Builder(String process) {
          this.process = process;
+      }
+      
+      public Builder withMode(ProcessMode mode) {
+         this.mode = mode;
+         return this;
       }
 
       public Builder withProcess(String process) {

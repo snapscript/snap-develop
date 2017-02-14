@@ -21,34 +21,36 @@ import org.snapscript.core.trace.TraceInterceptor;
 public class ProcessAgent {
 
    private final ProcessContext context;
+   private final ProcessMode mode;
    private final String system;
    private final String process;
    private final String level;
    private final Model model;
    private final URI root;
 
-   public ProcessAgent(URI root, String system, String process, String level) {
-      this(root, system, process, level, 0);
+   public ProcessAgent(ProcessMode mode, URI root, String system, String process, String level) {
+      this(mode, root, system, process, level, 0);
    }
    
-   public ProcessAgent(URI root,String system,  String process, String level, int threads) {
-      this(root, system, process, level, threads, 0);
+   public ProcessAgent(ProcessMode mode, URI root,String system,  String process, String level, int threads) {
+      this(mode, root, system, process, level, threads, 0);
    }
    
-   public ProcessAgent(URI root, String system, String process, String level, int threads, int stack) {
-      this.context = new ProcessContext(root, process, threads, stack);
+   public ProcessAgent(ProcessMode mode, URI root, String system, String process, String level, int threads, int stack) {
+      this.context = new ProcessContext(mode, root, process, threads, stack);
       this.model = new EmptyModel();
       this.process = process;
       this.system = system;
       this.level = level;
       this.root = root;
+      this.mode = mode;
    }
    
-   public ProcessAgentService start(ProcessMode mode) throws Exception {
-      return start(mode, model);
+   public ProcessAgentService start() throws Exception {
+      return start(model);
    }
    
-   public ProcessAgentService start(ProcessMode mode, Model model) throws Exception {
+   public ProcessAgentService start(Model model) throws Exception {
       BreakpointMatcher matcher = context.getMatcher();
       SuspendController controller = context.getController();
       TraceInterceptor interceptor = context.getInterceptor();
