@@ -1,5 +1,5 @@
 function showProjectDialog() {
-   createTreeOpenDialog(function(dialogPathDetails, projectName) {
+   DialogBuilder.createTreeOpenDialog(function(dialogPathDetails, projectName) {
       if(projectName != "" && projectName != null) {
          var host = window.document.location.hostname;
          var port = window.document.location.port;

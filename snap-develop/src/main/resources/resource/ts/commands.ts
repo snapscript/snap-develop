@@ -2,7 +2,7 @@
 module Command {
    
    export function searchTypes() {
-      createListDialog(function(text){
+      DialogBuilder.createListDialog(function(text){
          var typesFound = findTypesMatching(text);
          var typeRows = [];
         
@@ -85,7 +85,7 @@ module Command {
    export function renameFile(resourcePath) {
       var originalFile = resourcePath.filePath;
       
-      renameFileTreeDialog(resourcePath, true, function(resourceDetails) {
+      DialogBuilder.renameFileTreeDialog(resourcePath, true, function(resourceDetails) {
          var message = JSON.stringify({
             project : document.title,
             from : originalFile,
@@ -100,7 +100,7 @@ module Command {
       var originalPath = resourcePath.filePath;
       var directoryPath = FileTree.createResourcePath(originalPath + ".#"); // put a # in to trick in to thinking its a file
       
-      renameDirectoryTreeDialog(directoryPath, true, function(resourceDetails) {
+      DialogBuilder.renameDirectoryTreeDialog(directoryPath, true, function(resourceDetails) {
          var message = JSON.stringify({
             project : document.title,
             from : originalPath,
@@ -111,7 +111,7 @@ module Command {
    }
    
    export function newFile(resourcePath) {
-      newFileTreeDialog(resourcePath, true, function(resourceDetails) {
+      DialogBuilder.newFileTreeDialog(resourcePath, true, function(resourceDetails) {
          if(!FileTree.isResourceFolder(resourceDetails.filePath)) {
             var message = JSON.stringify({
                project : document.title,
@@ -128,7 +128,7 @@ module Command {
    }
    
    export function newDirectory(resourcePath) {
-      newDirectoryTreeDialog(resourcePath, true, function(resourceDetails) {
+      DialogBuilder.newDirectoryTreeDialog(resourcePath, true, function(resourceDetails) {
          if(FileTree.isResourceFolder(resourceDetails.filePath)) {
             var message = JSON.stringify({
                project : document.title,
@@ -150,13 +150,13 @@ module Command {
    function saveFileWithAction(saveCallback, update) {
       var editorData = FileEditor.loadEditor();
       if (editorData.resource == null) {
-         openTreeDialog(null, false, function(resourceDetails) {
+         DialogBuilder.openTreeDialog(null, false, function(resourceDetails) {
             saveEditor(update);
             saveCallback();
          });
       } else {
          if (FileEditor.isEditorChanged()) {
-            openTreeDialog(editorData.resource, true, function(resourceDetails) {
+            DialogBuilder.openTreeDialog(editorData.resource, true, function(resourceDetails) {
                saveEditor(update);
                saveCallback();
             });
@@ -352,7 +352,7 @@ module Command {
    }
    
    export function evaluateExpression() {
-      evaluateExpressionDialog();
+      DialogBuilder.evaluateExpressionDialog();
    }
    
    export function switchProject() {
