@@ -50,25 +50,25 @@ function showProblems() {
 function clearProblems() {
     var problems = w2ui['problems'];
     currentProblems = {};
-    clearEditorHighlights();
+    FileEditor.clearEditorHighlights();
     if (problems != null) {
         problems.records = [];
         problems.refresh();
     }
 }
 function highlightProblems() {
-    var editorData = loadEditor();
+    var editorData = FileEditor.loadEditor();
     var editorResource = editorData.resource;
     if (editorResource != null) {
-        //clearEditorHighlights(); this makes breakpoints jitter
+        //FileEditor.clearEditorHighlights(); this makes breakpoints jitter
         if (currentProblems.hasOwnProperty(editorResource.resourcePath)) {
             var problemInfo = currentProblems[editorResource.resourcePath];
             if (problemInfo != null) {
-                clearEditorHighlights(); // clear if the resource is focused
-                createEditorHighlight(problemInfo.line, "problemHighlight");
+                FileEditor.clearEditorHighlights(); // clear if the resource is focused
+                FileEditor.createEditorHighlight(problemInfo.line, "problemHighlight");
             }
             else {
-                clearEditorHighlights(); // clear if the resource is focused
+                FileEditor.clearEditorHighlights(); // clear if the resource is focused
             }
         }
     }
@@ -76,7 +76,7 @@ function highlightProblems() {
 function updateProblems(socket, type, text) {
     var problems = w2ui['problems'];
     var message = JSON.parse(text);
-    var resourcePath = createResourcePath(message.resource);
+    var resourcePath = FileTree.createResourcePath(message.resource);
     var problemInfo = {
         line: message.line,
         message: "<div class='errorDescription'>" + message.description + "</div>",

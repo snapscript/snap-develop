@@ -31,7 +31,7 @@ function refreshStatusProcesses() {
    if(expiryCount > 0) {
       showStatus(); // something expired!
    }
-   pingProcess(); // this will force a STATUS event
+   Command.pingProcess(); // this will force a STATUS event
 }
 
 function terminateStatusProcess(socket, type, text) {
@@ -41,7 +41,7 @@ function terminateStatusProcess(socket, type, text) {
    if(statusFocus == text) {
       suspendedThreads = {};
       currentFocusThread = null;
-      terminateThreads();
+      ThreadManager.terminateThreads();
       clearStatusFocus();
    }
    showStatus();
@@ -90,20 +90,20 @@ function updateStatusFocus(process) {
       $("#toolbarDebug").css('opacity', '0.4');
       $("#toolbarDebug").css('filter', 'alpha(opacity=40)'); // msie
       $("#process").html("");
-      clearEditorHighlights(); // focus lost so clear breakpoints
+      FileEditor.clearEditorHighlights(); // focus lost so clear breakpoints
    }
    if(statusFocus != process) {
       Profiler.clearProfiler(); // profiler does not apply
-      clearThreads(); // race condition here
+      ThreadManager.clearThreads(); // race condition here
       clearVariables();
    }
-   updateConsoleFocus(process); // clear console if needed
+   ProcessConsole.updateConsoleFocus(process); // clear console if needed
    statusFocus = process;
 }
 
 function clearStatusFocus(){ // clear up stuff
    statusFocus = null;
-   clearThreads(); // race condition here
+   ThreadManager.clearThreads(); // race condition here
    clearVariables();
 //   clearProfiler();
 //   clearConsole();
@@ -141,7 +141,7 @@ function showStatus() {
                   active = "&nbsp;<input type='radio' checked>";
                }
                if(statusProcessInfo.resource != null) {
-                  var resourcePathDetails = createResourcePath(statusProcessInfo.resource);
+                  var resourcePathDetails = FileTree.createResourcePath(statusProcessInfo.resource);
                   
                   if(statusFocus == statusProcess) {
                      displayName = "<div class='debugFocusRecord'>"+statusProcess+"</div>";

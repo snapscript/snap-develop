@@ -4,8 +4,8 @@ function changeProjectFont(){
    var fontSize = document.getElementById("fontSize");
    
    if(fontSize != null && fontFamily != null) {
-      updateEditorFont(fontFamily.options[fontFamily.selectedIndex].value, fontSize.options[fontSize.selectedIndex].value);
-      updateConsoleFont(fontFamily.options[fontFamily.selectedIndex].value, fontSize.options[fontSize.selectedIndex].value);
+      FileEditor.updateEditorFont(fontFamily.options[fontFamily.selectedIndex].value, fontSize.options[fontSize.selectedIndex].value);
+      ProcessConsole.updateConsoleFont(fontFamily.options[fontFamily.selectedIndex].value, fontSize.options[fontSize.selectedIndex].value);
    }
 }
 
@@ -13,12 +13,8 @@ function changeEditorTheme(){
    var editorTheme = document.getElementById("editorTheme");
    
    if(editorTheme != null) {
-      setEditorTheme("ace/theme/" + editorTheme.options[editorTheme.selectedIndex].value.toLowerCase());
+      FileEditor.setEditorTheme("ace/theme/" + editorTheme.options[editorTheme.selectedIndex].value.toLowerCase());
    }
-}
-
-function evaluateExpression() {
-   evaluateExpressionDialog();
 }
 
 function toggleFullScreen() {
@@ -67,7 +63,7 @@ function applyProjectTheme() {
             editorTheme.value = displayInfo.themeName;
          }
          if(displayInfo.consoleCapacity != null) {
-            updateConsoleCapacity(Math.max(displayInfo.consoleCapacity, 5000)); // don't allow stupidly small size
+            ProcessConsole.updateConsoleCapacity(Math.max(displayInfo.consoleCapacity, 5000)); // don't allow stupidly small size
          }
          if(displayInfo.logoImage != null) {
             var toolbarRow =  document.getElementById("toolbarRow"); // this is pretty rubbish, but it works!
@@ -127,11 +123,11 @@ function showEditorContent(containsEditor) { // hack to render editor
 }
 
 function updateEditorTabName() {
-   var editorData = loadEditor();
+   var editorData = FileEditor.loadEditor();
    var editorFileName = document.getElementById("editFileName");
    
    if(editorFileName != null){
-      var editorData = loadEditor();
+      var editorData = FileEditor.loadEditor();
       
       if(editorData != null && editorData.resource != null) {
          editorFileName.innerHTML = "<span title='" + editorData.resource.resourcePath +"'>&nbsp;" + editorData.resource.fileName + "&nbsp;</span>";
@@ -177,7 +173,7 @@ function deleteEditorTab(resource) {
 function renameEditorTab(from, to) {
    var layout = findActiveEditorLayout();
    var tabs = findActiveEditorTabLayout();
-   var editorData = loadEditor();
+   var editorData = FileEditor.loadEditor();
    
    if(tabs != null && from != null && to != null) {
       var tabList = tabs.tabs;
@@ -188,8 +184,8 @@ function renameEditorTab(from, to) {
          
          if(nextTab != null && nextTab.id == from) {
             var newTab = JSON.parse(JSON.stringify(nextTab)); // clone the tab
-            var toPath = createResourcePath(to);
-            var fromPath = createResourcePath(from);
+            var toPath = FileTree.createResourcePath(to);
+            var fromPath = FileTree.createResourcePath(from);
 
             tabs.remove(nextTab.id); // remove the tab
 
@@ -213,7 +209,7 @@ function renameEditorTab(from, to) {
 function createEditorTab() {
    var layout = findActiveEditorLayout();
    var tabs = findActiveEditorTabLayout();
-   var editorData = loadEditor();
+   var editorData = FileEditor.loadEditor();
    
    if(tabs != null && editorData != null && editorData.resource != null) {
       var tabList = tabs.tabs;
@@ -341,7 +337,7 @@ function startResizePoller() { // because w2ui onResize not working
          if(editorWidth != currentWidth || editorHeight != currentHeight) {
             editorWidth = currentWidth;
             editorHeight = currentHeight;
-            resizeEditor();
+            FileEditor.resizeEditor();
          }
       }
    }, 100);
@@ -777,11 +773,11 @@ function createTopMenuBar(){
                         + "   <td>"
                         + "      <table id='toolbarNormal'>"
                         + "      <tr>"
-                        + "         <td><div id='newFile' onclick='newFile(null)' title='New File&nbsp;&nbsp;&nbsp;Ctrl+N'></div></td>"                           
-                        + "         <td><div id='saveFile' onclick='saveFile(null)' title='Save File&nbsp;&nbsp;&nbsp;Ctrl+S'></div></td>" 
-                        + "         <td><div id='deleteFile' onclick='deleteFile(null)' title='Delete File'></div></td>"   
-                        + "         <td><div id='searchTypes' onclick='searchTypes()' title='Search Types&nbsp;&nbsp;&nbsp;Ctrl+Shift+S'></div></td>"                             
-                        + "         <td><div id='runScript' onclick='runScript()' title='Run Script&nbsp;&nbsp;&nbsp;Ctrl+R'></div></td>" 
+                        + "         <td><div id='newFile' onclick='Command.newFile(null)' title='New File&nbsp;&nbsp;&nbsp;Ctrl+N'></div></td>"                           
+                        + "         <td><div id='saveFile' onclick='Command.saveFile(null)' title='Save File&nbsp;&nbsp;&nbsp;Ctrl+S'></div></td>" 
+                        + "         <td><div id='deleteFile' onclick='Command.deleteFile(null)' title='Delete File'></div></td>"   
+                        + "         <td><div id='searchTypes' onclick='Command.searchTypes()' title='Search Types&nbsp;&nbsp;&nbsp;Ctrl+Shift+S'></div></td>"                             
+                        + "         <td><div id='runScript' onclick='Command.runScript()' title='Run Script&nbsp;&nbsp;&nbsp;Ctrl+R'></div></td>" 
                         + "      </tr>"
                         + "      </table>"
                         + "   </td>" 
@@ -789,12 +785,12 @@ function createTopMenuBar(){
                         + "   <td>"
                         + "      <table id='toolbarDebug'>"
                         + "      <tr>"
-                        + "         <td><div id='stopScript' onclick='stopScript()' title='Stop Script'></div></td>" 
-                        + "         <td><div id='resumeScript' onclick='resumeScript()' title='Resume Script'></div></td>" 
-                        + "         <td><div id='stepInScript' onclick='stepInScript()' title='Step In'></div></td>" 
-                        + "         <td><div id='stepOutScript' onclick='stepOutScript()' title='Step Out'></div></td>" 
-                        + "         <td><div id='stepOverScript' onclick='stepOverScript()' title='Step Over'></div></td>" 
-                        + "         <td><div id='evaluateExpression' onclick='evaluateExpression()' title='Evaluate Expression'></div></td>"                         
+                        + "         <td><div id='stopScript' onclick='Command.stopScript()' title='Stop Script'></div></td>" 
+                        + "         <td><div id='resumeScript' onclick='Command.resumeScript()' title='Resume Script'></div></td>" 
+                        + "         <td><div id='stepInScript' onclick='Command.stepInScript()' title='Step In'></div></td>" 
+                        + "         <td><div id='stepOutScript' onclick='Command.stepOutScript()' title='Step Out'></div></td>" 
+                        + "         <td><div id='stepOverScript' onclick='Command.stepOverScript()' title='Step Over'></div></td>" 
+                        + "         <td><div id='evaluateExpression' onclick='Command.evaluateExpression()' title='Evaluate Expression'></div></td>"                         
                         + "      </tr>"
                         + "      </table>"
                         + "   </td>"
@@ -870,8 +866,8 @@ function createTopMenuBar(){
                             "   </td>"+
                             "   <td>&nbsp;&nbsp;</td>"+  
                             "   <td><div id='toolbarResize' title='Full Screen' onclick='toggleFullScreen()'></div></td>"+                               
-                            "   <td><div id='toolbarSwitchLayout' title='Switch Layout' onclick='switchLayout()'></div></td>"+                                
-                            "   <td><div id='toolbarSwitchProject' title='Switch Project' onclick='switchProject()'></div></td>"+     
+                            "   <td><div id='toolbarSwitchLayout' title='Switch Layout' onclick='Command.switchLayout()'></div></td>"+                                
+                            "   <td><div id='toolbarSwitchProject' title='Switch Project' onclick='Command.switchProject()'></div></td>"+     
                             "   <td>&nbsp;&nbsp;</td>"+                                 
                             "</tr>"+
                             "</table>"+
@@ -909,7 +905,7 @@ function createProblemsTab(){
             if (sel.length == 1) {
                var record = grid.get(sel[0]);
                FileExplorer.openTreeFile(record.script, function() {
-                  showEditorLine(record.line);  
+                  FileEditor.showEditorLine(record.line);  
                });
             }
             grid.selectNone();
@@ -991,7 +987,7 @@ function createProfilerTab(){
             if (sel.length == 1) {
                var record = grid.get(sel[0]);
                FileExplorer.openTreeFile(record.script, function() {
-                  showEditorLine(record.line);  
+                  FileEditor.showEditorLine(record.line);  
                }); 
             }
             grid.selectNone();
@@ -1025,7 +1021,7 @@ function createBreakpointsTab(){
             if (sel.length == 1) {
                var record = grid.get(sel[0]);
                FileExplorer.openTreeFile(record.script, function() {
-                  showEditorLine(record.line);  
+                  FileEditor.showEditorLine(record.line);  
                }); 
             }
             grid.selectNone();
@@ -1082,9 +1078,9 @@ function createThreadsTab(){
             if (sel.length == 1) {
                var record = grid.get(sel[0]);
                FileExplorer.openTreeFile(record.script, function(){
-                  updateThreadFocusByName(record.thread);
-                  showEditorLine(record.line);  
-                  showThreads();
+                  ThreadManager.updateThreadFocusByName(record.thread);
+                  FileEditor.showEditorLine(record.line);  
+                  ThreadManager.showThreads();
                });
             }
             grid.selectNone();
@@ -1138,10 +1134,10 @@ function createDebugTab(){
                
                if(record.running) {
                   FileExplorer.openTreeFile(record.script, function() {
-                     attachProcess(record.process);
+                     Command.attachProcess(record.process);
                   });
                } else {
-                  attachProcess(record.process);
+                  Command.attachProcess(record.process);
                }
             }
             grid.selectNone();
@@ -1158,7 +1154,7 @@ function activateTab(tabName, layoutName, containsBrowse, containsEditor, browse
    if (tabName == 'consoleTab') {
       w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='console'></div>");
       w2ui[layoutName].refresh();
-      showConsole();
+      ProcessConsole.showConsole();
    } else if (tabName == 'problemsTab') {
       w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='problems'></div>");
       w2ui[layoutName].refresh();
@@ -1168,12 +1164,12 @@ function activateTab(tabName, layoutName, containsBrowse, containsEditor, browse
       w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='breakpoints'></div>");
       w2ui[layoutName].refresh();
       $('#breakpoints').w2render('breakpoints');
-      showEditorBreakpoints();
+      FileEditor.showEditorBreakpoints();
    } else if(tabName == 'threadsTab'){
       w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='threads'></div>");
       w2ui[layoutName].refresh();
       $('#threads').w2render('threads');
-      showThreads();
+      ThreadManager.showThreads();
    } else if(tabName == 'variablesTab'){
       w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='variables'></div>");
       w2ui[layoutName].refresh();

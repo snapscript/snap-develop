@@ -27,7 +27,7 @@ var LinkIndexer;
             var focusToken = editorCurrentTokens[editorFocusToken];
             if (focusToken != null) {
                 setTimeout(function () {
-                    showEditorLine(focusToken.line); // focus on the line there was a token
+                    FileEditor.showEditorLine(focusToken.line); // focus on the line there was a token
                 }, 100);
                 editorFocusToken = null; // clear for next open
             }

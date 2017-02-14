@@ -14,8 +14,8 @@ module History {
       
       if(hashIndex != -1) {
          var resource = location.substring(hashIndex + 1);
-         var resourceData = createResourcePath(resource);
-         var editorData = loadEditor();
+         var resourceData = FileTree.createResourcePath(resource);
+         var editorData = FileEditor.loadEditor();
          var editorResource = editorData.resource;
          
          if(editorResource == null || editorResource.resourcePath != resourceData.resourcePath) { // only if changed

@@ -5,7 +5,7 @@ function toggleExpandVariable(name) {
    var variablePaths = expandVariableTree(name, expandVariableHistory);
    
    if(variablePaths != null) {
-      browseScriptVariables(variablePaths);
+      Command.browseScriptVariables(variablePaths);
    }
 }
 
@@ -13,12 +13,12 @@ function toggleExpandEvaluation(name, expression) {
    var variablePaths = expandVariableTree(name, expandEvaluationHistory);
    
    if(variablePaths != null) {
-      browseScriptEvaluation(variablePaths, expression, false);
+      Command.browseScriptEvaluation(variablePaths, expression, false);
    }
 }
 
 function expandVariableTree(name, variableHistory) {
-   var threadScope = focusedThread();
+   var threadScope = ThreadManager.focusedThread();
    var expandPath = name + ".*"; // this ensures they sort in sequence with '.' notation, e.g blah.foo.*
    var removePrefix = name + ".";
    
@@ -55,8 +55,8 @@ function expandVariableTree(name, variableHistory) {
 }
 
 function showVariables() {
-   var localVariables = focusedThreadVariables();
-   var evaluationVariables = focusedThreadEvaluation();
+   var localVariables = ThreadManager.focusedThreadVariables();
+   var evaluationVariables = ThreadManager.focusedThreadEvaluation();
    
    showVariablesGrid(localVariables, 'variables', false);
    showVariablesGrid(evaluationVariables, 'evaluation', true);

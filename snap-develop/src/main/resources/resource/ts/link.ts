@@ -42,7 +42,7 @@ module LinkIndexer {
          
          if(focusToken != null) {
             setTimeout(function() { // delay to allow the editor to complete loading
-               showEditorLine(focusToken.line);  // focus on the line there was a token
+               FileEditor.showEditorLine(focusToken.line);  // focus on the line there was a token
             }, 100);
             editorFocusToken = null; // clear for next open
          }

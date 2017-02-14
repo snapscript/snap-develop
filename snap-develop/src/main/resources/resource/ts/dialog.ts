@@ -113,10 +113,10 @@ function createTreeDialog(resourceDetails, foldersOnly, saveCallback, dialogTitl
    $("#dialogSave").click(function() {
       var originalDialogFileName = $('#dialogFile').html();
       var originalDialogFolder = $('#dialogFolder').html();
-      var dialogFileName = cleanResourcePath(originalDialogFileName);
-      var dialogFolder = cleanResourcePath(originalDialogFolder);
+      var dialogFileName = FileTree.cleanResourcePath(originalDialogFileName);
+      var dialogFolder = FileTree.cleanResourcePath(originalDialogFolder);
       var dialogProjectPath = dialogFolder + "/" + dialogFileName; // /src/blah/script.snap
-      var dialogPathDetails = createResourcePath(dialogProjectPath); 
+      var dialogPathDetails = FileTree.createResourcePath(dialogProjectPath); 
       
       saveCallback(dialogPathDetails);
       w2popup.close();
@@ -125,18 +125,18 @@ function createTreeDialog(resourceDetails, foldersOnly, saveCallback, dialogTitl
       w2popup.close();
    });
    if (resourceDetails != null) {
-      $('#dialogFolder').html(cleanResourcePath(resourceDetails.projectDirectory)); // /src/blah
-      $('#dialogFile').html(cleanResourcePath(resourceDetails.fileName)); // script.snap
+      $('#dialogFolder').html(FileTree.cleanResourcePath(resourceDetails.projectDirectory)); // /src/blah
+      $('#dialogFile').html(FileTree.cleanResourcePath(resourceDetails.fileName)); // script.snap
    }
-   createTree(treePath, "dialog", "dialogTree", dialogExpandPath, foldersOnly, null, function(event, data) {
-      var selectedFileDetails = createResourcePath(data.node.tooltip);
+   FileTree.createTree(treePath, "dialog", "dialogTree", dialogExpandPath, foldersOnly, null, function(event, data) {
+      var selectedFileDetails = FileTree.createResourcePath(data.node.tooltip);
 
       if (data.node.isFolder()) {
-         $('#dialogFolder').html(cleanResourcePath(selectedFileDetails.projectDirectory));
+         $('#dialogFolder').html(FileTree.cleanResourcePath(selectedFileDetails.projectDirectory));
          $('#dialogFile').html("");
       } else {
-         $('#dialogFolder').html(cleanResourcePath(selectedFileDetails.projectDirectory)); // /src/blah
-         $('#dialogFile').html(cleanResourcePath(selectedFileDetails.fileName)); // file.snap
+         $('#dialogFolder').html(FileTree.cleanResourcePath(selectedFileDetails.projectDirectory)); // /src/blah
+         $('#dialogFile').html(FileTree.cleanResourcePath(selectedFileDetails.fileName)); // file.snap
       }
    });
 }
@@ -144,8 +144,8 @@ function createTreeDialog(resourceDetails, foldersOnly, saveCallback, dialogTitl
 function createTreeOpenDialog(openCallback, closeCallback, dialogTitle, buttonText, treePath) {
    var completeFunction = function() {
       var originalDialogFolder = $('#dialogPath').html();
-      var dialogFolder = cleanResourcePath(originalDialogFolder); // clean up path
-      var dialogPathDetails = createResourcePath(dialogFolder); 
+      var dialogFolder = FileTree.cleanResourcePath(originalDialogFolder); // clean up path
+      var dialogPathDetails = FileTree.createResourcePath(dialogFolder); 
       var selectedDirectory = dialogPathDetails.projectDirectory;
       
       if(selectedDirectory.startsWith("/")) {
@@ -194,14 +194,14 @@ function createTreeOpenDialog(openCallback, closeCallback, dialogTitle, buttonTe
       completeFunction();
       w2popup.close();
    });
-   createTreeOfDepth(treePath, "dialog", "dialogTree", "/" + document.title, true, null, function(event, data) {
-      var selectedFileDetails = createResourcePath(data.node.tooltip);
+   FileTree.createTreeOfDepth(treePath, "dialog", "dialogTree", "/" + document.title, true, null, function(event, data) {
+      var selectedFileDetails = FileTree.createResourcePath(data.node.tooltip);
       var selectedDirectory = selectedFileDetails.projectDirectory;
       
       if(selectedDirectory.startsWith("/")) {
          selectedDirectory = selectedDirectory.substring(1);
       }
-      $('#dialogPath').html(cleanResourcePath(selectedDirectory));
+      $('#dialogPath').html(FileTree.cleanResourcePath(selectedDirectory));
    }, 2);
 }
 
@@ -339,7 +339,7 @@ function createGridDialog(listFunction, dialogTitle) { // listFunction(token): [
          w2ui['evaluation'].destroy(); // destroy grid so you can recreate it
          //$("#dialog").remove(); // delete the element
          clearEvaluation();
-         browseScriptEvaluation([], "", true); // clear the variables
+         Command.browseScriptEvaluation([], "", true); // clear the variables
       },
       onMax : function(event) {
          event.onComplete = function() {
@@ -359,7 +359,7 @@ function createGridDialog(listFunction, dialogTitle) { // listFunction(token): [
       var text = $("#dialogPath").html();
       var expression = clearHtml(text);
       
-      browseScriptEvaluation([], expression, true); // clear the variables
+      Command.browseScriptEvaluation([], expression, true); // clear the variables
    });
 }
 
