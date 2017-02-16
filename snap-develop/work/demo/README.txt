@@ -1,3 +1,32 @@
+# Project was developed as part of a mobile game framework
+# Shows some of the interesting things that can be done with embedded scripting
+
+1) Developed to be used on Android but can be used on any VM
+2) Comparable frameworks for the Java platform what work across platforms
+	a) LUA (JLua)
+	b) Rhino (Javascript)
+	c) Groid (Groovy)
+	
+3) Features of the language
+   a) Compliant with JSR233 for integration in to existing frameworks
+   b) Creates proxies which make it accessible from within the host application
+   c) Runs on any Java platform variant including SDK, Dalvik, ART, and GAE
+
+4) Debugger can be used as a service and contains
+	- Step In/Out/Over
+	- Evaluations
+	- Heap Walking
+	- Fault Capture
+	
+- Introduction to the language and some examples
+- Example using it with embedded camunda
+- Example bootstrapping a game in to android
+- Example debugging an actual device
+- Example using evaulations
+- Dependency injection language and extending it
+- Internals of the framework?
+
+
 A) Introduction 
 	- What problem is it solving
 	- Alternatives that exist
