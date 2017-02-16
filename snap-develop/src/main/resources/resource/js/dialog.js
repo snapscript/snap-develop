@@ -1,40 +1,5 @@
 var DialogBuilder;
 (function (DialogBuilder) {
-    //   function openAlertDialog(message) {
-    //      w2popup.open({
-    //         title : 'Alert',
-    //         body : '<div class="dialog">'+
-    //                '    <div style="style="text-align: center">'+
-    //                '       <div style="display: inline-block;">'+message+'</div>'+
-    //                '    </div>'+
-    //                '</div>',
-    //         buttons : '<button class="btn dialogButton" onclick="w2popup.close();">Close</button>',
-    //         width : 500,
-    //         height : 300,
-    //         overflow : 'hidden',
-    //         color : '#333',
-    //         speed : '0.3',
-    //         opacity : '0.8',
-    //         modal : true,
-    //         showClose : true,
-    //         showMax : true,
-    //         onOpen : function(event) {
-    //            console.log('open');
-    //         },
-    //         onClose : function(event) {
-    //            console.log('close');
-    //         },
-    //         onMax : function(event) {
-    //            console.log('max');
-    //         },
-    //         onMin : function(event) {
-    //            console.log('min');
-    //         },
-    //         onKeydown : function(event) {
-    //            console.log('keydown');
-    //         }
-    //      });
-    //   }
     function openTreeDialog(resourceDetails, foldersOnly, saveCallback) {
         if (resourceDetails != null) {
             createProjectDialog(resourceDetails, foldersOnly, saveCallback, "Save Changes");

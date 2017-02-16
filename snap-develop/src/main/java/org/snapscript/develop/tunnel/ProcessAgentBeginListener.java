@@ -26,7 +26,8 @@ public class ProcessAgentBeginListener extends ProcessEventAdapter {
       
       if(mode.isTerminateRequired()) {
          controller.stop(process);
-      } else {
+      }
+      if(mode.isDetachRequired()) {
          controller.detach(process);
       }
    }
