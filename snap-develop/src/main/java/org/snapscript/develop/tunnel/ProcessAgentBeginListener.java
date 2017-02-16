@@ -24,8 +24,10 @@ public class ProcessAgentBeginListener extends ProcessEventAdapter {
       String process = event.getProcess();
       ProcessMode mode = event.getMode();
       
-      if(!mode.isAsync()) {
+      if(mode.isTerminateRequired()) {
          controller.stop(process);
+      } else {
+         controller.detach(process);
       }
    }
 }

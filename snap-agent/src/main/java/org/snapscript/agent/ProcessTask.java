@@ -1,6 +1,7 @@
 package org.snapscript.agent;
 
 import java.util.SortedSet;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.snapscript.agent.event.BeginEvent;
@@ -34,6 +35,7 @@ public class ProcessTask implements Runnable {
    
    @Override
    public void run() {
+      CountDownLatch latch = context.getLatch();
       String process = context.getProcess();
       
       // start and listen for the socket close
@@ -88,17 +90,19 @@ public class ProcessTask implements Runnable {
             } catch(Exception e) {
                e.printStackTrace();
             } finally {
-               if(!mode.isAsync()) {
+               if(mode.isTerminateRequired()) {
                   ProcessTerminator.terminate("Task has finished executing"); // shutdown when finished
                }
+               latch.countDown();
             }
          }
       } catch (Exception e) {
          System.err.println(ExceptionBuilder.build(e));
       } finally {
-         if(!mode.isAsync()) {
+         if(mode.isTerminateRequired()) {
             ProcessTerminator.terminate("Task has finished executing"); // shutdown when finished
          }
+         latch.countDown();
       }
    }
 }

@@ -1,11 +1,7 @@
 
-function foo(){
-   return "x";
-}
+import util.regex.Pattern;
 
-function bar(){
-   return null;
-}
+var pattern = Pattern.compile(".*\\/\\/\\s*suspend.*");
+var matcher = pattern.matcher("blah // susspend ");
 
-println(foo()?.toUpperCase());
-println(bar()?.toUpperCase());
+println(matcher.matches());

@@ -22,17 +22,17 @@ public class ProcessStore implements Store {
 
    @Override
    public InputStream getInputStream(String resource) {
-      String path = getPath(resource);
+      String path = getPath(project, resource);
       return store.getInputStream(path);
    }
    
    @Override
    public OutputStream getOutputStream(String resource) {
-      String path = getPath(resource);
+      String path = getPath(project, resource);
       return store.getOutputStream(path);
    }
    
-   public String getPath(String resource) {
+   public static String getPath(String project, String resource) {
       if(project != null) {
          if(!project.startsWith("/")) {
             project = "/" + project;

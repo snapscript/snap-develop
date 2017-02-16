@@ -33,7 +33,7 @@ public class ProcessLauncher {
       String host = configuration.getHost();
       String level = logger.getLevel();
       String name = generator.generate();
-      String mode = ProcessMode.ATTACHED.name();
+      String mode = ProcessMode.SCRIPT.name();
       String home = System.getProperty("java.home");
       File directory = workspace.create(TEMP_PATH);
       File file = new File(directory, JAR_FILE);

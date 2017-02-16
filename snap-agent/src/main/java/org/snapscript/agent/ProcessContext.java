@@ -1,6 +1,7 @@
 package org.snapscript.agent;
 
 import java.net.URI;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 
 import org.snapscript.agent.debug.BreakpointMatcher;
@@ -11,6 +12,7 @@ import org.snapscript.compile.ResourceCompiler;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.EmptyModel;
 import org.snapscript.core.Model;
+import org.snapscript.core.ResourceManager;
 import org.snapscript.core.link.PackageLinker;
 import org.snapscript.core.trace.TraceInterceptor;
 
@@ -21,6 +23,7 @@ public class ProcessContext {
    private final ProcessProfiler profiler;
    private final BreakpointMatcher matcher;
    private final StoreContext context;
+   private final CountDownLatch latch;
    private final ProcessStore store;
    private final ProcessMode mode;
    private final Executor executor;
@@ -36,6 +39,7 @@ public class ProcessContext {
    }
    
    public ProcessContext(ProcessMode mode, URI root, String process, int port, int threads, int stack) {
+      this.latch = new CountDownLatch(1);
       this.store = new ProcessStore(root);
       this.executor = new ThreadPool(threads, stack);
       this.context = new StoreContext(store, executor);
@@ -50,6 +54,14 @@ public class ProcessContext {
    
    public ProcessMode getMode() {
       return mode;
+   }
+
+   public CountDownLatch getLatch() {
+      return latch;
+   }
+
+   public ResourceManager getManager(){
+      return context.getManager();
    }
    
    public PackageLinker getLinker() {

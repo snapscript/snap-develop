@@ -1,8 +1,11 @@
 package org.snapscript.develop.camunda;
 
+import java.net.InetAddress;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.snapscript.agent.ProcessAgent;
 import org.snapscript.agent.ProcessAgentService;
@@ -11,39 +14,58 @@ import org.snapscript.core.MapModel;
 
 public class CamundaScriptTask {
    
-   private static final String RESOURCE = "/rfq.snap";
+   private static final String RESOURCE = "/task.snap";
    private static final String PROJECT = "camunda";
-   private static final String URL = "http://192.168.56.1:4457/resource/";
+   private static final String URL = "http://%s:4457/resource/";
 
    public static void main(String[] list) throws Exception {
       CamundaScriptTask task = new CamundaScriptTask();
-      CamundaContext context = new CamundaContext("ERTF-DBRE-HERH-ERYE", "rfq.bpmn");
+      DelegateExecution context = new DelegateExecution("ERTF-DBRE-HERH-ERYE", "rfq.bpmn");
       
       task.onScriptTask(context);
+      Thread.sleep(100000000);
    }
    
-   public void onScriptTask(CamundaContext context) throws Exception {
+   public void onScriptTask(DelegateExecution execution) throws Exception {
+      String address = InetAddress.getLocalHost().getHostAddress();
       Map<String, Object> state = new HashMap<String, Object>();
       MapModel model = new MapModel(state);
       ProcessAgent agent = new ProcessAgent(
-            ProcessMode.DETACHED,
-            URI.create(URL), 
+            ProcessMode.TASK,
+            URI.create(String.format(URL, address)),
             "Camunda 2.0", 
-            context.getProcessInstanceId(),
+            execution.getProcessInstanceId(),
             "DEBUG");
       
-      state.put("context", context);
+      state.put("execution", execution);
       ProcessAgentService service = agent.start(model);
-      service.createBreakpoint(RESOURCE, 1);
+
+      createBreakpoints(service);
       service.execute(PROJECT, RESOURCE);
+      service.join(6000000); // wait for script to finish
    }
-   
-   private static class CamundaContext {
+
+   public void createBreakpoints(ProcessAgentService service) {
+      String source = service.loadScript(PROJECT, RESOURCE);
+      Pattern pattern = Pattern.compile(".*\\/\\/\\s*suspend.*");
+      String[] list = source.split("\\r?\\n");
+
+      for(int i = 0; i < list.length; i++) {
+         String line = list[i];
+         Matcher matcher = pattern.matcher(line);
+
+         if(matcher.matches()) {
+            service.createBreakpoint(RESOURCE, i+1);
+         }
+      }
+   }
+
+   private static class DelegateExecution {
       
       private final String processInstanceId;
       private final String processId;
       
-      public CamundaContext(String processInstanceId, String processId) {
+      public DelegateExecution(String processInstanceId, String processId) {
          this.processInstanceId = processInstanceId;
          this.processId = processId;
       }

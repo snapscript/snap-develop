@@ -1,17 +1,24 @@
 package org.snapscript.agent;
 
 public enum ProcessMode {
-    DETACHED(true),
-    ATTACHED(false);
+    SERVICE(false, false), // background long running
+    SCRIPT(true, false), // terminates when script ends
+    TASK(false, true); // stops ping when script ends
 
-    private final boolean async;
+    private final boolean terminate;
+    private final boolean detach;
 
-    private ProcessMode(boolean async) {
-        this.async = async;
+    private ProcessMode(boolean terminate, boolean detach) {
+       this.terminate = terminate;
+       this.detach = detach;
     }
 
-    public boolean isAsync(){
-        return async;
+    public boolean isDetachRequired() {
+       return detach;
+    }
+
+    public boolean isTerminateRequired(){
+        return terminate;
     }
     
     public static ProcessMode resolveMode(String token) {
@@ -24,6 +31,6 @@ public enum ProcessMode {
              return mode;
           }
        }
-       return ATTACHED;
+       return SCRIPT;
     }
 }

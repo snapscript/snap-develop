@@ -1,5 +1,0 @@
-start(context);
-
-function start(context) {
-   println(context);
-}

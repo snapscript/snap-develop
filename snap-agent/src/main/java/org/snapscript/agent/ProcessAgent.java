@@ -62,7 +62,7 @@ public class ProcessAgent {
          ProcessLog log = new ConsoleLog();
          ProcessLogger logger = new ProcessLogger(log, level);
          SystemValidator validator = new SystemValidator(context);
-         ConnectionChecker checker = new ConnectionChecker(process, system);
+         ConnectionChecker checker = new ConnectionChecker(context, process, system);
          ProcessResourceExecutor executor = new ProcessResourceExecutor(context, mode, model);
          ProcessEventReceiver listener = new ProcessEventReceiver(context, mode, checker, executor, model);
          ProcessEventTimer timer = new ProcessEventTimer(listener, logger);

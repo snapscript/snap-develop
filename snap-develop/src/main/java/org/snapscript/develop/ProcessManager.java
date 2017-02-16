@@ -22,12 +22,14 @@ public class ProcessManager implements ProcessAgentController {
    private final Map<String, ProcessConnection> connections; // active processes
    private final ProcessConfiguration configuration;
    private final ProcessConfigurationLoader loader;
+   private final ProcessLogger logger;
    private final ProcessPool pool;
 
    public ProcessManager(ProcessConfigurationLoader loader, ProcessLogger logger, Workspace workspace, int capacity) throws Exception {
       this.connections = new ConcurrentHashMap<String, ProcessConnection>();
       this.configuration = new ProcessConfiguration();
       this.pool = new ProcessPool(configuration, logger, workspace, capacity);
+      this.logger = logger;
       this.loader = loader;
    }
    
@@ -141,6 +143,16 @@ public class ProcessManager implements ProcessAgentController {
       
       if(connection != null) {
          connection.close(process + ": Explicit stop requested");
+      }
+      return true;
+   }
+
+   @Override
+   public boolean detach(String process) {
+      ProcessConnection connection = connections.remove(process);
+
+      if(connection != null) {
+         logger.debug(process + ": Detach requested");
       }
       return true;
    }

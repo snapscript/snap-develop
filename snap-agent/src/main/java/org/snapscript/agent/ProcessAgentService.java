@@ -1,11 +1,13 @@
 package org.snapscript.agent;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.snapscript.agent.debug.BreakpointMatcher;
 import org.snapscript.agent.event.ProcessEventChannel;
 import org.snapscript.core.Model;
+import org.snapscript.core.ResourceManager;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 public class ProcessAgentService {
    
@@ -19,6 +21,13 @@ public class ProcessAgentService {
       this.executor = executor;
       this.channel = channel;
       this.context = context;
+   }
+
+   public String loadScript(String project, String resource) {
+      ResourceManager manager = context.getManager();
+      String path = ProcessStore.getPath(project, resource);
+
+      return manager.getString(path);
    }
    
    public void createBreakpoint(String resource, int line) {
@@ -53,5 +62,16 @@ public class ProcessAgentService {
       matcher.update(breakpoints);
       store.update(project); 
       executor.execute(channel, actual, project, resource);
+   }
+
+   public boolean join(long time) {
+      CountDownLatch latch = context.getLatch();
+
+      try {
+         latch.await();
+      }catch(Exception e) {
+         return false;
+      }
+      return true;
    }
 }
