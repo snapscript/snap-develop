@@ -18,7 +18,7 @@ public class ProcessServer {
       try {
          InetSocketAddress address = server.start();
          int port = address.getPort();
-         String host = address.getHostString();
+         String host = address.getHostName();
          String project = String.format("http://%s:%s/", host, port);
          String script = CommandLineArgument.SCRIPT.getValue();
             

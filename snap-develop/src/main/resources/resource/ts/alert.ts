@@ -33,11 +33,11 @@ module Alerts {
             width        : 450,       // width of the dialog
             height       : 220,       // height of the dialog
             yes_text     : yesButton,     // text for yes button
-            yes_class    : '',        // class for yes button
+            yes_class    : 'btn dialogButton',        // class for yes button
             yes_style    : '',        // style for yes button
             yes_callBack : yesCallback,      // callBack for yes button
             no_text      : noButton,      // text for no button
-            no_class     : '',        // class for no button
+            no_class     : 'btn dialogButton',        // class for no button
             no_style     : '',        // style for no button
             no_callBack  : noCallback,      // callBack for no button
             callBack     : null       // common callBack

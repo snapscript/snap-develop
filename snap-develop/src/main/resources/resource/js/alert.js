@@ -29,11 +29,11 @@ var Alerts;
             width: 450,
             height: 220,
             yes_text: yesButton,
-            yes_class: '',
+            yes_class: 'btn dialogButton',
             yes_style: '',
             yes_callBack: yesCallback,
             no_text: noButton,
-            no_class: '',
+            no_class: 'btn dialogButton',
             no_style: '',
             no_callBack: noCallback,
             callBack: null // common callBack

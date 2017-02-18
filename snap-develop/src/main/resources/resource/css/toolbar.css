@@ -121,3 +121,6 @@
 	background-repeat: no-repeat;
     padding: 12px;   
 }
+.styledSelect{
+    border-radius: 0px !important;
+}
