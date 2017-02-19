@@ -1,5 +1,6 @@
 var KeyBinder;
 (function (KeyBinder) {
+    var MAX_PRESS_REPEAT = 250; // 250 milliseconds
     var pressTimes = {};
     function bindKeys() {
         var listener = new window.keypress.Listener();
@@ -78,7 +79,7 @@ var KeyBinder;
                 if (pressAction) {
                     var previousTime = pressTimes[keyBinding];
                     var currentTime = new Date().getTime();
-                    if (!previousTime || previousTime + 500 < currentTime) {
+                    if (!previousTime || previousTime + MAX_PRESS_REPEAT < currentTime) {
                         pressAction();
                         pressTimes[keyBinding] = currentTime;
                     }

@@ -21,18 +21,24 @@ package org.snapscript.agent.debug;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.snapscript.core.Path;
+import org.snapscript.core.trace.Trace;
 import org.snapscript.core.trace.TraceType;
 
 public class ThreadProgress {
 
    private final AtomicReference<ResumeType> resume;
+   private final AtomicReference<Trace> current;
+   private final BreakpointMatcher matcher;
    private final AtomicInteger match;
    private final AtomicInteger depth;
    
-   public ThreadProgress() {
+   public ThreadProgress(BreakpointMatcher matcher) {
       this.resume = new AtomicReference<ResumeType>();
+      this.current = new AtomicReference<Trace>();
       this.match = new AtomicInteger();
       this.depth = new AtomicInteger();
+      this.matcher = matcher;
    }
    
    public int currentDepth() {
@@ -74,23 +80,97 @@ public class ThreadProgress {
       resume.set(type);
    }
    
-   public boolean suspend(TraceType trace) {
-      if(trace == TraceType.NORMAL) {
-         ResumeType type = resume.get();
+   public boolean isSuspendBefore(Trace trace) {
+      if(isMatchBefore(trace)) {
+         current.set(trace);
+         return true;
+      }
+      return false;
+   }
+   
+   private boolean isMatchBefore(Trace trace) {
+      TraceType traceType = trace.getType();
+      Path path = trace.getPath();
+      String resource = path.getPath();
+      int line = trace.getLine();
+      
+      if(matcher.isBreakpoint(resource, line)){
+         return true;
+      }
+      if(traceType == TraceType.NORMAL) {
+         ResumeType resumeType = resume.get();
          int require = match.get();
          int actual = depth.get();
          
-         if(type != null) {
-            if(type == ResumeType.RUN) {
+         if(resumeType != null) {
+            if(resumeType == ResumeType.RUN) {
                return false;
-            } else if(type == ResumeType.STEP_IN) {
+            } else if(resumeType == ResumeType.STEP_IN) {
                return true; // always step in
-            } else if(type == ResumeType.STEP_OUT) {
+            } else if(resumeType == ResumeType.STEP_OUT) {
                return actual <= require;
-            } else if(type == ResumeType.STEP_OVER) {
+            } else if(resumeType == ResumeType.STEP_OVER) {
                return actual <= require;
             } 
             return require == actual;
+         }
+      }
+      return false;
+   }
+   
+   
+   public boolean isSuspendAfter(Trace trace) {
+      if(isMatchAfter(trace) && isLineChange(trace)) {
+         current.set(null);
+         return true;
+      }
+      return false;
+   }
+   
+   private boolean isMatchAfter(Trace trace) {
+      TraceType traceType = trace.getType();
+      
+      if(traceType == TraceType.NORMAL) {
+         ResumeType resumeType = resume.get();
+         int require = match.get();
+         int actual = depth.get();
+         
+         if(resumeType != null) {
+            if(resumeType == ResumeType.RUN) {
+               return false;
+            } else if(resumeType == ResumeType.STEP_IN) {
+               return true; // always step in
+            } else if(resumeType == ResumeType.STEP_OUT) {
+               return actual <= require;
+            } else if(resumeType == ResumeType.STEP_OVER) {
+               return actual <= require;
+            } 
+            return require == actual;
+         }
+      }
+      return false;
+   }
+   
+   private boolean isLineChange(Trace trace) {
+      Trace previous = current.get();
+      
+      if(previous != null) {
+         int previousLine = previous.getLine();
+         int thisLine = trace.getLine();
+         
+         if(thisLine > 0) {
+            Path previousPath = previous.getPath();
+            Path thisPath = trace.getPath();
+            
+            if(previousLine != thisLine) {
+               return true;
+            }
+            String previousResource = previousPath.getPath();
+            String thisResource = thisPath.getPath();
+            
+            if(!thisResource.equals(previousResource)) {
+               return true;
+            }
          }
       }
       return false;

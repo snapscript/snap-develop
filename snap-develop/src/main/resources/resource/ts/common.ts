@@ -108,9 +108,12 @@ function escapeHtml(text) {
 
 function clearHtml(text) {
    return text
-         .replace(/<br>/g, "")
-         .replace(/&nbsp;/g, "")
-         .replace(/&amp;/g, "&");        
+      .replace(/<br>/g, "")
+      .replace(/&quot;/g, "\"")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&nbsp;/g, "")
+      .replace(/&amp;/g, "&");        
 }
 
 function currentTime() {

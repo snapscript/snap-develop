@@ -245,12 +245,13 @@ module DialogBuilder {
    }
    
    function createGridDialog(listFunction, inputText, dialogTitle) { // listFunction(token): [a, b, c]
+      inputText = (inputText ? escapeHtml(inputText) : '');
       w2popup.open({
          title : dialogTitle,
          body : '<div id="dialogContainerBig">'+
                '   <div id="dialog"></div>'+
                '</div>'+
-               '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">'+ (inputText ? inputText : '') +'</div>',
+               '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">'+ inputText +'</div>',
          buttons : '<button id="dialogSave" class="btn dialogButton">Evaluate</button>',
          width : 700,
          height : 400,

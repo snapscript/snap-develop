@@ -66,7 +66,7 @@ public class BreakpointMatcher {
       matches = copy;
    }
    
-   public boolean match(String resource, int line) {
+   public boolean isBreakpoint(String resource, int line) {
       if(line < matches.length) {
          if(line >= 0) {
             Set set = matches[line];

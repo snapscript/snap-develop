@@ -1,7 +1,8 @@
 
 module KeyBinder {
 
-   var pressTimes = {};
+   const MAX_PRESS_REPEAT = 250; // 250 milliseconds
+   const pressTimes = {};
 
    export function bindKeys() {
       var listener = new window.keypress.Listener();
@@ -84,7 +85,7 @@ module KeyBinder {
                var previousTime = pressTimes[keyBinding];
                var currentTime = new Date().getTime();
                
-               if(!previousTime || previousTime + 500 < currentTime) { // prevent repeats
+               if(!previousTime || previousTime + MAX_PRESS_REPEAT < currentTime) { // prevent repeats
                   pressAction();
                   pressTimes[keyBinding] = currentTime;
                }

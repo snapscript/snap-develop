@@ -22,7 +22,7 @@ for(var i = 0; i < array.size(); i++){
 }
 
 var multi = new String[10][6];
-
+ 
 for(var i = 0; i < multi.size(); i++) {   
    var inner = multi[i];
    
