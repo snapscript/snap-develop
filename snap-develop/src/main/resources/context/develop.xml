@@ -113,6 +113,11 @@
     <constructor-arg ref="ProcessLogger" />
   </bean>
   
+  <bean id="TextMatchResource" class="org.snapscript.develop.find.TextMatchResource">
+    <constructor-arg ref="ProjectBuilder" />
+    <constructor-arg ref="ProcessLogger" />
+  </bean>
+  
   <bean id="TypeNodeResource" class="org.snapscript.develop.complete.TypeNodeResource">
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="ConfigurationClassLoader" />
@@ -194,6 +199,7 @@
         <entry key="/format.*" value-ref="SourceFormatResource" />
         <entry key="/type.*" value-ref="TypeNodeResource" />        
         <entry key="/complete.*" value-ref="CompletionResource" />
+        <entry key="/find.*" value-ref="TextMatchResource" />
         <entry key="/class/.*" value-ref="ClassLoaderResource" />
         <entry key="/project/.*" value-ref="ProjectResource" />
         <entry key="/display/.*" value-ref="ProjectDisplayResource" />

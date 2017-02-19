@@ -28,7 +28,7 @@
 <script src="/js/external/jquery-ui.js"></script>
 <script src="/js/external/jquery-context-menu.js"></script>
 <script src="/js/external/bootstrap.min.js"></script>
-<script src="/js/external/keypress.min.js"></script>
+<script src="/js/external/mousetrap.min.js"></script>
 <script src="/js/external/spin.js"></script>
 <script src="/js/external/fancytree.js"></script>
 <script src="/js/external/w2ui.js"></script>

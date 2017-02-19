@@ -66,6 +66,65 @@ module Command {
       return response;
    }
    
+   export function searchFiles() {
+      DialogBuilder.createListDialog(function(text){
+         var filesFound = findFilesWithText(text);
+         var fileRows = [];
+        
+         for(var i = 0; i < filesFound.length; i++) {
+            var fileFound = filesFound[i];
+            var debugToggle = ";debug";
+            var locationPath = window.document.location.pathname;
+            var locationHash = window.document.location.hash;
+            var debug = locationPath.indexOf(debugToggle, locationPath.length - debugToggle.length) !== -1;
+            var resourceLink = "/resource/" + fileFound.project + "/" + fileFound.resource;
+            
+            var resourceCell = {
+               text: fileFound.resource,
+               line: fileFound.line,
+               resource: resourceLink,
+               style: 'resourceNode'
+            };
+//            var lineCell = {
+//               text: "&nbsp;line&nbsp;" + filesFound[i].line + "&nbsp;",
+//               link: resourceLink,
+//               style: ''
+//            };
+            var textCell = {
+               text: fileFound.text,
+               line: fileFound.line,
+               resource: resourceLink,
+               style: 'textNode'
+            };
+            fileRows.push([resourceCell, /*lineCell, */textCell]);
+         }
+         return fileRows;
+     }, "Search Files");
+   }
+   
+   function findFilesWithText(text) {
+      var response = [];
+      
+      if(text && text.length > 1) {
+         jQuery.ajax({
+            url: '/find/' + document.title + '?expression=' + text,
+            success: function (filesMatched) {
+               for(var i = 0; i < filesMatched.length; i++) {
+                  var fileMatch = filesMatched[i];
+                  var typeEntry = {
+                        resource: fileMatch.resource,
+                        line: fileMatch.line,
+                        project: document.title
+                  };
+                  response.push(fileMatch);
+               }
+            },
+            async: false
+         });
+      }
+      return response;
+   }
+   
    export function exploreDirectory(resourcePath) {
       if(FileTree.isResourceFolder(resourcePath.filePath)) {
          var message = JSON.stringify({

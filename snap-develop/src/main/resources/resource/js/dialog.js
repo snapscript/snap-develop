@@ -172,7 +172,7 @@ var DialogBuilder;
                 '</div>' +
                 '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>',
             buttons: '<button id="dialogSave" class="btn dialogButton">Cancel</button>',
-            width: 600,
+            width: 800,
             height: 400,
             overflow: 'hidden',
             color: '#333',
@@ -195,9 +195,20 @@ var DialogBuilder;
                                 var cell = row[j];
                                 content += "<td width='50%'><div class='";
                                 content += cell.style;
-                                content += "' onclick='return DialogBuilder.submitDialogListResource(\"";
-                                content += cell.link;
-                                content += "\")'>";
+                                content += "' onclick='return DialogBuilder.submitDialogListResource";
+                                if (cell.line) {
+                                    content += "(\"";
+                                    content += cell.resource;
+                                    content += "\", ";
+                                    content += cell.line;
+                                    content += ")";
+                                }
+                                else {
+                                    content += "(\""; // ("link")
+                                    content += cell.link;
+                                    content += "\")";
+                                }
+                                content += "'>";
                                 content += cell.text;
                                 content += "</div></td>";
                             }
@@ -317,9 +328,16 @@ var DialogBuilder;
             Command.browseScriptEvaluation([], expression, true); // clear the variables
         });
     }
-    function submitDialogListResource(resource) {
-        location.href = resource;
+    function submitDialogListResource(resource, line) {
         $("#dialogSave").click(); // force the click
+        if (line) {
+            FileExplorer.openTreeFile(resource, function () {
+                FileEditor.showEditorLine(line);
+            });
+        }
+        else {
+            location.href = resource;
+        }
         return false;
     }
     DialogBuilder.submitDialogListResource = submitDialogListResource;
