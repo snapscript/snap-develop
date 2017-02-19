@@ -25,8 +25,8 @@ var DialogBuilder;
         createProjectDialog(resourceDetails, foldersOnly, saveCallback, "New Directory");
     }
     DialogBuilder.newDirectoryTreeDialog = newDirectoryTreeDialog;
-    function evaluateExpressionDialog() {
-        createGridDialog(function (x) { return []; }, "Evaluate Expression");
+    function evaluateExpressionDialog(expressionToEvaluate) {
+        createGridDialog(function (x) { return []; }, expressionToEvaluate, "Evaluate Expression");
     }
     DialogBuilder.evaluateExpressionDialog = evaluateExpressionDialog;
     function createProjectDialog(resourceDetails, foldersOnly, saveCallback, dialogTitle) {
@@ -233,13 +233,13 @@ var DialogBuilder;
         });
     }
     DialogBuilder.createListDialog = createListDialog;
-    function createGridDialog(listFunction, dialogTitle) {
+    function createGridDialog(listFunction, inputText, dialogTitle) {
         w2popup.open({
             title: dialogTitle,
             body: '<div id="dialogContainerBig">' +
                 '   <div id="dialog"></div>' +
                 '</div>' +
-                '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>',
+                '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">' + (inputText ? inputText : '') + '</div>',
             buttons: '<button id="dialogSave" class="btn dialogButton">Evaluate</button>',
             width: 700,
             height: 400,

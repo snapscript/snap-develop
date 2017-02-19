@@ -326,7 +326,7 @@ module Command {
    }
    
    export function attachProcess(process) {
-      var statusFocus = currentStatusFocus(); // what is the current focus
+      var statusFocus = DebugManager.currentStatusFocus(); // what is the current focus
       var editorData = FileEditor.loadEditor();
       var message = JSON.stringify({
          process: process,
@@ -352,7 +352,11 @@ module Command {
    }
    
    export function evaluateExpression() {
-      DialogBuilder.evaluateExpressionDialog();
+      var threadScope = ThreadManager.focusedThread();
+      if (threadScope != null) {
+         var selectedText = FileEditor.getSelectedText();
+         DialogBuilder.evaluateExpressionDialog(selectedText);
+      }
    }
    
    export function switchProject() {

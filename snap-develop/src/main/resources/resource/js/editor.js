@@ -349,6 +349,11 @@ var FileEditor;
         $("#currentFile").html("File:&nbsp;" + editorResource.projectPath + "&nbsp;&nbsp;");
     }
     FileEditor.updateEditor = updateEditor;
+    function getSelectedText() {
+        var editor = ace.edit("editor");
+        return editor.getSelectedText();
+    }
+    FileEditor.getSelectedText = getSelectedText;
     function isEditorChanged() {
         if (editorResource != null) {
             var editor = ace.edit("editor");
@@ -424,64 +429,69 @@ var FileEditor;
             url: '/format/' + document.title
         });
     }
-    function registerEditorBindings() {
-        var editor = ace.edit("editor");
-        editor.commands.addCommand({
-            name: 'run',
-            bindKey: {
-                win: 'Ctrl-R',
-                mac: 'Command-R'
-            },
-            exec: function (editor) {
-                Command.runScript();
-            },
-            readOnly: true
-        });
-        editor.commands.addCommand({
-            name: 'save',
-            bindKey: {
-                win: 'Ctrl-S',
-                mac: 'Command-S'
-            },
-            exec: function (editor) {
-                Command.saveFile();
-            },
-            readOnly: true
-        });
-        editor.commands.addCommand({
-            name: 'new',
-            bindKey: {
-                win: 'Ctrl-N',
-                mac: 'Command-N'
-            },
-            exec: function (editor) {
-                Command.newFile(null);
-            },
-            readOnly: true
-        });
-        editor.commands.addCommand({
-            name: 'format',
-            bindKey: {
-                win: 'Ctrl-Shift-F',
-                mac: 'Command-Shift-F'
-            },
-            exec: function (editor) {
-                formatEditorSource();
-            },
-            readOnly: true
-        });
-        editor.commands.addCommand({
-            name: 'find',
-            bindKey: {
-                win: 'Ctrl-Shift-S',
-                mac: 'Command-Shift-S'
-            },
-            exec: function (editor) {
-                Command.searchTypes();
-            },
-            readOnly: true
-        });
-    }
+    FileEditor.formatEditorSource = formatEditorSource;
+    //   function registerEditorBindings() {
+    //      var editor = ace.edit("editor");
+    //      editor.commands.addCommand({
+    //         name : 'run',
+    //         bindKey : {
+    //            win : 'Ctrl-R',
+    //            mac : 'Command-R'
+    //         },
+    //         exec : function(editor) {
+    //            Command.runScript();
+    //         },
+    //         readOnly : true
+    //      // false if this command should not apply in readOnly mode
+    //      });
+    //      editor.commands.addCommand({
+    //         name : 'save',
+    //         bindKey : {
+    //            win : 'Ctrl-S',
+    //            mac : 'Command-S'
+    //         },
+    //         exec : function(editor) {
+    //            Command.saveFile();
+    //         },
+    //         readOnly : true
+    //      // false if this command should not apply in readOnly mode
+    //      });
+    //      editor.commands.addCommand({
+    //         name : 'new',
+    //         bindKey : {
+    //            win : 'Ctrl-N',
+    //            mac : 'Command-N'
+    //         },
+    //         exec : function(editor) {
+    //            Command.newFile(null);
+    //         },
+    //         readOnly : true
+    //      // false if this command should not apply in readOnly mode
+    //      });
+    //      editor.commands.addCommand({
+    //         name : 'format',
+    //         bindKey : {
+    //            win : 'Ctrl-Shift-F',
+    //            mac : 'Command-Shift-F'
+    //         },
+    //         exec : function(editor) {
+    //            formatEditorSource();
+    //         },
+    //         readOnly : true
+    //      // false if this command should not apply in readOnly mode
+    //      });
+    //      editor.commands.addCommand({
+    //          name: 'find',
+    //          bindKey: {
+    //              win: 'Ctrl-Shift-S',
+    //              mac: 'Command-Shift-S'
+    //          },
+    //          exec: function (editor) {
+    //               Command.searchTypes();
+    //          },
+    //          readOnly: true
+    //      });    
+    //   }
     function setEditorTheme(theme) {
         if (theme != null) {
             var editor = ace.edit("editor");
@@ -527,7 +537,8 @@ var FileEditor;
             e.stop();
         });
         createEditorLinks(editor, validEditorLink, openEditorLink); // link.js
-        registerEditorBindings();
+        KeyBinder.bindKeys(); // register key bindings
+        //registerEditorBindings();
         changeProjectFont(); // project.js update font
         scrollEditorToTop();
         LoadSpinner.finish();

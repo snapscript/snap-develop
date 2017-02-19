@@ -311,7 +311,7 @@ var Command;
     }
     Command.browseScriptEvaluation = browseScriptEvaluation;
     function attachProcess(process) {
-        var statusFocus = currentStatusFocus(); // what is the current focus
+        var statusFocus = DebugManager.currentStatusFocus(); // what is the current focus
         var editorData = FileEditor.loadEditor();
         var message = JSON.stringify({
             process: process,
@@ -337,7 +337,11 @@ var Command;
     }
     Command.switchLayout = switchLayout;
     function evaluateExpression() {
-        DialogBuilder.evaluateExpressionDialog();
+        var threadScope = ThreadManager.focusedThread();
+        if (threadScope != null) {
+            var selectedText = FileEditor.getSelectedText();
+            DialogBuilder.evaluateExpressionDialog(selectedText);
+        }
     }
     Command.evaluateExpression = evaluateExpression;
     function switchProject() {

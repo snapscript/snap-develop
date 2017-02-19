@@ -387,6 +387,11 @@ module FileEditor {
       $("#currentFile").html("File:&nbsp;"+editorResource.projectPath+"&nbsp;&nbsp;");
    }
    
+   export function getSelectedText() {
+      var editor = ace.edit("editor");
+      return editor.getSelectedText();
+   }
+   
    export function isEditorChanged() {
       if(editorResource != null) {
          var editor = ace.edit("editor");
@@ -448,7 +453,7 @@ module FileEditor {
       }
    }
    
-   function formatEditorSource() {
+   export function formatEditorSource() {
       var editor = ace.edit("editor");
       var text = editor.getValue();
       $.ajax({
@@ -467,68 +472,68 @@ module FileEditor {
      });
    }
    
-   function registerEditorBindings() {
-      var editor = ace.edit("editor");
-      editor.commands.addCommand({
-         name : 'run',
-         bindKey : {
-            win : 'Ctrl-R',
-            mac : 'Command-R'
-         },
-         exec : function(editor) {
-            Command.runScript();
-         },
-         readOnly : true
-      // false if this command should not apply in readOnly mode
-      });
-      editor.commands.addCommand({
-         name : 'save',
-         bindKey : {
-            win : 'Ctrl-S',
-            mac : 'Command-S'
-         },
-         exec : function(editor) {
-            Command.saveFile();
-         },
-         readOnly : true
-      // false if this command should not apply in readOnly mode
-      });
-      editor.commands.addCommand({
-         name : 'new',
-         bindKey : {
-            win : 'Ctrl-N',
-            mac : 'Command-N'
-         },
-         exec : function(editor) {
-            Command.newFile(null);
-         },
-         readOnly : true
-      // false if this command should not apply in readOnly mode
-      });
-      editor.commands.addCommand({
-         name : 'format',
-         bindKey : {
-            win : 'Ctrl-Shift-F',
-            mac : 'Command-Shift-F'
-         },
-         exec : function(editor) {
-            formatEditorSource();
-         },
-         readOnly : true
-      // false if this command should not apply in readOnly mode
-      });
-      editor.commands.addCommand({
-          name: 'find',
-          bindKey: {
-              win: 'Ctrl-Shift-S',
-              mac: 'Command-Shift-S'
-          },
-          exec: function (editor) {
-               Command.searchTypes();
-          },
-          readOnly: true
-      });    
-   }
+//   function registerEditorBindings() {
+//      var editor = ace.edit("editor");
+//      editor.commands.addCommand({
+//         name : 'run',
+//         bindKey : {
+//            win : 'Ctrl-R',
+//            mac : 'Command-R'
+//         },
+//         exec : function(editor) {
+//            Command.runScript();
+//         },
+//         readOnly : true
+//      // false if this command should not apply in readOnly mode
+//      });
+//      editor.commands.addCommand({
+//         name : 'save',
+//         bindKey : {
+//            win : 'Ctrl-S',
+//            mac : 'Command-S'
+//         },
+//         exec : function(editor) {
+//            Command.saveFile();
+//         },
+//         readOnly : true
+//      // false if this command should not apply in readOnly mode
+//      });
+//      editor.commands.addCommand({
+//         name : 'new',
+//         bindKey : {
+//            win : 'Ctrl-N',
+//            mac : 'Command-N'
+//         },
+//         exec : function(editor) {
+//            Command.newFile(null);
+//         },
+//         readOnly : true
+//      // false if this command should not apply in readOnly mode
+//      });
+//      editor.commands.addCommand({
+//         name : 'format',
+//         bindKey : {
+//            win : 'Ctrl-Shift-F',
+//            mac : 'Command-Shift-F'
+//         },
+//         exec : function(editor) {
+//            formatEditorSource();
+//         },
+//         readOnly : true
+//      // false if this command should not apply in readOnly mode
+//      });
+//      editor.commands.addCommand({
+//          name: 'find',
+//          bindKey: {
+//              win: 'Ctrl-Shift-S',
+//              mac: 'Command-Shift-S'
+//          },
+//          exec: function (editor) {
+//               Command.searchTypes();
+//          },
+//          readOnly: true
+//      });    
+//   }
    
    export function setEditorTheme(theme) {
       if(theme != null){
@@ -577,7 +582,8 @@ module FileEditor {
          e.stop()
       });
       createEditorLinks(editor, validEditorLink, openEditorLink); // link.js
-      registerEditorBindings();
+      KeyBinder.bindKeys(); // register key bindings
+      //registerEditorBindings();
       changeProjectFont(); // project.js update font
       scrollEditorToTop();
       LoadSpinner.finish();

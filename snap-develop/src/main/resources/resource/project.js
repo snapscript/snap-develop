@@ -786,11 +786,11 @@ function createTopMenuBar(){
                         + "      <table id='toolbarDebug'>"
                         + "      <tr>"
                         + "         <td><div id='stopScript' onclick='Command.stopScript()' title='Stop Script'></div></td>" 
-                        + "         <td><div id='resumeScript' onclick='Command.resumeScript()' title='Resume Script'></div></td>" 
-                        + "         <td><div id='stepInScript' onclick='Command.stepInScript()' title='Step In'></div></td>" 
-                        + "         <td><div id='stepOutScript' onclick='Command.stepOutScript()' title='Step Out'></div></td>" 
-                        + "         <td><div id='stepOverScript' onclick='Command.stepOverScript()' title='Step Over'></div></td>" 
-                        + "         <td><div id='evaluateExpression' onclick='Command.evaluateExpression()' title='Evaluate Expression'></div></td>"                         
+                        + "         <td><div id='resumeScript' onclick='Command.resumeScript()' title='Resume Script&nbsp;&nbsp;&nbsp;F8'></div></td>" 
+                        + "         <td><div id='stepInScript' onclick='Command.stepInScript()' title='Step In&nbsp;&nbsp;&nbsp;F5'></div></td>" 
+                        + "         <td><div id='stepOutScript' onclick='Command.stepOutScript()' title='Step Out&nbsp;&nbsp;&nbsp;F7'></div></td>" 
+                        + "         <td><div id='stepOverScript' onclick='Command.stepOverScript()' title='Step Over&nbsp;&nbsp;&nbsp;F6'></div></td>" 
+                        + "         <td><div id='evaluateExpression' onclick='Command.evaluateExpression()' title='Evaluate Expression&nbsp;&nbsp;&nbsp;Ctrl+Shift+E'></div></td>"                         
                         + "      </tr>"
                         + "      </table>"
                         + "   </td>"
@@ -1189,7 +1189,7 @@ function activateTab(tabName, layoutName, containsBrowse, containsEditor, browse
       w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='debug'></div>");
       w2ui[layoutName].refresh();
       $('#debug').w2render('debug');
-      showStatus();
+      DebugManager.showStatus();
    } else { // editor is always the default as it contains file names
       w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>");
       w2ui[layoutName].refresh();
