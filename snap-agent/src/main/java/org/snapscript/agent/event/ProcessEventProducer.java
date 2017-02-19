@@ -79,7 +79,7 @@ public class ProcessEventProducer {
       public Boolean call() throws Exception {
          try {
             logger.info("Closing connection: " + reason);
-            cause.printStackTrace();
+            //cause.printStackTrace();
             writer.close();
          }catch(Exception e) {
             throw new IllegalStateException("Could not close writer: " + reason);
