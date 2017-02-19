@@ -86,6 +86,16 @@ function updateTableRecords(update, name) {
    }
 }
 
+function sleepThread(millis) {
+    var date = new Date();
+    var curDate = null;
+    
+    do { 
+       curDate = new Date(); 
+    }
+    while(curDate-date < millis);
+}
+
 function escapeHtml(text) {
    return text
         .replace(/&/g, "&amp;")

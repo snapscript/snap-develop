@@ -1,37 +1,43 @@
 
 module KeyBinder {
 
+   var pressTimes = {};
+
    export function bindKeys() {
       var listener = new window.keypress.Listener();
       var keyBindings = [
-         createKeyBinding("ctrl n", function() {
+         createKeyBinding("ctrl n", false, function() {
             Command.newFile(null);
          }),
-         createKeyBinding("ctrl s", function() {
+         createKeyBinding("ctrl s", false, function() {
             Command.saveFile(null);
          }),
-         createKeyBinding("ctrl shift s", function() {
+         createKeyBinding("ctrl shift s", false, function() {
             Command.searchTypes();
          }),
-         createKeyBinding("ctrl r", function() {
+         createKeyBinding("ctrl r", false, function() {
             Command.runScript();
          }),
-         createKeyBinding("f8", function() {
+         createKeyBinding("f8", true, function() {
+            console.log("F8");
             Command.resumeScript();
          }),
-         createKeyBinding("f5", function() {
+         createKeyBinding("f5", true, function() {
+            console.log("F5");
             Command.stepInScript();
          }),
-         createKeyBinding("f7", function() {
+         createKeyBinding("f7", true, function() {
+            console.log("F7");
             Command.stepOutScript();
          }),
-         createKeyBinding("f6", function() {
+         createKeyBinding("f6", true, function() {
+            console.log("F6");
             Command.stepOverScript();
          }),
-         createKeyBinding("ctrl shift f", function() {
+         createKeyBinding("ctrl shift f", false, function() {
             FileEditor.formatEditorSource();
          }),
-         createKeyBinding("ctrl shift e", function() {
+         createKeyBinding("ctrl shift e", false, function() {
             Command.evaluateExpression();
          })];
       ];
@@ -49,29 +55,39 @@ module KeyBinder {
       return keyBinding;
    }
    
-   function createKeyBinding(name, pressAction, releaseAction) {
-      var editor = ace.edit("editor");
+   function createKeyBinding(name, preventDefault, pressAction, releaseAction) {
       var keyBinding = parseKeyBinding(name);
-      //console.log(keyBinding);
-      editor.commands.addCommand({
-          name : name,
-          bindKey : {
-             win : keyBinding,
-             mac : keyBinding
-          },
-          exec : function(editor) {
-             if(pressAction) { 
-                pressAction();
+      
+      if(!preventDefault) {
+         var editor = ace.edit("editor");
+         //console.log(keyBinding);
+         editor.commands.addCommand({
+             name : name,
+             bindKey : {
+                win : keyBinding,
+                mac : keyBinding
+             },
+             exec : function(editor) {
+                if(pressAction) { 
+                   pressAction();
+                }
              }
-          }
-      });
+         });
+      }
       return {
          keys: name,
-         prevent_default: false,
+         prevent_default: preventDefault,
+         prevent_repeat: true,
          is_exclusive: true,
          on_keydown: function() {
             if(pressAction) { 
-               pressAction();
+               var previousTime = pressTimes[keyBinding];
+               var currentTime = new Date().getTime();
+               
+               if(!previousTime || previousTime + 500 < currentTime) { // prevent repeats
+                  pressAction();
+                  pressTimes[keyBinding] = currentTime;
+               }
             }
          },
          on_keyup: function(e) {
