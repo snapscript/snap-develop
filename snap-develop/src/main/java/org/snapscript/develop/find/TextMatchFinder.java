@@ -50,9 +50,7 @@ public class TextMatchFinder {
                if(line == null) {
                   break;
                }
-               line = line.toLowerCase();
-               
-               if(line.contains(token)) {
+               if(line.toLowerCase().contains(token)) {
                   int number = reader.getLineNumber();
                   String text = line.replace(expression, "<span style='background-color: #f0f0f0;'>"+expression+"</span>");
                   TextMatch match = new TextMatch(project, resource, text, number);
