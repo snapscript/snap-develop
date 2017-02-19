@@ -42,13 +42,17 @@ public class TextMatchFinder {
          LineNumberReader reader = new LineNumberReader(source);
 
          try {
+            String token = expression.toLowerCase();
+            
             while(reader.ready()) {
                String line = reader.readLine();
                
                if(line == null) {
                   break;
                }
-               if(line.contains(expression)) {
+               line = line.toLowerCase();
+               
+               if(line.contains(token)) {
                   int number = reader.getLineNumber();
                   String text = line.replace(expression, "<span style='background-color: #f0f0f0;'>"+expression+"</span>");
                   TextMatch match = new TextMatch(project, resource, text, number);
