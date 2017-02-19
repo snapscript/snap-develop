@@ -52,7 +52,7 @@ public class TextMatchFinder {
                }
                if(line.toLowerCase().contains(token)) {
                   int number = reader.getLineNumber();
-                  String text = line.replace(expression, "<span style='background-color: #f0f0f0;'>"+expression+"</span>");
+                  String text = line.replace(expression, "<span style='background-color: #f0f0f0;'>"+expression+"</span>"); // not good with case
                   TextMatch match = new TextMatch(project, resource, text, number);
                   lines.add(match);
                }
