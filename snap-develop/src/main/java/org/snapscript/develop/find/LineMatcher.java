@@ -73,10 +73,7 @@ public class LineMatcher {
    
    private String escape(String token) {
       return token
-            .replace("&", "&amp;")
             .replace("<", "&lt;")
-            .replace(">", "&gt;")
-            .replace("\"", "&quot;")
-            .replace("'", "&#039;");
+            .replace(">", "&gt;");
    }
 }

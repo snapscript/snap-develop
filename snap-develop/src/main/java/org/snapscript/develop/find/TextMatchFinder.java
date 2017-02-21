@@ -29,7 +29,8 @@ import org.snapscript.agent.log.ProcessLogger;
 
 public class TextMatchFinder {
    
-   private static final int BUFFER_SIZE = 8192 * 10;
+   private static final String FOREGROUND_COLOR = "#ffffff";
+   private static final String BACKGROUND_COLOR = "#6495ed"; 
    
    private final ProcessLogger logger;
    
@@ -41,14 +42,12 @@ public class TextMatchFinder {
       File file = textFile.getFile();
       String project = textFile.getProject();
       String resource = textFile.getPath();
-      long length = file.length();
-      int buffer = Math.min((int)length, BUFFER_SIZE);
       
       try {
          List<TextMatch> lines = new ArrayList<TextMatch>();
          FileReader source = new FileReader(file);
-         LineNumberReader reader = new LineNumberReader(source, buffer);
-         LineMatcher matcher = new LineMatcher(expression, "#6495ed", "#ffffff", true);
+         LineNumberReader reader = new LineNumberReader(source);
+         LineMatcher matcher = new LineMatcher(expression, BACKGROUND_COLOR, FOREGROUND_COLOR, true);
          
          try {
             while(reader.ready()) {
