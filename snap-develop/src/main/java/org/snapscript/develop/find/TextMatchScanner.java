@@ -19,6 +19,7 @@
 package org.snapscript.develop.find;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -28,7 +29,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 import org.simpleframework.http.Path;
 import org.snapscript.agent.log.ProcessLogger;
@@ -42,7 +42,19 @@ import org.snapscript.develop.http.project.ProjectBuilder;
 
 public class TextMatchScanner {
 
+   private static final String[] EXTENSIONS = new String[] {
+      ".snap",
+      ".xml",
+      ".json",
+      ".js",
+      ".xml",
+      ".properties",
+      ".java",
+      ".txt"
+   };
+   
    private final Cache<String, Set<TextFile>> cache; // reduce the set of files to look at
+   private final FilenameFilter filter;
    private final TextMatchFinder finder;
    private final ProjectBuilder builder;
    private final ProcessLogger logger;
@@ -51,6 +63,7 @@ public class TextMatchScanner {
    private final Set<String> tokens; // what is available in cache
    
    public TextMatchScanner(ProjectBuilder builder, ProcessLogger logger) {
+      this.filter = new FileExtensionFilter(EXTENSIONS);
       this.executor = new ThreadPool(10);
       this.cleaner = new CacheCleaner();
       this.cache = new LeastRecentlyUsedCache<String, Set<TextFile>>(cleaner, 100);
@@ -130,8 +143,7 @@ public class TextMatchScanner {
       String name = project.getProjectName();
       File directory = project.getProjectPath();
       String root = directory.getCanonicalPath();
-      Pattern pattern = Pattern.compile(".*.snap");
-      List<File> list = FilePatternMatcher.scan(pattern, directory);
+      List<File> list = FilePatternMatcher.scan(filter, directory);
       int length = root.length();
       
       if(root.endsWith("/")) {
