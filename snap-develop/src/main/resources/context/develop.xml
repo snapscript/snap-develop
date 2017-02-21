@@ -5,6 +5,10 @@
   <bean id="Workspace" class="org.snapscript.develop.Workspace" init-method="create">
     <constructor-arg value="${directory}" />
   </bean>
+  
+  <bean id="ThreadPool" class="org.snapscript.common.ThreadPool">
+      <constructor-arg value="10"/>
+  </bean>
 
   <bean id="BackupManager" class="org.snapscript.develop.BackupManager">
     <constructor-arg ref="ProcessLogger" />
@@ -116,12 +120,14 @@
   <bean id="TextMatchResource" class="org.snapscript.develop.find.TextMatchResource">
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="ProcessLogger" />
+    <constructor-arg ref="ThreadPool"/>
   </bean>
   
   <bean id="TypeNodeResource" class="org.snapscript.develop.complete.TypeNodeResource">
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="ConfigurationClassLoader" />
     <constructor-arg ref="ProcessLogger" />
+    <constructor-arg ref="ThreadPool"/>
   </bean>
   
   <bean id="SourceFormatResource" class="org.snapscript.develop.complete.SourceFormatResource">
@@ -166,6 +172,7 @@
     <constructor-arg ref="ProcessLogger" />
     <constructor-arg ref="ProcessManager" />
     <constructor-arg ref="BackupManager"/>
+    <constructor-arg ref="ThreadPool"/>
   </bean>
 
   <bean id="ClassResourceLoader" class="org.snapscript.develop.http.loader.ClassResourceLoader">

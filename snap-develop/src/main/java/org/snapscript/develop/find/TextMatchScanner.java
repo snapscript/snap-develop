@@ -59,18 +59,18 @@ public class TextMatchScanner {
    private final ProjectBuilder builder;
    private final ProcessLogger logger;
    private final CacheCleaner cleaner;
-   private final ThreadPool executor;
+   private final ThreadPool pool;
    private final Set<String> tokens; // what is available in cache
    
-   public TextMatchScanner(ProjectBuilder builder, ProcessLogger logger) {
+   public TextMatchScanner(ProjectBuilder builder, ProcessLogger logger, ThreadPool pool) {
       this.filter = new FileExtensionFilter(EXTENSIONS);
-      this.executor = new ThreadPool(10);
       this.cleaner = new CacheCleaner();
       this.cache = new LeastRecentlyUsedCache<String, Set<TextFile>>(cleaner, 100);
       this.tokens = new CopyOnWriteArraySet<String>();
       this.finder = new TextMatchFinder(logger);
       this.builder = builder;
       this.logger = logger;
+      this.pool = pool;
    }
    
    public List<TextMatch> scanFiles(final Path path, final String expression) throws Exception {
@@ -83,7 +83,7 @@ public class TextMatchScanner {
          final BlockingQueue<TextFile> finished = new LinkedBlockingQueue<TextFile>();
          
          for(final TextFile file : files) {
-            executor.execute(new Runnable() {
+            pool.execute(new Runnable() {
                public void run() {
                   try {
                      List<TextMatch> match = finder.findText(file, expression);
@@ -103,7 +103,7 @@ public class TextMatchScanner {
          for(final TextFile file : files) {
             finished.take(); // wait for them all to finish
          }
-         executor.schedule(new Runnable() { // crude but will clear cache
+         pool.schedule(new Runnable() { // crude but will clear cache
             public void run() {
                tokens.remove(key);
                cache.take(key);

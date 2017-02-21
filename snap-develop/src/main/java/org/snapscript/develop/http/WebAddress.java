@@ -20,7 +20,6 @@ package org.snapscript.develop.http;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 
 public class WebAddress {
 

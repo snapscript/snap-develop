@@ -25,6 +25,7 @@ import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.common.ThreadPool;
 import org.snapscript.develop.common.PatternEscaper;
 import org.snapscript.develop.configuration.ConfigurationClassLoader;
 import org.snapscript.develop.http.project.ProjectBuilder;
@@ -43,8 +44,8 @@ public class TypeNodeResource implements Resource {
    private final TypeNodeScanner scanner;
    private final Gson gson;
    
-   public TypeNodeResource(ProjectBuilder builder, ConfigurationClassLoader loader, ProcessLogger logger) {
-      this.scanner = new TypeNodeScanner(builder, loader, logger);
+   public TypeNodeResource(ProjectBuilder builder, ConfigurationClassLoader loader, ProcessLogger logger, ThreadPool pool) {
+      this.scanner = new TypeNodeScanner(builder, loader, logger, pool);
       this.gson = new GsonBuilder().setPrettyPrinting().create();
       this.loader = loader;
    }

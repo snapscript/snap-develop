@@ -25,6 +25,7 @@ import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.common.ThreadPool;
 import org.snapscript.develop.http.project.ProjectBuilder;
 import org.snapscript.develop.http.resource.Resource;
 
@@ -36,8 +37,8 @@ public class TextMatchResource implements Resource {
    private final TextMatchScanner scanner;
    private final Gson gson;
    
-   public TextMatchResource(ProjectBuilder builder, ProcessLogger logger) {
-      this.scanner = new TextMatchScanner(builder, logger);
+   public TextMatchResource(ProjectBuilder builder, ProcessLogger logger, ThreadPool pool) {
+      this.scanner = new TextMatchScanner(builder, logger, pool);
       this.gson = new GsonBuilder().setPrettyPrinting().create();
    }
 

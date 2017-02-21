@@ -39,15 +39,11 @@ public class FileProcessor<T> {
    private final FileAction<T> action;
    private final ThreadPool pool;
    
-   public FileProcessor(FileAction<T> action) {
-      this(action, 10);
-   }
-   
-   public FileProcessor(FileAction<T> action, int threads) {
+   public FileProcessor(FileAction<T> action, ThreadPool pool) {
       this.executors = new ConcurrentHashMap<String, Map<File, FileExecutor>>();
       this.active = new ConcurrentHashMap<String, Set<File>>();
-      this.pool = new ThreadPool(threads);
       this.action = action;
+      this.pool = pool;
    }
    
    

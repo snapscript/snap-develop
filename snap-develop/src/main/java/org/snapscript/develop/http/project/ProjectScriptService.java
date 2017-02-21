@@ -26,6 +26,7 @@ import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.http.socket.Session;
 import org.simpleframework.http.socket.service.Service;
 import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.common.ThreadPool;
 import org.snapscript.develop.BackupManager;
 import org.snapscript.develop.ConnectListener;
 import org.snapscript.develop.ProcessManager;
@@ -44,9 +45,9 @@ public class ProjectScriptService implements Service {
    private final ProcessLogger logger;
    private final BackupManager manager;
    
-   public ProjectScriptService(ProcessManager engine, ConnectListener listener, ConfigurationClassLoader loader, ProcessLogger logger, ProjectBuilder builder, BackupManager manager) {
-      this.compiler = new ProjectProblemFinder(builder, logger);
-      this.loader = new TypeNodeScanner(builder, loader, logger);
+   public ProjectScriptService(ProcessManager engine, ConnectListener listener, ConfigurationClassLoader loader, ProcessLogger logger, ProjectBuilder builder, BackupManager manager, ThreadPool pool) {
+      this.compiler = new ProjectProblemFinder(builder, logger, pool);
+      this.loader = new TypeNodeScanner(builder, loader, logger, pool);
       this.manager = manager;
       this.listener = listener;
       this.builder = builder;

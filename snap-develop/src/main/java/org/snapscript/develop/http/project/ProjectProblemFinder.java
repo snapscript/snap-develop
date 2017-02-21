@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.simpleframework.http.Path;
 import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.common.ThreadPool;
 import org.snapscript.develop.common.FileAction;
 import org.snapscript.develop.common.FileProcessor;
 import org.snapscript.develop.common.FileReader;
@@ -36,13 +37,9 @@ public class ProjectProblemFinder {
    private final ProjectBuilder builder;
    private final ProcessLogger logger;
    
-   public ProjectProblemFinder(ProjectBuilder builder, ProcessLogger logger) {
-      this(builder, logger, 10);
-   }
-   
-   public ProjectProblemFinder(ProjectBuilder builder, ProcessLogger logger, int threads) {
+   public ProjectProblemFinder(ProjectBuilder builder, ProcessLogger logger, ThreadPool pool) {
       this.action = new CompileAction(builder, logger);
-      this.processor = new FileProcessor<Problem>(action, threads);
+      this.processor = new FileProcessor<Problem>(action, pool);
       this.builder = builder;
       this.logger = logger;
    }

@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.simpleframework.http.Path;
 import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.common.ThreadPool;
 import org.snapscript.develop.common.FileAction;
 import org.snapscript.develop.common.FileProcessor;
 import org.snapscript.develop.common.FileReader;
@@ -41,13 +42,9 @@ public class TypeNodeScanner {
    private final ProjectBuilder builder;
    private final ProcessLogger logger;
    
-   public TypeNodeScanner(ProjectBuilder builder, ConfigurationClassLoader loader, ProcessLogger logger) {
-      this(builder, loader, logger, 10);
-   }
-   
-   public TypeNodeScanner(ProjectBuilder builder, ConfigurationClassLoader loader, ProcessLogger logger, int threads) {
+   public TypeNodeScanner(ProjectBuilder builder, ConfigurationClassLoader loader, ProcessLogger logger, ThreadPool pool) {
       this.action = new CompileAction(builder, loader, logger);
-      this.processor = new FileProcessor<Map<String, TypeNode>>(action, threads);
+      this.processor = new FileProcessor<Map<String, TypeNode>>(action, pool);
       this.builder = builder;
       this.logger = logger;
    }
