@@ -29,6 +29,8 @@ import org.snapscript.agent.log.ProcessLogger;
 
 public class TextMatchFinder {
    
+   private static final int BUFFER_SIZE = 8192 * 10;
+   
    private final ProcessLogger logger;
    
    public TextMatchFinder(ProcessLogger logger) {
@@ -39,11 +41,13 @@ public class TextMatchFinder {
       File file = textFile.getFile();
       String project = textFile.getProject();
       String resource = textFile.getPath();
+      long length = file.length();
+      int buffer = Math.min((int)length, BUFFER_SIZE);
       
       try {
          List<TextMatch> lines = new ArrayList<TextMatch>();
          FileReader source = new FileReader(file);
-         LineNumberReader reader = new LineNumberReader(source);
+         LineNumberReader reader = new LineNumberReader(source, buffer);
          LineMatcher matcher = new LineMatcher(expression, "#6495ed", "#ffffff", true);
          
          try {

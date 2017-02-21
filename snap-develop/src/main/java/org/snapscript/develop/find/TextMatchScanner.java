@@ -26,8 +26,8 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.simpleframework.http.Path;
@@ -47,7 +47,7 @@ public class TextMatchScanner {
    private final ProjectBuilder builder;
    private final ProcessLogger logger;
    private final CacheCleaner cleaner;
-   private final Executor executor;
+   private final ThreadPool executor;
    private final Set<String> tokens; // what is available in cache
    
    public TextMatchScanner(ProjectBuilder builder, ProcessLogger logger) {
@@ -90,6 +90,12 @@ public class TextMatchScanner {
          for(final TextFile file : files) {
             finished.take(); // wait for them all to finish
          }
+         executor.schedule(new Runnable() { // crude but will clear cache
+            public void run() {
+               tokens.remove(key);
+               cache.take(key);
+            }
+         }, 10, TimeUnit.SECONDS); // clear the cache entry in 10 seconds
          tokens.add(key);
          cache.cache(key, success);
          return matches;
