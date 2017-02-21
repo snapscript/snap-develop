@@ -347,7 +347,9 @@ module DialogBuilder {
       
       if(line) {
          FileExplorer.openTreeFile(resource, function() {
-            FileEditor.showEditorLine(line);  
+            window.setTimeout(function() {
+               FileEditor.showEditorLine(line);
+            }, 100); // delay focus on line, some bug here that needs a delay 
          });
       }else {
          location.href = resource;

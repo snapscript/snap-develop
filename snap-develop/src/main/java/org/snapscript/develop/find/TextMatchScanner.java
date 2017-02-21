@@ -19,30 +19,107 @@
 package org.snapscript.develop.find;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Pattern;
 
 import org.simpleframework.http.Path;
 import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.common.Cache;
+import org.snapscript.common.LeastRecentlyUsedCache;
+import org.snapscript.common.LeastRecentlyUsedMap.RemovalListener;
+import org.snapscript.common.ThreadPool;
 import org.snapscript.develop.common.FilePatternMatcher;
 import org.snapscript.develop.http.project.Project;
 import org.snapscript.develop.http.project.ProjectBuilder;
 
 public class TextMatchScanner {
 
+   private final Cache<String, Set<TextFile>> cache; // reduce the set of files to look at
    private final TextMatchFinder finder;
    private final ProjectBuilder builder;
    private final ProcessLogger logger;
+   private final CacheCleaner cleaner;
+   private final Executor executor;
+   private final Set<String> tokens; // what is available in cache
    
    public TextMatchScanner(ProjectBuilder builder, ProcessLogger logger) {
+      this.executor = new ThreadPool(10);
+      this.cleaner = new CacheCleaner();
+      this.cache = new LeastRecentlyUsedCache<String, Set<TextFile>>(cleaner, 100);
+      this.tokens = new CopyOnWriteArraySet<String>();
       this.finder = new TextMatchFinder(logger);
       this.builder = builder;
       this.logger = logger;
    }
    
-   public List<TextMatch> scanFiles(Path path, String expression) throws Exception {
-      List<TextMatch> matches = new ArrayList<TextMatch>();
+   public List<TextMatch> scanFiles(final Path path, final String expression) throws Exception {
+      final String key = createKey(path, expression);
+      final Set<TextFile> files = findFiles(path, expression);
+      
+      if(!files.isEmpty()) {
+         final List<TextMatch> matches = new CopyOnWriteArrayList<TextMatch>();
+         final Set<TextFile> success = new CopyOnWriteArraySet<TextFile>();
+         final BlockingQueue<TextFile> finished = new LinkedBlockingQueue<TextFile>();
+         
+         for(final TextFile file : files) {
+            executor.execute(new Runnable() {
+               public void run() {
+                  try {
+                     List<TextMatch> match = finder.findText(file, expression);
+                     
+                     if(!match.isEmpty()) {
+                        matches.addAll(match);
+                        success.add(file);
+                     }
+                     //logger.debug("Searched " + file);
+                     finished.offer(file);
+                  }catch(Exception e) {
+                     logger.debug("Error searching file " + file, e);
+                  }
+               }
+            });
+         }
+         for(final TextFile file : files) {
+            finished.take(); // wait for them all to finish
+         }
+         tokens.add(key);
+         cache.cache(key, success);
+         return matches;
+      }
+      return Collections.emptyList();
+   }
+   
+   private Set<TextFile> findFiles(Path path, String expression) throws Exception {
+      String key = createKey(path, expression); 
+      Set<TextFile> files = null;
+      int best = 0;
+      
+      for(String token : tokens) {
+         if(key.startsWith(token)) {
+            int length = token.length();
+            
+            if(length > best) {
+               files = cache.fetch(token);
+               best = length;
+            }
+         }
+      }
+      if(files == null) {
+         return findAllFiles(path, expression);
+      }
+      return files;
+   }
+   
+   private Set<TextFile> findAllFiles(Path path, String expression) throws Exception {
+      Set<TextFile> textFiles = new LinkedHashSet<TextFile>();
       Project project = builder.createProject(path);
       String name = project.getProjectName();
       File directory = project.getProjectPath();
@@ -62,13 +139,25 @@ public class TextMatchScanner {
          if(!resourcePath.startsWith("/")) {
             resourcePath = "/" + resourcePath;
          }
-         List<TextMatch> match = finder.findText(file, name, resourcePath, expression);
-         
-         if(!match.isEmpty()) {
-            matches.addAll(match);
-         }
+         TextFile projectFile = new TextFile(file, name, resourcePath);
+         textFiles.add(projectFile);
       }
-      return matches;
+      return textFiles;
    }
+   
+   private String createKey(Path path, String expression) throws Exception {
+      Project project = builder.createProject(path);
+      String name = project.getProjectName();
+      String token = expression.toLowerCase();
+      
+      return String.format("%s:%s", name, token);
+   }
+   
+   private class CacheCleaner implements RemovalListener<String, Set<TextFile>> {
 
+      @Override
+      public void notifyRemoved(String key, Set<TextFile> value) {
+         tokens.remove(key);
+      }
+   }
 }

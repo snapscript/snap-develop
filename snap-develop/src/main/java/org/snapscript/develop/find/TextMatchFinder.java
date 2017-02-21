@@ -35,24 +35,28 @@ public class TextMatchFinder {
       this.logger = logger;
    }
 
-   public List<TextMatch> findText(File file, String project, String resource, String expression) {
+   public List<TextMatch> findText(TextFile textFile, String expression) {
+      File file = textFile.getFile();
+      String project = textFile.getProject();
+      String resource = textFile.getPath();
+      
       try {
          List<TextMatch> lines = new ArrayList<TextMatch>();
          FileReader source = new FileReader(file);
          LineNumberReader reader = new LineNumberReader(source);
-
+         LineMatcher matcher = new LineMatcher(expression, "#6495ed", "#ffffff", true);
+         
          try {
-            String token = expression.toLowerCase();
-            
             while(reader.ready()) {
                String line = reader.readLine();
                
                if(line == null) {
                   break;
                }
-               if(line.toLowerCase().contains(token)) {
+               String text = matcher.match(line);
+               
+               if(text != null) {
                   int number = reader.getLineNumber();
-                  String text = line.replace(expression, "<span style='background-color: #f0f0f0;'>"+expression+"</span>"); // not good with case
                   TextMatch match = new TextMatch(project, resource, text, number);
                   lines.add(match);
                }
