@@ -7,7 +7,7 @@
   </bean>
   
   <bean id="ThreadPool" class="org.snapscript.common.ThreadPool">
-      <constructor-arg value="10"/>
+      <constructor-arg value="20"/>
   </bean>
 
   <bean id="BackupManager" class="org.snapscript.develop.BackupManager">
