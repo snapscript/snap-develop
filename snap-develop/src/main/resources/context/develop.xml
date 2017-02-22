@@ -5,9 +5,9 @@
   <bean id="Workspace" class="org.snapscript.develop.Workspace" init-method="create">
     <constructor-arg value="${directory}" />
   </bean>
-  
+
   <bean id="ThreadPool" class="org.snapscript.common.ThreadPool">
-      <constructor-arg value="20"/>
+    <constructor-arg value="20" />
   </bean>
 
   <bean id="BackupManager" class="org.snapscript.develop.BackupManager">
@@ -27,13 +27,13 @@
   <bean id="ProcessConfigurationLoader" class="org.snapscript.develop.configuration.ProcessConfigurationLoader">
     <constructor-arg ref="ConfigurationReader" />
   </bean>
-  
+
   <bean id="ProcessLog" class="org.snapscript.agent.log.FileLog">
     <constructor-arg value="${log-file}" />
   </bean>
 
   <bean id="ProcessLogger" class="org.snapscript.agent.log.ProcessLogger">
-    <constructor-arg ref="ProcessLog"/>
+    <constructor-arg ref="ProcessLog" />
     <constructor-arg value="${log-level}" />
   </bean>
 
@@ -116,20 +116,24 @@
     <constructor-arg ref="ConfigurationClassLoader" />
     <constructor-arg ref="ProcessLogger" />
   </bean>
-  
+
   <bean id="TextMatchResource" class="org.snapscript.develop.find.TextMatchResource">
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="ProcessLogger" />
-    <constructor-arg ref="ThreadPool"/>
+    <constructor-arg ref="ThreadPool" />
   </bean>
-  
+
+  <bean id="FileMatchResource" class="org.snapscript.develop.find.FileMatchResource">
+    <constructor-arg ref="ProjectBuilder" />
+  </bean>
+
   <bean id="TypeNodeResource" class="org.snapscript.develop.complete.TypeNodeResource">
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="ConfigurationClassLoader" />
     <constructor-arg ref="ProcessLogger" />
-    <constructor-arg ref="ThreadPool"/>
+    <constructor-arg ref="ThreadPool" />
   </bean>
-  
+
   <bean id="SourceFormatResource" class="org.snapscript.develop.complete.SourceFormatResource">
     <constructor-arg ref="ProjectBuilder" />
   </bean>
@@ -153,7 +157,7 @@
   <bean id="ProjectFileResource" class="org.snapscript.develop.http.project.ProjectFileResource">
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="ContentTypeResolver" />
-    <constructor-arg ref="ProcessLogger"/>
+    <constructor-arg ref="ProcessLogger" />
   </bean>
 
   <bean id="ProjectTreeResource" class="org.snapscript.develop.http.project.ProjectTreeResource">
@@ -168,11 +172,11 @@
   <bean id="ProjectScriptService" class="org.snapscript.develop.http.project.ProjectScriptService">
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="ConnectListener" />
-    <constructor-arg ref="ConfigurationClassLoader"/>
+    <constructor-arg ref="ConfigurationClassLoader" />
     <constructor-arg ref="ProcessLogger" />
     <constructor-arg ref="ProcessManager" />
-    <constructor-arg ref="BackupManager"/>
-    <constructor-arg ref="ThreadPool"/>
+    <constructor-arg ref="BackupManager" />
+    <constructor-arg ref="ThreadPool" />
   </bean>
 
   <bean id="ClassResourceLoader" class="org.snapscript.develop.http.loader.ClassResourceLoader">
@@ -195,16 +199,17 @@
     <constructor-arg value="UTF-8" />
     <constructor-arg value="NOT_FOUND" />
   </bean>
-  
+
   <bean id="ProcessTunnelResource" class="org.snapscript.develop.tunnel.ProcessTunnelResource">
-    <constructor-arg ref="ProcessManager"/>
+    <constructor-arg ref="ProcessManager" />
   </bean>
 
   <bean id="ResourceMatcher" class="org.snapscript.develop.http.resource.RegularExpressionMatcher">
     <constructor-arg>
       <map>
         <entry key="/format.*" value-ref="SourceFormatResource" />
-        <entry key="/type.*" value-ref="TypeNodeResource" />        
+        <entry key="/file.*" value-ref="FileMatchResource" />
+        <entry key="/type.*" value-ref="TypeNodeResource" />
         <entry key="/complete.*" value-ref="CompletionResource" />
         <entry key="/find.*" value-ref="TextMatchResource" />
         <entry key="/class/.*" value-ref="ClassLoaderResource" />
@@ -214,7 +219,7 @@
         <entry key="/tree.*" value-ref="ProjectTreeResource" />
         <entry key="/" value-ref="ProjectOpenDialog" />
         <entry key="/.*.js" value-ref="TypeScriptResource" />
-        <entry key=".*:\d+" value-ref="ProcessTunnelResource"/>
+        <entry key=".*:\d+" value-ref="ProcessTunnelResource" />
       </map>
     </constructor-arg>
   </bean>
@@ -222,7 +227,7 @@
   <bean id="FileMatcher" class="org.snapscript.develop.http.resource.FileMatcher">
     <constructor-arg ref="FileResolver" />
     <constructor-arg ref="ContentTypeResolver" />
-    <constructor-arg ref="ProcessLogger" />    
+    <constructor-arg ref="ProcessLogger" />
   </bean>
 
   <bean id="CombinationMatcher" class="org.snapscript.develop.http.resource.CombinationMatcher">

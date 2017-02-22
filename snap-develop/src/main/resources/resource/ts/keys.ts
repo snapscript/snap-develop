@@ -17,6 +17,9 @@ module KeyBinder {
       createKeyBinding("ctrl shift h", false, function() {
          Command.searchFiles();
       });
+      createKeyBinding("ctrl shift g", false, function() {
+         Command.findFileNames();
+      });
       createKeyBinding("ctrl r", false, function() {
          Command.runScript();
       });

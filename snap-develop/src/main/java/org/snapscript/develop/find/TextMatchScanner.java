@@ -20,6 +20,7 @@ package org.snapscript.develop.find;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -111,7 +112,9 @@ public class TextMatchScanner {
          }, 10, TimeUnit.SECONDS); // clear the cache entry in 10 seconds
          tokens.add(key);
          cache.cache(key, success);
-         return matches;
+         List<TextMatch> sorted = new ArrayList<TextMatch>(matches);
+         Collections.sort(sorted);
+         return sorted;
       }
       return Collections.emptyList();
    }

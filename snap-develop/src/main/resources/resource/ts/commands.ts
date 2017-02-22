@@ -125,6 +125,57 @@ module Command {
       return response;
    }
    
+   export function findFileNames() {
+      DialogBuilder.createListDialog(function(text){
+         var filesFound = findFilesByName(text);
+         var fileRows = [];
+        
+         for(var i = 0; i < filesFound.length; i++) {
+            var fileFound = filesFound[i];
+            var debugToggle = ";debug";
+            var locationPath = window.document.location.pathname;
+            var locationHash = window.document.location.hash;
+            var debug = locationPath.indexOf(debugToggle, locationPath.length - debugToggle.length) !== -1;
+            var resourceLink = "/project/" + fileFound.project;
+            
+            if (debug) {
+                resourceLink += debugToggle;
+            }
+            resourceLink += "#" + fileFound.resource;
+            
+            var resourceCell = {
+               text: fileFound.text,
+               link: resourceLink,
+               style: 'resourceNode'
+            };
+            fileRows.push([resourceCell]);
+         }
+         return fileRows;
+     }, "Find Files");
+   }
+   
+   function findFilesByName(text) {
+      var response = [];
+      
+      if(text && text.length > 1) {
+         jQuery.ajax({
+            url: '/file/' + document.title + '?expression=' + text,
+            success: function (filesMatched) {
+               for(var i = 0; i < filesMatched.length; i++) {
+                  var fileMatch = filesMatched[i];
+                  var typeEntry = {
+                        resource: fileMatch.resource,
+                        project: document.title
+                  };
+                  response.push(fileMatch);
+               }
+            },
+            async: false
+         });
+      }
+      return response;
+   }
+   
    export function exploreDirectory(resourcePath) {
       if(FileTree.isResourceFolder(resourcePath.filePath)) {
          var message = JSON.stringify({

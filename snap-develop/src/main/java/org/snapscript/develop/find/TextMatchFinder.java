@@ -29,9 +29,6 @@ import org.snapscript.agent.log.ProcessLogger;
 
 public class TextMatchFinder {
    
-   private static final String FOREGROUND_COLOR = "#ffffff";
-   private static final String BACKGROUND_COLOR = "#6495ed"; 
-   
    private final ProcessLogger logger;
    
    public TextMatchFinder(ProcessLogger logger) {
@@ -47,7 +44,7 @@ public class TextMatchFinder {
          List<TextMatch> lines = new ArrayList<TextMatch>();
          FileReader source = new FileReader(file);
          LineNumberReader reader = new LineNumberReader(source);
-         LineMatcher matcher = new LineMatcher(expression, BACKGROUND_COLOR, FOREGROUND_COLOR, true);
+         MatchEvaluator matcher = new MatchEvaluator(expression);
          
          try {
             while(reader.ready()) {

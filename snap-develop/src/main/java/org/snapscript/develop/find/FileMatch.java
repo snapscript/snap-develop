@@ -1,5 +1,5 @@
 /*
- * TextMatch.java December 2016
+ * FileMatch.java December 2016
  *
  * Copyright (C) 2016, Niall Gallagher <niallg@users.sf.net>
  *
@@ -18,33 +18,24 @@
 
 package org.snapscript.develop.find;
 
-public class TextMatch implements Comparable<TextMatch> {
+public class FileMatch implements Comparable<FileMatch> {
 
    private final String resource;
    private final String project;
    private final String text;
-   private final int line;
    
-   public TextMatch(String project, String resource, String text, int line) {
+   public FileMatch(String project, String resource, String text) {
       this.resource = resource;
       this.project = project;
-      this.line = line;
       this.text = text;
    }
 
    @Override
-   public int compareTo(TextMatch other) {
-      if(!resource.equals(other.resource)) {
-         return resource.compareTo(other.resource);
-      }
-      return text.compareTo(other.text);
+   public int compareTo(FileMatch other) {
+      return resource.compareTo(other.resource);
    }
-
-   public int getLine() {
-      return line;
-   }
-
-   public String getText() {
+   
+   public String getText(){
       return text;
    }
 
@@ -55,4 +46,5 @@ public class TextMatch implements Comparable<TextMatch> {
    public String getResource() {
       return resource;
    }
+
 }
