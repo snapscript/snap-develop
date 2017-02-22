@@ -1,5 +1,5 @@
 /*
- * FileExpressionFilter.java December 2016
+ * PathBuilder.java December 2016
  *
  * Copyright (C) 2016, Niall Gallagher <niallg@users.sf.net>
  *
@@ -19,29 +19,27 @@
 package org.snapscript.develop.find;
 
 import java.io.File;
-import java.io.FilenameFilter;
 
-public class FileExpressionFilter implements FilenameFilter {
+public class PathBuilder {
    
-   private final ExpressionResolver resolver;
-   private final PathBuilder builder;
+   private final String root;
    
-   public FileExpressionFilter(ExpressionResolver resolver, PathBuilder builder) {
-      this.resolver = resolver;
-      this.builder = builder;
+   public PathBuilder(String root) {
+      this.root = root;
    }
 
-   @Override
-   public boolean accept(File file, String name) {
-      if(file.isFile()) {
-         String source = builder.buildPath(file);
-         String result = resolver.match(source);
+   public String buildPath(File file) {
+      try {
+         String filePath = file.getCanonicalPath();
+         String relativePath = filePath.replace(root, "");
+         String resourcePath = relativePath.replace(File.separatorChar, '/');
          
-         if(result != null) {
-            return true;
+         if(!resourcePath.startsWith("/")) {
+            resourcePath = "/" + resourcePath;
          }
+         return resourcePath;
+      }catch(Exception e) {
+         throw new IllegalArgumentException("Could not build path from " + file, e);
       }
-      return false;
    }
-
 }

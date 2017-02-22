@@ -141,7 +141,6 @@ public class TextMatchScanner {
    }
    
    private Set<TextFile> findAllFiles(Path path, String expression) throws Exception {
-      Set<TextFile> textFiles = new LinkedHashSet<TextFile>();
       Project project = builder.createProject(path);
       String name = project.getProjectName();
       File directory = project.getProjectPath();
@@ -152,14 +151,11 @@ public class TextMatchScanner {
       if(root.endsWith("/")) {
          root = root.substring(0, length -1);
       }
+      Set<TextFile> textFiles = new LinkedHashSet<TextFile>();
+      PathBuilder builder = new PathBuilder(root);
+      
       for(File file : list) {
-         String filePath = file.getCanonicalPath();
-         String relativePath = filePath.replace(root, "");
-         String resourcePath = relativePath.replace(File.separatorChar, '/');
-         
-         if(!resourcePath.startsWith("/")) {
-            resourcePath = "/" + resourcePath;
-         }
+         String resourcePath = builder.buildPath(file);
          TextFile projectFile = new TextFile(file, name, resourcePath);
          textFiles.add(projectFile);
       }
