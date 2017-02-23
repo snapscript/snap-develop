@@ -162,16 +162,16 @@ module DialogBuilder {
             selectedDirectory = selectedDirectory.substring(1);
          }
          $('#dialogPath').html(FileTree.cleanResourcePath(selectedDirectory));
-      }, 2);
-   }
-   
+      }, 2);  
+   }       
+        
    export function createListDialog(listFunction, patternList, dialogTitle) { // listFunction(token): [a, b, c]
       w2popup.open({
          title : dialogTitle,
          body : createDialogLayout('', patternList, true),
          buttons : '<button id="dialogSave" class="btn dialogButton">Cancel</button>',
          width : 800,
-         height : 400,
+         height : 400, 
          overflow : 'hidden',
          color : '#333',
          speed : '0.3',
@@ -362,13 +362,13 @@ module DialogBuilder {
                  '</div>'+
                  '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">' + firstInputText + '</div>';
          
-      }
+      }   
       return '<div id="dialogContainerBig">'+
               '   <div id="dialog"></div>'+
               '</div>'+
               '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>';
    }
-   
+    
    export function submitDialogListResource(resource, line) {
       $("#dialogSave").click(); // force the click
       

@@ -19,6 +19,7 @@
 package org.snapscript.develop.common;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -28,7 +29,17 @@ public class FilePatternScanner {
    private static final String RECURSIVE_PATTERN = "_RECURSIVE_PATTERN_";
    private static final String SINGLE_PATTERN = "_SINGLE_PATTERN_";
    
-   public static List<File> scan(String token) throws Exception {
+   public static List<File> scan(String token, File root) throws IOException {
+      File file = new File(root, token);
+      
+      if(root.exists()) {
+         String expand = file.getAbsolutePath();
+         return scan(expand);
+      }
+      return Collections.emptyList();
+   }
+   
+   public static List<File> scan(String token) throws IOException {
       File file = new File(token);
       
       if(token.contains("*")) {

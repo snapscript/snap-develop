@@ -137,6 +137,11 @@
       <version>2.5</version>
     </dependency>
     <dependency>
+      <groupId>com.google.javascript</groupId>
+      <artifactId>closure-compiler</artifactId>
+      <version>v20161201</version>
+    </dependency>  
+    <dependency>
       <groupId>org.apache.ivy</groupId>
       <artifactId>ivy</artifactId>
       <version>2.1.0</version>

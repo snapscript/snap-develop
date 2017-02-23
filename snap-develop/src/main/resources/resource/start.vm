@@ -20,11 +20,11 @@
 <script src="/js/external/fancytree.js"></script>
 <script src="/js/external/w2ui.js"></script>
 <script src="/js/external/filesaver.js"></script>
-<script src="/js/module.js"></script>
-<script src="/js/spinner.js"></script>
-<script src="/js/tree.js"></script>
-<script src="/js/dialog.js"></script>
-<script src="/js/common.js"></script>
+<script src="/js/module.min.js"></script>
+<script src="/js/spinner.min.js"></script>
+<script src="/js/tree.min.js"></script>
+<script src="/js/dialog.min.js"></script>
+<script src="/js/common.min.js"></script>
 </head>
 <body style="height: 100%; margin: 0; background-color: #ececec;">
   <div id="mainLayout" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"></div>

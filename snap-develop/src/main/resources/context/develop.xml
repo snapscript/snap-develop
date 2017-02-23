@@ -109,6 +109,16 @@
         <value>target/classes/resource/js</value>
       </list>
     </constructor-arg>
+    <constructor-arg>
+      <list>
+        <!-- value>src/main/resources/resource/*.js</value-->
+        <value>src/main/resources/resource/js/*.js</value>
+        <!--value>src/main/resources/resource/js/external/*.js</value>
+        <value>src/main/resources/resource/js/external/*.js</value>
+        <value>src/main/resources/resource/js/external/ace/ace.js</value>
+        <value>src/main/resources/resource/js/external/ace/ext-language_tools.js</value-->
+      </list>
+    </constructor-arg>
   </bean>
 
   <bean id="CompletionResource" class="org.snapscript.develop.complete.CompletionResource">

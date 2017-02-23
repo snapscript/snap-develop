@@ -897,7 +897,7 @@ function createProblemsTab(){
          size : '45%',
          sortable : true,
          resizable : true
-      },  ],
+      }],
       onClick : function(event) {
          var grid = this;
          event.onComplete = function() {
@@ -1070,7 +1070,7 @@ function createThreadsTab(){
          size : '10%',
          sortable : false,
          resizable : true
-      },],
+      }],
       onClick : function(event) {
          var grid = this;
          event.onComplete = function() {

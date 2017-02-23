@@ -32,20 +32,22 @@ public class TypeScriptResource implements Resource {
    private final TypeScriptCompiler compiler;
    private final FileMatcher matcher;
    private final List<File> outputDirs;
-   private final File sourceDir;
+   private final List<String> sourceFiles;
+   private final File typescriptDir;
    
-   public TypeScriptResource(TypeScriptCompiler compiler, FileMatcher matcher, File sourceDir, List<File> outputDirs) {
+   public TypeScriptResource(TypeScriptCompiler compiler, FileMatcher matcher, File typescriptDir, List<File> outputDirs, List<String> sourceFiles) {
       this.compiler = compiler;
-      this.sourceDir = sourceDir;
+      this.typescriptDir = typescriptDir;
       this.outputDirs = outputDirs;
+      this.sourceFiles = sourceFiles;
       this.matcher = matcher;
    }
 
    @Override
    public void handle(Request request, Response response) throws Throwable {
-      if(sourceDir.exists()) {
+      if(typescriptDir.exists()) {
          for(File outputDir : outputDirs) {
-            compiler.compile(sourceDir, outputDir);
+            compiler.compile(typescriptDir, outputDir, sourceFiles);
          }
       }
       Resource resource = matcher.match(request, response);

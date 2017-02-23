@@ -29,10 +29,11 @@ import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.ConsoleListener;
 import org.snapscript.develop.ConsoleManager;
 
+import com.google.javascript.jscomp.CompilationLevel;
+
 public class TypeScriptCompiler {
    
-   private static final String DEFAULT_COMPILER = "src\\main\\typescript\\tsc.js";
-   private static final String DEFAULT_NODE = "C:\\Program Files\\nodejs\\node.exe";
+   private static final String COMPRESS_SOURCE_FILE = "all.js";
    
    private final File compiler;
    private final File node;
@@ -44,12 +45,20 @@ public class TypeScriptCompiler {
       this.compiler = new File(root, compiler);
    }
    
-   public synchronized void compile(File sourceDir, File outputFile) throws Exception {
+   public synchronized void compile(File sourceDir, File outputDir, List<String> libraryFiles) throws Exception {
+      File generatedFile = new File(outputDir, COMPRESS_SOURCE_FILE);
+      
       if(!sourceDir.exists()) {
          throw new IOException("Source directory '" +sourceDir+"' does not exist");
       }
       if(!sourceDir.isDirectory()) {
          throw new IOException("Source directory '"+sourceDir+"' is actually a file");
+      }
+      if(!outputDir.exists()) {
+         throw new IOException("Output directory '" +outputDir+"' does not exist");
+      }
+      if(!outputDir.isDirectory()) {
+         throw new IOException("Output directory '"+outputDir+"' is actually a file");
       }
       if(node.exists() && compiler.exists()) {
          List<String> command = new ArrayList<String>();
@@ -57,16 +66,13 @@ public class TypeScriptCompiler {
          command.add(node.getCanonicalPath());
          command.add(compiler.getCanonicalPath()); 
          
-         if(outputFile.isDirectory()) {
+         if(outputDir.isDirectory()) {
             command.add("--outDir");
-            command.add(outputFile.getCanonicalPath());
-         }else {
-            command.add("--outFile");
-            command.add(outputFile.getCanonicalPath());
+            command.add(outputDir.getCanonicalPath());
          }
          File[] sourceFiles = sourceDir.listFiles();
          File work = compiler.getParentFile();
-         long outputTime = outputFile.lastModified();
+         long outputTime = outputDir.lastModified();
          long sourceTime = 0;
          int outputCount = 0;
          
@@ -83,8 +89,8 @@ public class TypeScriptCompiler {
                command.add(path);
             }
          }
-         if(outputFile.isDirectory()) {
-            File[] outputFiles = outputFile.listFiles();
+         if(outputDir.isDirectory()) {
+            File[] outputFiles = outputDir.listFiles();
             
             for(File file : outputFiles) {
                String name = file.getName();
@@ -98,10 +104,10 @@ public class TypeScriptCompiler {
                   outputCount++;
                }
             }
-         } else {
-            outputCount = 1;
          }
          if(sourceTime > outputTime || outputCount == 0) {
+            ScriptCompiler compiler = new ScriptCompiler(CompilationLevel.SIMPLE_OPTIMIZATIONS);
+            ScriptProcessor processor = new ScriptProcessor(compiler);
             ProcessBuilder builder = new ProcessBuilder(command);
             CompilerListener listener = new CompilerListener();
             ConsoleManager manager = new ConsoleManager(listener);
@@ -114,6 +120,18 @@ public class TypeScriptCompiler {
             
             manager.tail(process, "tsc");
             process.waitFor();
+            
+            if(outputDir.isDirectory()) {
+               File[] outputFiles = outputDir.listFiles();
+               
+               for(File file : outputFiles) {
+                  String name = file.getName();
+                  
+                  if(file.isFile() && name.endsWith(".js")) {
+                     processor.process(file); // minify the source
+                  }
+               }
+            }
          }
       }
    }
@@ -147,13 +165,5 @@ public class TypeScriptCompiler {
             e.printStackTrace();
          }
       }
-   }
-
-   public static void main(String[] list) throws Exception {
-      File root = new File(".");
-      File output = new File(root, "src\\main\\resources\\resource\\ts\\build\\all.js");
-      File sourceDir = new File(root, "src\\main\\resources\\resource\\ts");
-      TypeScriptCompiler compiler = new TypeScriptCompiler(DEFAULT_COMPILER, DEFAULT_NODE);
-      compiler.compile(sourceDir, output);
    }
 }
