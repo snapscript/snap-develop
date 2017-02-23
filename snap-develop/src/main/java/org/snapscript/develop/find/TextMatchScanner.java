@@ -62,7 +62,7 @@ public class TextMatchScanner {
    }
    
    public List<TextMatch> scanFiles(final Path path, final String filePattern, final String expression) throws Exception {
-      final String key = createKey(path, expression);
+      final String key = createKey(path, filePattern, expression);
       final Set<TextFile> files = findFiles(path, filePattern, expression);
       
       if(!files.isEmpty()) {
@@ -107,7 +107,7 @@ public class TextMatchScanner {
    }
    
    private Set<TextFile> findFiles(Path path, String filePattern, String expression) throws Exception {
-      String key = createKey(path, expression); 
+      String key = createKey(path, filePattern, expression); 
       Set<TextFile> files = null;
       int best = 0;
       
@@ -138,10 +138,13 @@ public class TextMatchScanner {
       
       for(String fileExpression : fileExpressions) {
          String pathPattern = fileExpression.trim();
-         List<FileMatch> filesMatched = scanner.findAllFiles(path, pathPattern);
          
-         for(FileMatch fileMatch : filesMatched) {
-            filesFound.add(fileMatch);
+         if(!pathPattern.isEmpty()) {
+            List<FileMatch> filesMatched = scanner.findAllFiles(path, pathPattern);
+            
+            for(FileMatch fileMatch : filesMatched) {
+               filesFound.add(fileMatch);
+            }
          }
       }
       for(FileMatch fileMatch : filesFound) {
@@ -154,12 +157,12 @@ public class TextMatchScanner {
       return textFiles;
    }
    
-   private String createKey(Path path, String expression) throws Exception {
+   private String createKey(Path path, String filePattern, String expression) throws Exception {
       Project project = builder.createProject(path);
       String name = project.getProjectName();
       String token = expression.toLowerCase();
       
-      return String.format("%s:%s", name, token);
+      return String.format("%s:%s:%s", name, filePattern, token);
    }
    
    private class CacheCleaner implements RemovalListener<String, Set<TextFile>> {
