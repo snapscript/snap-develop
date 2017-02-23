@@ -31,7 +31,7 @@ module Command {
             typeRows.push([typeCell, resourceCell]);
          }
          return typeRows;
-     }, "Search Types");
+     }, null, "Search Types");
    }
    
    function findTypesMatching(text) {
@@ -67,8 +67,8 @@ module Command {
    }
    
    export function searchFiles() {
-      DialogBuilder.createListDialog(function(text){
-         var filesFound = findFilesWithText(text);
+      DialogBuilder.createListDialog(function(text, fileTypes){
+         var filesFound = findFilesWithText(text, fileTypes);
          var fileRows = [];
         
          for(var i = 0; i < filesFound.length; i++) {
@@ -99,15 +99,15 @@ module Command {
             fileRows.push([resourceCell, /*lineCell, */textCell]);
          }
          return fileRows;
-     }, "Search Files");
+     }, '*.snap,*.properties,*.xml,*.txt,*.json', "Search Files");
    }
    
-   function findFilesWithText(text) {
+   function findFilesWithText(text, fileTypes) {
       var response = [];
       
       if(text && text.length > 1) {
          jQuery.ajax({
-            url: '/find/' + document.title + '?expression=' + text,
+            url: '/find/' + document.title + '?expression=' + text + '&pattern=' + fileTypes,
             success: function (filesMatched) {
                for(var i = 0; i < filesMatched.length; i++) {
                   var fileMatch = filesMatched[i];
@@ -151,7 +151,7 @@ module Command {
             fileRows.push([resourceCell]);
          }
          return fileRows;
-     }, "Find Files");
+     }, null, "Find Files");
    }
    
    function findFilesByName(text) {

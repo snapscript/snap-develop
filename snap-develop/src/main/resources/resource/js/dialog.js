@@ -39,11 +39,7 @@ var DialogBuilder;
         }
         w2popup.open({
             title: dialogTitle,
-            body: '<div id="dialogContainer">' +
-                '   <div id="dialog"></div>' +
-                '</div>' +
-                '<div id="dialogFolder">' + dialogExpandPath + '</div>' +
-                '<div id="dialogFile" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>',
+            body: createDialogLayout('', dialogExpandPath, false),
             buttons: '<button id="dialogSave" class="btn dialogButton">Save</button><button id="dialogCancel" class="btn dialogButton">Cancel</button>',
             width: 500,
             height: 400,
@@ -56,7 +52,7 @@ var DialogBuilder;
             showMax: true,
             onOpen: function (event) {
                 setTimeout(function () {
-                    var element = document.getElementById('dialogFile');
+                    var element = document.getElementById('dialogPath');
                     element.contentEditable = true;
                     element.focus();
                 }, 200);
@@ -75,11 +71,11 @@ var DialogBuilder;
             }
         });
         $("#dialogSave").click(function () {
-            var originalDialogFileName = $('#dialogFile').html();
+            var originalDialogFileName = $('#dialogPath').html();
             var originalDialogFolder = $('#dialogFolder').html();
-            var dialogFileName = FileTree.cleanResourcePath(originalDialogFileName);
+            var dialogPathName = FileTree.cleanResourcePath(originalDialogFileName);
             var dialogFolder = FileTree.cleanResourcePath(originalDialogFolder);
-            var dialogProjectPath = dialogFolder + "/" + dialogFileName; // /src/blah/script.snap
+            var dialogProjectPath = dialogFolder + "/" + dialogPathName; // /src/blah/script.snap
             var dialogPathDetails = FileTree.createResourcePath(dialogProjectPath);
             saveCallback(dialogPathDetails);
             w2popup.close();
@@ -89,17 +85,17 @@ var DialogBuilder;
         });
         if (resourceDetails != null) {
             $('#dialogFolder').html(FileTree.cleanResourcePath(resourceDetails.projectDirectory)); // /src/blah
-            $('#dialogFile').html(FileTree.cleanResourcePath(resourceDetails.fileName)); // script.snap
+            $('#dialogPath').html(FileTree.cleanResourcePath(resourceDetails.fileName)); // script.snap
         }
         FileTree.createTree(treePath, "dialog", "dialogTree", dialogExpandPath, foldersOnly, null, function (event, data) {
             var selectedFileDetails = FileTree.createResourcePath(data.node.tooltip);
             if (data.node.isFolder()) {
                 $('#dialogFolder').html(FileTree.cleanResourcePath(selectedFileDetails.projectDirectory));
-                $('#dialogFile').html("");
+                $('#dialogPath').html("");
             }
             else {
                 $('#dialogFolder').html(FileTree.cleanResourcePath(selectedFileDetails.projectDirectory)); // /src/blah
-                $('#dialogFile').html(FileTree.cleanResourcePath(selectedFileDetails.fileName)); // file.snap
+                $('#dialogPath').html(FileTree.cleanResourcePath(selectedFileDetails.fileName)); // file.snap
             }
         });
     }
@@ -116,10 +112,7 @@ var DialogBuilder;
         };
         w2popup.open({
             title: dialogTitle,
-            body: '<div id="dialogContainerBig">' +
-                '   <div id="dialog"></div>' +
-                '</div>' +
-                '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>',
+            body: createDialogLayout('', null, null),
             buttons: '<button id="dialogSave" class="btn dialogButton">' + buttonText + '</button>',
             width: 500,
             height: 400,
@@ -164,13 +157,10 @@ var DialogBuilder;
         }, 2);
     }
     DialogBuilder.createTreeOpenDialog = createTreeOpenDialog;
-    function createListDialog(listFunction, dialogTitle) {
+    function createListDialog(listFunction, patternList, dialogTitle) {
         w2popup.open({
             title: dialogTitle,
-            body: '<div id="dialogContainerBig">' +
-                '   <div id="dialog"></div>' +
-                '</div>' +
-                '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>',
+            body: createDialogLayout('', patternList, true),
             buttons: '<button id="dialogSave" class="btn dialogButton">Cancel</button>',
             width: 800,
             height: 400,
@@ -184,9 +174,16 @@ var DialogBuilder;
             onOpen: function (event) {
                 setTimeout(function () {
                     $('#dialogPath').on('change keyup paste', function () {
-                        var text = $("#dialogPath").html();
-                        var expression = clearHtml(text);
-                        var list = listFunction(expression);
+                        var expressionText = $("#dialogPath").html();
+                        var expressionPattern = null;
+                        if (patternList) {
+                            expressionPattern = $("#dialogFolder").html();
+                            expressionPattern = clearHtml(expressionPattern);
+                        }
+                        if (expressionText) {
+                            expressionText = clearHtml(expressionText);
+                        }
+                        var list = listFunction(expressionText, expressionPattern);
                         var content = "<table class='dialogListTable' width='100%'>";
                         for (var i = 0; i < list.length; i++) {
                             var row = list[i];
@@ -248,10 +245,7 @@ var DialogBuilder;
         inputText = (inputText ? escapeHtml(inputText) : '');
         w2popup.open({
             title: dialogTitle,
-            body: '<div id="dialogContainerBig">' +
-                '   <div id="dialog"></div>' +
-                '</div>' +
-                '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">' + inputText + '</div>',
+            body: createDialogLayout(inputText, null, false),
             buttons: '<button id="dialogSave" class="btn dialogButton">Evaluate</button>',
             width: 700,
             height: 400,
@@ -327,6 +321,35 @@ var DialogBuilder;
             var expression = clearHtml(text);
             Command.browseScriptEvaluation([], expression, true); // clear the variables
         });
+    }
+    function createDialogLayout(firstInputText, secondInputText, secondInputEditable) {
+        if (secondInputText) {
+            var clickEvent = '';
+            if (secondInputEditable) {
+                clickEvent = ' onclick="this.contentEditable=\'true\';"';
+            }
+            if (!secondInputText) {
+                secondInputText = '';
+            }
+            if (!firstInputText) {
+                firstInputText = '';
+            }
+            return '<div id="dialogContainer">' +
+                '   <div id="dialog"></div>' +
+                '</div>' +
+                '<div id="dialogFolder" ' + clickEvent + '>' + secondInputText + '</div>' +
+                '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">' + firstInputText + '</div>';
+        }
+        if (firstInputText) {
+            return '<div id="dialogContainerBig">' +
+                '   <div id="dialog"></div>' +
+                '</div>' +
+                '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">' + firstInputText + '</div>';
+        }
+        return '<div id="dialogContainerBig">' +
+            '   <div id="dialog"></div>' +
+            '</div>' +
+            '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>';
     }
     function submitDialogListResource(resource, line) {
         $("#dialogSave").click(); // force the click

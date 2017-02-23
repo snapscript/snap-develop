@@ -60,7 +60,7 @@ public class FileMatchScanner {
          if(textMatch != null) {
             MatchEvaluator evaluator = new MatchEvaluator(textMatch);
             String replaceText = evaluator.match(resourcePath);
-            FileMatch projectFile = new FileMatch(name, resourcePath, replaceText);
+            FileMatch projectFile = new FileMatch(name, resourcePath, file, replaceText);
             filesFound.add(projectFile);
          }
       }

@@ -44,10 +44,11 @@ public class TextMatchResource implements Resource {
 
    @Override
    public void handle(Request request, Response response) throws Throwable {
+      String pattern = request.getParameter("pattern");
       String query = request.getParameter("expression");
       Path path = request.getPath();
       PrintStream out = response.getPrintStream(8192);
-      List<TextMatch> matches = scanner.scanFiles(path, query);
+      List<TextMatch> matches = scanner.scanFiles(path, pattern, query);
       String text = gson.toJson(matches);
       response.setContentType("application/json");
       out.println(text);

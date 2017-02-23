@@ -19,7 +19,6 @@
 package org.snapscript.develop.find;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -37,25 +36,13 @@ import org.snapscript.common.Cache;
 import org.snapscript.common.LeastRecentlyUsedCache;
 import org.snapscript.common.LeastRecentlyUsedMap.RemovalListener;
 import org.snapscript.common.ThreadPool;
-import org.snapscript.develop.common.FilePatternMatcher;
 import org.snapscript.develop.http.project.Project;
 import org.snapscript.develop.http.project.ProjectBuilder;
 
 public class TextMatchScanner {
-
-   private static final String[] EXTENSIONS = new String[] {
-      ".snap",
-      ".xml",
-      ".json",
-      ".js",
-      ".xml",
-      ".properties",
-      ".java",
-      ".txt"
-   };
    
    private final Cache<String, Set<TextFile>> cache; // reduce the set of files to look at
-   private final FilenameFilter filter;
+   private final FileMatchScanner scanner;
    private final TextMatchFinder finder;
    private final ProjectBuilder builder;
    private final ProcessLogger logger;
@@ -64,7 +51,7 @@ public class TextMatchScanner {
    private final Set<String> tokens; // what is available in cache
    
    public TextMatchScanner(ProjectBuilder builder, ProcessLogger logger, ThreadPool pool) {
-      this.filter = new FileExtensionFilter(EXTENSIONS);
+      this.scanner = new FileMatchScanner(builder); // e.g *.snap, *.txt
       this.cleaner = new CacheCleaner();
       this.cache = new LeastRecentlyUsedCache<String, Set<TextFile>>(cleaner, 100);
       this.tokens = new CopyOnWriteArraySet<String>();
@@ -74,9 +61,9 @@ public class TextMatchScanner {
       this.pool = pool;
    }
    
-   public List<TextMatch> scanFiles(final Path path, final String expression) throws Exception {
+   public List<TextMatch> scanFiles(final Path path, final String filePattern, final String expression) throws Exception {
       final String key = createKey(path, expression);
-      final Set<TextFile> files = findFiles(path, expression);
+      final Set<TextFile> files = findFiles(path, filePattern, expression);
       
       if(!files.isEmpty()) {
          final List<TextMatch> matches = new CopyOnWriteArrayList<TextMatch>();
@@ -119,7 +106,7 @@ public class TextMatchScanner {
       return Collections.emptyList();
    }
    
-   private Set<TextFile> findFiles(Path path, String expression) throws Exception {
+   private Set<TextFile> findFiles(Path path, String filePattern, String expression) throws Exception {
       String key = createKey(path, expression); 
       Set<TextFile> files = null;
       int best = 0;
@@ -135,28 +122,33 @@ public class TextMatchScanner {
          }
       }
       if(files == null) {
-         return findAllFiles(path, expression);
+         return findAllFiles(path, filePattern, expression);
       }
       return files;
    }
    
-   private Set<TextFile> findAllFiles(Path path, String expression) throws Exception {
-      Project project = builder.createProject(path);
-      String name = project.getProjectName();
-      File directory = project.getProjectPath();
-      String root = directory.getCanonicalPath();
-      List<File> list = FilePatternMatcher.scan(filter, directory);
-      int length = root.length();
-      
-      if(root.endsWith("/")) {
-         root = root.substring(0, length -1);
-      }
+   private Set<TextFile> findAllFiles(Path path, String filePattern, String expression) throws Exception {
+      Set<FileMatch> filesFound = new LinkedHashSet<FileMatch>();
       Set<TextFile> textFiles = new LinkedHashSet<TextFile>();
-      PathBuilder builder = new PathBuilder(root);
       
-      for(File file : list) {
-         String resourcePath = builder.buildPath(file);
-         TextFile projectFile = new TextFile(file, name, resourcePath);
+      if(filePattern == null) {
+         filePattern = "*.*";
+      }
+      String[] fileExpressions = filePattern.split(",");
+      
+      for(String fileExpression : fileExpressions) {
+         String pathPattern = fileExpression.trim();
+         List<FileMatch> filesMatched = scanner.findAllFiles(path, pathPattern);
+         
+         for(FileMatch fileMatch : filesMatched) {
+            filesFound.add(fileMatch);
+         }
+      }
+      for(FileMatch fileMatch : filesFound) {
+         File file = fileMatch.getFile();
+         String resourcePath = fileMatch.getResource();
+         String projectName = fileMatch.getProject();
+         TextFile projectFile = new TextFile(file, projectName, resourcePath);
          textFiles.add(projectFile);
       }
       return textFiles;
