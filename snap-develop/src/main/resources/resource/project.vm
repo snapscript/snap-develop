@@ -61,7 +61,7 @@
   </div>
   <div id='editParentHidden' style='display: none;'><div id='editor'></div></div>
   <div id='browseParentHidden' style='display: none;'><div id='explorer'></div></div>
-  <script type="text/javascript" src="/project.js"></script>
+  <script type="text/javascript" src="/js/project.min.js"></script>
 </body>
 </html>
 

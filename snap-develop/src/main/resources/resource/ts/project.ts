@@ -16,7 +16,7 @@ function changeEditorTheme(){
       FileEditor.setEditorTheme("ace/theme/" + editorTheme.options[editorTheme.selectedIndex].value.toLowerCase());
    }
 }
-
+ 
 function toggleFullScreen() {
    var perspective = determineProjectLayout();
 

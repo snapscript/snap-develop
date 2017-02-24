@@ -191,7 +191,7 @@ module DialogBuilder {
                   }
                   if(expressionText) {
                      expressionText = clearHtml(expressionText);
-                  }
+                  } 
                   listFunction(expressionText, expressionPattern, function(list) {
                      var content = "<table class='dialogListTable' width='100%'>";
                      
