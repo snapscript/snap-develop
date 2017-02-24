@@ -183,37 +183,38 @@ var DialogBuilder;
                         if (expressionText) {
                             expressionText = clearHtml(expressionText);
                         }
-                        var list = listFunction(expressionText, expressionPattern);
-                        var content = "<table class='dialogListTable' width='100%'>";
-                        for (var i = 0; i < list.length; i++) {
-                            var row = list[i];
-                            content += "<tr>";
-                            for (var j = 0; j < row.length; j++) {
-                                var cell = row[j];
-                                content += "<td width='50%'><div class='";
-                                content += cell.style;
-                                content += "' onclick='return DialogBuilder.submitDialogListResource";
-                                if (cell.line) {
-                                    content += "(\"";
-                                    content += cell.resource;
-                                    content += "\", ";
-                                    content += cell.line;
-                                    content += ")";
+                        listFunction(expressionText, expressionPattern, function (list) {
+                            var content = "<table class='dialogListTable' width='100%'>";
+                            for (var i = 0; i < list.length; i++) {
+                                var row = list[i];
+                                content += "<tr>";
+                                for (var j = 0; j < row.length; j++) {
+                                    var cell = row[j];
+                                    content += "<td width='50%'><div class='";
+                                    content += cell.style;
+                                    content += "' onclick='return DialogBuilder.submitDialogListResource";
+                                    if (cell.line) {
+                                        content += "(\"";
+                                        content += cell.resource;
+                                        content += "\", ";
+                                        content += cell.line;
+                                        content += ")";
+                                    }
+                                    else {
+                                        content += "(\""; // ("link")
+                                        content += cell.link;
+                                        content += "\")";
+                                    }
+                                    content += "'>";
+                                    content += cell.text;
+                                    content += "</div></td>";
                                 }
-                                else {
-                                    content += "(\""; // ("link")
-                                    content += cell.link;
-                                    content += "\")";
-                                }
-                                content += "'>";
-                                content += cell.text;
-                                content += "</div></td>";
+                                content += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+                                content += "</tr>";
                             }
-                            content += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
-                            content += "</tr>";
-                        }
-                        content += "</table>";
-                        $("#dialog").html(content);
+                            content += "</table>";
+                            $("#dialog").html(content);
+                        });
                     });
                     var element = document.getElementById('dialogPath');
                     element.contentEditable = true;

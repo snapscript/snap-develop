@@ -1,103 +1,110 @@
 var Command;
 (function (Command) {
     function searchTypes() {
-        DialogBuilder.createListDialog(function (text) {
-            var typesFound = findTypesMatching(text);
-            var typeRows = [];
-            for (var i = 0; i < typesFound.length; i++) {
-                var debugToggle = ";debug";
-                var locationPath = window.document.location.pathname;
-                var locationHash = window.document.location.hash;
-                var debug = locationPath.indexOf(debugToggle, locationPath.length - debugToggle.length) !== -1;
-                var resourceLink = "/project/" + typesFound[i].project;
-                if (debug) {
-                    resourceLink += debugToggle;
+        DialogBuilder.createListDialog(function (text, ignoreMe, onComplete) {
+            findTypesMatching(text, function (typesFound) {
+                var typeRows = [];
+                for (var i = 0; i < typesFound.length; i++) {
+                    var debugToggle = ";debug";
+                    var locationPath = window.document.location.pathname;
+                    var locationHash = window.document.location.hash;
+                    var debug = locationPath.indexOf(debugToggle, locationPath.length - debugToggle.length) !== -1;
+                    var resourceLink = "/project/" + typesFound[i].project;
+                    if (debug) {
+                        resourceLink += debugToggle;
+                    }
+                    resourceLink += "#" + typesFound[i].resource;
+                    var typeCell = {
+                        text: typesFound[i].name,
+                        link: resourceLink,
+                        style: typesFound[i].type == 'module' ? 'moduleNode' : 'typeNode'
+                    };
+                    var resourceCell = {
+                        text: typesFound[i].resource,
+                        link: resourceLink,
+                        style: 'resourceNode'
+                    };
+                    typeRows.push([typeCell, resourceCell]);
                 }
-                resourceLink += "#" + typesFound[i].resource;
-                var typeCell = {
-                    text: typesFound[i].name,
-                    link: resourceLink,
-                    style: typesFound[i].type == 'module' ? 'moduleNode' : 'typeNode'
-                };
-                var resourceCell = {
-                    text: typesFound[i].resource,
-                    link: resourceLink,
-                    style: 'resourceNode'
-                };
-                typeRows.push([typeCell, resourceCell]);
-            }
-            return typeRows;
+                onComplete(typeRows);
+            });
         }, null, "Search Types");
     }
     Command.searchTypes = searchTypes;
-    function findTypesMatching(text) {
-        var response = [];
-        jQuery.ajax({
-            url: '/type/' + document.title + '?expression=' + text,
-            success: function (typeMatches) {
-                var sortedMatches = [];
-                for (var typeMatch in typeMatches) {
-                    if (typeMatches.hasOwnProperty(typeMatch)) {
-                        sortedMatches.push(typeMatch);
+    function findTypesMatching(text, onComplete) {
+        if (text) {
+            jQuery.ajax({
+                url: '/type/' + document.title + '?expression=' + text,
+                success: function (typeMatches) {
+                    var sortedMatches = [];
+                    for (var typeMatch in typeMatches) {
+                        if (typeMatches.hasOwnProperty(typeMatch)) {
+                            sortedMatches.push(typeMatch);
+                        }
                     }
-                }
-                sortedMatches.sort();
-                for (var i = 0; i < sortedMatches.length; i++) {
-                    var typeMatch = sortedMatches[i];
-                    var typeReference = typeMatches[typeMatch];
-                    var typeEntry = {
-                        name: typeReference.name,
-                        resource: typeReference.resource,
-                        type: typeReference.type,
-                        project: document.title
-                    };
-                    response.push(typeEntry);
-                }
-            },
-            async: false
-        });
-        return response;
+                    sortedMatches.sort();
+                    var response = [];
+                    for (var i = 0; i < sortedMatches.length; i++) {
+                        var typeMatch = sortedMatches[i];
+                        var typeReference = typeMatches[typeMatch];
+                        var typeEntry = {
+                            name: typeReference.name,
+                            resource: typeReference.resource,
+                            type: typeReference.type,
+                            project: document.title
+                        };
+                        response.push(typeEntry);
+                    }
+                    onComplete(response);
+                },
+                async: true
+            });
+        }
+        else {
+            onComplete([]);
+        }
     }
     function searchFiles() {
-        DialogBuilder.createListDialog(function (text, fileTypes) {
-            var filesFound = findFilesWithText(text, fileTypes);
-            var fileRows = [];
-            for (var i = 0; i < filesFound.length; i++) {
-                var fileFound = filesFound[i];
-                var debugToggle = ";debug";
-                var locationPath = window.document.location.pathname;
-                var locationHash = window.document.location.hash;
-                var debug = locationPath.indexOf(debugToggle, locationPath.length - debugToggle.length) !== -1;
-                var resourceLink = "/resource/" + fileFound.project + "/" + fileFound.resource;
-                var resourceCell = {
-                    text: fileFound.resource,
-                    line: fileFound.line,
-                    resource: resourceLink,
-                    style: 'resourceNode'
-                };
-                //            var lineCell = {
-                //               text: "&nbsp;line&nbsp;" + filesFound[i].line + "&nbsp;",
-                //               link: resourceLink,
-                //               style: ''
-                //            };
-                var textCell = {
-                    text: fileFound.text,
-                    line: fileFound.line,
-                    resource: resourceLink,
-                    style: 'textNode'
-                };
-                fileRows.push([resourceCell, textCell]);
-            }
-            return fileRows;
+        DialogBuilder.createListDialog(function (text, fileTypes, onComplete) {
+            findFilesWithText(text, fileTypes, function (filesFound) {
+                var fileRows = [];
+                for (var i = 0; i < filesFound.length; i++) {
+                    var fileFound = filesFound[i];
+                    var debugToggle = ";debug";
+                    var locationPath = window.document.location.pathname;
+                    var locationHash = window.document.location.hash;
+                    var debug = locationPath.indexOf(debugToggle, locationPath.length - debugToggle.length) !== -1;
+                    var resourceLink = "/resource/" + fileFound.project + "/" + fileFound.resource;
+                    var resourceCell = {
+                        text: fileFound.resource,
+                        line: fileFound.line,
+                        resource: resourceLink,
+                        style: 'resourceNode'
+                    };
+                    //            var lineCell = {
+                    //               text: "&nbsp;line&nbsp;" + filesFound[i].line + "&nbsp;",
+                    //               link: resourceLink,
+                    //               style: ''
+                    //            };
+                    var textCell = {
+                        text: fileFound.text,
+                        line: fileFound.line,
+                        resource: resourceLink,
+                        style: 'textNode'
+                    };
+                    fileRows.push([resourceCell, textCell]);
+                }
+                return onComplete(fileRows);
+            });
         }, '*.snap,*.properties,*.xml,*.txt,*.json', "Search Files");
     }
     Command.searchFiles = searchFiles;
-    function findFilesWithText(text, fileTypes) {
-        var response = [];
+    function findFilesWithText(text, fileTypes, onComplete) {
         if (text && text.length > 1) {
             jQuery.ajax({
                 url: '/find/' + document.title + '?expression=' + text + '&pattern=' + fileTypes,
                 success: function (filesMatched) {
+                    var response = [];
                     for (var i = 0; i < filesMatched.length; i++) {
                         var fileMatch = filesMatched[i];
                         var typeEntry = {
@@ -107,44 +114,48 @@ var Command;
                         };
                         response.push(fileMatch);
                     }
+                    onComplete(response);
                 },
-                async: false
+                async: true
             });
         }
-        return response;
+        else {
+            onComplete([]);
+        }
     }
     function findFileNames() {
-        DialogBuilder.createListDialog(function (text) {
-            var filesFound = findFilesByName(text);
-            var fileRows = [];
-            for (var i = 0; i < filesFound.length; i++) {
-                var fileFound = filesFound[i];
-                var debugToggle = ";debug";
-                var locationPath = window.document.location.pathname;
-                var locationHash = window.document.location.hash;
-                var debug = locationPath.indexOf(debugToggle, locationPath.length - debugToggle.length) !== -1;
-                var resourceLink = "/project/" + fileFound.project;
-                if (debug) {
-                    resourceLink += debugToggle;
+        DialogBuilder.createListDialog(function (text, ignoreMe, onComplete) {
+            findFilesByName(text, function (filesFound) {
+                var fileRows = [];
+                for (var i = 0; i < filesFound.length; i++) {
+                    var fileFound = filesFound[i];
+                    var debugToggle = ";debug";
+                    var locationPath = window.document.location.pathname;
+                    var locationHash = window.document.location.hash;
+                    var debug = locationPath.indexOf(debugToggle, locationPath.length - debugToggle.length) !== -1;
+                    var resourceLink = "/project/" + fileFound.project;
+                    if (debug) {
+                        resourceLink += debugToggle;
+                    }
+                    resourceLink += "#" + fileFound.resource;
+                    var resourceCell = {
+                        text: fileFound.text,
+                        link: resourceLink,
+                        style: 'resourceNode'
+                    };
+                    fileRows.push([resourceCell]);
                 }
-                resourceLink += "#" + fileFound.resource;
-                var resourceCell = {
-                    text: fileFound.text,
-                    link: resourceLink,
-                    style: 'resourceNode'
-                };
-                fileRows.push([resourceCell]);
-            }
-            return fileRows;
+                return onComplete(fileRows);
+            });
         }, null, "Find Files");
     }
     Command.findFileNames = findFileNames;
-    function findFilesByName(text) {
-        var response = [];
+    function findFilesByName(text, onComplete) {
         if (text && text.length > 1) {
             jQuery.ajax({
                 url: '/file/' + document.title + '?expression=' + text,
                 success: function (filesMatched) {
+                    var response = [];
                     for (var i = 0; i < filesMatched.length; i++) {
                         var fileMatch = filesMatched[i];
                         var typeEntry = {
@@ -153,11 +164,14 @@ var Command;
                         };
                         response.push(fileMatch);
                     }
+                    onComplete(response);
                 },
-                async: false
+                async: true
             });
         }
-        return response;
+        else {
+            onComplete([]);
+        }
     }
     function exploreDirectory(resourcePath) {
         if (FileTree.isResourceFolder(resourcePath.filePath)) {
