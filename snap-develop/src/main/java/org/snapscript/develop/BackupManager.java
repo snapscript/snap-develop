@@ -22,6 +22,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.FileTime;
 import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -43,7 +48,7 @@ public class BackupManager {
    private static final String BACKUP_FOLDER = ".backup";
    private static final String DATE_FORMAT = "yyyy_MM_dd_HH_mm_ss_SSS";
    private static final String DATE_PATTERN = "^.*\\.\\d\\d\\d\\d_\\d\\d_\\d\\d_\\d\\d_\\d\\d_\\d\\d_\\d\\d\\d$";
-   private static final long BACKUP_EXPIRY = 5 * 24 * 60 * 60 * 1000;
+   private static final long BACKUP_EXPIRY = 5 * 24 * 60 * 60 * 1000; // 5 days
    
    private final ProjectBuilder builder;
    private final ProcessLogger logger;
@@ -67,8 +72,11 @@ public class BackupManager {
                if(!backupDirectory.exists()) {
                   backupDirectory.mkdirs();
                }
+               long modificationTime = file.lastModified();
+               
                cleanBackups(file, project);
                copyFile(file, backupFile);
+               updateFileCreationTime(backupFile, modificationTime);
             }
          } else {
             File[] files = file.listFiles();
@@ -80,8 +88,21 @@ public class BackupManager {
       }
    }
    
+   private synchronized void updateFileCreationTime(File file, long creationTime) {
+      try {
+         Date date = new Date(creationTime);
+         logger.info("Updating backup file '" + file + "' to '" + date + "'");
+         Path path = Paths.get(file.toURI());
+         BasicFileAttributeView attributes = Files.getFileAttributeView(path, BasicFileAttributeView.class);
+         FileTime time = FileTime.fromMillis(creationTime);
+         attributes.setTimes(time, time, time);
+      } catch(Exception e) {
+         logger.info("Could not find backup from " + file, e);
+      }
+   }
+   
    private synchronized File createBackupFile(File file, String project) {
-      long time = System.currentTimeMillis();
+      long time = file.lastModified();
       File backupRoot = workspace.create(BACKUP_FOLDER);
       Project proj = builder.getProject(project);
       

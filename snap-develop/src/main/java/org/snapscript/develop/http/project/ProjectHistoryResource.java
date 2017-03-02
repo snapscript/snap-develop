@@ -70,24 +70,8 @@ public class ProjectHistoryResource implements Resource {
       String timeStamp = request.getParameter("time"); // do we load file
       
       if(timeStamp != null) {
-         Path path = request.getPath(); 
-         Project project = builder.createProject(path);
-         ProjectFileSystem system = project.getFileSystem();
-         File file = system.getFile(path);
-         String name = project.getProjectName();
-         List<BackupFile> files = manager.findAllBackups(file, name);
-         InputStream source = null;
-         
-         for(BackupFile entry : files) {
-            if(entry.getTimeStamp().equals(timeStamp)) {
-               File backupFile = entry.getFile();
-               source = new FileInputStream(backupFile);
-            }
-         }
-         if(source == null) {
-            source = new FileInputStream(file);
-         }
          response.setContentType("text/plain");
+         InputStream source = findBackupFile(request, response);
          OutputStream output = response.getOutputStream();
          
          byte[] chunk = new byte[1024];
@@ -101,6 +85,24 @@ public class ProjectHistoryResource implements Resource {
          return true; // we found it
       }
       return false;
+   }
+   
+   private InputStream findBackupFile(Request request, Response response) throws Throwable {
+      String timeStamp = request.getParameter("time"); // do we load file
+      Path path = request.getPath(); 
+      Project project = builder.createProject(path);
+      ProjectFileSystem system = project.getFileSystem();
+      File file = system.getFile(path);
+      String name = project.getProjectName();
+      List<BackupFile> files = manager.findAllBackups(file, name);
+      
+      for(BackupFile entry : files) {
+         if(entry.getTimeStamp().equals(timeStamp)) {
+            File backupFile = entry.getFile();
+            return new FileInputStream(backupFile);
+         }
+      }
+      return new FileInputStream(file);
    }
    
    private void handleNotFound(Request request, Response response) throws Throwable {
