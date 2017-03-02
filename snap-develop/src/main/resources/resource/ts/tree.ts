@@ -109,10 +109,10 @@ module FileTree {
       }
       //console.log("FileTree.createResourcePath(" + path + ")");
       
-      if(!path.startsWith("/")) {  // script.snap
+      if(!path.indexOf("/") == 0) {  // script.snap
          path = "/" + path; // /snap.script
       }
-      if(!path.startsWith(resourcePathPrefix)) { // /resource/<project>/(<file-path>)
+      if(!path.indexOf(resourcePathPrefix) == 0) { // /resource/<project>/(<file-path>)
          path = "/resource/" + document.title + path;
       }
       var isFolder = isResourceFolder(path); // /resource/<project>/blah/

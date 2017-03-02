@@ -25,7 +25,7 @@ function expandVariableTree(name, variableHistory) {
         var removePaths = [];
         for (var i = 0; i < variablePaths.length; i++) {
             var currentPath = variablePaths[i];
-            if (currentPath.startsWith(removePrefix)) {
+            if (currentPath.indexOf(removePrefix) == 0) {
                 removePaths.push(currentPath); // remove variable
             }
         }

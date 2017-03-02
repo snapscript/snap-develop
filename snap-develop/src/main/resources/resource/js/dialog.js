@@ -105,7 +105,7 @@ var DialogBuilder;
             var dialogFolder = FileTree.cleanResourcePath(originalDialogFolder); // clean up path
             var dialogPathDetails = FileTree.createResourcePath(dialogFolder);
             var selectedDirectory = dialogPathDetails.projectDirectory;
-            if (selectedDirectory.startsWith("/")) {
+            if (selectedDirectory.indexOf("/") == 0) {
                 selectedDirectory = selectedDirectory.substring(1);
             }
             openCallback(dialogPathDetails, selectedDirectory);
@@ -150,7 +150,7 @@ var DialogBuilder;
         FileTree.createTreeOfDepth(treePath, "dialog", "dialogTree", "/" + document.title, true, null, function (event, data) {
             var selectedFileDetails = FileTree.createResourcePath(data.node.tooltip);
             var selectedDirectory = selectedFileDetails.projectDirectory;
-            if (selectedDirectory.startsWith("/")) {
+            if (selectedDirectory.indexOf("/") == 0) {
                 selectedDirectory = selectedDirectory.substring(1);
             }
             $('#dialogPath').html(FileTree.cleanResourcePath(selectedDirectory));

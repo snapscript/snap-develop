@@ -211,7 +211,7 @@ module Command {
             to: resourceDetails.filePath
          });
          socket.send("RENAME:" + message);
-         renameEditorTab(resourcePath.resourcePath, resourceDetails.resourcePath); // rename tabs if open
+         Project.renameEditorTab(resourcePath.resourcePath, resourceDetails.resourcePath); // rename tabs if open
       });
    }
    
@@ -329,7 +329,7 @@ module Command {
                   if(editorData.resource != null && editorData.resource.resourcePath == resourceDetails.resourcePath) { // delete focused file
                      FileEditor.resetEditor();
                   }
-                  deleteEditorTab(resourceDetails.resourcePath); // rename tabs if open
+                  Project.deleteEditorTab(resourceDetails.resourcePath); // rename tabs if open
                },
                function(){});
       }

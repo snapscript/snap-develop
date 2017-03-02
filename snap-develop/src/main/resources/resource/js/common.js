@@ -73,6 +73,12 @@ function updateTableRecords(update, name) {
         w2ui[name].refresh();
     }
 }
+function isMacintosh() {
+    return navigator.platform.indexOf('Mac') > -1;
+}
+function isWindows() {
+    return navigator.platform.indexOf('Win') > -1;
+}
 function escapeHtml(text) {
     return text
         .replace(/&/g, "&amp;")

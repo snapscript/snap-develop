@@ -24,12 +24,21 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
+import org.simpleframework.http.Path;
+
 public class ProjectFileSystem {
 
    private final Project project;
    
    public ProjectFileSystem(Project project) {
       this.project = project;
+   }
+   
+   public File getFile(Path path) {
+      String projectPath = path.getPath(2); // /<project-name>/<project-path> or /default/blah.snap
+      File sourcePath = project.getSourcePath();
+      String realPath = projectPath.replace('/', File.separatorChar);
+      return new File(sourcePath, realPath);
    }
    
    public void writeAsByteArray(String path, String resource) throws Exception {
@@ -77,6 +86,10 @@ public class ProjectFileSystem {
       return buffer.toByteArray();
    }
    
+   public ProjectFile readFile(Path path) throws Exception {
+      String projectPath = path.getPath(2); // /<project-name>/<project-path> or /default/blah.snap
+      return readFile(projectPath);
+   }
    
    public ProjectFile readFile(String path) throws Exception {
       long time = System.currentTimeMillis();

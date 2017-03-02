@@ -86,6 +86,14 @@ function updateTableRecords(update, name) {
    }
 }
 
+function isMacintosh() {
+   return navigator.platform.indexOf('Mac') > -1
+ }
+
+ function isWindows() {
+   return navigator.platform.indexOf('Win') > -1
+ }
+
 function escapeHtml(text) {
    return text
         .replace(/&/g, "&amp;")

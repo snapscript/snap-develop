@@ -36,6 +36,10 @@ public class ProjectFile {
       this.time = time;
    }
    
+   public File getFile() {
+      return file;
+   }
+   
    public byte[] getByteArray() {
       try {
          if(data == null) {

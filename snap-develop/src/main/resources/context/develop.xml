@@ -11,6 +11,7 @@
   </bean>
 
   <bean id="BackupManager" class="org.snapscript.develop.BackupManager">
+    <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="ProcessLogger" />
     <constructor-arg ref="Workspace" />
   </bean>
@@ -111,12 +112,9 @@
     </constructor-arg>
     <constructor-arg>
       <list>
-        <!-- value>src/main/resources/resource/*.js</value-->
+        <!-- value>src/main/resources/resource/*.js</value -->
         <value>src/main/resources/resource/js/*.js</value>
-        <!--value>src/main/resources/resource/js/external/*.js</value>
-        <value>src/main/resources/resource/js/external/*.js</value>
-        <value>src/main/resources/resource/js/external/ace/ace.js</value>
-        <value>src/main/resources/resource/js/external/ace/ext-language_tools.js</value-->
+        <!--value>src/main/resources/resource/js/external/*.js</value> <value>src/main/resources/resource/js/external/*.js</value> <value>src/main/resources/resource/js/external/ace/ace.js</value> <value>src/main/resources/resource/js/external/ace/ext-language_tools.js</value -->
       </list>
     </constructor-arg>
   </bean>
@@ -179,6 +177,11 @@
     <constructor-arg value=".display" />
   </bean>
 
+  <bean id="ProjectHistoryResource" class="org.snapscript.develop.http.project.ProjectHistoryResource">
+    <constructor-arg ref="ProjectBuilder" />
+    <constructor-arg ref="BackupManager" />
+  </bean>
+
   <bean id="ProjectScriptService" class="org.snapscript.develop.http.project.ProjectScriptService">
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="ConnectListener" />
@@ -221,6 +224,7 @@
         <entry key="/file.*" value-ref="FileMatchResource" />
         <entry key="/type.*" value-ref="TypeNodeResource" />
         <entry key="/complete.*" value-ref="CompletionResource" />
+        <entry key="/history.*" value-ref="ProjectHistoryResource" />
         <entry key="/find.*" value-ref="TextMatchResource" />
         <entry key="/class/.*" value-ref="ClassLoaderResource" />
         <entry key="/project/.*" value-ref="ProjectResource" />

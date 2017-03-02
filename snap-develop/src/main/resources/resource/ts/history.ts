@@ -8,6 +8,33 @@ module History {
       setTimeout(updateEditorFromHistory, 200);
    }
    
+   export function showFileHistory() {
+      var editorData = FileEditor.loadEditor();
+      var resource = editorData.resource.projectPath;
+      jQuery.ajax({
+         url: '/history/' + document.title + '/' + resource;
+         success: function (currentRecords) {
+            var historyRecords = [];
+            var historyIndex = 1;
+            
+            for (var i = 0; i < currentRecords.length; i++) {
+               var currentRecord = currentRecords[i];
+               var recordResource = FileTree.createResourcePath(currentRecord.path);
+               
+               historyRecords.push({ 
+                  recid: historyIndex++,
+                  resource: "<div class='historyPath'>" + recordResource.filePath + "</div>", // /blah/file.snap 
+                  date: currentRecord.date,
+                  script: recordResource.resourcePath // /resource/<project>/blah/file.snap
+               });
+            }
+            w2ui['history'].records = historyRecords;
+            w2ui['history'].refresh();
+         },
+         async: true
+      });
+   }
+   
    function updateEditorFromHistory(){
       var location = window.location.hash;
       var hashIndex = location.indexOf('#');

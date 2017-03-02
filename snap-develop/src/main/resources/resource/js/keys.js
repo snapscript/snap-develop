@@ -18,6 +18,18 @@ var KeyBinder;
         createKeyBinding("ctrl shift g", false, function () {
             Command.findFileNames();
         });
+        createKeyBinding("ctrl shift f", false, function () {
+            FileEditor.formatEditorSource();
+        });
+        createKeyBinding("ctrl shift e", false, function () {
+            Command.evaluateExpression();
+        });
+        createKeyBinding("ctrl z", false, function () {
+            FileEditor.undoEditorChange();
+        });
+        createKeyBinding("ctrl y", false, function () {
+            FileEditor.redoEditorChange();
+        });
         createKeyBinding("ctrl r", false, function () {
             Command.runScript();
         });
@@ -37,19 +49,17 @@ var KeyBinder;
             console.log("F6");
             Command.stepOverScript();
         });
-        createKeyBinding("ctrl shift f", false, function () {
-            FileEditor.formatEditorSource();
-        });
-        createKeyBinding("ctrl shift e", false, function () {
-            Command.evaluateExpression();
-        });
     }
     KeyBinder.bindKeys = bindKeys;
     function parseKeyBinding(name) {
         var keyParts = name.split(/\s+/);
         var keyBindingParts = [];
         for (var i = 0; i < keyParts.length; i++) {
-            keyBindingParts[i] = keyParts[i].charAt(0).toUpperCase() + keyParts[i].slice(1);
+            var keyPart = keyParts[i];
+            if (isMacintosh() && keyPart == 'ctrl') {
+                keyPart = 'command';
+            }
+            keyBindingParts[i] = keyPart.charAt(0).toUpperCase() + keyPart.slice(1);
         }
         var editorKeyBinding = keyBindingParts.join("-");
         var globalKeyBinding = keyBindingParts.join("+").toLowerCase();
@@ -60,21 +70,22 @@ var KeyBinder;
     }
     function createKeyBinding(name, preventDefault, pressAction) {
         var keyBinding = parseKeyBinding(name);
-        var editor = ace.edit("editor");
-        // console.log(keyBinding);
-        editor.commands.addCommand({
-            name: name,
-            bindKey: {
-                win: keyBinding.editor,
-                mac: keyBinding.editor
-            },
-            exec: function (editor) {
-                if (pressAction) {
-                    pressAction();
-                }
-            }
-        });
-        Mousetrap.bind(keyBinding.global, function (e) {
+        //      var editor = ace.edit("editor");
+        //      
+        //      console.log(keyBinding.editor);
+        //      editor.commands.addCommand({
+        //           name : name,
+        //           bindKey : {
+        //              win : keyBinding.editor,
+        //              mac : keyBinding.editor
+        //           },
+        //           exec : function(editor) {
+        //              if(pressAction) { 
+        //                 pressAction();
+        //              }
+        //           }
+        //      });
+        Mousetrap.bindGlobal(keyBinding.global, function (e) {
             if (pressAction) {
                 pressAction();
             }

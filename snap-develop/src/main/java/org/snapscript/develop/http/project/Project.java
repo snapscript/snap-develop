@@ -20,6 +20,7 @@ package org.snapscript.develop.http.project;
 
 import java.io.File;
 
+import org.simpleframework.http.Path;
 import org.snapscript.develop.Workspace;
 
 public class Project {

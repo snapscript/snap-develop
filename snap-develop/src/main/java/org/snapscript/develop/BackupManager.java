@@ -35,6 +35,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.develop.http.project.Project;
+import org.snapscript.develop.http.project.ProjectBuilder;
 
 public class BackupManager {
    
@@ -43,42 +45,50 @@ public class BackupManager {
    private static final String DATE_PATTERN = "^.*\\.\\d\\d\\d\\d_\\d\\d_\\d\\d_\\d\\d_\\d\\d_\\d\\d_\\d\\d\\d$";
    private static final long BACKUP_EXPIRY = 5 * 24 * 60 * 60 * 1000;
    
+   private final ProjectBuilder builder;
    private final ProcessLogger logger;
    private final Workspace workspace;
    private final DateFormat format;
    
-   public BackupManager(ProcessLogger logger,Workspace workspace) {
+   public BackupManager(ProjectBuilder builder, ProcessLogger logger, Workspace workspace) {
       this.format = new SimpleDateFormat(DATE_FORMAT);
+      this.builder = builder;
       this.workspace = workspace;
       this.logger = logger;
    }
    
-   public synchronized void backupFile(File root, File file, String project) {
+   public synchronized void backupFile(File file, String project) {
       if(file.exists()) {
          if(file.isFile()) {
-            if(acceptFile(root, file, project)) {
-               File backupFile = createBackupFile(root, file, project);
+            if(acceptFile(file, project)) {
+               File backupFile = createBackupFile(file, project);
                File backupDirectory = backupFile.getParentFile();
                
                if(!backupDirectory.exists()) {
                   backupDirectory.mkdirs();
                }
-               cleanBackups(root, file, project);
+               cleanBackups(file, project);
                copyFile(file, backupFile);
             }
          } else {
             File[] files = file.listFiles();
             
             for(File entry : files) {
-               backupFile(root, entry, project);
+               backupFile(entry, project);
             }
          }
       }
    }
    
-   private synchronized File createBackupFile(File root, File file, String project) {
+   private synchronized File createBackupFile(File file, String project) {
       long time = System.currentTimeMillis();
       File backupRoot = workspace.create(BACKUP_FOLDER);
+      Project proj = builder.getProject(project);
+      
+      if(proj == null) {
+         throw new IllegalArgumentException("Project " + project + " does not exist");
+      }
+      File root = proj.getProjectPath();
       String extension = format.format(time);
       String relative = relative(root, file);
       String timestampFile = String.format("%s/%s.%s", project, relative, extension);
@@ -86,9 +96,9 @@ public class BackupManager {
       return new File(backupRoot, timestampFile);
    }
    
-   private synchronized boolean acceptFile(File root, File file, String project) {
+   private synchronized boolean acceptFile(File file, String project) {
       if(file.isFile() && file.exists()) {
-         File latestBackup = findLatestBackup(root, file, project);
+         File latestBackup = findLatestBackup(file, project);
          
          if(latestBackup != null) {
             byte[] backupDigest = digestFile(latestBackup);
@@ -101,31 +111,31 @@ public class BackupManager {
       return false;
    }
    
-   private synchronized void cleanBackups(File root, File file, String project) {
-      List<File> backupFiles = findAllBackups(root, file, project);
+   private synchronized void cleanBackups(File file, String project) {
+      List<BackupFile> backupFiles = findAllBackups(file, project);
       int backupCount = backupFiles.size();
       
       if(backupCount > 1) {
-         for(File backupFile : backupFiles) {
-            if(backupFile.exists()) {
-               long lastModified = backupFile.lastModified();
+         for(BackupFile backupFile : backupFiles) {
+            if(backupFile.getFile().exists()) {
+               long lastModified = backupFile.getFile().lastModified();
                long time = System.currentTimeMillis();
                
                if(lastModified + BACKUP_EXPIRY < time) {
-                  deleteFile(backupFile);
+                  deleteFile(backupFile.getFile());
                }
             }
          }
       }
    }
    
-   private synchronized File findLatestBackup(File root, File file, String project) {
+   private synchronized File findLatestBackup(File file, String project) {
       try {
-         List<File> backupFiles = findAllBackups(root, file, project);
-         Iterator<File> backupIterator = backupFiles.iterator();
+         List<BackupFile> backupFiles = findAllBackups(file, project);
+         Iterator<BackupFile> backupIterator = backupFiles.iterator();
          
          if(backupIterator.hasNext()) {
-            return backupIterator.next();
+            return backupIterator.next().getFile();
          }
       } catch(Exception e) {
          logger.info("Could not find backup from " + file, e);
@@ -133,31 +143,43 @@ public class BackupManager {
       return null;
    }
    
-   private synchronized List<File> findAllBackups(File root, File file, String project) {
+   public synchronized List<BackupFile> findAllBackups(File file, String project) {
       try {
-         List<File> backupHistory = new ArrayList<File>();
-         Map<Long, File> timeStampFiles = new TreeMap<Long, File>();
-         File backupFile = createBackupFile(root, file, project);
+         List<BackupFile> backupHistory = new ArrayList<BackupFile>();
+         Map<Long, BackupFile> timeStampFiles = new TreeMap<Long, BackupFile>();
+         File backupFile = createBackupFile(file, project);
          File backupDirectory = backupFile.getParentFile();
          File[] list = backupDirectory.listFiles();
+         Project proj = builder.getProject(project);
+         
+         if(proj == null) {
+            throw new IllegalArgumentException("Project " + project + " does not exist");
+         }
+         File root = proj.getProjectPath();
+         String rootPath = root.getCanonicalPath();
+         String matchName = file.getName();
          
          for(File entry : list) {
             String name = entry.getName();
             
-            if(name.matches(DATE_PATTERN)) {
+            if(name.matches(DATE_PATTERN) && name.startsWith(matchName) && entry.exists()) {
                int index = name.lastIndexOf(".");
                int length = name.length();
                String timeStamp = name.substring(index + 1, length);
                Date date = format.parse(timeStamp);
                long time = date.getTime();
+               String fullFile = file.getCanonicalPath();
+               String relativeFile = fullFile.replace(rootPath, "").replace(File.separatorChar, '/');
+               String projectPath = relativeFile.startsWith("/") ? relativeFile : ("/" + relativeFile);
+               BackupFile backupData = new BackupFile(entry, projectPath, date, timeStamp, project);
                
-               timeStampFiles.put(time, entry);
+               timeStampFiles.put(time, backupData);
             }
          }
          Set<Long> timeStamps = timeStampFiles.keySet();
          
          for(Long timeStamp : timeStamps) {
-            File timeStampFile = timeStampFiles.get(timeStamp);
+            BackupFile timeStampFile = timeStampFiles.get(timeStamp);
             backupHistory.add(timeStampFile);
          }
          Collections.reverse(backupHistory);

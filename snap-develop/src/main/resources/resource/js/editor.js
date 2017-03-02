@@ -345,7 +345,8 @@ var FileEditor;
             }
         }
         indexEditorTokens(text, resource); // create some tokens we can link to dynamically
-        createEditorTab(); // update the tab name
+        Project.createEditorTab(); // update the tab name
+        History.showFileHistory(); // update the history
         $("#currentFile").html("File:&nbsp;" + editorResource.projectPath + "&nbsp;&nbsp;");
     }
     FileEditor.updateEditor = updateEditor;
@@ -502,6 +503,16 @@ var FileEditor;
         }
     }
     FileEditor.setEditorTheme = setEditorTheme;
+    function undoEditorChange() {
+        var editor = ace.edit("editor");
+        editor.getSession().getUndoManager().undo(true);
+    }
+    FileEditor.undoEditorChange = undoEditorChange;
+    function redoEditorChange() {
+        var editor = ace.edit("editor");
+        editor.getSession().getUndoManager().redo(true);
+    }
+    FileEditor.redoEditorChange = redoEditorChange;
     function showEditor() {
         var langTools = ace.require("ace/ext/language_tools");
         var editor = ace.edit("editor");
@@ -516,6 +527,7 @@ var FileEditor;
         editor.setReadOnly(true);
         editor.setAutoScrollEditorIntoView(true);
         editor.getSession().setUseSoftTabs(true);
+        editor.keyBinding.setDefaultHandler(null); // disable all keybindings and allow Mousetrap to do it
         editor.setShowPrintMargin(false);
         editor.setOptions({
             enableBasicAutocompletion: true
@@ -539,7 +551,7 @@ var FileEditor;
         createEditorLinks(editor, validEditorLink, openEditorLink); // link.js
         KeyBinder.bindKeys(); // register key bindings
         //registerEditorBindings();
-        changeProjectFont(); // project.js update font
+        Project.changeProjectFont(); // project.js update font
         scrollEditorToTop();
         LoadSpinner.finish();
     }

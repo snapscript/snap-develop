@@ -20,4 +20,4 @@ var start = new Date().getTime();
 var result = fib(30); // =1346269 (0.013 seconds)
 System.out.println("fib(40)="+result);
 var stop =new Date().getTime();
-print((stop -start));
+print((stop -start)); 

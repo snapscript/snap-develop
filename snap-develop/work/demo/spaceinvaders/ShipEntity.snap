@@ -1,4 +1,4 @@
-
+    
 /**
  * The entity that represents the players ship
  */
@@ -16,8 +16,8 @@ class ShipEntity extends Entity {
     */
    new(game, ref, x, y) : super(ref,x,y){
       this.game = game;
-   }
-   
+   } 
+     
    /**
     * Request that the ship move itself based on an elapsed ammount of
     * time

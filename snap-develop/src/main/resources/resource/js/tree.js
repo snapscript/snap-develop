@@ -95,10 +95,10 @@ var FileTree;
             return currentPathDetails;
         }
         //console.log("FileTree.createResourcePath(" + path + ")");
-        if (!path.startsWith("/")) {
+        if (!path.indexOf("/") == 0) {
             path = "/" + path; // /snap.script
         }
-        if (!path.startsWith(resourcePathPrefix)) {
+        if (!path.indexOf(resourcePathPrefix) == 0) {
             path = "/resource/" + document.title + path;
         }
         var isFolder = isResourceFolder(path); // /resource/<project>/blah/
