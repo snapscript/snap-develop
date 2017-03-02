@@ -48,7 +48,7 @@ public class BackupManager {
    private static final String BACKUP_FOLDER = ".backup";
    private static final String DATE_FORMAT = "yyyy_MM_dd_HH_mm_ss_SSS";
    private static final String DATE_PATTERN = "^.*\\.\\d\\d\\d\\d_\\d\\d_\\d\\d_\\d\\d_\\d\\d_\\d\\d_\\d\\d\\d$";
-   private static final long BACKUP_EXPIRY = 5 * 24 * 60 * 60 * 1000; // 5 days
+   private static final long BACKUP_EXPIRY = 14 * 24 * 60 * 60 * 1000; // 14 days
    
    private final ProjectBuilder builder;
    private final ProcessLogger logger;
