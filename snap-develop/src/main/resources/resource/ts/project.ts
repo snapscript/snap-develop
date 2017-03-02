@@ -949,7 +949,7 @@ module Project {
                var sel = grid.getSelection();
                if (sel.length == 1) {
                   var record = grid.get(sel[0]);
-                  FileExplorer.openTreeFile(record.script, function() {
+                  FileExplorer.openTreeHistoryFile(record.script, record.time, function() {
                      FileEditor.showEditorLine(record.line);  
                   });
                }

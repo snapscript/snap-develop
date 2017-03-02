@@ -38,6 +38,38 @@ module FileExplorer {
       }
    }
    
+   export function openTreeHistoryFile(resourcePath, timeStamp, afterLoad) {
+      var filePath = resourcePath.toLowerCase();
+      var backupResourcePath = resourcePath.replace(/^\/resource/i, "/history");
+      //var backupUrl = backupResourcePath + "?time=" + timeStamp;
+      
+      if(filePath.endsWith(".json") || filePath.endsWith(".js")) { // is it json or javascript
+         jQuery.ajax({
+            url: backupResourcePath + "?time=" + timeStamp,
+            type: "get",
+            success: function (response) {
+               handleOpenTreeFile(resourcePath, afterLoad, response);
+            },
+            error: function (response) {
+               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath);
+            },
+            async: false
+         });
+      } else {
+         jQuery.ajax({
+            url: backupResourcePath + "?time=" + timeStamp,
+            type: "get",            
+            success: function (response) {
+               handleOpenTreeFile(resourcePath, afterLoad, response);
+            },
+            error: function (response) {
+               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath);
+            },
+            async: false
+         });
+      }
+   }
+   
    function handleOpenTreeFile(resourcePath, afterLoad, response) {
       var mode = FileEditor.resolveEditorMode(resourcePath);
       

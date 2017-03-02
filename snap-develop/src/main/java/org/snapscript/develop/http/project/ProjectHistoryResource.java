@@ -1,6 +1,9 @@
 package org.snapscript.develop.http.project;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.List;
 
@@ -30,31 +33,76 @@ public class ProjectHistoryResource implements Resource {
 
    @Override
    public void handle(Request request, Response response) throws Throwable {
+      response.setStatus(Status.OK);
+
+      try {
+         if(handleFindBackup(request, response)) {
+            handleNotFound(request, response);
+         } else {
+            handleBackupHistory(request, response);
+         }
+      }catch(Exception e) {
+         handleNotFound(request, response);
+      }
+   }
+   
+   private void handleBackupHistory(Request request, Response response) throws Throwable {
       Path path = request.getPath(); 
-      String projectPath = path.getPath(2);
       Project project = builder.createProject(path);
       ProjectFileSystem system = project.getFileSystem();
       File file = system.getFile(path);
       String name = project.getProjectName();
+      List<BackupFile> files = manager.findAllBackups(file, name);
       PrintStream stream = response.getPrintStream();
+      String text = gson.toJson(files);
       
-      response.setStatus(Status.OK);
       response.setContentType("application/json");
-
-      try {
+      stream.println(text);
+      stream.close();
+   }
+   
+   private boolean handleFindBackup(Request request, Response response) throws Throwable {
+      String timeStamp = request.getParameter("time"); // do we load file
+      
+      if(timeStamp != null) {
+         Path path = request.getPath(); 
+         Project project = builder.createProject(path);
+         ProjectFileSystem system = project.getFileSystem();
+         File file = system.getFile(path);
+         String name = project.getProjectName();
          List<BackupFile> files = manager.findAllBackups(file, name);
-         String text = gson.toJson(files);
-         stream.println(text);
-         stream.close();
-      }catch(Exception e) {
-         PrintStream out = response.getPrintStream();
-         response.setStatus(Status.NOT_FOUND);
-         response.setContentType("text/plain");
          
-         if(projectPath.endsWith(Reserved.SCRIPT_EXTENSION)){
-            out.println("// No source found for " + projectPath);
+         for(BackupFile entry : files) {
+            if(entry.getTimeStamp().equals(timeStamp)) {
+               response.setContentType("text/plain");
+               File backupFile = entry.getFile();
+               OutputStream output = response.getOutputStream();
+               InputStream source = new FileInputStream(backupFile);
+               byte[] chunk = new byte[1024];
+               int count = 0;
+               
+               while((count = source.read(chunk)) != -1){
+                  output.write(chunk, 0, count);
+               }
+               source.close();
+               output.close();
+               return true; // we found it
+            }
          }
-         out.close();
       }
+      return false;
+   }
+   
+   private void handleNotFound(Request request, Response response) throws Throwable {
+      Path path = request.getPath(); 
+      String projectPath = path.getPath(2);
+      PrintStream out = response.getPrintStream();
+      response.setStatus(Status.NOT_FOUND);
+      response.setContentType("text/plain");
+      
+      if(projectPath.endsWith(Reserved.SCRIPT_EXTENSION)){
+         out.println("// No source found for " + projectPath);
+      }
+      out.close();
    }
 }

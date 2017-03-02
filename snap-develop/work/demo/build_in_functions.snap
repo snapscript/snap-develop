@@ -14,3 +14,5 @@ function println(x){
 
 printf("%s=%s%n", 1, 2);
 println("x");
+
+// Foo

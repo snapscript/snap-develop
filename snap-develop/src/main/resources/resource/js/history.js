@@ -22,6 +22,7 @@ var History;
                         recid: historyIndex++,
                         resource: "<div class='historyPath'>" + recordResource.filePath + "</div>",
                         date: currentRecord.date,
+                        time: currentRecord.timeStamp,
                         script: recordResource.resourcePath // /resource/<project>/blah/file.snap
                     });
                 }
