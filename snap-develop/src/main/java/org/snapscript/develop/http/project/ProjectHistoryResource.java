@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Date;
 import java.util.List;
 
 import org.simpleframework.http.Path;
@@ -36,9 +37,7 @@ public class ProjectHistoryResource implements Resource {
       response.setStatus(Status.OK);
 
       try {
-         if(handleFindBackup(request, response)) {
-            handleNotFound(request, response);
-         } else {
+         if(!handleFindBackup(request, response)) {
             handleBackupHistory(request, response);
          }
       }catch(Exception e) {
@@ -48,11 +47,17 @@ public class ProjectHistoryResource implements Resource {
    
    private void handleBackupHistory(Request request, Response response) throws Throwable {
       Path path = request.getPath(); 
+      String projectPath = path.getPath(2);
       Project project = builder.createProject(path);
       ProjectFileSystem system = project.getFileSystem();
       File file = system.getFile(path);
       String name = project.getProjectName();
+      long modificationTime = file.lastModified();
       List<BackupFile> files = manager.findAllBackups(file, name);
+      Date modificationDate = new Date(modificationTime);
+      BackupFile currentFile = new BackupFile(file, projectPath, modificationDate, "current", name);
+      
+      files.add(0, currentFile);
       PrintStream stream = response.getPrintStream();
       String text = gson.toJson(files);
       
@@ -71,24 +76,29 @@ public class ProjectHistoryResource implements Resource {
          File file = system.getFile(path);
          String name = project.getProjectName();
          List<BackupFile> files = manager.findAllBackups(file, name);
+         InputStream source = null;
          
          for(BackupFile entry : files) {
             if(entry.getTimeStamp().equals(timeStamp)) {
-               response.setContentType("text/plain");
                File backupFile = entry.getFile();
-               OutputStream output = response.getOutputStream();
-               InputStream source = new FileInputStream(backupFile);
-               byte[] chunk = new byte[1024];
-               int count = 0;
-               
-               while((count = source.read(chunk)) != -1){
-                  output.write(chunk, 0, count);
-               }
-               source.close();
-               output.close();
-               return true; // we found it
+               source = new FileInputStream(backupFile);
             }
          }
+         if(source == null) {
+            source = new FileInputStream(file);
+         }
+         response.setContentType("text/plain");
+         OutputStream output = response.getOutputStream();
+         
+         byte[] chunk = new byte[1024];
+         int count = 0;
+         
+         while((count = source.read(chunk)) != -1){
+            output.write(chunk, 0, count);
+         }
+         source.close();
+         output.close();
+         return true; // we found it
       }
       return false;
    }
