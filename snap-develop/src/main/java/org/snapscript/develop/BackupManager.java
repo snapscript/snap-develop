@@ -49,6 +49,7 @@ public class BackupManager {
    private static final String DATE_FORMAT = "yyyy_MM_dd_HH_mm_ss_SSS";
    private static final String DATE_PATTERN = "^.*\\.\\d\\d\\d\\d_\\d\\d_\\d\\d_\\d\\d_\\d\\d_\\d\\d_\\d\\d\\d$";
    private static final long BACKUP_EXPIRY = 14 * 24 * 60 * 60 * 1000; // 14 days
+   private static final int BACKUP_COUNT = 4; // keep at least 4 files
    
    private final ProjectBuilder builder;
    private final ProcessLogger logger;
@@ -90,8 +91,6 @@ public class BackupManager {
    
    private synchronized void updateFileCreationTime(File file, long creationTime) {
       try {
-         Date date = new Date(creationTime);
-         logger.info("Updating backup file '" + file + "' to '" + date + "'");
          Path path = Paths.get(file.toURI());
          BasicFileAttributeView attributes = Files.getFileAttributeView(path, BasicFileAttributeView.class);
          FileTime time = FileTime.fromMillis(creationTime);
@@ -136,7 +135,7 @@ public class BackupManager {
       List<BackupFile> backupFiles = findAllBackups(file, project);
       int backupCount = backupFiles.size();
       
-      if(backupCount > 1) {
+      if(backupCount > BACKUP_COUNT) { // keep at least 4 files
          for(BackupFile backupFile : backupFiles) {
             if(backupFile.getFile().exists()) {
                long lastModified = backupFile.getFile().lastModified();
