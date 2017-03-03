@@ -81,6 +81,9 @@ module FileTree {
       if(path != null) {
          var cleanPath = path.replace(/\/+/, "/").replace(/\.#/, ""); // replace // with /
          
+         while(cleanPath.indexOf("//") != -1) {
+            cleanPath = cleanPath.replace("//", "/"); // remove double slashes like /x/y//z.snap
+         }
          if(cleanPath.endsWith("/")) {
             cleanPath = cleanPath.substring(0,cleanPath.length-1);
          }
@@ -93,6 +96,9 @@ module FileTree {
       var resourcePathPrefix = "/resource/" + document.title + "/";
       var resourcePathRoot = "/resource/" + document.title;
       
+      while(path.indexOf("//") != -1) {
+         path = path.replace("//", "/"); // remove double slashes like /x/y//z.snap
+      }
       if(path == resourcePathRoot || path == resourcePathPrefix) { // its the root /
          var currentPathDetails = {
             resourcePath: resourcePathPrefix, // /resource/<project>/blah/script.snap
