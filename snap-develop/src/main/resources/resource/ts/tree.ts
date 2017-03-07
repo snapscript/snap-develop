@@ -19,7 +19,13 @@ module FileTree {
          function showFancyTree() {
             // using default options
             $('#' + id).fancytree({
-               click : clickCallback
+               click : clickCallback,
+               expand: function(event, data) {
+                  Command.folderExpand(data.node.key);
+               },
+               collapse: function(event, data) {
+                  Command.folderCollapse(data.node.key);
+               }
             });
             if(treeMenuHandler != null) {
                 $("#" + id).contextmenu({

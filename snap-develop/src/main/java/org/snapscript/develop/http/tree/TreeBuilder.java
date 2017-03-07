@@ -18,19 +18,14 @@
 
 package org.snapscript.develop.http.tree;
 
-import java.io.File;
-
 public class TreeBuilder {
 
-   public static String createTree(File treePath, String treeId, String expand, boolean foldersOnly, int folderDepth) throws Throwable {
-      String projectName = treePath.getName();
+   public static String createTree(TreeContext context, String treeId, boolean foldersOnly, int folderDepth) throws Throwable {
       StringBuilder builder = new StringBuilder();
       builder.append("<div id=\""+treeId+"\">\n");
       builder.append("<ul id=\"treeData\" style=\"display: none;\">\n");
       TreeDirectory tree = new TreeDirectory(
-               treePath, 
-               projectName, 
-               expand,
+               context,
                foldersOnly,
                folderDepth);
       tree.buildTree(builder);

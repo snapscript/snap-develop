@@ -183,6 +183,22 @@ var Command;
         }
     }
     Command.exploreDirectory = exploreDirectory;
+    function folderExpand(resourcePath) {
+        var message = JSON.stringify({
+            project: document.title,
+            folder: resourcePath
+        });
+        socket.send("FOLDER_EXPAND:" + message);
+    }
+    Command.folderExpand = folderExpand;
+    function folderCollapse(resourcePath) {
+        var message = JSON.stringify({
+            project: document.title,
+            folder: resourcePath
+        });
+        socket.send("FOLDER_COLLAPSE:" + message);
+    }
+    Command.folderCollapse = folderCollapse;
     function pingProcess() {
         if (isSocketOpen()) {
             socket.send("PING:" + document.title);

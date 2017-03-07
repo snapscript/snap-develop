@@ -195,6 +195,22 @@ module Command {
       }
    }
    
+   export function folderExpand(resourcePath) {
+      var message = JSON.stringify({
+         project: document.title,
+         folder : resourcePath
+      });
+      socket.send("FOLDER_EXPAND:" + message);
+   }
+   
+   export function folderCollapse(resourcePath) {
+      var message = JSON.stringify({
+         project: document.title,
+         folder : resourcePath
+      });
+      socket.send("FOLDER_COLLAPSE:" + message);
+   }
+   
    export function pingProcess() {
       if(isSocketOpen()) {
          socket.send("PING:" + document.title);

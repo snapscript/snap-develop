@@ -1,5 +1,5 @@
 /*
- * TreeConstants.java December 2016
+ * FolderExpandCommandMarshaller.java December 2016
  *
  * Copyright (C) 2016, Niall Gallagher <niallg@users.sf.net>
  *
@@ -16,10 +16,11 @@
  * permissions and limitations under the License.
  */
 
-package org.snapscript.develop.http.tree;
+package org.snapscript.develop.command;
 
-public interface TreeConstants {
-   String ROOT = "/resource/";
-   String INDENT = "  ";
-   String PREFIX = "/resource";
+public class FolderExpandCommandMarshaller extends ObjectCommandMarshaller<FolderExpandCommand>{
+   
+   public FolderExpandCommandMarshaller() {
+      super(CommandType.FOLDER_EXPAND);
+   }
 }

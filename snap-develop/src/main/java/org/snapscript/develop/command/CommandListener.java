@@ -30,35 +30,38 @@ import org.snapscript.develop.BackupManager;
 import org.snapscript.develop.ProcessManager;
 import org.snapscript.develop.common.Problem;
 import org.snapscript.develop.common.ProblemFinder;
-import org.snapscript.develop.complete.TypeNodeScanner;
 import org.snapscript.develop.http.project.ProjectProblemFinder;
+import org.snapscript.develop.http.tree.TreeContext;
+import org.snapscript.develop.http.tree.TreeContextManager;
 
 public class CommandListener {
    
    private final CommandEventForwarder forwarder;
-   private final ProjectProblemFinder compiler;
-   private final TypeNodeScanner loader;
-   private final CommandFilter filter;
-   private final CommandClient client;
-   private final ProcessManager engine;
-   private final ProcessLogger logger;
+   private final ProjectProblemFinder problemFinder;
+   private final TreeContextManager treeManager;
+   private final CommandFilter commandFilter;
+   private final CommandClient commandClient;
+   private final ProcessManager processManager;
+   private final ProcessLogger processLogger;
    private final ProblemFinder finder;
-   private final BackupManager manager;
+   private final BackupManager backupManager;
+   private final String cookie;
    private final String project;
    private final File root;
    private final Path path;
    
-   public CommandListener(ProcessManager engine, ProjectProblemFinder compiler, TypeNodeScanner loader, FrameChannel channel, ProcessLogger logger, BackupManager manager, Path path, File root, String project) {
-      this.filter = new CommandFilter();
-      this.client = new CommandClient(channel, project);
-      this.forwarder = new CommandEventForwarder(client, filter, logger);
+   public CommandListener(ProcessManager processManager, ProjectProblemFinder problemFinder, FrameChannel frameChannel, ProcessLogger processLogger, BackupManager backupManager, TreeContextManager treeManager, Path path, File root, String project, String cookie) {
+      this.commandFilter = new CommandFilter();
+      this.commandClient = new CommandClient(frameChannel, project);
+      this.forwarder = new CommandEventForwarder(commandClient, commandFilter, processLogger);
       this.finder = new ProblemFinder();
-      this.compiler = compiler;
-      this.manager = manager;
-      this.loader = loader;
-      this.logger = logger;
-      this.engine = engine;
+      this.treeManager = treeManager;
+      this.problemFinder = problemFinder;
+      this.backupManager = backupManager;
+      this.processLogger = processLogger;
+      this.processManager = processManager;
       this.project = project;
+      this.cookie = cookie;
       this.root = root;
       this.path = path;
    }
@@ -88,7 +91,7 @@ public class CommandListener {
             }
          }
       } catch(Exception e) {
-         logger.info("Error exploring directory " + resource, e);
+         processLogger.info("Error exploring directory " + resource, e);
       }
    }
    
@@ -103,24 +106,24 @@ public class CommandListener {
             boolean exists = file.exists();
             
             if(exists) {
-               manager.backupFile(file, project);
+               backupManager.backupFile(file, project);
             }
             if(command.isCreate() && exists) {
-               client.sendAlert(resource, "Resource " + resource + " already exists");
+               commandClient.sendAlert(resource, "Resource " + resource + " already exists");
             } else {
-               manager.saveFile(file, source);
+               backupManager.saveFile(file, source);
                
                if(problem == null) {
-                  client.sendSyntaxError(resource, "", 0, -1); // clear problem
+                  commandClient.sendSyntaxError(resource, "", 0, -1); // clear problem
                } else {
                   String description = problem.getDescription();
                   int line = problem.getLine();
                   long time = System.currentTimeMillis();
                   
-                  client.sendSyntaxError(resource, description, time, line);
+                  commandClient.sendSyntaxError(resource, description, time, line);
                }
                if(!exists) {
-                  client.sendReloadTree();
+                  commandClient.sendReloadTree();
                }
             } 
          } else {
@@ -128,11 +131,11 @@ public class CommandListener {
             
             if(!file.exists()) {
                file.mkdirs();
-               client.sendReloadTree();
+               commandClient.sendReloadTree();
             }
          }
       } catch(Exception e) {
-         logger.info("Error saving " + resource, e);
+         processLogger.info("Error saving " + resource, e);
       }
    }
    
@@ -149,21 +152,21 @@ public class CommandListener {
             boolean toExists = toFile.exists();
             
             if(!fromExists) {
-               client.sendAlert(from, "Resource " + from + " does not exist");
+               commandClient.sendAlert(from, "Resource " + from + " does not exist");
             } else {
                if(toExists) {
-                  client.sendAlert(to, "Resource " + to + " does already exists");
+                  commandClient.sendAlert(to, "Resource " + to + " does already exists");
                } else {
                   if(fromFile.renameTo(toFile)){
-                     client.sendReloadTree();
+                     commandClient.sendReloadTree();
                   } else {
-                     client.sendAlert(from, "Could not rename " + from + " to " + to);
+                     commandClient.sendAlert(from, "Could not rename " + from + " to " + to);
                   }
                }
             }
          } 
       } catch(Exception e) {
-         logger.info("Error renaming " + from, e);
+         processLogger.info("Error renaming " + from, e);
       }
    }   
    
@@ -179,21 +182,21 @@ public class CommandListener {
             boolean exists = file.exists();
             
             if(exists) {
-               manager.backupFile(file, project);
+               backupManager.backupFile(file, project);
             }
-            manager.saveFile(file, source);
-            client.sendSyntaxError(resource, "", 0, -1); // clear problem
-            engine.register(forwarder); // make sure we are registered
-            engine.execute(command, filter); 
+            backupManager.saveFile(file, source);
+            commandClient.sendSyntaxError(resource, "", 0, -1); // clear problem
+            processManager.register(forwarder); // make sure we are registered
+            processManager.execute(command, commandFilter); 
          } else {
             String description = problem.getDescription();
             int line = problem.getLine();
             long time = System.currentTimeMillis();
             
-            client.sendSyntaxError(resource, description, time, line);
+            commandClient.sendSyntaxError(resource, description, time, line);
          }
       } catch(Exception e) {
-         logger.info("Error executing " + resource, e);
+         processLogger.info("Error executing " + resource, e);
       }
    }
    
@@ -201,40 +204,40 @@ public class CommandListener {
       String process = command.getProcess();
       
       try {
-         String focus = filter.getFocus();
+         String focus = commandFilter.getFocus();
          
          if(focus == null) { // not focused
             if(command.isFocus()) {
-               filter.setFocus(process);
+               commandFilter.setFocus(process);
             }
          } else if(process.equals(focus)) { // focused
             if(command.isFocus()) {
-               filter.setFocus(process); // accept messages from this process
+               commandFilter.setFocus(process); // accept messages from this process
             } else {
-               filter.clearFocus(); // clear the focus
+               commandFilter.clearFocus(); // clear the focus
             }
          } else {
             if(command.isFocus()) {
-               filter.setFocus(process);
+               commandFilter.setFocus(process);
             }
          }
-         engine.breakpoints(command, process);
-         engine.register(forwarder); // make sure we are registered
+         processManager.breakpoints(command, process);
+         processManager.register(forwarder); // make sure we are registered
       } catch(Exception e) {
-         logger.info("Error attaching to process " + process, e);
+         processLogger.info("Error attaching to process " + process, e);
       }
    }
    
    public void onStep(StepCommand command) {
       String thread = command.getThread();
-      String focus = filter.getFocus();
+      String focus = commandFilter.getFocus();
             
       try {
          if(focus != null) {
-            engine.step(command, focus);
+            processManager.step(command, focus);
          }
       } catch(Exception e) {
-         logger.info("Error stepping through " + thread +" in process " + focus, e);
+         processLogger.info("Error stepping through " + thread +" in process " + focus, e);
       }
    }
    
@@ -248,102 +251,136 @@ public class CommandListener {
             boolean exists = file.exists();
             
             if(exists) {
-               manager.backupFile(file, project);
+               backupManager.backupFile(file, project);
                
                if(file.isDirectory()) {
                   
                }
                file.delete();
-               client.sendReloadTree();
+               commandClient.sendReloadTree();
             }
          }
       } catch(Exception e) {
-         logger.info("Error deleting " + resource, e);
+         processLogger.info("Error deleting " + resource, e);
       }
    }
    
    public void onBreakpoints(BreakpointsCommand command) {
-      String focus = filter.getFocus();
+      String focus = commandFilter.getFocus();
       
       try {
          if(focus != null) {
-            engine.breakpoints(command, focus);
+            processManager.breakpoints(command, focus);
          }
       } catch(Exception e){
-         logger.info("Error setting breakpoints for process " + focus, e);
+         processLogger.info("Error setting breakpoints for process " + focus, e);
       }
    }
    
    public void onBrowse(BrowseCommand command) {
-      String focus = filter.getFocus();
+      String focus = commandFilter.getFocus();
       
       try {
          if(focus != null) {
-            engine.browse(command, focus);
+            processManager.browse(command, focus);
          }
       } catch(Exception e) {
-         logger.info("Error browsing variables for process " + focus, e);
+         processLogger.info("Error browsing variables for process " + focus, e);
       }
    }
    
    public void onEvaluate(EvaluateCommand command) {
-      String focus = filter.getFocus();
+      String focus = commandFilter.getFocus();
       
       try {
          if(focus != null) {
-            engine.evaluate(command, focus);
+            processManager.evaluate(command, focus);
          }
       } catch(Exception e) {
-         logger.info("Error browsing variables for process " + focus, e);
+         processLogger.info("Error browsing variables for process " + focus, e);
+      }
+   }
+   
+   public void onFolderExpand(FolderExpandCommand command) {
+      String focus = commandFilter.getFocus();
+      String folder = command.getFolder();
+      String project = command.getProject();
+      
+      try {
+         TreeContext context = treeManager.getContext(root, project, cookie);
+         
+         if(context != null) {
+            processLogger.info("Expand folder: " + folder);
+            context.folderExpand(folder);
+         }
+      } catch(Exception e) {
+         processLogger.info("Error stopping process " + focus, e);
+      }
+   }
+   
+   public void onFolderCollapse(FolderCollapseCommand command) {
+      String focus = commandFilter.getFocus();
+      String folder = command.getFolder();
+      String project = command.getProject();
+      
+      try {
+         TreeContext context = treeManager.getContext(root, project, cookie);
+         
+         if(context != null) {
+            processLogger.info("Collapse folder: " + folder);
+            context.folderCollapse(folder);
+         }
+      } catch(Exception e) {
+         processLogger.info("Error stopping process " + focus, e);
       }
    }
    
    public void onStop(StopCommand command) {
-      String focus = filter.getFocus();
+      String focus = commandFilter.getFocus();
       
       try {
          if(focus != null) {
-            engine.stop(focus);
-            client.sendProcessTerminate(focus);
-            filter.clearFocus();
+            processManager.stop(focus);
+            commandClient.sendProcessTerminate(focus);
+            commandFilter.clearFocus();
          }
       } catch(Exception e) {
-         logger.info("Error stopping process " + focus, e);
+         processLogger.info("Error stopping process " + focus, e);
       }
    }
    
    public void onPing(PingCommand command) {
-      String focus = filter.getFocus();
+      String focus = commandFilter.getFocus();
       
       try {
          if(focus != null) {
             long time = System.currentTimeMillis();
             
-            if(!engine.ping(focus, time)) {
-               client.sendProcessTerminate(focus);
-               filter.clearFocus();
+            if(!processManager.ping(focus, time)) {
+               commandClient.sendProcessTerminate(focus);
+               commandFilter.clearFocus();
             }
          }
-         engine.register(forwarder); // make sure we are registered
+         processManager.register(forwarder); // make sure we are registered
       } catch(Exception e) {
-         logger.info("Error pinging process " + focus, e);
+         processLogger.info("Error pinging process " + focus, e);
       }
    }
    
    public void onPing() {
-      String focus = filter.getFocus();
+      String focus = commandFilter.getFocus();
       
       try {
          if(focus != null) {
             long time = System.currentTimeMillis();
             
-            if(!engine.ping(focus, time)) {
-               client.sendProcessTerminate(focus);
-               filter.clearFocus();
+            if(!processManager.ping(focus, time)) {
+               commandClient.sendProcessTerminate(focus);
+               commandFilter.clearFocus();
             }
          }
-         engine.register(forwarder); // make sure we are registered
-         Set<Problem> problems = compiler.compileProject(path);
+         processManager.register(forwarder); // make sure we are registered
+         Set<Problem> problems = problemFinder.compileProject(path);
 //         Map<String, TypeNode> nodes = loader.compileProject(path);
 //         Set<String> names = nodes.keySet();
 //         int index = 0;
@@ -365,19 +402,19 @@ public class CommandListener {
             int line = problem.getLine();
             long time = System.currentTimeMillis();
             
-            client.sendSyntaxError(path,description,  time, line);
+            commandClient.sendSyntaxError(path,description,  time, line);
          }
       } catch(Exception e) {
-         logger.info("Error pinging process " + focus, e);
+         processLogger.info("Error pinging process " + focus, e);
       }
    }
    
    public void onClose() {
       try {
          //client.sendProcessTerminate();
-         engine.remove(forwarder);
+         processManager.remove(forwarder);
       } catch(Exception e) {
-         logger.info("Error removing listener", e);
+         processLogger.info("Error removing listener", e);
       }
    }
 }

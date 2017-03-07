@@ -18,53 +18,47 @@
 
 package org.snapscript.develop.http.tree;
 
-import static org.snapscript.develop.http.tree.TreeConstants.ID;
 import static org.snapscript.develop.http.tree.TreeConstants.INDENT;
+import static org.snapscript.develop.http.tree.TreeConstants.PREFIX;
 import static org.snapscript.develop.http.tree.TreeConstants.ROOT;
 import static org.snapscript.develop.http.tree.TreeEntryBuilder.buildFile;
 import static org.snapscript.develop.http.tree.TreeEntryBuilder.buildFolder;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 public class TreeDirectory {
    
-   private final TreeFolderExpander expander;
-   private final String project;
-   private final String expand;
-   private final File root;
+   private final TreeContext context;
    private final boolean foldersOnly;
    private final int folderDepth;
    
-   public TreeDirectory(File root, String project) {
-      this(root, project, null);
+   public TreeDirectory(TreeContext context) {
+      this(context, false);
    }
    
-   public TreeDirectory(File root, String project, String expand) {
-      this(root, project, expand, false);
+   public TreeDirectory(TreeContext context, boolean foldersOnly) {
+      this(context, foldersOnly, Integer.MAX_VALUE);
    }
    
-   public TreeDirectory(File root, String project, String expand, boolean foldersOnly) {
-      this(root, project, expand, foldersOnly, Integer.MAX_VALUE);
-   }
-   
-   public TreeDirectory(File root, String project, String expand, boolean foldersOnly, int folderDepth) {
-      this.expander = new TreeFolderExpander(project, expand);
+   public TreeDirectory(TreeContext context, boolean foldersOnly, int folderDepth) {
       this.foldersOnly = foldersOnly;
       this.folderDepth = folderDepth;
-      this.project = project;
-      this.expand = expand;
-      this.root = root;
+      this.context = context;
    }
    
    public void buildTree(StringBuilder builder) throws Exception {
+      File root = context.getRoot();
+      String project = context.getProject();
+      Set<String> folders = context.getExpandFolders();
       TreeNode node = new TreeNode.Builder(root)
          .withPath(ROOT + project)
          .withIndent(INDENT)
-         .withPrefix(ID)
-         .withId(1)
+         .withPrefix(PREFIX)
+         .withId("/" + project)
          .withDepth(folderDepth)
-         .withExpand(expand != null)
+         .withExpand(!folders.isEmpty())
          .withRoot(true)
          .build();
       
@@ -83,7 +77,7 @@ public class TreeDirectory {
                List<File> list = node.getFiles();
                
                if(!list.isEmpty()) {
-                  String prefix = node.getPrefix() + node.getId() + ".";
+                  String prefix = node.getPrefix() + node.getId() + "/";
                   
                   builder.append(node.getIndent());
                   builder.append("<ul>\n");
@@ -95,8 +89,9 @@ public class TreeDirectory {
                            .withPath(nextPath)
                            .withIndent(node.getIndent() + INDENT)
                            .withPrefix(prefix)
+                           .withId(title)
                            .withDepth(folderDepth -1)
-                           .withExpand(expander.expand(nextPath))
+                           .withExpand(context.expand(nextPath))
                            .build();
                      
                      buildTree(builder, next);

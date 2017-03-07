@@ -20,19 +20,29 @@ package org.snapscript.develop.http.project;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.simpleframework.http.Cookie;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.snapscript.develop.http.resource.Resource;
 import org.snapscript.develop.http.tree.TreeBuilder;
+import org.snapscript.develop.http.tree.TreeContext;
+import org.snapscript.develop.http.tree.TreeContextManager;
 
 public class ProjectTreeResource implements Resource {
    
+   private final TreeContextManager manager;
+   private final AtomicInteger counter;
    private final ProjectBuilder builder;
+   private final String session;
    
-   public ProjectTreeResource(ProjectBuilder builder) {
+   public ProjectTreeResource(ProjectBuilder builder, TreeContextManager manager, String session) {
+      this.counter = new AtomicInteger();
+      this.manager = manager;
       this.builder = builder;
+      this.session = session;
    }
 
    @Override
@@ -57,7 +67,20 @@ public class ProjectTreeResource implements Resource {
       if(folders != null) {
          foldersOnly = Boolean.parseBoolean(folders);
       }
-      String result = TreeBuilder.createTree(treePath, name, expand, foldersOnly, folderDepth);
+      int count = counter.getAndIncrement();
+      Cookie cookie = request.getCookie(session);
+      String value = String.valueOf(count);
+      
+      if(cookie != null) {
+         value = cookie.getValue();
+      } else {
+         response.setCookie(session, value);
+      }
+      String projectName = treePath.getName();
+      TreeContext context = manager.getContext(treePath, projectName, value);
+
+      context.folderExpand(expand);
+      String result = TreeBuilder.createTree(context, name, foldersOnly, folderDepth);
       PrintStream out = response.getPrintStream();
       response.setContentType("text/html");
       out.println(result);

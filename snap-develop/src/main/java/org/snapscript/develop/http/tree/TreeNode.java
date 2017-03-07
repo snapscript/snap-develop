@@ -31,7 +31,7 @@ public class TreeNode {
    private final String path; 
    private final String indent;
    private final String prefix;
-   private final int id; 
+   private final String id; 
    private final int depth; 
    private final boolean expand;
    private final boolean root;
@@ -78,7 +78,7 @@ public class TreeNode {
       return prefix;
    }
 
-   public int getId() {
+   public String getId() {
       return id;
    }
 
@@ -104,7 +104,7 @@ public class TreeNode {
       private String path; 
       private String indent;
       private String prefix;
-      private int id; 
+      private String id; 
       private int depth; 
       private boolean expand;
       private boolean root;
@@ -133,7 +133,7 @@ public class TreeNode {
          return this;
       }
 
-      public Builder withId(int id) {
+      public Builder withId(String id) {
          this.id = id;
          return this;
       }

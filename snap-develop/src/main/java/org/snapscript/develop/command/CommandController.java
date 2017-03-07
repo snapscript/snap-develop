@@ -67,7 +67,11 @@ public class CommandController implements FrameListener {
                listener.onRename((RenameCommand)command);
             } else if(command instanceof PingCommand) {
                listener.onPing((PingCommand)command);
-            } 
+            } else if(command instanceof FolderExpandCommand) {
+               listener.onFolderExpand((FolderExpandCommand)command);
+            }else if(command instanceof FolderCollapseCommand) {
+               listener.onFolderCollapse((FolderCollapseCommand)command);
+            }
          } else if(type == FrameType.PONG){
             listener.onPing();
          }

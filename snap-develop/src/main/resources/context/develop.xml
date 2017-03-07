@@ -146,6 +146,8 @@
     <constructor-arg ref="ProjectBuilder" />
   </bean>
 
+  <bean id="TreeContextManager" class="org.snapscript.develop.http.tree.TreeContextManager" />
+
   <bean id="ProjectBuilder" class="org.snapscript.develop.http.project.ProjectBuilder">
     <constructor-arg ref="Workspace" />
     <constructor-arg value="${project-mode}" />
@@ -170,6 +172,8 @@
 
   <bean id="ProjectTreeResource" class="org.snapscript.develop.http.project.ProjectTreeResource">
     <constructor-arg ref="ProjectBuilder" />
+    <constructor-arg ref="TreeContextManager" />
+    <constructor-arg value="SESSID" />
   </bean>
 
   <bean id="ProjectDisplayResource" class="org.snapscript.develop.http.project.ProjectDisplayResource">
@@ -189,7 +193,9 @@
     <constructor-arg ref="ProcessLogger" />
     <constructor-arg ref="ProcessManager" />
     <constructor-arg ref="BackupManager" />
+    <constructor-arg ref="TreeContextManager" />
     <constructor-arg ref="ThreadPool" />
+    <constructor-arg value="SESSID" />
   </bean>
 
   <bean id="ClassResourceLoader" class="org.snapscript.develop.http.loader.ClassResourceLoader">
@@ -271,6 +277,7 @@
   <bean id="WebContainer" class="org.snapscript.develop.http.WebContainer">
     <constructor-arg ref="WebSocketContainer" />
     <constructor-arg value="Apache/2.2.14 (Win32)" />
+    <constructor-arg value="SESSID" />
   </bean>
 
   <bean id="WebServer" class="org.snapscript.develop.http.WebServer">
