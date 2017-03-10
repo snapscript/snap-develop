@@ -5,7 +5,7 @@
 	width: 70px;
 	height: 25px;
 	overflow: hidden;
-	background: url('/img/down_arrow_small_trans.png') no-repeat right transparent;
+	background: url('/img/down_arrow_small_trans.png') no-repeat right #ffffff;
 	border: 1px solid #c0c0c0;
 }
 
@@ -16,7 +16,7 @@
 	width: 150px;
 	height: 25px;
 	overflow: hidden;
-	background: url('/img/down_arrow_small_trans.png') no-repeat right transparent;
+	background: url('/img/down_arrow_small_trans.png') no-repeat right #ffffff;
 	border: 1px solid #c0c0c0;
 }
 
@@ -27,6 +27,6 @@
 	width: 150px;
 	height: 25px;
 	overflow: hidden;
-	background: url('/img/down_arrow_small_trans.png') no-repeat right transparent;
+	background: url('/img/down_arrow_small_trans.png') no-repeat right #ffffff;
 	border: 1px solid #c0c0c0;
 }
