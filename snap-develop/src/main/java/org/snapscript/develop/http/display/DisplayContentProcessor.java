@@ -51,12 +51,12 @@ public class DisplayContentProcessor {
    public DisplayContent create(Request request) throws Exception {
       Path path = request.getPath();
       String target = path.getPath();
-      DisplayContent content = contentCache.fetch(target);
+      DisplayContent content = contentCache.fetch(target); // THIS CACHE DOES NOT WORK WITH REGARDS THEME
       
-      if(content == null) {
+      //if(content == null) {
          content = compress(request);
-         contentCache.cache(target, content);
-      }
+        // contentCache.cache(target, content);
+      //}
       return content;
    }
    
