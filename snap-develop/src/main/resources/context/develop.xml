@@ -150,8 +150,9 @@
     <constructor-arg value="project.vm" />
   </bean>
 
-  <bean id="ProjectOpenDialog" class="org.snapscript.develop.http.project.ProjectOpenDialog">
-    <constructor-arg ref="ProjectBuilder" />
+  <bean id="ProjectSelectResource" class="org.snapscript.develop.http.project.ProjectSelectResource">
+    <constructor-arg ref="DisplayModelResolver" />
+    <constructor-arg ref="ProjectBuilder"/>
     <constructor-arg ref="TemplateEngine" />
     <constructor-arg value="start.vm" />
   </bean>
@@ -262,7 +263,7 @@
         <entry key="/display/.*" value-ref="DisplayThemeResource" />
         <entry key="/resource/.*" value-ref="ProjectFileResource" />
         <entry key="/tree.*" value-ref="ProjectTreeResource" />
-        <entry key="/" value-ref="ProjectOpenDialog" />
+        <entry key="/" value-ref="ProjectSelectResource" />
         <entry key="/.*.js" value-ref="TypeScriptResource" />
         <entry key=".*:\d+" value-ref="ProcessTunnelResource" />
       </map>

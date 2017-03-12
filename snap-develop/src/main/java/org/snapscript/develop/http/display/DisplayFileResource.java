@@ -48,7 +48,7 @@ public class DisplayFileResource implements Resource {
 
    @Override
    public void handle(Request request, Response response) throws Exception {
-      DisplayContent content = displayProcessor.compress(request);
+      DisplayContent content = displayProcessor.create(request);
       OutputStream output = response.getOutputStream();
       String type = content.getType();
       String path = content.getPath();

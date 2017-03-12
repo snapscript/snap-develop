@@ -26,6 +26,8 @@ import java.util.zip.GZIPOutputStream;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Protocol;
 import org.simpleframework.http.Request;
+import org.snapscript.common.Cache;
+import org.snapscript.common.LeastRecentlyUsedCache;
 import org.snapscript.develop.http.resource.ContentTypeResolver;
 import org.snapscript.develop.http.resource.FileResolver;
 
@@ -34,17 +36,31 @@ public class DisplayContentProcessor {
    private static final String ENCODING_TYPE = "gzip";
    private static final String TEXT_TYPE = "text";
 
+   private final Cache<String, DisplayContent> contentCache;
    private final DisplayInterpolator displayInterpolator;
    private final ContentTypeResolver typeResolver;
    private final FileResolver fileResolver;
 
    public DisplayContentProcessor(DisplayInterpolator displayInterpolator, FileResolver fileResolver, ContentTypeResolver typeResolver) {
+      this.contentCache = new LeastRecentlyUsedCache<String, DisplayContent>(1000);
       this.displayInterpolator = displayInterpolator;
       this.fileResolver = fileResolver;
       this.typeResolver = typeResolver;
    }
 
-   public DisplayContent compress(Request request) throws Exception {
+   public DisplayContent create(Request request) throws Exception {
+      Path path = request.getPath();
+      String target = path.getPath();
+      DisplayContent content = contentCache.fetch(target);
+      
+      if(content == null) {
+         content = compress(request);
+         contentCache.cache(target, content);
+      }
+      return content;
+   }
+   
+   private DisplayContent compress(Request request) throws Exception {
       Path path = request.getPath();
       String target = path.getPath();
       String type = typeResolver.resolveType(target);

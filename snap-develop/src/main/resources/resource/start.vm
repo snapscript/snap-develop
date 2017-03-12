@@ -3,11 +3,11 @@
 <head>
 <title>${root}</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<link href="/css/external/w2ui.flat.css" rel="stylesheet">
 <link href="/css/external/font-awesome.min.css" rel="stylesheet">
 <link href="/css/external/bootstrap.min.css" rel="stylesheet">
 <link href="/css/external/jquery-ui.min.css" rel="stylesheet" />
-<link href="/css/external/fancytree.css" rel="stylesheet" />
+<link href="/css/external/${FANCY_TREE_CSS_FILE}" rel="stylesheet" />
+<link href="/css/external/${W2UI_CSS_FILE}" rel="stylesheet">
 <link href="/css/dialog.css" rel="stylesheet" />
 <link href="/css/tree.css" rel="stylesheet" />
 <link href="/css/splash.css" rel="stylesheet" />
@@ -26,7 +26,7 @@
 <script src="/js/dialog.min.js"></script>
 <script src="/js/common.min.js"></script>
 </head>
-<body style="height: 100%; margin: 0; background-color: #ececec;">
+<body style="height: 100%; margin: 0; background-color: ${PROJECT_BACKGROUND_COLOR}; color: ${PROJECT_FONT_COLOR};">
   <div id="mainLayout" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"></div>
   <div id="overlay">
     <!--div id="splash-square"><img src="/img/splash.png"></div-->
