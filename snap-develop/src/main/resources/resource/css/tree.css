@@ -12,7 +12,7 @@
 	font-family: "Lucida Console", sans-serif;
 	overflow: scroll;
 	font-size: 0.9em;
-	background-color: #ffffff;
+	background-color: ${TREE_BACKGROUND_COLOR};
 	border-style: solid;
 	border-width: 1px;
 	border-color: #c0c0c0;
@@ -24,11 +24,15 @@
 	left: 8px;
 }
 
+#explorerTree {
+	background-color: ${TREE_BACKGROUND_COLOR};
+}
+
 #browseParent { 
 	font-family: "Lucida Console", sans-serif;
 	overflow: scroll;	
     font-size: 0.9em;   
-    background-color: #ffffff;
+    background-color: ${TREE_BACKGROUND_COLOR};
     border-radius: 0px;    
  	border-style: solid;
     border-width: 1px;
@@ -42,7 +46,8 @@
 }
 
 .browseTab {	
-	background-image: url('/img/toolbar/fldr_obj.gif');	
+	background-image: url('${IMAGE_FOLDER}/fldr_obj.gif');	
+	background-size: contain;
 	background-position: left bottom;
 	background-repeat: no-repeat;
 	padding-top: 3px;
@@ -55,8 +60,8 @@
 .ui-menu {
 	font-family: Verdana, Arial, sans-serif;
 	font-size: 12px;
-	font-color: #000000;
-	background-color: #f3f3f3;
+	color: #f1f1f1;
+	background-color: #616161;
 	-webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.4);
 	-moz-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.4);
 	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.4);
@@ -70,43 +75,50 @@
 }
 
 .menu-explore {
-	background-image: url('/img/toolbar/fldr_obj.gif') !important;
+	background-image: url('${IMAGE_FOLDER}/fldr_obj.gif') !important;
+	background-size: 16px 16px !important;
 	background-position: center !important;
 	background-repeat: no-repeat !important;
 }
 
 .menu-run {
-	background-image: url('/img/toolbar/nav_go.gif') !important;
+	background-image: url('${IMAGE_FOLDER}/nav_go.gif') !important;
+	background-size: 16px 16px !important;
 	background-position: center !important;
 	background-repeat: no-repeat !important;
 }
 
 .menu-stop {
-	background-image: url('/img/toolbar/rem_co.gif') !important;
+	background-image: url('${IMAGE_FOLDER}/rem_co.gif') !important;
+	background-size: 16px 16px !important;
 	background-position: center !important;
 	background-repeat: no-repeat !important;
 }
 
 .menu-save {
-	background-image: url('/img/toolbar/save_edit.gif') !important;
+	background-image: url('${IMAGE_FOLDER}/save_edit.gif') !important;
+	background-size: 16px 16px !important;
 	background-position: center !important;
 	background-repeat: no-repeat !important;
 }
 
 .menu-rename {
-	background-image: url('/img/toolbar/swap.gif') !important;
+	background-image: url('${IMAGE_FOLDER}/swap.gif') !important;
+	background-size: 16px 16px !important;
 	background-position: center !important;
 	background-repeat: no-repeat !important;
 }
 
 .menu-trash {
-	background-image: url('/img/toolbar/trash.gif') !important;
+	background-image: url('${IMAGE_FOLDER}/trash.gif') !important;
+	background-size: 16px 16px !important;
 	background-position: center !important;
 	background-repeat: no-repeat !important;
 }
 
 .menu-new {
-	background-image: url('/img/toolbar/new_con.gif') !important;
+	background-image: url('${IMAGE_FOLDER}/new_con.gif') !important;
+	background-size: 16px 16px !important;
 	background-position: center !important;
 	background-repeat: no-repeat !important;
 }

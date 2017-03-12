@@ -551,7 +551,7 @@ button.ui-button::-moz-focus-inner {
 	cursor: pointer;
 	min-height: 0; /* support: IE7 */
 	/* support: IE10, see #8844 */
-	list-style-image: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
+	/*list-style-image: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");*/
 }
 .ui-menu .ui-menu-divider {
 	margin: 5px 0;
@@ -884,9 +884,9 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-focus,
 .ui-widget-header .ui-state-focus {
 	border: 1px solid #999999;
-	background: #dadada url("/img/icons/ui-bg_glass_75_dadada_1x400.png") 50% 50% repeat-x;
+	/*background: #dadada url("/img/icons/ui-bg_glass_75_dadada_1x400.png") 50% 50% repeat-x;*/
 	font-weight: normal;
-	color: #212121;
+	color: #f0f0f0;
 }
 .ui-state-hover a,
 .ui-state-hover a:hover,
@@ -903,9 +903,9 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-active,
 .ui-widget-header .ui-state-active {
 	border: 1px solid #aaaaaa;
-	background: #ffffff url("/img/icons/ui-bg_glass_65_ffffff_1x400.png") 50% 50% repeat-x;
+	/*background: #ffffff url("/img/icons/ui-bg_glass_65_ffffff_1x400.png") 50% 50% repeat-x;*/
 	font-weight: normal;
-	color: #212121;
+	color: #f0f0f0;
 }
 .ui-state-active a,
 .ui-state-active a:link,
@@ -988,7 +988,7 @@ body .ui-tooltip {
 }
 .ui-state-hover .ui-icon,
 .ui-state-focus .ui-icon {
-	background-image: url("/img/icons/ui-icons_454545_256x240.png");
+	/*background-image: url("/img/icons/ui-icons_454545_256x240.png");*/
 }
 .ui-state-active .ui-icon {
 	background-image: url("/img/icons/ui-icons_454545_256x240.png");

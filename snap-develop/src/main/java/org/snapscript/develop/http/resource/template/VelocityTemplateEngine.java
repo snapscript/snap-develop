@@ -32,8 +32,8 @@ public class VelocityTemplateEngine implements TemplateEngine {
    private final VelocityEngine engine;
    private final TemplateFinder finder;
 
-   public VelocityTemplateEngine(VelocityEngine engine, FileResolver resolver, String prefix, String suffix) {
-      this.finder = new TemplateFinder(resolver, prefix, suffix);
+   public VelocityTemplateEngine(VelocityEngine engine, FileResolver resolver, String prefix) {
+      this.finder = new TemplateFinder(resolver, prefix);
       this.engine = engine;
    }
 

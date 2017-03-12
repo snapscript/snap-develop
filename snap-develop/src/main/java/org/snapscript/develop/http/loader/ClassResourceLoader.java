@@ -52,8 +52,12 @@ public class ClassResourceLoader {
       return data;
    }
    
-   private byte[] loadResource(String path) throws Exception {
-      String location = path.substring(1);
+   public static byte[] loadResource(String path) throws Exception {
+      String location = path;
+      
+      if(location.startsWith("/")) {
+         location = path.substring(1);
+      }
       ClassLoader loader = ClassLoader.getSystemClassLoader();
       InputStream input = loader.getResourceAsStream(location);
       

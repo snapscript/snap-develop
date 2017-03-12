@@ -18,14 +18,25 @@
 
 package org.snapscript.develop.http.tree;
 
+import org.snapscript.develop.http.display.DisplayModelResolver;
+import org.snapscript.develop.http.resource.template.TemplateModel;
+
 public class TreeBuilder {
 
-   public static String createTree(TreeContext context, String treeId, boolean foldersOnly, int folderDepth) throws Throwable {
+   private final DisplayModelResolver resolver;
+   
+   public TreeBuilder(DisplayModelResolver resolver) {
+      this.resolver = resolver;
+   }
+   
+   public String createTree(TreeContext context, String treeId, boolean foldersOnly, int folderDepth) throws Throwable {
       StringBuilder builder = new StringBuilder();
       builder.append("<div id=\""+treeId+"\">\n");
       builder.append("<ul id=\"treeData\" style=\"display: none;\">\n");
+      TemplateModel model = resolver.getModel();
       TreeDirectory tree = new TreeDirectory(
                context,
+               model,
                foldersOnly,
                folderDepth);
       tree.buildTree(builder);

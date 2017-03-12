@@ -30,16 +30,10 @@ import org.snapscript.develop.http.resource.FileResolver;
 public class TemplateFinder {
 
    private final FileResolver resolver;
-   private final String suffix;
    private final String prefix;
 
    public TemplateFinder(FileResolver resolver, String prefix) {
-      this(resolver, prefix, null);
-   }
-   
-   public TemplateFinder(FileResolver resolver, String prefix, String suffix) {
       this.resolver = resolver;
-      this.suffix = suffix;
       this.prefix = prefix;
    }
    
@@ -66,7 +60,7 @@ public class TemplateFinder {
 
       for(String realPath : searchPath) {
          InputStream source = resolver.resolveStream(realPath);
-         
+        
          if(source != null) {
             return realPath;
          }
@@ -75,11 +69,6 @@ public class TemplateFinder {
    }
 
    private List<String> searchPath(String path) throws IOException {
-      if (suffix != null) {
-         if (!path.endsWith(suffix)) {
-            path = path + suffix;
-         }
-      }
       if (prefix != null) {
          String original = path;
          

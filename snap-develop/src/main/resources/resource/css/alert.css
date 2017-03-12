@@ -1,5 +1,6 @@
 .alertMessage {	
-	background-image: url('/img/warning.png');	
+	background-image: url('${IMAGE_FOLDER}/warning.png');	
+	background-size: contain;
 	background-position: left bottom;
 	background-repeat: no-repeat;
 	padding-top: 3px;

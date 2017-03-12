@@ -11,7 +11,7 @@ function gcd(a,b) {
     b = temp; 
   }
  
-  while (true) {
+  loop {
     a %= b;
     if (a == 0) { 
        return b; 

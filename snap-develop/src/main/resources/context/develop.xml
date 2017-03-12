@@ -78,21 +78,12 @@
     <constructor-arg ref="FileManager" />
   </bean>
 
-  <bean id="VelocityEngine" class="org.apache.velocity.app.VelocityEngine" init-method="init">
-    <constructor-arg>
-      <props>
-        <prop key="runtime.log.logsystem.class">org.apache.velocity.runtime.log.Log4JLogChute</prop>
-        <prop key="runtime.log.logsystem.log4j.logger">root</prop>
-        <prop key="parser.pool.size">5</prop>
-      </props>
-    </constructor-arg>
-  </bean>
+  <!-- bean id="VelocityEngine" class="org.apache.velocity.app.VelocityEngine" init-method="init"> <constructor-arg> <props> <prop key="runtime.log.logsystem.class">org.apache.velocity.runtime.log.Log4JLogChute</prop> 
+    <prop key="runtime.log.logsystem.log4j.logger">root</prop> <prop key="parser.pool.size">5</prop> </props> </constructor-arg> </bean -->
 
-  <bean id="TemplateEngine" class="org.snapscript.develop.http.resource.template.VelocityTemplateEngine">
-    <constructor-arg ref="VelocityEngine" />
+  <bean id="TemplateEngine" class="org.snapscript.develop.http.resource.template.StringTemplateEngine">
     <constructor-arg ref="FileResolver" />
     <constructor-arg value="/" />
-    <constructor-arg value=".vm" />
   </bean>
 
   <bean id="TypeScriptCompiler" class="org.snapscript.develop.compile.TypeScriptCompiler">
@@ -102,7 +93,7 @@
 
   <bean id="TypeScriptResource" class="org.snapscript.develop.compile.TypeScriptResource">
     <constructor-arg ref="TypeScriptCompiler" />
-    <constructor-arg ref="FileMatcher" />
+    <constructor-arg ref="DisplayMatcher" />
     <constructor-arg value="src/main/resources/resource/ts" />
     <constructor-arg>
       <list>
@@ -154,6 +145,7 @@
   </bean>
 
   <bean id="ProjectResource" class="org.snapscript.develop.http.project.ProjectResource">
+    <constructor-arg ref="DisplayModelResolver"/>
     <constructor-arg ref="TemplateEngine" />
     <constructor-arg value="project.vm" />
   </bean>
@@ -173,12 +165,45 @@
   <bean id="ProjectTreeResource" class="org.snapscript.develop.http.project.ProjectTreeResource">
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="TreeContextManager" />
+    <constructor-arg ref="DisplayModelResolver"/>
     <constructor-arg value="SESSID" />
   </bean>
 
-  <bean id="ProjectDisplayResource" class="org.snapscript.develop.http.project.ProjectDisplayResource">
+  <bean id="DisplayThemeResource" class="org.snapscript.develop.http.display.DisplayThemeResource">
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg value=".display" />
+  </bean>
+
+  <bean id="DisplayThemeLoader" class="org.snapscript.develop.http.display.DisplayThemeLoader" init-method="validateThemes">
+    <constructor-arg>
+      <list>
+        <value>/context/theme/monokai.xml</value>
+        <value>/context/theme/eclipse.xml</value>
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <bean id="DisplayModelResolver" class="org.snapscript.develop.http.display.DisplayModelResolver">
+    <constructor-arg ref="DisplayThemeLoader" />
+    <constructor-arg ref="Workspace" />
+    <constructor-arg value=".display" />
+  </bean>
+
+  <bean id="DisplayInterpolator" class="org.snapscript.develop.http.display.DisplayInterpolator">
+    <constructor-arg ref="DisplayModelResolver" />
+    <constructor-arg ref="TemplateEngine" />
+  </bean>
+
+  <bean id="DisplayContentProcessor" class="org.snapscript.develop.http.display.DisplayContentProcessor">
+    <constructor-arg ref="DisplayInterpolator" />
+    <constructor-arg ref="FileResolver" />
+    <constructor-arg ref="ContentTypeResolver" />
+  </bean>
+
+  <bean id="DisplayMatcher" class="org.snapscript.develop.http.display.DisplayResourceMatcher">
+    <constructor-arg ref="DisplayContentProcessor" />
+    <constructor-arg ref="FileResolver" />
+    <constructor-arg ref="ProcessLogger" />
   </bean>
 
   <bean id="ProjectHistoryResource" class="org.snapscript.develop.http.project.ProjectHistoryResource">
@@ -234,7 +259,7 @@
         <entry key="/find.*" value-ref="TextMatchResource" />
         <entry key="/class/.*" value-ref="ClassLoaderResource" />
         <entry key="/project/.*" value-ref="ProjectResource" />
-        <entry key="/display/.*" value-ref="ProjectDisplayResource" />
+        <entry key="/display/.*" value-ref="DisplayThemeResource" />
         <entry key="/resource/.*" value-ref="ProjectFileResource" />
         <entry key="/tree.*" value-ref="ProjectTreeResource" />
         <entry key="/" value-ref="ProjectOpenDialog" />
@@ -244,17 +269,11 @@
     </constructor-arg>
   </bean>
 
-  <bean id="FileMatcher" class="org.snapscript.develop.http.resource.FileMatcher">
-    <constructor-arg ref="FileResolver" />
-    <constructor-arg ref="ContentTypeResolver" />
-    <constructor-arg ref="ProcessLogger" />
-  </bean>
-
   <bean id="CombinationMatcher" class="org.snapscript.develop.http.resource.CombinationMatcher">
     <constructor-arg>
       <list>
         <ref bean="ResourceMatcher" />
-        <ref bean="FileMatcher" />
+        <ref bean="DisplayMatcher" />
       </list>
     </constructor-arg>
     <constructor-arg ref="NotFoundResource" />
@@ -262,6 +281,7 @@
 
   <bean id="ResourceContainer" class="org.snapscript.develop.http.resource.ResourceContainer">
     <constructor-arg ref="CombinationMatcher" />
+    <constructor-arg ref="ProcessLogger" />
   </bean>
 
   <bean id="WebSocketRouter" class="org.simpleframework.http.socket.service.DirectRouter">

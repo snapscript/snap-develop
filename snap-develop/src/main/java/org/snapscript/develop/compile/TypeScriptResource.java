@@ -24,18 +24,18 @@ import java.util.List;
 
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.snapscript.develop.http.resource.FileMatcher;
 import org.snapscript.develop.http.resource.Resource;
+import org.snapscript.develop.http.resource.ResourceMatcher;
 
 public class TypeScriptResource implements Resource {
 
    private final TypeScriptCompiler compiler;
-   private final FileMatcher matcher;
+   private final ResourceMatcher matcher;
    private final List<File> outputDirs;
    private final List<String> sourceFiles;
    private final File typescriptDir;
    
-   public TypeScriptResource(TypeScriptCompiler compiler, FileMatcher matcher, File typescriptDir, List<File> outputDirs, List<String> sourceFiles) {
+   public TypeScriptResource(TypeScriptCompiler compiler, ResourceMatcher matcher, File typescriptDir, List<File> outputDirs, List<String> sourceFiles) {
       this.compiler = compiler;
       this.typescriptDir = typescriptDir;
       this.outputDirs = outputDirs;

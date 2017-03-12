@@ -24,37 +24,35 @@ import static org.simpleframework.http.Status.OK;
 
 import java.io.IOException;
 
-import org.simpleframework.http.Method;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
 import org.simpleframework.http.core.Container;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.snapscript.agent.log.ProcessLogger;
 
 public class ResourceContainer implements Container {
 
-   private static final Logger LOG = LoggerFactory.getLogger(ResourceContainer.class);
-
    private final ResourceMatcher matcher;
+   private final ProcessLogger logger;
    private final Resource failure;
    private final Status status;
 
-   public ResourceContainer(ResourceMatcher matcher) {
-      this(matcher, OK);
+   public ResourceContainer(ResourceMatcher matcher, ProcessLogger logger) {
+      this(matcher, logger, OK);
    }
 
-   public ResourceContainer(ResourceMatcher matcher, Status status) {
-      this(matcher, null, status);
+   public ResourceContainer(ResourceMatcher matcher, ProcessLogger logger, Status status) {
+      this(matcher, logger, null, status);
    }
 
-   public ResourceContainer(ResourceMatcher matcher, Resource failure) {
-      this(matcher, failure, OK);
+   public ResourceContainer(ResourceMatcher matcher, ProcessLogger logger, Resource failure) {
+      this(matcher, logger, failure, OK);
    }
 
-   public ResourceContainer(ResourceMatcher matcher, Resource failure, Status status) {
+   public ResourceContainer(ResourceMatcher matcher, ProcessLogger logger, Resource failure, Status status) {
       this.failure = failure;
       this.matcher = matcher;
+      this.logger = logger;
       this.status = status;
    }
 
@@ -71,7 +69,8 @@ public class ResourceContainer implements Container {
          response.setDescription(status.description);
          resource.handle(request, response);
       } catch (Throwable cause) {
-         LOG.info("Error handling resource", cause);
+         cause.printStackTrace();
+         logger.info("Error handling resource", cause);
 
          try {
             if (failure != null) {
@@ -79,7 +78,7 @@ public class ResourceContainer implements Container {
                failure.handle(request, response);
             }
          } catch (Throwable fatal) {
-            LOG.info("Could not send an error response", fatal);
+            logger.info("Could not send an error response", fatal);
          }
       } finally {
          try {
@@ -87,7 +86,7 @@ public class ResourceContainer implements Container {
                response.close();
             }
          } catch (IOException ignore) {
-            LOG.info("Could not close response", ignore);
+            logger.info("Could not close response", ignore);
          }
       }
    }

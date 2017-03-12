@@ -1,0 +1,15 @@
+<theme name="monokai">
+   <value key="IMAGE_FOLDER">/img/theme/monokai</value>
+   <value key="PROJECT_FONT_COLOR">#ffffff</value>
+   <value key="PROJECT_BACKGROUND_COLOR">#515151</value>
+   <value key="PROJECT_MENU_COLOR">#515151</value>
+   <value key="FANCY_TREE_CSS_FILE">fancytree-dark.css</value>
+   <value key="W2UI_CSS_FILE">w2ui-flat-dark.css</value>
+   <value key="CONSOLE_BACKGROUND_COLOR">#919191</value>
+   <value key="DIALOG_BACKGROUND_COLOR">#717171</value>
+   <value key="DIALOG_FONT_COLOR">#FFFFFF</value> 
+   <value key="DIALOG_PANEL_COLOR">#616161</value>
+   <value key="DIALOG_ENTRY_HIGHLIGHT_COLOR">#919191</value>
+   <value key="DIALOG_ENTRY_BORDER_COLOR">#DEDEDE</value>  
+   <value key="TREE_BACKGROUND_COLOR">#616161</value>   
+</theme>

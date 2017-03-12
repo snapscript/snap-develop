@@ -26,7 +26,7 @@ var Profiler;
             var profileRecord = profileRecords[i];
             var resourcePath = FileTree.createResourcePath(profileRecord.resource);
             var displayName = "<div class='profilerRecord'>" + resourcePath.projectPath + "</div>";
-            var percentageBar = "<div style='padding: 2px;'><div style='height: 10px; background: #C61414; width: " + profilerWidths[i] + "%;'></div></div>";
+            var percentageBar = "<div style='padding: 2px;'><div style='height: 10px; background: #ed6761; width: " + profilerWidths[i] + "%;'></div></div>";
             var averageTime = (profileRecord.count / profileRecord.time) / 1000; // average time in seconds
             profilerRecords.push({
                 recid: profilerIndex++,

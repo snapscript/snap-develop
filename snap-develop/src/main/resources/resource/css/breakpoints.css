@@ -7,8 +7,8 @@
     border-width: 1px;
     border-color: #c0c0c0;
     position: absolute;
-    padding: 2px;
-    top: 8px;
+    padding: 0px;
+    top: 12px;
     right: 8px;
     bottom: 8px;
     left: 8px;
@@ -18,13 +18,15 @@
     /*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
     font-size: 1.1em;  	
-	background-image: url('/img/toolbar/thread_view.gif');	
+	background-image: url('${IMAGE_FOLDER}/thread_view.gif');	
+	background-size: contain;
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */
 }
 .breakpointsTab {	
-	background-image: url('/img/toolbar/threadgroup_obj.gif');	
+	background-image: url('${IMAGE_FOLDER}/threadgroup_obj.gif');	
+	background-size: contain;
 	background-position: left bottom;
 	background-repeat: no-repeat;
 	padding-top: 3px;

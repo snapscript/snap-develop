@@ -7,15 +7,16 @@
     border-width: 1px;
     border-color: #c0c0c0;
     position: absolute;
-    padding: 2px;
-    top: 8px;
+    padding: 0px;
+    top: 12px;
     right: 8px;
     bottom: 8px;
     left: 8px;
 }
 
 .debugTab {	
-	background-image: url('/img/toolbar/debug_exc.gif');	
+	background-image: url('${IMAGE_FOLDER}/debug_exc.gif');
+	background-size: contain;	
 	background-position: left bottom;
 	background-repeat: no-repeat;
 	padding-top: 3px;
@@ -28,7 +29,8 @@
 .debugRecord {
 	/*font-family: "Lucida Console", sans-serif;*/
     font-size: 1.1em;
-	background-image: url('/img/toolbar/nav_go.gif');	
+	background-image: url('${IMAGE_FOLDER}/nav_go.gif');
+	background-size: contain;	
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */
@@ -37,7 +39,8 @@
 .debugFocusRecord {
 	/*font-family: "Lucida Console", sans-serif;*/
     font-size: 1.1em;
-	background-image: url('/img/toolbar/resume_co.gif');	
+	background-image: url('${IMAGE_FOLDER}/resume_co.gif');
+	background-size: contain;	
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */
@@ -46,7 +49,8 @@
 .debugIdleRecord {
 	/*font-family: "Lucida Console", sans-serif;*/
     font-size: 1.1em;
-	background-image: url('/img/toolbar/suspend_co.gif');	
+	background-image: url('${IMAGE_FOLDER}/suspend_co.gif');	
+	background-size: contain;
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */

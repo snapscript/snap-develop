@@ -33,7 +33,8 @@
 }
 
 .editTab {	
-	background-image: url('/img/toolbar/write_obj.gif');	
+	background-image: url('${IMAGE_FOLDER}/write_obj.gif');	
+	background-size: contain;
 	background-position: left bottom;
 	background-repeat: no-repeat;
 	padding-top: 3px;
@@ -47,7 +48,8 @@
 	/*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
 	font-size: 1.1em;
-	background-image: url('/img/toolbar/green_dot.gif');
+	background-image: url('${IMAGE_FOLDER}/green_dot.gif');
+	background-size: contain;
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */
@@ -57,7 +59,8 @@
 	/*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
 	font-size: 1.1em;
-	background-image: url('/img/toolbar/grey_dot.gif');
+	background-image: url('${IMAGE_FOLDER}/grey_dot.gif');
+	background-size: contain;
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */
@@ -68,7 +71,8 @@
     font-size: 1.2em;*/
 	font-size: 1.1em;
 	white-space: nowrap;
-	background-image: url('/img/toolbar/cu_obj.gif');
+	background-image: url('${IMAGE_FOLDER}/cu_obj.gif');
+	background-size: contain;
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */

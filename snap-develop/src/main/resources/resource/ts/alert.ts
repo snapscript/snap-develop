@@ -23,7 +23,7 @@ module Alerts {
       var text = '<table border="0" width="100%">'+
                   '  <tr>'+
                   '    <td>&nbsp;&nbsp</td>'+
-                  '    <td align="right"><img src="/img/warning.png"></td>'+
+                  '    <td align="right"><img src="/img/warning.png" height="20px"></td>'+
                   '    <td align="left">&nbsp;&nbsp'+message+'</td>'+
                   '  </tr>'+
                   '</table>';

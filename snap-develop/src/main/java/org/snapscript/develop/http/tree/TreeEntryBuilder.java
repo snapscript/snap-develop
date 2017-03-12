@@ -20,43 +20,62 @@ package org.snapscript.develop.http.tree;
 
 public class TreeEntryBuilder {
 
-   public static void buildFolder(StringBuilder builder, TreeNode node) {
+   public static void buildFolder(StringBuilder builder, TreeNode node, String imageFolder) {
       builder.append(node.getIndent());
       builder.append("<li id=\"");
       builder.append(node.getPrefix());
       builder.append(node.getId());
       builder.append("\" title=\"");
       builder.append(node.getPath());
-      
-      if(node.isRoot()) {
-         builder.append("\" data-icon=\"/img/toolbar/index_co.gif\" class=\"expanded folder\">");
-      } else if(node.isExpand()) {
-         builder.append("\" data-icon=\"/img/toolbar/fldr_obj.gif\" class=\"expanded folder\">");
+
+      if (node.isRoot()) {
+         builder.append("\" data-icon=\"");
+         builder.append(imageFolder);
+         builder.append("/index_co.gif\" class=\"expanded folder\">");
+      } else if (node.isExpand()) {
+         builder.append("\" data-icon=\"");
+         builder.append(imageFolder);
+         builder.append("/fldr_obj.gif\" class=\"expanded folder\">");
       } else {
-         builder.append("\" data-icon=\"/img/toolbar/fldr_obj.gif\" class=\"folder\">");
+         builder.append("\" data-icon=\"");
+         builder.append(imageFolder);
+         builder.append("/fldr_obj.gif\" class=\"folder\">");
       }
       builder.append(node.getName());
       builder.append("\n");
    }
 
-   public static void buildFile(StringBuilder builder, TreeNode node) {
-      String icon = "data-icon=\"/img/toolbar/cu_obj.gif\"";
+   public static void buildFile(StringBuilder builder, TreeNode node, String imageFolder) {
       String name = node.getName();
-      
-      if(name.endsWith(".gif")) {
-         icon = "data-icon=\"/img/toolbar/image_obj.gif\"";
-      } else if(name.endsWith(".png")) {
-         icon = "data-icon=\"/img/toolbar/image_obj.gif\"";
-      } else if(name.endsWith(".jpg")) {
-         icon = "data-icon=\"/img/toolbar/image_obj.gif\"";    
-      } else if(name.endsWith(".jar")) {
-         icon = "data-icon=\"/img/toolbar/jar_src_obj.gif\"";                    
-      }else if(!name.endsWith(".snap")){
-         icon = "data-icon=\"/img/toolbar/file_obj.gif\"";
-      }
+
       builder.append(node.getIndent());
       builder.append("<li ");
-      builder.append(icon);
+
+      if (name.endsWith(".gif")) {
+         builder.append("data-icon=\"");
+         builder.append(imageFolder);
+         builder.append("/image_obj.gif\"");
+      } else if (name.endsWith(".png")) {
+         builder.append("data-icon=\"");
+         builder.append(imageFolder);
+         builder.append("/image_obj.gif\"");
+      } else if (name.endsWith(".jpg")) {
+         builder.append("data-icon=\"");
+         builder.append(imageFolder);
+         builder.append("/image_obj.gif\"");
+      } else if (name.endsWith(".jar")) {
+         builder.append("data-icon=\"");
+         builder.append(imageFolder);
+         builder.append("/jar_src_obj.gif\"");
+      } else if (!name.endsWith(".snap")) {
+         builder.append("data-icon=\"");
+         builder.append(imageFolder);
+         builder.append("/file_obj.gif\"");
+      } else {
+         builder.append("data-icon=\"");
+         builder.append(imageFolder);
+         builder.append("/cu_obj.gif\"");
+      }
       builder.append(" id=\"");
       builder.append(node.getPrefix());
       builder.append(node.getId());

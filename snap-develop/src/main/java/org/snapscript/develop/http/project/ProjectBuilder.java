@@ -52,6 +52,16 @@ public class ProjectBuilder {
       return projects.get(name);
    }
    
+   public Project getProject(Path path){ // /project/<project-name>/ || /project/default
+      if(mode.isMultipleMode()) { // multiple project support
+         String projectPrefix = path.getPath(1, 1); // /<project-name>
+         String projectName = projectPrefix.substring(1); // <project-name>
+         
+         return projects.get(projectName);
+      }
+      return single;
+   }
+   
    public Project createProject(Path path){ // /project/<project-name>/ || /project/default
       if(mode.isMultipleMode()) { // multiple project support
          String projectPrefix = path.getPath(1, 1); // /<project-name>

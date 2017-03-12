@@ -28,24 +28,29 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 
+import org.snapscript.develop.http.display.DisplayKey;
+import org.snapscript.develop.http.resource.template.TemplateModel;
+
 public class TreeDirectory {
    
+   private final TemplateModel theme;
    private final TreeContext context;
    private final boolean foldersOnly;
    private final int folderDepth;
    
-   public TreeDirectory(TreeContext context) {
-      this(context, false);
+   public TreeDirectory(TreeContext context, TemplateModel theme) {
+      this(context, theme, false);
    }
    
-   public TreeDirectory(TreeContext context, boolean foldersOnly) {
-      this(context, foldersOnly, Integer.MAX_VALUE);
+   public TreeDirectory(TreeContext context, TemplateModel theme, boolean foldersOnly) {
+      this(context, theme, foldersOnly, Integer.MAX_VALUE);
    }
    
-   public TreeDirectory(TreeContext context, boolean foldersOnly, int folderDepth) {
+   public TreeDirectory(TreeContext context, TemplateModel theme, boolean foldersOnly, int folderDepth) {
       this.foldersOnly = foldersOnly;
       this.folderDepth = folderDepth;
       this.context = context;
+      this.theme = theme;
    }
    
    public void buildTree(StringBuilder builder) throws Exception {
@@ -66,13 +71,15 @@ public class TreeDirectory {
    }
    
    private void buildTree(StringBuilder builder, TreeNode node) throws Exception {
+      String themeKey = DisplayKey.IMAGE_FOLDER.name();
+      String imageFolder = String.valueOf(theme.getAttribute(themeKey));
       String name = node.getName();
       int folderDepth = node.getDepth();
       
       if(folderDepth > 0) {
          if(node.isDirectory()) {
             if(!name.startsWith(".")) { // ignore directories starting with "."
-               buildFolder(builder, node);
+               buildFolder(builder, node, imageFolder);
                
                List<File> list = node.getFiles();
                
@@ -102,7 +109,7 @@ public class TreeDirectory {
             }
          } else {
             if(!foldersOnly) {
-               buildFile(builder, node);
+               buildFile(builder, node, imageFolder);
             }
          }
       }

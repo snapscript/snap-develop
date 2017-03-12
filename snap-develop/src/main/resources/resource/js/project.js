@@ -302,7 +302,7 @@ var Project;
     function createExploreLayout() {
         // $('#topLayer').spin({ lines: 10, length: 30, width: 20, radius: 40 });
         // -- LAYOUT
-        var pstyle = 'background-color: #F5F6F7; overflow: hidden;';
+        var pstyle = 'background-color: ${PROJECT_BACKGROUND_COLOR}; overflow: hidden;';
         $('#mainLayout').w2layout({
             name: 'exploreMainLayout',
             padding: 0,
@@ -480,7 +480,7 @@ var Project;
     function createDebugLayout() {
         // $('#topLayer').spin({ lines: 10, length: 30, width: 20, radius: 40 });
         // -- LAYOUT
-        var pstyle = 'background-color: #F5F6F7; overflow: hidden;';
+        var pstyle = 'background-color: ${PROJECT_BACKGROUND_COLOR}; overflow: hidden;';
         $('#mainLayout').w2layout({
             name: 'debugMainLayout',
             padding: 0,
@@ -695,7 +695,7 @@ var Project;
             "</div>";
     }
     function createTopMenuBar() {
-        var pstyle = 'background-color: #fafafa; overflow: hidden;';
+        var pstyle = 'background-color: ${PROJECT_MENU_COLOR}; overflow: hidden;';
         $('#topLayout').w2layout({
             name: 'topLayout',
             padding: 0,

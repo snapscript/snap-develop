@@ -26,6 +26,7 @@ import org.simpleframework.http.Cookie;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
+import org.snapscript.develop.http.display.DisplayModelResolver;
 import org.snapscript.develop.http.resource.Resource;
 import org.snapscript.develop.http.tree.TreeBuilder;
 import org.snapscript.develop.http.tree.TreeContext;
@@ -33,15 +34,17 @@ import org.snapscript.develop.http.tree.TreeContextManager;
 
 public class ProjectTreeResource implements Resource {
    
-   private final TreeContextManager manager;
-   private final AtomicInteger counter;
-   private final ProjectBuilder builder;
+   private final TreeContextManager contextManager;
+   private final AtomicInteger sessionCounter;
+   private final ProjectBuilder projectBuilder;
+   private final TreeBuilder treeBuilder;
    private final String session;
    
-   public ProjectTreeResource(ProjectBuilder builder, TreeContextManager manager, String session) {
-      this.counter = new AtomicInteger();
-      this.manager = manager;
-      this.builder = builder;
+   public ProjectTreeResource(ProjectBuilder projectBuilder, TreeContextManager contextManager, DisplayModelResolver modelResolver, String session) {
+      this.treeBuilder = new TreeBuilder(modelResolver);
+      this.sessionCounter = new AtomicInteger();
+      this.contextManager = contextManager;
+      this.projectBuilder = projectBuilder;
       this.session = session;
    }
 
@@ -53,12 +56,12 @@ public class ProjectTreeResource implements Resource {
       String depth = request.getParameter("depth");
       Path path = request.getPath(); // /tree/<project-name>
       String[] segments = path.getSegments();
-      File treePath = builder.getRoot();
+      File treePath = projectBuilder.getRoot();
       boolean foldersOnly = false;
       int folderDepth = Integer.MAX_VALUE;
       
       if(segments.length > 1) {
-         Project project = builder.createProject(path);
+         Project project = projectBuilder.createProject(path);
          treePath = project.getProjectPath();
       }
       if(depth != null) {
@@ -67,7 +70,7 @@ public class ProjectTreeResource implements Resource {
       if(folders != null) {
          foldersOnly = Boolean.parseBoolean(folders);
       }
-      int count = counter.getAndIncrement();
+      int count = sessionCounter.getAndIncrement();
       Cookie cookie = request.getCookie(session);
       String value = String.valueOf(count);
       
@@ -77,10 +80,10 @@ public class ProjectTreeResource implements Resource {
          response.setCookie(session, value);
       }
       String projectName = treePath.getName();
-      TreeContext context = manager.getContext(treePath, projectName, value);
+      TreeContext context = contextManager.getContext(treePath, projectName, value);
 
       context.folderExpand(expand);
-      String result = TreeBuilder.createTree(context, name, foldersOnly, folderDepth);
+      String result = treeBuilder.createTree(context, name, foldersOnly, folderDepth);
       PrintStream out = response.getPrintStream();
       response.setContentType("text/html");
       out.println(result);

@@ -1,66 +1,77 @@
 
 #runScript {
-	background-image: url('/img/toolbar/nav_go.gif');	
+	background-image: url('${IMAGE_FOLDER}/nav_go.gif');
+	background-size: 16px 16px;		
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px;
 }
 #resumeScript {
-	background-image: url('/img/toolbar/resume_co.gif');	
+	background-image: url('${IMAGE_FOLDER}/resume_co.gif');	
+	background-size: 16px 16px;	
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px;
 }
 #stepInScript {
-	background-image: url('/img/toolbar/stepinto_co.gif');	
+	background-image: url('${IMAGE_FOLDER}/stepinto_co.gif');	
+	background-size: 16px 16px;
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px;
 }
 #stepOutScript {
-	background-image: url('/img/toolbar/stepreturn_co.gif');	
+	background-image: url('${IMAGE_FOLDER}/stepreturn_co.gif');
+	background-size: 16px 16px;	
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px;
 }
 #stepOverScript {
-	background-image: url('/img/toolbar/stepover_co.gif');	
+	background-image: url('${IMAGE_FOLDER}/stepover_co.gif');
+	background-size: 16px 16px;	
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px;   
 }
 #stopScript {
-	background-image: url('/img/toolbar/rem_co.gif');	
+	background-image: url('${IMAGE_FOLDER}/rem_co.gif');	
+	background-size: 16px 16px;	
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px; 
 }
 #saveFile {
-	background-image: url('/img/toolbar/save_edit.gif');	
+	background-image: url('${IMAGE_FOLDER}/save_edit.gif');
+	background-size: 16px 16px;	
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px; 
 }
 #deleteFile {
-	background-image: url('/img/toolbar/trash.gif');	
+	background-image: url('${IMAGE_FOLDER}/trash.gif');
+	background-size: 16px 16px;		
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px;
 }
 #newFile {
-	background-image: url('/img/toolbar/new_con.gif');	
+	background-image: url('${IMAGE_FOLDER}/new_con.gif');
+	background-size: 16px 16px;		
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px;  
 }
 #searchTypes {
-	background-image: url('/img/toolbar/insp_sbook.gif');	
+	background-image: url('${IMAGE_FOLDER}/insp_sbook.gif');	
+	background-size: 16px 16px;		
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px; 
 }
 #evaluateExpression {
-	background-image: url('/img/toolbar/watchlist_view.gif');	
+	background-image: url('${IMAGE_FOLDER}/watchlist_view.gif');	
+	background-size: 16px 16px;
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px; 
@@ -104,19 +115,22 @@
 	max-height:100%;
 }
 #toolbarResize {
-	background-image: url('/img/toolbar/defaultview_misc.gif');	
+	background-image: url('${IMAGE_FOLDER}/defaultview_misc.gif');	
+	background-size: 16px 16px;
 	background-position: right center;
 	background-repeat: no-repeat;
     padding: 12px;   
 }
 #toolbarSwitchProject {
-	background-image: url('/img/toolbar/switch.gif');	
+	background-image: url('${IMAGE_FOLDER}/switch.gif');	
+	background-size: 16px 16px;
 	background-position: right center;
 	background-repeat: no-repeat;
     padding: 12px;   
 }
 #toolbarSwitchLayout {
-	background-image: url('/img/toolbar/layout_co.gif');	
+	background-image: url('${IMAGE_FOLDER}/layout_co.gif');
+	background-size: 16px 16px;	
 	background-position: right center;
 	background-repeat: no-repeat;
     padding: 12px;   

@@ -7,8 +7,8 @@
     border-width: 1px;
     border-color: #c0c0c0;
     position: absolute;
-    padding: 2px;
-    top: 8px;
+    padding: 0px;
+    top: 12px;
     right: 8px;
     bottom: 8px;
     left: 8px;
@@ -17,7 +17,8 @@
     /*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
     font-size: 1.1em;  		
-	background-image: url('/img/toolbar/green_dot.gif');	
+	background-image: url('${IMAGE_FOLDER}/green_dot.gif');
+	background-size: contain;	
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */
@@ -26,7 +27,8 @@
     /*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
     font-size: 1.1em;  		
-	background-image: url('/img/toolbar/red_dot.gif');	
+	background-image: url('${IMAGE_FOLDER}/red_dot.gif');	
+	background-size: contain;
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */
@@ -35,7 +37,8 @@
     /*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
     font-size: 1.1em;  		
-	background-image: url('/img/toolbar/green_dot.gif');	
+	background-image: url('${IMAGE_FOLDER}/green_dot.gif');
+	background-size: contain;	
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */
@@ -44,7 +47,8 @@
     /*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
     font-size: 1.1em;  		
-	background-image: url('/img/toolbar/yellow_dot.gif');	
+	background-image: url('${IMAGE_FOLDER}/yellow_dot.gif');	
+	background-size: contain;
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */
@@ -53,7 +57,7 @@
     /*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
     font-size: 1.1em;  		
-	background-image: url('/img/toolbar/variable_tab.gif');	
+	background-image: url('${IMAGE_FOLDER}/variable_tab.gif');	
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */
@@ -62,7 +66,8 @@
 	/*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
 	font-size: 1.1em;
-	background-image: url('/img/toolbar/grey_dot.gif');	
+	background-image: url('${IMAGE_FOLDER}/grey_dot.gif');	
+	background-size: contain;
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */
@@ -74,7 +79,8 @@
     font-size: 1em
 }
 .variableTab {	
-	background-image: url('/img/toolbar/variable_tab.gif');	
+	background-image: url('${IMAGE_FOLDER}/variable_tab.gif');	
+	background-size: contain;
 	background-position: left bottom;
 	background-repeat: no-repeat;
 	padding-top: 3px;
