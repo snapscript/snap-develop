@@ -15,7 +15,7 @@
 }
 
 .profilerTab {	
-	background-image: url('${IMAGE_FOLDER}/th_vertical.gif');	
+	background-image: url('${IMAGE_FOLDER}/clock.png');	
 	background-size: contain;
 	background-position: left bottom;
 	background-repeat: no-repeat;
@@ -29,7 +29,7 @@
 .profilerRecord {
 	/*font-family: "Lucida Console", sans-serif;*/
     font-size: 1.1em;
-	background-image: url('${IMAGE_FOLDER}/read_obj.gif');	
+	background-image: url('${IMAGE_FOLDER}/clock.png');	
 	background-size: contain;
 	background-position: left center;
 	background-repeat: no-repeat;

@@ -18,14 +18,14 @@
     /*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
     font-size: 1.1em;  	
-	background-image: url('${IMAGE_FOLDER}/thread_view.gif');	
+	background-image: url('${IMAGE_FOLDER}/breakpoint.png');	
 	background-size: contain;
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */
 }
 .breakpointsTab {	
-	background-image: url('${IMAGE_FOLDER}/threadgroup_obj.gif');	
+	background-image: url('${IMAGE_FOLDER}/breakpoint.png');	
 	background-size: contain;
 	background-position: left bottom;
 	background-repeat: no-repeat;

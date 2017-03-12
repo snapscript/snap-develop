@@ -15,7 +15,7 @@
 }
 
 .historyTab {	
-	background-image: url('${IMAGE_FOLDER}/saveall_edit.gif');	
+	background-image: url('${IMAGE_FOLDER}/history.png');	
 	background-size: contain;
 	background-position: left bottom;
 	background-repeat: no-repeat;
@@ -29,7 +29,7 @@
     /*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
     font-size: 1.1em;  	
-	background-image: url('${IMAGE_FOLDER}/restore_welcome.gif');
+	background-image: url('${IMAGE_FOLDER}/restore_history.png');
 	background-size: contain;	
 	background-position: left center;
 	background-repeat: no-repeat;

@@ -15,7 +15,7 @@
 }
 
 .debugTab {	
-	background-image: url('${IMAGE_FOLDER}/debug_exc.gif');
+	background-image: url('${IMAGE_FOLDER}/debug.png');
 	background-size: contain;	
 	background-position: left bottom;
 	background-repeat: no-repeat;
@@ -29,7 +29,7 @@
 .debugRecord {
 	/*font-family: "Lucida Console", sans-serif;*/
     font-size: 1.1em;
-	background-image: url('${IMAGE_FOLDER}/nav_go.gif');
+	background-image: url('${IMAGE_FOLDER}/run.png');
 	background-size: contain;	
 	background-position: left center;
 	background-repeat: no-repeat;
@@ -39,7 +39,7 @@
 .debugFocusRecord {
 	/*font-family: "Lucida Console", sans-serif;*/
     font-size: 1.1em;
-	background-image: url('${IMAGE_FOLDER}/resume_co.gif');
+	background-image: url('${IMAGE_FOLDER}/resume.png');
 	background-size: contain;	
 	background-position: left center;
 	background-repeat: no-repeat;
@@ -49,7 +49,7 @@
 .debugIdleRecord {
 	/*font-family: "Lucida Console", sans-serif;*/
     font-size: 1.1em;
-	background-image: url('${IMAGE_FOLDER}/suspend_co.gif');	
+	background-image: url('${IMAGE_FOLDER}/suspend.png');	
 	background-size: contain;
 	background-position: left center;
 	background-repeat: no-repeat;

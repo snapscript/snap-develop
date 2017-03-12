@@ -31,15 +31,15 @@ public class TreeEntryBuilder {
       if (node.isRoot()) {
          builder.append("\" data-icon=\"");
          builder.append(imageFolder);
-         builder.append("/index_co.gif\" class=\"expanded folder\">");
+         builder.append("/project_index.png\" class=\"expanded folder\">");
       } else if (node.isExpand()) {
          builder.append("\" data-icon=\"");
          builder.append(imageFolder);
-         builder.append("/fldr_obj.gif\" class=\"expanded folder\">");
+         builder.append("/file_directory.png\" class=\"expanded folder\">");
       } else {
          builder.append("\" data-icon=\"");
          builder.append(imageFolder);
-         builder.append("/fldr_obj.gif\" class=\"folder\">");
+         builder.append("/file_directory.png\" class=\"folder\">");
       }
       builder.append(node.getName());
       builder.append("\n");
@@ -54,15 +54,15 @@ public class TreeEntryBuilder {
       if (name.endsWith(".gif")) {
          builder.append("data-icon=\"");
          builder.append(imageFolder);
-         builder.append("/image_obj.gif\"");
+         builder.append("/file_image.png\"");
       } else if (name.endsWith(".png")) {
          builder.append("data-icon=\"");
          builder.append(imageFolder);
-         builder.append("/image_obj.gif\"");
+         builder.append("/file_image.png\"");
       } else if (name.endsWith(".jpg")) {
          builder.append("data-icon=\"");
          builder.append(imageFolder);
-         builder.append("/image_obj.gif\"");
+         builder.append("/file_image.png\"");
       } else if (name.endsWith(".jar")) {
          builder.append("data-icon=\"");
          builder.append(imageFolder);
@@ -70,11 +70,11 @@ public class TreeEntryBuilder {
       } else if (!name.endsWith(".snap")) {
          builder.append("data-icon=\"");
          builder.append(imageFolder);
-         builder.append("/file_obj.gif\"");
+         builder.append("/file_text.png\"");
       } else {
          builder.append("data-icon=\"");
          builder.append(imageFolder);
-         builder.append("/cu_obj.gif\"");
+         builder.append("/file_code.png\"");
       }
       builder.append(" id=\"");
       builder.append(node.getPrefix());

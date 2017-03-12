@@ -24,7 +24,7 @@
     /*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
     font-size: 1.1em;  
-	background-image: url('${IMAGE_FOLDER}/rem_co.gif');
+	background-image: url('${IMAGE_FOLDER}/stop.png');
 	background-size: contain;
 	background-position: left center;
 	background-repeat: no-repeat;
@@ -32,7 +32,7 @@
 }
 
 .problemsTab {	
-	background-image: url('${IMAGE_FOLDER}/errorwarning_tab.gif');	
+	background-image: url('${IMAGE_FOLDER}/warning.png');	
 	background-size: contain;	
 	background-position: left bottom;
 	background-repeat: no-repeat;

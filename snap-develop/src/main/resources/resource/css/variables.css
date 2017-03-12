@@ -17,7 +17,7 @@
     /*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
     font-size: 1.1em;  		
-	background-image: url('${IMAGE_FOLDER}/green_dot.gif');
+	background-image: url('${IMAGE_FOLDER}/green_circle.png');
 	background-size: contain;	
 	background-position: left center;
 	background-repeat: no-repeat;
@@ -27,7 +27,7 @@
     /*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
     font-size: 1.1em;  		
-	background-image: url('${IMAGE_FOLDER}/red_dot.gif');	
+	background-image: url('${IMAGE_FOLDER}/red_square.png');	
 	background-size: contain;
 	background-position: left center;
 	background-repeat: no-repeat;
@@ -37,7 +37,7 @@
     /*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
     font-size: 1.1em;  		
-	background-image: url('${IMAGE_FOLDER}/green_dot.gif');
+	background-image: url('${IMAGE_FOLDER}/green_circle.png');
 	background-size: contain;	
 	background-position: left center;
 	background-repeat: no-repeat;
@@ -47,7 +47,7 @@
     /*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
     font-size: 1.1em;  		
-	background-image: url('${IMAGE_FOLDER}/yellow_dot.gif');	
+	background-image: url('${IMAGE_FOLDER}/yellow_square.png');	
 	background-size: contain;
 	background-position: left center;
 	background-repeat: no-repeat;
@@ -57,7 +57,7 @@
     /*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
     font-size: 1.1em;  		
-	background-image: url('${IMAGE_FOLDER}/variable_tab.gif');	
+	background-image: url('${IMAGE_FOLDER}/calculator.png');	
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */
@@ -66,7 +66,7 @@
 	/*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
 	font-size: 1.1em;
-	background-image: url('${IMAGE_FOLDER}/grey_dot.gif');	
+	background-image: url('${IMAGE_FOLDER}/grey_circle.png');	
 	background-size: contain;
 	background-position: left center;
 	background-repeat: no-repeat;
@@ -79,7 +79,7 @@
     font-size: 1em
 }
 .variableTab {	
-	background-image: url('${IMAGE_FOLDER}/variable_tab.gif');	
+	background-image: url('${IMAGE_FOLDER}/calculator.png');	
 	background-size: contain;
 	background-position: left bottom;
 	background-repeat: no-repeat;

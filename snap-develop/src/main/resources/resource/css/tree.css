@@ -46,7 +46,7 @@
 }
 
 .browseTab {	
-	background-image: url('${IMAGE_FOLDER}/fldr_obj.gif');	
+	background-image: url('${IMAGE_FOLDER}/file_directory.png');	
 	background-size: contain;
 	background-position: left bottom;
 	background-repeat: no-repeat;
@@ -75,49 +75,49 @@
 }
 
 .menu-explore {
-	background-image: url('${IMAGE_FOLDER}/fldr_obj.gif') !important;
+	background-image: url('${IMAGE_FOLDER}/file_directory.png') !important;
 	background-size: 16px 16px !important;
 	background-position: center !important;
 	background-repeat: no-repeat !important;
 }
 
 .menu-run {
-	background-image: url('${IMAGE_FOLDER}/nav_go.gif') !important;
+	background-image: url('${IMAGE_FOLDER}/run.png') !important;
 	background-size: 16px 16px !important;
 	background-position: center !important;
 	background-repeat: no-repeat !important;
 }
 
 .menu-stop {
-	background-image: url('${IMAGE_FOLDER}/rem_co.gif') !important;
+	background-image: url('${IMAGE_FOLDER}/stop.png') !important;
 	background-size: 16px 16px !important;
 	background-position: center !important;
 	background-repeat: no-repeat !important;
 }
 
 .menu-save {
-	background-image: url('${IMAGE_FOLDER}/save_edit.gif') !important;
+	background-image: url('${IMAGE_FOLDER}/save.png') !important;
 	background-size: 16px 16px !important;
 	background-position: center !important;
 	background-repeat: no-repeat !important;
 }
 
 .menu-rename {
-	background-image: url('${IMAGE_FOLDER}/swap.gif') !important;
+	background-image: url('${IMAGE_FOLDER}/swap.png') !important;
 	background-size: 16px 16px !important;
 	background-position: center !important;
 	background-repeat: no-repeat !important;
 }
 
 .menu-trash {
-	background-image: url('${IMAGE_FOLDER}/trash.gif') !important;
+	background-image: url('${IMAGE_FOLDER}/trash.png') !important;
 	background-size: 16px 16px !important;
 	background-position: center !important;
 	background-repeat: no-repeat !important;
 }
 
 .menu-new {
-	background-image: url('${IMAGE_FOLDER}/new_con.gif') !important;
+	background-image: url('${IMAGE_FOLDER}/new_file.png') !important;
 	background-size: 16px 16px !important;
 	background-position: center !important;
 	background-repeat: no-repeat !important;
