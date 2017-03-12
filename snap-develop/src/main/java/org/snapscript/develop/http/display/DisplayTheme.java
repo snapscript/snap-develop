@@ -14,11 +14,14 @@ import org.snapscript.develop.http.resource.template.TemplateModel;
 @Root
 public class DisplayTheme {
    
-   @ElementList(entry="value", inline=true)
+   @ElementList(entry="value", inline=true, required=false)
    private Dictionary<ThemeValue> values;
    
    @Attribute
    private String name;
+   
+   @Attribute(required=false)
+   private String extend;
 
    public DisplayTheme() {
       this.values = new Dictionary<ThemeValue>();
@@ -28,11 +31,19 @@ public class DisplayTheme {
       return name;
    }
    
-   public TemplateModel getModel() {
+   public TemplateModel getModel(DisplayThemeLoader loader) throws Exception {
       Map<String, Object> variables = new HashMap<String, Object>();
       
-      for(ThemeValue value : values) {
-         variables.put(value.key, value.value);
+      if(extend != null) {
+         TemplateModel model = loader.getModel(extend);
+         Map<String, Object> base = model.getAttributes();
+         
+         variables.putAll(base);
+      }
+      if(values != null) {
+         for(ThemeValue value : values) {
+            variables.put(value.key, value.value);
+         }
       }
       DisplayKey[] keys = DisplayKey.values();
       

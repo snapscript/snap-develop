@@ -768,7 +768,6 @@ var Project;
                         "          <option value='monokai'>&nbsp;Monokai</option>\n" +
                         "          <option value='solarized_dark'>&nbsp;Solarized Dark</option>\n" +
                         "          <option value='solarized_light'>&nbsp;Solarized Light</option>\n" +
-                        "          <option value='sqlserver'>&nbsp;SQL Server</option>\n" +
                         "          <option value='terminal'>&nbsp;Terminal</option>\n" +
                         "          <option value='textmate'>&nbsp;TextMate</option>\n" +
                         "          <option value='twilight'>&nbsp;Twilight</option>\n" +

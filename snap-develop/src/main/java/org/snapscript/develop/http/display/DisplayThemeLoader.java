@@ -2,7 +2,6 @@ package org.snapscript.develop.http.display;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,35 +13,54 @@ public class DisplayThemeLoader {
 
    private final Map<String, DisplayTheme> themes;
    private final Persister persister;
-   private final List<String> sources;
+   private final String path;
    
-   public DisplayThemeLoader(List<String> sources) {
+   public DisplayThemeLoader(String path) {
       this.themes = new ConcurrentHashMap<String, DisplayTheme>();
       this.persister = new Persister();
-      this.sources = sources;
+      this.path = path;
    }
    
-   public void validateThemes() throws Exception {
-      for(String source : sources) {
-         byte[] data = ClassResourceLoader.loadResource(source);
-         InputStream stream = new ByteArrayInputStream(data);
-         DisplayTheme theme = persister.read(DisplayTheme.class, stream);
-         String name = theme.getName();
-         
-         themes.put(name,  theme);
+   private String getThemePath(String name) throws Exception {
+      if(path.endsWith("/")) {
+         return String.format("%s%s.xml", path, name);
       }
+      return String.format("%s/%s.xml", path, name);
+   }
+
+   private InputStream getThemeFile(String name) throws Exception {
+      String location = getThemePath(name);
+      byte[] data = ClassResourceLoader.loadResource(location);
+      
+      if(data == null) {
+         location = location.toLowerCase(); // lowercase by convention
+         data = ClassResourceLoader.loadResource(location); 
+      }
+      if(data == null) {
+         throw new IllegalStateException("Could not find theme '" + name + "' in '" + location + "'");
+      }
+      return new ByteArrayInputStream(data);
    }
    
-   public DisplayTheme getTheme(String name) {
+   public DisplayTheme getTheme(String name) throws Exception {
       DisplayTheme theme = themes.get(name);
       
       if(theme == null) {
-         throw new IllegalStateException("Could not find " + name);
+         InputStream stream = getThemeFile(name);
+         
+         if(stream == null) {
+            throw new IllegalStateException("Could not find theme '" + name + "'");
+         }
+         theme = persister.read(DisplayTheme.class, stream);
+         name = theme.getName();
+         
+         themes.put(name,  theme);
+         
       }
       return theme;
    }
    
-   public TemplateModel getModel(String name) {
-      return getTheme(name).getModel();
+   public TemplateModel getModel(String name) throws Exception {
+      return getTheme(name).getModel(this);
    }
 }

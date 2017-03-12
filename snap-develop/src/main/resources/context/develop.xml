@@ -174,13 +174,8 @@
     <constructor-arg value=".display" />
   </bean>
 
-  <bean id="DisplayThemeLoader" class="org.snapscript.develop.http.display.DisplayThemeLoader" init-method="validateThemes">
-    <constructor-arg>
-      <list>
-        <value>/context/theme/monokai.xml</value>
-        <value>/context/theme/eclipse.xml</value>
-      </list>
-    </constructor-arg>
+  <bean id="DisplayThemeLoader" class="org.snapscript.develop.http.display.DisplayThemeLoader">
+    <constructor-arg value="/context/theme"/>
   </bean>
 
   <bean id="DisplayModelResolver" class="org.snapscript.develop.http.display.DisplayModelResolver">
