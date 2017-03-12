@@ -20,34 +20,34 @@ package org.snapscript.develop.http.project;
 
 import java.io.File;
 import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
+import org.snapscript.develop.http.display.DisplayModelResolver;
 import org.snapscript.develop.http.resource.Resource;
 import org.snapscript.develop.http.resource.template.TemplateEngine;
 import org.snapscript.develop.http.resource.template.TemplateModel;
 
-public class ProjectOpenDialog implements Resource {
+public class ProjectSelectResource implements Resource {
    
+   private final DisplayModelResolver resolver;
    private final ProjectBuilder builder;
    private final TemplateEngine engine;
    private final String resource;
    
-   public ProjectOpenDialog(ProjectBuilder builder, TemplateEngine engine, String resource) {
-      this.builder = builder;
+   public ProjectSelectResource(DisplayModelResolver resolver, ProjectBuilder builder, TemplateEngine engine, String resource) {
+      this.resolver = resolver;
       this.resource = resource;
+      this.builder = builder;
       this.engine = engine;
    }
    
    @Override
    public void handle(Request request, Response response) throws Exception {
-      Map<String, Object> map = new HashMap<String, Object>();
-      TemplateModel model = new TemplateModel(map);
+      TemplateModel model = resolver.getModel();
       File root = builder.getRoot();
       String name = root.getName();
-      map.put("root", name);
+      model.setAttribute("root", name);
       String text = engine.renderTemplate(model, resource);
       PrintStream stream = response.getPrintStream();
 
