@@ -37,10 +37,10 @@ public class DisplayTheme {
       DisplayKey[] keys = DisplayKey.values();
       
       for(DisplayKey key : keys) {
-         String name = key.name();
+         String required = key.name();
          
-         if(!variables.containsKey(name)) {
-            throw new IllegalStateException("Theme '" + name + "' does not define '" + name + "'");
+         if(!variables.containsKey(required)) {
+            throw new IllegalStateException("Theme '" + name + "' does not define '" + required + "'");
          }
       }
       return new TemplateModel(variables);

@@ -12,5 +12,7 @@
   <value key="DIALOG_ENTRY_HIGHLIGHT_COLOR">#EFF9FE</value>
   <value key="DIALOG_ENTRY_BORDER_COLOR">#70C0E7</value>
   <value key="TREE_BACKGROUND_COLOR">#FFFFFF</value>
+  <value key="MENU_BACKGROUND_COLOR">#f3f3f3</value>
+  <value key="MENU_FONT_COLOR">#000000</value>
 </theme>
 
