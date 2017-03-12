@@ -25,8 +25,9 @@ import org.simpleframework.xml.Root;
 @Root
 public class DisplayDefinition {
    
+   private static final String DEFAULT_THEME = "eclipse";
    private static final String DEFAULT_FONT = "Consolas";
-   private static final String DEFAULT_LOGO = "/img/logo_grey_shade.png";
+   private static final String DEFAULT_LOGO = null; //"/img/logo_grey_shade.png";
    private static final int DEFAULT_SIZE = 14;
    private static final int DEFAULT_CAPACITY = 50000;
    
@@ -100,6 +101,6 @@ public class DisplayDefinition {
    }
    
    public static DisplayDefinition getDefault() {
-      return new DisplayDefinition(null, DEFAULT_LOGO, DEFAULT_FONT, DEFAULT_SIZE, DEFAULT_CAPACITY);
+      return new DisplayDefinition(DEFAULT_THEME, DEFAULT_LOGO, DEFAULT_FONT, DEFAULT_SIZE, DEFAULT_CAPACITY);
    }
 }

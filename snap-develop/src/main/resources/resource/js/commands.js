@@ -467,6 +467,13 @@ var Command;
         }
     }
     Command.switchLayout = switchLayout;
+    function updateDisplay(displayInfo) {
+        var message = JSON.stringify(displayInfo);
+        if (socket) {
+            socket.send("DISPLAY_UPDATE:" + message); // update and save display
+        }
+    }
+    Command.updateDisplay = updateDisplay;
     function evaluateExpression() {
         var threadScope = ThreadManager.focusedThread();
         if (threadScope != null) {
@@ -475,6 +482,12 @@ var Command;
         }
     }
     Command.evaluateExpression = evaluateExpression;
+    function refreshScreen() {
+        setTimeout(function () {
+            location.reload();
+        }, 10);
+    }
+    Command.refreshScreen = refreshScreen;
     function switchProject() {
         document.location = "/";
     }

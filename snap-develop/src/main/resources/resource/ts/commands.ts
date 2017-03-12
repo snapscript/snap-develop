@@ -486,12 +486,25 @@ module Command {
       }
    }
    
+   export function updateDisplay(displayInfo) {
+      var message = JSON.stringify(displayInfo);
+      if(socket) {
+         socket.send("DISPLAY_UPDATE:" + message); // update and save display
+      }
+   }
+   
    export function evaluateExpression() {
       var threadScope = ThreadManager.focusedThread();
       if (threadScope != null) {
          var selectedText = FileEditor.getSelectedText();
          DialogBuilder.evaluateExpressionDialog(selectedText);
       }
+   }
+   
+   export function refreshScreen() {
+      setTimeout(function() {
+         location.reload();
+      }, 10);
    }
    
    export function switchProject() {

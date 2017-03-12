@@ -1,5 +1,7 @@
 
 module Project {
+   
+   var currentDisplayInfo = {};
 
    export function createMainLayout() {
       var perspective = determineProjectLayout();
@@ -49,8 +51,14 @@ module Project {
       var fontSize = document.getElementById("fontSize");
       
       if(fontSize != null && fontFamily != null) {
-         FileEditor.updateEditorFont(fontFamily.options[fontFamily.selectedIndex].value, fontSize.options[fontSize.selectedIndex].value);
-         ProcessConsole.updateConsoleFont(fontFamily.options[fontFamily.selectedIndex].value, fontSize.options[fontSize.selectedIndex].value);
+         var fontSizeValue = fontSize.options[fontSize.selectedIndex].value;
+         var fontFamilyValue = fontFamily.options[fontFamily.selectedIndex].value;
+         
+         FileEditor.updateEditorFont(fontFamilyValue, fontSizeValue);
+         ProcessConsole.updateConsoleFont(fontFamilyValue, fontSizeValue);
+         
+         var displayInfo = currentProjectDisplay();
+         Command.updateDisplay(displayInfo);
       }
    }
    
@@ -58,7 +66,15 @@ module Project {
       var editorTheme = document.getElementById("editorTheme");
       
       if(editorTheme != null) {
-         FileEditor.setEditorTheme("ace/theme/" + editorTheme.options[editorTheme.selectedIndex].value.toLowerCase());
+         var themeName = editorTheme.options[editorTheme.selectedIndex].value.toLowerCase();
+         FileEditor.setEditorTheme("ace/theme/" + themeName);
+         
+         var displayInfo = currentProjectDisplay();
+         Command.updateDisplay(displayInfo);
+         
+         if(isProjectThemeChange(displayInfo.themeName)) { // do we need to refresh
+            Command.refreshScreen(); // refresh the whole screen
+         }
       }
    }
     
@@ -90,9 +106,30 @@ module Project {
       }
    }
    
+   function isProjectThemeChange(name) {
+      if(currentDisplayInfo) {
+         return currentDisplayInfo.themeName != name.toLowerCase(); // if they are not the same
+      }
+      return false;
+   }
+   
+   function currentProjectDisplay(){
+      var fontFamily = document.getElementById("fontFamily");
+      var fontSize = document.getElementById("fontSize");
+      var editorTheme = document.getElementById("editorTheme");
+   
+      return {
+         consoleCapacity: 50000,
+         themeName: editorTheme.value.toLowerCase().trim(),
+         fontSize: fontSize.value.toLowerCase().replace("px", "").trim(), // get font size
+         fontName: fontFamily.value
+      };
+   }
+   
    function applyProjectTheme() {
       $.get("/display/"+document.title, function(displayInfo) {
-         //var theme = JSON.parse(response);
+         currentDisplayInfo = displayInfo; // save display info
+         
          if(displayInfo.fontName != null && displayInfo.fontSize != null) {
             var fontFamily = document.getElementById("fontFamily");
             var fontSize = document.getElementById("fontSize");
@@ -824,25 +861,10 @@ module Project {
                                "   <td  width='100%'></td>"+
                                "   <td>"+
                                "        <select class='styledSelect' id='editorTheme' size='1' onchange='Project.changeEditorTheme()'>\n"+
-                               "          <option value='ambiance'>&nbsp;Ambiance</option>\n"+
-                               "          <option value='chaos'>&nbsp;Chaos</option>\n"+
                                "          <option value='chrome'>&nbsp;Chrome</option>\n"+
-                               "          <option value='clouds_midnight'>&nbsp;Clouds Midnight</option>\n"+
-                               "          <option value='clouds'>&nbsp;Clouds</option>\n"+
-                               "          <option value='cobalt'>&nbsp;Cobalt</option>\n"+
-                               "          <option value='crimson_editor'>&nbsp;Crimson Editor</option>\n"+
-                               "          <option value='dawn'>&nbsp;Dawn</option>\n"+
-                               "          <option value='textmate' selected='selected'>&nbsp;Default</option>\n"+                               
-                               "          <option value='dreamweaver'>&nbsp;Dreamweaver</option>\n"+
-                               "          <option value='eclipse'>&nbsp;Eclipse</option>\n"+
+                               "          <option value='eclipse' selected='selected'>&nbsp;Eclipse</option>\n"+
                                "          <option value='github'>&nbsp;GitHub</option>\n"+
-                               "          <option value='kuroir'>&nbsp;Kuroir</option>\n"+
-                               "          <option value='merbivore_soft'>&nbsp;Merbivore Soft</option>\n"+
-                               "          <option value='merbivore'>&nbsp;Merbivore</option>\n"+
-                               "          <option value='mono_industrial'>&nbsp;Mono Industrial</option>\n"+
                                "          <option value='monokai'>&nbsp;Monokai</option>\n"+
-                               "          <option value='solarized_dark'>&nbsp;Solarized Dark</option>\n"+
-                               "          <option value='solarized_light'>&nbsp;Solarized Light</option>\n"+
                                "          <option value='terminal'>&nbsp;Terminal</option>\n"+
                                "          <option value='textmate'>&nbsp;TextMate</option>\n"+
                                "          <option value='twilight'>&nbsp;Twilight</option>\n"+

@@ -1,5 +1,5 @@
 /*
- * ProjectDisplayResource.java December 2016
+ * DisplayThemeResource.java December 2016
  *
  * Copyright (C) 2016, Niall Gallagher <niallg@users.sf.net>
  *
@@ -18,16 +18,11 @@
 
 package org.snapscript.develop.http.display;
 
-import java.io.File;
 import java.io.PrintStream;
 
-import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
-import org.simpleframework.xml.core.Persister;
-import org.snapscript.develop.http.project.Project;
-import org.snapscript.develop.http.project.ProjectBuilder;
 import org.snapscript.develop.http.resource.Resource;
 
 import com.google.gson.Gson;
@@ -35,48 +30,23 @@ import com.google.gson.Gson;
 // /theme/<project>
 public class DisplayThemeResource implements Resource {
    
-   private final DisplayDefinition display;
-   private final ProjectBuilder builder;
-   private final Persister persister;
-   private final String theme;
+   private final DisplayPersister displayPersister;
    private final Gson gson;
    
-   public DisplayThemeResource(ProjectBuilder builder, String theme) {
-      this.display =  DisplayDefinition.getDefault();
-      this.persister = new Persister();
+   public DisplayThemeResource(DisplayPersister displayPersister) {
+      this.displayPersister = displayPersister;
       this.gson = new Gson();
-      this.builder = builder;
-      this.theme = theme;
    }
 
    @Override
    public void handle(Request request, Response response) throws Throwable {
-      Path path = request.getPath(); 
-      Project project = builder.createProject(path);
+      DisplayDefinition display = displayPersister.readDefinition();
       PrintStream out = response.getPrintStream();
-      File root = project.getProjectPath();
-      File file = new File(root, theme);
-      
-      if(!file.exists()) {
-         root = root.getParentFile();
-         file = new File(root, theme);
-      }
-      if(file.exists()) {
-         DisplayDefinition display = persister.read(DisplayDefinition.class, file);
-         String text = gson.toJson(display);
-         response.setStatus(Status.OK);
-         response.setContentType("application/json");
-         out.println(text);
-         out.close();
-      } else {
-         String text = gson.toJson(display);
-         response.setStatus(Status.OK);
-         response.setContentType("application/json");
-         out.println(text);
-         out.close();
-         // save default display
-         persister.write(display, file);
-      }
+      String text = gson.toJson(display);
+      response.setStatus(Status.OK);
+      response.setContentType("application/json");
+      out.println(text);
+      out.close();
    }
 
 }

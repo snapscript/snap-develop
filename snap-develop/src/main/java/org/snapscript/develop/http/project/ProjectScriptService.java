@@ -34,10 +34,12 @@ import org.snapscript.develop.ProcessManager;
 import org.snapscript.develop.command.CommandController;
 import org.snapscript.develop.command.CommandListener;
 import org.snapscript.develop.configuration.ConfigurationClassLoader;
+import org.snapscript.develop.http.display.DisplayPersister;
 import org.snapscript.develop.http.tree.TreeContextManager;
 
 public class ProjectScriptService implements Service {
    
+   private final DisplayPersister displayPersister;
    private final TreeContextManager treeManager;
    private final ProjectProblemFinder problemFinder;
    private final ConnectListener connectListener;
@@ -47,8 +49,20 @@ public class ProjectScriptService implements Service {
    private final BackupManager backupManager;
    private final String session;
    
-   public ProjectScriptService(ProcessManager processManager, ConnectListener connectListener, ConfigurationClassLoader loader, ProcessLogger processLogger, ProjectBuilder projectBuilder, BackupManager backupManager, TreeContextManager treeManager, ThreadPool pool, String session) {
+   public ProjectScriptService(
+         ProcessManager processManager, 
+         ConnectListener connectListener, 
+         ConfigurationClassLoader loader, 
+         ProcessLogger processLogger, 
+         ProjectBuilder projectBuilder, 
+         BackupManager backupManager, 
+         TreeContextManager treeManager, 
+         DisplayPersister displayPersister,
+         ThreadPool pool, 
+         String session) 
+   {
       this.problemFinder = new ProjectProblemFinder(projectBuilder, processLogger, pool);
+      this.displayPersister = displayPersister;
       this.treeManager = treeManager;
       this.backupManager = backupManager;
       this.connectListener = connectListener;
@@ -75,7 +89,18 @@ public class ProjectScriptService implements Service {
             value = cookie.getValue();
          }
          try {
-            CommandListener commandListener = new CommandListener(processManager, problemFinder, channel, processLogger, backupManager, treeManager, path, projectPath, projectName, value);
+            CommandListener commandListener = new CommandListener(
+                  processManager, 
+                  problemFinder, 
+                  displayPersister,
+                  channel, 
+                  processLogger, 
+                  backupManager, 
+                  treeManager, 
+                  path, 
+                  projectPath, 
+                  projectName, 
+                  value);
             CommandController commandController = new CommandController(commandListener);
 
             channel.register(commandController);

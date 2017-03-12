@@ -22,8 +22,6 @@ import static org.simpleframework.http.Protocol.CONTENT_ENCODING;
 import static org.simpleframework.http.Protocol.CONTENT_TYPE;
 import static org.simpleframework.http.Status.OK;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 import org.simpleframework.http.Request;

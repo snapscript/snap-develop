@@ -145,7 +145,7 @@
   </bean>
 
   <bean id="ProjectResource" class="org.snapscript.develop.http.project.ProjectResource">
-    <constructor-arg ref="DisplayModelResolver"/>
+    <constructor-arg ref="DisplayModelResolver" />
     <constructor-arg ref="TemplateEngine" />
     <constructor-arg value="project.vm" />
   </bean>
@@ -165,23 +165,27 @@
   <bean id="ProjectTreeResource" class="org.snapscript.develop.http.project.ProjectTreeResource">
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="TreeContextManager" />
-    <constructor-arg ref="DisplayModelResolver"/>
+    <constructor-arg ref="DisplayModelResolver" />
     <constructor-arg value="SESSID" />
   </bean>
 
   <bean id="DisplayThemeResource" class="org.snapscript.develop.http.display.DisplayThemeResource">
-    <constructor-arg ref="ProjectBuilder" />
-    <constructor-arg value=".display" />
+    <constructor-arg ref="DisplayPersister" />
   </bean>
 
   <bean id="DisplayThemeLoader" class="org.snapscript.develop.http.display.DisplayThemeLoader">
-    <constructor-arg value="/context/theme"/>
+    <constructor-arg value="/context/theme" />
+  </bean>
+
+  <bean id="DisplayPersister" class="org.snapscript.develop.http.display.DisplayPersister">
+    <constructor-arg ref="ProcessLogger" />
+    <constructor-arg ref="Workspace" />
+    <constructor-arg value=".display" />
   </bean>
 
   <bean id="DisplayModelResolver" class="org.snapscript.develop.http.display.DisplayModelResolver">
+    <constructor-arg ref="DisplayPersister" />
     <constructor-arg ref="DisplayThemeLoader" />
-    <constructor-arg ref="Workspace" />
-    <constructor-arg value=".display" />
   </bean>
 
   <bean id="DisplayInterpolator" class="org.snapscript.develop.http.display.DisplayInterpolator">
@@ -214,6 +218,7 @@
     <constructor-arg ref="ProcessManager" />
     <constructor-arg ref="BackupManager" />
     <constructor-arg ref="TreeContextManager" />
+    <constructor-arg ref="DisplayPersister"/>
     <constructor-arg ref="ThreadPool" />
     <constructor-arg value="SESSID" />
   </bean>

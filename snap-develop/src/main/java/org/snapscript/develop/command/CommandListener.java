@@ -30,12 +30,15 @@ import org.snapscript.develop.BackupManager;
 import org.snapscript.develop.ProcessManager;
 import org.snapscript.develop.common.Problem;
 import org.snapscript.develop.common.ProblemFinder;
+import org.snapscript.develop.http.display.DisplayDefinition;
+import org.snapscript.develop.http.display.DisplayPersister;
 import org.snapscript.develop.http.project.ProjectProblemFinder;
 import org.snapscript.develop.http.tree.TreeContext;
 import org.snapscript.develop.http.tree.TreeContextManager;
 
 public class CommandListener {
    
+   private final DisplayPersister displayPersister;
    private final CommandEventForwarder forwarder;
    private final ProjectProblemFinder problemFinder;
    private final TreeContextManager treeManager;
@@ -50,11 +53,24 @@ public class CommandListener {
    private final File root;
    private final Path path;
    
-   public CommandListener(ProcessManager processManager, ProjectProblemFinder problemFinder, FrameChannel frameChannel, ProcessLogger processLogger, BackupManager backupManager, TreeContextManager treeManager, Path path, File root, String project, String cookie) {
+   public CommandListener(
+         ProcessManager processManager, 
+         ProjectProblemFinder problemFinder, 
+         DisplayPersister displayPersister,
+         FrameChannel frameChannel, 
+         ProcessLogger processLogger, 
+         BackupManager backupManager, 
+         TreeContextManager treeManager, 
+         Path path, 
+         File root, 
+         String project, 
+         String cookie) 
+   {
       this.commandFilter = new CommandFilter();
       this.commandClient = new CommandClient(frameChannel, project);
       this.forwarder = new CommandEventForwarder(commandClient, commandFilter, processLogger);
       this.finder = new ProblemFinder();
+      this.displayPersister = displayPersister;
       this.treeManager = treeManager;
       this.problemFinder = problemFinder;
       this.backupManager = backupManager;
@@ -332,6 +348,31 @@ public class CommandListener {
          }
       } catch(Exception e) {
          processLogger.info("Error stopping process " + focus, e);
+      }
+   }
+   
+   public void onDisplayUpdate(DisplayUpdateCommand command) {
+      int fontSize = command.getFontSize();
+      String fontName = command.getFontName();
+      String themeName = command.getThemeName();
+      
+      try {
+         DisplayDefinition definition = displayPersister.readDefinition();
+         
+         if(definition != null) {
+            if(fontName != null) {
+               definition.setFontName(fontName);
+            }
+            if(fontSize > 0) {
+               definition.setFontSize(fontSize);
+            }
+            if(themeName != null) {
+               definition.setThemeName(themeName);
+            }
+            displayPersister.saveDefinition(definition);
+         }
+      } catch(Exception e) {
+         processLogger.info("Error saving definition", e);
       }
    }
    

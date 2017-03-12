@@ -47,7 +47,8 @@ public enum CommandType {
    EVALUATE(EvaluateCommandMarshaller.class, EvaluateCommand.class, CLIENT),
    PING(PingCommandMarshaller.class, PingCommand.class, CLIENT),
    FOLDER_EXPAND(FolderExpandCommandMarshaller.class, FolderExpandCommand.class, CLIENT),
-   FOLDER_COLLAPSE(FolderCollapseCommandMarshaller.class, FolderCollapseCommand.class, CLIENT);
+   FOLDER_COLLAPSE(FolderCollapseCommandMarshaller.class, FolderCollapseCommand.class, CLIENT),
+   DISPLAY_UPDATE(DisplayUpdateCommandMarshaller.class, DisplayUpdateCommand.class, CLIENT);
    
    public final Class<? extends CommandMarshaller> marshaller;
    public final Class<? extends Command> command;
