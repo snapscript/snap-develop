@@ -73,6 +73,12 @@ function updateTableRecords(update, name) {
         w2ui[name].refresh();
     }
 }
+function stringEndsWith(text, token) {
+    if (text && token) {
+        return text.slice(-token.length) == token;
+    }
+    return false;
+}
 function isMacintosh() {
     return navigator.platform.indexOf('Mac') > -1;
 }
