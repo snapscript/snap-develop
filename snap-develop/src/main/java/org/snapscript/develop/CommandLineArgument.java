@@ -28,7 +28,8 @@ public enum CommandLineArgument {
    DIRECTORY("directory", "work", "Directory used for sources", ".*"),
    VERBOSE("log-level", "INFO", "Level of logging", "(TRACE|DEBUG|INFO)"),
    LOG("log-file", "log/snapd.log", "Log file to use", ".+"),
-   SCRIPT("script", null, "Script to launch", ".*.snap");
+   SCRIPT("script", null, "Script to launch", ".*.snap"),
+   CLIENT("client", "false", "Launche client browser", "(true|false)");
    
    public final String description;
    public final Pattern pattern;

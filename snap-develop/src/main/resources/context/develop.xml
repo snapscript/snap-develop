@@ -16,6 +16,10 @@
     <constructor-arg ref="Workspace" />
   </bean>
 
+  <bean id="BrowserLauncher" class="org.snapscript.develop.browser.BrowserLauncher">
+    <constructor-arg value="${client}" />
+  </bean>
+
   <bean id="ConfigurationReader" class="org.snapscript.develop.configuration.ConfigurationReader">
     <constructor-arg ref="ProcessLogger" />
     <constructor-arg ref="Workspace" />
@@ -47,6 +51,7 @@
 
   <bean id="ProcessServer" class="org.snapscript.develop.ProcessServer" init-method="start">
     <constructor-arg ref="ProcessManager" />
+    <constructor-arg ref="BrowserLauncher" />
     <constructor-arg ref="WebServer" />
   </bean>
 
@@ -152,7 +157,7 @@
 
   <bean id="ProjectSelectResource" class="org.snapscript.develop.http.project.ProjectSelectResource">
     <constructor-arg ref="DisplayModelResolver" />
-    <constructor-arg ref="ProjectBuilder"/>
+    <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="TemplateEngine" />
     <constructor-arg value="start.vm" />
   </bean>
@@ -219,7 +224,7 @@
     <constructor-arg ref="ProcessManager" />
     <constructor-arg ref="BackupManager" />
     <constructor-arg ref="TreeContextManager" />
-    <constructor-arg ref="DisplayPersister"/>
+    <constructor-arg ref="DisplayPersister" />
     <constructor-arg ref="ThreadPool" />
     <constructor-arg value="SESSID" />
   </bean>

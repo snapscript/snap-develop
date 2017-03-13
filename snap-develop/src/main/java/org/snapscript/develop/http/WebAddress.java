@@ -18,7 +18,6 @@
 
 package org.snapscript.develop.http;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 public class WebAddress {
@@ -39,8 +38,7 @@ public class WebAddress {
    
    public InetSocketAddress getExternalAddress() {
       try {
-         String host = InetAddress.getLocalHost().getHostAddress();
-         return new InetSocketAddress(host, port);
+         return new InetSocketAddress("localhost", port);
       }catch(Exception e){
          return new InetSocketAddress(port);
       }

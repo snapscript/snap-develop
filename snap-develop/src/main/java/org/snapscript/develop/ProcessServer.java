@@ -20,14 +20,17 @@ package org.snapscript.develop;
 
 import java.net.InetSocketAddress;
 
+import org.snapscript.develop.browser.BrowserLauncher;
 import org.snapscript.develop.http.WebServer;
 
 public class ProcessServer {
 
+   private final BrowserLauncher launcher;
    private final ProcessManager engine;
    private final WebServer server;
    
-   public ProcessServer(ProcessManager engine, WebServer server) {
+   public ProcessServer(ProcessManager engine, BrowserLauncher launcher, WebServer server) {
+      this.launcher = launcher;
       this.engine = engine;
       this.server = server;
    }
@@ -44,6 +47,7 @@ public class ProcessServer {
             engine.launch(); // start a new process
          }
          System.err.println(project);
+         launcher.launch(host, port);
          engine.start(host, port);
       } catch(Exception e) {
          e.printStackTrace();
