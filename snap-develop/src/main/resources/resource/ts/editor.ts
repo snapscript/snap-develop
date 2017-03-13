@@ -243,40 +243,40 @@ module FileEditor {
    export function resolveEditorMode(resource) {
       var token = resource.toLowerCase();
       
-      if(token.endsWith(".snap")) {
+      if(stringEndsWith(token, ".snap")) {
          return "ace/mode/snapscript";
       }
-      if(token.endsWith(".xml")) {
+      if(stringEndsWith(token, ".xml")) {
          return "ace/mode/xml";
       }
-      if(token.endsWith(".json")) {
+      if(stringEndsWith(token, ".json")) {
          return "ace/mode/json";
       }
-      if(token.endsWith(".sql")) {
+      if(stringEndsWith(token, ".sql")) {
          return "ace/mode/sql";
       }
-      if(token.endsWith(".js")) {
+      if(stringEndsWith(token, ".js")) {
          return "ace/mode/javascript";
       }
-      if(token.endsWith(".html")) {
+      if(stringEndsWith(token, ".html")) {
          return "ace/mode/html";
       }
-      if(token.endsWith(".htm")) {
+      if(stringEndsWith(token, ".htm")) {
          return "ace/mode/html";
       }
-      if(token.endsWith(".txt")) {
+      if(stringEndsWith(token, ".txt")) {
          return "ace/mode/text";
       }
-      if(token.endsWith(".properties")) {
+      if(stringEndsWith(token, ".properties")) {
          return "ace/mode/properties";
       }
-      if(token.endsWith(".gitignore")) {
+      if(stringEndsWith(token, ".gitignore")) {
          return "ace/mode/text";
       }
-      if(token.endsWith(".project")) {
+      if(stringEndsWith(token, ".project")) {
          return "ace/mode/xml";
       }
-      if(token.endsWith(".classpath")) {
+      if(stringEndsWith(token, ".classpath")) {
          return "ace/mode/xml";
       }
       return null;

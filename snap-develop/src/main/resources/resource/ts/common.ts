@@ -86,6 +86,13 @@ function updateTableRecords(update, name) {
    }
 }
 
+function stringEndsWith(text, token) {
+   if(text && token) {
+      return text.slice(-token.length) == token;
+   }
+   return false;
+}
+
 function isMacintosh() {
    return navigator.platform.indexOf('Mac') > -1
  }

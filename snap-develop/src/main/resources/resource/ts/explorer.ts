@@ -23,7 +23,7 @@ module FileExplorer {
    export function openTreeFile(resourcePath, afterLoad) {
       var filePath = resourcePath.toLowerCase();
       
-      if(filePath.endsWith(".json") || filePath.endsWith(".js")) { // is it json or javascript
+      if(stringEndsWith(filePath, ".json") || stringEndsWith(filePath, ".js")) { // is it json or javascript
          $.get(resourcePath, function(response) {
             handleOpenTreeFile(resourcePath, afterLoad, response);
          }, "text").fail(function() {
@@ -43,7 +43,7 @@ module FileExplorer {
       var backupResourcePath = resourcePath.replace(/^\/resource/i, "/history");
       //var backupUrl = backupResourcePath + "?time=" + timeStamp;
       
-      if(filePath.endsWith(".json") || filePath.endsWith(".js")) { // is it json or javascript
+      if(stringEndsWith(filePath, ".json") || stringEndsWith(filePath, ".js")) { // is it json or javascript
          jQuery.ajax({
             url: backupResourcePath + "?time=" + timeStamp,
             type: "get",

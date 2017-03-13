@@ -19,6 +19,7 @@ function showProjectDialog() {
          }   
          address += "/project/" + projectName
          address += query;
+
          console.log("Opening " + projectName + " " + address);
          document.location = address;
       } else {

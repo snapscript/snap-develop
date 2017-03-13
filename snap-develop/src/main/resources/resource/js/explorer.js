@@ -18,7 +18,7 @@ var FileExplorer;
     }
     function openTreeFile(resourcePath, afterLoad) {
         var filePath = resourcePath.toLowerCase();
-        if (filePath.endsWith(".json") || filePath.endsWith(".js")) {
+        if (stringEndsWith(filePath, ".json") || stringEndsWith(filePath, ".js")) {
             $.get(resourcePath, function (response) {
                 handleOpenTreeFile(resourcePath, afterLoad, response);
             }, "text").fail(function () {
@@ -38,7 +38,7 @@ var FileExplorer;
         var filePath = resourcePath.toLowerCase();
         var backupResourcePath = resourcePath.replace(/^\/resource/i, "/history");
         //var backupUrl = backupResourcePath + "?time=" + timeStamp;
-        if (filePath.endsWith(".json") || filePath.endsWith(".js")) {
+        if (stringEndsWith(filePath, ".json") || stringEndsWith(filePath, ".js")) {
             jQuery.ajax({
                 url: backupResourcePath + "?time=" + timeStamp,
                 type: "get",

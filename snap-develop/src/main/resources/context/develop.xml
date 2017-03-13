@@ -17,6 +17,7 @@
   </bean>
 
   <bean id="BrowserLauncher" class="org.snapscript.develop.browser.BrowserLauncher">
+    <constructor-arg ref="ProcessLogger" />
     <constructor-arg value="${client}" />
   </bean>
 

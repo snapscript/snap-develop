@@ -12,7 +12,7 @@ module History {
       var editorData = FileEditor.loadEditor();
       var resource = editorData.resource.projectPath;
       jQuery.ajax({
-         url: '/history/' + document.title + '/' + resource;
+         url: '/history/' + document.title + '/' + resource,
          success: function (currentRecords) {
             var historyRecords = [];
             var historyIndex = 1;

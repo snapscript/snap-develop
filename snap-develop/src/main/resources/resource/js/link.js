@@ -12,7 +12,7 @@ var LinkIndexer;
     function indexEditorTokens(text, resource) {
         var token = resource.toLowerCase();
         var tokenList = {};
-        if (token.endsWith(".snap")) {
+        if (stringEndsWith(token, ".snap")) {
             var lines = text.split(/\r?\n/);
             for (var i = 0; i < lines.length; i++) {
                 var line = lines[i];

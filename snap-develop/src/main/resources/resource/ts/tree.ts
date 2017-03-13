@@ -75,7 +75,7 @@ module FileTree {
    }
    
    export function isResourceFolder(path) {
-      if(!path.endsWith("/")) {
+      if(!stringEndsWith(path, "/")) {
          var parts = path.split(".");
          
          if(path.length === 1 || (parts[0] === "" && parts.length === 2)) {
@@ -96,7 +96,7 @@ module FileTree {
          while(cleanPath.indexOf("//") != -1) {
             cleanPath = cleanPath.replace("//", "/"); // remove double slashes like /x/y//z.snap
          }
-         if(cleanPath.endsWith("/")) {
+         if(stringEndsWith(cleanPath, "/")) {
             cleanPath = cleanPath.substring(0,cleanPath.length-1);
          }
          return cleanPath;

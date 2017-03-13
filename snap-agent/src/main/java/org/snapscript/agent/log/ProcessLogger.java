@@ -54,7 +54,7 @@ public class ProcessLogger {
    }
    
    public boolean isTrace() {
-      return level.isDebug();
+      return level.isTrace();
    }
    
    public boolean isDebug() {

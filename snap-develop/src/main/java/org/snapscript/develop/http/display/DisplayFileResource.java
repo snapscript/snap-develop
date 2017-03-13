@@ -57,8 +57,9 @@ public class DisplayFileResource implements Resource {
       double ratio = content.getCompression();
       long time = content.getDuration();
 
-      logger.debug(path + " ratio=" + ratio + "% time=" + time + "ms");
-      
+      if(logger.isTrace()) {
+         logger.debug(path + " ratio=" + ratio + "% time=" + time + "ms");
+      }
       response.setCode(status.code);
       response.setDescription(status.description);
       response.setValue(CONTENT_TYPE, type);
