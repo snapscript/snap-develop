@@ -16,5 +16,7 @@
   <value key="MENU_FONT_COLOR">#000000</value>
   <value key="SCROLL_BAR_TRACK">#F0F0F0</value>
   <value key="SCROLL_BAR_THUMB">#C0C0C0</value>
+  <value key="SELECT_LIST_BACKGROUND_COLOR">#FFFFFF</value>
+  <value key="SELECT_LIST_FONT_COLOR">#000000</value>
 </theme>
 

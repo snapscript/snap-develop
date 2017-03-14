@@ -5,8 +5,10 @@
 	width: 70px;
 	height: 25px;
 	overflow: hidden;
-	background: url('/img/down_arrow_small_trans.png') no-repeat right #ffffff;
+	/*background: url('/img/down_arrow_small_trans.png') no-repeat right #ffffff;*/
 	border: 1px solid #c0c0c0;
+	background: ${SELECT_LIST_BACKGROUND_COLOR};
+	color: ${SELECT_LIST_FONT_COLOR};
 }
 
 #fontFamily {
@@ -16,8 +18,10 @@
 	width: 150px;
 	height: 25px;
 	overflow: hidden;
-	background: url('/img/down_arrow_small_trans.png') no-repeat right #ffffff;
+	/*background: url('/img/down_arrow_small_trans.png') no-repeat right #ffffff;*/
 	border: 1px solid #c0c0c0;
+	background: ${SELECT_LIST_BACKGROUND_COLOR};
+	color: ${SELECT_LIST_FONT_COLOR};
 }
 
 #editorTheme {
@@ -27,8 +31,10 @@
 	width: 150px;
 	height: 25px;
 	overflow: hidden;
-	background: url('/img/down_arrow_small_trans.png') no-repeat right #ffffff;
+	/*background: url('/img/down_arrow_small_trans.png') no-repeat right #ffffff;*/
 	border: 1px solid #c0c0c0;
+	background: ${SELECT_LIST_BACKGROUND_COLOR};
+	color: ${SELECT_LIST_FONT_COLOR};
 }
 
 ::-webkit-scrollbar {
