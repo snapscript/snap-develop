@@ -22,7 +22,7 @@ public class BrowserContext {
       this.port = builder.port;
    }
    
-   public static String getIconPath() {
+   public String getIconPath() {
       return ICON_PATH;
    }
 
