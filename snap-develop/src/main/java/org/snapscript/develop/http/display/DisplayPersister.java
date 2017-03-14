@@ -23,15 +23,15 @@ public class DisplayPersister {
       this.theme = theme;
    }
    
-   public DisplayDefinition readDefinition(){
+   public synchronized DisplayDefinition readDefinition(){
       return getDisplayFile().readDefinition();
    }
    
-   public void saveDefinition(DisplayDefinition definition) {
+   public synchronized void saveDefinition(DisplayDefinition definition) {
       getDisplayFile().saveDefinition(definition);
    }
    
-   private DisplayFile getDisplayFile() {
+   private synchronized DisplayFile getDisplayFile() {
       DisplayFile displayFile = reference.get();
       
       if(displayFile == null) {

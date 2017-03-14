@@ -104,7 +104,7 @@
 .w2ui-disabled,
 .w2ui-readonly {
   /*background-color: #f1f1f1 !important;*/
-  background-color: red !important;
+  background-color: #efefef !important;
   color: #777 !important;
 }
 /*************************************************
@@ -221,7 +221,7 @@ input[type=checkbox].w2ui-toggle:focus {
   display: none;
   z-index: 1300;
   color: inherit;
-  background-color: red;
+  background-color: #efefef;
   border: 3px solid #777777;
   box-shadow: 0px 2px 10px #999999;
 
@@ -281,7 +281,7 @@ input[type=checkbox].w2ui-toggle:focus {
   transition: opacity 0.3s;
 }
 .w2ui-tag .w2ui-tag-body {
-  background-color: red;
+  background-color: #efefef;
   display: inline-block;
   position: absolute;
 
@@ -326,12 +326,12 @@ input[type=checkbox].w2ui-toggle:focus {
 }
 .w2ui-overlay table.w2ui-drop-menu .w2ui-item-odd {
   color: inherit;
-  background-color: red;
+  background-color: #efefef;
 }
 .w2ui-overlay table.w2ui-drop-menu .w2ui-item-group {
   color: #444;
   font-weight: bold;
-  background-color: red;
+  background-color: #efefef;
   border-bottom: 1px solid #D3D2D4;
 }
 .w2ui-overlay table.w2ui-drop-menu td.menu-icon {
@@ -352,17 +352,17 @@ input[type=checkbox].w2ui-toggle:focus {
   height: 18px;
   padding: 2px 7px;
   margin: 3px 5px 0px 5px;
-  background-color: red;
+  background-color: #efefef;
   color: #667274;
   box-shadow: 0 0 2px #ffffff;
   text-shadow: 1px 1px 1px #e6e6e6;
 }
 .w2ui-overlay table.w2ui-drop-menu tr:hover {
   color: inherit;
-  background-color: red;
+  background-color: #efefef;
 }
 .w2ui-overlay table.w2ui-drop-menu tr.w2ui-selected {
-  background-color: red;
+  background-color: #efefef;
 }
 .w2ui-overlay table.w2ui-drop-menu tr.w2ui-selected td {
   color: inherit;
@@ -424,7 +424,7 @@ input[type=checkbox].w2ui-toggle:focus {
   height: 100%;
   opacity: 0.15;
   filter: alpha(opacity=15);
-  background-color: red;
+  background-color: #efefef;
 }
 .w2ui-lock-msg {
   display: none;
@@ -447,7 +447,7 @@ input[type=checkbox].w2ui-toggle:focus {
   font-family: Verdana, Arial, sans-serif;
   opacity: 0.8;
   filter: alpha(opacity=80);
-  background-color: red;
+  background-color: #efefef;
   color: #ffffff;
   text-align: center;
 
@@ -655,7 +655,7 @@ button.btn-red.clicked {
 .w2ui-form {
   position: relative;
   color: #000000;
-  background-color: red;
+  background-color: #efefef;
   border: 1px solid #c0c0c0;
 
   padding: 0px;
@@ -703,10 +703,10 @@ button.btn-red.clicked {
 
 
   padding-top: 5px !important;
-  background-color: red;
+  background-color: #efefef;
 }
 .w2ui-form .w2ui-tabs .w2ui-tab.active {
-  background-color: red;
+  background-color: #efefef;
 }
 .w2ui-form .w2ui-page {
   position: absolute;
@@ -752,7 +752,7 @@ button.btn-red.clicked {
   font-size: 120%;
 }
 .w2ui-group {
-  background-color: red;
+  background-color: #efefef;
   margin: 5px 0px 10px 0px;
   padding: 10px 5px;
   border-top: 1px solid #cedcea;
@@ -1235,7 +1235,7 @@ button.btn-red.clicked {
   width: auto;
   padding: 3px 10px 1px 7px;
   border: 1px solid #88b0d6;
-  background-color: red;
+  background-color: #efefef;
   white-space: nowrap;
   cursor: default;
   font-family: verdana;
@@ -1395,7 +1395,7 @@ button.btn-red.clicked {
   bottom: 0px;
   z-index: 1;
   color: inherit;
-  background-color: red;
+  background-color: #efefef;
 }
 .w2ui-layout > div .w2ui-resizer {
   display: none;
@@ -1405,7 +1405,7 @@ button.btn-red.clicked {
 }
 .w2ui-layout > div .w2ui-resizer:hover,
 .w2ui-layout > div .w2ui-resizer.active {
-  background-color: yellow;
+  background-color: #919191;
 }
 /*************************************************
 * ---- Grid ----
@@ -1459,7 +1459,7 @@ button.btn-red.clicked {
   height: 22px;
   border: 1px solid #b9b9b9;
   color: #000000;
-  background-color: red;
+  background-color: #efefef;
   padding: 3px 18px 3px 23px;
   margin: 0px;
 }

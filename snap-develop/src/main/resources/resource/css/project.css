@@ -30,3 +30,20 @@
 	background: url('/img/down_arrow_small_trans.png') no-repeat right #ffffff;
 	border: 1px solid #c0c0c0;
 }
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+ 
+::-webkit-scrollbar-track {
+    background: ${SCROLL_BAR_TRACK};
+}
+
+::-webkit-scrollbar-thumb {
+    background: ${SCROLL_BAR_THUMB};
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+	background: ${SCROLL_BAR_THUMB}; 
+}

@@ -11,6 +11,7 @@
 <link href="/css/dialog.css" rel="stylesheet" />
 <link href="/css/tree.css" rel="stylesheet" />
 <link href="/css/splash.css" rel="stylesheet" />
+<link href="/css/start.css" rel="stylesheet" />
 <script src="/js/external/ace/ace.js"></script>
 <script src="/js/external/jquery.js"></script>
 <script src="/js/external/jquery-ui.js"></script>
