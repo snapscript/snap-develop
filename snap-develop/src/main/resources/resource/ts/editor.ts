@@ -229,7 +229,7 @@ module FileEditor {
    function encodeEditorText(text, resource) {
       var token = resource.toLowerCase();
       
-      if(token.endsWith(".json")) {
+      if(stringEndsWith(token, ".json")) {
          try {
              var object = JSON.parse(text);
              return JSON.stringify(object, null, 3);
@@ -290,7 +290,7 @@ module FileEditor {
       var importRegex = /import\s+([a-z][a-zA-Z0-9\.]*)\.([A-Z][a-zA-Z]*)/g;
       var tokenList = {};
       
-      if(token.endsWith(".snap")) {
+      if(stringEndsWith(token, ".snap")) {
          var lines = text.split(/\r?\n/);
          
          for(var i = 0; i < lines.length; i++) {
