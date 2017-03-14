@@ -24,9 +24,12 @@ import java.util.Set;
 import org.snapscript.develop.http.project.ProjectMode;
 import org.snapscript.service.ScriptService;
 
+import javax.swing.*;
+
 //--mode=develop --directory=work --port=4457 --agent-pool=4 --agent-port=4456 --log-level=DEBUG
 public class ApplicationLauncher {
-   
+
+   private static final String ABOUT_NAME = "Snap Develop";
    private static final String PROJECT_MODE = "project-mode";
    private static final String MODE_ARGUMENT = "mode";
    private static final String DEFAULT_MODE = "develop";
@@ -43,8 +46,15 @@ public class ApplicationLauncher {
          System.out.println("--" + name + "=" + value);
          System.setProperty(name, value); // make available to configuration
       }
-      System.setProperty("java.awt.headless", "true");
+      String server = CommandLineArgument.SERVER_ONLY.getValue();
 
+      if(Boolean.parseBoolean(server)) {
+         System.setProperty("java.awt.headless", "true");
+      } else {
+         System.setProperty("apple.laf.useScreenMenuBar", "true");
+         System.setProperty("com.apple.mrj.application.apple.menu.about.name", ABOUT_NAME);
+         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      }
       if(commands.containsKey(MODE_ARGUMENT)) { // is there a mode setting
          mode = commands.get(MODE_ARGUMENT);
       }

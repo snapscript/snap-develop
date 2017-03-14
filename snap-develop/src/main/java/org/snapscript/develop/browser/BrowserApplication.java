@@ -1,15 +1,20 @@
 package org.snapscript.develop.browser;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
 import org.snapscript.develop.http.loader.ClassResourceLoader;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 public class BrowserApplication extends Application {
    
@@ -20,6 +25,19 @@ public class BrowserApplication extends Application {
    @Override
    public void start(Stage stage) {
       try {
+         MenuBar menuBar = new MenuBar();
+         Menu menu = new Menu("File");
+         MenuItem quit = new MenuItem("Quit");
+         menuBar.setUseSystemMenuBar(true);
+         menuBar.useSystemMenuBarProperty().set(true);
+         quit.setOnAction(new EventHandler() {
+            @Override
+            public void handle(Event event) {
+               Platform.exit();
+            }
+         });
+         menu.getItems().add(quit);
+         menuBar.getMenus().add(menu);
          stage.setTitle(context.getDirectory().getCanonicalPath());
          byte[] data = ClassResourceLoader.loadResource(context.getIconPath());
          InputStream stream = new ByteArrayInputStream(data);
