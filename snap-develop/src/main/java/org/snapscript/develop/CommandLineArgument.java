@@ -29,7 +29,8 @@ public enum CommandLineArgument {
    VERBOSE("log-level", "INFO", "Level of logging", "(TRACE|DEBUG|INFO)"),
    LOG("log-file", "log/snapd.log", "Log file to use", ".+"),
    SCRIPT("script", null, "Script to launch", ".*.snap"),
-   CLIENT("client", "false", "Launche client browser", "(true|false)");
+   SERVER_ONLY("server-only", "false", "Launch server only", "(true|false)"),
+   CLIENT_DEBUG("client-debug", "false", "Enable client debugger", "(true|false)"); // firebug
    
    public final String description;
    public final Pattern pattern;

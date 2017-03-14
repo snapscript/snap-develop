@@ -3,26 +3,35 @@ package org.snapscript.develop.browser;
 import java.io.File;
 
 import org.snapscript.agent.log.ProcessLogger;
-import org.snapscript.develop.CommandLineArgument;
 
 public class BrowserLauncher {
 
    private final ProcessLogger logger;
-   private final boolean enabled;
+   private final File directory;
+   private final boolean disabled;
+   private final boolean debug;
    
-   public BrowserLauncher(ProcessLogger logger, boolean enabled) {
+   public BrowserLauncher(ProcessLogger logger, File directory, boolean disabled, boolean debug) {
+      this.directory = directory;
       this.logger = logger;
-      this.enabled = enabled;
+      this.disabled = disabled;
+      this.debug = debug;
    }
    
    public void launch(final String host, final int port) {
-      if(enabled) {
-         final String directory = CommandLineArgument.DIRECTORY.getValue();
-         final File file = new File(directory);
+      if(!disabled) {
+         final BrowserContext context = new BrowserContext.Builder()
+            .withDebug(debug)
+            .withHost(host)
+            .withPort(port)
+            .withLogger(logger)
+            .withDirectory(directory)
+            .build();
+         
          final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-               BrowserApplication.launch(logger, file, host, port);
+               BrowserApplication.launch(context);
             }
          });
          thread.start();

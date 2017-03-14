@@ -34,25 +34,25 @@
 <script src="/js/external/fancytree.js"></script>
 <script src="/js/external/w2ui.js"></script>
 <script src="/js/external/filesaver.js"></script>
-<script src="/js/module.min.js"></script>
-<script src="/js/spinner.min.js"></script>
-<script src="/js/editor.min.js"></script>
-<script src="/js/socket.min.js"></script>
-<script src="/js/console.min.js"></script>
-<script src="/js/tree.min.js"></script>
-<script src="/js/threads.min.js"></script>
-<script src="/js/debug.min.js"></script>
-<script src="/js/variables.min.js"></script>
-<script src="/js/dialog.min.js"></script>
-<script src="/js/common.min.js"></script>
-<script src="/js/history.min.js"></script>
-<script src="/js/problem.min.js"></script>
-<script src="/js/profiler.min.js"></script>
-<script src="/js/commands.min.js"></script>
-<script src="/js/explorer.min.js"></script>
-<script src="/js/link.min.js"></script>
-<script src="/js/alert.min.js"></script>
-<script src="/js/keys.min.js"></script>
+<script src="/js/module.${JS_EXTENSION}"></script>
+<script src="/js/spinner.${JS_EXTENSION}"></script>
+<script src="/js/editor.${JS_EXTENSION}"></script>
+<script src="/js/socket.${JS_EXTENSION}"></script>
+<script src="/js/console.${JS_EXTENSION}"></script>
+<script src="/js/tree.${JS_EXTENSION}"></script>
+<script src="/js/threads.${JS_EXTENSION}"></script>
+<script src="/js/debug.${JS_EXTENSION}"></script>
+<script src="/js/variables.${JS_EXTENSION}"></script>
+<script src="/js/dialog.${JS_EXTENSION}"></script>
+<script src="/js/common.${JS_EXTENSION}"></script>
+<script src="/js/history.${JS_EXTENSION}"></script>
+<script src="/js/problem.${JS_EXTENSION}"></script>
+<script src="/js/profiler.${JS_EXTENSION}"></script>
+<script src="/js/commands.${JS_EXTENSION}"></script>
+<script src="/js/explorer.${JS_EXTENSION}"></script>
+<script src="/js/link.${JS_EXTENSION}"></script>
+<script src="/js/alert.${JS_EXTENSION}"></script>
+<script src="/js/keys.${JS_EXTENSION}"></script>
 </head>
 <body style="height: 100%; margin: 0; background-color: ${PROJECT_BACKGROUND_COLOR}; color: ${PROJECT_FONT_COLOR};">
   <div id="mainLayout" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"></div>
@@ -62,7 +62,7 @@
   </div>
   <div id='editParentHidden' style='display: none;'><div id='editor'></div></div>
   <div id='browseParentHidden' style='display: none;'><div id='explorer'></div></div>
-  <script type="text/javascript" src="/js/project.min.js"></script>
+  <script type="text/javascript" src="/js/project.${JS_EXTENSION}"></script>
 </body>
 </html>
 

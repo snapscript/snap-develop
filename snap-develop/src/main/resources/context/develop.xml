@@ -18,7 +18,9 @@
 
   <bean id="BrowserLauncher" class="org.snapscript.develop.browser.BrowserLauncher">
     <constructor-arg ref="ProcessLogger" />
-    <constructor-arg value="${client}" />
+    <constructor-arg value="${directory}" />
+    <constructor-arg value="${server-only}" />
+    <constructor-arg value="${client-debug}" />
   </bean>
 
   <bean id="ConfigurationReader" class="org.snapscript.develop.configuration.ConfigurationReader">

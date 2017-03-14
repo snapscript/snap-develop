@@ -1,4 +1,4 @@
-<theme name="light">
+<theme name="light" extend="base">
   <value key="IMAGE_FOLDER">/img/theme/light</value>
   <value key="PROJECT_FONT_COLOR">#000000</value>
   <value key="PROJECT_BACKGROUND_COLOR">#F5F6F7</value>

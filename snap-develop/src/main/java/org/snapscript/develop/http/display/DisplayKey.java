@@ -1,6 +1,7 @@
 package org.snapscript.develop.http.display;
 
 public enum DisplayKey {
+   JS_EXTENSION,
    IMAGE_FOLDER,
    PROJECT_FONT_COLOR,
    PROJECT_BACKGROUND_COLOR,

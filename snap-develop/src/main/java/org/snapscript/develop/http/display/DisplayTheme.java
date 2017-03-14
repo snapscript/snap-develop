@@ -45,15 +45,6 @@ public class DisplayTheme {
             variables.put(value.key, value.value);
          }
       }
-      DisplayKey[] keys = DisplayKey.values();
-      
-      for(DisplayKey key : keys) {
-         String required = key.name();
-         
-         if(!variables.containsKey(required)) {
-            throw new IllegalStateException("Theme '" + name + "' does not define '" + required + "'");
-         }
-      }
       return new TemplateModel(variables);
    }
    
