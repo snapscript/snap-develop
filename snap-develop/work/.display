@@ -2,7 +2,7 @@
    <theme-name>monokai</theme-name>
    <console-capacity>50000</console-capacity>
    <font>
-      <font-family>Menlo</font-family>
+      <font-family>Lucida Console</font-family>
       <font-size>13</font-size>
    </font>
 </displayDefinition>

@@ -385,7 +385,46 @@ module FileEditor {
       indexEditorTokens(text, resource); // create some tokens we can link to dynamically
       Project.createEditorTab(); // update the tab name
       History.showFileHistory(); // update the history
-      $("#currentFile").html("File:&nbsp;"+editorResource.projectPath+"&nbsp;&nbsp;");
+      createEditorBreadcrumb(editorResource.projectPath);
+      
+   }
+   
+   function createEditorBreadcrumb(resourcePath) {
+      var pathSegments = resourcePath.split("/");
+      var pathBreadcrumb = "";
+      
+      pathBreadcrumb += "<table border='0'>\n";
+      pathBreadcrumb += "<tr>\n";
+      pathBreadcrumb += "<td><div class='treeIndexFolder'></div><td>\n";
+      pathBreadcrumb += "<td>"+document.title+"</td>\n";
+      
+      for(var i = 0; i < pathSegments.length; i++) {
+         var segment = pathSegments[i];
+         
+         if(segment.length > 0) {
+            pathBreadcrumb += "<td><div class='";
+            
+            if(segment.indexOf(".") != -1){
+               pathBreadcrumb += "treeFile";
+            } else {
+               pathBreadcrumb += "treeFileFolder";
+            }
+            pathBreadcrumb += "'></div>";
+            pathBreadcrumb += "</td>\n<td>";
+            pathBreadcrumb += segment;
+            pathBreadcrumb += "</td>\n";
+         }
+      }
+      pathBreadcrumb += "</table>";
+      //$("#currentFile").html("File:&nbsp;"+editorResource.projectPath+"&nbsp;&nbsp;");
+      $("#currentFile").html(pathBreadcrumb);
+   }
+   
+   export function showEditorFileInTree() {
+      var editorData = loadEditor();
+      var resourcePath = editorData.resource;
+      
+      FileTree.showTreeNode('explorerTree', resourcePath);
    }
    
    export function getSelectedText() {

@@ -25,6 +25,14 @@ module FileTree {
       });
    }
    
+   export function showTreeNode(id, treePath) {
+      if(id && treePath) {
+         if(treePath.resourcePath) {
+            $("#" + id).fancytree("getTree").getNodeByKey(treePath.resourcePath).setActive();
+         }
+      }
+   }
+   
    function showFancyTree(id, treeMenuHandler, clickCallback) {
       // using default options
       $('#' + id).fancytree({

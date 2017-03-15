@@ -417,9 +417,10 @@ var Project;
                     name: 'tabs',
                     tabs: {
                         active: 'browseTab',
+                        right: '<div id="navigateToTreeArrow" onclick="FileEditor.showEditorFileInTree()"></div>',
                         tabs: [{
                                 id: 'browseTab',
-                                caption: '<div class="browseTab">Browse</div>',
+                                caption: '<div class="browseTab">Browse&nbsp;</div>',
                                 content: "<div style='overflow: scroll; font-family: monospace;' id='browse'><div id='browseParent'><div id='explorer'></div></div></div>",
                                 closable: false
                             }],
@@ -716,8 +717,8 @@ var Project;
         return "<div id='status'>" +
             "  <table width='100%' height='100%'>" +
             "  <tr>" +
-            "    <td width='50%' align='left'><p id='process'></p></td>" +
-            "    <td width='50%' align='right'><p id='currentFile'></p></td>" +
+            "    <td width='50%' align='left'><div id='process'></div></td>" +
+            "    <td width='50%' align='right'><div id='currentFile'></div></td>" +
             "  </tr>" +
             "  </table>" +
             "</div>";

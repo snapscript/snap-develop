@@ -22,6 +22,14 @@ var FileTree;
         });
     }
     FileTree.createTreeOfDepth = createTreeOfDepth;
+    function showTreeNode(id, treePath) {
+        if (id && treePath) {
+            if (treePath.resourcePath) {
+                $("#" + id).fancytree("getTree").getNodeByKey(treePath.resourcePath).setActive();
+            }
+        }
+    }
+    FileTree.showTreeNode = showTreeNode;
     function showFancyTree(id, treeMenuHandler, clickCallback) {
         // using default options
         $('#' + id).fancytree({

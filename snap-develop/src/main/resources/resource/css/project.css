@@ -5,9 +5,9 @@
 	width: 70px;
 	height: 25px;
 	overflow: hidden;
-	/*background: url('/img/down_arrow_small_trans.png') no-repeat right #ffffff;*/
+	background: url('${IMAGE_FOLDER}/down_arrow.png') no-repeat right ${SELECT_LIST_BACKGROUND_COLOR};
+	background-size: contain;
 	border: 1px solid #c0c0c0;
-	background: ${SELECT_LIST_BACKGROUND_COLOR};
 	color: ${SELECT_LIST_FONT_COLOR};
 }
 
@@ -18,9 +18,9 @@
 	width: 150px;
 	height: 25px;
 	overflow: hidden;
-	/*background: url('/img/down_arrow_small_trans.png') no-repeat right #ffffff;*/
+	background: url('${IMAGE_FOLDER}/down_arrow.png') no-repeat right ${SELECT_LIST_BACKGROUND_COLOR};
+	background-size: contain;
 	border: 1px solid #c0c0c0;
-	background: ${SELECT_LIST_BACKGROUND_COLOR};
 	color: ${SELECT_LIST_FONT_COLOR};
 }
 
@@ -31,11 +31,26 @@
 	width: 150px;
 	height: 25px;
 	overflow: hidden;
-	/*background: url('/img/down_arrow_small_trans.png') no-repeat right #ffffff;*/
+	background: url('${IMAGE_FOLDER}/down_arrow.png') no-repeat right ${SELECT_LIST_BACKGROUND_COLOR};
+	background-size: contain;
 	border: 1px solid #c0c0c0;
-	background: ${SELECT_LIST_BACKGROUND_COLOR};
 	color: ${SELECT_LIST_FONT_COLOR};
 }
+
+#navigateToTreeArrow {
+	background-image: url('${IMAGE_FOLDER}/arrow_left.png');
+	background-size: 16px 16px;	
+	background-position: right;
+	background-repeat: no-repeat;
+    padding: 12px;
+}
+
+#currentFile {
+	margin-top: -3px;
+	padding-right: 12px;
+	/*border: 1px solid red;*/
+}
+
 
 ::-webkit-scrollbar {
     width: 10px;

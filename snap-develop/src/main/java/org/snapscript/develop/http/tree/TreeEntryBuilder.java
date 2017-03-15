@@ -41,7 +41,13 @@ public class TreeEntryBuilder {
          builder.append(imageFolder);
          builder.append("/file_directory.png\" class=\"folder\">");
       }
-      builder.append(node.getName());
+      if(node.isRoot()) {
+         builder.append("<b>");
+         builder.append(node.getName());
+         builder.append("</b>");
+      } else {
+         builder.append(node.getName());
+      }
       builder.append("\n");
    }
 

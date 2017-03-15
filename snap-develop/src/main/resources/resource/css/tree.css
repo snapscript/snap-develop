@@ -82,6 +82,31 @@
 	display: block;
 }
 
+
+.treeIndexFolder {
+	background-image: url('${IMAGE_FOLDER}/project_index.png');
+	background-size: 16px 16px;	
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px;
+}
+
+.treeFileFolder {
+	background-image: url('${IMAGE_FOLDER}/file_directory.png');
+	background-size: 16px 16px;	
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px;
+}
+
+.treeFile {
+	background-image: url('${IMAGE_FOLDER}/file_text.png');
+	background-size: 16px 16px;	
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px;
+}
+
 .menu-explore {
 	background-image: url('${IMAGE_FOLDER}/file_directory.png') !important;
 	background-size: 16px 16px !important;
