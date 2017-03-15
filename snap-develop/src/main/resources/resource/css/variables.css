@@ -58,6 +58,7 @@
     font-size: 1.2em;*/
     font-size: 1.1em;  		
 	background-image: url('${IMAGE_FOLDER}/calculator.png');	
+	background-size: contain;
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 22px; /* Or size of icon + spacing */
