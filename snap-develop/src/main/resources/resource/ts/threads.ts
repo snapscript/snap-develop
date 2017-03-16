@@ -113,9 +113,9 @@ module ThreadManager {
    function updateFocusedThread(threadScope) {
       if(isThreadFocusLineChange(threadScope)) { // has the update resulted in a new line or resource
          if(isThreadFocusResourceChange(threadScope)) { // do we need to update the editor with a new resource
-               var resourcePathDetails = FileTree.createResourcePath(threadScope.resource);
-            
-               FileExplorer.openTreeFile(resourcePathDetails.resourcePath, function(){
+            var resourcePathDetails = FileTree.createResourcePath(threadScope.resource);
+         
+            FileExplorer.openTreeFile(resourcePathDetails.resourcePath, function(){
                updateThreadFocus(threadScope);
                FileEditor.showEditorLine(threadScope.line);
             });
@@ -132,9 +132,9 @@ module ThreadManager {
       var editorData = FileEditor.loadEditor();
       
       if(editorData.resource.filePath != threadScope.resource) { // do we need to change resource on hit of breakpoint
-            var resourcePathDetails = FileTree.createResourcePath(threadScope.resource);
-         
-            FileExplorer.openTreeFile(resourcePathDetails.resourcePath, function(){
+         var resourcePathDetails = FileTree.createResourcePath(threadScope.resource);
+      
+         FileExplorer.openTreeFile(resourcePathDetails.resourcePath, function(){
             updateThreadFocus(threadScope);
             FileEditor.showEditorLine(threadScope.line);
          });
