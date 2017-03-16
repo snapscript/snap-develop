@@ -5,7 +5,6 @@
   <value key="PROJECT_MENU_COLOR">#FAFAFA</value>
   <value key="FANCY_TREE_CSS_FILE">fancytree-light.css</value>
   <value key="W2UI_CSS_FILE">w2ui-flat-light.css</value>
-  <value key="CONSOLE_BACKGROUND_COLOR">#FFFFFF</value>
   <value key="DIALOG_BACKGROUND_COLOR">#FFFFFF</value>
   <value key="DIALOG_FONT_COLOR">#000000</value>
   <value key="DIALOG_PANEL_COLOR">#FFFFFF</value>
@@ -18,5 +17,8 @@
   <value key="SCROLL_BAR_THUMB">#C0C0C0</value>
   <value key="SELECT_LIST_BACKGROUND_COLOR">#FFFFFF</value>
   <value key="SELECT_LIST_FONT_COLOR">#000000</value>
+  <value key="CONSOLE_BACKGROUND_COLOR">#FFFFFF</value>
+  <value key="CONSOLE_ERROR_FONT_COLOR">#FF0000</value>
+  <value key="CONSOLE_FONT_COLOR">#000000</value>  
 </theme>
 

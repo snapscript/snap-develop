@@ -1,10 +1,10 @@
 .consoleError {
-	color: red;
+	color: ${CONSOLE_ERROR_FONT_COLOR};
 	white-space: pre;
 }
 
 .consoleNormal {
-	color: black;
+	color: ${CONSOLE_ERROR_COLOR};
 	white-space: pre;
 }
 
