@@ -1,4 +1,5 @@
 /*
+ * ProjectDefaultResource.java December 2016
  *
  * Copyright (C) 2016, Niall Gallagher <niallg@users.sf.net>
  *
