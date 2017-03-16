@@ -221,6 +221,7 @@
 
   <bean id="ProjectDefaultResource" class="org.snapscript.develop.http.project.ProjectDefaultResource">
     <constructor-arg ref="ProjectBuilder" />
+    <constructor-arg ref="ProcessLogger" />
   </bean>
 
   <bean id="ProjectScriptService" class="org.snapscript.develop.http.project.ProjectScriptService">
