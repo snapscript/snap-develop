@@ -23,6 +23,7 @@
 <link href="/css/alert.css" rel="stylesheet" />
 <link href="/css/project.css" rel="stylesheet" />
 <link href="/css/history.css" rel="stylesheet" />
+<link href="/css/status.css" rel="stylesheet" />
 <script src="/js/external/ace/ace.js"></script>
 <script src="/js/external/ace/ext-language_tools.js"></script>
 <script src="/js/external/jquery.js"></script>
@@ -53,6 +54,7 @@
 <script src="/js/link.${JS_EXTENSION}"></script>
 <script src="/js/alert.${JS_EXTENSION}"></script>
 <script src="/js/keys.${JS_EXTENSION}"></script>
+<script src="/js/status.${JS_EXTENSION}"></script>
 </head>
 <body style="height: 100%; margin: 0; background-color: ${PROJECT_BACKGROUND_COLOR}; color: ${PROJECT_FONT_COLOR};">
   <div id="mainLayout" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"></div>

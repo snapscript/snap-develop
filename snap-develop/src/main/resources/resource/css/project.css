@@ -53,12 +53,6 @@
     padding: 12px;
 }
 
-#currentFile {
-	margin-top: -3px;
-	padding-right: 12px;
-	/*border: 1px solid red;*/
-}
-
 ::-webkit-scrollbar {
     width: 10px;
     height: 10px;

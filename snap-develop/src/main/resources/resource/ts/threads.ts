@@ -19,7 +19,8 @@ module ThreadManager {
       clearVariables();
       Profiler.clearProfiler();
       clearThreads();
-      $("#process").html("<i>&nbsp;RUNNING: " + message.resource + " ("+message.process+") "+message.duration+" milliseconds</i>");
+      
+      StatusPanel.showProcessStatus(message.resource, message.process);
    }
    
    function deleteThreads(socket, type, text) {

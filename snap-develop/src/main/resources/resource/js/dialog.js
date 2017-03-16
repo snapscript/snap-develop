@@ -190,7 +190,7 @@ var DialogBuilder;
                                 content += "<tr>";
                                 for (var j = 0; j < row.length; j++) {
                                     var cell = row[j];
-                                    content += "<td width='50%'><div class='";
+                                    content += "<td width='50%'><div id='dialogListEntry" + i + "' class='";
                                     content += cell.style;
                                     content += "' onclick='return DialogBuilder.submitDialogListResource";
                                     if (cell.line) {

@@ -201,7 +201,7 @@ module DialogBuilder {
                         
                         for(var j = 0; j < row.length; j++) {
                            var cell = row[j];
-                           content += "<td width='50%'><div class='";
+                           content += "<td width='50%'><div id='dialogListEntry" + i + "' class='";
                            content += cell.style;
                            content += "' onclick='return DialogBuilder.submitDialogListResource";
                            
@@ -389,7 +389,7 @@ module DialogBuilder {
       var evt = e || window.event
       // "e" is the standard behavior (FF, Chrome, Safari, Opera),
       // while "window.event" (or "event") is IE's behavior
-      if ( evt.keyCode === 13 ) {
+      if(evt.keyCode === 13) {
          $("#dialogSave").click(); // force the click
           // Do something
           // You can disable the form submission this way:

@@ -97,9 +97,13 @@ module DebugManager {
       var statusInfo = statusProcesses[process];
       
       if(statusInfo != null && statusInfo.resource != null){
+         var statusResourcePath = FileTree.createResourcePath(statusInfo.resource);
+         
          $("#toolbarDebug").css('opacity', '1.0');
          $("#toolbarDebug").css('filter', 'alpha(opacity=100)'); // msie
-         $("#process").html("<i>&nbsp;RUNNING: " + statusInfo.resource + " ("+process+")</i>");
+         
+         StatusPanel.showProcessStatus(statusInfo.resource, process);
+         //$("#process").html("<i>&nbsp;RUNNING: " + statusInfo.resource + " ("+process+")</i>");
       } else {
          $("#toolbarDebug").css('opacity', '0.4');
          $("#toolbarDebug").css('filter', 'alpha(opacity=40)'); // msie

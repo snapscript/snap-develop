@@ -24,6 +24,15 @@ var KeyBinder;
         createKeyBinding("ctrl shift e", false, function () {
             Command.evaluateExpression();
         });
+        createKeyBinding("ctrl shift m", false, function () {
+            Project.toggleFullScreen();
+        });
+        createKeyBinding("ctrl shift l", false, function () {
+            Command.switchLayout();
+        });
+        createKeyBinding("ctrl shift p", false, function () {
+            Command.switchProject();
+        });
         createKeyBinding("ctrl z", false, function () {
             FileEditor.undoEditorChange();
         });
