@@ -569,6 +569,7 @@ module Project {
          activateTab("consoleTab", "exploreBottomTabLayout", false, false, "style='right: 0px;'"); 
          activateTab("browseTab", "exploreLeftTabLayout", true, false, "style='right: 0px;'"); 
          activateTab("editTab", "exploreEditorTabLayout", false, true, "style='right: 0px;'"); 
+         openDefaultResource();
       }, 300); // update theme
    }
    
@@ -790,6 +791,7 @@ module Project {
          activateTab("variablesTab", "debugRightTabLayout", false, false, "");   
          activateTab("consoleTab", "debugBottomTabLayout", false, false, "");  
          activateTab("editTab", "debugEditorTabLayout", false, true, "");  
+         openDefaultResource();
       }, 300); // update theme
       
       
@@ -1271,6 +1273,16 @@ module Project {
          $('#edit').w2render('edit');
          showEditorContent(containsEditor);
       }
+   }
+   
+   function openDefaultResource() {
+      jQuery.ajax({
+         url: '/default/' + document.title,
+         success: function (defaultResource) {
+            FileExplorer.openTreeFile(defaultResource, function(){});
+         },
+         async: true
+      });
    }
 }
 

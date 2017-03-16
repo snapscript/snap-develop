@@ -219,6 +219,10 @@
     <constructor-arg ref="BackupManager" />
   </bean>
 
+  <bean id="ProjectDefaultResource" class="org.snapscript.develop.http.project.ProjectDefaultResource">
+    <constructor-arg ref="ProjectBuilder" />
+  </bean>
+
   <bean id="ProjectScriptService" class="org.snapscript.develop.http.project.ProjectScriptService">
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="ConnectListener" />
@@ -261,6 +265,7 @@
     <constructor-arg>
       <map>
         <entry key="/format.*" value-ref="SourceFormatResource" />
+        <entry key="/default.*" value-ref="ProjectDefaultResource" />
         <entry key="/file.*" value-ref="FileMatchResource" />
         <entry key="/type.*" value-ref="TypeNodeResource" />
         <entry key="/complete.*" value-ref="CompletionResource" />
