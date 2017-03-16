@@ -453,7 +453,7 @@ module Project {
                active : 'editTab',
                tabs : [ {
                   id : 'editTab',
-                  caption : '<div class="editTab" id="editFileName">Edit</div>',
+                  caption : '<div class="editTab" id="editFileName">...</div>',
                   content : "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
                   closable: true 
                } ],
@@ -640,7 +640,7 @@ module Project {
                active : 'editTab',
                tabs : [ {
                   id : 'editTab',
-                  caption : '<div class="editTab" id="editFileName">Edit</div>',
+                  caption : '<div class="editTab" id="editFileName">...</div>',
                   content : "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
                   closable: true 
                } ],
@@ -1276,13 +1276,18 @@ module Project {
    }
    
    function openDefaultResource() {
-      jQuery.ajax({
-         url: '/default/' + document.title,
-         success: function (defaultResource) {
-            FileExplorer.openTreeFile(defaultResource, function(){});
-         },
-         async: true
-      });
+      var location = window.location.hash;
+      var hashIndex = location.indexOf('#');
+      
+      if(hashIndex == -1) { // no path specified
+         jQuery.ajax({
+            url: '/default/' + document.title,
+            success: function (defaultResource) {
+               FileExplorer.openTreeFile(defaultResource, function(){});
+            },
+            async: true
+         });
+      }
    }
 }
 

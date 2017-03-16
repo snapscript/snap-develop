@@ -393,7 +393,7 @@ var Project;
                         active: 'editTab',
                         tabs: [{
                                 id: 'editTab',
-                                caption: '<div class="editTab" id="editFileName">Edit</div>',
+                                caption: '<div class="editTab" id="editFileName">...</div>',
                                 content: "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
                                 closable: true
                             }],
@@ -568,7 +568,7 @@ var Project;
                         active: 'editTab',
                         tabs: [{
                                 id: 'editTab',
-                                caption: '<div class="editTab" id="editFileName">Edit</div>',
+                                caption: '<div class="editTab" id="editFileName">...</div>',
                                 content: "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
                                 closable: true
                             }],
@@ -1191,13 +1191,17 @@ var Project;
         }
     }
     function openDefaultResource() {
-        jQuery.ajax({
-            url: '/default/' + document.title,
-            success: function (defaultResource) {
-                FileExplorer.openTreeFile(defaultResource, function () { });
-            },
-            async: true
-        });
+        var location = window.location.hash;
+        var hashIndex = location.indexOf('#');
+        if (hashIndex == -1) {
+            jQuery.ajax({
+                url: '/default/' + document.title,
+                success: function (defaultResource) {
+                    FileExplorer.openTreeFile(defaultResource, function () { });
+                },
+                async: true
+            });
+        }
     }
 })(Project || (Project = {}));
 ModuleSystem.registerModule("project", "Project module: project.js", Project.createMainLayout, ["common", "socket", "console", "problem", "editor", "spinner", "tree", "threads"]);
