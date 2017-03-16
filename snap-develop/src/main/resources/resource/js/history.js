@@ -33,6 +33,14 @@ var History;
         });
     }
     History.showFileHistory = showFileHistory;
+    function navigateForward() {
+        window.history.forward();
+    }
+    History.navigateForward = navigateForward;
+    function navigateBackward() {
+        window.history.back();
+    }
+    History.navigateBackward = navigateBackward;
     function updateEditorFromHistory() {
         var location = window.location.hash;
         var hashIndex = location.indexOf('#');

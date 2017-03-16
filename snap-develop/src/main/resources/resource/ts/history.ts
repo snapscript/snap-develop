@@ -36,6 +36,14 @@ module History {
       });
    }
    
+   export function navigateForward() {
+      window.history.forward();
+   }
+   
+   export function navigateBackward() {
+      window.history.back();
+   }
+   
    function updateEditorFromHistory(){
       var location = window.location.hash;
       var hashIndex = location.indexOf('#');

@@ -420,7 +420,7 @@ var Project;
                         right: '<div id="navigateToTreeArrow" onclick="FileEditor.showEditorFileInTree()"></div>',
                         tabs: [{
                                 id: 'browseTab',
-                                caption: '<div class="browseTab">Browse&nbsp;</div>',
+                                caption: '<div class="browseTab">Project&nbsp;</div>',
                                 content: "<div style='overflow: scroll; font-family: monospace;' id='browse'><div id='browseParent'><div id='explorer'></div></div></div>",
                                 closable: false
                             }],
@@ -618,7 +618,7 @@ var Project;
                                 closable: false
                             }, {
                                 id: 'browseTab',
-                                caption: '<div class="browseTab">Browse</div>',
+                                caption: '<div class="browseTab">Project</div>',
                                 content: "<div style='overflow: scroll; font-family: monospace;' id='browse'><div id='browseParent'></div></div>",
                                 closable: false
                             }],
@@ -776,6 +776,9 @@ var Project;
                         "<table border='0' width='100%' cellpadding='0'>" +
                         "<tr>" +
                         "   <td  width='100%'></td>" +
+                        "   <td><div id='toolbarNavigateBack' title='Navigate Back' onclick='History.navigateBackward()'></div></td>" +
+                        "   <td><div id='toolbarNavigateForward' title='Navigate Forward' onclick='History.navigateForward()'></div></td>" +
+                        "   <td>&nbsp;&nbsp;</td>" +
                         "   <td>" +
                         "        <select class='styledSelect' id='editorTheme' size='1' onchange='Project.changeEditorTheme()'>\n" +
                         "          <option value='chrome'>&nbsp;Chrome</option>\n" +

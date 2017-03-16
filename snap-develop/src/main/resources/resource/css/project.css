@@ -45,12 +45,19 @@
     padding: 12px;
 }
 
+#navigateToTreeArrow:active {
+	background-image: url('${IMAGE_FOLDER}/arrow_left.png');
+	background-size: 18px 18px;	
+	background-position: right;
+	background-repeat: no-repeat;
+    padding: 12px;
+}
+
 #currentFile {
 	margin-top: -3px;
 	padding-right: 12px;
 	/*border: 1px solid red;*/
 }
-
 
 ::-webkit-scrollbar {
     width: 10px;
