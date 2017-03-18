@@ -45,6 +45,9 @@ var KeyBinder;
         createKeyBinding("right", false, function () {
             FileEditor.moveCursorRight();
         });
+        createKeyBinding("tab", false, function () {
+            FileEditor.indentCurrentLine();
+        });
         createKeyBinding("ctrl /", false, function () {
             FileEditor.commentSelection();
         });

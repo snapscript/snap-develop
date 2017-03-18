@@ -65,6 +65,11 @@ module FileEditor {
       editorMarkers[line] = marker;
    }
    
+   export function indentCurrentLine() {
+      var editor = ace.edit("editor");
+      editor.indent();
+   }
+   
    export function commentSelection() {
       var editor = ace.edit("editor");
       editor.toggleCommentLines();
@@ -88,7 +93,7 @@ module FileEditor {
    
    function moveCursorTo(rowChange, columnChange) {
       var editor = ace.edit("editor");
-      var cursorPosition = editor.getCursorPosition()
+      var cursorPosition = editor.getCursorPosition();
       var currentRow = cursorPosition.row;
       var currentColumn = cursorPosition.column;
       var maxRow = editor.session.getLength() - 1

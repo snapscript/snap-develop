@@ -56,6 +56,11 @@ var FileEditor;
         editorMarkers[line] = marker;
     }
     FileEditor.createEditorHighlight = createEditorHighlight;
+    function indentCurrentLine() {
+        var editor = ace.edit("editor");
+        editor.indent();
+    }
+    FileEditor.indentCurrentLine = indentCurrentLine;
     function commentSelection() {
         var editor = ace.edit("editor");
         editor.toggleCommentLines();
