@@ -21,7 +21,7 @@ package org.snapscript.develop.complete;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.snapscript.develop.http.project.Project;
+import org.snapscript.develop.resource.project.Project;
 
 public class SourceFormatter {
 

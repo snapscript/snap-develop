@@ -40,8 +40,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.snapscript.agent.log.ProcessLogger;
-import org.snapscript.develop.http.project.Project;
-import org.snapscript.develop.http.project.ProjectBuilder;
+import org.snapscript.develop.resource.project.Project;
+import org.snapscript.develop.resource.project.ProjectBuilder;
 
 public class BackupManager {
    

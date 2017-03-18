@@ -4,6 +4,11 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.snapscript.develop.resource.template.PropertyBinder;
+import org.snapscript.develop.resource.template.PropertyTemplateFilter;
+import org.snapscript.develop.resource.template.StringTemplate;
+import org.snapscript.develop.resource.template.TemplateModel;
+
 import junit.framework.TestCase;
 
 public class StringTemplateTest extends TestCase {

@@ -21,7 +21,7 @@ package org.snapscript.develop;
 import java.net.InetSocketAddress;
 
 import org.snapscript.develop.browser.BrowserLauncher;
-import org.snapscript.develop.http.WebServer;
+import org.snapscript.develop.resource.WebServer;
 
 public class ProcessServer {
 

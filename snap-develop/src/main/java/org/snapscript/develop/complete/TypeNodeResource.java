@@ -28,8 +28,8 @@ import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.ThreadPool;
 import org.snapscript.develop.common.PatternEscaper;
 import org.snapscript.develop.configuration.ConfigurationClassLoader;
-import org.snapscript.develop.http.project.ProjectBuilder;
-import org.snapscript.develop.http.resource.Resource;
+import org.snapscript.develop.resource.Resource;
+import org.snapscript.develop.resource.project.ProjectBuilder;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

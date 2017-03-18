@@ -23,9 +23,9 @@ import java.io.PrintStream;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.snapscript.develop.http.project.Project;
-import org.snapscript.develop.http.project.ProjectBuilder;
-import org.snapscript.develop.http.resource.Resource;
+import org.snapscript.develop.resource.Resource;
+import org.snapscript.develop.resource.project.Project;
+import org.snapscript.develop.resource.project.ProjectBuilder;
 
 // /format/<project>
 public class SourceFormatResource implements Resource {

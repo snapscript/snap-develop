@@ -32,8 +32,8 @@ import org.snapscript.develop.common.FileReader;
 import org.snapscript.develop.common.TypeNode;
 import org.snapscript.develop.common.TypeNodeFinder;
 import org.snapscript.develop.configuration.ConfigurationClassLoader;
-import org.snapscript.develop.http.project.Project;
-import org.snapscript.develop.http.project.ProjectBuilder;
+import org.snapscript.develop.resource.project.Project;
+import org.snapscript.develop.resource.project.ProjectBuilder;
 
 public class TypeNodeScanner {
 

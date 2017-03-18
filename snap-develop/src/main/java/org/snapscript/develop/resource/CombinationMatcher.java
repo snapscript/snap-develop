@@ -1,0 +1,52 @@
+/*
+ * CombinationMatcher.java December 2016
+ *
+ * Copyright (C) 2016, Niall Gallagher <niallg@users.sf.net>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
+ * implied. See the License for the specific language governing 
+ * permissions and limitations under the License.
+ */
+
+package org.snapscript.develop.resource;
+
+import java.util.List;
+
+import org.simpleframework.http.Request;
+import org.simpleframework.http.Response;
+
+public class CombinationMatcher implements ResourceMatcher {
+
+   private final List<ResourceMatcher> matchers;
+   private final Resource fallback;
+
+   public CombinationMatcher(List<ResourceMatcher> matchers) {
+      this(matchers, null);
+   }
+   
+   public CombinationMatcher(List<ResourceMatcher> matchers, Resource fallback) {
+      this.fallback = fallback;
+      this.matchers = matchers;
+   }
+
+   @Override
+   public Resource match(Request request, Response response) throws Exception {
+      for (ResourceMatcher matcher : matchers) {
+         Resource resource = matcher.match(request, response);
+
+         if (resource != null) {
+            return resource;
+         }
+      }
+      return fallback;
+   }
+
+}

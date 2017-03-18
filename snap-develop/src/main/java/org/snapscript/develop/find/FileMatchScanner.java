@@ -25,8 +25,8 @@ import java.util.List;
 
 import org.simpleframework.http.Path;
 import org.snapscript.develop.common.FilePatternMatcher;
-import org.snapscript.develop.http.project.Project;
-import org.snapscript.develop.http.project.ProjectBuilder;
+import org.snapscript.develop.resource.project.Project;
+import org.snapscript.develop.resource.project.ProjectBuilder;
 
 public class FileMatchScanner {
 

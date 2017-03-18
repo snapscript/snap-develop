@@ -21,7 +21,7 @@ package org.snapscript.develop;
 import java.util.Map;
 import java.util.Set;
 
-import org.snapscript.develop.http.project.ProjectMode;
+import org.snapscript.develop.resource.project.ProjectMode;
 import org.snapscript.service.ScriptService;
 
 import javax.swing.*;

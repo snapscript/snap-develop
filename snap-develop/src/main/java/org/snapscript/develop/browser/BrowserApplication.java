@@ -11,7 +11,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.snapscript.develop.http.loader.ClassResourceLoader;
+
+import org.snapscript.develop.resource.loader.ClassResourceLoader;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

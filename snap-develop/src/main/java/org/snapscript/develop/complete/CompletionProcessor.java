@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.configuration.ConfigurationClassLoader;
-import org.snapscript.develop.http.project.Project;
+import org.snapscript.develop.resource.project.Project;
 
 public class CompletionProcessor {
    

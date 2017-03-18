@@ -24,8 +24,8 @@ import java.util.List;
 
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.snapscript.develop.http.resource.Resource;
-import org.snapscript.develop.http.resource.ResourceMatcher;
+import org.snapscript.develop.resource.Resource;
+import org.snapscript.develop.resource.ResourceMatcher;
 
 public class TypeScriptResource implements Resource {
 

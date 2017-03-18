@@ -36,8 +36,8 @@ import org.snapscript.common.Cache;
 import org.snapscript.common.LeastRecentlyUsedCache;
 import org.snapscript.common.LeastRecentlyUsedMap.RemovalListener;
 import org.snapscript.common.ThreadPool;
-import org.snapscript.develop.http.project.Project;
-import org.snapscript.develop.http.project.ProjectBuilder;
+import org.snapscript.develop.resource.project.Project;
+import org.snapscript.develop.resource.project.ProjectBuilder;
 
 public class TextMatchScanner {
    

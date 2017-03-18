@@ -26,8 +26,8 @@ import java.util.Collections;
 import org.simpleframework.http.Path;
 import org.snapscript.develop.command.CommandListener;
 import org.snapscript.develop.command.ExecuteCommand;
-import org.snapscript.develop.http.project.Project;
-import org.snapscript.develop.http.project.ProjectBuilder;
+import org.snapscript.develop.resource.project.Project;
+import org.snapscript.develop.resource.project.ProjectBuilder;
 
 public class ConnectListener {
 

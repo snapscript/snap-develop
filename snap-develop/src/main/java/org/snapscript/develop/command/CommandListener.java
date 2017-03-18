@@ -30,11 +30,11 @@ import org.snapscript.develop.BackupManager;
 import org.snapscript.develop.ProcessManager;
 import org.snapscript.develop.common.Problem;
 import org.snapscript.develop.common.ProblemFinder;
-import org.snapscript.develop.http.display.DisplayDefinition;
-import org.snapscript.develop.http.display.DisplayPersister;
-import org.snapscript.develop.http.project.ProjectProblemFinder;
-import org.snapscript.develop.http.tree.TreeContext;
-import org.snapscript.develop.http.tree.TreeContextManager;
+import org.snapscript.develop.resource.display.DisplayDefinition;
+import org.snapscript.develop.resource.display.DisplayPersister;
+import org.snapscript.develop.resource.project.ProjectProblemFinder;
+import org.snapscript.develop.resource.tree.TreeContext;
+import org.snapscript.develop.resource.tree.TreeContextManager;
 
 public class CommandListener {
    

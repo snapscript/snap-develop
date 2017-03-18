@@ -24,8 +24,8 @@ import java.util.List;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.snapscript.develop.http.project.ProjectBuilder;
-import org.snapscript.develop.http.resource.Resource;
+import org.snapscript.develop.resource.Resource;
+import org.snapscript.develop.resource.project.ProjectBuilder;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
