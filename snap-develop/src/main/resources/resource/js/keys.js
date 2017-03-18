@@ -33,6 +33,21 @@ var KeyBinder;
         createKeyBinding("ctrl shift p", false, function () {
             Command.switchProject();
         });
+        createKeyBinding("up", false, function () {
+            FileEditor.moveCursorUp();
+        });
+        createKeyBinding("down", false, function () {
+            FileEditor.moveCursorDown();
+        });
+        createKeyBinding("left", false, function () {
+            FileEditor.moveCursorLeft();
+        });
+        createKeyBinding("right", false, function () {
+            FileEditor.moveCursorRight();
+        });
+        createKeyBinding("ctrl /", false, function () {
+            FileEditor.commentSelection();
+        });
         createKeyBinding("ctrl z", false, function () {
             FileEditor.undoEditorChange();
         });

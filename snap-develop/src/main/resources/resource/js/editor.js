@@ -56,6 +56,40 @@ var FileEditor;
         editorMarkers[line] = marker;
     }
     FileEditor.createEditorHighlight = createEditorHighlight;
+    function commentSelection() {
+        var editor = ace.edit("editor");
+        editor.toggleCommentLines();
+    }
+    FileEditor.commentSelection = commentSelection;
+    function moveCursorUp() {
+        moveCursorTo(-1, 0);
+    }
+    FileEditor.moveCursorUp = moveCursorUp;
+    function moveCursorDown() {
+        moveCursorTo(1, 0);
+    }
+    FileEditor.moveCursorDown = moveCursorDown;
+    function moveCursorLeft() {
+        moveCursorTo(0, -1);
+    }
+    FileEditor.moveCursorLeft = moveCursorLeft;
+    function moveCursorRight() {
+        moveCursorTo(0, 1);
+    }
+    FileEditor.moveCursorRight = moveCursorRight;
+    function moveCursorTo(rowChange, columnChange) {
+        var editor = ace.edit("editor");
+        var cursorPosition = editor.getCursorPosition();
+        var currentRow = cursorPosition.row;
+        var currentColumn = cursorPosition.column;
+        var maxRow = editor.session.getLength() - 1;
+        var maxColumn = editor.session.getLine(currentColumn).length; // or simply Infinity
+        var nextRow = currentRow + rowChange;
+        var nextColumn = currentColumn + columnChange;
+        if (nextRow <= maxRow && nextRow >= 0 && nextColumn >= 0) {
+            editor.selection.moveTo(nextRow, nextColumn);
+        }
+    }
     function clearEditorBreakpoint(row) {
         var editor = ace.edit("editor");
         var session = editor.getSession();
