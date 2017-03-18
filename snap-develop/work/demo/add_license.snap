@@ -15,7 +15,7 @@ var header = "/*
  * implied. See the License for the specific language governing 
  * permissions and limitations under the License.
  */";
-new File("C:\\Work\\development\\snapscript\\snap-develop")
+new File("C:\\Work\\development\\snapscript")
    .findFiles(f -> f.name.endsWith(".java") && f.canonicalPath.contains("\\src\\main\\java"))
    .forEach(f -> {
       var text = f.readText();
@@ -23,11 +23,18 @@ new File("C:\\Work\\development\\snapscript\\snap-develop")
       if(firstIndex != -1) {
          var length = text.length();
          var secondIndex = text.indexOf("*/", firstIndex+1);
-         var firstPart = text.substring(0, firstIndex);
-         var secondPart = text.substring(secondIndex + 3, length);
-         var removeLicense = firstPart + secondPart;
-         var addLicense = String.format(header, f.name) + "\n\n" + text;
-         println(removeLicense);
-         //f.writeText(update);
+         
+         if(secondIndex != -1){
+            var licenseComment = text.substring(firstIndex, secondIndex);
+            
+            if(licenseComment.contains("niallg@users")) {
+               var firstPart = text.substring(0, firstIndex);
+               var secondPart = text.substring(secondIndex + 3, length);
+               var removeLicense = firstPart + secondPart;
+               var addLicense = String.format(header, f.name) + "\n\n" + text;
+               //println(removeLicense);
+               f.writeText(removeLicense);
+            }
+         }
       }
    });
