@@ -9,11 +9,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.snapscript:snap-compile:1.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.snapscript:snap-tree:1.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.snapscript:snap-core:1.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.snapscript:snap-common:1.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.snapscript:snap-parse:1.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.snapscript:snap-compile:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.snapscript:snap-tree:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.snapscript:snap-core:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.snapscript:snap-common:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.snapscript:snap-parse:1.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
   </component>
 </module>

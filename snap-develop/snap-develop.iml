@@ -33,11 +33,11 @@
     <orderEntry type="library" name="Maven: org.apache.maven.wagon:wagon-http-shared:2.10" level="project" />
     <orderEntry type="library" name="Maven: org.jsoup:jsoup:1.7.2" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.2" level="project" />
-    <orderEntry type="library" name="Maven: org.snapscript:snap-compile:1.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.snapscript:snap-tree:1.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.snapscript:snap-core:1.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.snapscript:snap-parse:1.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.snapscript:snap-common:1.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.snapscript:snap-compile:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.snapscript:snap-tree:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.snapscript:snap-core:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.snapscript:snap-parse:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.snapscript:snap-common:1.1" level="project" />
     <orderEntry type="module" module-name="snap-agent" />
     <orderEntry type="module" module-name="snap-service" />
     <orderEntry type="module" module-name="snap-graphics" />
@@ -72,6 +72,8 @@
     <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:3.0.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.jsinterop:jsinterop-annotations:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.ivy:ivy:2.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.mockito:mockito-all:1.9.5" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.16.14" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
   </component>
 </module>
