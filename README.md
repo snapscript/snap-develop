@@ -27,24 +27,22 @@ Below are some screenshots of the development environment hosted in Chrome.
 ![Developer Variables](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_variables.png)
 ##### Threads
 ![Developer Threads](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_threads.png)
+##### Process View
+![Developer Debug](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_agents.png)
 ##### Profiler
 ![Developer Profiler](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_profiler.png)
 ##### Debug Perspective
-![Developer Profiler](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_changelayout.png)
+![Developer Debug Perspective](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_changelayout.png)
 ##### Full Screen
-![Developer Debug](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_fullscreen.png)
+![Developer Full Screen](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_fullscreen.png)
 ##### Dark Theme
-![Developer Debug](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_darktheme.png)
+![Developer Dark Theme](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_darktheme.png)
 ##### Search Types
-![Developer Debug](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_searchtypes.png)
-##### Search Types
-![Developer Debug](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_searchtypes.png)
+![Developer Search Types](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_searchtypes.png)
 ##### Search Files
-![Developer Debug](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_searchfiles.png)
-##### Search Types
-![Developer Debug](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_findfiles.png)
-##### Process View
-![Developer Debug](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_agents.png)
+![Developer Search Files](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_searchfiles.png)
+##### File Files
+![Developer Find Files](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_findfiles.png)
 ##### Save Resources
 ![Developer Debug](https://raw.githubusercontent.com/snapscript/snap-site/master/images/debugger_save.png)
 ##### Open Projects
