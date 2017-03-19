@@ -40,10 +40,10 @@ public class BrowserApplication extends Application {
          menu.getItems().add(quit);
          menuBar.getMenus().add(menu);
          stage.setTitle(context.getDirectory().getCanonicalPath());
-         byte[] data = ClassResourceLoader.loadResource(context.getIconPath());
-         InputStream stream = new ByteArrayInputStream(data);
-         Image image = new Image(stream);
-         stage.getIcons().add(image); 
+         //byte[] data = ClassResourceLoader.loadResource(context.getIconPath());
+         //InputStream stream = new ByteArrayInputStream(data);
+         //Image image = new Image(stream);
+         //stage.getIcons().add(image);
       }catch(Exception e) {
          context.getLogger().info("Could not load image", e);
       }
