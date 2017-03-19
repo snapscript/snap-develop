@@ -11,8 +11,6 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.FileTime;
 import java.security.MessageDigest;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -22,10 +20,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import lombok.AllArgsConstructor;
+
 import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.resource.project.Project;
 import org.snapscript.develop.resource.project.ProjectBuilder;
 
+@AllArgsConstructor
 public class BackupManager {
    
    private static final String BACKUP_FOLDER = ".backup";
@@ -37,14 +38,6 @@ public class BackupManager {
    private final ProjectBuilder builder;
    private final ProcessLogger logger;
    private final Workspace workspace;
-   private final DateFormat format;
-   
-   public BackupManager(ProjectBuilder builder, ProcessLogger logger, Workspace workspace) {
-      this.format = new SimpleDateFormat(DATE_FORMAT);
-      this.builder = builder;
-      this.workspace = workspace;
-      this.logger = logger;
-   }
    
    public synchronized void backupFile(File file, String project) {
       if(file.exists()) {
@@ -92,7 +85,7 @@ public class BackupManager {
          throw new IllegalArgumentException("Project " + project + " does not exist");
       }
       File root = proj.getProjectPath();
-      String extension = format.format(time);
+      String extension = DateFormatter.format(DATE_FORMAT, time);
       String relative = relative(root, file);
       String timestampFile = String.format("%s/%s.%s", project, relative, extension);
 
@@ -169,7 +162,7 @@ public class BackupManager {
                int index = name.lastIndexOf(".");
                int length = name.length();
                String timeStamp = name.substring(index + 1, length);
-               Date date = format.parse(timeStamp);
+               Date date = DateFormatter.parse(DATE_FORMAT, timeStamp);
                long time = date.getTime();
                String fullFile = file.getCanonicalPath();
                String relativeFile = fullFile.replace(rootPath, "").replace(File.separatorChar, '/');

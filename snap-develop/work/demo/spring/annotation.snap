@@ -1,8 +1,10 @@
 
-@Configuration
-module Mod{
+@Component
+class Mod{
 
-   @Component
+
+
+   @Inject
    fun(@Inject x: Foo){
    }
 }

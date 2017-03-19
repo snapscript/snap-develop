@@ -1,9 +1,8 @@
 
 package org.snapscript.develop.command;
 
-public class StopCommand implements Command {
+import lombok.NoArgsConstructor;
 
-   public StopCommand() {
-      super();
-   }
+@NoArgsConstructor
+public class StopCommand implements Command {
 }

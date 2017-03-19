@@ -44,8 +44,8 @@ public class ProcessStore implements Store {
          if(resource.startsWith("/")) {
             resource = resource.substring(1);
          }
-         return project + resource;
+         return project.concat(resource).replace("//", "/");
       }
-      return resource;
+      return resource.replace("//", "/");
    }
 }

@@ -2,7 +2,6 @@
 package org.snapscript.develop.command;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.snapscript.agent.debug.ScopeVariableTree;
 import org.snapscript.agent.event.BeginEvent;
@@ -18,17 +17,17 @@ import org.snapscript.agent.event.SyntaxErrorEvent;
 import org.snapscript.agent.event.WriteErrorEvent;
 import org.snapscript.agent.event.WriteOutputEvent;
 import org.snapscript.agent.log.ProcessLogger;
-import org.snapscript.agent.profiler.ProfileResult;
 import org.snapscript.develop.FaultLogger;
-import org.snapscript.develop.common.TextEscaper;
 
 public class CommandEventForwarder extends ProcessEventAdapter {
    
+   private final CommandEventConverter converter;
    private final CommandFilter filter;
    private final CommandClient client;
    private final FaultLogger logger;
    
-   public CommandEventForwarder(CommandClient client, CommandFilter filter, ProcessLogger logger) {
+   public CommandEventForwarder(CommandClient client, CommandFilter filter, ProcessLogger logger, String project) {
+      this.converter = new CommandEventConverter(filter, project);
       this.logger = new FaultLogger(logger);
       this.filter = filter;
       this.client = client;
@@ -37,20 +36,8 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    @Override
    public void onScope(ProcessEventChannel channel, ScopeEvent event) throws Exception {
       if(filter.isFocused(event)) {
-         ScopeVariableTree tree = event.getVariables();
-         Map<String, Map<String, String>> local = tree.getLocal();
-         Map<String, Map<String, String>> evaluation = tree.getEvaluation();
-         String process = event.getProcess();
-         String thread = event.getThread();
-         String stack = event.getStack();
-         String instruction = event.getInstruction();
-         String status = event.getStatus();
-         String resource = event.getResource();
-         int change = tree.getChange();
-         int depth = event.getDepth();
-         int line = event.getLine();
-         int key = event.getKey();
-         client.sendScope(process, local, evaluation, thread, stack, instruction, status, resource, line, depth, key, change);
+         ScopeCommand command = converter.convert(event);
+         client.sendCommand(command);
       }
    }
    
@@ -70,90 +57,64 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    
    @Override
    public void onWriteError(ProcessEventChannel channel, WriteErrorEvent event) throws Exception {   
-      //if(filter.accept(event)) {
-         String process = event.getProcess();
-         byte[] array = event.getData();
-         int length = event.getLength();
-         int offset = event.getOffset();
-         String text = TextEscaper.escape(array, offset, length);
-         client.sendPrintError(process, text);
-      //}
+      PrintErrorCommand command = converter.convert(event);
+      client.sendCommand(command);
    }
    
    @Override
    public void onWriteOutput(ProcessEventChannel channel, WriteOutputEvent event) throws Exception {  
-      //if(filter.accept(event)) {
-         String process = event.getProcess();
-         byte[] array = event.getData();
-         int length = event.getLength();
-         int offset = event.getOffset();
-         String text = TextEscaper.escape(array, offset, length);
-         client.sendPrintOutput(process, text);
-      //}
+      PrintOutputCommand command = converter.convert(event);
+      client.sendCommand(command);
    }
    
    @Override
    public void onSyntaxError(ProcessEventChannel channel, SyntaxErrorEvent event) throws Exception {
-      if(filter.isFocused(event)) {
-         String description = event.getDescription();
-         String resource = event.getResource();
-         int line = event.getLine();
-         long time = System.currentTimeMillis();
-         client.sendSyntaxError(resource, description, time, line);
-      }
+      ProblemCommand command = converter.convert(event);
+      client.sendCommand(command);
    }
    
    @Override
    public void onBegin(ProcessEventChannel channel, BeginEvent event) throws Exception {
       if(filter.isFocused(event)) {
-         String process = event.getProcess();
-         String resource = event.getResource();
-         long duration = event.getDuration();
-         client.sendBegin(process, resource, duration);
+         BeginCommand command = converter.convert(event);
+         client.sendCommand(command);
       }
    }
    
    @Override
    public void onProfile(ProcessEventChannel channel, ProfileEvent event) throws Exception {
       if(filter.isFocused(event)) {
-         String process = event.getProcess();
-         Set<ProfileResult> results = event.getResults();
-         client.sendProfile(process, results);
+         ProfileCommand command = converter.convert(event);
+         client.sendCommand(command);
       }
    }
    
    @Override
    public void onRegister(ProcessEventChannel channel, RegisterEvent event) throws Exception {  
-      String focus = filter.getFocus();
-      String process = event.getProcess();
-      String system = event.getSystem();
-      long time = System.currentTimeMillis();
-      client.sendStatus(process, system, null, null, time, false, process.equals(focus)); // update clients on status
+      StatusCommand command = converter.convert(event);
+      client.sendCommand(command);
    }
    
    @Override
    public void onPong(ProcessEventChannel channel, PongEvent event) throws Exception {  
-      String focus = filter.getFocus();
-      String project = event.getProject();
-      String process = event.getProcess();
-      String system = event.getSystem();
-      String resource = event.getResource();
-      boolean running = event.isRunning();
-      long time = System.currentTimeMillis();
-      client.sendStatus(process, system, project, resource, time, running, process.equals(focus)); // update clients on status
+      StatusCommand command = converter.convert(event);
+      client.sendCommand(command);
    }
    
    @Override
    public void onExit(ProcessEventChannel channel, ExitEvent event) throws Exception {  
-      String process = event.getProcess();
-      client.sendProcessExit(process);
+      ExitCommand command = converter.convert(event);
+      client.sendCommand(command);
    }
    
    @Override
    public void onClose(ProcessEventChannel channel) throws Exception { 
       String focus = filter.getFocus();
       if(focus != null) {
-         client.sendProcessTerminate(focus); 
+         TerminateCommand command = TerminateCommand.builder()
+               .process(focus)
+               .build();
+         client.sendCommand(command); 
       }
    }
 }

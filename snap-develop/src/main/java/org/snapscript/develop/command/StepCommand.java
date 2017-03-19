@@ -1,9 +1,18 @@
 
 package org.snapscript.develop.command;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class StepCommand implements Command {
 
-   private static enum StepType {
+   public static enum StepType {
       RUN,
       STEP_IN,
       STEP_OVER,
@@ -12,29 +21,4 @@ public class StepCommand implements Command {
    
    private String thread;
    private StepType type;
-   
-   public StepCommand(String thread, StepType type) {
-      this.thread = thread;
-      this.type = type;
-   }
-   
-   public String getThread() {
-      return thread;
-   }
-   
-   public boolean isRun() {
-      return type == StepType.RUN;
-   }
-   
-   public boolean isStepIn() {
-      return type == StepType.STEP_IN;
-   }
-   
-   public boolean isStepOver() {
-      return type == StepType.STEP_OVER;
-   }
-   
-   public boolean isStepOut() {
-      return type == StepType.STEP_OUT;
-   }
 }

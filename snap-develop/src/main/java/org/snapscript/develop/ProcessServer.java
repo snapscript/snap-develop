@@ -3,20 +3,17 @@ package org.snapscript.develop;
 
 import java.net.InetSocketAddress;
 
+import lombok.AllArgsConstructor;
+
 import org.snapscript.develop.browser.BrowserLauncher;
 import org.snapscript.develop.resource.WebServer;
 
+@AllArgsConstructor
 public class ProcessServer {
 
    private final BrowserLauncher launcher;
    private final ProcessManager engine;
    private final WebServer server;
-   
-   public ProcessServer(ProcessManager engine, BrowserLauncher launcher, WebServer server) {
-      this.launcher = launcher;
-      this.engine = engine;
-      this.server = server;
-   }
    
    public void start() {
       try {

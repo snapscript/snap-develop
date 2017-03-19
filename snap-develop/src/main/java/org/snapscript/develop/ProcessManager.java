@@ -10,11 +10,13 @@ import org.snapscript.agent.event.ProcessEventFilter;
 import org.snapscript.agent.event.ProcessEventListener;
 import org.snapscript.agent.event.StepEvent;
 import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.develop.command.AttachCommand;
 import org.snapscript.develop.command.BreakpointsCommand;
 import org.snapscript.develop.command.BrowseCommand;
 import org.snapscript.develop.command.EvaluateCommand;
 import org.snapscript.develop.command.ExecuteCommand;
 import org.snapscript.develop.command.StepCommand;
+import org.snapscript.develop.command.StepCommand.StepType;
 import org.snapscript.develop.configuration.ProcessConfiguration;
 import org.snapscript.develop.configuration.ProcessConfigurationLoader;
 
@@ -81,6 +83,16 @@ public class ProcessManager implements ProcessAgentController {
       return true;
    }
    
+   public boolean attach(AttachCommand command, String process) {
+      ProcessConnection connection = connections.get(process);
+      
+      if(connection != null) {
+         Map<String, Map<Integer, Boolean>> breakpoints = command.getBreakpoints();
+         return connection.suspend(breakpoints);
+      }
+      return true;
+   }
+   
    public boolean browse(BrowseCommand command, String process) {
       ProcessConnection connection = connections.get(process);
       
@@ -110,14 +122,15 @@ public class ProcessManager implements ProcessAgentController {
       
       if(connection != null) {
          String thread = command.getThread();
+         StepType type = command.getType();
          
-         if(command.isRun()) {
+         if(type == StepType.RUN) {
             return connection.step(thread, StepEvent.RUN);
-         } else if(command.isStepIn()) {
+         } else if(type == StepType.STEP_IN) {
             return connection.step(thread, StepEvent.STEP_IN);
-         } else if(command.isStepOut()) {
+         } else if(type == StepType.STEP_OUT) {
             return connection.step(thread, StepEvent.STEP_OUT);
-         } else if(command.isStepOver()) {
+         } else if(type == StepType.STEP_OVER) {
             return connection.step(thread, StepEvent.STEP_OVER);
          }
       }

@@ -6,18 +6,17 @@ import java.io.StringWriter;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.AllArgsConstructor;
+
 import org.snapscript.agent.log.ProcessLogger;
 
+@AllArgsConstructor
 public class FaultLogger {
    
    private static final String INDENT = "   ";
 
    private final ProcessLogger logger;
-   
-   public FaultLogger(ProcessLogger logger) {
-      this.logger = logger;
-   }
-   
+
    public void log(String process, Map<String, Map<String, String>> local, String resource, String thread, String cause, int line) {
       String description = createDescription(resource, thread, line);
       String variables = createVariables(local, INDENT);

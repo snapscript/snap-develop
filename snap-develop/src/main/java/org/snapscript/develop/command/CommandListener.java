@@ -51,7 +51,7 @@ public class CommandListener {
    {
       this.commandFilter = new CommandFilter();
       this.commandClient = new CommandClient(frameChannel, project);
-      this.forwarder = new CommandEventForwarder(commandClient, commandFilter, processLogger);
+      this.forwarder = new CommandEventForwarder(commandClient, commandFilter, processLogger, project);
       this.finder = new ProblemFinder();
       this.displayPersister = displayPersister;
       this.treeManager = treeManager;
@@ -220,7 +220,7 @@ public class CommandListener {
                commandFilter.setFocus(process);
             }
          }
-         processManager.breakpoints(command, process);
+         processManager.attach(command, process);
          processManager.register(forwarder); // make sure we are registered
       } catch(Exception e) {
          processLogger.info("Error attaching to process " + process, e);

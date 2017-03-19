@@ -6,19 +6,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Collections;
 
+import lombok.AllArgsConstructor;
+
 import org.simpleframework.http.Path;
 import org.snapscript.develop.command.CommandListener;
 import org.snapscript.develop.command.ExecuteCommand;
 import org.snapscript.develop.resource.project.Project;
 import org.snapscript.develop.resource.project.ProjectBuilder;
 
+@AllArgsConstructor
 public class ConnectListener {
 
    private final ProjectBuilder builder;
-   
-   public ConnectListener(ProjectBuilder builder) {
-      this.builder = builder;
-   }
    
    public void connect(CommandListener listener, Path path) {
       String script = CommandLineArgument.SCRIPT.getValue();
@@ -42,7 +41,13 @@ public class ConnectListener {
             
             String source = buffer.toString("UTF-8");
             String system = System.getProperty("os.name");
-            ExecuteCommand command = new ExecuteCommand(projectName, system, script, source, Collections.EMPTY_MAP);
+            ExecuteCommand command = ExecuteCommand.builder()
+                  .project(projectName)
+                  .system(system)
+                  .resource(script)
+                  .source(source)
+                  .breakpoints(Collections.EMPTY_MAP)
+                  .build();
             
             listener.onExecute(command);
          } catch(Exception e) {

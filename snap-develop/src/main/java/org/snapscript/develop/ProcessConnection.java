@@ -4,6 +4,8 @@ package org.snapscript.develop;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.AllArgsConstructor;
+
 import org.snapscript.agent.event.BreakpointsEvent;
 import org.snapscript.agent.event.BrowseEvent;
 import org.snapscript.agent.event.EvaluateEvent;
@@ -13,17 +15,12 @@ import org.snapscript.agent.event.ProcessEventChannel;
 import org.snapscript.agent.event.StepEvent;
 import org.snapscript.agent.log.ProcessLogger;
 
+@AllArgsConstructor
 public class ProcessConnection {
 
    private final ProcessEventChannel channel;
    private final ProcessLogger logger;
    private final String process;
-
-   public ProcessConnection(ProcessEventChannel channel, ProcessLogger logger, String process) {
-      this.channel = channel;
-      this.process = process;
-      this.logger = logger;
-   }
 
    public boolean execute(String project, String path, Map<String, Map<Integer, Boolean>> breakpoints) {
       try {

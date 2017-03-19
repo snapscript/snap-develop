@@ -1,33 +1,17 @@
 
 package org.snapscript.develop.command;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PrintErrorCommand implements Command {
 
    private String process;
-   private String text;
-   
-   public PrintErrorCommand() {
-      super();
-   }
-   
-   public PrintErrorCommand(String process, String text) {
-      this.process = process;
-      this.text = text;
-   }
-   
-   public String getText() {
-      return text;
-   }
-   
-   public void setText(String text) {
-      this.text = text;
-   }
-
-   public String getProcess() {
-      return process;
-   }
-
-   public void setProcess(String process) {
-      this.process = process;
-   }  
+   private String text; 
 }
