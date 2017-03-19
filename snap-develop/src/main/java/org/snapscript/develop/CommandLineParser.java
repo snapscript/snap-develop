@@ -11,7 +11,7 @@ public class CommandLineParser {
    public static Map<String, String> parse(String[] list) throws Exception {
       Map<String, String> commands = new HashMap<String, String>();
       
-      if(list.length > 0) {
+      if(list != null) {
          CommandLineArgument[] arguments = CommandLineArgument.values();
          
          for(CommandLineArgument argument : arguments) {
