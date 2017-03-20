@@ -57,31 +57,34 @@ var FileEditor;
     }
     FileEditor.createEditorHighlight = createEditorHighlight;
     function findTextInEditor() {
-        Alerts.createPromptAlert("Find Text", "Find", "Cancel", function (textToFind) {
-            var editor = ace.edit("editor");
-            var session = editor.getSession();
-            //      var matchesFound = {};
-            var range = editor.find(textToFind, {
-                backwards: false,
-                wrap: true,
-                caseSensitive: false,
-                wholeWord: false,
-                regExp: false
-            });
-            //      while(range) {
-            //         var rangeKey = JSON.stringify(range);
-            //         
-            //         if(!matchesFound.hasOwnProperty(rangeKey)) {
-            //            matchesFound[rangeKey] = true;
-            session.addMarker(range, "findHighlight", "background"); // "background"|"text"|"fullLine"
-            //            range = editor.findNext();
-            //         } else {
-            //            break;
-            //         }
-            //      }
-            //editor.findNext();
-            //editor.findPrevious();
-        });
+        var editorData = loadEditor();
+        Command.searchFiles(editorData.resource.projectPath);
+        //      Alerts.createPromptAlert("Find Text", "Find", "Cancel", function(textToFind) {
+        //         var editor = ace.edit("editor");
+        //         var session = editor.getSession();
+        //   //      var matchesFound = {};
+        //         var range = editor.find(textToFind,{
+        //            backwards: false,
+        //            wrap: true,
+        //            caseSensitive: false,
+        //            wholeWord: false,
+        //            regExp: false
+        //          });
+        //         
+        //   //      while(range) {
+        //   //         var rangeKey = JSON.stringify(range);
+        //   //         
+        //   //         if(!matchesFound.hasOwnProperty(rangeKey)) {
+        //   //            matchesFound[rangeKey] = true;
+        //               session.addMarker(range, "findHighlight", "background"); // "background"|"text"|"fullLine"
+        //   //            range = editor.findNext();
+        //   //         } else {
+        //   //            break;
+        //   //         }
+        //   //      }
+        //          //editor.findNext();
+        //          //editor.findPrevious();
+        //      });
     }
     FileEditor.findTextInEditor = findTextInEditor;
     function indentCurrentLine() {

@@ -64,7 +64,10 @@ var Command;
             onComplete([]);
         }
     }
-    function searchFiles() {
+    function searchFiles(filePatterns) {
+        if (!filePatterns) {
+            filePatterns = '*.snap,*.properties,*.xml,*.txt,*.json';
+        }
         DialogBuilder.createListDialog(function (text, fileTypes, onComplete) {
             findFilesWithText(text, fileTypes, function (filesFound) {
                 var fileRows = [];
@@ -96,7 +99,7 @@ var Command;
                 }
                 return onComplete(fileRows);
             });
-        }, '*.snap,*.properties,*.xml,*.txt,*.json', "Search Files");
+        }, filePatterns, "Search Files");
     }
     Command.searchFiles = searchFiles;
     function findFilesWithText(text, fileTypes, onComplete) {
