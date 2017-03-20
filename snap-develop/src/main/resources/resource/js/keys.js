@@ -33,6 +33,9 @@ var KeyBinder;
         createKeyBinding("ctrl shift p", false, function () {
             Command.switchProject();
         });
+        createKeyBinding("ctrl f", false, function () {
+            FileEditor.findTextInEditor();
+        });
         createKeyBinding("up", false, function () {
             FileEditor.moveCursorUp();
         });

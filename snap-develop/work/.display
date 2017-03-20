@@ -3,6 +3,6 @@
    <console-capacity>50000</console-capacity>
    <font>
       <font-family>Lucida Console</font-family>
-      <font-size>12</font-size>
+      <font-size>13</font-size>
    </font>
 </displayDefinition>
