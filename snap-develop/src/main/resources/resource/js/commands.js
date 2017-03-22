@@ -68,7 +68,7 @@ var Command;
         if (!filePatterns) {
             filePatterns = '*.snap,*.properties,*.xml,*.txt,*.json';
         }
-        DialogBuilder.createTextSearchOnlyDialog(function (text, fileTypes, searchCriteria, onComplete) {
+        DialogBuilder.createTextSearchAndReplaceDialog(function (text, fileTypes, searchCriteria, onComplete) {
             findFilesWithText(text, fileTypes, searchCriteria, function (filesFound) {
                 var fileRows = [];
                 for (var i = 0; i < filesFound.length; i++) {

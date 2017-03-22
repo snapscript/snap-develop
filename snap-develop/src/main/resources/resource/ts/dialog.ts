@@ -283,7 +283,7 @@ module DialogBuilder {
    }  
    
    export function createTextSearchAndReplaceDialog(listFunction, fileFilterPatterns, dialogTitle) { // listFunction(token): [a, b, c]
-      var dialogBody = createListDialogLayout();
+      var dialogBody = createTextSearchAndReplaceDialogLayout(fileFilterPatterns, '');
       var executeSearch = function() {
          var expressionText = $("#searchText").html();
          var searchCriteria = {
@@ -540,7 +540,7 @@ module DialogBuilder {
          '</div>\n'+
          '<div id="fileFilterPatterns" class="searchAndReplaceFileFilterInputBox" onclick="this.contentEditable=\'true\';">'+fileFilterPatterns+'</div>\n'+
          '<div id="searchText" class="searchAndReplaceValueInputBox" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">'+searchText+'</div>\n'+
-         '<div id="replaceText" class="searchAndReplaceInputBox" style="display: none;" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>\n'+
+         '<div id="replaceText" class="searchAndReplaceInputBox" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>\n'+
          '<div class="searchAndReplaceCheckBoxPanel">\n'+
          '   <table border="0" cellspacing="5">\n'+
          '      <tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputCaseSensitive\')">\n'+
