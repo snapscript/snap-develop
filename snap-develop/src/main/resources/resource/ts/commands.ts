@@ -73,8 +73,8 @@ module Command {
       if(!filePatterns) {
          filePatterns = '*.snap,*.properties,*.xml,*.txt,*.json';
       }
-      DialogBuilder.createListDialog(function(text, fileTypes, onComplete){
-         findFilesWithText(text, fileTypes, function(filesFound) {
+      DialogBuilder.createTextSearchOnlyDialog(function(text, fileTypes, searchCriteria, onComplete){
+         findFilesWithText(text, fileTypes, searchCriteria, function(filesFound) {
             var fileRows = [];
            
             for(var i = 0; i < filesFound.length; i++) {
@@ -109,10 +109,19 @@ module Command {
      }, filePatterns, "Search Files");
    }
    
-   function findFilesWithText(text, fileTypes, onComplete) {
+   function findFilesWithText(text, fileTypes, searchCriteria, onComplete) {
       if(text && text.length > 1) {
+         var searchUrl = '';
+         
+         searchUrl += '/find/' + document.title;
+         searchUrl += '?expression=' + text;
+         searchUrl += '&pattern=' + fileTypes;
+         searchUrl += "&caseSensitive=" + searchCriteria.caseSensitive;
+         searchUrl += "&regularExpression=" + searchCriteria.regularExpression;
+         searchUrl += "&wholeWord=" + searchCriteria.wholeWord;
+         
          jQuery.ajax({
-            url: '/find/' + document.title + '?expression=' + text + '&pattern=' + fileTypes,
+            url: searchUrl,
             success: function (filesMatched) {
                var response = [];
                

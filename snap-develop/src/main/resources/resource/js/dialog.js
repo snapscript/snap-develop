@@ -26,7 +26,7 @@ var DialogBuilder;
     }
     DialogBuilder.newDirectoryTreeDialog = newDirectoryTreeDialog;
     function evaluateExpressionDialog(expressionToEvaluate) {
-        createGridDialog(function (x) { return []; }, expressionToEvaluate, "Evaluate Expression");
+        createEvaluateDialog(expressionToEvaluate, "Evaluate Expression");
     }
     DialogBuilder.evaluateExpressionDialog = evaluateExpressionDialog;
     function createProjectDialog(resourceDetails, foldersOnly, saveCallback, dialogTitle) {
@@ -39,7 +39,7 @@ var DialogBuilder;
         }
         w2popup.open({
             title: dialogTitle,
-            body: createDialogLayout('', dialogExpandPath, false),
+            body: createFileSelectionDialogLayout(dialogExpandPath, ''),
             buttons: '<button id="dialogSave" class="btn dialogButton">Save</button><button id="dialogCancel" class="btn dialogButton">Cancel</button>',
             width: 500,
             height: 400,
@@ -110,9 +110,10 @@ var DialogBuilder;
             }
             openCallback(dialogPathDetails, selectedDirectory);
         };
+        var dialogBody = createFileFolderSelectionDialogLayout();
         w2popup.open({
             title: dialogTitle,
-            body: createDialogLayout('', null, null),
+            body: dialogBody,
             buttons: '<button id="dialogSave" class="btn dialogButton">' + buttonText + '</button>',
             width: 500,
             height: 400,
@@ -158,9 +159,10 @@ var DialogBuilder;
     }
     DialogBuilder.createTreeOpenDialog = createTreeOpenDialog;
     function createListDialog(listFunction, patternList, dialogTitle) {
+        var dialogBody = createListDialogLayout();
         w2popup.open({
             title: dialogTitle,
-            body: createDialogLayout('', patternList, true),
+            body: dialogBody,
             buttons: '<button id="dialogSave" class="btn dialogButton">Cancel</button>',
             width: 800,
             height: 400,
@@ -184,54 +186,19 @@ var DialogBuilder;
                             expressionText = clearHtml(expressionText);
                         }
                         listFunction(expressionText, expressionPattern, function (list) {
-                            var content = "<table class='dialogListTable' width='100%'>";
-                            for (var i = 0; i < list.length; i++) {
-                                var row = list[i];
-                                content += "<tr>";
-                                for (var j = 0; j < row.length; j++) {
-                                    var cell = row[j];
-                                    content += "<td width='50%'><div id='dialogListEntry" + i + "' class='";
-                                    content += cell.style;
-                                    content += "' onclick='return DialogBuilder.submitDialogListResource";
-                                    if (cell.line) {
-                                        content += "(\"";
-                                        content += cell.resource;
-                                        content += "\", ";
-                                        content += cell.line;
-                                        content += ")";
-                                    }
-                                    else {
-                                        content += "(\""; // ("link")
-                                        content += cell.link;
-                                        content += "\")";
-                                    }
-                                    content += "'>";
-                                    content += cell.text;
-                                    content += "</div></td>";
-                                }
-                                content += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
-                                content += "</tr>";
+                            var content = createDialogListTable(list);
+                            if (content) {
+                                $("#dialog").html(content);
                             }
-                            content += "</table>";
-                            $("#dialog").html(content);
+                            else {
+                                $("#dialog").html('');
+                            }
                         });
                     });
                     var element = document.getElementById('dialogPath');
                     element.contentEditable = true;
                     element.focus();
                 }, 200);
-            },
-            onClose: function (event) {
-                console.log('close');
-            },
-            onMax: function (event) {
-                console.log('max');
-            },
-            onMin: function (event) {
-                console.log('min');
-            },
-            onKeydown: function (event) {
-                console.log('keydown');
             }
         });
         $("#dialogSave").click(function () {
@@ -242,11 +209,131 @@ var DialogBuilder;
         });
     }
     DialogBuilder.createListDialog = createListDialog;
-    function createGridDialog(listFunction, inputText, dialogTitle) {
-        inputText = (inputText ? escapeHtml(inputText) : '');
+    function createTextSearchOnlyDialog(listFunction, fileFilterPatterns, dialogTitle) {
+        var dialogBody = createTextSearchOnlyDialogLayout(fileFilterPatterns, '');
+        var executeSearch = function () {
+            var expressionText = $("#searchText").html();
+            var searchCriteria = {
+                caseSensitive: isCheckboxSelected("inputCaseSensitive"),
+                regularExpression: isCheckboxSelected("inputRegularExpression"),
+                wholeWord: isCheckboxSelected("inputWholeWord")
+            };
+            var expressionPattern = null;
+            if (fileFilterPatterns) {
+                expressionPattern = $("#fileFilterPatterns").html();
+                expressionPattern = clearHtml(expressionPattern);
+            }
+            if (expressionText) {
+                expressionText = clearHtml(expressionText);
+            }
+            listFunction(expressionText, expressionPattern, searchCriteria, function (list) {
+                var content = createDialogListTable(list);
+                if (content) {
+                    $("#dialog").html(content);
+                }
+                else {
+                    $("#dialog").html('');
+                }
+            });
+        };
         w2popup.open({
             title: dialogTitle,
-            body: createDialogLayout(inputText, null, false),
+            body: dialogBody,
+            buttons: '<button id="dialogSave" class="btn dialogButton">Cancel</button>',
+            width: 800,
+            height: 400,
+            overflow: 'hidden',
+            color: '#999',
+            speed: '0.3',
+            opacity: '0.8',
+            modal: true,
+            showClose: true,
+            showMax: true,
+            onOpen: function (event) {
+                setTimeout(function () {
+                    $('#searchText').on('change keyup paste', executeSearch);
+                    //               $('#inputCaseSensitive').change(executeSearch);
+                    //               $('#inputRegularExpression').change(executeSearch);
+                    //               $('#inputWholeWord').change(executeSearch);
+                    var element = document.getElementById('searchText');
+                    element.contentEditable = true;
+                    element.focus();
+                }, 200);
+            }
+        });
+        $("#dialogSave").click(function () {
+            w2popup.close();
+        });
+        $("#dialogCancel").click(function () {
+            w2popup.close();
+        });
+    }
+    DialogBuilder.createTextSearchOnlyDialog = createTextSearchOnlyDialog;
+    function createTextSearchAndReplaceDialog(listFunction, fileFilterPatterns, dialogTitle) {
+        var dialogBody = createListDialogLayout();
+        var executeSearch = function () {
+            var expressionText = $("#searchText").html();
+            var searchCriteria = {
+                caseSensitive: isCheckboxSelected("inputCaseSensitive"),
+                regularExpression: isCheckboxSelected("inputRegularExpression"),
+                wholeWord: isCheckboxSelected("inputWholeWord")
+            };
+            var expressionPattern = null;
+            if (fileFilterPatterns) {
+                expressionPattern = $("#fileFilterPatterns").html();
+                expressionPattern = clearHtml(expressionPattern);
+            }
+            if (expressionText) {
+                expressionText = clearHtml(expressionText);
+            }
+            listFunction(expressionText, expressionPattern, searchCriteria, function (list) {
+                var content = createDialogListTable(list);
+                if (content) {
+                    $("#dialog").html(content);
+                }
+                else {
+                    $("#dialog").html('');
+                }
+            });
+        };
+        w2popup.open({
+            title: dialogTitle,
+            body: dialogBody,
+            buttons: '<button id="dialogSave" class="btn dialogButton">Cancel</button>',
+            width: 800,
+            height: 400,
+            overflow: 'hidden',
+            color: '#999',
+            speed: '0.3',
+            opacity: '0.8',
+            modal: true,
+            showClose: true,
+            showMax: true,
+            onOpen: function (event) {
+                setTimeout(function () {
+                    $('#searchText').on('change keyup paste', executeSearch);
+                    //               $('#inputCaseSensitive').change(executeSearch);
+                    //               $('#inputRegularExpression').change(executeSearch);
+                    //               $('#inputWholeWord').change(executeSearch);
+                    var element = document.getElementById('searchText');
+                    element.contentEditable = true;
+                    element.focus();
+                }, 200);
+            }
+        });
+        $("#dialogSave").click(function () {
+            w2popup.close();
+        });
+        $("#dialogCancel").click(function () {
+            w2popup.close();
+        });
+    }
+    DialogBuilder.createTextSearchAndReplaceDialog = createTextSearchAndReplaceDialog;
+    function createEvaluateDialog(inputText, dialogTitle) {
+        var dialogBody = createGridDialogLayout(inputText ? escapeHtml(inputText) : '');
+        w2popup.open({
+            title: dialogTitle,
+            body: dialogBody,
             buttons: '<button id="dialogSave" class="btn dialogButton">Evaluate</button>',
             width: 700,
             height: 400,
@@ -323,34 +410,122 @@ var DialogBuilder;
             Command.browseScriptEvaluation([], expression, true); // clear the variables
         });
     }
-    function createDialogLayout(firstInputText, secondInputText, secondInputEditable) {
-        if (secondInputText) {
-            var clickEvent = '';
-            if (secondInputEditable) {
-                clickEvent = ' onclick="this.contentEditable=\'true\';"';
+    function createDialogListTable(list) {
+        var content = "<table class='dialogListTable' width='100%'>";
+        for (var i = 0; i < list.length; i++) {
+            var row = list[i];
+            content += "<tr id='dialogListEntry" + i + "'>";
+            for (var j = 0; j < row.length; j++) {
+                var cell = row[j];
+                content += "<td width='50%'><div class='";
+                content += cell.style;
+                content += "' onclick='return DialogBuilder.submitDialogListResource";
+                if (cell.line) {
+                    content += "(\"";
+                    content += cell.resource;
+                    content += "\", ";
+                    content += cell.line;
+                    content += ")";
+                }
+                else {
+                    content += "(\""; // ("link")
+                    content += cell.link;
+                    content += "\")";
+                }
+                content += "'>";
+                content += cell.text;
+                content += "</div></td>";
             }
-            if (!secondInputText) {
-                secondInputText = '';
-            }
-            if (!firstInputText) {
-                firstInputText = '';
-            }
-            return '<div id="dialogContainer">' +
-                '   <div id="dialog"></div>' +
-                '</div>' +
-                '<div id="dialogFolder" ' + clickEvent + '>' + secondInputText + '</div>' +
-                '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">' + firstInputText + '</div>';
+            content += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+            content += "</tr>";
         }
-        if (firstInputText) {
-            return '<div id="dialogContainerBig">' +
-                '   <div id="dialog"></div>' +
-                '</div>' +
-                '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">' + firstInputText + '</div>';
+        content += "</table>";
+        return content;
+    }
+    function createGridDialogLayout(inputText) {
+        if (!inputText) {
+            inputText = '';
         }
         return '<div id="dialogContainerBig">' +
             '   <div id="dialog"></div>' +
             '</div>' +
+            '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">' + inputText + '</div>';
+    }
+    function createListDialogLayout() {
+        return '<div id="dialogContainerBig">' +
+            '   <div id="dialog"></div>' +
+            '</div>' +
             '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>';
+    }
+    function createFileFolderSelectionDialogLayout() {
+        return '<div id="dialogContainerBig">\n' +
+            '   <div id="dialog"></div>\n' +
+            '</div>\n' +
+            '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>';
+    }
+    function createFileSelectionDialogLayout(selectedFileFolder, selectedFile) {
+        if (!selectedFileFolder) {
+            selectedFileFolder = '';
+        }
+        if (!selectedFile) {
+            selectedFile = '';
+        }
+        return '<div id="dialogContainer">\n' +
+            '   <div id="dialog"></div>\n' +
+            '</div>\n' +
+            '<div id="dialogFolder">' + selectedFileFolder + '</div>\n' +
+            '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">' + selectedFile + '</div>';
+    }
+    function createTextSearchOnlyDialogLayout(fileFilterPatterns, searchText) {
+        if (!searchText) {
+            searchText = '';
+        }
+        return '<div id="dialogContainer">\n' +
+            '   <div id="dialog"></div>\n' +
+            '</div>\n' +
+            '<div id="fileFilterPatterns" class="searchFileFilterInputBox" onclick="this.contentEditable=\'true\';">' + fileFilterPatterns + '</div>\n' +
+            '<div id="searchText" class="searchValueInputBox" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">' + searchText + '</div>\n' +
+            '<div class="searchCheckBoxPanel">\n' +
+            '   <table border="0" cellspacing="5">\n' +
+            '      <tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputCaseSensitive\')">\n' +
+            '         <td><input type="checkbox" name="caseSensitive" id="inputCaseSensitive"><label></label>&nbsp;&nbsp;Case sensitive</td>\n' +
+            '      </tr>\n' +
+            '      <tr><td height="5px"></td></tr>\n' +
+            '      <tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputRegularExpression\')">\n' +
+            '         <td><input type="checkbox" name="regex" id="inputRegularExpression"><label></label>&nbsp;&nbsp;Regular expression</td>\n' +
+            '      </tr>\n' +
+            '      <tr><td height="5px"></td></tr>\n' +
+            '      <tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputWholeWord\')">\n' +
+            '         <td><input type="checkbox" name="wholeWord" id="inputWholeWord"><label></label>&nbsp;&nbsp;Whole word</td>\n' +
+            '      </tr>\n' +
+            '   </table>\n' +
+            '</div>';
+    }
+    function createTextSearchAndReplaceDialogLayout(fileFilterPatterns, searchText) {
+        if (!searchText) {
+            searchText = '';
+        }
+        return '<div id="dialogContainerSmall">\n' +
+            '   <div id="dialog"></div>\n' +
+            '</div>\n' +
+            '<div id="fileFilterPatterns" class="searchAndReplaceFileFilterInputBox" onclick="this.contentEditable=\'true\';">' + fileFilterPatterns + '</div>\n' +
+            '<div id="searchText" class="searchAndReplaceValueInputBox" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">' + searchText + '</div>\n' +
+            '<div id="replaceText" class="searchAndReplaceInputBox" style="display: none;" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>\n' +
+            '<div class="searchAndReplaceCheckBoxPanel">\n' +
+            '   <table border="0" cellspacing="5">\n' +
+            '      <tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputCaseSensitive\')">\n' +
+            '         <td><input type="checkbox" name="caseSensitive" id="inputCaseSensitive"><label></label>&nbsp;&nbsp;Case sensitive</td>\n' +
+            '      </tr>\n' +
+            '      <tr><td height="5px"></td></tr>\n' +
+            '      <tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputRegularExpression\')">\n' +
+            '         <td><input type="checkbox" name="regex" id="inputRegularExpression"><label></label>&nbsp;&nbsp;Regular expression</td>\n' +
+            '      </tr>\n' +
+            '      <tr><td height="5px"></td></tr>\n' +
+            '      <tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputWholeWord\')">\n' +
+            '         <td><input type="checkbox" name="wholeWord" id="inputWholeWord"><label></label>&nbsp;&nbsp;Whole word</td>\n' +
+            '      </tr>\n' +
+            '   </table>\n' +
+            '</div>';
     }
     function submitDialogListResource(resource, line) {
         $("#dialogSave").click(); // force the click
@@ -367,6 +542,21 @@ var DialogBuilder;
         return false;
     }
     DialogBuilder.submitDialogListResource = submitDialogListResource;
+    function isCheckboxSelected(input) {
+        var inputField = document.getElementById(input);
+        if (inputField) {
+            return inputField.checked;
+        }
+        return false;
+    }
+    function toggleCheckboxSelection(input) {
+        var inputField = document.getElementById(input);
+        if (inputField) {
+            inputField.checked = !inputField.checked;
+        }
+        return false;
+    }
+    DialogBuilder.toggleCheckboxSelection = toggleCheckboxSelection;
     function submitDialog(e) {
         var evt = e || window.event;
         // "e" is the standard behavior (FF, Chrome, Safari, Opera),

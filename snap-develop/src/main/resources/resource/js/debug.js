@@ -134,12 +134,11 @@ var DebugManager;
                     if (statusProject == document.title || statusProject == null) {
                         var displayName = "<div class='debugIdleRecord'>" + statusProcess + "</div>";
                         var status = "WAITING";
-                        var active = "&nbsp;<input type='radio'>";
-                        ;
+                        var active = "&nbsp;<input type='radio'><label></label>";
                         var resourcePath = "";
                         var running = false;
                         if (statusFocus == statusProcess) {
-                            active = "&nbsp;<input type='radio' checked>";
+                            active = "&nbsp;<input type='radio' checked><label></label>";
                         }
                         if (statusProcessInfo.resource != null) {
                             var resourcePathDetails = FileTree.createResourcePath(statusProcessInfo.resource);

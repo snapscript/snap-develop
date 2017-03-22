@@ -45,7 +45,10 @@ public class TextMatchScanner {
       this.pool = pool;
    }
    
-   public List<TextMatch> scanFiles(final Path path, final String filePattern, final String expression) throws Exception {
+   public List<TextMatch> scanFiles(TextMatchRequest matchRequest) throws Exception {
+      final Path path = matchRequest.getPath();
+      final String filePattern = matchRequest.getPattern();
+      final String expression = matchRequest.getQuery();
       final String key = createKey(path, filePattern, expression);
       final Set<TextFile> files = findFiles(path, filePattern, expression);
       

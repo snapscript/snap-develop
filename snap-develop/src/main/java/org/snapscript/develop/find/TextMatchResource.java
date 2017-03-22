@@ -28,15 +28,31 @@ public class TextMatchResource implements Resource {
 
    @Override
    public void handle(Request request, Response response) throws Throwable {
-      String pattern = request.getParameter("pattern");
-      String query = request.getParameter("expression");
-      Path path = request.getPath();
+      TextMatchRequest matchRequest = parse(request);
       PrintStream out = response.getPrintStream(8192);
-      List<TextMatch> matches = scanner.scanFiles(path, pattern, query);
+      List<TextMatch> matches = scanner.scanFiles(matchRequest);
       String text = gson.toJson(matches);
       response.setContentType("application/json");
       out.println(text);
       out.close();
+   }
+   
+   private TextMatchRequest parse(Request request) throws Throwable {
+      Path path = request.getPath();
+      String pattern = request.getParameter("pattern");
+      String query = request.getParameter("expression");
+      boolean caseSensitive = Boolean.parseBoolean(request.getParameter("caseSensitive"));
+      boolean regularExpression = Boolean.parseBoolean(request.getParameter("regularExpression"));
+      boolean wholeWord = Boolean.parseBoolean(request.getParameter("wholeWord"));
+      
+      return TextMatchRequest.builder()
+            .pattern(pattern)
+            .query(query)
+            .path(path)
+            .caseSensitive(caseSensitive)
+            .regularExpression(regularExpression)
+            .wholeWord(wholeWord)
+            .build();
    }
 
 }

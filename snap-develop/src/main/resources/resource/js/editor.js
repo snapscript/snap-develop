@@ -598,6 +598,7 @@ var FileEditor;
         }
         editor.completers = [autoComplete];
         //setEditorTheme("eclipse"); // set the default to eclipse
+        //editor.setScrollSpeed(0.05);
         editor.getSession().setMode("ace/mode/snapscript");
         editor.getSession().setTabSize(3);
         editor.setReadOnly(true);
@@ -632,50 +633,54 @@ var FileEditor;
         LoadSpinner.finish();
     }
     function validEditorLink(string, col) {
-        var tokenPatterns = [
-            "\\.[A-Z][a-zA-Z0-9]*;",
-            "\\sas\\s+[A-Z][a-zA-Z0-9]*;",
-            "[a-zA-Z][a-zA-Z0-9]*\\s*\\.",
-            "[a-z][a-zA-Z0-9]*\\s*[=|<|>|!|\-|\+|\*|\\/|%]",
-            "new\\s+[A-Z][a-zA-Z0-9]*\\s*\\(",
-            "[a-zA-Z][a-zA-Z0-9]*\\s*\\(",
-            "[A-Z][a-zA-Z0-9]*\\s*\\[",
-            ":\\s*[A-Z][a-zA-Z0-9]*",
-            "extends\\s+[A-Z][a-zA-Z0-9]*",
-            "with\\s+[A-Z][a-zA-Z0-9]*" // implements trait
-        ];
-        for (var i = 0; i < tokenPatterns.length; i++) {
-            var regExp = new RegExp(tokenPatterns[i], 'g'); // WE SHOULD CACHE THE REGEX FOR PERFORMANCE
-            var matchFound = null;
-            regExp.lastIndex = 0; // you have to reset regex to its start position
-            string.replace(regExp, function (str) {
-                var offset = arguments[arguments.length - 2];
-                var length = str.length;
-                if (offset <= col && offset + length >= col) {
-                    var indexToken = editorCurrentTokens[str];
-                    if (indexToken != null) {
-                        matchFound = {
-                            start: offset,
-                            value: str
-                        };
+        if (KeyBinder.isControlPressed()) {
+            var tokenPatterns = [
+                "\\.[A-Z][a-zA-Z0-9]*;",
+                "\\sas\\s+[A-Z][a-zA-Z0-9]*;",
+                "[a-zA-Z][a-zA-Z0-9]*\\s*\\.",
+                "[a-z][a-zA-Z0-9]*\\s*[=|<|>|!|\-|\+|\*|\\/|%]",
+                "new\\s+[A-Z][a-zA-Z0-9]*\\s*\\(",
+                "[a-zA-Z][a-zA-Z0-9]*\\s*\\(",
+                "[A-Z][a-zA-Z0-9]*\\s*\\[",
+                ":\\s*[A-Z][a-zA-Z0-9]*",
+                "extends\\s+[A-Z][a-zA-Z0-9]*",
+                "with\\s+[A-Z][a-zA-Z0-9]*" // implements trait
+            ];
+            for (var i = 0; i < tokenPatterns.length; i++) {
+                var regExp = new RegExp(tokenPatterns[i], 'g'); // WE SHOULD CACHE THE REGEX FOR PERFORMANCE
+                var matchFound = null;
+                regExp.lastIndex = 0; // you have to reset regex to its start position
+                string.replace(regExp, function (str) {
+                    var offset = arguments[arguments.length - 2];
+                    var length = str.length;
+                    if (offset <= col && offset + length >= col) {
+                        var indexToken = editorCurrentTokens[str];
+                        if (indexToken != null) {
+                            matchFound = {
+                                start: offset,
+                                value: str
+                            };
+                        }
                     }
+                });
+                if (matchFound != null) {
+                    return matchFound;
                 }
-            });
-            if (matchFound != null) {
-                return matchFound;
             }
         }
         return null;
     }
     function openEditorLink(event) {
-        var indexToken = editorCurrentTokens[event.value];
-        if (indexToken != null) {
-            if (indexToken.resource != null) {
-                editorFocusToken = event.value;
-                window.location.hash = indexToken.resource;
-            }
-            else {
-                showEditorLine(indexToken.line);
+        if (KeyBinder.isControlPressed()) {
+            var indexToken = editorCurrentTokens[event.value];
+            if (indexToken != null) {
+                if (indexToken.resource != null) {
+                    editorFocusToken = event.value;
+                    window.location.hash = indexToken.resource;
+                }
+                else {
+                    showEditorLine(indexToken.line);
+                }
             }
         }
     }
