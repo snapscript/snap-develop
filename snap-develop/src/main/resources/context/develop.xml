@@ -131,13 +131,13 @@
     <constructor-arg ref="ProcessLogger" />
   </bean>
 
-  <bean id="TextMatchResource" class="org.snapscript.develop.find.TextMatchResource">
+  <bean id="TextMatchResource" class="org.snapscript.develop.find.text.TextMatchResource">
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="ProcessLogger" />
     <constructor-arg ref="ThreadPool" />
   </bean>
 
-  <bean id="FileMatchResource" class="org.snapscript.develop.find.FileMatchResource">
+  <bean id="FileMatchResource" class="org.snapscript.develop.find.file.FileMatchResource">
     <constructor-arg ref="ProjectBuilder" />
   </bean>
 

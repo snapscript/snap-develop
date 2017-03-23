@@ -1,6 +1,6 @@
 
 
-package org.snapscript.develop.find;
+package org.snapscript.develop.find.text;
 
 import java.io.File;
 import java.io.FileReader;
@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.develop.find.MatchEvaluator;
 
 public class TextMatchFinder {
    

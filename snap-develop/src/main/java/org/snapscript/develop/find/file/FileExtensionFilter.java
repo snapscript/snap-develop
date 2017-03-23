@@ -1,6 +1,6 @@
 
 
-package org.snapscript.develop.find;
+package org.snapscript.develop.find.file;
 
 import java.io.File;
 import java.io.FilenameFilter;

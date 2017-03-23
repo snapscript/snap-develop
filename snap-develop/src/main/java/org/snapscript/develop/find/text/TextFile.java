@@ -1,6 +1,6 @@
 
 
-package org.snapscript.develop.find;
+package org.snapscript.develop.find.text;
 
 import java.io.File;
 

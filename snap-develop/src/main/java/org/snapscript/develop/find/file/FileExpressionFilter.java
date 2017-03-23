@@ -1,9 +1,12 @@
 
 
-package org.snapscript.develop.find;
+package org.snapscript.develop.find.file;
 
 import java.io.File;
 import java.io.FilenameFilter;
+
+import org.snapscript.develop.find.ExpressionResolver;
+import org.snapscript.develop.find.PathBuilder;
 
 public class FileExpressionFilter implements FilenameFilter {
    

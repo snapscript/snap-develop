@@ -1,29 +1,20 @@
 
 
-package org.snapscript.develop.find;
+package org.snapscript.develop.find.file;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.simpleframework.http.Path;
 import org.snapscript.develop.common.FilePatternMatcher;
-import org.snapscript.develop.resource.project.Project;
-import org.snapscript.develop.resource.project.ProjectBuilder;
+import org.snapscript.develop.find.ExpressionResolver;
+import org.snapscript.develop.find.MatchEvaluator;
+import org.snapscript.develop.find.PathBuilder;
 
 public class FileMatchScanner {
 
-   private final ProjectBuilder builder;
-   
-   public FileMatchScanner(ProjectBuilder builder) {
-      this.builder = builder;
-   }
-
-   public List<FileMatch> findAllFiles(Path path, String expression) throws Exception {
-      Project project = builder.createProject(path);
-      String name = project.getProjectName();
-      File directory = project.getProjectPath();
+   public List<FileMatch> findAllFiles(File directory, String project, String expression) throws Exception {
       String root = directory.getCanonicalPath();
       int length = root.length();
       
@@ -44,7 +35,7 @@ public class FileMatchScanner {
          if(textMatch != null) {
             MatchEvaluator evaluator = new MatchEvaluator(textMatch);
             String replaceText = evaluator.match(resourcePath, false);
-            FileMatch projectFile = new FileMatch(name, resourcePath, file, replaceText);
+            FileMatch projectFile = new FileMatch(project, resourcePath, file, replaceText);
             filesFound.add(projectFile);
          }
       }
