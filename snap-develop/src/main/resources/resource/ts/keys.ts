@@ -6,6 +6,8 @@ module KeyBinder {
    var controlPressed = false;
 
    export function bindKeys() {
+      disableBrowserKeys();
+      
       createKeyBinding("ctrl n", true, function() {
          Command.newFile(null);
       });
@@ -45,30 +47,30 @@ module KeyBinder {
       createKeyUpBinding("ctrl", false, function() {
          controlPressed = false;
       });
-      createKeyBinding("up", false, function() {
-         FileEditor.moveCursorUp();
-      });
-      createKeyBinding("down", false, function() {
-         FileEditor.moveCursorDown();
-      });
-      createKeyBinding("left", false, function() {
-         FileEditor.moveCursorLeft();
-      });
-      createKeyBinding("right", false, function() {
-         FileEditor.moveCursorRight();
-      });
-      createKeyBinding("tab", true, function() {
-         FileEditor.indentCurrentLine();
-      });
-      createKeyBinding("ctrl /", true, function() {
-         FileEditor.commentSelection();
-      });
-      createKeyBinding("ctrl z", true, function() {
-         FileEditor.undoEditorChange();
-      });
-      createKeyBinding("ctrl y", true, function() {
-         FileEditor.redoEditorChange();
-      });
+//      createKeyBinding("up", false, function() {
+//         FileEditor.moveCursorUp();
+//      });
+//      createKeyBinding("down", false, function() {
+//         FileEditor.moveCursorDown();
+//      });
+//      createKeyBinding("left", false, function() {
+//         FileEditor.moveCursorLeft();
+//      });
+//      createKeyBinding("right", false, function() {
+//         FileEditor.moveCursorRight();
+//      });
+//      createKeyBinding("tab", true, function() {
+//         FileEditor.indentCurrentLine();
+//      });
+//      createKeyBinding("ctrl /", true, function() {
+//         FileEditor.commentSelection();
+//      });
+//      createKeyBinding("ctrl z", true, function() {
+//         FileEditor.undoEditorChange();
+//      });
+//      createKeyBinding("ctrl y", true, function() {
+//         FileEditor.redoEditorChange();
+//      });
       createKeyBinding("ctrl r", true, function() {
          Command.runScript();
       });
@@ -94,6 +96,14 @@ module KeyBinder {
       return controlPressed;
    }
    
+   function disableBrowserKeys() {
+      $(window).keydown(function(event) {
+         if(event.ctrlKey) { 
+           event.preventDefault(); 
+         }
+       });
+   }
+   
    function parseKeyBinding(name) {
       var keyParts = name.split(/\s+/);
       var keyBindingParts = [];
@@ -117,7 +127,22 @@ module KeyBinder {
    
    function createKeyBinding(name, preventDefault, pressAction) {
       var keyBinding = parseKeyBinding(name);      
-
+//      var editor = ace.edit("editor");
+//       
+//      console.log(keyBinding.editor);
+//      editor.commands.addCommand({
+//           name : name,
+//           bindKey : {
+//               win : keyBinding.editor,
+//               mac : keyBinding.editor
+//           },
+//           exec : function(editor) {
+//              if(pressAction) { 
+//                 pressAction();
+//              }
+//           }
+//      });
+      FileEditor.addEditorKeyBinding(keyBinding, pressAction);
       Mousetrap.bindGlobal(keyBinding.global, function(e) {
          if(pressAction) {
             pressAction();

@@ -11,7 +11,6 @@ public class MatchEvaluator {
    private final String background;
    private final String foreground;
    private final String expression;
-   private final String token;
    private final boolean bold;
    
    public MatchEvaluator(String expression) {
@@ -20,15 +19,23 @@ public class MatchEvaluator {
    
    public MatchEvaluator(String expression, String background, String foreground, boolean bold) {
       this.builder = new StringBuilder();
-      this.token = expression.toLowerCase();
       this.background = background;
       this.foreground = foreground;
       this.expression = expression;
       this.bold = bold;
    }
 
-   public String match(String line) {
-      String source = line.toLowerCase();
+   public String match(String line, boolean caseSensitive) {
+      if(!caseSensitive) {
+         String source = line.toLowerCase();
+         String token = expression.toLowerCase();
+         
+         return match(builder, line, source, expression, token);
+      }
+      return match(builder, line, line, expression, expression);
+   }
+   
+   private String match(StringBuilder builder, String line, String source, String expression, String token) {
       int index = source.indexOf(token);
       
       if(index >= 0) {

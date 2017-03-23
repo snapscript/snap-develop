@@ -96,46 +96,64 @@ module FileEditor {
 //      });
    }
    
-   export function indentCurrentLine() {
+   export function addEditorKeyBinding(keyBinding, actionFunction) {
       var editor = ace.edit("editor");
-      editor.indent();
+
+      editor.commands.addCommand({
+           name : keyBinding.editor,
+           bindKey : {
+              win : keyBinding.editor,
+              mac : keyBinding.editor
+           },
+           exec : function(editor) {
+              if(actionFunction) { 
+                 actionFunction();
+              }
+           }
+      });
    }
    
-   export function commentSelection() {
-      var editor = ace.edit("editor");
-      editor.toggleCommentLines();
-   }
-   
-   export function moveCursorUp() {
-      moveCursorTo(-1, 0);
-   }
-   
-   export function moveCursorDown() {
-      moveCursorTo(1, 0);
-   }
-   
-   export function moveCursorLeft() {
-      moveCursorTo(0, -1);
-   }
-   
-   export function moveCursorRight() {
-      moveCursorTo(0, 1);
-   }
-   
-   function moveCursorTo(rowChange, columnChange) {
-      var editor = ace.edit("editor");
-      var cursorPosition = editor.getCursorPosition();
-      var currentRow = cursorPosition.row;
-      var currentColumn = cursorPosition.column;
-      var maxRow = editor.session.getLength() - 1
-      var maxColumn = editor.session.getLine(currentColumn).length // or simply Infinity
-      var nextRow = currentRow + rowChange;
-      var nextColumn = currentColumn + columnChange;
-      
-      if(nextRow <= maxRow && /*nextColumn <= maxColumn &&*/ nextRow >= 0 && nextColumn >= 0) {
-         editor.selection.moveTo(nextRow, nextColumn);
-      }
-   }
+//   
+//   export function indentCurrentLine() {
+//      var editor = ace.edit("editor");
+//      editor.indent();
+//   }
+//   
+//   export function commentSelection() {
+//      var editor = ace.edit("editor");
+//      editor.toggleCommentLines();
+//   }
+//   
+//   export function moveCursorUp() {
+//      moveCursorTo(-1, 0);
+//   }
+//   
+//   export function moveCursorDown() {
+//      moveCursorTo(1, 0);
+//   }
+//   
+//   export function moveCursorLeft() {
+//      moveCursorTo(0, -1);
+//   }
+//   
+//   export function moveCursorRight() {
+//      moveCursorTo(0, 1);
+//   }
+//   
+//   function moveCursorTo(rowChange, columnChange) {
+//      var editor = ace.edit("editor");
+//      var cursorPosition = editor.getCursorPosition();
+//      var currentRow = cursorPosition.row;
+//      var currentColumn = cursorPosition.column;
+//      var maxRow = editor.session.getLength() - 1
+//      var maxColumn = editor.session.getLine(currentColumn).length // or simply Infinity
+//      var nextRow = currentRow + rowChange;
+//      var nextColumn = currentColumn + columnChange;
+//      
+//      if(nextRow <= maxRow && /*nextColumn <= maxColumn &&*/ nextRow >= 0 && nextColumn >= 0) {
+//         editor.selection.moveTo(nextRow, nextColumn);
+//      }
+//   }
    
    function clearEditorBreakpoint(row) {
       var editor = ace.edit("editor");
@@ -652,7 +670,11 @@ module FileEditor {
       editor.setReadOnly(true);
       editor.setAutoScrollEditorIntoView(true);
       editor.getSession().setUseSoftTabs(true);
-      editor.keyBinding.setDefaultHandler(null); // disable all keybindings and allow Mousetrap to do it
+      editor.commands.removeCommand("find");
+      // ################# DISABLE KEY BINDINGS ######################
+      //editor.keyBinding.setDefaultHandler(null); // disable all keybindings and allow Mousetrap to do it
+      // #############################################################
+      
       editor.setShowPrintMargin(false);
       editor.setOptions({
          enableBasicAutocompletion: true

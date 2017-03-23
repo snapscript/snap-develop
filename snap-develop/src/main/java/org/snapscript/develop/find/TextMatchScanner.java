@@ -46,11 +46,10 @@ public class TextMatchScanner {
    }
    
    public List<TextMatch> scanFiles(TextMatchRequest matchRequest) throws Exception {
-      final Path path = matchRequest.getPath();
-      final String filePattern = matchRequest.getPattern();
+      final boolean caseSensitive = matchRequest.isCaseSensitive();
       final String expression = matchRequest.getQuery();
-      final String key = createKey(path, filePattern, expression);
-      final Set<TextFile> files = findFiles(path, filePattern, expression);
+      final String key = createKey(matchRequest);
+      final Set<TextFile> files = findFiles(matchRequest);
       
       if(!files.isEmpty()) {
          final List<TextMatch> matches = new CopyOnWriteArrayList<TextMatch>();
@@ -61,7 +60,7 @@ public class TextMatchScanner {
             pool.execute(new Runnable() {
                public void run() {
                   try {
-                     List<TextMatch> match = finder.findText(file, expression);
+                     List<TextMatch> match = finder.findText(file, expression, caseSensitive);
                      
                      if(!match.isEmpty()) {
                         matches.addAll(match);
@@ -93,8 +92,8 @@ public class TextMatchScanner {
       return Collections.emptyList();
    }
    
-   private Set<TextFile> findFiles(Path path, String filePattern, String expression) throws Exception {
-      String key = createKey(path, filePattern, expression); 
+   private Set<TextFile> findFiles(TextMatchRequest matchRequest) throws Exception {
+      String key = createKey(matchRequest); 
       Set<TextFile> files = null;
       int best = 0;
       
@@ -109,14 +108,16 @@ public class TextMatchScanner {
          }
       }
       if(files == null) {
-         return findAllFiles(path, filePattern, expression);
+         return findAllFiles(matchRequest);
       }
       return files;
    }
    
-   private Set<TextFile> findAllFiles(Path path, String filePattern, String expression) throws Exception {
+   private Set<TextFile> findAllFiles(TextMatchRequest matchRequest) throws Exception {
       Set<FileMatch> filesFound = new LinkedHashSet<FileMatch>();
       Set<TextFile> textFiles = new LinkedHashSet<TextFile>();
+      String filePattern = matchRequest.getPattern();
+      Path path = matchRequest.getPath();
       
       if(filePattern == null) {
          filePattern = "*.*";
@@ -144,12 +145,16 @@ public class TextMatchScanner {
       return textFiles;
    }
    
-   private String createKey(Path path, String filePattern, String expression) throws Exception {
+   private String createKey(TextMatchRequest matchRequest) throws Exception {
+      Path path = matchRequest.getPath();
+      String expression = matchRequest.getQuery();
+      String filePattern = matchRequest.getPattern();
+      boolean caseSensitive = matchRequest.isCaseSensitive();
       Project project = builder.createProject(path);
       String name = project.getProjectName();
       String token = expression.toLowerCase();
       
-      return String.format("%s:%s:%s", name, filePattern, token);
+      return String.format("%s:%s:%s:%s", name, filePattern, caseSensitive, token);
    }
    
    private class CacheCleaner implements RemovalListener<String, Set<TextFile>> {

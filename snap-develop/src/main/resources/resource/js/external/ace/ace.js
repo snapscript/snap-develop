@@ -10294,6 +10294,7 @@ MultiHashHandler.prototype = HashHandler.prototype;
     
 
     this.addCommand = function(command) {
+       console.log("Command added: name: " + command.name + " key: " + JSON.stringify(command.bindKey));
         if (this.commands[command.name])
             this.removeCommand(command);
 

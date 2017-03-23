@@ -19,7 +19,7 @@ public class TextMatchFinder {
       this.logger = logger;
    }
 
-   public List<TextMatch> findText(TextFile textFile, String expression) {
+   public List<TextMatch> findText(TextFile textFile, String expression, boolean caseSensitive) {
       File file = textFile.getFile();
       String project = textFile.getProject();
       String resource = textFile.getPath();
@@ -37,7 +37,7 @@ public class TextMatchFinder {
                if(line == null) {
                   break;
                }
-               String text = matcher.match(line);
+               String text = matcher.match(line, caseSensitive);
                
                if(text != null) {
                   int number = reader.getLineNumber();
