@@ -163,7 +163,7 @@ var DialogBuilder;
         w2popup.open({
             title: dialogTitle,
             body: dialogBody,
-            buttons: '<button id="dialogSave" class="btn dialogButton">Cancel</button>',
+            buttons: '<button id="dialogCancel" class="btn dialogButton">Cancel</button>',
             width: 800,
             height: 400,
             overflow: 'hidden',
@@ -239,7 +239,7 @@ var DialogBuilder;
         w2popup.open({
             title: dialogTitle,
             body: dialogBody,
-            buttons: '<button id="dialogSave" class="btn dialogButton">Cancel</button>',
+            buttons: '<button id="dialogCancel" class="btn dialogButton">Cancel</button>',
             width: 800,
             height: 400,
             overflow: 'hidden',
@@ -299,7 +299,7 @@ var DialogBuilder;
         w2popup.open({
             title: dialogTitle,
             body: dialogBody,
-            buttons: '<button id="dialogSave" class="btn dialogButton">Cancel</button>',
+            buttons: '<button id="dialogSave" class="btn dialogButton">Replace</button><button id="dialogCancel" class="btn dialogButton">Cancel</button>',
             width: 800,
             height: 400,
             overflow: 'hidden',
@@ -322,6 +322,17 @@ var DialogBuilder;
             }
         });
         $("#dialogSave").click(function () {
+            var searchText = $("#searchText").html();
+            var replaceText = $("#replaceText").html();
+            var filePatterns = $("#fileFilterPatterns").html();
+            var searchCriteria = {
+                caseSensitive: isCheckboxSelected("inputCaseSensitive"),
+                regularExpression: isCheckboxSelected("inputRegularExpression"),
+                wholeWord: isCheckboxSelected("inputWholeWord"),
+                enableReplace: true,
+                replace: replaceText
+            };
+            Command.replaceTokenInFiles(searchText, searchCriteria, filePatterns);
             w2popup.close();
         });
         $("#dialogCancel").click(function () {

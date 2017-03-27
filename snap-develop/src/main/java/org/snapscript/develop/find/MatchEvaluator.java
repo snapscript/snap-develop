@@ -2,16 +2,22 @@
 
 package org.snapscript.develop.find;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 public class MatchEvaluator {
    
    public static final String FOREGROUND_COLOR = "#ffffff";
    public static final String BACKGROUND_COLOR = "#6495ed"; 
    
-   private final StringBuilder builder;
-   private final String background;
-   private final String foreground;
-   private final String expression;
-   private final boolean bold;
+   protected final StringBuilder builder;
+   protected final String background;
+   protected final String foreground;
+   protected final String expression;
+   protected final boolean bold;
    
    public MatchEvaluator(String expression) {
       this(expression, BACKGROUND_COLOR, FOREGROUND_COLOR, true);
@@ -29,24 +35,64 @@ public class MatchEvaluator {
       if(!caseSensitive) {
          String source = line.toLowerCase();
          String token = expression.toLowerCase();
+         List<MatchPart> tokens = match(line, source, expression, token);
          
-         return match(builder, line, source, expression, token);
+         if(tokens != null) {
+            return highlightText(builder, tokens);
+         }
+         return null;
       }
-      return match(builder, line, line, expression, expression);
+      List<MatchPart> tokens = match(line, line, expression, expression);
+      
+      if(tokens != null) {
+         return highlightText(builder, tokens);
+      }
+      return null;
    }
    
-   private String match(StringBuilder builder, String line, String source, String expression, String token) {
-      int index = source.indexOf(token);
-      
-      if(index >= 0) {
-         int length = expression.length();
-         int start = 0;
+   public String replace(String line, String replace, boolean caseSensitive) {
+      if(!caseSensitive) {
+         String source = line.toLowerCase();
+         String token = expression.toLowerCase();
+         List<MatchPart> tokens = match(line, source, expression, token);
          
-         while(index >= 0) {
-            String begin = line.substring(start, index);
-            String text = line.substring(index, index + length);
-            
-            builder.append(escape(begin));
+         if(tokens != null) {
+            return replaceText(builder, replace, tokens);
+         }
+         return null;
+      }
+      List<MatchPart> tokens = match(line, line, expression, expression);
+      
+      if(tokens != null) {
+         return replaceText(builder, replace, tokens);
+      }
+      return null;
+   }
+   
+   private String replaceText(StringBuilder builder, String replace, List<MatchPart> list) {
+      for(MatchPart part : list) {
+         String begin = part.getBegin();
+         String text = part.getMatch();
+         
+         builder.append(begin);
+         
+         if(text != null) {
+            builder.append(replace);
+         }
+      }
+      String text = builder.toString();
+      builder.setLength(0);
+      return text;
+   }
+   
+   private String highlightText(StringBuilder builder, List<MatchPart> list) {
+      for(MatchPart part : list) {
+         String begin = part.getBegin();
+         String text = part.getMatch();
+         
+         builder.append(escape(begin));
+         
+         if(text != null) {
             builder.append("<span style='background-color: ");
             builder.append(background);
             builder.append("; color: ");
@@ -56,23 +102,49 @@ public class MatchEvaluator {
             builder.append(";'>");
             builder.append(escape(text));
             builder.append("</span>");
+         }
+      }
+      String text = builder.toString();
+      builder.setLength(0);
+      return text;
+   }
+   
+   protected List<MatchPart> match(String line, String source, String expression, String token) {
+      int index = source.indexOf(token);
+      
+      if(index >= 0) {
+         List<MatchPart> tokens = new ArrayList<MatchPart>();
+         int length = expression.length();
+         int start = 0;
+         
+         while(index >= 0) {
+            String begin = line.substring(start, index);
+            String text = line.substring(index, index + length);
+            
+            tokens.add(new MatchPart(begin, text));
             start = index + length;
             index = source.indexOf(token, start);
          }
          int last = line.length();
          String remainder = line.substring(start, last);
-         builder.append(escape(remainder));
-         String result = builder.toString();
-         builder.setLength(0);
-         return result;
+         tokens.add(new MatchPart(remainder, null));
+         return tokens;
       }
       return null;
    }
    
-   private String escape(String token) {
+   private static String escape(String token) {
       return token
             .replace("<", "&lt;")
             .replace(">", "&gt;");
+   }
+   
+   @Data
+   @AllArgsConstructor
+   public static class MatchPart {
+      
+      private final String begin;
+      private final String match;
    }
 }
 

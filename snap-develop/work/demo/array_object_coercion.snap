@@ -1,32 +1,32 @@
 class Score with Comparable {
-   var score;
-   new(score){
-      this.score = score;
+   var Score;
+   new(Score){
+      this.Score = Score;
    }
    compareTo(other){
-      return Double.compare(score, other.score);
+      return Double.compare(Score, other.Score);
    }
    test(){
-      println("score=${this}");
+      println("Score=${this}");
       return this;
    }
    toString(){
-      return "${score}";
+      return "${Score}";
    }
 }
 var x: Score[] = [new Score(1.1), new Score(1.0), new Score(2.0)];
 println(x);
 var set = new TreeSet(); 
-for(var score in x){
-   set.add(score);
+for(var Score in x){
+   set.add(Score);
 }
 println(set);
 
-for(var score in x){
-   println(score);
+for(var Score in x){
+   println(Score);
 }
 Arrays.sort(x, (a,b)->a.compareTo(b));
-for(var score in x){
-   println(score);
+for(var Score in x){
+   println(Score);
 }
 println(Integer[].class);

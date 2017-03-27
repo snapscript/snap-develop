@@ -31,7 +31,7 @@ public class TextMatchResource implements Resource {
    public void handle(Request request, Response response) throws Throwable {
       TextMatchQuery query = parser.parse(request);
       PrintStream stream = response.getPrintStream(8192);
-      List<TextMatch> matches = scanner.scanFiles(query);
+      List<TextMatch> matches = scanner.process(query);
       String text = gson.toJson(matches);
       response.setContentType("application/json");
       stream.println(text);

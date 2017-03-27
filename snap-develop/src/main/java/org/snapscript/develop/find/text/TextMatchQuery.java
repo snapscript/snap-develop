@@ -13,9 +13,11 @@ public class TextMatchQuery {
    private final File path;
    private final String project;
    private final String pattern;
+   private final String replace;
    private final String query;
    private final boolean caseSensitive; 
    private final boolean regularExpression; 
    private final boolean wholeWord;
+   private final boolean enableReplace;
 }
 

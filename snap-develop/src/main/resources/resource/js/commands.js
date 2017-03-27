@@ -64,11 +64,27 @@ var Command;
             onComplete([]);
         }
     }
+    function replaceTokenInFiles(matchText, searchCriteria, filePatterns) {
+        findFilesWithText(matchText, filePatterns, searchCriteria, function (text, fileTypes, searchCriteria, onComplete) { });
+    }
+    Command.replaceTokenInFiles = replaceTokenInFiles;
     function searchFiles(filePatterns) {
+        searchOrReplaceFiles(false, filePatterns);
+    }
+    Command.searchFiles = searchFiles;
+    function searchAndReplaceFiles(filePatterns) {
+        searchOrReplaceFiles(true, filePatterns);
+    }
+    Command.searchAndReplaceFiles = searchAndReplaceFiles;
+    function searchOrReplaceFiles(enableReplace, filePatterns) {
         if (!filePatterns) {
             filePatterns = '*.snap,*.properties,*.xml,*.txt,*.json';
         }
-        DialogBuilder.createTextSearchOnlyDialog(function (text, fileTypes, searchCriteria, onComplete) {
+        var searchFunction = DialogBuilder.createTextSearchOnlyDialog;
+        if (enableReplace) {
+            searchFunction = DialogBuilder.createTextSearchAndReplaceDialog;
+        }
+        searchFunction(function (text, fileTypes, searchCriteria, onComplete) {
             findFilesWithText(text, fileTypes, searchCriteria, function (filesFound) {
                 var fileRows = [];
                 for (var i = 0; i < filesFound.length; i++) {
@@ -101,7 +117,6 @@ var Command;
             });
         }, filePatterns, "Search Files");
     }
-    Command.searchFiles = searchFiles;
     function findFilesWithText(text, fileTypes, searchCriteria, onComplete) {
         if (text && text.length > 1) {
             var searchUrl = '';
@@ -111,6 +126,8 @@ var Command;
             searchUrl += "&caseSensitive=" + searchCriteria.caseSensitive;
             searchUrl += "&regularExpression=" + searchCriteria.regularExpression;
             searchUrl += "&wholeWord=" + searchCriteria.wholeWord;
+            searchUrl += "&replace=" + searchCriteria.replace;
+            searchUrl += "&enableReplace=" + searchCriteria.enableReplace;
             jQuery.ajax({
                 url: searchUrl,
                 success: function (filesMatched) {

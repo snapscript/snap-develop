@@ -69,12 +69,29 @@ module Command {
       }
    }
    
+   export function replaceTokenInFiles(matchText, searchCriteria, filePatterns) {
+      findFilesWithText(matchText, filePatterns, searchCriteria, function(text, fileTypes, searchCriteria, onComplete){});
+   }
+   
    export function searchFiles(filePatterns) {
+      searchOrReplaceFiles(false, filePatterns);
+   }
+   
+   export function searchAndReplaceFiles(filePatterns) {
+      searchOrReplaceFiles(true, filePatterns);
+   }
+   
+   function searchOrReplaceFiles(enableReplace, filePatterns) {
       if(!filePatterns) {
          filePatterns = '*.snap,*.properties,*.xml,*.txt,*.json';
+      } 
+      var searchFunction = DialogBuilder.createTextSearchOnlyDialog;
+      
+      if(enableReplace) {
+         searchFunction = DialogBuilder.createTextSearchAndReplaceDialog;
       }
-      DialogBuilder.createTextSearchOnlyDialog(function(text, fileTypes, searchCriteria, onComplete){
-         findFilesWithText(text, fileTypes, searchCriteria, function(filesFound) {
+      searchFunction(function(text, fileTypes, searchCriteria, onComplete){
+         findFilesWithText(text, fileTypes, searchCriteria, function(filesFound) { // don't replace in the search phase
             var fileRows = [];
            
             for(var i = 0; i < filesFound.length; i++) {
@@ -119,6 +136,8 @@ module Command {
          searchUrl += "&caseSensitive=" + searchCriteria.caseSensitive;
          searchUrl += "&regularExpression=" + searchCriteria.regularExpression;
          searchUrl += "&wholeWord=" + searchCriteria.wholeWord;
+         searchUrl += "&replace=" + searchCriteria.replace;
+         searchUrl += "&enableReplace=" + searchCriteria.enableReplace;
          
          jQuery.ajax({
             url: searchUrl,

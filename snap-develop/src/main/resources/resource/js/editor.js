@@ -56,6 +56,11 @@ var FileEditor;
         editorMarkers[line] = marker;
     }
     FileEditor.createEditorHighlight = createEditorHighlight;
+    function findAndReplaceTextInEditor() {
+        var editorData = loadEditor();
+        Command.searchAndReplaceFiles(editorData.resource.projectPath);
+    }
+    FileEditor.findAndReplaceTextInEditor = findAndReplaceTextInEditor;
     function findTextInEditor() {
         var editorData = loadEditor();
         Command.searchFiles(editorData.resource.projectPath);

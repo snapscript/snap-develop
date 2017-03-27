@@ -17,13 +17,7 @@ module KeyBinder {
       createKeyBinding("ctrl shift s", true, function() {
          Command.searchTypes();
       });
-      createKeyBinding("ctrl shift h", true, function() {
-         Command.searchFiles();
-      });
-      createKeyBinding("ctrl shift g", true, function() {
-         Command.findFileNames();
-      });
-      createKeyBinding("ctrl shift f", true, function() {
+      createKeyBinding("ctrl tab", true, function() {
          FileEditor.formatEditorSource();
       });
       createKeyBinding("ctrl shift e", true, function() {
@@ -37,6 +31,18 @@ module KeyBinder {
       });
       createKeyBinding("ctrl shift p", true, function() {
          Command.switchProject();
+      });
+      createKeyBinding("ctrl shift g", true, function() {
+         Command.findFileNames();
+      });
+      createKeyBinding("ctrl shift h", true, function() {
+         Command.searchAndReplaceFiles();
+      });
+      createKeyBinding("ctrl shift f", true, function() {
+         Command.searchFiles();
+      });
+      createKeyBinding("ctrl h", true, function() {
+         FileEditor.findAndReplaceTextInEditor();
       });
       createKeyBinding("ctrl f", true, function() {
          FileEditor.findTextInEditor();

@@ -65,6 +65,11 @@ module FileEditor {
       editorMarkers[line] = marker;
    }
    
+   export function findAndReplaceTextInEditor(){
+      var editorData = loadEditor();
+      Command.searchAndReplaceFiles(editorData.resource.projectPath);
+   }
+   
    export function findTextInEditor() {
       var editorData = loadEditor();
       Command.searchFiles(editorData.resource.projectPath);

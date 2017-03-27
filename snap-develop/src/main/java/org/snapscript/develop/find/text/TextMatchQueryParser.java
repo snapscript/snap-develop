@@ -13,11 +13,13 @@ import org.snapscript.develop.resource.project.ProjectBuilder;
 @AllArgsConstructor
 public class TextMatchQueryParser {
    
+   private static final String REPLACE = "replace";
    private static final String PATTERN = "pattern";
    private static final String EXPRESSION = "expression";
    private static final String CASE_SENSITIVE = "caseSensitive";
    private static final String REGULAR_EXPRESSION = "regularExpression";
    private static final String WHOLE_WORD = "wholeWord";
+   private static final String ENABLE_REPLACE = "enableReplace";
    
    private final ProjectBuilder builder;
    
@@ -31,17 +33,21 @@ public class TextMatchQueryParser {
       }
       String name = project.getProjectName();
       File root = project.getProjectPath();
+      String replace = parser.getString(REPLACE, false);
       String pattern = parser.getString(PATTERN);
       String query = parser.getString(EXPRESSION);
       boolean caseSensitive = parser.getBoolean(CASE_SENSITIVE);
       boolean regularExpression = parser.getBoolean(REGULAR_EXPRESSION);
       boolean wholeWord = parser.getBoolean(WHOLE_WORD);
+      boolean enableReplace = parser.getBoolean(ENABLE_REPLACE, false);
       
       return TextMatchQuery.builder()
             .pattern(pattern)
             .query(query)
             .path(root)
+            .replace(replace)
             .project(name)
+            .enableReplace(enableReplace)
             .caseSensitive(caseSensitive)
             .regularExpression(regularExpression)
             .wholeWord(wholeWord)

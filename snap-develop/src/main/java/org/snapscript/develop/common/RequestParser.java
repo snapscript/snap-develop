@@ -11,9 +11,13 @@ public class RequestParser {
    }
    
    public String getString(String name) {
+      return getString(name, true);
+   }
+   
+   public String getString(String name, boolean required) {
       String value = request.getParameter(name);
       
-      if(value == null) {
+      if(value == null && required) {
          throw new IllegalArgumentException("Could not find parameter " + name);
       }
       return value;
@@ -24,13 +28,40 @@ public class RequestParser {
       return Boolean.parseBoolean(value);
    }
    
+   public boolean getBoolean(String name, boolean enable) {
+      String value = getString(name, enable);
+      
+      if(value != null) {
+         return Boolean.parseBoolean(value);
+      }
+      return false;
+   }
+   
    public int getInteger(String name) {
       String value = getString(name);
       return Integer.parseInt(value);
    }
    
+   public int getInteger(String name, boolean enable) {
+      String value = getString(name, enable);
+      
+      if(value == null) {
+         return Integer.parseInt(value);
+      }
+      return 0;
+   }
+   
    public double getDouble(String name) {
       String value = getString(name);
       return Double.parseDouble(value);
+   }
+   
+   public double getDouble(String name, boolean enable) {
+      String value = getString(name, enable);
+      
+      if(value != null) {
+         return Double.parseDouble(value);
+      }
+      return Double.NaN;
    }
 }
