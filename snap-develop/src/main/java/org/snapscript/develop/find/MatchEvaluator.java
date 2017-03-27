@@ -32,7 +32,7 @@ public class MatchEvaluator {
    }
 
    public String match(String line, boolean caseSensitive) {
-      if(!caseSensitive) {
+      if(caseSensitive) {
          String source = line.toLowerCase();
          String token = expression.toLowerCase();
          List<MatchPart> tokens = match(line, source, expression, token);
@@ -51,7 +51,7 @@ public class MatchEvaluator {
    }
    
    public String replace(String line, String replace, boolean caseSensitive) {
-      if(!caseSensitive) {
+      if(caseSensitive) {
          String source = line.toLowerCase();
          String token = expression.toLowerCase();
          List<MatchPart> tokens = match(line, source, expression, token);
