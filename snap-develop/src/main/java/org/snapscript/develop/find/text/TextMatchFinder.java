@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.find.MatchEvaluator;
+import org.snapscript.develop.find.MatchType;
 
 public class TextMatchFinder {
    
@@ -21,7 +22,7 @@ public class TextMatchFinder {
       this.logger = logger;
    }
 
-   public List<TextMatch> findText(TextFile textFile, String expression, boolean caseSensitive) {
+   public List<TextMatch> findText(TextFile textFile, MatchType type, String expression, boolean caseSensitive) {
       File file = textFile.getFile();
       String project = textFile.getProject();
       String resource = textFile.getPath();
@@ -30,7 +31,7 @@ public class TextMatchFinder {
          List<TextMatch> lines = new ArrayList<TextMatch>();
          FileReader source = new FileReader(file);
          LineNumberReader reader = new LineNumberReader(source);
-         MatchEvaluator matcher = new MatchEvaluator(expression);
+         MatchEvaluator matcher = MatchEvaluator.of(type, expression, caseSensitive);
          
          try {
             while(reader.ready()) {
@@ -39,7 +40,7 @@ public class TextMatchFinder {
                if(line == null) {
                   break;
                }
-               String text = matcher.match(line, caseSensitive);
+               String text = matcher.match(line);
                
                if(text != null) {
                   int number = reader.getLineNumber();
@@ -57,7 +58,7 @@ public class TextMatchFinder {
       return Collections.emptyList();
    }
    
-   public List<TextMatch> replaceText(TextFile textFile, String expression, String replace, boolean caseSensitive) {
+   public List<TextMatch> replaceText(TextFile textFile, MatchType type, String expression, String replace, boolean caseSensitive) {
       File file = textFile.getFile();
       String project = textFile.getProject();
       String resource = textFile.getPath();
@@ -67,7 +68,7 @@ public class TextMatchFinder {
          List<TextMatch> lines = new ArrayList<TextMatch>();
          FileReader source = new FileReader(file);
          LineNumberReader reader = new LineNumberReader(source);
-         MatchEvaluator matcher = new MatchEvaluator(expression);
+         MatchEvaluator matcher = MatchEvaluator.of(type, expression, caseSensitive);
          
          try {
             while(reader.ready()) {
@@ -76,7 +77,7 @@ public class TextMatchFinder {
                if(line == null) {
                   break;
                }
-               String text = matcher.replace(line, replace, caseSensitive);
+               String text = matcher.replace(line, replace);
                
                if(text != null) {
                   int number = reader.getLineNumber();

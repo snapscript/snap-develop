@@ -17,6 +17,8 @@ import com.google.gson.GsonBuilder;
 
 public class TextMatchResource implements Resource {
    
+   private static final int MAX_COUNT = 1000;
+   
    private final TextMatchQueryParser parser;
    private final TextMatchScanner scanner;
    private final Gson gson;
@@ -32,6 +34,11 @@ public class TextMatchResource implements Resource {
       TextMatchQuery query = parser.parse(request);
       PrintStream stream = response.getPrintStream(8192);
       List<TextMatch> matches = scanner.process(query);
+      int length = matches.size();
+      
+      if(length > MAX_COUNT) {
+         matches = matches.subList(0, MAX_COUNT);
+      }
       String text = gson.toJson(matches);
       response.setContentType("application/json");
       stream.println(text);

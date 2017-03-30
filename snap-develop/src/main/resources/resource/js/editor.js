@@ -627,8 +627,10 @@ var FileEditor;
         editor.setReadOnly(true);
         editor.setAutoScrollEditorIntoView(true);
         editor.getSession().setUseSoftTabs(true);
-        editor.commands.removeCommand("replace");
-        editor.commands.removeCommand("find");
+        editor.commands.removeCommand("replace"); // Ctrl-H
+        editor.commands.removeCommand("find"); // Ctrl-F
+        editor.commands.removeCommand("expandToMatching"); // Ctrl-Shift-M
+        editor.commands.removeCommand("expandtoline"); // Ctrl-Shift-L
         // ################# DISABLE KEY BINDINGS ######################
         //editor.keyBinding.setDefaultHandler(null); // disable all keybindings and allow Mousetrap to do it
         // #############################################################

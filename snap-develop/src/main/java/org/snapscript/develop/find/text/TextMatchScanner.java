@@ -13,6 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.ThreadPool;
+import org.snapscript.develop.find.MatchType;
 
 public class TextMatchScanner {
    
@@ -40,6 +41,7 @@ public class TextMatchScanner {
    private List<TextMatch> searchFiles(final TextMatchQuery query) throws Exception {
       final boolean caseSensitive = query.isCaseSensitive();
       final String expression = query.getQuery();
+      final MatchType type = query.getType();
       final Set<TextFile> files = findFiles(query);
       
       if(!files.isEmpty()) {
@@ -51,7 +53,7 @@ public class TextMatchScanner {
             pool.execute(new Runnable() {
                public void run() {
                   try {
-                     List<TextMatch> match = finder.findText(file, expression, caseSensitive);
+                     List<TextMatch> match = finder.findText(file, type, expression, caseSensitive);
                      
                      if(!match.isEmpty()) {
                         matches.addAll(match);
@@ -65,7 +67,9 @@ public class TextMatchScanner {
                }
             });
          }
-         for(final TextFile file : files) {
+         int count = files.size();
+         
+         for(int i = 0; i < count; i++){
             finished.take(); // wait for them all to finish
          }
          history.saveMatches(query, success);
@@ -80,6 +84,7 @@ public class TextMatchScanner {
       final boolean caseSensitive = query.isCaseSensitive();
       final String expression = query.getQuery();
       final String replace = query.getReplace();
+      final MatchType type = query.getType();
       final Set<TextFile> files = findFiles(query);
       
       if(!files.isEmpty()) {
@@ -91,7 +96,7 @@ public class TextMatchScanner {
             pool.execute(new Runnable() {
                public void run() {
                   try {
-                     List<TextMatch> match = finder.replaceText(file, expression, replace, caseSensitive);
+                     List<TextMatch> match = finder.replaceText(file, type, expression, replace, caseSensitive);
                      
                      if(!match.isEmpty()) {
                         matches.addAll(match);
@@ -105,7 +110,9 @@ public class TextMatchScanner {
                }
             });
          }
-         for(final TextFile file : files) {
+         int count = files.size();
+         
+         for(int i = 0; i < count; i++){
             finished.take(); // wait for them all to finish
          }
          history.saveMatches(query, success);

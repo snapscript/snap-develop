@@ -70,7 +70,20 @@ module Command {
    }
    
    export function replaceTokenInFiles(matchText, searchCriteria, filePatterns) {
-      findFilesWithText(matchText, filePatterns, searchCriteria, function(text, fileTypes, searchCriteria, onComplete){});
+      findFilesWithText(matchText, filePatterns, searchCriteria, function(filesReplaced){
+         var editorData = FileEditor.loadEditor();
+         
+         for(var i = 0; i < filesReplaced.length; i++) {
+            var fileReplaced = filesReplaced[i];
+            var fileReplacedResource = FileTree.createResourcePath("/resource/" + fileReplaced.project + "/" + fileReplaced.resource);
+            
+            if(editorData.resource.resourcePath == fileReplacedResource.resourcePath) {
+               FileExplorer.openTreeFile(fileReplacedResource.resourcePath, function() {
+                  //FileEditor.showEditorLine(record.line);  
+               }); 
+            }
+         }
+      });
    }
    
    export function searchFiles(filePatterns) {
@@ -131,13 +144,13 @@ module Command {
          var searchUrl = '';
          
          searchUrl += '/find/' + document.title;
-         searchUrl += '?expression=' + text;
-         searchUrl += '&pattern=' + fileTypes;
-         searchUrl += "&caseSensitive=" + searchCriteria.caseSensitive;
-         searchUrl += "&regularExpression=" + searchCriteria.regularExpression;
-         searchUrl += "&wholeWord=" + searchCriteria.wholeWord;
-         searchUrl += "&replace=" + searchCriteria.replace;
-         searchUrl += "&enableReplace=" + searchCriteria.enableReplace;
+         searchUrl += '?expression=' + encodeURIComponent(text);
+         searchUrl += '&pattern=' + encodeURIComponent(fileTypes);
+         searchUrl += "&caseSensitive=" + encodeURIComponent(searchCriteria.caseSensitive);
+         searchUrl += "&regularExpression=" + encodeURIComponent(searchCriteria.regularExpression);
+         searchUrl += "&wholeWord=" + encodeURIComponent(searchCriteria.wholeWord);
+         searchUrl += "&replace=" + encodeURIComponent(searchCriteria.replace);
+         searchUrl += "&enableReplace=" + encodeURIComponent(searchCriteria.enableReplace);
          
          jQuery.ajax({
             url: searchUrl,

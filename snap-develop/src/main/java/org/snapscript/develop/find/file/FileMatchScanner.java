@@ -9,7 +9,9 @@ import java.util.List;
 
 import org.snapscript.develop.common.FilePatternMatcher;
 import org.snapscript.develop.find.ExpressionResolver;
+import org.snapscript.develop.find.LiteralMatchEvaluator;
 import org.snapscript.develop.find.MatchEvaluator;
+import org.snapscript.develop.find.MatchType;
 import org.snapscript.develop.find.PathBuilder;
 
 public class FileMatchScanner {
@@ -33,8 +35,8 @@ public class FileMatchScanner {
          String textMatch = resolver.match(resourcePath);
          
          if(textMatch != null) {
-            MatchEvaluator evaluator = new MatchEvaluator(textMatch);
-            String replaceText = evaluator.match(resourcePath, false);
+            MatchEvaluator evaluator = MatchEvaluator.of(MatchType.LITERAL, textMatch, false);
+            String replaceText = evaluator.match(resourcePath);
             FileMatch projectFile = new FileMatch(project, resourcePath, file, replaceText);
             filesFound.add(projectFile);
          }

@@ -572,7 +572,7 @@ module DialogBuilder {
    
     
    export function submitDialogListResource(resource, line) {
-      $("#dialogSave").click(); // force the click
+      $("#dialogCancel").click(); // force the click
       
       if(line) {
          FileExplorer.openTreeFile(resource, function() {

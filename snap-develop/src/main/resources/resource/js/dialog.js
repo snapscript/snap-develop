@@ -539,7 +539,7 @@ var DialogBuilder;
             '</div>';
     }
     function submitDialogListResource(resource, line) {
-        $("#dialogSave").click(); // force the click
+        $("#dialogCancel").click(); // force the click
         if (line) {
             FileExplorer.openTreeFile(resource, function () {
                 window.setTimeout(function () {

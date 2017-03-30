@@ -2,13 +2,16 @@
 
 package org.snapscript.develop.find;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-public class MatchEvaluator {
+public abstract class MatchEvaluator {
+   
+   public static MatchEvaluator of(MatchType type, String expression, boolean sensitive) {
+      if(type == MatchType.REGEX) {
+         return new PatternMatchEvaluator(expression, sensitive);
+      }
+      return new LiteralMatchEvaluator(expression, sensitive);
+   }
    
    public static final String FOREGROUND_COLOR = "#ffffff";
    public static final String BACKGROUND_COLOR = "#6495ed"; 
@@ -17,22 +20,28 @@ public class MatchEvaluator {
    protected final String background;
    protected final String foreground;
    protected final String expression;
+   protected final boolean sensitive;
    protected final boolean bold;
    
-   public MatchEvaluator(String expression) {
-      this(expression, BACKGROUND_COLOR, FOREGROUND_COLOR, true);
+   MatchEvaluator(String expression, boolean sensitive) {
+      this(expression, sensitive, BACKGROUND_COLOR, FOREGROUND_COLOR, true);
    }
    
-   public MatchEvaluator(String expression, String background, String foreground, boolean bold) {
+   MatchEvaluator(String expression, boolean sensitive, String background, String foreground, boolean bold) {
       this.builder = new StringBuilder();
       this.background = background;
       this.foreground = foreground;
       this.expression = expression;
+      this.sensitive = sensitive;
       this.bold = bold;
    }
+   
+   private boolean isCaseSensitive() {
+      return sensitive;
+   }
 
-   public String match(String line, boolean caseSensitive) {
-      if(caseSensitive) {
+   public String match(String line) {
+      if(!isCaseSensitive()) {
          String source = line.toLowerCase();
          String token = expression.toLowerCase();
          List<MatchPart> tokens = match(line, source, expression, token);
@@ -50,8 +59,8 @@ public class MatchEvaluator {
       return null;
    }
    
-   public String replace(String line, String replace, boolean caseSensitive) {
-      if(caseSensitive) {
+   public String replace(String line, String replace) {
+      if(!isCaseSensitive()) {
          String source = line.toLowerCase();
          String token = expression.toLowerCase();
          List<MatchPart> tokens = match(line, source, expression, token);
@@ -109,42 +118,12 @@ public class MatchEvaluator {
       return text;
    }
    
-   protected List<MatchPart> match(String line, String source, String expression, String token) {
-      int index = source.indexOf(token);
-      
-      if(index >= 0) {
-         List<MatchPart> tokens = new ArrayList<MatchPart>();
-         int length = expression.length();
-         int start = 0;
-         
-         while(index >= 0) {
-            String begin = line.substring(start, index);
-            String text = line.substring(index, index + length);
-            
-            tokens.add(new MatchPart(begin, text));
-            start = index + length;
-            index = source.indexOf(token, start);
-         }
-         int last = line.length();
-         String remainder = line.substring(start, last);
-         tokens.add(new MatchPart(remainder, null));
-         return tokens;
-      }
-      return null;
-   }
-   
    private static String escape(String token) {
       return token
             .replace("<", "&lt;")
             .replace(">", "&gt;");
    }
    
-   @Data
-   @AllArgsConstructor
-   public static class MatchPart {
-      
-      private final String begin;
-      private final String match;
-   }
+   protected abstract List<MatchPart> match(String line, String source, String expression, String token);
 }
 
