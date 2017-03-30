@@ -193,4 +193,4 @@ module DebugManager {
    }
 }
 
-ModuleSystem.registerModule("debug", "Debug module: debug.js", DebugManager.createStatus, [ "common", "socket", "tree", "threads" ]);
+ModuleSystem.registerModule("debug", "Debug module: debug.js", null, DebugManager.createStatus, [ "common", "socket", "tree", "threads" ]);

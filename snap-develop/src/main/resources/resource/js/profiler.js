@@ -49,4 +49,4 @@ var Profiler;
     }
     Profiler.clearProfiler = clearProfiler;
 })(Profiler || (Profiler = {}));
-ModuleSystem.registerModule("profiler", "Profiler module: profiler.js", Profiler.startProfiler, ["common", "socket"]);
+ModuleSystem.registerModule("profiler", "Profiler module: profiler.js", null, Profiler.startProfiler, ["common", "socket"]);

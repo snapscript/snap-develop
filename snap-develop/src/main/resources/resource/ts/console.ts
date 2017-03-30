@@ -172,4 +172,4 @@ module ProcessConsole {
    }
 }
 
-ModuleSystem.registerModule("console", "Console module: console.js", ProcessConsole.registerConsole, ["common", "socket"]);
+ModuleSystem.registerModule("console", "Console module: console.js", null, ProcessConsole.registerConsole, ["common", "socket"]);

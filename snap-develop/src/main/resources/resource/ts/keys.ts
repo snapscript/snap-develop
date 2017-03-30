@@ -180,4 +180,4 @@ module KeyBinder {
    }
 }
 
-ModuleSystem.registerModule("keys", "Key binder: key.js", KeyBinder.bindKeys, [ "common", "spinner", "tree", "commands", "editor" ]);
+ModuleSystem.registerModule("keys", "Key binder: key.js", null, KeyBinder.bindKeys, [ "common", "spinner", "tree", "commands", "editor" ]);

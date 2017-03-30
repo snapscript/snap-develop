@@ -191,4 +191,4 @@ module FileTree {
    }
 }
 
-ModuleSystem.registerModule("tree", "Tree module: tree.js", null, [ "common" ]);
+ModuleSystem.registerModule("tree", "Tree module: tree.js", null, null, [ "common" ]);

@@ -724,4 +724,4 @@ var FileEditor;
     }
     FileEditor.updateEditorFont = updateEditorFont;
 })(FileEditor || (FileEditor = {}));
-ModuleSystem.registerModule("editor", "Editor module: editor.js", FileEditor.createEditor, ["common", "spinner", "tree"]);
+ModuleSystem.registerModule("editor", "Editor module: editor.js", null, FileEditor.createEditor, ["common", "spinner", "tree"]);

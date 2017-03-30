@@ -166,4 +166,4 @@ function createTermination(failure) {
         }
     }
 }
-ModuleSystem.registerModule("socket", "Socket subscription module: socket.js", startSocket, []);
+ModuleSystem.registerModule("socket", "Socket subscription module: socket.js", null, startSocket, []);

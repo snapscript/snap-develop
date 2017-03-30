@@ -84,4 +84,4 @@ var Alerts;
     }
     Alerts.createPromptAlert = createPromptAlert;
 })(Alerts || (Alerts = {}));
-ModuleSystem.registerModule("alert", "Alert module: alert.js", Alerts.registerAlerts, ["common", "socket"]);
+ModuleSystem.registerModule("alert", "Alert module: alert.js", null, Alerts.registerAlerts, ["common", "socket"]);

@@ -93,4 +93,4 @@ function updateProblems(socket, type, text) {
     showProblems();
     highlightProblems(); // highlight the problems
 }
-ModuleSystem.registerModule("problem", "Problem module: problem.js", registerProblems, ["common", "socket"]);
+ModuleSystem.registerModule("problem", "Problem module: problem.js", null, registerProblems, ["common", "socket"]);

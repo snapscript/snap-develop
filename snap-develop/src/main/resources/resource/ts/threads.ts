@@ -283,4 +283,4 @@ module ThreadManager {
    }
 }
 
-ModuleSystem.registerModule("threads", "Thread module: threads.js", ThreadManager.createThreads, [ "common", "socket", "explorer" ]);
+ModuleSystem.registerModule("threads", "Thread module: threads.js", null, ThreadManager.createThreads, [ "common", "socket", "explorer" ]);

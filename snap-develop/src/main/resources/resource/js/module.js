@@ -1,8 +1,6 @@
 var ModuleSystem;
 (function (ModuleSystem) {
     var modules = {};
-    var starting = [];
-    var started = [];
     /**
      * This is used to register modules such they can start in order
      * or dependency. This allows multiple modules to be registered without
@@ -10,17 +8,21 @@ var ModuleSystem;
      *
      * @param name the name of the module
      * @param description a description of the module
-     * @param method the module initialization method
+     * @param prepare this is a function for preparing the module
+     * @param start the function for starting the module
      * @param dependencies the modules it depends on
      */
-    function registerModule(name, description, method, dependencies) {
-        var start = method;
+    function registerModule(name, description, prepare, start, dependencies) {
         if (start == null) {
-            start = function () { };
+            start = function (module) { };
+        }
+        if (prepare == null) {
+            prepare = function (module) { };
         }
         var module = {
             name: name,
             description: description,
+            prepare: prepare,
             start: start,
             dependencies: dependencies
         };
@@ -35,51 +37,77 @@ var ModuleSystem;
             }
         }
         else {
-            for (var name in modules) {
-                if (modules.hasOwnProperty(name)) {
+            processModules({
+                phase: "PREPARE",
+                processed: {},
+                processing: {},
+                process: function (module) {
+                    if (module.prepare) {
+                        module.prepare();
+                    }
+                }
+            });
+            setTimeout(function () {
+                processModules({
+                    phase: "START",
+                    processed: {},
+                    processing: {},
+                    process: function (module) {
+                        if (module.start) {
+                            module.start();
+                        }
+                    }
+                });
+            }, 300);
+        }
+    }
+    ModuleSystem.loadModules = loadModules;
+    function processModules(context) {
+        for (var name in modules) {
+            if (modules.hasOwnProperty(name)) {
+                if (!context.processed[name]) {
                     var module = modules[name];
                     var description = module.description;
                     var count = module.dependencies;
                     if (count == 0) {
-                        starting[name] = false;
-                        started[name] = true;
-                        console.log("Starting independent module '" + name + "' (" + description + ")");
-                        module.start(); /* start independent module */
+                        context.processing[name] = false;
+                        context.processed[name] = true;
+                        console.log("[" + context.phase + "] independent module '" + name + "' (" + description + ")");
+                        context.process(module); /* process independent module */
                     }
                     else {
-                        starting[name] = false;
-                        started[name] = false;
+                        context.processing[name] = false;
+                        context.processed[name] = false;
                     }
                 }
             }
-            for (var name in modules) {
-                if (modules.hasOwnProperty(name)) {
-                    var module = modules[name];
-                    if (!started[name]) {
-                        loadModule(module);
-                    }
+        }
+        for (var name in modules) {
+            if (modules.hasOwnProperty(name)) {
+                var module = modules[name];
+                if (!context.processed[name]) {
+                    processModule(context, module);
                 }
             }
         }
     }
-    ModuleSystem.loadModules = loadModules;
-    function loadModule(module) {
+    function processModule(context, module) {
         var dependencies = module.dependencies;
         var description = module.description;
         var name = module.name;
-        if (started[name]) {
-            return; /* already started */
+        if (context.processed[name]) {
+            return; /* already processed */
         }
-        if (!starting[name]) {
-            starting[name] = true;
+        if (!context.processing[name]) {
+            context.processing[name] = true;
             for (var i = 0; i < dependencies.length; i++) {
                 var dependency = dependencies[i];
                 var child = modules[dependency];
-                loadModule(child);
+                processModule(context, child);
             }
-            console.log("Starting module '" + name + "' (" + description + ")");
-            module.start(); /* start once all dependencies are started */
-            started[name] = true;
+            console.log("[" + context.phase + "] module '" + name + "' (" + description + ")");
+            context.process(module); /* process once all dependencies are processed */
+            context.processed[name] = true;
         }
     }
     function checkModules() {

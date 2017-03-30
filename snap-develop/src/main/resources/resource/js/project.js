@@ -9,9 +9,20 @@ var Project;
         else {
             createExploreLayout();
         }
-        startResizePoller(); // dynamically resize the editor
+        $(window).trigger('resize'); // force a redraw after w2ui
     }
     Project.createMainLayout = createMainLayout;
+    function startMainLayout() {
+        var perspective = determineProjectLayout();
+        if (perspective == "debug") {
+            startDebugLayout(); // show debug layout
+        }
+        else {
+            startExploreLayout();
+        }
+        startResizePoller(); // dynamically resize the editor
+    }
+    Project.startMainLayout = startMainLayout;
     function determineProjectLayout() {
         var debugToggle = ";debug";
         var locationPath = window.document.location.pathname;
@@ -499,13 +510,13 @@ var Project;
         w2ui['exploreEditorTabLayout'].refresh();
         w2ui['exploreBottomTabLayout'].refresh();
         w2ui['exploreLeftTabLayout'].refresh();
-        setTimeout(function () {
-            applyProjectTheme();
-            activateTab("consoleTab", "exploreBottomTabLayout", false, false, "style='right: 0px;'");
-            activateTab("browseTab", "exploreLeftTabLayout", true, false, "style='right: 0px;'");
-            activateTab("editTab", "exploreEditorTabLayout", false, true, "style='right: 0px;'");
-            openDefaultResource();
-        }, 300); // update theme
+    }
+    function startExploreLayout() {
+        applyProjectTheme();
+        activateTab("consoleTab", "exploreBottomTabLayout", false, false, "style='right: 0px;'");
+        activateTab("browseTab", "exploreLeftTabLayout", true, false, "style='right: 0px;'");
+        activateTab("editTab", "exploreEditorTabLayout", false, true, "style='right: 0px;'");
+        openDefaultResource();
     }
     function createDebugLayout() {
         // $('#topLayer').spin({ lines: 10, length: 30, width: 20, radius: 40 });
@@ -706,14 +717,14 @@ var Project;
         w2ui['debugLeftTabLayout'].refresh();
         w2ui['debugRightTabLayout'].refresh();
         w2ui['debugBottomTabLayout'].refresh();
-        setTimeout(function () {
-            applyProjectTheme();
-            activateTab("debugTab", "debugLeftTabLayout", true, false, "");
-            activateTab("variablesTab", "debugRightTabLayout", false, false, "");
-            activateTab("consoleTab", "debugBottomTabLayout", false, false, "");
-            activateTab("editTab", "debugEditorTabLayout", false, true, "");
-            openDefaultResource();
-        }, 300); // update theme
+    }
+    function startDebugLayout() {
+        applyProjectTheme();
+        activateTab("debugTab", "debugLeftTabLayout", true, false, "");
+        activateTab("variablesTab", "debugRightTabLayout", false, false, "");
+        activateTab("consoleTab", "debugBottomTabLayout", false, false, "");
+        activateTab("editTab", "debugEditorTabLayout", false, true, "");
+        openDefaultResource();
     }
     function createBottomStatusContent() {
         return "<div id='status'>" +
@@ -1204,4 +1215,4 @@ var Project;
         }
     }
 })(Project || (Project = {}));
-ModuleSystem.registerModule("project", "Project module: project.js", Project.createMainLayout, ["common", "socket", "console", "problem", "editor", "spinner", "tree", "threads"]);
+ModuleSystem.registerModule("project", "Project module: project.js", Project.createMainLayout, Project.startMainLayout, ["common", "socket", "console", "problem", "editor", "spinner", "tree", "threads"]);

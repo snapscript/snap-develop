@@ -128,4 +128,4 @@ module FileExplorer {
       }
    }
 }
-ModuleSystem.registerModule("explorer", "Explorer module: explorer.js", FileExplorer.showTree, [ "common", "spinner", "tree", "commands" ]);
+ModuleSystem.registerModule("explorer", "Explorer module: explorer.js", null, FileExplorer.showTree, [ "common", "spinner", "tree", "commands" ]);

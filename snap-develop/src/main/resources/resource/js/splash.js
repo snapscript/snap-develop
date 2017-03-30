@@ -13,4 +13,4 @@ var Splash;
     Splash.showSplash = showSplash;
     ;
 })(Splash || (Splash = {}));
-ModuleSystem.registerModule("splash", "Splash screen module: splash.js", Splash.showSplash, []);
+ModuleSystem.registerModule("splash", "Splash screen module: splash.js", null, Splash.showSplash, []);

@@ -54,4 +54,4 @@ module LoadSpinner {
    }
 }
 
-ModuleSystem.registerModule("spinner", "Spinner module: spinner.js", LoadSpinner.create, []);
+ModuleSystem.registerModule("spinner", "Spinner module: spinner.js", null, LoadSpinner.create, []);

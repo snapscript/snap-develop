@@ -126,4 +126,4 @@ function currentTime() {
    return date.getTime();
 }
 
-ModuleSystem.registerModule("common", "Common module: common.js", null, []);
+ModuleSystem.registerModule("common", "Common module: common.js", null, null, []);

@@ -49,4 +49,4 @@ module StatusPanel {
    }
 }
 
-ModuleSystem.registerModule("status", "Status panel module: status.js", null, []);
+ModuleSystem.registerModule("status", "Status panel module: status.js", null, null, []);

@@ -58,4 +58,4 @@ var History;
         }
     }
 })(History || (History = {}));
-ModuleSystem.registerModule("history", "History module: history.js", History.trackHistory, ["common", "editor"]);
+ModuleSystem.registerModule("history", "History module: history.js", null, History.trackHistory, ["common", "editor"]);

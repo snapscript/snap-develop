@@ -617,4 +617,4 @@ module DialogBuilder {
    }
 }
 
-ModuleSystem.registerModule("dialog", "Dialog module: dialog.js", null, [ "common", "tree" ]);
+ModuleSystem.registerModule("dialog", "Dialog module: dialog.js", null, null, [ "common", "tree" ]);

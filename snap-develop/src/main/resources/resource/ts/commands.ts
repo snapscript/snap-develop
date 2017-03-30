@@ -543,4 +543,4 @@ module Command {
    }
 }
 
-ModuleSystem.registerModule("commands", "Commands module: commands.js", null, [ "common", "editor", "tree", "threads" ]);
+ModuleSystem.registerModule("commands", "Commands module: commands.js", null, null, [ "common", "editor", "tree", "threads" ]);
