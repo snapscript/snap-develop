@@ -44,6 +44,15 @@ var KeyBinder;
         createKeyBinding("ctrl f", true, function () {
             FileEditor.findTextInEditor();
         });
+        //      createKeyBinding("ctrl c", true, function() {
+        //         console.log("COPY BUFFER");
+        //      });
+        //      createKeyBinding("ctrl v", true, function() {
+        //         console.log("PASTE BUFFER");
+        //      });
+        //      createKeyBinding("ctrl x", true, function() {
+        //         console.log("CUT BUFFER");
+        //      });
         createKeyDownBinding("ctrl", false, function () {
             controlPressed = true;
         });

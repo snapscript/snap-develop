@@ -12,3 +12,18 @@ while(x++<10){
    }
    println(x);
 }
+
+// function foo(x: Date|String) {
+
+// }
+
+// function foo(x: String): String? {
+//    return x;
+// }
+
+// class Foo {
+
+//    const x: Date?;
+//    const y: Format;
+   
+// }

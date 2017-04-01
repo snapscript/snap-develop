@@ -11,16 +11,33 @@ public class CommandLine {
 
    private final FileStore store;
    private final File directory;
+   private final File classpath;
    private final String script;
    private final String evaluation;
    private final Model model;
    
-   public CommandLine(Model model, String path, String script, String evaluation) {
-      this.directory = new File(path);
+   public CommandLine(Model model, File directory, File classpath, String script, String evaluation) {
       this.store = new FileStore(directory);
-      this.script = script;
       this.evaluation = evaluation;
+      this.classpath = classpath;
+      this.directory = directory;
+      this.script = script;
       this.model = model;
+   }
+   
+   public void validate() {
+      if(!directory.exists()) {
+         throw new IllegalArgumentException("Could not find work directory " + directory);
+      }
+      if(!classpath.exists()) {
+         throw new IllegalArgumentException("Could not find classpath directory " + classpath);
+      }
+      if(!directory.isDirectory()) {
+         throw new IllegalArgumentException("Work directory " + directory + " is not a directory");
+      }
+      if(script != null) {
+         store.getInputStream(script);
+      }
    }
    
    public Model getModel() {
@@ -29,6 +46,10 @@ public class CommandLine {
    
    public Store getStore() {
       return store;
+   }
+   
+   public File getClasspath() {
+      return classpath;
    }
 
    public File getDirectory() {

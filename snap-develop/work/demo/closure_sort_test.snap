@@ -9,3 +9,7 @@ set.add(2);
 for(var entry in set){
    println(entry);
 }
+
+// var m = {:};
+// m[8]=11;
+// println(m);
