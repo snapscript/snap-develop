@@ -45,7 +45,9 @@ public class ProjectProblemFinder {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.debug("Took " + duration + " ms to compile project " + name);
+         if(logger.isTrace()) {
+            logger.trace("Took " + duration + " ms to compile project " + name);
+         }
       }
    }
    

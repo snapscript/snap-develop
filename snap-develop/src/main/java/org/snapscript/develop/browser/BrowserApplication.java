@@ -8,14 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
-import org.snapscript.develop.resource.loader.ClassResourceLoader;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 public class BrowserApplication extends Application {
    
@@ -48,7 +42,7 @@ public class BrowserApplication extends Application {
          context.getLogger().info("Could not load image", e);
       }
       browser = new Browser(context);
-      scene = new Scene(browser, 800, 800, Color.web("#666970"));
+      scene = new Scene(browser, 1200, 800, Color.web("#666970"));
       stage.setScene(scene);
       stage.show();
       browser.show(context.getTarget());
