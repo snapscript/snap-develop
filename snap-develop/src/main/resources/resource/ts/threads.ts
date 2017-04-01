@@ -6,7 +6,7 @@ module ThreadManager {
    
    export function createThreads() {
       createRoute("BEGIN", startThreads, clearThreads);
-      createRoute("SCOPE", updateThreads, clearVariables);
+      createRoute("SCOPE", updateThreads, VariableManager.clearVariables);
       createRoute("TERMINATE", deleteThreads);
       createRoute("EXIT", deleteThreads);
    }
@@ -16,7 +16,7 @@ module ThreadManager {
       
       suspendedThreads = {};
       clearFocusThread();
-      clearVariables();
+      VariableManager.clearVariables();
       Profiler.clearProfiler();
       clearThreads();
       
@@ -35,7 +35,7 @@ module ThreadManager {
       suspendedThreads = {};
       clearFocusThread();
       FileEditor.clearEditorHighlights(); // this should be done in editor.js, i.e createRoute("EXIT" ... )
-      clearVariables();
+      VariableManager.clearVariables();
       clearThreads();
    }
    
@@ -107,7 +107,7 @@ module ThreadManager {
    function updateThreadPanels(threadScope){
       suspendedThreads[threadScope.thread] = threadScope; // N.B update suspended threads before rendering
       showThreads();
-      showVariables();
+      VariableManager.showVariables();
    }
    
    function updateFocusedThread(threadScope) {
@@ -192,7 +192,7 @@ module ThreadManager {
    }
    
    function clearFocusThread() {
-      clearVariables(); // clear the browse tree
+      VariableManager.clearVariables(); // clear the browse tree
       threadEditorFocus = {
          thread: null, 
          process: null,

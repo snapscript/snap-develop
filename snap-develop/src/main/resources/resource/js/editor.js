@@ -424,7 +424,7 @@ var FileEditor;
         editorMarkers = {};
         editorText = text;
         window.location.hash = editorResource.projectPath; // update # anchor
-        highlightProblems(); // higlight problems on this resource
+        ProblemManager.highlightProblems(); // higlight problems on this resource
         if (resource != null) {
             var breakpoints = editorBreakpoints[editorResource.filePath];
             if (breakpoints != null) {

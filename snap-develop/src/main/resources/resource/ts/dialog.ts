@@ -400,7 +400,7 @@ module DialogBuilder {
                            var text = $("#dialogPath").html();
                            var expression = clearHtml(text);
                            
-                           toggleExpandEvaluation(record.path, expression);
+                           VariableManager.toggleExpandEvaluation(record.path, expression);
                         }
                         grid.selectNone();
                         grid.refresh();
@@ -408,14 +408,14 @@ module DialogBuilder {
                   }               
                }); 
                setTimeout(function() {
-                  showVariables();
+                  VariableManager.showVariables();
                }, 200);
             }, 200);
          },
          onClose : function(event) {
             w2ui['evaluation'].destroy(); // destroy grid so you can recreate it
             //$("#dialog").remove(); // delete the element
-            clearEvaluation();
+            VariableManager.clearEvaluation();
             Command.browseScriptEvaluation([], "", true); // clear the variables
          },
          onMax : function(event) {
@@ -536,9 +536,9 @@ module DialogBuilder {
          '         <td><input type="checkbox" name="regex" id="inputRegularExpression"><label></label>&nbsp;&nbsp;Regular expression</td>\n'+
          '      </tr>\n'+
          '      <tr><td height="5px"></td></tr>\n'+
-         '      <tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputWholeWord\')">\n'+
+         '      <!--tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputWholeWord\')">\n'+
          '         <td><input type="checkbox" name="wholeWord" id="inputWholeWord"><label></label>&nbsp;&nbsp;Whole word</td>\n'+
-         '      </tr>\n'+                 
+         '      </tr-->\n'+                 
          '   </table>\n'+  
          '</div>';
    }
@@ -563,9 +563,9 @@ module DialogBuilder {
          '         <td><input type="checkbox" name="regex" id="inputRegularExpression"><label></label>&nbsp;&nbsp;Regular expression</td>\n'+
          '      </tr>\n'+
          '      <tr><td height="5px"></td></tr>\n'+
-         '      <tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputWholeWord\')">\n'+
+         '      <!--tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputWholeWord\')">\n'+
          '         <td><input type="checkbox" name="wholeWord" id="inputWholeWord"><label></label>&nbsp;&nbsp;Whole word</td>\n'+
-         '      </tr>\n'+                 
+         '      </tr-->\n'+                 
          '   </table>\n'+  
          '</div>';
    }

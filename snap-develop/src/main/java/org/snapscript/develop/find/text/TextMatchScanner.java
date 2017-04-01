@@ -72,7 +72,9 @@ public class TextMatchScanner {
          for(int i = 0; i < count; i++){
             finished.take(); // wait for them all to finish
          }
-         history.saveMatches(query, success);
+         if(!query.isRegularExpression()) {
+            history.saveMatches(query, success);
+         }
          List<TextMatch> sorted = new ArrayList<TextMatch>(matches);
          Collections.sort(sorted);
          return sorted;
@@ -115,7 +117,9 @@ public class TextMatchScanner {
          for(int i = 0; i < count; i++){
             finished.take(); // wait for them all to finish
          }
-         history.saveMatches(query, success);
+         if(!query.isRegularExpression()) {
+            history.saveMatches(query, success);
+         }
          List<TextMatch> sorted = new ArrayList<TextMatch>(matches);
          Collections.sort(sorted);
          return sorted;

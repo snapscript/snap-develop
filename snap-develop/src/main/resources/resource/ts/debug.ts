@@ -113,7 +113,7 @@ module DebugManager {
       if(statusFocus != process) {
          Profiler.clearProfiler(); // profiler does not apply
          ThreadManager.clearThreads(); // race condition here
-         clearVariables();
+         VariableManager.clearVariables();
       }
       ProcessConsole.updateConsoleFocus(process); // clear console if needed
       statusFocus = process;
@@ -122,7 +122,7 @@ module DebugManager {
    function clearStatusFocus(){ // clear up stuff
       statusFocus = null;
       ThreadManager.clearThreads(); // race condition here
-      clearVariables();
+      VariableManager.clearVariables();
    //   clearProfiler();
    //   clearConsole();
       $("#toolbarDebug").css('opacity', '0.4');

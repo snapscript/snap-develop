@@ -431,7 +431,7 @@ var Project;
                         right: '<div id="navigateToTreeArrow" onclick="FileEditor.showEditorFileInTree()"></div>',
                         tabs: [{
                                 id: 'browseTab',
-                                caption: '<div class="browseTab">Project&nbsp;</div>',
+                                caption: '<div class="browseTab">Project&nbsp;&nbsp;&nbsp;</div>',
                                 content: "<div style='overflow: scroll; font-family: monospace;' id='browse'><div id='browseParent'><div id='explorer'></div></div></div>",
                                 closable: false
                             }],
@@ -831,9 +831,9 @@ var Project;
                         "        </select>\n" +
                         "   </td>" +
                         "   <td>&nbsp;&nbsp;</td>" +
-                        "   <td><div id='toolbarResize' title='Full Screen' onclick='Project.toggleFullScreen()'></div></td>" +
-                        "   <td><div id='toolbarSwitchLayout' title='Switch Layout' onclick='Command.switchLayout()'></div></td>" +
-                        "   <td><div id='toolbarSwitchProject' title='Switch Project' onclick='Command.switchProject()'></div></td>" +
+                        "   <td><div id='toolbarResize' title='Full Screen&nbsp;&nbsp;&nbsp;Ctrl+M' onclick='Project.toggleFullScreen()'></div></td>" +
+                        "   <td><div id='toolbarSwitchLayout' title='Switch Layout&nbsp;&nbsp;&nbsp;Ctrl+L' onclick='Command.switchLayout()'></div></td>" +
+                        "   <td><div id='toolbarSwitchProject' title='Switch Project&nbsp;&nbsp;&nbsp;Ctrl+P' onclick='Command.switchProject()'></div></td>" +
                         "   <td>&nbsp;&nbsp;</td>" +
                         "</tr>" +
                         "</table>" +
@@ -936,7 +936,7 @@ var Project;
                     var sel = grid.getSelection();
                     if (sel.length == 1) {
                         var record = grid.get(sel[0]);
-                        toggleExpandVariable(record.path);
+                        VariableManager.toggleExpandVariable(record.path);
                     }
                     grid.selectNone();
                     grid.refresh();
@@ -1150,7 +1150,7 @@ var Project;
             w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='problems'></div>");
             w2ui[layoutName].refresh();
             $('#problems').w2render('problems');
-            showProblems();
+            ProblemManager.showProblems();
         }
         else if (tabName == 'breakpointsTab') {
             w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='breakpoints'></div>");
@@ -1168,13 +1168,13 @@ var Project;
             w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='variables'></div>");
             w2ui[layoutName].refresh();
             $('#variables').w2render('variables');
-            showVariables();
+            VariableManager.showVariables();
         }
         else if (tabName == 'profilerTab') {
             w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='profiler'></div>");
             w2ui[layoutName].refresh();
             $('#profiler').w2render('profiler');
-            showVariables();
+            VariableManager.showVariables();
         }
         else if (tabName == 'browseTab') {
             w2ui[layoutName].content('main', "<div style='overflow: hidden; font-family: monospace;' id='browse'><div id='browseParent' " + browseStyle + "></div></div>");
