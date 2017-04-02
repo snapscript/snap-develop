@@ -8,7 +8,7 @@ module FileExplorer {
          window.setTimeout(reloadTree, 500);
          treeVisible = true;
       }
-      createRoute("RELOAD_TREE", reloadTree);
+      EventBus.createRoute("RELOAD_TREE", reloadTree);
    
    }
    

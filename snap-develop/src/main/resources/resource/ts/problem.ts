@@ -4,7 +4,7 @@ module ProblemManager {
    var currentProblems = {};
    
    export function registerProblems() {
-   	createRoute('PROBLEM', updateProblems);
+   	EventBus.createRoute('PROBLEM', updateProblems);
       setInterval(refreshProblems, 1000); // refresh the problems systems every 1 second
    }
    

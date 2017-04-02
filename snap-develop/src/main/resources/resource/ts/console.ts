@@ -6,11 +6,11 @@ module ProcessConsole {
    var consoleProcess = null;
    
    export function registerConsole() {
-      createRoute("BEGIN", createConsole, null); 
-   	createRoute('PRINT_ERROR', updateConsole, null);
-   	createRoute('PRINT_OUTPUT', updateConsole, null);
-      createRoute('TERMINATE', terminateConsole, null); // clear focus
-      createRoute('EXIT', terminateConsole, null);
+      EventBus.createRoute("BEGIN", createConsole, null); 
+   	EventBus.createRoute('PRINT_ERROR', updateConsole, null);
+   	EventBus.createRoute('PRINT_OUTPUT', updateConsole, null);
+      EventBus.createRoute('TERMINATE', terminateConsole, null); // clear focus
+      EventBus.createRoute('EXIT', terminateConsole, null);
    	setInterval(showConsole, 200); // prevents reflow overload when console is busy
    }
    

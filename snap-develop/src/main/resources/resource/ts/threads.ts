@@ -5,10 +5,10 @@ module ThreadManager {
    var threadEditorFocus = {};
    
    export function createThreads() {
-      createRoute("BEGIN", startThreads, clearThreads);
-      createRoute("SCOPE", updateThreads, VariableManager.clearVariables);
-      createRoute("TERMINATE", deleteThreads);
-      createRoute("EXIT", deleteThreads);
+      EventBus.createRoute("BEGIN", startThreads, clearThreads);
+      EventBus.createRoute("SCOPE", updateThreads, VariableManager.clearVariables);
+      EventBus.createRoute("TERMINATE", deleteThreads);
+      EventBus.createRoute("EXIT", deleteThreads);
    }
    
    function startThreads(socket, type, text) {
@@ -34,7 +34,7 @@ module ThreadManager {
    export function terminateThreads() {
       suspendedThreads = {};
       clearFocusThread();
-      FileEditor.clearEditorHighlights(); // this should be done in editor.js, i.e createRoute("EXIT" ... )
+      FileEditor.clearEditorHighlights(); // this should be done in editor.js, i.e EventBus.createRoute("EXIT" ... )
       VariableManager.clearVariables();
       clearThreads();
    }

@@ -11,7 +11,7 @@ module FileEditor {
    
    export function createEditor() {
       window.setTimeout(showEditor, 400);
-      createTermination(clearEditorHighlights); // create callback
+      EventBus.createTermination(clearEditorHighlights); // create callback
    }
    
    export function clearEditorHighlights() {

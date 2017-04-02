@@ -2,7 +2,7 @@
 module Alerts {
    
    export function registerAlerts() {
-      createRoute('ALERT', createAlert);
+      EventBus.createRoute('ALERT', createAlert);
    }
    
    function createAlert(socket, type, text) {

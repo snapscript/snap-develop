@@ -1,7 +1,7 @@
 var Alerts;
 (function (Alerts) {
     function registerAlerts() {
-        createRoute('ALERT', createAlert);
+        EventBus.createRoute('ALERT', createAlert);
     }
     Alerts.registerAlerts = registerAlerts;
     function createAlert(socket, type, text) {

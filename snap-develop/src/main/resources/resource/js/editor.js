@@ -9,7 +9,7 @@ var FileEditor;
     var editorFocusToken = null; // token to focus on editor load
     function createEditor() {
         window.setTimeout(showEditor, 400);
-        createTermination(clearEditorHighlights); // create callback
+        EventBus.createTermination(clearEditorHighlights); // create callback
     }
     FileEditor.createEditor = createEditor;
     function clearEditorHighlights() {

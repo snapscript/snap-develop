@@ -5,9 +5,9 @@ module DebugManager {
    var statusFocus = null;
    
    export function createStatus() {
-      createRoute("STATUS", createStatusProcess, clearStatus); // status of processes
-      createRoute("TERMINATE", terminateStatusProcess); // clear focus
-      createRoute("EXIT", terminateStatusProcess);
+      EventBus.createRoute("STATUS", createStatusProcess, clearStatus); // status of processes
+      EventBus.createRoute("TERMINATE", terminateStatusProcess); // clear focus
+      EventBus.createRoute("EXIT", terminateStatusProcess);
       setInterval(refreshStatusProcesses, 1000); // refresh the status systems every 1 second
    }
    

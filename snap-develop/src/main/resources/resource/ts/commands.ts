@@ -231,33 +231,33 @@ module Command {
    
    export function exploreDirectory(resourcePath) {
       if(FileTree.isResourceFolder(resourcePath.filePath)) {
-         var message = JSON.stringify({
+         var message = {
             project : document.title,
             resource : resourcePath.filePath,
-         });
-         socket.send("EXPLORE:" + message);
+         };
+         EventBus.sendEvent("EXPLORE", message);
       }
    }
    
    export function folderExpand(resourcePath) {
-      var message = JSON.stringify({
+      var message = {
          project: document.title,
          folder : resourcePath
-      });
-      socket.send("FOLDER_EXPAND:" + message);
+      };
+      EventBus.sendEvent("FOLDER_EXPAND", message);
    }
    
    export function folderCollapse(resourcePath) {
-      var message = JSON.stringify({
+      var message = {
          project: document.title,
          folder : resourcePath
-      });
-      socket.send("FOLDER_COLLAPSE:" + message);
+      };
+      EventBus.sendEvent("FOLDER_COLLAPSE", message);
    }
    
    export function pingProcess() {
-      if(isSocketOpen()) {
-         socket.send("PING:" + document.title);
+      if(EventBus.isSocketOpen()) {
+         EventBus.sendEvent("PING", document.title);
       }
    }
    
@@ -265,12 +265,12 @@ module Command {
       var originalFile = resourcePath.filePath;
       
       DialogBuilder.renameFileTreeDialog(resourcePath, true, function(resourceDetails) {
-         var message = JSON.stringify({
+         var message = {
             project : document.title,
             from : originalFile,
             to: resourceDetails.filePath
-         });
-         socket.send("RENAME:" + message);
+         };
+         EventBus.sendEvent("RENAME", message);
          Project.renameEditorTab(resourcePath.resourcePath, resourceDetails.resourcePath); // rename tabs if open
       });
    }
@@ -280,27 +280,27 @@ module Command {
       var directoryPath = FileTree.createResourcePath(originalPath + ".#"); // put a # in to trick in to thinking its a file
       
       DialogBuilder.renameDirectoryTreeDialog(directoryPath, true, function(resourceDetails) {
-         var message = JSON.stringify({
+         var message = {
             project : document.title,
             from : originalPath,
             to: resourceDetails.filePath
-         });
-         socket.send("RENAME:" + message);
+         };
+         EventBus.sendEvent("RENAME", message);
       });
    }
    
    export function newFile(resourcePath) {
       DialogBuilder.newFileTreeDialog(resourcePath, true, function(resourceDetails) {
          if(!FileTree.isResourceFolder(resourceDetails.filePath)) {
-            var message = JSON.stringify({
+            var message = {
                project : document.title,
                resource : resourceDetails.filePath,
                source : "",
                directory: false,
                create: true
-            });
+            };
             ProcessConsole.clearConsole();
-            socket.send("SAVE:" + message);
+            EventBus.sendEvent("SAVE", message);
             FileEditor.updateEditor("", resourceDetails.projectPath);
          }
       });
@@ -309,15 +309,15 @@ module Command {
    export function newDirectory(resourcePath) {
       DialogBuilder.newDirectoryTreeDialog(resourcePath, true, function(resourceDetails) {
          if(FileTree.isResourceFolder(resourceDetails.filePath)) {
-            var message = JSON.stringify({
+            var message = {
                project : document.title,
                resource : resourceDetails.filePath,
                source : "",
                directory: true,
                create: true
-            });
+            };
             ProcessConsole.clearConsole();
-            socket.send("SAVE:" + message);
+            EventBus.sendEvent("SAVE", message);
          }
       });
    }
@@ -351,15 +351,15 @@ module Command {
       var editorPath = editorData.resource;
       
       if(editorPath != null) {
-         var message = JSON.stringify({
+         var message = {
             project : document.title,
             resource : editorPath.filePath,
             source : editorData.source,
             directory: false,
             create: false
-         });
+         };
          ProcessConsole.clearConsole();
-         socket.send("SAVE:" + message);
+         EventBus.sendEvent("SAVE", message);
          
          if(update) { // should the editor be updated?
             FileEditor.updateEditor(editorData.source, editorPath.projectPath);
@@ -379,12 +379,12 @@ module Command {
          
          Alerts.createConfirmAlert("Delete File", message, "Delete", "Cancel", 
                function(){
-                  var message = JSON.stringify({
+                  var message = {
                      project : document.title,
                      resource : resourceDetails.filePath
-                  });
+                  };
                   ProcessConsole.clearConsole();
-                  socket.send("DELETE:" + message);
+                  EventBus.sendEvent("DELETE", message);
                   
                   if(editorData.resource != null && editorData.resource.resourcePath == resourceDetails.resourcePath) { // delete focused file
                      FileEditor.resetEditor();
@@ -397,123 +397,123 @@ module Command {
    
    export function deleteDirectory(resourceDetails) {
       if(resourceDetails != null) {
-         var message = JSON.stringify({
+         var message = {
             project : document.title,
             resource : resourceDetails.filePath
-         });
+         };
          ProcessConsole.clearConsole();
-         socket.send("DELETE:" + message);
+         EventBus.sendEvent("DELETE", message);
       }
    }
    
    export function runScript() {
       saveFileWithAction(function() {
          var editorData = FileEditor.loadEditor();
-         var message = JSON.stringify({
+         var message = {
             breakpoints : editorData.breakpoints,
             project : document.title,
             resource : editorData.resource.filePath,
             source : editorData.source
-         });
-         socket.send("EXECUTE:" + message);
+         };
+         EventBus.sendEvent("EXECUTE", message);
       }, true); // save editor
    }
    
    export function updateScriptBreakpoints() {
       var editorData = FileEditor.loadEditor();
-      var message = JSON.stringify({
+      var message = {
          breakpoints : editorData.breakpoints,
          project : document.title,
-      });
-      socket.send("BREAKPOINTS:" + message);
+      };
+      EventBus.sendEvent("BREAKPOINTS", message);
    }
    
    export function stepOverScript() {
       var threadScope = ThreadManager.focusedThread();
       if(threadScope != null) {
-         var message = JSON.stringify({
+         var message = {
             thread: threadScope.thread,
             type: "STEP_OVER"
-         });
+         };
          FileEditor.clearEditorHighlights();
-         socket.send("STEP:" + message);
+         EventBus.sendEvent("STEP", message);
       }
    }
    
    export function stepInScript() {
       var threadScope = ThreadManager.focusedThread();
       if(threadScope != null) {
-         var message = JSON.stringify({
+         var message = {
             thread: threadScope.thread,
             type: "STEP_IN"
-         });
+         };
          FileEditor.clearEditorHighlights();
-         socket.send("STEP:" + message);
+         EventBus.sendEvent("STEP", message);
       }
    }
    
    export function stepOutScript() {
       var threadScope = ThreadManager.focusedThread();
       if(threadScope != null) {
-         var message = JSON.stringify({
+         var message = {
             thread: threadScope.thread,
             type: "STEP_OUT"
-         });
+         };
          FileEditor.clearEditorHighlights(); 
-         socket.send("STEP:" + message);
+         EventBus.sendEvent("STEP", message);
       }
    }
    
    export function resumeScript() {
       var threadScope = ThreadManager.focusedThread();
       if(threadScope != null) {
-         var message = JSON.stringify({
+         var message = {
             thread: threadScope.thread,
             type: "RUN"
-         });
+         };
          FileEditor.clearEditorHighlights(); 
-         socket.send("STEP:" + message);
+         EventBus.sendEvent("STEP", message);
       }
    }
    
    export function stopScript() {
-      socket.send("STOP");
+      EventBus.sendEvent("STOP");
    }
    
    export function browseScriptVariables(variables) {
       var threadScope = ThreadManager.focusedThread();
       if(threadScope != null) {
-         var message = JSON.stringify({
+         var message = {
             thread: threadScope.thread,
             expand: variables
-         });
-         socket.send("BROWSE:" + message);
+         };
+         EventBus.sendEvent("BROWSE", message);
       }
    }
    
    export function browseScriptEvaluation(variables, expression, refresh) {
       var threadScope = ThreadManager.focusedThread();
       if (threadScope != null) {
-          var message = JSON.stringify({
+          var message = {
               thread: threadScope.thread,
               expression: expression,
               expand: variables,
               refresh: refresh
-          });
-          socket.send("EVALUATE:" + message);
+          };
+          EventBus.sendEvent("EVALUATE", message);
       }
    }
    
    export function attachProcess(process) {
       var statusFocus = DebugManager.currentStatusFocus(); // what is the current focus
       var editorData = FileEditor.loadEditor();
-      var message = JSON.stringify({
+      var message = {
          process: process,
          breakpoints : editorData.breakpoints,
          project : document.title,
          focus: statusFocus != process // toggle the focus
-      });
-      socket.send("ATTACH:" + message); // attach to process
+      };
+      EventBus.sendEvent("ATTACH", message); // attach to process
    }
    
    export function switchLayout() {
@@ -531,9 +531,8 @@ module Command {
    }
    
    export function updateDisplay(displayInfo) {
-      var message = JSON.stringify(displayInfo);
-      if(socket) {
-         socket.send("DISPLAY_UPDATE:" + message); // update and save display
+      if(EventBus.isSocketOpen()) {
+         EventBus.sendEvent("DISPLAY_UPDATE", displayInfo); // update and save display
       }
    }
    

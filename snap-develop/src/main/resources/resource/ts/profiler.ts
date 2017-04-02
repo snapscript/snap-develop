@@ -2,7 +2,7 @@
 module Profiler {
    
    export function startProfiler() {
-      createRoute("PROFILE", updateProfiler, clearProfiler);
+      EventBus.createRoute("PROFILE", updateProfiler, clearProfiler);
    }
    
    function updateProfiler(socket, type, text) {

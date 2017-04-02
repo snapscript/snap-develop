@@ -1,7 +1,7 @@
 var Profiler;
 (function (Profiler) {
     function startProfiler() {
-        createRoute("PROFILE", updateProfiler, clearProfiler);
+        EventBus.createRoute("PROFILE", updateProfiler, clearProfiler);
     }
     Profiler.startProfiler = startProfiler;
     function updateProfiler(socket, type, text) {
