@@ -28,7 +28,7 @@ var Command;
                 }
                 onComplete(typeRows);
             });
-        }, null, "Search Types");
+        }, null, "Find Types");
     }
     Command.searchTypes = searchTypes;
     function findTypesMatching(text, onComplete) {
@@ -126,7 +126,7 @@ var Command;
                 }
                 return onComplete(fileRows);
             });
-        }, filePatterns, "Search Files");
+        }, filePatterns, enableReplace ? "Replace Text" : "Find Text");
     }
     function findFilesWithText(text, fileTypes, searchCriteria, onComplete) {
         if (text && text.length > 1) {

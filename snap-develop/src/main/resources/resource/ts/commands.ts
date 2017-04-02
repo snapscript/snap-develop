@@ -136,7 +136,7 @@ module Command {
             }
             return onComplete(fileRows);
          });
-     }, filePatterns, "Search Files");
+     }, filePatterns, enableReplace ? "Replace Text" : "Find Text");
    }
    
    function findFilesWithText(text, fileTypes, searchCriteria, onComplete) {
