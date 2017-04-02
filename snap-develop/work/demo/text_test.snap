@@ -1,7 +1,5 @@
 
 import util.regex.Pattern;
 
-var pattern = Pattern.compile(".*\\/\\/\\s*suspend.*");
-var matcher = pattern.matcher("blah // susspend ");
-
-println(matcher.matches());
+exec("ls -al", "c:\\temp").stream().forEach(line -> println(line));
+println("foo");

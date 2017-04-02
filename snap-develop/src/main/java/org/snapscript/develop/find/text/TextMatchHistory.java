@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.snapscript.common.Cache;
 import org.snapscript.common.LeastRecentlyUsedCache;
-import org.snapscript.common.ThreadPool;
+import org.snapscript.common.thread.ThreadPool;
 
 public class TextMatchHistory {
 

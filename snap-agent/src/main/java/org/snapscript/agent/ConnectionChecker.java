@@ -4,7 +4,7 @@ package org.snapscript.agent;
 import org.snapscript.agent.event.PingEvent;
 import org.snapscript.agent.event.PongEvent;
 import org.snapscript.agent.event.ProcessEventChannel;
-import org.snapscript.common.ThreadBuilder;
+import org.snapscript.common.thread.ThreadBuilder;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;

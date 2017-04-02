@@ -6,7 +6,7 @@
     <constructor-arg value="${directory}" />
   </bean>
 
-  <bean id="ThreadPool" class="org.snapscript.common.ThreadPool">
+  <bean id="ThreadPool" class="org.snapscript.common.thread.ThreadPool">
     <constructor-arg value="20" />
   </bean>
 

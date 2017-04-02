@@ -8,7 +8,7 @@ import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.snapscript.agent.log.ProcessLogger;
-import org.snapscript.common.ThreadPool;
+import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.develop.common.PatternEscaper;
 import org.snapscript.develop.configuration.ConfigurationClassLoader;
 import org.snapscript.develop.resource.Resource;

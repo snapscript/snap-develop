@@ -26,7 +26,7 @@ import org.snapscript.agent.event.SyntaxErrorEvent;
 import org.snapscript.agent.event.WriteErrorEvent;
 import org.snapscript.agent.event.WriteOutputEvent;
 import org.snapscript.agent.log.ProcessLogger;
-import org.snapscript.common.ThreadBuilder;
+import org.snapscript.common.thread.ThreadBuilder;
 import org.snapscript.develop.configuration.ProcessConfiguration;
 import org.snapscript.develop.tunnel.ProcessEventService;
 

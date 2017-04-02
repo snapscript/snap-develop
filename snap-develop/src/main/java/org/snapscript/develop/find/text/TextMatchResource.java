@@ -8,7 +8,7 @@ import java.util.List;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.snapscript.agent.log.ProcessLogger;
-import org.snapscript.common.ThreadPool;
+import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.develop.resource.Resource;
 import org.snapscript.develop.resource.project.ProjectBuilder;
 

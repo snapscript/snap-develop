@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.simpleframework.http.Path;
 import org.snapscript.agent.log.ProcessLogger;
-import org.snapscript.common.ThreadPool;
+import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.develop.common.FileAction;
 import org.snapscript.develop.common.FileProcessor;
 import org.snapscript.develop.common.FileReader;

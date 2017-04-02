@@ -1,7 +1,7 @@
 
 package org.snapscript.agent.event;
 
-import org.snapscript.common.ThreadBuilder;
+import org.snapscript.common.thread.ThreadBuilder;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;

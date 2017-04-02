@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.snapscript.agent.event.ProcessEventChannel;
 import org.snapscript.agent.event.ProfileEvent;
-import org.snapscript.common.ThreadBuilder;
+import org.snapscript.common.thread.ThreadBuilder;
 
 public class ProfileResultUpdater implements Runnable {
 

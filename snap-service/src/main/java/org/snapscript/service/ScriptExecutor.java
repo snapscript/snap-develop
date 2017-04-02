@@ -5,7 +5,7 @@ import static org.snapscript.core.Reserved.DEFAULT_PACKAGE;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 
-import org.snapscript.common.ThreadPool;
+import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.compile.Compiler;
 import org.snapscript.compile.Executable;
 import org.snapscript.compile.ResourceCompiler;

@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.snapscript.agent.event.ExecuteData;
 import org.snapscript.agent.event.ProcessEventChannel;
-import org.snapscript.common.ThreadBuilder;
+import org.snapscript.common.thread.ThreadBuilder;
 import org.snapscript.core.Model;
 
 public class ProcessResourceExecutor {

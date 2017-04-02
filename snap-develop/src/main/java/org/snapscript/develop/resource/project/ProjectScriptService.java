@@ -10,7 +10,7 @@ import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.http.socket.Session;
 import org.simpleframework.http.socket.service.Service;
 import org.snapscript.agent.log.ProcessLogger;
-import org.snapscript.common.ThreadPool;
+import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.develop.BackupManager;
 import org.snapscript.develop.ConnectListener;
 import org.snapscript.develop.ProcessManager;

@@ -23,7 +23,7 @@ import org.snapscript.agent.event.ProcessEventTimer;
 import org.snapscript.agent.event.ProcessEventType;
 import org.snapscript.agent.log.ConsoleLog;
 import org.snapscript.agent.log.ProcessLogger;
-import org.snapscript.common.ThreadPool;
+import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.develop.tunnel.MessageEnvelopeCollector;
 import org.snapscript.develop.tunnel.ProcessEventService;
 

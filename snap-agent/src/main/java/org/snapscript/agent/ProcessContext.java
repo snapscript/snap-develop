@@ -8,7 +8,7 @@ import java.util.concurrent.Executor;
 import org.snapscript.agent.debug.BreakpointMatcher;
 import org.snapscript.agent.debug.SuspendController;
 import org.snapscript.agent.profiler.ProcessProfiler;
-import org.snapscript.common.ThreadPool;
+import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.compile.ResourceCompiler;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.EmptyModel;

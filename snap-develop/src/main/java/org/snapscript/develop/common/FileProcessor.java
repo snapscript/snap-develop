@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.snapscript.common.ThreadPool;
+import org.snapscript.common.thread.ThreadPool;
 
 public class FileProcessor<T> {
 

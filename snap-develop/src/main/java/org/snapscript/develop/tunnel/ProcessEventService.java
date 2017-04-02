@@ -16,7 +16,7 @@ import org.snapscript.agent.event.ProcessEventListener;
 import org.snapscript.agent.event.ProcessEventMarshaller;
 import org.snapscript.agent.event.ProcessEventType;
 import org.snapscript.agent.log.ProcessLogger;
-import org.snapscript.common.ThreadPool;
+import org.snapscript.common.thread.ThreadPool;
 
 public class ProcessEventService implements MessageEnvelopeProcessor, ProcessEventChannel {
 
