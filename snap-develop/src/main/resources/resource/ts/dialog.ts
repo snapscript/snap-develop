@@ -65,9 +65,11 @@ module DialogBuilder {
          },
          onMax : function(event) {
             console.log('max');
+            $(window).trigger('resize');
          },
          onMin : function(event) {
             console.log('min');
+            $(window).trigger('resize');
          },
          onKeydown : function(event) {
             console.log('keydown');
@@ -144,9 +146,11 @@ module DialogBuilder {
          },
          onMax : function(event) {
             console.log('max');
+            $(window).trigger('resize');
          },
          onMin : function(event) {
             console.log('min');
+            $(window).trigger('resize');
          },
          onKeydown : function(event) {
             console.log('keydown');
@@ -210,6 +214,14 @@ module DialogBuilder {
                element.contentEditable = true;
                element.focus();
             }, 200);
+         },
+         onMax : function(event) {
+            console.log('max');
+            $(window).trigger('resize');
+         },
+         onMin : function(event) {
+            console.log('min');
+            $(window).trigger('resize');
          }
       });
       $("#dialogSave").click(function() {
@@ -272,6 +284,14 @@ module DialogBuilder {
                element.contentEditable = true;
                element.focus();
             }, 200);
+         },
+         onMax : function(event) {
+            console.log('max');
+            $(window).trigger('resize');
+         },
+         onMin : function(event) {
+            console.log('min');
+            $(window).trigger('resize');
          }
       });
       $("#dialogSave").click(function() {
@@ -334,6 +354,14 @@ module DialogBuilder {
                element.contentEditable = true;
                element.focus();
             }, 200);
+         },
+         onMax : function(event) {
+            console.log('max');
+            $(window).trigger('resize');
+         },
+         onMin : function(event) {
+            console.log('min');
+            $(window).trigger('resize');
          }
       });
       $("#dialogSave").click(function() {
@@ -422,11 +450,13 @@ module DialogBuilder {
             event.onComplete = function() {
                w2ui['evaluation'].refresh(); // resize
             }
+            $(window).trigger('resize');
          },
          onMin : function(event) {
             event.onComplete = function() {
                w2ui['evaluation'].refresh(); // resize
             }
+            $(window).trigger('resize');
          },
          onKeydown : function(event) {
             console.log('keydown');
