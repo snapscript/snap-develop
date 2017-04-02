@@ -1,5 +1,12 @@
 
+import util.stream.Collectors;
 import util.regex.Pattern;
 
-exec("ls -al", "c:\\temp").stream().forEach(line -> println(line));
+exec("ls -a", "c:\\temp")
+   .stream()
+   .map(entry -> new File("C:\\temp", entry))
+   .collect(Collectors.toList())
+   .stream()
+   .forEach(file -> println(file.getCanonicalPath()));
+
 println("foo");

@@ -6,9 +6,9 @@
 	background-repeat: no-repeat;
     padding: 12px;
 }
-#runScript {
+#runScript:active {
 	background-image: url('${IMAGE_FOLDER}/run.png');
-	background-size: 18px 18px;		
+	background-size: 10px 10px;		
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px;
@@ -22,7 +22,7 @@
 }
 #resumeScript:active {
 	background-image: url('${IMAGE_FOLDER}/resume.png');	
-	background-size: 18px 18px;	
+	background-size: 10px 10px;	
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px;
@@ -36,7 +36,7 @@
 }
 #stepInScript:active {
 	background-image: url('${IMAGE_FOLDER}/step_in.png');	
-	background-size: 18px 18px;
+	background-size: 10px 10px;
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px;
@@ -50,7 +50,7 @@
 }
 #stepOutScript:active {
 	background-image: url('${IMAGE_FOLDER}/step_out.png');
-	background-size: 18px 18px;	
+	background-size: 10px 10px;	
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px;
@@ -64,7 +64,7 @@
 }
 #stepOverScript:active {
 	background-image: url('${IMAGE_FOLDER}/step_over.png');
-	background-size: 18px 18px;	
+	background-size: 10px 10px;	
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px;   
@@ -78,7 +78,7 @@
 }
 #stopScript:active {
 	background-image: url('${IMAGE_FOLDER}/stop.png');	
-	background-size: 18px 18px;	
+	background-size: 10px 10px;	
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px; 
@@ -92,7 +92,7 @@
 }
 #saveFile:active {
 	background-image: url('${IMAGE_FOLDER}/save.png');
-	background-size: 18px 18px;	
+	background-size: 10px 10px;	
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px; 
@@ -106,7 +106,7 @@
 }
 #deleteFile:active {
 	background-image: url('${IMAGE_FOLDER}/trash.png');
-	background-size: 18px 18px;		
+	background-size: 10px 10px;		
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px;
@@ -120,7 +120,7 @@
 }
 #newFile:active {
 	background-image: url('${IMAGE_FOLDER}/new_file.png');
-	background-size: 18px 18px;		
+	background-size: 10px 10px;		
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px;  
@@ -134,7 +134,7 @@
 }
 #searchTypes:active {
 	background-image: url('${IMAGE_FOLDER}/search_glass.png');	
-	background-size: 18px 18px;		
+	background-size: 10px 10px;		
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px; 
@@ -148,7 +148,7 @@
 }
 #evaluateExpression:active {
 	background-image: url('${IMAGE_FOLDER}/evaluate.png');	
-	background-size: 18px 18px;
+	background-size: 10px 10px;
 	background-position: center;
 	background-repeat: no-repeat;
     padding: 12px; 
@@ -208,7 +208,7 @@
 }
 #toolbarResize:active {
 	background-image: url('${IMAGE_FOLDER}/max_screen.png');	
-	background-size: 18px 18px;
+	background-size: 10px 10px;
 	background-position: right center;
 	background-repeat: no-repeat;
     padding: 12px;   
@@ -222,7 +222,7 @@
 }
 #toolbarSwitchProject:active {
 	background-image: url('${IMAGE_FOLDER}/switch_project.png');	
-	background-size: 18px 18px;
+	background-size: 10px 10px;
 	background-position: right center;
 	background-repeat: no-repeat;
     padding: 12px;   
@@ -236,7 +236,7 @@
 }
 #toolbarSwitchLayout:active {
 	background-image: url('${IMAGE_FOLDER}/switch_perspective.png');
-	background-size: 18px 18px;	
+	background-size: 10px 10px;	
 	background-position: right center;
 	background-repeat: no-repeat;
     padding: 12px;   
@@ -252,7 +252,7 @@
 
 #toolbarNavigateBack:active {
 	background-image: url('${IMAGE_FOLDER}/arrow_nav_back.png');
-	background-size: 18px 18px;	
+	background-size: 10px 10px;	
 	background-position: right center;
 	background-repeat: no-repeat;
     padding: 12px;   
@@ -268,7 +268,7 @@
 
 #toolbarNavigateForward:active {
 	background-image: url('${IMAGE_FOLDER}/arrow_nav_forward.png');
-	background-size: 18px 18px;	
+	background-size: 10px 10px;	
 	background-position: right center;
 	background-repeat: no-repeat;
     padding: 12px;   
