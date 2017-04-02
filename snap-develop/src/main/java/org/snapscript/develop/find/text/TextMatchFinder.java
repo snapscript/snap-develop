@@ -3,14 +3,14 @@
 package org.snapscript.develop.find.text;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.LineNumberReader;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.develop.common.FileReader;
 import org.snapscript.develop.find.MatchEvaluator;
 import org.snapscript.develop.find.MatchType;
 
@@ -22,86 +22,72 @@ public class TextMatchFinder {
       this.logger = logger;
    }
 
-   public List<TextMatch> findText(TextFile textFile, MatchType type, String expression, boolean caseSensitive) {
+   public List<TextMatch> findText(TextFile textFile, MatchType type, String expression, boolean sensitive) {
       File file = textFile.getFile();
       String project = textFile.getProject();
       String resource = textFile.getPath();
       
       try {
-         List<TextMatch> lines = new ArrayList<TextMatch>();
-         FileReader source = new FileReader(file);
-         LineNumberReader reader = new LineNumberReader(source);
-         MatchEvaluator matcher = MatchEvaluator.of(type, expression, caseSensitive);
+         List<TextMatch> matches = new ArrayList<TextMatch>();
+         Iterator<String> lines = FileReader.readLines(file);
+         MatchEvaluator matcher = MatchEvaluator.of(type, expression, sensitive);
+         int index = 1;
          
-         try {
-            while(reader.ready()) {
-               String line = reader.readLine();
-               
-               if(line == null) {
-                  break;
-               }
-               String text = matcher.match(line);
-               
-               if(text != null) {
-                  int number = reader.getLineNumber();
-                  TextMatch match = new TextMatch(project, resource, text, number);
-                  lines.add(match);
-               }
+         while(lines.hasNext()) {
+            String line = lines.next();
+            String text = matcher.match(line);
+            
+            if(text != null) {
+               TextMatch match = new TextMatch(project, resource, text, index); // lines start at line 1
+               matches.add(match);
             }
-         } finally {
-            reader.close();
+            index++;
          }
-         return lines;
+         return matches;
       }catch(Exception e) {
          logger.debug("Could not read file", e);
       }
       return Collections.emptyList();
    }
    
-   public List<TextMatch> replaceText(TextFile textFile, MatchType type, String expression, String replace, boolean caseSensitive) {
+   public List<TextMatch> replaceText(TextFile textFile, MatchType type, String expression, String replace, boolean sensitive) {
       File file = textFile.getFile();
       String project = textFile.getProject();
       String resource = textFile.getPath();
       
       try {
          StringBuilder builder = new StringBuilder();
-         List<TextMatch> lines = new ArrayList<TextMatch>();
-         FileReader source = new FileReader(file);
-         LineNumberReader reader = new LineNumberReader(source);
-         MatchEvaluator matcher = MatchEvaluator.of(type, expression, caseSensitive);
+         List<TextMatch> matches = new ArrayList<TextMatch>();
+         Iterator<String> lines = FileReader.readLines(file);
+         MatchEvaluator matcher = MatchEvaluator.of(type, expression, sensitive);
+         int index = 1;
          
-         try {
-            while(reader.ready()) {
-               String line = reader.readLine();
-               
-               if(line == null) {
-                  break;
-               }
-               String text = matcher.replace(line, replace);
-               
-               if(text != null) {
-                  int number = reader.getLineNumber();
-                  TextMatch match = new TextMatch(project, resource, text, number);
-                  lines.add(match);
-                  builder.append(text);
-               } else {
-                  builder.append(line);
-               }
-               builder.append("\n");
+         while(lines.hasNext()) {
+            String line = lines.next();
+            String text = matcher.replace(line, replace);
+            
+            if(text != null) {
+               TextMatch match = new TextMatch(project, resource, text, index); // lines start at line 1
+               matches.add(match);
+               builder.append(text);
+            } else {
+               builder.append(line);
             }
-         } finally {
-            reader.close();
+            builder.append("\n");
+            index++;
          }
-         FileWriter writer = new FileWriter(file);
+         FileOutputStream writer = new FileOutputStream(file);
          
          try {
             String newText = builder.toString();
-            writer.write(newText);
+            byte[] newData = newText.getBytes("UTF-8");
+            
+            writer.write(newData);
             writer.flush();
          }finally {
             writer.close();
          }
-         return lines;
+         return matches;
       }catch(Exception e) {
          logger.debug("Could not read file", e);
       }

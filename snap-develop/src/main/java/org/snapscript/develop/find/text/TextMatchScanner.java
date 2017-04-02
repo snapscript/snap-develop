@@ -9,11 +9,11 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.ThreadPool;
-import org.snapscript.develop.find.MatchType;
 
 public class TextMatchScanner {
    
@@ -31,96 +31,37 @@ public class TextMatchScanner {
       this.pool = pool;
    }
    
-   public List<TextMatch> process(final TextMatchQuery query) throws Exception {
-      if(query.isEnableReplace()) {
-         return searchAndReplaceFiles(query);
-      }
-      return searchFiles(query);
-   }
-   
-   private List<TextMatch> searchFiles(final TextMatchQuery query) throws Exception {
-      final boolean caseSensitive = query.isCaseSensitive();
-      final String expression = query.getQuery();
-      final MatchType type = query.getType();
-      final Set<TextFile> files = findFiles(query);
+   public List<TextMatch> process(TextMatchQuery query) throws Exception {
+      Set<TextFile> files = findFiles(query);
+      int count = files.size();
       
-      if(!files.isEmpty()) {
-         final List<TextMatch> matches = new CopyOnWriteArrayList<TextMatch>();
-         final Set<TextFile> success = new CopyOnWriteArraySet<TextFile>();
-         final BlockingQueue<TextFile> finished = new LinkedBlockingQueue<TextFile>();
+      if(count > 0) {
+         CountDownLatch latch = new CountDownLatch(count);
+         List<TextMatch> matches = new CopyOnWriteArrayList<TextMatch>();
+         Set<TextFile> success = new CopyOnWriteArraySet<TextFile>();
+         BlockingQueue<TextMatchResult> results = new LinkedBlockingQueue<TextMatchResult>();
+         TextMatchListener listener = new TextMatchResultCollector(results, latch);
+         List<TextMatch> sorted = new ArrayList<TextMatch>();
          
-         for(final TextFile file : files) {
-            pool.execute(new Runnable() {
-               public void run() {
-                  try {
-                     List<TextMatch> match = finder.findText(file, type, expression, caseSensitive);
-                     
-                     if(!match.isEmpty()) {
-                        matches.addAll(match);
-                        success.add(file);
-                     }
-                     //logger.debug("Searched " + file);
-                     finished.offer(file);
-                  }catch(Exception e) {
-                     logger.debug("Error searching file " + file, e);
-                  }
-               }
-            });
+         for(TextFile file : files) {
+            TextMatchTask task = new TextMatchTask(finder, listener, query, file);
+            pool.execute(task);
          }
-         int count = files.size();
+         latch.await();
          
-         for(int i = 0; i < count; i++){
-            finished.take(); // wait for them all to finish
+         for(TextMatchResult result : results) {
+            List<TextMatch> match = result.getMatches();
+            TextFile file = result.getFile();
+            
+            if(!match.isEmpty()) {
+               matches.addAll(match);
+               success.add(file);
+            }
          }
          if(!query.isRegularExpression()) {
-            history.saveMatches(query, success);
+            history.saveMatches(query, success); // used to reduce the search scope
          }
-         List<TextMatch> sorted = new ArrayList<TextMatch>(matches);
-         Collections.sort(sorted);
-         return sorted;
-      }
-      return Collections.emptyList();
-   }
-   
-   private List<TextMatch> searchAndReplaceFiles(final TextMatchQuery query) throws Exception {
-      final boolean caseSensitive = query.isCaseSensitive();
-      final String expression = query.getQuery();
-      final String replace = query.getReplace();
-      final MatchType type = query.getType();
-      final Set<TextFile> files = findFiles(query);
-      
-      if(!files.isEmpty()) {
-         final List<TextMatch> matches = new CopyOnWriteArrayList<TextMatch>();
-         final Set<TextFile> success = new CopyOnWriteArraySet<TextFile>();
-         final BlockingQueue<TextFile> finished = new LinkedBlockingQueue<TextFile>();
-         
-         for(final TextFile file : files) {
-            pool.execute(new Runnable() {
-               public void run() {
-                  try {
-                     List<TextMatch> match = finder.replaceText(file, type, expression, replace, caseSensitive);
-                     
-                     if(!match.isEmpty()) {
-                        matches.addAll(match);
-                        success.add(file);
-                     }
-                     //logger.debug("Searched " + file);
-                     finished.offer(file);
-                  }catch(Exception e) {
-                     logger.debug("Error searching file " + file, e);
-                  }
-               }
-            });
-         }
-         int count = files.size();
-         
-         for(int i = 0; i < count; i++){
-            finished.take(); // wait for them all to finish
-         }
-         if(!query.isRegularExpression()) {
-            history.saveMatches(query, success);
-         }
-         List<TextMatch> sorted = new ArrayList<TextMatch>(matches);
+         sorted.addAll(matches);
          Collections.sort(sorted);
          return sorted;
       }
@@ -136,5 +77,6 @@ public class TextMatchScanner {
       return files;
    }
    
+
 
 }
