@@ -28,7 +28,7 @@ var Command;
                 }
                 onComplete(typeRows);
             });
-        }, null, "Find Types");
+        }, null, "Search Types");
     }
     Command.searchTypes = searchTypes;
     function findTypesMatching(text, onComplete) {
