@@ -289,7 +289,7 @@ module FileEditor {
    
       editorMarkers = {};
       editorResource = null;
-      editor.setReadOnly(true);
+      editor.setReadOnly(false);
       session.setValue(editorText, 1);
       $("#currentFile").html("");
    }
@@ -672,7 +672,7 @@ module FileEditor {
       //editor.setScrollSpeed(0.05);
       editor.getSession().setMode("ace/mode/snapscript");
       editor.getSession().setTabSize(3);
-      editor.setReadOnly(true);
+      editor.setReadOnly(false);
       editor.setAutoScrollEditorIntoView(true);
       editor.getSession().setUseSoftTabs(true);
       

@@ -1,6 +1,6 @@
 
 import util.stream.Collectors;
-import util.regex.Pattern;
+//import util.regex.Pattern;
 
 exec("ls -a", "c:\\temp")
    .stream()
