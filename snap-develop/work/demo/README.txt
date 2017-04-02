@@ -1,67 +1,30 @@
-# Project was developed as part of a mobile game framework
-# Shows some of the interesting things that can be done with embedded scripting
+SnapScript
+==============
 
-1) Developed to be used on Android but can be used on any VM
-2) Comparable frameworks for the Java platform what work across platforms
-	a) LUA (JLua)
-	b) Rhino (Javascript)
-	c) Groid (Groovy)
-	
-3) Features of the language
-   a) Compliant with JSR233 for integration in to existing frameworks
-   b) Creates proxies which make it accessible from within the host application
-   c) Runs on any Java platform variant including SDK, Dalvik, ART, and GAE
+Snap is an open source, optionally typed, object oriented scripting language for the Java platform. 
+The learning curve is small for anyone with experience of Java, JavaScript, TypeScript, or Scala, 
+amongst others. It has excellent integration with the host platform, and can do whatever can be 
+done with Java and much more.
 
-4) Debugger can be used as a service and contains
-	- Step In/Out/Over
-	- Evaluations
-	- Heap Walking
-	- Fault Capture
-	
-- Introduction to the language and some examples
-- Example using it with embedded camunda
-- Example bootstrapping a game in to android
-- Example debugging an actual device
-- Example using evaulations
-- Dependency injection language and extending it
-- Internals of the framework?
+The language is ideal for embedding in to an existing application, and is a fraction of the size of 
+similar languages for the Java platform. In addition to embedding it can be run as a standalone 
+interpreter and has an development environment which allows scripts to be debugged and profiled.
 
+[http://www.snapscript.org/](http://www.snapscript.org/)
 
-A) Introduction 
-	- What problem is it solving
-	- Alternatives that exist
-	- Standards compliant
+#### Development Environment
 
-B) Overview of tools
-	- Debugger (Assist in development, Syntax Check, Debugging, Heap Walking, Evaluations)
-	- Example applications
+Snap comes with a development environment that is available over HTTP on any web browser that 
+supports Web Sockets. To develop and debug scripts the devlopment environment can be started with 
+the command shown below. All that is required is a web browser and Java 1.5 or greater. The 
+development environment is a single JAR file that can be downloaded from 
+[here](https://github.com/snapscript/snap-release). In addition an embeddable version is available 
+which can be integrated in to any Java application.
 
-c) Example source
-	- Keywords
-	- Types
-	- Functions
+*java -jar snapd.jar --mode=develop --directory=work --port=4457*
 
-D) Example Android apps
-	- Poor tools that exist on IntelliJ/Eclipse
-	- Bootstrap an application
-	- Debug an application
+The development environment can use hot stand-by agents to improve responsiveness, the agent pool 
+can be configured on the command line. In addition an agent can connect through the HTTP port using 
+the HTTP CONNECT request and begin a debug session. An example configuration is shown below.
 
-1) Leverage some of the existing tools on the Java platform such as Proxies and Reflection
-2) Compliant with JSR233 for integration in to existing frameworks
-3) Runs on any Java platform variant including SDK, Dalvik, ART, and GAE
-4) Its embeddable in to any existing Java application for evaluations
-5) Creates proxies which make it accessible from within the host application
-6) Comparable frameworks for the Java platform what work across platforms
-	- LUA (JLua)
-	- Rhino (Javascript)
-	- Groid (Groovy)
-7) Most offer poor compile performance when used as scripts, no tools
-8) Can be used to bootstap functionality in to existing host applications
-9) Tools can perform the following 
-	- Step In/Out/Over
-	- Evaluations
-	- Heap Walking
-	- Fault Capture
-10) Source is organised in to class files and package files
-	- <package>.snap
-	- <package>/<Class>.snap
+*java -jar snapd.jar --mode=develop --directory=work --port=4457 --agent-pool=4 --server-only=true*
