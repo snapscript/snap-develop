@@ -621,7 +621,9 @@ var FileEditor;
         }
         editor.completers = [autoComplete];
         //setEditorTheme("eclipse"); // set the default to eclipse
-        //editor.setScrollSpeed(0.05);
+        if (java) {
+            editor.setScrollSpeed(0.05); // slow down if its Java FX
+        }
         editor.getSession().setMode("ace/mode/snapscript");
         editor.getSession().setTabSize(3);
         editor.setReadOnly(false);

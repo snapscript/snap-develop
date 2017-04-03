@@ -12,6 +12,7 @@ module Project {
          createExploreLayout();
       }
       $(window).trigger('resize'); // force a redraw after w2ui
+
    }
    
    export function startMainLayout() {
@@ -492,7 +493,7 @@ module Project {
                right: '<div id="navigateToTreeArrow" onclick="FileEditor.showEditorFileInTree()"></div>',
                tabs : [ {
                   id : 'browseTab',
-                  caption : '<div class="browseTab">Project&nbsp;&nbsp;&nbsp;</div>',
+                  caption : '<div class="browseTab">Project&nbsp;</div>',
                   content : "<div style='overflow: scroll; font-family: monospace;' id='browse'><div id='browseParent'><div id='explorer'></div></div></div>",
                   closable: false 
                } ],

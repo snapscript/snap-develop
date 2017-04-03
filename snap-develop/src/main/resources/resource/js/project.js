@@ -431,7 +431,7 @@ var Project;
                         right: '<div id="navigateToTreeArrow" onclick="FileEditor.showEditorFileInTree()"></div>',
                         tabs: [{
                                 id: 'browseTab',
-                                caption: '<div class="browseTab">Project&nbsp;&nbsp;&nbsp;</div>',
+                                caption: '<div class="browseTab">Project&nbsp;</div>',
                                 content: "<div style='overflow: scroll; font-family: monospace;' id='browse'><div id='browseParent'><div id='explorer'></div></div></div>",
                                 closable: false
                             }],
