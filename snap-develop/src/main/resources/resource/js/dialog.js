@@ -490,19 +490,19 @@ var DialogBuilder;
         return '<div id="dialogContainerBig">' +
             '   <div id="dialog"></div>' +
             '</div>' +
-            '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">' + inputText + '</div>';
+            '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'dialogPath\');">' + inputText + '</div>';
     }
     function createListDialogLayout() {
         return '<div id="dialogContainerBig">' +
             '   <div id="dialog"></div>' +
             '</div>' +
-            '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>';
+            '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'dialogPath\');"></div>';
     }
     function createFileFolderSelectionDialogLayout() {
         return '<div id="dialogContainerBig">\n' +
             '   <div id="dialog"></div>\n' +
             '</div>\n' +
-            '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>';
+            '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'dialogPath\');"></div>';
     }
     function createFileSelectionDialogLayout(selectedFileFolder, selectedFile) {
         if (!selectedFileFolder) {
@@ -515,7 +515,7 @@ var DialogBuilder;
             '   <div id="dialog"></div>\n' +
             '</div>\n' +
             '<div id="dialogFolder">' + selectedFileFolder + '</div>\n' +
-            '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">' + selectedFile + '</div>';
+            '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'dialogPath\');">' + selectedFile + '</div>';
     }
     function createTextSearchOnlyDialogLayout(fileFilterPatterns, searchText) {
         if (!searchText) {
@@ -524,8 +524,8 @@ var DialogBuilder;
         return '<div id="dialogContainer">\n' +
             '   <div id="dialog"></div>\n' +
             '</div>\n' +
-            '<div id="fileFilterPatterns" class="searchFileFilterInputBox" onclick="this.contentEditable=\'true\';">' + fileFilterPatterns + '</div>\n' +
-            '<div id="searchText" class="searchValueInputBox" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">' + searchText + '</div>\n' +
+            '<div id="fileFilterPatterns" class="searchFileFilterInputBox" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'fileFilterPatterns\');">' + fileFilterPatterns + '</div>\n' +
+            '<div id="searchText" class="searchValueInputBox" onkeydown="contenteditable="true" return DialogBuilder.submitDialog(event);" onclick="return DialogBuilder.focusDialogInput(\'searchText\');">' + searchText + '</div>\n' +
             '<div class="searchCheckBoxPanel">\n' +
             '   <table border="0" cellspacing="5">\n' +
             '      <tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputCaseSensitive\')">\n' +
@@ -549,9 +549,9 @@ var DialogBuilder;
         return '<div id="dialogContainerSmall">\n' +
             '   <div id="dialog"></div>\n' +
             '</div>\n' +
-            '<div id="fileFilterPatterns" class="searchAndReplaceFileFilterInputBox" onclick="this.contentEditable=\'true\';">' + fileFilterPatterns + '</div>\n' +
-            '<div id="searchText" class="searchAndReplaceValueInputBox" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';">' + searchText + '</div>\n' +
-            '<div id="replaceText" class="searchAndReplaceInputBox" onkeydown="return DialogBuilder.submitDialog(event);" onclick="this.contentEditable=\'true\';"></div>\n' +
+            '<div id="fileFilterPatterns" class="searchAndReplaceFileFilterInputBox" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'fileFilterPatterns\');">' + fileFilterPatterns + '</div>\n' +
+            '<div id="searchText" class="searchAndReplaceValueInputBox" contenteditable="true" onkeydown="return DialogBuilder.submitDialog(event);" onclick="return DialogBuilder.focusDialogInput(\'searchText\');">' + searchText + '</div>\n' +
+            '<div id="replaceText" class="searchAndReplaceInputBox" contenteditable="true" onkeydown="return DialogBuilder.submitDialog(event);" onclick="return DialogBuilder.focusDialogInput(\'replaceText\');"></div>\n' +
             '<div class="searchAndReplaceCheckBoxPanel">\n' +
             '   <table border="0" cellspacing="5">\n' +
             '      <tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputCaseSensitive\')">\n' +
@@ -583,6 +583,13 @@ var DialogBuilder;
         return false;
     }
     DialogBuilder.submitDialogListResource = submitDialogListResource;
+    function focusDialogInput(name) {
+        document.getElementById(name).contentEditable = true;
+        document.getElementById(name).focus();
+        document.getElementById(name).focus();
+        return true;
+    }
+    DialogBuilder.focusDialogInput = focusDialogInput;
     function isCheckboxSelected(input) {
         var inputField = document.getElementById(input);
         if (inputField) {

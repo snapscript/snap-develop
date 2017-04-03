@@ -670,9 +670,6 @@ module FileEditor {
       editor.completers = [autoComplete];
       //setEditorTheme("eclipse"); // set the default to eclipse
       
-      if(java) {
-         editor.setScrollSpeed(0.05); // slow down if its Java FX
-      }
       editor.getSession().setMode("ace/mode/snapscript");
       editor.getSession().setTabSize(3);
       editor.setReadOnly(false);
@@ -715,6 +712,11 @@ module FileEditor {
       Project.changeProjectFont(); // project.js update font
       scrollEditorToTop();
       LoadSpinner.finish();
+      
+      // JavaFX has a very fast scroll speed
+      if(typeof java !== 'undefined') {
+         editor.setScrollSpeed(0.05); // slow down if its Java FX
+      }
    }
    
    function validEditorLink(string, col) { // see link.js (http://jsbin.com/jehopaja/4/edit?html,output)
