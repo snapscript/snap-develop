@@ -22,7 +22,7 @@ for(var score in x){
 }
 println(set);
 
-for(var score in x){
+for(var score in x){ 
    println(score);
 }
 Arrays.sort(x, (a,b)->a.compareTo(b));

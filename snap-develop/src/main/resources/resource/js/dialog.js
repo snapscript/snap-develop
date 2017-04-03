@@ -93,7 +93,6 @@ var DialogBuilder;
             var selectedFileDetails = FileTree.createResourcePath(data.node.tooltip);
             if (data.node.isFolder()) {
                 $('#dialogFolder').html(FileTree.cleanResourcePath(selectedFileDetails.projectDirectory));
-                $('#dialogPath').html("");
             }
             else {
                 $('#dialogFolder').html(FileTree.cleanResourcePath(selectedFileDetails.projectDirectory)); // /src/blah

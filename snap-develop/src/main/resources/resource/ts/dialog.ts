@@ -98,7 +98,7 @@ module DialogBuilder {
    
          if (data.node.isFolder()) {
             $('#dialogFolder').html(FileTree.cleanResourcePath(selectedFileDetails.projectDirectory));
-            $('#dialogPath').html("");
+            //$('#dialogPath').html(""); // DO NOT CLEAR THE PATH INPUT
          } else {
             $('#dialogFolder').html(FileTree.cleanResourcePath(selectedFileDetails.projectDirectory)); // /src/blah
             $('#dialogPath').html(FileTree.cleanResourcePath(selectedFileDetails.fileName)); // file.snap

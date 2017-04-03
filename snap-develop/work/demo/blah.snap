@@ -12,7 +12,7 @@ class Foo {
    var text;
    new(@Param @Param2 text){
       this.text = text;
-   }
+   } 
    @Blah
    dump():Nuh{
       return new Nuh(text);
@@ -20,7 +20,7 @@ class Foo {
    toString() {
       return text;
    }
-   
+    
    // // this is an inner class
    // static class Foo{
    // }
