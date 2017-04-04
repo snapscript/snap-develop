@@ -1,3 +1,5 @@
+// DO NOT DELETE THIS FILE!!!
+
 // import test.Blah.Bar;
 // import test.Blah;
 // import test.Foo;
@@ -11,7 +13,7 @@ var list =[];
 for(var x in 1..10)
    list.add(new Thread(->{
       for(var i in 0..9){
-         println(new Foo("xx"));
+         println(new Foo("xx")); // BUG DEFINING CONSTRUCTOR
          println(new Blah(1,2));
          println(new Blah.Bar("X")+": "+Thread.currentThread());
       }

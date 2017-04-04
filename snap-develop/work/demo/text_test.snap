@@ -2,11 +2,30 @@
 import util.stream.Collectors;
 //import util.regex.Pattern;
 
-exec("ls -a", "c:\\temp")
-   .stream()
-   .map(entry -> new File("C:\\temp", entry))
-   .collect(Collectors.toList())
-   .stream()
-   .forEach(file -> println(file.getCanonicalPath()));
+var x=11;
 
-println("foo");
+var msg = `This is a test "${x}"`;
+println(msg);
+
+
+// var map={
+//    l:'LONG',
+//    L:'LONG',
+//    d:'DOUBLE',
+//    D:'DOUBLE',
+//    f:'FLOAT',
+//    F:'FLOAT'};
+   
+// for(var i = 0; i < 255; i++){
+//    var token = 'int.class';
+//    var char: Character = i;
+//    var type = map[char.toString()];
+//    if(type == null){
+//       type = 'INTEGER';
+//    }
+//    if(i % 8 == 0){
+//       println();
+//    }
+//    print("${type}, ");
+// }
+
