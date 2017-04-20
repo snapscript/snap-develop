@@ -24,11 +24,19 @@ function convertData(data) {
    for(var i = 0; i < data.length; i++) {
       var source = data[i].source;
       var destination = data[i].destination;
+      var type = data[i].type;
       
       edges.push({
          source: nodeIds[source],
          target: nodeIds[destination]
-      })
+      });
+      
+      if(type == 3) { // inout connection
+         edges.push({
+            source: nodeIds[destination],
+            target: nodeIds[source]
+         });
+      }
    }
    return {
      nodes: nodes,
@@ -39,8 +47,10 @@ function convertData(data) {
 function drawGraph(id, data, width, height) {
    var linkDistance=200;
 
-   var colors = d3.scale.category10();
-
+   var colors = d3.scale.category20();
+   //var colors = d3.scale.category10();
+   //var colors = d3.scaleOrdinal(d3.schemeCategory20);
+   
    var svg = d3.select("#" + id).append("svg").attr({"width":width,"height":height});
 
    var force = d3.layout.force()
@@ -67,7 +77,7 @@ function drawGraph(id, data, width, height) {
      .data(data.nodes)
      .enter()
      .append("circle")
-     .attr({"r":15})
+     .attr({"r":10})
      .style("fill",function(d,i){return colors(i);})
      .call(force.drag)
 
@@ -154,10 +164,10 @@ function drawGraph(id, data, width, height) {
                rx = bbox.x+bbox.width/2;
                ry = bbox.y+bbox.height/2;
                return 'rotate(180 '+rx+' '+ry+')';
-               }
+           }
            else {
                return 'rotate(0)';
-               }
+           }
        });
    });
 }
