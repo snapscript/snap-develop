@@ -2,21 +2,17 @@ package org.snapscript.develop.browser;
 
 import java.io.File;
 
+import lombok.AllArgsConstructor;
+
 import org.snapscript.agent.log.ProcessLogger;
 
+@AllArgsConstructor
 public class BrowserLauncher {
 
    private final ProcessLogger logger;
    private final File directory;
    private final boolean disabled;
    private final boolean debug;
-   
-   public BrowserLauncher(ProcessLogger logger, File directory, boolean disabled, boolean debug) {
-      this.directory = directory;
-      this.logger = logger;
-      this.disabled = disabled;
-      this.debug = debug;
-   }
    
    public void launch(final String host, final int port) {
       if(!disabled) {

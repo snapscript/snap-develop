@@ -6,14 +6,13 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class Workspace {
 
    private final File root;
-   
-   public Workspace(File root){
-      this.root = root;
-   }
-   
+
    public File create(String name) {
       File file = new File(root, name);
       
