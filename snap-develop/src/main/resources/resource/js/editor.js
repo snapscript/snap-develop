@@ -466,7 +466,7 @@ var FileEditor;
                 }
             }
         }
-        session.setUndoManager(manager); // clear undo history
+        session.setUndoManager(manager); // reset undo history
     }
     function updateEditor(text, resource) {
         var editor = ace.edit("editor");

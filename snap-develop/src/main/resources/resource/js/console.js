@@ -3,6 +3,8 @@ var ProcessConsole;
     var consoleTable = {};
     var consoleCapacity = 5000;
     var consoleProcess = null;
+    var consoleFont = null;
+    var consoleFontSize = null;
     function registerConsole() {
         EventBus.createRoute("BEGIN", createConsole, null);
         EventBus.createRoute('PRINT_ERROR', updateConsole, null);
@@ -18,6 +20,8 @@ var ProcessConsole;
             consoleElement.style.fontFamily = fontFamily;
             consoleElement.style.fontSize = fontSize;
         }
+        consoleFont = fontFamily;
+        consoleFontSize = fontSize;
     }
     ProcessConsole.updateConsoleFont = updateConsoleFont;
     function updateConsoleCapacity(maxCapacity) {
@@ -85,6 +89,9 @@ var ProcessConsole;
                     consoleElement.innerHTML = consoleText;
                     consoleElement.scrollTop = consoleElement.scrollHeight;
                 }
+            }
+            if (consoleFont && consoleFontSize) {
+                updateConsoleFont(consoleFont, consoleFontSize);
             }
         }
     }

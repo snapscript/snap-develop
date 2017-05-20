@@ -17,7 +17,7 @@ class Score with Comparable {
 var x: Score[] = [new Score(1.1), new Score(1.0), new Score(2.0)];
 println(x);
 var set = new TreeSet(); 
-for(var score in x){
+for(var score in x){  
    set.add(score);
 }
 println(set);

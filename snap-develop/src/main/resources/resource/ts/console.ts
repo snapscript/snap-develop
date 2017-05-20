@@ -4,6 +4,8 @@ module ProcessConsole {
    var consoleTable = {};
    var consoleCapacity = 5000;
    var consoleProcess = null;
+   var consoleFont = null;
+   var consoleFontSize = null;
    
    export function registerConsole() {
       EventBus.createRoute("BEGIN", createConsole, null); 
@@ -21,6 +23,8 @@ module ProcessConsole {
          consoleElement.style.fontFamily = fontFamily;
          consoleElement.style.fontSize = fontSize;
       }   
+      consoleFont = fontFamily;
+      consoleFontSize = fontSize;
    }
    
    export function updateConsoleCapacity(maxCapacity) {
@@ -93,6 +97,9 @@ module ProcessConsole {
       			consoleElement.innerHTML = consoleText;
       			consoleElement.scrollTop = consoleElement.scrollHeight;
       		}
+   	   }
+   	   if(consoleFont && consoleFontSize) {
+   	      updateConsoleFont(consoleFont, consoleFontSize);
    	   }
    	}
    }
