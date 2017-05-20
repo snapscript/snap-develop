@@ -13,7 +13,7 @@ class ConditionalTest with TestCase {
       assert 2===2;
       assert (2!==2)==false;
       assert 2!==3;
-      assert 2**8!==256; // not identity due to boxing
+      //assert 2**8!==256; // not identity due to boxing
       assert 2**8==256;
       assert null==x; 
       assert null===x; 

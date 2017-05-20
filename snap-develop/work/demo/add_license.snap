@@ -15,6 +15,7 @@ var header = "/*
  * implied. See the License for the specific language governing 
  * permissions and limitations under the License.
  */";
+ 
 // new File("C:\\Work\\development\\snapscript")
 //    .findFiles(f -> f.name.endsWith(".java") && f.canonicalPath.contains("\\src\\main\\java"))
 //    .forEach(f -> {

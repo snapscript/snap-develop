@@ -7,6 +7,7 @@ var FileEditor;
     var editorTheme = null;
     var editorCurrentTokens = {}; // current editor hyperlinks
     var editorFocusToken = null; // token to focus on editor load
+    var editorHistory = {};
     function createEditor() {
         window.setTimeout(showEditor, 400);
         EventBus.createTermination(clearEditorHighlights); // create callback
@@ -49,9 +50,10 @@ var FileEditor;
         var editor = ace.edit("editor");
         var Range = ace.require('ace/range').Range;
         var session = editor.getSession();
-        //clearEditorHighlight(line);
+        // clearEditorHighlight(line);
         clearEditorHighlights(); // clear all highlights in editor
-        // session.addMarker(new Range(from, 0, to, 1), "errorMarker", "fullLine");
+        // session.addMarker(new Range(from, 0, to, 1), "errorMarker",
+        // "fullLine");
         var marker = session.addMarker(new Range(line - 1, 0, line - 1, 1), css, "fullLine");
         editorMarkers[line] = marker;
     }
@@ -64,32 +66,34 @@ var FileEditor;
     function findTextInEditor() {
         var editorData = loadEditor();
         Command.searchFiles(editorData.resource.projectPath);
-        //      Alerts.createPromptAlert("Find Text", "Find", "Cancel", function(textToFind) {
-        //         var editor = ace.edit("editor");
-        //         var session = editor.getSession();
-        //   //      var matchesFound = {};
-        //         var range = editor.find(textToFind,{
-        //            backwards: false,
-        //            wrap: true,
-        //            caseSensitive: false,
-        //            wholeWord: false,
-        //            regExp: false
-        //          });
+        // Alerts.createPromptAlert("Find Text", "Find", "Cancel", function(textToFind)
+        // {
+        // var editor = ace.edit("editor");
+        // var session = editor.getSession();
+        // // var matchesFound = {};
+        // var range = editor.find(textToFind,{
+        // backwards: false,
+        // wrap: true,
+        // caseSensitive: false,
+        // wholeWord: false,
+        // regExp: false
+        // });
         //         
-        //   //      while(range) {
-        //   //         var rangeKey = JSON.stringify(range);
-        //   //         
-        //   //         if(!matchesFound.hasOwnProperty(rangeKey)) {
-        //   //            matchesFound[rangeKey] = true;
-        //               session.addMarker(range, "findHighlight", "background"); // "background"|"text"|"fullLine"
-        //   //            range = editor.findNext();
-        //   //         } else {
-        //   //            break;
-        //   //         }
-        //   //      }
-        //          //editor.findNext();
-        //          //editor.findPrevious();
-        //      });
+        // // while(range) {
+        // // var rangeKey = JSON.stringify(range);
+        // //
+        // // if(!matchesFound.hasOwnProperty(rangeKey)) {
+        // // matchesFound[rangeKey] = true;
+        // session.addMarker(range, "findHighlight", "background"); //
+        // "background"|"text"|"fullLine"
+        // // range = editor.findNext();
+        // // } else {
+        // // break;
+        // // }
+        // // }
+        // //editor.findNext();
+        // //editor.findPrevious();
+        // });
     }
     FileEditor.findTextInEditor = findTextInEditor;
     function addEditorKeyBinding(keyBinding, actionFunction) {
@@ -109,46 +113,48 @@ var FileEditor;
     }
     FileEditor.addEditorKeyBinding = addEditorKeyBinding;
     //   
-    //   export function indentCurrentLine() {
-    //      var editor = ace.edit("editor");
-    //      editor.indent();
-    //   }
+    // export function indentCurrentLine() {
+    // var editor = ace.edit("editor");
+    // editor.indent();
+    // }
     //   
-    //   export function commentSelection() {
-    //      var editor = ace.edit("editor");
-    //      editor.toggleCommentLines();
-    //   }
+    // export function commentSelection() {
+    // var editor = ace.edit("editor");
+    // editor.toggleCommentLines();
+    // }
     //   
-    //   export function moveCursorUp() {
-    //      moveCursorTo(-1, 0);
-    //   }
+    // export function moveCursorUp() {
+    // moveCursorTo(-1, 0);
+    // }
     //   
-    //   export function moveCursorDown() {
-    //      moveCursorTo(1, 0);
-    //   }
+    // export function moveCursorDown() {
+    // moveCursorTo(1, 0);
+    // }
     //   
-    //   export function moveCursorLeft() {
-    //      moveCursorTo(0, -1);
-    //   }
+    // export function moveCursorLeft() {
+    // moveCursorTo(0, -1);
+    // }
     //   
-    //   export function moveCursorRight() {
-    //      moveCursorTo(0, 1);
-    //   }
+    // export function moveCursorRight() {
+    // moveCursorTo(0, 1);
+    // }
     //   
-    //   function moveCursorTo(rowChange, columnChange) {
-    //      var editor = ace.edit("editor");
-    //      var cursorPosition = editor.getCursorPosition();
-    //      var currentRow = cursorPosition.row;
-    //      var currentColumn = cursorPosition.column;
-    //      var maxRow = editor.session.getLength() - 1
-    //      var maxColumn = editor.session.getLine(currentColumn).length // or simply Infinity
-    //      var nextRow = currentRow + rowChange;
-    //      var nextColumn = currentColumn + columnChange;
+    // function moveCursorTo(rowChange, columnChange) {
+    // var editor = ace.edit("editor");
+    // var cursorPosition = editor.getCursorPosition();
+    // var currentRow = cursorPosition.row;
+    // var currentColumn = cursorPosition.column;
+    // var maxRow = editor.session.getLength() - 1
+    // var maxColumn = editor.session.getLine(currentColumn).length // or simply
+    // Infinity
+    // var nextRow = currentRow + rowChange;
+    // var nextColumn = currentColumn + columnChange;
     //      
-    //      if(nextRow <= maxRow && /*nextColumn <= maxColumn &&*/ nextRow >= 0 && nextColumn >= 0) {
-    //         editor.selection.moveTo(nextRow, nextColumn);
-    //      }
-    //   }
+    // if(nextRow <= maxRow && /*nextColumn <= maxColumn &&*/ nextRow >= 0 &&
+    // nextColumn >= 0) {
+    // editor.selection.moveTo(nextRow, nextColumn);
+    // }
+    // }
     function clearEditorBreakpoint(row) {
         var editor = ace.edit("editor");
         var session = editor.getSession();
@@ -260,7 +266,7 @@ var FileEditor;
         console.log("Resize editor " + width + "x" + height);
         editor.setAutoScrollEditorIntoView(true);
         editor.resize(true);
-        //editor.focus();
+        // editor.focus();
     }
     FileEditor.resizeEditor = resizeEditor;
     function resetEditor() {
@@ -288,26 +294,43 @@ var FileEditor;
     }
     function loadEditor() {
         var editor = ace.edit("editor");
+        var editorHistory = loadEditorHistory();
         var text = editor.getValue();
         return {
             breakpoints: editorBreakpoints,
             resource: editorResource,
+            history: editorHistory,
             source: text
         };
     }
     FileEditor.loadEditor = loadEditor;
+    function loadEditorHistory() {
+        var editor = ace.edit("editor");
+        var session = editor.getSession();
+        var manager = session.getUndoManager();
+        var undoStack = jQuery.extend(true, {}, manager.$undoStack);
+        var redoStack = jQuery.extend(true, {}, manager.$redoStack);
+        return {
+            undoStack: undoStack,
+            redoStack: redoStack,
+            dirtyCounter: manager.dirtyCounter
+        };
+    }
     function encodeEditorText(text, resource) {
-        var token = resource.toLowerCase();
-        if (stringEndsWith(token, ".json")) {
-            try {
-                var object = JSON.parse(text);
-                return JSON.stringify(object, null, 3);
+        if (text) {
+            var token = resource.toLowerCase();
+            if (stringEndsWith(token, ".json")) {
+                try {
+                    var object = JSON.parse(text);
+                    return JSON.stringify(object, null, 3);
+                }
+                catch (e) {
+                    return text;
+                }
             }
-            catch (e) {
-                return text;
-            }
+            return text;
         }
-        return text;
+        return "";
     }
     function resolveEditorMode(resource) {
         var token = resource.toLowerCase();
@@ -372,14 +395,17 @@ var FileEditor;
             var focusToken = editorCurrentTokens[editorFocusToken];
             if (focusToken != null) {
                 setTimeout(function () {
-                    showEditorLine(focusToken.line); // focus on the line there was a token
+                    // loading
+                    showEditorLine(focusToken.line); // focus on the line there
+                    // was a token
                 }, 100);
                 editorFocusToken = null; // clear for next open
             }
         }
     }
     function indexEditorLine(line, number, expression, tokenList, templates, external) {
-        expression.lastIndex = 0; // you have to reset regex to its start position
+        expression.lastIndex = 0; // you have to reset regex to its start
+        // position
         var tokens = expression.exec(line);
         if (tokens != null && tokens.length > 0) {
             var resourceToken = tokens[1]; // only for 'import' which is external
@@ -402,22 +428,62 @@ var FileEditor;
             }
         }
     }
+    function saveEditorHistory() {
+        var editorData = loadEditor();
+        if (editorData.resource && editorData.source) {
+            var md5Hash = md5(editorData.source);
+            editorHistory[editorData.resource.resourcePath] = {
+                hash: md5Hash,
+                history: editorData.history
+            };
+        }
+    }
+    function createEditorUndoManager(session, text, resource) {
+        var manager = new ace.UndoManager();
+        if (text && resource) {
+            var editorResource = FileTree.createResourcePath(resource);
+            var history = editorHistory[editorResource.resourcePath];
+            if (history) {
+                var md5Hash = md5(text);
+                if (history.hash == md5Hash) {
+                    var undoStack = history.history.undoStack;
+                    var redoStack = history.history.redoStack;
+                    for (var undoEntry in undoStack) {
+                        if (undoStack.hasOwnProperty(undoEntry)) {
+                            manager.$undoStack[undoEntry] = undoStack[undoEntry];
+                        }
+                    }
+                    for (var redoEntry in redoStack) {
+                        if (redoStack.hasOwnProperty(redoEntry)) {
+                            manager.$redoStack[redoEntry] = undoStack[redoEntry];
+                        }
+                    }
+                    manager.$doc = session;
+                    manager.dirtyCounter = history.history.dirtyCounter;
+                }
+                else {
+                    editorHistory[editorResource.resourcePath] = null;
+                }
+            }
+        }
+        session.setUndoManager(manager); // clear undo history
+    }
     function updateEditor(text, resource) {
         var editor = ace.edit("editor");
         var session = editor.getSession();
         var currentMode = session.getMode();
         var actualMode = resolveEditorMode(resource);
-        var text = encodeEditorText(text, resource); // change JSON conversion
+        text = encodeEditorText(text, resource); // change JSON conversion
+        saveEditorHistory(); // save any existing history
         if (actualMode != currentMode) {
             session.setMode({
                 path: actualMode,
                 v: Date.now()
             });
         }
-        var manager = new ace.UndoManager();
         editor.setReadOnly(false);
         editor.setValue(text, 1);
-        editor.getSession().setUndoManager(manager); // clear undo history
+        createEditorUndoManager(session, text, resource); // restore any existing history
         clearEditor();
         scrollEditorToTop();
         editorResource = FileTree.createResourcePath(resource);
@@ -530,68 +596,68 @@ var FileEditor;
         });
     }
     FileEditor.formatEditorSource = formatEditorSource;
-    //   function registerEditorBindings() {
-    //      var editor = ace.edit("editor");
-    //      editor.commands.addCommand({
-    //         name : 'run',
-    //         bindKey : {
-    //            win : 'Ctrl-R',
-    //            mac : 'Command-R'
-    //         },
-    //         exec : function(editor) {
-    //            Command.runScript();
-    //         },
-    //         readOnly : true
-    //      // false if this command should not apply in readOnly mode
-    //      });
-    //      editor.commands.addCommand({
-    //         name : 'save',
-    //         bindKey : {
-    //            win : 'Ctrl-S',
-    //            mac : 'Command-S'
-    //         },
-    //         exec : function(editor) {
-    //            Command.saveFile();
-    //         },
-    //         readOnly : true
-    //      // false if this command should not apply in readOnly mode
-    //      });
-    //      editor.commands.addCommand({
-    //         name : 'new',
-    //         bindKey : {
-    //            win : 'Ctrl-N',
-    //            mac : 'Command-N'
-    //         },
-    //         exec : function(editor) {
-    //            Command.newFile(null);
-    //         },
-    //         readOnly : true
-    //      // false if this command should not apply in readOnly mode
-    //      });
-    //      editor.commands.addCommand({
-    //         name : 'format',
-    //         bindKey : {
-    //            win : 'Ctrl-Shift-F',
-    //            mac : 'Command-Shift-F'
-    //         },
-    //         exec : function(editor) {
-    //            formatEditorSource();
-    //         },
-    //         readOnly : true
-    //      // false if this command should not apply in readOnly mode
-    //      });
-    //      editor.commands.addCommand({
-    //          name: 'find',
-    //          bindKey: {
-    //              win: 'Ctrl-Shift-S',
-    //              mac: 'Command-Shift-S'
-    //          },
-    //          exec: function (editor) {
-    //               Command.searchTypes();
-    //          },
-    //          readOnly: true
-    //      });    
-    //   }
+    // function registerEditorBindings() {
+    // var editor = ace.edit("editor");
+    // editor.commands.addCommand({
+    // name : 'run',
+    // bindKey : {
+    // win : 'Ctrl-R',
+    // mac : 'Command-R'
+    // },
+    // exec : function(editor) {
+    // Command.runScript();
+    // },
+    // readOnly : true
+    // // false if this command should not apply in readOnly mode
+    // });
+    // editor.commands.addCommand({
+    // name : 'save',
+    // bindKey : {
+    // win : 'Ctrl-S',
+    // mac : 'Command-S'
+    // },
+    // exec : function(editor) {
+    // Command.saveFile();
+    // },
+    // readOnly : true
+    // // false if this command should not apply in readOnly mode
+    // });
+    // editor.commands.addCommand({
+    // name : 'new',
+    // bindKey : {
+    // win : 'Ctrl-N',
+    // mac : 'Command-N'
+    // },
+    // exec : function(editor) {
+    // Command.newFile(null);
+    // },
+    // readOnly : true
+    // // false if this command should not apply in readOnly mode
+    // });
+    // editor.commands.addCommand({
+    // name : 'format',
+    // bindKey : {
+    // win : 'Ctrl-Shift-F',
+    // mac : 'Command-Shift-F'
+    // },
+    // exec : function(editor) {
+    // formatEditorSource();
+    // },
+    // readOnly : true
+    // // false if this command should not apply in readOnly mode
+    // });
+    // editor.commands.addCommand({
+    // name: 'find',
+    // bindKey: {
+    // win: 'Ctrl-Shift-S',
+    // mac: 'Command-Shift-S'
+    // },
+    // exec: function (editor) {
+    // Command.searchTypes();
+    // },
+    // readOnly: true
+    // });
+    // }
     function setEditorTheme(theme) {
         if (theme != null) {
             var editor = ace.edit("editor");
@@ -620,7 +686,7 @@ var FileEditor;
             editor.setTheme(editorTheme);
         }
         editor.completers = [autoComplete];
-        //setEditorTheme("eclipse"); // set the default to eclipse
+        // setEditorTheme("eclipse"); // set the default to eclipse
         editor.getSession().setMode("ace/mode/snapscript");
         editor.getSession().setTabSize(3);
         editor.setReadOnly(false);
@@ -631,7 +697,8 @@ var FileEditor;
         editor.commands.removeCommand("expandToMatching"); // Ctrl-Shift-M
         editor.commands.removeCommand("expandtoline"); // Ctrl-Shift-L
         // ################# DISABLE KEY BINDINGS ######################
-        //editor.keyBinding.setDefaultHandler(null); // disable all keybindings and allow Mousetrap to do it
+        // editor.keyBinding.setDefaultHandler(null); // disable all keybindings
+        // and allow Mousetrap to do it
         // #############################################################
         editor.setShowPrintMargin(false);
         editor.setOptions({
@@ -655,7 +722,7 @@ var FileEditor;
         });
         createEditorLinks(editor, validEditorLink, openEditorLink); // link.js
         KeyBinder.bindKeys(); // register key bindings
-        //registerEditorBindings();
+        // registerEditorBindings();
         Project.changeProjectFont(); // project.js update font
         scrollEditorToTop();
         LoadSpinner.finish();
@@ -665,12 +732,14 @@ var FileEditor;
         }
     }
     function validEditorLink(string, col) {
+        // (http://jsbin.com/jehopaja/4/edit?html,output)
         if (KeyBinder.isControlPressed()) {
             var tokenPatterns = [
                 "\\.[A-Z][a-zA-Z0-9]*;",
                 "\\sas\\s+[A-Z][a-zA-Z0-9]*;",
                 "[a-zA-Z][a-zA-Z0-9]*\\s*\\.",
                 "[a-z][a-zA-Z0-9]*\\s*[=|<|>|!|\-|\+|\*|\\/|%]",
+                // operation
                 "new\\s+[A-Z][a-zA-Z0-9]*\\s*\\(",
                 "[a-zA-Z][a-zA-Z0-9]*\\s*\\(",
                 "[A-Z][a-zA-Z0-9]*\\s*\\[",
@@ -679,9 +748,12 @@ var FileEditor;
                 "with\\s+[A-Z][a-zA-Z0-9]*" // implements trait
             ];
             for (var i = 0; i < tokenPatterns.length; i++) {
-                var regExp = new RegExp(tokenPatterns[i], 'g'); // WE SHOULD CACHE THE REGEX FOR PERFORMANCE
+                var regExp = new RegExp(tokenPatterns[i], 'g'); // WE SHOULD CACHE
+                // THE REGEX FOR
+                // PERFORMANCE
                 var matchFound = null;
-                regExp.lastIndex = 0; // you have to reset regex to its start position
+                regExp.lastIndex = 0; // you have to reset regex to its start
+                // position
                 string.replace(regExp, function (str) {
                     var offset = arguments[arguments.length - 2];
                     var length = str.length;

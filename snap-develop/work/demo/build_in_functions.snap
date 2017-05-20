@@ -3,16 +3,19 @@ print("xx");
 println(time());
 eval("blah('foo')");
 
+// this should last beyond the save
 function blah(x){
    println("blah("+x+")");
 }
 
-// this function should take priority
+// please save the editor state this is some more stuff
 function println(x){
    System.out.println("new("+x+")");
 }
 
+// this is a test of the undo manager that should restore undo
+
 printf("%s=%s%n", 1, 2);
 println("x");
 
-// Foo
+// This is a simple test
