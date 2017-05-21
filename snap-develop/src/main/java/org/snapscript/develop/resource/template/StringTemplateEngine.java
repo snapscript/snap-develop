@@ -15,7 +15,7 @@ public class StringTemplateEngine implements TemplateEngine {
    private final PropertyBinder binder;
    
    public StringTemplateEngine(FileResolver resolver, String prefix) {
-      this(resolver, prefix, 100);
+      this(resolver, prefix, 0); // default is no caching
    }
    
    public StringTemplateEngine(FileResolver resolver, String prefix, int capacity) {

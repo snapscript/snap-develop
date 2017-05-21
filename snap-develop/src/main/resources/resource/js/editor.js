@@ -370,7 +370,7 @@ var FileEditor;
         if (stringEndsWith(token, ".classpath")) {
             return "ace/mode/xml";
         }
-        return null;
+        return "ace/mode/text";
     }
     FileEditor.resolveEditorMode = resolveEditorMode;
     function indexEditorTokens(text, resource) {

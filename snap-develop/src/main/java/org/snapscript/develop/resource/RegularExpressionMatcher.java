@@ -6,7 +6,6 @@ import static org.simpleframework.http.Method.CONNECT;
 import java.util.Map;
 import java.util.Set;
 
-import org.simpleframework.http.Method;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;

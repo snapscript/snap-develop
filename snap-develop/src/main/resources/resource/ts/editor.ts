@@ -399,7 +399,7 @@ module FileEditor {
       if(stringEndsWith(token, ".classpath")) {
          return "ace/mode/xml";
       }
-      return null;
+      return "ace/mode/text";
    }
    
    function indexEditorTokens(text, resource) { // create dynamic hyperlinks
