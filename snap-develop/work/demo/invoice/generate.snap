@@ -114,7 +114,7 @@ function createInvoiceDocument(company: Company, timesheet: Timesheet) {
       var timesheetDate = invoiceFormat.format(timesheet.date);
       var invoiceDate = invoiceFormat.format(currentDate);
       var timeStamp = timStampFormat.format(timesheet.date);
-      var file = new File("C:/Work/docs/lab49/invoices/invoice_${timeStamp}.html");
+      var file = new File("C:/Work/docs/lab49/invoices/invoice_${timeStamp}_${timesheet.totalHours}.html");
       var template = "<html>
       <head>
           <script type='text/javascript'>
