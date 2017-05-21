@@ -55,10 +55,7 @@ module History {
          var editorResource = editorData.resource;
          
          if(editorResource == null || editorResource.resourcePath != resourceData.resourcePath) { // only if changed
-            FileExplorer.openTreeFile(resourceData.resourcePath, function() {
-               var editor = ace.edit("editor"); // XXX this is the wrong place for this!!
-               editor.setReadOnly(false); // make sure its editable
-            });
+            FileExplorer.openTreeFile(resourceData.resourcePath, function() {});
          }
       }
    }

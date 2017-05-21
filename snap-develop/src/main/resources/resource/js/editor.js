@@ -659,77 +659,78 @@ var FileEditor;
     // });
     // }
     function setEditorTheme(theme) {
-        if (theme != null) {
-            var editor = ace.edit("editor");
-            if (editor != null) {
-                editor.setTheme(theme);
+        executeWhenEditorReady(function (editor) {
+            if (theme != null) {
+                var editor = ace.edit("editor");
+                if (editor != null) {
+                    editor.setTheme(theme);
+                }
+                editorTheme = theme;
             }
-            editorTheme = theme;
-        }
+        });
     }
     FileEditor.setEditorTheme = setEditorTheme;
-    function undoEditorChange() {
-        var editor = ace.edit("editor");
-        editor.getSession().getUndoManager().undo(true);
-    }
-    FileEditor.undoEditorChange = undoEditorChange;
-    function redoEditorChange() {
-        var editor = ace.edit("editor");
-        editor.getSession().getUndoManager().redo(true);
-    }
-    FileEditor.redoEditorChange = redoEditorChange;
+    //   export function undoEditorChange() {
+    //      var editor = ace.edit("editor");
+    //      editor.getSession().getUndoManager().undo(true);
+    //   }
+    //   
+    //   export function redoEditorChange() {
+    //      var editor = ace.edit("editor");
+    //      editor.getSession().getUndoManager().redo(true);
+    //   }
     function showEditor() {
-        var langTools = ace.require("ace/ext/language_tools");
-        var editor = ace.edit("editor");
-        var autoComplete = createEditorAutoComplete();
-        if (editorTheme != null) {
-            editor.setTheme(editorTheme);
-        }
-        editor.completers = [autoComplete];
-        // setEditorTheme("eclipse"); // set the default to eclipse
-        editor.getSession().setMode("ace/mode/snapscript");
-        editor.getSession().setTabSize(3);
-        editor.setReadOnly(false);
-        editor.setAutoScrollEditorIntoView(true);
-        editor.getSession().setUseSoftTabs(true);
-        editor.commands.removeCommand("replace"); // Ctrl-H
-        editor.commands.removeCommand("find"); // Ctrl-F
-        editor.commands.removeCommand("expandToMatching"); // Ctrl-Shift-M
-        editor.commands.removeCommand("expandtoline"); // Ctrl-Shift-L
-        // ################# DISABLE KEY BINDINGS ######################
-        // editor.keyBinding.setDefaultHandler(null); // disable all keybindings
-        // and allow Mousetrap to do it
-        // #############################################################
-        editor.setShowPrintMargin(false);
-        editor.setOptions({
-            enableBasicAutocompletion: true
+        executeWhenEditorReady(function (editor) {
+            var autoComplete = createEditorAutoComplete();
+            if (editorTheme != null) {
+                editor.setTheme(editorTheme);
+            }
+            editor.completers = [autoComplete];
+            // setEditorTheme("eclipse"); // set the default to eclipse
+            editor.getSession().setMode("ace/mode/snapscript");
+            editor.getSession().setTabSize(3);
+            editor.setReadOnly(false);
+            editor.setAutoScrollEditorIntoView(true);
+            editor.getSession().setUseSoftTabs(true);
+            editor.commands.removeCommand("replace"); // Ctrl-H
+            editor.commands.removeCommand("find"); // Ctrl-F
+            editor.commands.removeCommand("expandToMatching"); // Ctrl-Shift-M
+            editor.commands.removeCommand("expandtoline"); // Ctrl-Shift-L
+            // ################# DISABLE KEY BINDINGS ######################
+            // editor.keyBinding.setDefaultHandler(null); // disable all keybindings
+            // and allow Mousetrap to do it
+            // #############################################################
+            editor.setShowPrintMargin(false);
+            editor.setOptions({
+                enableBasicAutocompletion: true
+            });
+            editor.on("guttermousedown", function (e) {
+                var target = e.domEvent.target;
+                if (target.className.indexOf("ace_gutter-cell") == -1) {
+                    return;
+                }
+                if (!editor.isFocused()) {
+                    return;
+                }
+                if (e.clientX > 25 + target.getBoundingClientRect().left) {
+                    return;
+                }
+                var row = e.getDocumentPosition().row;
+                // should be a getBreakpoints but does not seem to be there!!
+                toggleEditorBreakpoint(row);
+                e.stop();
+            });
+            createEditorLinks(editor, validEditorLink, openEditorLink); // link.js
+            KeyBinder.bindKeys(); // register key bindings
+            // registerEditorBindings();
+            Project.changeProjectFont(); // project.js update font
+            scrollEditorToTop();
+            LoadSpinner.finish();
+            // JavaFX has a very fast scroll speed
+            if (typeof java !== 'undefined') {
+                editor.setScrollSpeed(0.05); // slow down if its Java FX
+            }
         });
-        editor.on("guttermousedown", function (e) {
-            var target = e.domEvent.target;
-            if (target.className.indexOf("ace_gutter-cell") == -1) {
-                return;
-            }
-            if (!editor.isFocused()) {
-                return;
-            }
-            if (e.clientX > 25 + target.getBoundingClientRect().left) {
-                return;
-            }
-            var row = e.getDocumentPosition().row;
-            // should be a getBreakpoints but does not seem to be there!!
-            toggleEditorBreakpoint(row);
-            e.stop();
-        });
-        createEditorLinks(editor, validEditorLink, openEditorLink); // link.js
-        KeyBinder.bindKeys(); // register key bindings
-        // registerEditorBindings();
-        Project.changeProjectFont(); // project.js update font
-        scrollEditorToTop();
-        LoadSpinner.finish();
-        // JavaFX has a very fast scroll speed
-        if (typeof java !== 'undefined') {
-            editor.setScrollSpeed(0.05); // slow down if its Java FX
-        }
     }
     function validEditorLink(string, col) {
         // (http://jsbin.com/jehopaja/4/edit?html,output)
@@ -789,16 +790,35 @@ var FileEditor;
         }
     }
     function updateEditorFont(fontFamily, fontSize) {
-        var langTools = ace.require("ace/ext/language_tools");
-        var editor = ace.edit("editor");
-        var autoComplete = createEditorAutoComplete();
-        editor.completers = [autoComplete];
-        editor.setOptions({
-            enableBasicAutocompletion: true,
-            fontFamily: "'" + fontFamily + "',monospace",
-            fontSize: fontSize
+        executeWhenEditorReady(function (editor) {
+            var autoComplete = createEditorAutoComplete();
+            editor.completers = [autoComplete];
+            editor.setOptions({
+                enableBasicAutocompletion: true,
+                fontFamily: "'" + fontFamily + "',monospace",
+                fontSize: fontSize
+            });
         });
     }
     FileEditor.updateEditorFont = updateEditorFont;
+    function executeWhenEditorReady(readyFunction) {
+        var readyCallback = function () {
+            var editorElement = document.getElementById("editor");
+            if (editorElement != null) {
+                var langTools = ace.require("ace/ext/language_tools");
+                var editor = ace.edit("editor");
+                if (editor != null) {
+                    readyFunction(editor);
+                    return true;
+                }
+            }
+            return false;
+        };
+        if (!readyCallback()) {
+            setTimeout(function () {
+                executeWhenEditorReady(readyFunction);
+            }, 100);
+        }
+    }
 })(FileEditor || (FileEditor = {}));
 ModuleSystem.registerModule("editor", "Editor module: editor.js", null, FileEditor.createEditor, ["common", "spinner", "tree"]);

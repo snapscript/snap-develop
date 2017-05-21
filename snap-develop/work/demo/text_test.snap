@@ -1,31 +1,12 @@
 
 import util.stream.Collectors;
-//import util.regex.Pattern;
 
-var x=11;
-
-var msg = `This is a test "${x}"`;
-println(msg);
-
-
-// var map={
-//    l:'LONG',
-//    L:'LONG',
-//    d:'DOUBLE',
-//    D:'DOUBLE',
-//    f:'FLOAT',
-//    F:'FLOAT'};
-   
-// for(var i = 0; i < 255; i++){
-//    var token = 'int.class';
-//    var char: Character = i;
-//    var type = map[char.toString()];
-//    if(type == null){
-//       type = 'INTEGER';
-//    }
-//    if(i % 8 == 0){
-//       println();
-//    }
-//    print("${type}, ");
-// }
-
+var x = 0;
+var func = -> {
+   println(x);
+   var foo = -> {
+      println(x);
+   };
+   foo();
+};
+func();

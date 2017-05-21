@@ -50,10 +50,7 @@ var History;
             var editorData = FileEditor.loadEditor();
             var editorResource = editorData.resource;
             if (editorResource == null || editorResource.resourcePath != resourceData.resourcePath) {
-                FileExplorer.openTreeFile(resourceData.resourcePath, function () {
-                    var editor = ace.edit("editor"); // XXX this is the wrong place for this!!
-                    editor.setReadOnly(false); // make sure its editable
-                });
+                FileExplorer.openTreeFile(resourceData.resourcePath, function () { });
             }
         }
     }
