@@ -31,5 +31,4 @@ class CallableTest with TestCase {
          assert set.contains(i);
       }
    }
-   
 }

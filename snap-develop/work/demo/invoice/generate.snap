@@ -4,12 +4,33 @@ generateInvoices();
 
 function generateInvoices() {
    var file = new File("C:/Work/docs/lab49/invoices/timesheets.csv");
-   var format = new SimpleDateFormat("dd/mm/yyyy");
    var company = readCompanyInfo();
    
    file.readLines().stream().forEach(line -> processInvoice(company, line));
 }
 
+/*
+{
+   "bankAccount": {
+      "accountName": "Account Name",
+      "accountNumber": "Account Number",
+      "sortCode": "11-22-33"
+   }, 
+   "agent": {
+      "agentAddress": "Agent\nAddress\nGoes\nHere",
+      "emailAddress": "agent@adress.com"
+   }, 
+   "accounts": {
+      "dailyRate": 111,
+      "vat": 0.20
+   },
+   "companyName": "Company Name",
+   "companyAddress": "Company\nAddress\nGoes\nHere", 
+   "phoneNumber": "11111",
+   "registrationNumber": "1111",
+   "vatNumber": "1111"
+}
+ */
 function readCompanyInfo() {
    var file = new File("C:/Work/docs/lab49/invoices/company.json");
    
@@ -44,9 +65,19 @@ function readCompanyInfo() {
    }
 }
 
+/*
+13/01/2017,8,8,8,8,8,40.00
+20/01/2017,8,8,8,8,8,40.00
+27/01/2017,8,8,8,8,8,40.00
+03/02/2017,8,8,8,0,8,32.00
+10/02/2017,8,8,8,8,8,40.00
+17/02/2017,8,8,8,8,8,40.00
+24/02/2017,8,8,8,8,0,32.00
+*/
 function processInvoice(company: Company, row: String){
    if(!row.isEmpty()) {
       try {
+         const format = new SimpleDateFormat("dd/MM/yyyy");
          const list = row.split(",");
          const hours = {:};
          
@@ -56,7 +87,8 @@ function processInvoice(company: Company, row: String){
          hours["Thursday"] = Integer.parseInt(list[4]);
          hours["Friday"] = Integer.parseInt(list[5]);
          
-         const date = format.parse(list[0]);
+         println(list[0]);
+         const date = format.parse(list[0]); // format is being accepted from a scope outside of this function
          const totalHours = Double.parseDouble(list[list.length -1]);
          const timesheet = new Timesheet(date, totalHours, hours);
          
@@ -70,7 +102,7 @@ function processInvoice(company: Company, row: String){
 
 function createInvoiceDocument(company: Company, timesheet: Timesheet) {
    try {
-      var timStampFormat = new SimpleDateFormat("yyyymmdd");
+      var timStampFormat = new SimpleDateFormat("yyyyMMdd");
       var invoiceFormat = new SimpleDateFormat("MMM d, yyyy");
       var currentDate = new Date();
       var totalDays = timesheet.calculateDays();
@@ -78,6 +110,7 @@ function createInvoiceDocument(company: Company, timesheet: Timesheet) {
       var gross = company.account.calculateGross(totalDays);
       var net = company.account.calculateNet(totalDays);
       var vat = company.account.calculateVat(totalDays);
+      println(timesheet.date);
       var timesheetDate = invoiceFormat.format(timesheet.date);
       var invoiceDate = invoiceFormat.format(currentDate);
       var timeStamp = timStampFormat.format(timesheet.date);
@@ -131,7 +164,7 @@ function createInvoiceDocument(company: Company, timesheet: Timesheet) {
       <div style='padding: 40px;'>
          <img src='./logo.png'>
          <center>
-            <h1>Tax Invoice</h1>
+            <h1>Invoice</h1>
          </center>
          <br>
          <br>
