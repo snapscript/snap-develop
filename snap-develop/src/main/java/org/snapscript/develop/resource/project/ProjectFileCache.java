@@ -17,15 +17,16 @@ public class ProjectFileCache {
    }
    
    public ProjectFile getFile(Path path) throws Exception {
-      String projectPath = path.getPath(2); // /<project-name>/<project-path> or /default/blah.snap
-      ProjectFile file = cache.get(projectPath);
+      String pathKey = path.getPath();
+      ProjectFile file = cache.get(pathKey);
       
       if(file == null || file.isStale()) {
+         String projectPath = path.getPath(2); // /<project-name>/<project-path> or /default/blah.snap
          Project project = builder.createProject(path);
          ProjectFileSystem fileSystem = project.getFileSystem();
          
          file = fileSystem.readFile(projectPath);
-         cache.put(projectPath, file);
+         cache.put(pathKey, file);
       }
       return file;
    }
