@@ -5,6 +5,8 @@ class DoubleComparator with Comparator{
    }
 }
 
+//data class Foo(val x, val y, val z);
+
 var comparator = new DoubleComparator();
 var set = new TreeSet(comparator);
 

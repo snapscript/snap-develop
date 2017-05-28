@@ -19,6 +19,7 @@
 <script src="/js/external/bootstrap.min.js"></script>
 <script src="/js/external/spin.js"></script>
 <script src="/js/external/fancytree.js"></script>
+<script src="/js/external/fancytree.dnd.js"></script>
 <script src="/js/external/w2ui.js"></script>
 <script src="/js/external/filesaver.js"></script>
 <script src="/js/module.${JS_EXTENSION}"></script>

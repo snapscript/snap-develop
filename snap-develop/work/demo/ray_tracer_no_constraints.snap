@@ -341,7 +341,8 @@ function start(path) {
    ImageIO.write(image, "png", file);   
 }
 
-var start = System.currentTimeMillis();
-start("c:\\temp\\raytrace.png");
-println(System.currentTimeMillis()-start);
-
+for(var i in 0..1000){
+   var start = System.currentTimeMillis();
+   start("c:\\temp\\raytrace.png");
+   println(System.currentTimeMillis()-start);
+}

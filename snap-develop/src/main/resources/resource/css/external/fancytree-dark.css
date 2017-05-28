@@ -28,7 +28,7 @@ ul.fancytree-container {
   outline:none !important;
   /*border: 1px dotted gray;*/
   display: table-cell; /* this makes it 100% of parent http://stackoverflow.com/questions/1122381/how-to-force-child-div-to-100-of-parents-div-without-specifying-parents-heigh */
-  overflow: auto;
+  overflow: hidden;
   min-height: 0%;
   position: relative;
 }
@@ -77,7 +77,7 @@ span.fancytree-drag-helper-img,
   vertical-align: top;
   background-repeat: no-repeat;
   background-position: left;
-  background-image: url("/img/fancytree-win8-icons.gif");
+  background-image: url("/img/theme/dark/fancytree-win8-icons.gif");
   background-position: 0px 0px;
 }
 span.fancytree-icon,

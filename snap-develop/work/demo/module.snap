@@ -49,3 +49,8 @@ module Blah{
 var f = new Blah.Foo(1,2);
 println(f);
 
+
+
+
+
+
