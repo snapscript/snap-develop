@@ -38,6 +38,10 @@ public class TypeNode {
    }
    
    public List<Function> getFunctions(){
+      return getFunctions(true);
+   }
+   
+   public List<Function> getFunctions(boolean includeSuper){
       if(Module.class.isInstance(value)) {
          return ((Module)value).getFunctions();
       }
@@ -49,6 +53,10 @@ public class TypeNode {
          while(type != null) {
             List<Function> functions = type.getFunctions();
             total.addAll(functions);
+            
+            if(!includeSuper) {
+               break;
+            }
             type = extractor.extractor(type);
          }
          return total;
@@ -57,6 +65,10 @@ public class TypeNode {
    }
    
    public List<Property> getProperties(){
+      return getProperties(true);
+   }
+   
+   public List<Property> getProperties(boolean includeSuper){
       if(Type.class.isInstance(value)) {
          List<Property> total = new ArrayList<Property>();
          SuperExtractor extractor = new SuperExtractor();
@@ -65,6 +77,10 @@ public class TypeNode {
          while(type != null) {
             List<Property> functions = type.getProperties();
             total.addAll(functions);
+            
+            if(!includeSuper) {
+               break;
+            }
             type = extractor.extractor(type);
          }
          return total;

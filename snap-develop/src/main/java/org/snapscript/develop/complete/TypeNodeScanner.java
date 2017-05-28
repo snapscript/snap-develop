@@ -3,12 +3,20 @@ package org.snapscript.develop.complete;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.simpleframework.http.Path;
 import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.thread.ThreadPool;
+import org.snapscript.core.Reserved;
+import org.snapscript.core.function.Function;
+import org.snapscript.core.function.Parameter;
+import org.snapscript.core.function.Signature;
+import org.snapscript.core.property.Property;
 import org.snapscript.develop.common.FileAction;
 import org.snapscript.develop.common.FileProcessor;
 import org.snapscript.develop.common.FileReader;
@@ -54,14 +62,39 @@ public class TypeNodeScanner {
             for(String typeName : typeNames) {
                TypeNode typeNode = types.get(typeName);
                String typePath = typeNode.getResource();
+               List<Function> typeFunctions = typeNode.getFunctions(false);
+               List<Property> typeProperties = typeNode.getProperties(false);
                
                if(typeName.matches(expression)) {
+                  Map<String, Set<Integer>> functionNames = new LinkedHashMap<String, Set<Integer>>();
+                  Set<String> propertyNames = new LinkedHashSet<String>();
                   TypeNodeReference reference = null;
                   
+                  for(Function typeFunction : typeFunctions) {
+                     String functionName = typeFunction.getName();
+                     Signature functionSignature = typeFunction.getSignature();
+                     List<Parameter> functionParams = functionSignature.getParameters();
+                     Set<Integer> functionParameterCounts = functionNames.get(functionName);
+                     int functionParamCount = functionParams.size();
+                     
+                     if(functionParameterCounts == null) {
+                        functionParameterCounts = new LinkedHashSet<Integer>();
+                        functionNames.put(functionName, functionParameterCounts);
+                     }
+                     if(Reserved.TYPE_CONSTRUCTOR.equals(functionName)) {
+                        functionParameterCounts.add(functionParamCount - 1);
+                     }else {
+                        functionParameterCounts.add(functionParamCount);
+                     }
+                  }
+                  for(Property typeProperty : typeProperties) {
+                     String propertyName = typeProperty.getName();
+                     propertyNames.add(propertyName);
+                  }
                   if(typeNode.isModule()) {
-                     reference = new TypeNodeReference(typeName, typePath, TypeNodeReference.MODULE);
+                     reference = new TypeNodeReference(functionNames, propertyNames, typeName, typePath, TypeNodeReference.MODULE);
                   } else {
-                     reference = new TypeNodeReference(typeName, typePath, TypeNodeReference.CLASS);
+                     reference = new TypeNodeReference(functionNames, propertyNames, typeName, typePath, TypeNodeReference.CLASS);
                   }
                   typeNodes.put(typeName +":" + typePath, reference);
                }
