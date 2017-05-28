@@ -243,13 +243,36 @@ var Command;
         }
     }
     Command.pingProcess = pingProcess;
+    function isDragAndDropFilePossible(fileToMove, moveTo) {
+        return moveTo.folder; // only move files and folders to different folders
+    }
+    Command.isDragAndDropFilePossible = isDragAndDropFilePossible;
+    function dragAndDropFile(fileToMove, moveTo) {
+        if (isDragAndDropFilePossible(fileToMove, moveTo)) {
+            var originalPath = FileTree.createResourcePath(fileToMove.name);
+            var destinationPath = FileTree.createResourcePath(moveTo.name);
+            var fromPath = FileTree.cleanResourcePath(originalPath.filePath);
+            var toPath = FileTree.cleanResourcePath(destinationPath.filePath + "/" + originalPath.fileName);
+            console.log("source: " + fromPath + " destination: " + toPath);
+            var message = {
+                project: document.title,
+                from: fromPath,
+                to: toPath,
+                dragAndDrop: true
+            };
+            EventBus.sendEvent("RENAME", message);
+            Project.renameEditorTab(fromPath, toPath); // rename tabs if open
+        }
+    }
+    Command.dragAndDropFile = dragAndDropFile;
     function renameFile(resourcePath) {
         var originalFile = resourcePath.filePath;
         DialogBuilder.renameFileTreeDialog(resourcePath, true, function (resourceDetails) {
             var message = {
                 project: document.title,
                 from: originalFile,
-                to: resourceDetails.filePath
+                to: resourceDetails.filePath,
+                dragAndDrop: false
             };
             EventBus.sendEvent("RENAME", message);
             Project.renameEditorTab(resourcePath.resourcePath, resourceDetails.resourcePath); // rename tabs if open

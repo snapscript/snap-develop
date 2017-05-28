@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RenameCommand implements Command {
 
+   private Boolean dragAndDrop;
    private String project;
    private String from;
    private String to;

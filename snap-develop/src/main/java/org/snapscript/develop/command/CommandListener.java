@@ -139,10 +139,14 @@ public class CommandListener {
    }
    
    public void onRename(RenameCommand command) {
+      Boolean dragAndDrop = command.getDragAndDrop();
       String from = command.getFrom();
       String to = command.getTo();
       
       try {
+         if(Boolean.TRUE.equals(dragAndDrop)) {
+            processLogger.info("Drag and drop from: " + from + " to: " + to);
+         }
          File fromFile = new File(root, "/" + from);
          File toFile = new File(root, "/" + to); 
          

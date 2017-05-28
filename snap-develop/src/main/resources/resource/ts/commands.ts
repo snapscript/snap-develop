@@ -261,6 +261,30 @@ module Command {
       }
    }
    
+   export function isDragAndDropFilePossible(fileToMove, moveTo) {
+      return moveTo.folder; // only move files and folders to different folders
+   }
+   
+   export function dragAndDropFile(fileToMove, moveTo) {
+      if(isDragAndDropFilePossible(fileToMove, moveTo)) {
+         var originalPath = FileTree.createResourcePath(fileToMove.name);
+         var destinationPath = FileTree.createResourcePath(moveTo.name);
+         var fromPath = FileTree.cleanResourcePath(originalPath.filePath);
+         var toPath = FileTree.cleanResourcePath(destinationPath.filePath + "/" + originalPath.fileName);
+         
+         console.log("source: " + fromPath + " destination: " + toPath);
+         
+         var message = {
+            project : document.title,
+            from : fromPath,
+            to: toPath,
+            dragAndDrop: true
+         };
+         EventBus.sendEvent("RENAME", message);
+         Project.renameEditorTab(fromPath, toPath); // rename tabs if open
+      }
+   }
+   
    export function renameFile(resourcePath) {
       var originalFile = resourcePath.filePath;
       
@@ -268,7 +292,8 @@ module Command {
          var message = {
             project : document.title,
             from : originalFile,
-            to: resourceDetails.filePath
+            to: resourceDetails.filePath,
+            dragAndDrop: false
          };
          EventBus.sendEvent("RENAME", message);
          Project.renameEditorTab(resourcePath.resourcePath, resourceDetails.resourcePath); // rename tabs if open

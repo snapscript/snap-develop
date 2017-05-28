@@ -58,13 +58,31 @@ var FileTree;
                 // Don't allow dropping *over* a node (would create a child)
                 return ["before", "after"];
                 */
-                return true;
+                if (typeof Command !== 'undefined') {
+                    return Command.isDragAndDropFilePossible({
+                        name: data.otherNode.key,
+                        folder: data.otherNode.folder == true
+                    }, {
+                        name: node.key,
+                        folder: node.folder == true
+                    });
+                }
+                return false;
             },
             dragDrop: function (node, data) {
                 /** This function MUST be defined to enable dropping of items on
                  *  the tree.
                  */
-                data.otherNode.moveTo(node, data.hitMode);
+                //data.otherNode.moveTo(node, data.hitMode); 
+                if (typeof Command !== 'undefined') {
+                    Command.dragAndDropFile({
+                        name: data.otherNode.key,
+                        folder: data.otherNode.folder == true
+                    }, {
+                        name: node.key,
+                        folder: node.folder == true
+                    });
+                }
             }
         };
         // using default options
@@ -181,6 +199,7 @@ var FileTree;
             currentFilePath += "/" + pathSegments[i];
         }
         if (isFolder) {
+            var currentFileName = pathSegments[pathSegments.length - 1];
             if (pathSegments.length > 3) {
                 for (var i = 3; i < pathSegments.length; i++) {
                     currentProjectDirectory += "/" + pathSegments[i];
