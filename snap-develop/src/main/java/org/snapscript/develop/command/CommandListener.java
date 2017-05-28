@@ -158,7 +158,7 @@ public class CommandListener {
                commandClient.sendAlert(from, "Resource " + from + " does not exist");
             } else {
                if(toExists) {
-                  commandClient.sendAlert(to, "Resource " + to + " does already exists");
+                  commandClient.sendAlert(to, "Resource " + to + " already exists");
                } else {
                   if(fromFile.renameTo(toFile)){
                      commandClient.sendReloadTree();

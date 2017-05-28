@@ -460,7 +460,7 @@ input[type=checkbox].w2ui-toggle:focus {
 }
 button.btn {
   display: inline-block;
-
+  border-radius: 0px;
   margin: 0px 5px;
   padding: 7px 12px 6px 12px !important;
   color: #666;

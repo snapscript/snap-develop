@@ -11,7 +11,7 @@ var Alerts;
             '  <tr>' +
             '    <td>&nbsp;&nbsp</td>' +
             '    <td align="right"><img src="${IMAGE_FOLDER}/warning.png" height="20px"></td>' +
-            '    <td align="left">&nbsp;&nbsp' + text + '</td>' +
+            '    <td align="left"><div class="alertText">' + text + '</div></td>' +
             '  </tr>' +
             '</table>');
     }
@@ -20,7 +20,7 @@ var Alerts;
             '  <tr>' +
             '    <td>&nbsp;&nbsp</td>' +
             '    <td align="right"><img src="${IMAGE_FOLDER}/warning.png" height="20px"></td>' +
-            '    <td align="left">&nbsp;&nbsp' + message + '</td>' +
+            '    <td align="left"><div class="alertText">' + message + '</div></td>' +
             '  </tr>' +
             '</table>';
         var options = {
