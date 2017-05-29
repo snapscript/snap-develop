@@ -6,7 +6,7 @@ import org.snapscript.agent.log.ProcessLogger;
 
 public class BrowserContext {
 
-   private static final String ICON_PATH = "/resource/img/icon.png";
+   private static final String ICON_PATH = "/resource/img/icon_large.png";
    
    private final ProcessLogger logger;
    private final File directory;

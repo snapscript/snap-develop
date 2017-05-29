@@ -1,5 +1,8 @@
 package org.snapscript.develop.browser;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.Event;
@@ -8,8 +11,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import org.snapscript.develop.resource.loader.ClassResourceLoader;
 
 public class BrowserApplication extends Application {
    
@@ -34,10 +40,10 @@ public class BrowserApplication extends Application {
          menu.getItems().add(quit);
          menuBar.getMenus().add(menu);
          stage.setTitle(context.getDirectory().getCanonicalPath());
-         //byte[] data = ClassResourceLoader.loadResource(context.getIconPath());
-         //InputStream stream = new ByteArrayInputStream(data);
-         //Image image = new Image(stream);
-         //stage.getIcons().add(image);
+         byte[] data = ClassResourceLoader.loadResource(context.getIconPath());
+         InputStream stream = new ByteArrayInputStream(data);
+         Image image = new Image(stream);
+         stage.getIcons().add(image);
       }catch(Exception e) {
          context.getLogger().info("Could not load image", e);
       }

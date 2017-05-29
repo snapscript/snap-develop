@@ -29,9 +29,10 @@
 }
 
 #browseParent { 
-	font-family: "Lucida Console", sans-serif;
-	overflow: scroll;	
-    font-size: 0.9em;   
+	font-family: "Lucida Console", sans-serif;	
+    font-size: 0.9em;  
+    overflow-y: scroll;
+	overflow-x: hidden; 
     background-color: ${TREE_BACKGROUND_COLOR};
     border-radius: 0px;    
  	border-style: solid;
