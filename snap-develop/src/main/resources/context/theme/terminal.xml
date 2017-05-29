@@ -1,1 +1,3 @@
-<theme name="terminal" extend="dark"/>
+<theme name="terminal" extend="dark">
+  <value key="TREE_FONT_COLOR">#DEDEDE</value>  
+</theme>
