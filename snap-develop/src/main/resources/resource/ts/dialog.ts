@@ -510,7 +510,7 @@ module DialogBuilder {
          inputText = '';
       }
       return '<div id="dialogContainerBig">'+
-         '   <div id="dialog"></div>'+
+         '   <div id="dialog" class="dialog"></div>'+
          '</div>'+
          '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'dialogPath\');">' + inputText + '</div>';
 
@@ -518,7 +518,7 @@ module DialogBuilder {
    
    function createListDialogLayout() {
       return '<div id="dialogContainerBig">'+
-         '   <div id="dialog"></div>'+
+         '   <div id="dialog" class="dialog"></div>'+
          '</div>'+
          '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'dialogPath\');"></div>';
 
@@ -526,7 +526,7 @@ module DialogBuilder {
    
    function createFileFolderSelectionDialogLayout() {
       return '<div id="dialogContainerBig">\n'+
-         '   <div id="dialog"></div>\n'+
+         '   <div id="dialog" class="dialogTree"></div>\n'+
          '</div>\n'+
          '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'dialogPath\');"></div>';
 
@@ -540,7 +540,7 @@ module DialogBuilder {
          selectedFile = '';
       }
       return '<div id="dialogContainer">\n'+
-         '   <div id="dialog"></div>\n'+
+         '   <div id="dialog" class="dialogTree"></div>\n'+
          '</div>\n'+
          '<div id="dialogFolder">'+selectedFileFolder+'</div>\n'+
          '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'dialogPath\');">'+selectedFile+'</div>';
@@ -552,7 +552,7 @@ module DialogBuilder {
          searchText = '';
       }
       return '<div id="dialogContainer">\n'+
-         '   <div id="dialog"></div>\n'+
+         '   <div id="dialog" class="dialog"></div>\n'+
          '</div>\n'+
          '<div id="fileFilterPatterns" class="searchFileFilterInputBox" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'fileFilterPatterns\');">'+fileFilterPatterns+'</div>\n'+
          '<div id="searchText" class="searchValueInputBox" onkeydown="contenteditable="true" return DialogBuilder.submitDialog(event);" onclick="return DialogBuilder.focusDialogInput(\'searchText\');">'+searchText+'</div>\n'+
@@ -578,7 +578,7 @@ module DialogBuilder {
          searchText = '';
       }
       return '<div id="dialogContainerSmall">\n'+
-         '   <div id="dialog"></div>\n'+
+         '   <div id="dialog" class="dialog"></div>\n'+
          '</div>\n'+
          '<div id="fileFilterPatterns" class="searchAndReplaceFileFilterInputBox" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'fileFilterPatterns\');">'+fileFilterPatterns+'</div>\n'+
          '<div id="searchText" class="searchAndReplaceValueInputBox" contenteditable="true" onkeydown="return DialogBuilder.submitDialog(event);" onclick="return DialogBuilder.focusDialogInput(\'searchText\');">'+searchText+'</div>\n'+

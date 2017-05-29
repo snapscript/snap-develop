@@ -10,7 +10,8 @@
   <value key="DIALOG_PANEL_COLOR">#616161</value>
   <value key="DIALOG_ENTRY_HIGHLIGHT_COLOR">#919191</value>
   <value key="DIALOG_ENTRY_BORDER_COLOR">#DEDEDE</value>
-  <value key="TREE_BACKGROUND_COLOR">#616161</value>
+  <value key="TREE_BACKGROUND_COLOR">#414141</value>
+  <value key="TREE_FONT_COLOR">#ffffff</value>
   <value key="MENU_BACKGROUND_COLOR">#515151</value>
   <value key="MENU_FONT_COLOR">#f1f1f1</value>
   <value key="SCROLL_BAR_TRACK">#919191</value>

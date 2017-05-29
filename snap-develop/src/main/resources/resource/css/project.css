@@ -1,3 +1,8 @@
+
+::-webkit-scrollbar-corner {
+	background-color: ${SCROLL_BAR_TRACK};
+}
+
 #fontSize {
     -webkit-appearance: none;
     -moz-appearance: none;
