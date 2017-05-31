@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 
-import org.snapscript.core.store.RemoteStore;
-import org.snapscript.core.store.Store;
+import org.snapscript.common.store.RemoteStore;
+import org.snapscript.common.store.Store;
 
 public class ProcessStore implements Store {
 

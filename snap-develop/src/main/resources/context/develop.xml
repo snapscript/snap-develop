@@ -244,17 +244,22 @@
     <constructor-arg value="SESSID" />
   </bean>
 
-  <bean id="ClassResourceLoader" class="org.snapscript.develop.resource.loader.ClassResourceLoader">
-    <constructor-arg value="org.snapscript." />
+  <bean id="ClassPathResourceLoader" class="org.snapscript.develop.resource.loader.ClassPathResourceLoader">
+    <constructor-arg>
+      <list>
+        <value>org.snapscript.</value>
+        <value>/grammar.bnf</value>
+      </list>
+    </constructor-arg>
   </bean>
 
   <bean id="ClassLoaderResource" class="org.snapscript.develop.resource.loader.ClassLoaderResource">
-    <constructor-arg ref="ClassResourceLoader" />
+    <constructor-arg ref="ClassPathResourceLoader" />
     <constructor-arg ref="ProcessLogger" />
   </bean>
 
   <bean id="RemoteProcessBuilder" class="org.snapscript.develop.resource.loader.RemoteProcessBuilder" init-method="create">
-    <constructor-arg ref="ClassResourceLoader" />
+    <constructor-arg ref="ClassPathResourceLoader" />
     <constructor-arg ref="Workspace" />
   </bean>
 

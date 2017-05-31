@@ -9,9 +9,9 @@ import java.util.jar.Manifest;
 
 public class JarBuilder {
 
-   private final ClassResourceLoader loader;
+   private final ClassPathResourceLoader loader;
    
-   public JarBuilder(ClassResourceLoader loader) {
+   public JarBuilder(ClassPathResourceLoader loader) {
       this.loader = loader;
    }
 
@@ -29,7 +29,7 @@ public class JarBuilder {
             path = resource.substring(1); // /org/domain/Type.class -> org/domain/Type.class
          }
          JarEntry entry = new JarEntry(path);
-         byte[] data = loader.loadClass(resource);
+         byte[] data = loader.loadResource(resource);
          
          if(data == null) {
             throw new IllegalStateException("Could not fine resource " + resource);

@@ -5,7 +5,7 @@ import util.concurrent.LinkedBlockingQueue;
 import compile.StoreContext;
 import compile.ResourceCompiler;
 import core.FilePathConverter;
-import core.store.FileStore;
+import common.store.FileStore;
 import core.EmptyModel;
 
 class TestCaseRunner {

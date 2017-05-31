@@ -5,6 +5,7 @@ import static org.snapscript.core.Reserved.DEFAULT_PACKAGE;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 
+import org.snapscript.common.store.Store;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.compile.Compiler;
 import org.snapscript.compile.Executable;
@@ -15,7 +16,6 @@ import org.snapscript.core.ExpressionEvaluator;
 import org.snapscript.core.FilePathConverter;
 import org.snapscript.core.Model;
 import org.snapscript.core.PathConverter;
-import org.snapscript.core.store.Store;
 
 public class ScriptExecutor implements Callable<Context> {
 

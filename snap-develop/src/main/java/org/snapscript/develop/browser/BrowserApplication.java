@@ -15,7 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import org.snapscript.develop.resource.loader.ClassResourceLoader;
+import org.snapscript.develop.resource.loader.ClassPathResourceLoader;
 
 public class BrowserApplication extends Application {
    
@@ -40,7 +40,7 @@ public class BrowserApplication extends Application {
          menu.getItems().add(quit);
          menuBar.getMenus().add(menu);
          stage.setTitle(context.getDirectory().getCanonicalPath());
-         byte[] data = ClassResourceLoader.loadResource(context.getIconPath());
+         byte[] data = ClassPathResourceLoader.findResource(context.getIconPath());
          InputStream stream = new ByteArrayInputStream(data);
          Image image = new Image(stream);
          stage.getIcons().add(image);

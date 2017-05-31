@@ -15,11 +15,12 @@ public class RemoteProcessBuilder {
    public static final String LAUNCHER_CLASS = "/org/snapscript/develop/resource/loader/RemoteProcessLauncher.class";
    public static final String LOADER_CLASS = "/org/snapscript/develop/resource/loader/RemoteClassLoader.class";
    public static final String MAIN_CLASS = "org.snapscript.develop.resource.loader.RemoteProcessLauncher";
+   public static final String GRAMMAR_FILE = "/grammar.bnf";
    
    private final JarBuilder builder;
    private final Workspace workspace;
    
-   public RemoteProcessBuilder(ClassResourceLoader loader, Workspace workspace) {
+   public RemoteProcessBuilder(ClassPathResourceLoader loader, Workspace workspace) {
       this.builder = new JarBuilder(loader);
       this.workspace = workspace;
    }
@@ -35,7 +36,7 @@ public class RemoteProcessBuilder {
       if(file.exists()) {
          file.delete();
       }
-      byte[] data = builder.createJar(MAIN_CLASS, LAUNCHER_CLASS, LOADER_CLASS);
+      byte[] data = builder.createJar(MAIN_CLASS, LAUNCHER_CLASS, LOADER_CLASS, GRAMMAR_FILE);
       File parent = file.getParentFile();
       
       if(!parent.exists()) {

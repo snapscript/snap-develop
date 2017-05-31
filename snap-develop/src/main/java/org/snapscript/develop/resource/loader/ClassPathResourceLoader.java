@@ -3,29 +3,30 @@ package org.snapscript.develop.resource.loader;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ClassResourceLoader {
+public class ClassPathResourceLoader {
    
    private final Map<String, byte[]> cache;
    private final ClassPathParser parser;
-   private final ClassFilter filter;
+   private final ClassPathFilter filter;
    
-   public ClassResourceLoader(String prefix) {
+   public ClassPathResourceLoader(List<String> prefix) {
       this.cache = new ConcurrentHashMap<String, byte[]>();
       this.parser = new ClassPathParser();
-      this.filter = new ClassFilter(prefix);
+      this.filter = new ClassPathFilter(prefix);
    }
 
-   public byte[] loadClass(String path) throws Exception {
+   public byte[] loadResource(String path) throws Exception {
       byte[] data = cache.get(path);
       
       if(data == null) {
          String type = parser.parse(path);
          
          if(filter.accept(type)) {
-            data = loadResource(path);
+            data = findResource(path);
             
             if(data != null) {
                cache.put(path, data);
@@ -35,7 +36,7 @@ public class ClassResourceLoader {
       return data;
    }
    
-   public static byte[] loadResource(String path) throws Exception {
+   public static byte[] findResource(String path) throws Exception {
       String location = path;
       
       if(location.startsWith("/")) {

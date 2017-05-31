@@ -3,9 +3,9 @@ package org.snapscript.service;
 
 import java.io.File;
 
+import org.snapscript.common.store.FileStore;
+import org.snapscript.common.store.Store;
 import org.snapscript.core.Model;
-import org.snapscript.core.store.FileStore;
-import org.snapscript.core.store.Store;
 
 public class CommandLine {
 

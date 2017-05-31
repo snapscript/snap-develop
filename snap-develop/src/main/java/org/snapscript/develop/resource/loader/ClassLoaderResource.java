@@ -12,10 +12,10 @@ import org.snapscript.develop.resource.Resource;
 
 public class ClassLoaderResource implements Resource {
    
-   private final ClassResourceLoader loader;
+   private final ClassPathResourceLoader loader;
    private final ProcessLogger logger;
 
-   public ClassLoaderResource(ClassResourceLoader loader, ProcessLogger logger) {
+   public ClassLoaderResource(ClassPathResourceLoader loader, ProcessLogger logger) {
       this.logger = logger;
       this.loader = loader;
    }
@@ -26,7 +26,7 @@ public class ClassLoaderResource implements Resource {
       Path path = request.getPath(); // /class/com/example/SomeClass.class
       String normal = path.getPath(1); // /com/example/SomeClass.class
       PrintStream output = response.getPrintStream();
-      byte[] data = loader.loadClass(normal); 
+      byte[] data = loader.loadResource(normal); 
 
       if(logger.isTrace()) {
          logger.trace(method + ": " + normal);

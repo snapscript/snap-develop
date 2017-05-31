@@ -7,6 +7,7 @@ import java.util.Map;
 
 public interface Configuration {
 
+   String CLASS_EXTENSION = ".class";
    String PROJECT_FILE = ".project";
    String CLASSPATH_FILE = ".classpath";
    String TEMP_PATH = ".temp";

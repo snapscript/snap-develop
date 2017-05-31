@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.simpleframework.xml.core.Persister;
-import org.snapscript.develop.resource.loader.ClassResourceLoader;
+import org.snapscript.develop.resource.loader.ClassPathResourceLoader;
 import org.snapscript.develop.resource.template.TemplateModel;
 
 public class DisplayThemeLoader {
@@ -30,11 +30,11 @@ public class DisplayThemeLoader {
 
    private InputStream getThemeFile(String name) throws Exception {
       String location = getThemePath(name);
-      byte[] data = ClassResourceLoader.loadResource(location);
+      byte[] data = ClassPathResourceLoader.findResource(location);
       
       if(data == null) {
          location = location.toLowerCase(); // lowercase by convention
-         data = ClassResourceLoader.loadResource(location); 
+         data = ClassPathResourceLoader.findResource(location); 
       }
       if(data == null) {
          throw new IllegalStateException("Could not find theme '" + name + "' in '" + location + "'");

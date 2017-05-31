@@ -1,6 +1,8 @@
 
 package org.snapscript.develop.resource.loader;
 
+import static org.snapscript.develop.configuration.Configuration.CLASS_EXTENSION;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -18,12 +20,16 @@ public class ClassPathParser {
       if(type == null) {
          int length = path.length();
          
-         if(length > 7) {
+         if(path.endsWith(CLASS_EXTENSION)) {
             type = path.substring(1, length -6);
             type = type.replace('/', '.');
             
             cache.put(path, type);
+         } else {
+            type = path;
+            cache.put(path, type);
          }
+            
       }
       return type;
    }
