@@ -13,13 +13,15 @@ public class ClassPathFilter {
    
    public boolean accept(String name) {
       if(name != null) {
+         Class type = getClass();
+         
          for(String prefix : prefixes) {
             if(name.startsWith(prefix)) {
                try {
                   Class.forName(name);
                   return true;
                } catch(Exception e) {
-                  return getClass().getResource(name) != null;
+                  return type.getResource(name) != null;
                }
             }
          }
