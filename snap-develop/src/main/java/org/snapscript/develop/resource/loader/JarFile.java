@@ -8,6 +8,7 @@ public interface JarFile {
    JarFile addManifestAttribute(Name name, String value) throws Exception;
    JarFile addManifestAttribute(String name, String value) throws Exception;
    JarFile addResource(String resource) throws Exception;
+   JarFile addResource(Class resource) throws Exception;
    JarFile saveFile(OutputStream stream) throws Exception;
    JarFile saveFile(File file) throws Exception;
 }

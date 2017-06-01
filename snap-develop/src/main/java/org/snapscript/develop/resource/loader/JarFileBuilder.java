@@ -4,6 +4,8 @@ package org.snapscript.develop.resource.loader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -21,18 +23,34 @@ public class JarFileBuilder {
       this.loader = loader;
    }
    
-   public JarFile create() {
-      Manifest manifest = new Manifest();
-      return new ClassPathJarFile(manifest);
-   }
-   
-   public JarFile create(String mainClass) {
+   public JarFile create() throws Exception {
       Manifest manifest = new Manifest();
       manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
-      manifest.getMainAttributes().put(Attributes.Name.MAIN_CLASS, mainClass);
       return new ClassPathJarFile(manifest);
    }
    
+   public JarFile create(Class mainClass) throws Exception {
+      String className = mainClass.getName();
+      
+      try {
+         Method mainMethod = mainClass.getDeclaredMethod("main", String[].class);
+         int modifiers = mainMethod.getModifiers();
+         
+         if(!Modifier.isStatic(modifiers)) {
+            throw new IllegalStateException("Main method for " + mainClass + " is not static");
+         }
+         if(!Modifier.isPublic(modifiers)) {
+            throw new IllegalStateException("Main method for " + mainClass + " is not public");
+         }
+      }catch(Exception e) {
+         throw new IllegalArgumentException("No main method for " + mainClass);
+      }
+      Manifest manifest = new Manifest();
+      manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
+      manifest.getMainAttributes().put(Attributes.Name.MAIN_CLASS, className);  
+      return new ClassPathJarFile(manifest).addResource(mainClass);
+   }
+
    private class ClassPathJarFile implements JarFile {
       
       private final Map<String, byte[]> resources;
@@ -83,13 +101,20 @@ public class JarFileBuilder {
       }
       
       @Override
+      public JarFile addResource(Class type) throws Exception {
+         String name = type.getName();
+         String resource = "/" + name.replace(".", "/") + ".class";
+         
+         return addResource(resource);
+      }
+      
+      @Override
       public JarFile addResource(String resource) throws Exception {
          byte[] data = loader.loadResource(resource);
          
          if(data == null) {
             throw new IllegalStateException("Could not fine resource " + resource);
          }
-         
          resources.put(resource, data);
          return this;
       }

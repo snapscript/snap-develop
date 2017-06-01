@@ -9,10 +9,7 @@ import java.io.File;
 import org.snapscript.develop.Workspace;
 
 public class RemoteProcessBuilder {
-   
-   public static final String LAUNCHER_CLASS = "/org/snapscript/develop/resource/loader/RemoteProcessLauncher.class";
-   public static final String LOADER_CLASS = "/org/snapscript/develop/resource/loader/RemoteClassLoader.class";
-   public static final String MAIN_CLASS = "org.snapscript.develop.resource.loader.RemoteProcessLauncher";
+
    public static final String GRAMMAR_FILE = "/grammar.bnf";
    
    private final JarFileBuilder builder;
@@ -31,9 +28,8 @@ public class RemoteProcessBuilder {
       }
       File file = new File(directory, JAR_FILE);
 
-      builder.create(MAIN_CLASS)
-               .addResource(LAUNCHER_CLASS)
-               .addResource(LOADER_CLASS)
+      builder.create(RemoteProcessLauncher.class)
+               .addResource(RemoteClassLoader.class)
                .addResource(GRAMMAR_FILE)
                .saveFile(file);
    }
