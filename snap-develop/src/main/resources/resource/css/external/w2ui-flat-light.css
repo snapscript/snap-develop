@@ -2370,7 +2370,7 @@ button.btn-red.clicked {
   padding: 0px 7px;
 }
 .w2ui-tabs .w2ui-tab {
-  padding: 6px 20px;
+  padding: 5px 20px;
   text-align: center;
   color: #888888;
   background-color: #F0F1F2;
@@ -2378,8 +2378,6 @@ button.btn-red.clicked {
   border-bottom: 1px solid silver;
   white-space: nowrap;
   margin: 1px 1px -1px 0px;
-
-
   cursor: default;
 }
 .w2ui-tabs .w2ui-tab.active {
@@ -2389,7 +2387,7 @@ button.btn-red.clicked {
   border-bottom: 1px solid transparent;
 }
 .w2ui-tabs .w2ui-tab.closable {
-  padding: 6px 28px 6px 20px;
+  padding: 5px 28px 5px 20px;
 }
 .w2ui-tabs .w2ui-tab-close {
   color: #555;
