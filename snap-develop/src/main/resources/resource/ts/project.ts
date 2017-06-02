@@ -217,12 +217,12 @@ module Project {
       }
    }
 
-   function clickOnTab(name, doubleClickFunction) {
-      var currentTime = currentTime();
+   export function clickOnTab(name, doubleClickFunction) {
+      var currentTime = new Date().getTime();
       var previousTime = doubleClickTimes[name];
 
       if(previousTime) {
-         if(previousTime + 200 < currentTime) {
+         if((currentTime - previousTime) < 200) {
             doubleClickFunction();
          }
       }
@@ -337,7 +337,7 @@ module Project {
          }
          tabResources[editorData.resource.resourcePath] = { 
             id : editorData.resource.resourcePath,
-            caption : "<div class='editTab' onclick='clickOnTab(\"" + editorData.resource.resourcePath + "\", Project.toggleFullScreen)' id='editFileName'><span title='" + editorData.resource.resourcePath +"'>&nbsp;" + editorData.resource.fileName + "&nbsp;</span></div>",
+            caption : "<div class='editTab' onclick=\"Project.clickOnTab(\'" + editorData.resource.resourcePath + "\', Project.toggleFullScreen)\" id='editFileName'><span title='" + editorData.resource.resourcePath +"'>&nbsp;" + editorData.resource.fileName + "&nbsp;</span></div>",
             content : "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
             closable: true,
             active: true

@@ -1,6 +1,7 @@
 var Project;
 (function (Project) {
     var currentDisplayInfo = {};
+    var doubleClickTimes = {};
     function createMainLayout() {
         var perspective = determineProjectLayout();
         if (perspective == "debug") {
@@ -188,6 +189,17 @@ var Project;
             updateEditorTabName();
         }
     }
+    function clickOnTab(name, doubleClickFunction) {
+        var currentTime = new Date().getTime();
+        var previousTime = doubleClickTimes[name];
+        if (previousTime) {
+            if ((currentTime - previousTime) < 200) {
+                doubleClickFunction();
+            }
+        }
+        doubleClickTimes[name] = currentTime;
+    }
+    Project.clickOnTab = clickOnTab;
     function updateEditorTabName() {
         var editorData = FileEditor.loadEditor();
         var editorFileName = document.getElementById("editFileName");
@@ -278,7 +290,7 @@ var Project;
             }
             tabResources[editorData.resource.resourcePath] = {
                 id: editorData.resource.resourcePath,
-                caption: "<div class='editTab' id='editFileName'><span title='" + editorData.resource.resourcePath + "'>&nbsp;" + editorData.resource.fileName + "&nbsp;</span></div>",
+                caption: "<div class='editTab' onclick=\"Project.clickOnTab(\'" + editorData.resource.resourcePath + "\', Project.toggleFullScreen)\" id='editFileName'><span title='" + editorData.resource.resourcePath + "'>&nbsp;" + editorData.resource.fileName + "&nbsp;</span></div>",
                 content: "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
                 closable: true,
                 active: true
