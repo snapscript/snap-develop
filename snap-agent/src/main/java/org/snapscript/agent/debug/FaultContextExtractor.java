@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.snapscript.agent.event.FaultEvent;
-import org.snapscript.agent.event.FaultEventMarshaller;
 import org.snapscript.agent.event.ProcessEventChannel;
 import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.core.Context;

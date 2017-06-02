@@ -1,15 +1,22 @@
 
 package org.snapscript.agent;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.snapscript.agent.debug.BreakpointMatcher;
 import org.snapscript.agent.debug.ResumeType;
 import org.snapscript.agent.debug.SuspendController;
-import org.snapscript.agent.event.*;
+import org.snapscript.agent.event.BreakpointsEvent;
+import org.snapscript.agent.event.BrowseEvent;
+import org.snapscript.agent.event.EvaluateEvent;
+import org.snapscript.agent.event.ExecuteData;
+import org.snapscript.agent.event.ExecuteEvent;
+import org.snapscript.agent.event.PingEvent;
+import org.snapscript.agent.event.ProcessEventAdapter;
+import org.snapscript.agent.event.ProcessEventChannel;
+import org.snapscript.agent.event.StepEvent;
 import org.snapscript.core.Model;
-
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class ProcessEventReceiver extends ProcessEventAdapter {
    
