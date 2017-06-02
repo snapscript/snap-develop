@@ -1,3 +1,4 @@
+import util.stream.Collectors;
 import test.TestCase;
 
 class Foo {
@@ -9,6 +10,12 @@ class Foo {
    new(a,b){
       this.a=a; 
       this.b=b;
+   }
+   getA(){
+      return a;
+   }
+   getB(){
+      return b;
    }
    toString(){
       return "${a},${b}";
@@ -69,5 +76,26 @@ class FunctionReferenceConstructorTest with TestCase {
       assert l[0] == 1;
       assert l[1] == 2;
       assert l[2] == 3;
+   }
+   
+   testFunctionCreationInStream() {
+      var list = [1, 2, 3, 4].stream().map(Foo::new).collect(Collectors.toList());
+      
+      assert list[0].toString() == '1,2';
+      assert list[1].toString() == '2,2';
+      assert list[2].toString() == '3,2';
+      assert list[3].toString() == '4,2';
+   }
+   
+   testFunctionCreationInMethod() {
+      const dump = (func, value) -> {
+         const foo = func(value);
+         const a = foo.getA();
+         
+         assert a == value;
+         assert foo.a == value;
+      };
+      dump(Foo::new, 11);
+      dump(Foo::new, 'rr');
    }
 }

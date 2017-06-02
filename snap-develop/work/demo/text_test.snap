@@ -10,3 +10,18 @@ var func = -> {
    foo();
 };
 func();
+
+class Foo{
+   const x;
+   new(x){
+      this.x = x;
+   }
+   
+   override toString(){
+      return "x=${x}";
+   }
+}
+
+[1, 2, 3, 4].stream().map(Foo::new).forEach(foo -> println(foo));
+
+println([1, 2, 3, 4].stream().map(Foo::new).collect(Collectors.toList()));
