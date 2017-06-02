@@ -2,6 +2,7 @@
 module Project {
    
    var currentDisplayInfo = {};
+   var doubleClickTimes = {};
 
    export function createMainLayout() {
       var perspective = determineProjectLayout();
@@ -215,6 +216,18 @@ module Project {
          updateEditorTabName();
       }
    }
+
+   function clickOnTab(name, doubleClickFunction) {
+      var currentTime = currentTime();
+      var previousTime = doubleClickTimes[name];
+
+      if(previousTime) {
+         if(previousTime + 200 < currentTime) {
+            doubleClickFunction();
+         }
+      }
+      doubleClickTimes[name] = currentTime;
+   }
    
    function updateEditorTabName() {
       var editorData = FileEditor.loadEditor();
@@ -324,7 +337,7 @@ module Project {
          }
          tabResources[editorData.resource.resourcePath] = { 
             id : editorData.resource.resourcePath,
-            caption : "<div class='editTab' id='editFileName'><span title='" + editorData.resource.resourcePath +"'>&nbsp;" + editorData.resource.fileName + "&nbsp;</span></div>",
+            caption : "<div class='editTab' onclick='clickOnTab(\"" + editorData.resource.resourcePath + "\", Project.toggleFullScreen)' id='editFileName'><span title='" + editorData.resource.resourcePath +"'>&nbsp;" + editorData.resource.fileName + "&nbsp;</span></div>",
             content : "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
             closable: true,
             active: true
