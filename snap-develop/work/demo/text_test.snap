@@ -25,3 +25,7 @@ class Foo{
 [1, 2, 3, 4].stream().map(Foo::new).forEach(foo -> println(foo));
 
 println([1, 2, 3, 4].stream().map(Foo::new).collect(Collectors.toList()));
+
+
+["1", "2", "3", "4"].stream().map(Foo::new).forEach(x -> println(x));
+

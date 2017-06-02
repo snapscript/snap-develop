@@ -50,11 +50,14 @@ public class ClassPathResourceLoader {
          byte[] buffer = new byte[1024];
          int count = 0;
          
-         while((count = input.read(buffer)) != -1) {
-            output.write(buffer, 0, count);
+         try {
+            while((count = input.read(buffer)) != -1) {
+               output.write(buffer, 0, count);
+            }
+            output.close();
+         }finally {
+            input.close();
          }
-         output.close();
-         input.close();
          return output.toByteArray();
       }
       return null;
