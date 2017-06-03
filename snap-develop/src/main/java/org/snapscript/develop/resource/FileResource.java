@@ -33,8 +33,9 @@ public class FileResource implements Resource {
    @Override
    public void handle(Request request, Response response) throws IOException {
       OutputStream output = response.getOutputStream();
-      InputStream input = manager.openInputStream(file);
-
+      Content content = manager.getContent(file);
+      InputStream input = content.getInputStream();
+      
       response.setCode(status.code);
       response.setDescription(status.description);
       response.setValue(CONTENT_TYPE, type);

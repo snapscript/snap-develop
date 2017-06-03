@@ -63,7 +63,7 @@ public class DisplayContentProcessor {
             output = new GZIPOutputStream(buffer);
             encoding = ENCODING_TYPE;
          } else {
-            input = fileResolver.resolveStream(target);
+            input = fileResolver.resolveContent(target).getInputStream();
          }
          byte[] block = new byte[8192];
          int count = 0;

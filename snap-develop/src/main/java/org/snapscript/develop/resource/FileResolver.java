@@ -2,7 +2,6 @@
 package org.snapscript.develop.resource;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 public class FileResolver {
 
@@ -12,7 +11,7 @@ public class FileResolver {
       this.manager = manager;
    }
 
-   public InputStream resolveStream(String path) throws IOException {
-      return manager.openInputStream(path);
+   public Content resolveContent(String path) throws IOException {
+      return manager.getContent(path);
    }
 }

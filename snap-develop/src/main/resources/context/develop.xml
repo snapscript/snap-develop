@@ -86,9 +86,6 @@
     <constructor-arg ref="FileManager" />
   </bean>
 
-  <!-- bean id="VelocityEngine" class="org.apache.velocity.app.VelocityEngine" init-method="init"> <constructor-arg> <props> <prop key="runtime.log.logsystem.class">org.apache.velocity.runtime.log.Log4JLogChute</prop> 
-    <prop key="runtime.log.logsystem.log4j.logger">root</prop> <prop key="parser.pool.size">5</prop> </props> </constructor-arg> </bean -->
-
   <bean id="TemplateEngine" class="org.snapscript.develop.resource.template.StringTemplateEngine">
     <constructor-arg ref="FileResolver" />
     <constructor-arg value="/" />

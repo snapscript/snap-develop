@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageInputStream;
 
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
@@ -18,6 +19,7 @@ import org.simpleframework.http.Status;
 import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.Cache;
 import org.snapscript.common.LeastRecentlyUsedCache;
+import org.snapscript.develop.resource.Content;
 import org.snapscript.develop.resource.ContentTypeResolver;
 import org.snapscript.develop.resource.FileResolver;
 import org.snapscript.develop.resource.Resource;
@@ -91,18 +93,20 @@ public class ImageScaleResource implements Resource {
    }
    
    private BufferedImage getOriginalImage(String path) throws Exception {
-      InputStream input = fileResolver.resolveStream(path);
+      Content content = fileResolver.resolveContent(path);
+      InputStream contentStream = content.getInputStream();
       
       try {
          String contentType = typeResolver.resolveType(path);
          ImageType imageType = ImageType.resolveByType(contentType);
          ImageReader imageReader = imageType.getImageReader();
-   
-         imageReader.setInput(ImageIO.createImageInputStream(input));
+         ImageInputStream imageStream = ImageIO.createImageInputStream(contentStream);
+         
+         imageReader.setInput(imageStream);
    
          return imageReader.read(0);
       }finally {
-         input.close();
+         contentStream.close();
       }
    }
    

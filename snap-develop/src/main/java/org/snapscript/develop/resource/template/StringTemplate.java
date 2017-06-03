@@ -4,16 +4,22 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.snapscript.develop.resource.Content;
+
 public class StringTemplate implements Template {
 
    private final TokenIterator iterator;
    private final List<Token> tokens;
+   private final Content content;
    private final String path;
+   private final long time;
    
-   public StringTemplate(String path, String template) {
+   public StringTemplate(Content content, String path, String template, long time) {
       this.iterator = new TokenIterator(template);
       this.tokens = new ArrayList<Token>();
+      this.content = content;
       this.path = path;
+      this.time = time;
    }
 
    @Override
@@ -34,6 +40,11 @@ public class StringTemplate implements Template {
             token.process(filter, writer);
          }
       }
+   }
+   
+   @Override
+   public boolean isStale() {
+      return time < content.getModificationTime();
    }
    
    private class TokenIterator {

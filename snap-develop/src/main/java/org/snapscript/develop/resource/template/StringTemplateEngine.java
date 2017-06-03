@@ -6,6 +6,7 @@ import java.io.StringWriter;
 
 import org.snapscript.common.Cache;
 import org.snapscript.common.LeastRecentlyUsedCache;
+import org.snapscript.develop.resource.Content;
 import org.snapscript.develop.resource.FileResolver;
 
 public class StringTemplateEngine implements TemplateEngine {
@@ -15,7 +16,7 @@ public class StringTemplateEngine implements TemplateEngine {
    private final PropertyBinder binder;
    
    public StringTemplateEngine(FileResolver resolver, String prefix) {
-      this(resolver, prefix, 0); // default is no caching
+      this(resolver, prefix, 1000); 
    }
    
    public StringTemplateEngine(FileResolver resolver, String prefix, int capacity) {
@@ -57,7 +58,7 @@ public class StringTemplateEngine implements TemplateEngine {
    protected Template resolveTemplate(String source) throws Exception {
       Template template = cache.fetch(source);
       
-      if(template == null) {
+      if(template == null || template.isStale()) {
          template = createTemplate(source);
          cache.cache(source, template);
       }
@@ -65,9 +66,12 @@ public class StringTemplateEngine implements TemplateEngine {
    }
    
    protected Template createTemplate(String source) throws Exception {
-      Reader reader = finder.findReader(source);
+      Content content = finder.findContent(source);
       
-      if(reader != null) {
+      if(content != null) {
+         Reader reader = content.getReader();
+         long time = System.currentTimeMillis();
+         
          try {
             StringBuilder builder = new StringBuilder();
             LineNumberReader iterator = new LineNumberReader(reader);
@@ -82,7 +86,7 @@ public class StringTemplateEngine implements TemplateEngine {
                builder.append("\n");
             }
             String text = builder.toString();
-            return new StringTemplate(source, text);
+            return new StringTemplate(content, source, text, time);
          }finally {
             reader.close();
          }

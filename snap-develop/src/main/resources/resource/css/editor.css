@@ -49,6 +49,12 @@
 	padding-left: 22px; /* Or size of icon + spacing */
 	margin-left: -10px;
 	z-index: 1009;
+	-webkit-user-select: none; /* Chrome/Safari */        
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE10+ */
+	/* Rules below not implemented in browsers yet */
+	-o-user-select: none;
+	user-select: none;
 }
 
 .typeNode {

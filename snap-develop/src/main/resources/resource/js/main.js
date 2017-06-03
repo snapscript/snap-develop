@@ -3,16 +3,16 @@ require.config({
         'ace': 'external/ace/ace',
         'ext-language_tools': 'external/ace/ext-language_tools',
         'jquery': 'external/jquery',
-        'jquery-ui': '/js/external/jquery-ui',
-        'jquery-context-menu': '/js/external/jquery-context-menu',
-        'mousetrap': '/js/external/mousetrap',
-        'mousetrap-global-bind': '/js/external/mousetrap-global-bind',
-        'spin': '/js/external/spin',
-        'fancytree': '/js/external/fancytree',
-        'fancytree-dnd': '/js/external/fancytree.dnd',
-        'w2ui': '/js/external/w2ui',
-        'filesaver': '/js/external/filesaver',
-        'md5': '/js/external/md5'
+        'jquery-ui': 'external/jquery-ui',
+        'jquery-context-menu': 'external/jquery-context-menu',
+        'mousetrap': 'external/mousetrap',
+        'mousetrap-global-bind': 'external/mousetrap-global-bind',
+        'spin': 'external/spin',
+        'fancytree': 'external/fancytree',
+        'fancytree-dnd': 'external/fancytree.dnd',
+        'w2ui': 'external/w2ui',
+        'filesaver': 'external/filesaver',
+        'md5': 'external/md5'
     },
     shim: {
         "w2ui": {
@@ -90,11 +90,11 @@ define(["require",
     "./select"], function (require, exports, fancytree, fancytreeDnd, ace, aceLanguageTools, mousetrap, mousetrapBindGlobal, socket, spinner, project, explorer, editor, history, console, threads, debug, profiler, alert, select) {
     "use strict";
     var path = window.location.pathname;
-    spinner.LoadSpinner.create();
     if (path == "/") {
         select.ProjectSelector.showProjectDialog();
     }
     else {
+        spinner.LoadSpinner.create();
         socket.EventBus.startSocket();
         project.Project.createMainLayout();
         setTimeout(function () {

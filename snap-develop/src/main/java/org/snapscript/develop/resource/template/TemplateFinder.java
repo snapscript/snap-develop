@@ -2,12 +2,10 @@
 package org.snapscript.develop.resource.template;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
 
+import org.snapscript.develop.resource.Content;
 import org.snapscript.develop.resource.FileResolver;
 
 public class TemplateFinder {
@@ -20,20 +18,11 @@ public class TemplateFinder {
       this.prefix = prefix;
    }
    
-   public Reader findReader(String path) throws IOException {
-      InputStream stream = findStream(path);
-      
-      if(stream != null) {
-         return new InputStreamReader(stream, "UTF-8");
-      }
-      return null;
-   } 
-   
-   public InputStream findStream(String path) throws IOException {
+   public Content findContent(String path) throws IOException {
       String realPath = findPath(path);
 
       if (realPath != null) {
-         return resolver.resolveStream(realPath);
+         return resolver.resolveContent(realPath);
       }
       return null;
    }  
@@ -42,9 +31,9 @@ public class TemplateFinder {
       List<String> searchPath = searchPath(path);
 
       for(String realPath : searchPath) {
-         InputStream source = resolver.resolveStream(realPath);
+         Content content = resolver.resolveContent(realPath);
         
-         if(source != null) {
+         if(content != null) {
             return realPath;
          }
       }
