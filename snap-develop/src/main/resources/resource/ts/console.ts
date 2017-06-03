@@ -1,5 +1,9 @@
+import * as $ from "jquery"
+import {Common} from "./common"
+import {Command} from "./commands"
+import {EventBus} from "./socket"
 
-module ProcessConsole {
+export module ProcessConsole {
    
    var consoleTable = {};
    var consoleCapacity = 5000;
@@ -179,4 +183,4 @@ module ProcessConsole {
    }
 }
 
-ModuleSystem.registerModule("console", "Console module: console.js", null, ProcessConsole.registerConsole, ["common", "socket"]);
+//ModuleSystem.registerModule("console", "Console module: console.js", null, ProcessConsole.registerConsole, ["common", "socket"]);

@@ -1,5 +1,7 @@
+import * as $ from "jquery"
+import {FileTree} from "./tree"
 
-module StatusPanel {
+export module StatusPanel {
    
    export function showProcessStatus(resource, agent) {
       var resourcePath = FileTree.createResourcePath(resource);
@@ -49,4 +51,4 @@ module StatusPanel {
    }
 }
 
-ModuleSystem.registerModule("status", "Status panel module: status.js", null, null, []);
+//ModuleSystem.registerModule("status", "Status panel module: status.js", null, null, []);

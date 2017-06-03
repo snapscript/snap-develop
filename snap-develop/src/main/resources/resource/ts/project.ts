@@ -1,8 +1,23 @@
+import * as $ from "jquery"
+import {w2ui, w2popup} from "w2ui"
+import {Common} from "./common"
+import {EventBus} from "./socket"
+import {ProcessConsole} from "./console"
+import {ProblemManager} from "./problem"
+import {FileEditor} from "./editor"
+import {LoadSpinner} from "./spinner"
+import {FileTree} from "./tree"
+import {ThreadManager} from "./threads"
+import {History} from "./history"
+import {VariableManager} from "./variables"
+import {FileExplorer} from "./explorer"
+import {Command} from "./commands" 
+import {DebugManager} from "./debug"
 
-module Project {
+export module Project {
    
-   var currentDisplayInfo = {};
-   var doubleClickTimes = {};
+   var currentDisplayInfo: any = {};
+   var doubleClickTimes: any = {};
 
    export function createMainLayout() {
       var perspective = determineProjectLayout();
@@ -25,6 +40,74 @@ module Project {
          startExploreLayout();
       }
       startResizePoller(); // dynamically resize the editor
+      attachClickEvents();
+   }
+   
+   function attachClickEvents() {
+      $('#toolbarNavigateBack').on('click', function(e) {
+         History.navigateBackward();
+         e.preventDefault();
+      });
+      $('#toolbarNavigateForward').on('click', function(e) {
+         History.navigateForward();
+         e.preventDefault();
+      });
+      $('#editorTheme').on('click', function(e) {
+         Project.changeEditorTheme();
+         e.preventDefault();
+      });
+      $('#fontFamily').on('click', function(e) {
+         Project.changeProjectFont();
+         e.preventDefault();
+      });
+      $('#fontSize').on('click', function(e) {
+         Project.changeProjectFont();
+         e.preventDefault();
+      });
+      $('#newFile').on('click', function(e) {
+         Command.newFile(null);
+         e.preventDefault();
+      });
+      $('#saveFile').on('click', function(e) {
+         Command.saveFile(null);
+         e.preventDefault();
+      });
+      $('#deleteFile').on('click', function(e) {
+         Command.deleteFile(null);
+         e.preventDefault();
+      });
+      $('#searchTypes').on('click', function(e) {
+         Command.searchTypes();
+         e.preventDefault();
+      });
+      $('#runScript').on('click', function(e) {
+         Command.runScript();
+         e.preventDefault();
+      });
+      $('#stopScript').on('click', function(e) {
+         Command.stopScript();
+         e.preventDefault();
+      });
+      $('#resumeScript').on('click', function(e) {
+         Command.resumeScript();
+         e.preventDefault();
+      });
+      $('#stepInScript').on('click', function(e) {
+         Command.stepInScript();
+         e.preventDefault();
+      });
+      $('#stepOutScript').on('click', function(e) {
+         Command.stepOutScript();
+         e.preventDefault();
+      });
+      $('#stepOverScript').on('click', function(e) {
+         Command.stepOverScript();
+         e.preventDefault();
+      });
+      $('#evaluateExpression').on('click', function(e) {
+         Command.evaluateExpression();
+         e.preventDefault();
+      });  
    }
    
    function determineProjectLayout() {
@@ -60,12 +143,14 @@ module Project {
    }
    
    export function changeProjectFont(){
-      var fontFamily = document.getElementById("fontFamily");
-      var fontSize = document.getElementById("fontSize");
+      var fontFamily: HTMLSelectElement = <HTMLSelectElement>document.getElementById("fontFamily");
+      var fontSize: HTMLSelectElement = <HTMLSelectElement>document.getElementById("fontSize");
       
       if(fontSize != null && fontFamily != null) {
-         var fontSizeValue = fontSize.options[fontSize.selectedIndex].value;
-         var fontFamilyValue = fontFamily.options[fontFamily.selectedIndex].value;
+         var fontSizeOption: HTMLOptionElement = <HTMLOptionElement>fontSize.options[fontSize.selectedIndex];
+         var fontFamilyOption: HTMLOptionElement = <HTMLOptionElement>fontFamily.options[fontFamily.selectedIndex];
+         var fontSizeValue = fontSizeOption.value;
+         var fontFamilyValue = fontFamilyOption.value;
          
          FileEditor.updateEditorFont(fontFamilyValue, fontSizeValue);
          ProcessConsole.updateConsoleFont(fontFamilyValue, fontSizeValue);
@@ -76,10 +161,11 @@ module Project {
    }
    
    export function changeEditorTheme(){
-      var editorTheme = document.getElementById("editorTheme");
+      var editorTheme: HTMLSelectElement = <HTMLSelectElement>document.getElementById("editorTheme");
       
       if(editorTheme != null) {
-         var themeName = editorTheme.options[editorTheme.selectedIndex].value.toLowerCase();
+         var themeOption: HTMLOptionElement = <HTMLOptionElement>editorTheme.options[editorTheme.selectedIndex];
+         var themeName = themeOption.value.toLowerCase();
          FileEditor.setEditorTheme("ace/theme/" + themeName);
          
          var displayInfo = currentProjectDisplay();
@@ -127,9 +213,9 @@ module Project {
    }
    
    function currentProjectDisplay(){
-      var fontFamily = document.getElementById("fontFamily");
-      var fontSize = document.getElementById("fontSize");
-      var editorTheme = document.getElementById("editorTheme");
+      var fontFamily: HTMLSelectElement = <HTMLSelectElement>document.getElementById("fontFamily");
+      var fontSize: HTMLSelectElement = <HTMLSelectElement>document.getElementById("fontSize");
+      var editorTheme: HTMLSelectElement = <HTMLSelectElement>document.getElementById("editorTheme");
    
       return {
          consoleCapacity: 50000,
@@ -144,9 +230,9 @@ module Project {
          currentDisplayInfo = displayInfo; // save display info
          
          if(displayInfo.fontName != null && displayInfo.fontSize != null) {
-            var fontFamily = document.getElementById("fontFamily");
-            var fontSize = document.getElementById("fontSize");
-            var editorTheme = document.getElementById("editorTheme");
+            var fontFamily: HTMLSelectElement = <HTMLSelectElement>document.getElementById("fontFamily");
+            var fontSize: HTMLSelectElement = <HTMLSelectElement>document.getElementById("fontSize");
+            var editorTheme: HTMLSelectElement = <HTMLSelectElement>document.getElementById("editorTheme");
             
             if(fontSize != null) {
                fontSize.value = displayInfo.fontSize + "px";
@@ -161,7 +247,7 @@ module Project {
                ProcessConsole.updateConsoleCapacity(Math.max(displayInfo.consoleCapacity, 5000)); // don't allow stupidly small size
             }
             if(displayInfo.logoImage != null) {
-               var toolbarRow =  document.getElementById("toolbarRow"); // this is pretty rubbish, but it works!
+               var toolbarRow: HTMLTableRowElement = <HTMLTableRowElement>document.getElementById("toolbarRow"); // this is pretty rubbish, but it works!
                
                toolbarRow.insertCell(0).innerHTML = "<div class='toolbarSeparator'></div>";
                toolbarRow.insertCell(0).innerHTML = "&nbsp;";
@@ -337,7 +423,7 @@ module Project {
          }
          tabResources[editorData.resource.resourcePath] = { 
             id : editorData.resource.resourcePath,
-            caption : "<div class='editTab' onclick=\"Project.clickOnTab(\'" + editorData.resource.resourcePath + "\', Project.toggleFullScreen)\" id='editFileName'><span title='" + editorData.resource.resourcePath +"'>&nbsp;" + editorData.resource.fileName + "&nbsp;</span></div>",
+            caption : "<div class='editTab' id='editFileName'><span title='" + editorData.resource.resourcePath +"'>&nbsp;" + editorData.resource.fileName + "&nbsp;</span></div>",
             content : "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
             closable: true,
             active: true
@@ -353,7 +439,7 @@ module Project {
          sortedNames.sort();
          
          for(var i = 0; i < sortedNames.length; i++) {
-            var tabResource = sortedNames[i];
+            var tabResource: string = sortedNames[i];
             var nextTab = tabResources[tabResource];
             
             nextTab.closable = sortedNames.length > 1; // if only one tab make sure it cannot be closed
@@ -362,6 +448,14 @@ module Project {
          tabs.tabs = sortedTabs;
          tabs.active = editorData.resource.resourcePath;
          activateTab(editorData.resource.resourcePath, layout.name, false, true, ""); // browse style makes no difference here
+         
+         // this is pretty rubbish, it would be good if there was a promise after redraw/repaint
+         setTimeout(function() { // wait for the paint to finish
+            $('#editFileName').on('click', function(e) {
+               Project.clickOnTab(editorData.resource.resourcePath, Project.toggleFullScreen);
+               e.preventDefault();
+            });  
+         }, 100);
       }
    }
    
@@ -848,11 +942,11 @@ module Project {
                            + "   <td>"
                            + "      <table id='toolbarNormal'>"
                            + "      <tr>"
-                           + "         <td><div id='newFile' onclick='Command.newFile(null)' title='New File&nbsp;&nbsp;&nbsp;Ctrl+N'></div></td>"                           
-                           + "         <td><div id='saveFile' onclick='Command.saveFile(null)' title='Save File&nbsp;&nbsp;&nbsp;Ctrl+S'></div></td>" 
-                           + "         <td><div id='deleteFile' onclick='Command.deleteFile(null)' title='Delete File'></div></td>"   
-                           + "         <td><div id='searchTypes' onclick='Command.searchTypes()' title='Search Types&nbsp;&nbsp;&nbsp;Ctrl+Shift+S'></div></td>"                             
-                           + "         <td><div id='runScript' onclick='Command.runScript()' title='Run Script&nbsp;&nbsp;&nbsp;Ctrl+R'></div></td>" 
+                           + "         <td><div id='newFile' title='New File&nbsp;&nbsp;&nbsp;Ctrl+N'></div></td>"                           
+                           + "         <td><div id='saveFile' title='Save File&nbsp;&nbsp;&nbsp;Ctrl+S'></div></td>" 
+                           + "         <td><div id='deleteFile' title='Delete File'></div></td>"   
+                           + "         <td><div id='searchTypes' title='Search Types&nbsp;&nbsp;&nbsp;Ctrl+Shift+S'></div></td>"                             
+                           + "         <td><div id='runScript' title='Run Script&nbsp;&nbsp;&nbsp;Ctrl+R'></div></td>" 
                            + "      </tr>"
                            + "      </table>"
                            + "   </td>" 
@@ -860,12 +954,12 @@ module Project {
                            + "   <td>"
                            + "      <table id='toolbarDebug'>"
                            + "      <tr>"
-                           + "         <td><div id='stopScript' onclick='Command.stopScript()' title='Stop Script'></div></td>" 
-                           + "         <td><div id='resumeScript' onclick='Command.resumeScript()' title='Resume Script&nbsp;&nbsp;&nbsp;F8'></div></td>" 
-                           + "         <td><div id='stepInScript' onclick='Command.stepInScript()' title='Step In&nbsp;&nbsp;&nbsp;F5'></div></td>" 
-                           + "         <td><div id='stepOutScript' onclick='Command.stepOutScript()' title='Step Out&nbsp;&nbsp;&nbsp;F7'></div></td>" 
-                           + "         <td><div id='stepOverScript' onclick='Command.stepOverScript()' title='Step Over&nbsp;&nbsp;&nbsp;F6'></div></td>" 
-                           + "         <td><div id='evaluateExpression' onclick='Command.evaluateExpression()' title='Evaluate Expression&nbsp;&nbsp;&nbsp;Ctrl+Shift+E'></div></td>"                         
+                           + "         <td><div id='stopScript' title='Stop Script'></div></td>" 
+                           + "         <td><div id='resumeScript' title='Resume Script&nbsp;&nbsp;&nbsp;F8'></div></td>" 
+                           + "         <td><div id='stepInScript' title='Step In&nbsp;&nbsp;&nbsp;F5'></div></td>" 
+                           + "         <td><div id='stepOutScript' title='Step Out&nbsp;&nbsp;&nbsp;F7'></div></td>" 
+                           + "         <td><div id='stepOverScript' title='Step Over&nbsp;&nbsp;&nbsp;F6'></div></td>" 
+                           + "         <td><div id='evaluateExpression' title='Evaluate Expression&nbsp;&nbsp;&nbsp;Ctrl+Shift+E'></div></td>"                         
                            + "      </tr>"
                            + "      </table>"
                            + "   </td>"
@@ -885,11 +979,11 @@ module Project {
                                "<table border='0' width='100%' cellpadding='0'>"+
                                "<tr>"+
                                "   <td  width='100%'></td>"+
-                               "   <td><div id='toolbarNavigateBack' title='Navigate Back' onclick='History.navigateBackward()'></div></td>"+                                
-                               "   <td><div id='toolbarNavigateForward' title='Navigate Forward' onclick='History.navigateForward()'></div></td>"+     
+                               "   <td><div id='toolbarNavigateBack' title='Navigate Back'></div></td>"+                                
+                               "   <td><div id='toolbarNavigateForward' title='Navigate Forward'></div></td>"+     
                                "   <td>&nbsp;&nbsp;</td>"+   
                                "   <td>"+
-                               "        <select class='styledSelect' id='editorTheme' size='1' onchange='Project.changeEditorTheme()'>\n"+
+                               "        <select class='styledSelect' id='editorTheme' size='1'>\n"+
                                "          <option value='chrome'>&nbsp;Chrome</option>\n"+
                                "          <option value='eclipse' selected='selected'>&nbsp;Eclipse</option>\n"+
                                "          <option value='github'>&nbsp;GitHub</option>\n"+
@@ -903,7 +997,7 @@ module Project {
                                "   </td>"+  
                                "   <td>&nbsp;&nbsp;</td>"+                              
                                "   <td>"+
-                               "        <select class='styledSelect' id='fontFamily' size='1' onchange='Project.changeProjectFont()'>\n"+
+                               "        <select class='styledSelect' id='fontFamily' size='1'>\n"+
                                "          <option value='Consolas' selected='selected'>&nbsp;Consolas</option>\n"+
                                "          <option value='Lucida Console'>&nbsp;Lucida Console</option>\n"+
                                "          <option value='Courier New'>&nbsp;Courier New</option>\n"+       
@@ -914,7 +1008,7 @@ module Project {
                                "   </td>"+  
                                "   <td>&nbsp;&nbsp;</td>"+  
                                "   <td>"+
-                               "        <select class='styledSelect' id='fontSize' size='1' onchange='Project.changeProjectFont()'>\n"+
+                               "        <select class='styledSelect' id='fontSize' size='1'>\n"+
                                "          <option value='10px'>&nbsp;10px</option>\n"+
                                "          <option value='11px'>&nbsp;11px</option>\n"+
                                "          <option value='12px'>&nbsp;12px</option>\n"+
@@ -927,9 +1021,9 @@ module Project {
                                "        </select>\n"+
                                "   </td>"+
                                "   <td>&nbsp;&nbsp;</td>"+  
-                               "   <td><div id='toolbarResize' title='Full Screen&nbsp;&nbsp;&nbsp;Ctrl+M' onclick='Project.toggleFullScreen()'></div></td>"+                               
-                               "   <td><div id='toolbarSwitchLayout' title='Switch Layout&nbsp;&nbsp;&nbsp;Ctrl+L' onclick='Command.switchLayout()'></div></td>"+                                
-                               "   <td><div id='toolbarSwitchProject' title='Switch Project&nbsp;&nbsp;&nbsp;Ctrl+P' onclick='Command.switchProject()'></div></td>"+     
+                               "   <td><div id='toolbarResize' title='Full Screen&nbsp;&nbsp;&nbsp;Ctrl+M'></div></td>"+                               
+                               "   <td><div id='toolbarSwitchLayout' title='Switch Layout&nbsp;&nbsp;&nbsp;Ctrl+L'></div></td>"+                                
+                               "   <td><div id='toolbarSwitchProject' title='Switch Project&nbsp;&nbsp;&nbsp;Ctrl+P'></div></td>"+     
                                "   <td>&nbsp;&nbsp;</td>"+                                 
                                "</tr>"+
                                "</table>"+
@@ -1303,7 +1397,7 @@ module Project {
       var hashIndex = location.indexOf('#');
       
       if(hashIndex == -1) { // no path specified
-         jQuery.ajax({
+         $.ajax({
             url: '/default/' + document.title,
             success: function (defaultResource) {
                FileExplorer.openTreeFile(defaultResource, function(){});
@@ -1314,5 +1408,5 @@ module Project {
    }
 }
 
-ModuleSystem.registerModule("project", "Project module: project.js", Project.createMainLayout, Project.startMainLayout, [ "common", "socket", "console", "problem", "editor", "spinner", "tree", "threads" ]);
+//ModuleSystem.registerModule("project", "Project module: project.js", Project.createMainLayout, Project.startMainLayout, [ "common", "socket", "console", "problem", "editor", "spinner", "tree", "threads" ]);
 

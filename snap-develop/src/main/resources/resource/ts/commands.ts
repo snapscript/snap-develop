@@ -1,5 +1,22 @@
-
-module Command {
+import * as $ from "jquery"
+import {w2ui} from "w2ui"
+import {Common} from "./common"
+import {Project} from "./project"
+import {Alerts} from "./alert"
+import {EventBus} from "./socket"
+import {ProcessConsole} from "./console"
+import {ProblemManager} from "./problem"
+import {FileEditor} from "./editor"
+import {LoadSpinner} from "./spinner"
+import {FileTree} from "./tree"
+import {ThreadManager} from "./threads"
+import {History} from "./history"
+import {VariableManager} from "./variables"
+import {DialogBuilder} from "./dialog"
+import {FileExplorer} from "./explorer"
+import {DebugManager} from "./debug"
+ 
+export module Command {
    
    export function searchTypes() {
       DialogBuilder.createListDialog(function(text, ignoreMe, onComplete){
@@ -37,7 +54,7 @@ module Command {
    
    function findTypesMatching(text, onComplete) {
       if(text) {
-         jQuery.ajax({
+         $.ajax({
             url: '/type/' + document.title + '?expression=' + text,
             success: function (typeMatches) {
                var sortedMatches = [];
@@ -152,7 +169,7 @@ module Command {
          searchUrl += "&replace=" + encodeURIComponent(searchCriteria.replace);
          searchUrl += "&enableReplace=" + encodeURIComponent(searchCriteria.enableReplace);
          
-         jQuery.ajax({
+         $.ajax({
             url: searchUrl,
             success: function (filesMatched) {
                var response = [];
@@ -207,7 +224,7 @@ module Command {
    
    function findFilesByName(text, onComplete) {
       if(text && text.length > 1) {
-         jQuery.ajax({
+         $.ajax({
             url: '/file/' + document.title + '?expression=' + text,
             success: function (filesMatched) {
                var response = [];
@@ -580,4 +597,4 @@ module Command {
    }
 }
 
-ModuleSystem.registerModule("commands", "Commands module: commands.js", null, null, [ "common", "editor", "tree", "threads" ]);
+//ModuleSystem.registerModule("commands", "Commands module: commands.js", null, null, [ "common", "editor", "tree", "threads" ]);

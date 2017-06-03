@@ -1,5 +1,7 @@
+import * as $ from "jquery"
+import {DialogBuilder} from "./dialog"
 
-module Start {
+export module Start {
 
    export function showProjectDialog() {
       DialogBuilder.createTreeOpenDialog(function(dialogPathDetails, projectName) {
@@ -34,4 +36,4 @@ module Start {
       "Open Project", "Open", "");
    }
 }
-ModuleSystem.registerModule("start", "Start module: start.js", null, Start.showProjectDialog, [ "common", "dialog", "tree", "spinner" ]);
+//ModuleSystem.registerModule("start", "Start module: start.js", null, Start.showProjectDialog, [ "common", "dialog", "tree", "spinner" ]);

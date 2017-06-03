@@ -1,5 +1,15 @@
-
-module FileExplorer {
+import * as $ from "jquery"
+import * as w2ui from "w2ui"
+import {ace} from "ace"
+import {saveAs} from "filesaver"
+import {Common} from "./common"
+import {EventBus} from "./socket"
+import {FileTree} from "./tree"
+import {FileEditor} from "./editor"
+import {Command} from "./commands"
+import {Alerts} from "./alert"
+ 
+export module FileExplorer {
    
    var treeVisible = false;
    
@@ -23,7 +33,7 @@ module FileExplorer {
    export function openTreeFile(resourcePath, afterLoad) {
       var filePath = resourcePath.toLowerCase();
       
-      if(stringEndsWith(filePath, ".json") || stringEndsWith(filePath, ".js")) { // is it json or javascript
+      if(Common.stringEndsWith(filePath, ".json") || Common.stringEndsWith(filePath, ".js")) { // is it json or javascript
          $.get(resourcePath, function(response) {
             handleOpenTreeFile(resourcePath, afterLoad, response);
          }, "text").fail(function() {
@@ -43,8 +53,8 @@ module FileExplorer {
       var backupResourcePath = resourcePath.replace(/^\/resource/i, "/history");
       //var backupUrl = backupResourcePath + "?time=" + timeStamp;
       
-      if(stringEndsWith(filePath, ".json") || stringEndsWith(filePath, ".js")) { // is it json or javascript
-         jQuery.ajax({
+      if(Common.stringEndsWith(filePath, ".json") || Common.stringEndsWith(filePath, ".js")) { // is it json or javascript
+         $.ajax({
             url: backupResourcePath + "?time=" + timeStamp,
             type: "get",
             success: function (response) {
@@ -56,7 +66,7 @@ module FileExplorer {
             async: false
          });
       } else {
-         jQuery.ajax({
+         $.ajax({
             url: backupResourcePath + "?time=" + timeStamp,
             type: "get",            
             success: function (response) {
@@ -128,4 +138,4 @@ module FileExplorer {
       }
    }
 }
-ModuleSystem.registerModule("explorer", "Explorer module: explorer.js", null, FileExplorer.showTree, [ "common", "spinner", "tree", "commands" ]);
+//ModuleSystem.registerModule("explorer", "Explorer module: explorer.js", null, FileExplorer.showTree, [ "common", "spinner", "tree", "commands" ]);

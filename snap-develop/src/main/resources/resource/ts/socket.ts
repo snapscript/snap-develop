@@ -1,8 +1,9 @@
+import {LoadSpinner} from "./spinner"
 
-module EventBus {
+export module EventBus {
    
-   var subscription = {};
-   var routes = {};
+   var subscription: any = {};
+   var routes: any = {};
    var disconnect = [];
    var socket = null;
    var connections = 0;
@@ -11,7 +12,7 @@ module EventBus {
    
    export function startSocket() {
       createSubscription();
-      setTimeout(openSocket, 1000); /* delay connect */
+      openSocket(); /* delay connect */
    }
    
    function refreshSocket() {
@@ -210,4 +211,4 @@ module EventBus {
    }
 }
 
-ModuleSystem.registerModule("socket", "Socket subscription module: socket.js", null, EventBus.startSocket, []);
+//ModuleSystem.registerModule("socket", "Socket subscription module: socket.js", null, EventBus.startSocket, []);

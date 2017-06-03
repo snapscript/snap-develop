@@ -48,6 +48,8 @@ public class TypeScriptCompiler {
          
          command.add(node.getCanonicalPath());
          command.add(compiler.getCanonicalPath()); 
+         command.add("--module"); 
+         command.add("AMD");
          
          if(outputDir.isDirectory()) {
             command.add("--outDir");

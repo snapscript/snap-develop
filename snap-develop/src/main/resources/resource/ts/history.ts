@@ -1,17 +1,22 @@
+import * as $ from "jquery"
+import {w2ui} from "w2ui"
+import {FileTree} from "./tree"
+import {FileEditor} from "./editor"
+import {FileExplorer} from "./explorer"
 
-module History {
+export module History {
 
    export function trackHistory() {
       $(window).on('hashchange', function() {
          updateEditorFromHistory();
       });
-      setTimeout(updateEditorFromHistory, 200);
-   }
+      updateEditorFromHistory(200);
+   } 
    
    export function showFileHistory() {
       var editorData = FileEditor.loadEditor();
       var resource = editorData.resource.projectPath;
-      jQuery.ajax({
+      $.ajax({
          url: '/history/' + document.title + '/' + resource,
          success: function (currentRecords) {
             var historyRecords = [];
@@ -61,4 +66,4 @@ module History {
    }
 }
 
-ModuleSystem.registerModule("history", "History module: history.js", null, History.trackHistory, [ "common", "editor" ]);
+//ModuleSystem.registerModule("history", "History module: history.js", null, History.trackHistory, [ "common", "editor" ]);

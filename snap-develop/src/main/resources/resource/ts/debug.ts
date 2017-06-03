@@ -1,5 +1,17 @@
+import * as $ from "jquery"
+import {w2ui} from "w2ui"
+import {Common} from "./common"
+import {EventBus} from "./socket"
+import {FileEditor} from "./editor"
+import {Profiler} from "./profiler"
+import {VariableManager} from "./variables"
+import {ProcessConsole} from "./console"
+import {ThreadManager} from "./threads"
+import {StatusPanel} from "./status"
+import {Command} from "./commands"
+import {FileTree} from "./tree"
 
-module DebugManager {
+export module DebugManager {
    
    var statusProcesses = {};
    var statusFocus = null;
@@ -12,7 +24,7 @@ module DebugManager {
    }
    
    function refreshStatusProcesses() {
-      var timeMillis = currentTime();
+      var timeMillis = Common.currentTime();
       var activeProcesses = {};
       var expiryCount = 0;
       
@@ -42,8 +54,8 @@ module DebugManager {
          statusProcesses[text] = null;
       }
       if(statusFocus == text) {
-         suspendedThreads = {};
-         currentFocusThread = null;
+         //suspendedThreads = {};
+         //currentFocusThread = null;
          ThreadManager.terminateThreads();
          clearStatusFocus();
       }
@@ -189,8 +201,8 @@ module DebugManager {
             }
          }
       }
-      updateTableRecords(statusRecords, 'debug'); // update if changed only
+      Common.updateTableRecords(statusRecords, 'debug'); // update if changed only
    }
 }
 
-ModuleSystem.registerModule("debug", "Debug module: debug.js", null, DebugManager.createStatus, [ "common", "socket", "tree", "threads" ]);
+//ModuleSystem.registerModule("debug", "Debug module: debug.js", null, DebugManager.createStatus, [ "common", "socket", "tree", "threads" ]);

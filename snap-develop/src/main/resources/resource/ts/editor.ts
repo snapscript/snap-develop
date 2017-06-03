@@ -1,5 +1,22 @@
+import * as $ from "jquery"
+import {md5} from "md5"
+import {ace} from "ace"
+import {w2ui, w2popup} from "w2ui"
+import {Common} from "./common"
+import {EventBus} from "./socket"
+import {ProcessConsole} from "./console"
+import {ProblemManager} from "./problem"
+import {LoadSpinner} from "./spinner"
+import {FileTree} from "./tree"
+import {ThreadManager} from "./threads"
+import {History} from "./history"
+import {VariableManager} from "./variables"
+import {Project} from "./project"
+import {StatusPanel} from "./status"
+import {KeyBinder} from "./keys"
+import {Command} from "./commands"
 
-module FileEditor {
+export module FileEditor {
 
    var editorBreakpoints = {}; // spans multiple resources
    var editorMarkers = {};
@@ -11,7 +28,7 @@ module FileEditor {
    var editorHistory = {};
    
    export function createEditor() {
-      window.setTimeout(showEditor, 400);
+      showEditor();
       EventBus.createTermination(clearEditorHighlights); // create callback
    }
    
@@ -333,8 +350,8 @@ module FileEditor {
       var editor = ace.edit("editor");
       var session = editor.getSession();
       var manager = session.getUndoManager();
-      var undoStack = jQuery.extend(true, {}, manager.$undoStack);
-      var redoStack = jQuery.extend(true, {}, manager.$redoStack);
+      var undoStack = $.extend(true, {}, manager.$undoStack);
+      var redoStack = $.extend(true, {}, manager.$redoStack);
 
       return {
          undoStack: undoStack,
@@ -347,7 +364,7 @@ module FileEditor {
       if(text) {
          var token = resource.toLowerCase();
          
-         if(stringEndsWith(token, ".json")) {
+         if(Common.stringEndsWith(token, ".json")) {
             try {
                 var object = JSON.parse(text);
                 return JSON.stringify(object, null, 3);
@@ -363,40 +380,40 @@ module FileEditor {
    export function resolveEditorMode(resource) {
       var token = resource.toLowerCase();
       
-      if(stringEndsWith(token, ".snap")) {
+      if(Common.stringEndsWith(token, ".snap")) {
          return "ace/mode/snapscript";
       }
-      if(stringEndsWith(token, ".xml")) {
+      if(Common.stringEndsWith(token, ".xml")) {
          return "ace/mode/xml";
       }
-      if(stringEndsWith(token, ".json")) {
+      if(Common.stringEndsWith(token, ".json")) {
          return "ace/mode/json";
       }
-      if(stringEndsWith(token, ".sql")) {
+      if(Common.stringEndsWith(token, ".sql")) {
          return "ace/mode/sql";
       }
-      if(stringEndsWith(token, ".js")) {
+      if(Common.stringEndsWith(token, ".js")) {
          return "ace/mode/javascript";
       }
-      if(stringEndsWith(token, ".html")) {
+      if(Common.stringEndsWith(token, ".html")) {
          return "ace/mode/html";
       }
-      if(stringEndsWith(token, ".htm")) {
+      if(Common.stringEndsWith(token, ".htm")) {
          return "ace/mode/html";
       }
-      if(stringEndsWith(token, ".txt")) {
+      if(Common.stringEndsWith(token, ".txt")) {
          return "ace/mode/text";
       }
-      if(stringEndsWith(token, ".properties")) {
+      if(Common.stringEndsWith(token, ".properties")) {
          return "ace/mode/properties";
       }
-      if(stringEndsWith(token, ".gitignore")) {
+      if(Common.stringEndsWith(token, ".gitignore")) {
          return "ace/mode/text";
       }
-      if(stringEndsWith(token, ".project")) {
+      if(Common.stringEndsWith(token, ".project")) {
          return "ace/mode/xml";
       }
-      if(stringEndsWith(token, ".classpath")) {
+      if(Common.stringEndsWith(token, ".classpath")) {
          return "ace/mode/xml";
       }
       return "ace/mode/text";
@@ -410,7 +427,7 @@ module FileEditor {
       var importRegex = /import\s+([a-z][a-zA-Z0-9\.]*)\.([A-Z][a-zA-Z]*)/g;
       var tokenList = {};
       
-      if(stringEndsWith(token, ".snap")) {
+      if(Common.stringEndsWith(token, ".snap")) {
          var lines = text.split(/\r?\n/);
          
          for(var i = 0; i < lines.length; i++) {
@@ -785,7 +802,11 @@ module FileEditor {
             e.stop()
          });
          
-         createEditorLinks(editor, validEditorLink, openEditorLink); // link.js
+         //
+         // THIS IS THE LINKS
+         //
+         
+         //createEditorLinks(editor, validEditorLink, openEditorLink); // link.js
          KeyBinder.bindKeys(); // register key bindings
          // registerEditorBindings();
          Project.changeProjectFont(); // project.js update font
@@ -897,4 +918,4 @@ module FileEditor {
    }
 }
 
-ModuleSystem.registerModule("editor", "Editor module: editor.js", null, FileEditor.createEditor, [ "common", "spinner", "tree" ]);
+//ModuleSystem.registerModule("editor", "Editor module: editor.js", null, FileEditor.createEditor, [ "common", "spinner", "tree" ]);

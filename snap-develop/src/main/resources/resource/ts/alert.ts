@@ -1,5 +1,8 @@
+import {w2ui} from "w2ui"
+import {EventBus} from "./socket"
+import {Common} from "./common"
 
-module Alerts {
+export module Alerts {
    
    export function registerAlerts() {
       EventBus.createRoute('ALERT', createAlert);
@@ -90,4 +93,4 @@ module Alerts {
       focusCallback();
    }
 }
-ModuleSystem.registerModule("alert", "Alert module: alert.js", null, Alerts.registerAlerts, ["common", "socket"]);
+//ModuleSystem.registerModule("alert", "Alert module: alert.js", null, Alerts.registerAlerts, ["common", "socket"]);

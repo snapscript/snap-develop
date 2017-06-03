@@ -1,5 +1,11 @@
+import * as $ from "jquery"
+import {w2ui, w2popup} from "w2ui"
+import {Common} from "./common"
+import {EventBus} from "./socket"
+import {FileTree} from "./tree"
+import {FileEditor} from "./editor"
 
-module ProblemManager {
+export module ProblemManager {
    
    var currentProblems = {};
    
@@ -9,7 +15,7 @@ module ProblemManager {
    }
    
    function refreshProblems() {
-      var timeMillis = currentTime();
+      var timeMillis = Common.currentTime();
       var activeProblems = {};
       var expiryCount = 0;
       
@@ -111,4 +117,4 @@ module ProblemManager {
    }
 }
 
-ModuleSystem.registerModule("problem", "Problem module: problem.js", null, ProblemManager.registerProblems, ["common", "socket"]);
+//ModuleSystem.registerModule("problem", "Problem module: problem.js", null, ProblemManager.registerProblems, ["common", "socket"]);

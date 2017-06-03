@@ -1,5 +1,9 @@
+import * as $ from "jquery"
+import * as fancytree from "fancytree"
+import {Common} from "./common"
+import {Command} from "./commands"
 
-module FileTree {
+export module FileTree {
    
    export function createTree(treePath, element, id, expandPath, foldersOnly, treeMenuHandler, clickCallback) { // #explorer
       createTreeOfDepth(treePath, element, id, expandPath, foldersOnly, treeMenuHandler, clickCallback, 10000); // large random depth
@@ -13,7 +17,7 @@ module FileTree {
          if(expandPath != null) {
             requestPath += "&expand="+expandPath;
          }
-         jQuery.ajax({
+         $.ajax({
             url: requestPath,
             success: function (response) {
                $('#' + element).html(response);
@@ -64,7 +68,7 @@ module FileTree {
             if(typeof Command !== 'undefined') {
                return Command.isDragAndDropFilePossible({
                   name: data.otherNode.key,
-                  folder: data.otherNode.folder == true;
+                  folder: data.otherNode.folder == true
                }, {
                   name: node.key,
                   folder: node.folder == true
@@ -81,7 +85,7 @@ module FileTree {
             if(typeof Command !== 'undefined') {
                Command.dragAndDropFile({
                   name: data.otherNode.key,
-                  folder: data.otherNode.folder == true;
+                  folder: data.otherNode.folder == true
                }, {
                   name: node.key,
                   folder: node.folder == true
@@ -89,9 +93,9 @@ module FileTree {
             }
          }
        };
-      
-      // using default options
-      $('#' + id).fancytree({
+       
+       // using default options
+       $('#' + id).fancytree({
          extensions: dragAndDrop ? ["dnd"] : [],
          click : clickCallback,
          expand: function(event, data) {
@@ -104,7 +108,7 @@ module FileTree {
                Command.folderCollapse(data.node.key);
             }
          },
-         dnd: dragAndDrop ? dnd : null;         
+         dnd: (dragAndDrop ? dnd : null)         
       });
       if(treeMenuHandler != null) {
           $("#" + id).contextmenu({
@@ -145,7 +149,7 @@ module FileTree {
    }
    
    export function isResourceFolder(path) {
-      if(!stringEndsWith(path, "/")) {
+      if(!Common.stringEndsWith(path, "/")) {
          var parts = path.split(".");
          
          if(path.length === 1 || (parts[0] === "" && parts.length === 2)) {
@@ -166,7 +170,7 @@ module FileTree {
          while(cleanPath.indexOf("//") != -1) {
             cleanPath = cleanPath.replace("//", "/"); // remove double slashes like /x/y//z.snap
          }
-         if(stringEndsWith(cleanPath, "/")) {
+         if(Common.stringEndsWith(cleanPath, "/")) {
             cleanPath = cleanPath.substring(0,cleanPath.length-1);
          }
          return cleanPath;
@@ -255,4 +259,4 @@ module FileTree {
    }
 }
 
-ModuleSystem.registerModule("tree", "Tree module: tree.js", null, null, [ "common" ]);
+//ModuleSystem.registerModule("tree", "Tree module: tree.js", null, null, [ "common" ]);

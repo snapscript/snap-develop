@@ -1,8 +1,18 @@
+import * as $ from "jquery"
+import {w2ui} from "w2ui"
+import {EventBus} from "./socket"
+import {Common} from "./common"
+import {FileTree} from "./tree"
+import {FileEditor} from "./editor"
+import {VariableManager} from "./variables"
+import {FileExplorer} from "./explorer"
+import {Profiler} from "./profiler"
+import {StatusPanel} from "./status"
 
-module ThreadManager {
+export module ThreadManager {
    
-   var suspendedThreads = {};
-   var threadEditorFocus = {};
+   var suspendedThreads: any = {};
+   var threadEditorFocus: any = {};
    
    export function createThreads() {
       EventBus.createRoute("BEGIN", startThreads, clearThreads);
@@ -279,8 +289,8 @@ module ThreadManager {
             });
          }
       }
-      updateTableRecords(threadRecords, 'threads'); // update if changed only
+      Common.updateTableRecords(threadRecords, 'threads'); // update if changed only
    }
 }
 
-ModuleSystem.registerModule("threads", "Thread module: threads.js", null, ThreadManager.createThreads, [ "common", "socket", "explorer" ]);
+//ModuleSystem.registerModule("threads", "Thread module: threads.js", null, ThreadManager.createThreads, [ "common", "socket", "explorer" ]);

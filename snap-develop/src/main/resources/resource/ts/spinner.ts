@@ -1,5 +1,6 @@
+import * as Spinner from "spin" 
 
-module LoadSpinner {
+export module LoadSpinner {
    
    var spinnerHiding = false;
    var spinner = null;
@@ -54,4 +55,4 @@ module LoadSpinner {
    }
 }
 
-ModuleSystem.registerModule("spinner", "Spinner module: spinner.js", null, LoadSpinner.create, []);
+//ModuleSystem.registerModule("spinner", "Spinner module: spinner.js", null, LoadSpinner.create, []);

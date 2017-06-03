@@ -1,8 +1,13 @@
+import * as $ from "jquery"
+import {w2ui} from "w2ui"
+import {ThreadManager} from "./threads"
+import {Common} from "./common"
+import {Command} from "./commands"
 
-module VariableManager {
+export module VariableManager {
 
-   var expandVariableHistory = {};
-   var expandEvaluationHistory = {};
+   var expandVariableHistory: any = {};
+   var expandEvaluationHistory: any = {};
    
    export function toggleExpandVariable(name) {
       var variablePaths = expandVariableTree(name, expandVariableHistory);
@@ -104,11 +109,11 @@ module VariableManager {
                }
             }
          }
-         var displayValue = "<div class='variableData'>"+escapeHtml(variable.value)+"</div>";
-         var displayName = "<div title='"+escapeHtml(variable.description)+"' style='padding-left: " + 
+         var displayValue = "<div class='variableData'>"+Common.escapeHtml(variable.value)+"</div>";
+         var displayName = "<div title='"+Common.escapeHtml(variable.description)+"' style='padding-left: " + 
             (variable.depth * 20)+ 
             "px;'><div class='"+displayStyle+
-            "'>"+escapeHtml(variable.name)+"</div></div>";
+            "'>"+Common.escapeHtml(variable.name)+"</div></div>";
          
          variableRecords.push({
             recid: variableIndex++,
@@ -133,11 +138,11 @@ module VariableManager {
    //   w2ui['evaluation'].records = [];
    //   w2ui['evaluation'].refresh();
    }
-   
+    
    export function clearVariables() {
       expandVariableHistory = {};
       w2ui['variables'].records = [];
       w2ui['variables'].refresh();
    }
 }
-ModuleSystem.registerModule("variables", "Variables module: variables.js", null, null, [ "common" ]);
+//ModuleSystem.registerModule("variables", "Variables module: variables.js", null, null, [ "common" ]);

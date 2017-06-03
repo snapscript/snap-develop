@@ -1,5 +1,10 @@
+import * as $ from "jquery"
+import {w2ui} from "w2ui"
+import {Common} from "./common"
+import {EventBus} from "./socket"
+import {FileTree} from "./tree"
 
-module Profiler {
+export module Profiler {
    
    export function startProfiler() {
       EventBus.createRoute("PROFILE", updateProfiler, clearProfiler);
@@ -20,8 +25,8 @@ module Profiler {
          var recordTime = profileRecords[i].time;
          
          if(recordTime > 0) {
-            var percentageTime = (recordTime/totalTime)*100;
-            var percentage = parseInt(percentageTime);
+            var percentageTime: number = (recordTime/totalTime)*100;
+            var percentage: number = parseInt(percentageTime);
             
             profilerWidths[i] = percentage;
          }
@@ -55,4 +60,4 @@ module Profiler {
    }
 }
 
-ModuleSystem.registerModule("profiler", "Profiler module: profiler.js", null, Profiler.startProfiler, [ "common", "socket" ]);
+//ModuleSystem.registerModule("profiler", "Profiler module: profiler.js", null, Profiler.startProfiler, [ "common", "socket" ]);

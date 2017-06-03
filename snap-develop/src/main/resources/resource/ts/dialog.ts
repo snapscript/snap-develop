@@ -1,5 +1,13 @@
-
-module DialogBuilder {
+import * as $ from "jquery"
+import {w2ui, w2popup} from "w2ui"
+import {Common} from "./common"
+import {Command} from "./commands"
+import {VariableManager} from "./variables"
+import {FileExplorer} from "./explorer"
+import {FileEditor} from "./editor"
+import {FileTree} from "./tree"
+ 
+export module DialogBuilder {
    
    export function openTreeDialog(resourceDetails, foldersOnly, saveCallback) {
       if (resourceDetails != null) {
@@ -39,9 +47,10 @@ module DialogBuilder {
       if (resourceDetails != null) {
          dialogExpandPath = resourceDetails.projectDirectory; // /src/blah
       }
+      var dialogBody = createFileSelectionDialogLayout(dialogExpandPath, '');
       w2popup.open({
          title : dialogTitle,
-         body : createFileSelectionDialogLayout(dialogExpandPath, ''), 
+         body : dialogBody.content, 
          buttons : '<button id="dialogSave" class="btn dialogButton">Save</button><button id="dialogCancel" class="btn dialogButton">Cancel</button>',
          width : 500,
          height : 400,
@@ -54,6 +63,7 @@ module DialogBuilder {
          showMax : true,
          onOpen : function(event) {
             setTimeout(function() {
+               dialogBody.init();
                var element = document.getElementById('dialogPath');
                
                element.contentEditable = true;
@@ -122,7 +132,7 @@ module DialogBuilder {
       
       w2popup.open({
          title : dialogTitle,
-         body : dialogBody,
+         body : dialogBody.content,
          buttons : '<button id="dialogSave" class="btn dialogButton">'+buttonText+'</button>',
          width : 500,
          height : 400,
@@ -135,6 +145,7 @@ module DialogBuilder {
          showMax : true,
          onOpen : function(event) {
             setTimeout(function() {
+               dialogBody.init();
                var element = document.getElementById('dialogPath');
                
                element.contentEditable = true;
@@ -175,7 +186,7 @@ module DialogBuilder {
       var dialogBody = createListDialogLayout();
       w2popup.open({
          title : dialogTitle,
-         body : dialogBody,
+         body : dialogBody.content,
          buttons : '<button id="dialogCancel" class="btn dialogButton">Cancel</button>',
          width : 800,
          height : 400, 
@@ -188,24 +199,29 @@ module DialogBuilder {
          showMax : true,
          onOpen : function(event) {
             setTimeout(function() {
+               dialogBody.init();
                $('#dialogPath').on('change keyup paste', function() {
                   var expressionText = $("#dialogPath").html();
                   var expressionPattern = null;
                   
                   if(patternList) {
                      expressionPattern = $("#dialogFolder").html();
-                     expressionPattern = clearHtml(expressionPattern);
+                     expressionPattern = Common.clearHtml(expressionPattern);
                   }
                   if(expressionText) {
-                     expressionText = clearHtml(expressionText);
+                     expressionText = Common.clearHtml(expressionText);
                   } 
                   listFunction(expressionText, expressionPattern, function(list) {
                      var content = createDialogListTable(list);
                      
-                     if(content){
-                        $("#dialog").html(content);
+                     if(content.content){
+                        $("#dialog").html(content.content);
                      }else {
                         $("#dialog").html('');
+                     }
+                     // this is kind of crap, but we need to be sure the html is rendered before binding
+                     if(content.init) {
+                        setTimeout(content.init, 100); // register the init function to run 
                      }
                   });
                });
@@ -245,24 +261,28 @@ module DialogBuilder {
          
          if(fileFilterPatterns) {
             expressionPattern = $("#fileFilterPatterns").html();
-            expressionPattern = clearHtml(expressionPattern);
+            expressionPattern = Common.clearHtml(expressionPattern);
          }
          if(expressionText) {
-            expressionText = clearHtml(expressionText);
+            expressionText = Common.clearHtml(expressionText);
          } 
          listFunction(expressionText, expressionPattern, searchCriteria, function(list) {
             var content = createDialogListTable(list);
             
-            if(content){
-               $("#dialog").html(content);
+            if(content.content){
+               $("#dialog").html(content.content);
             }else {
                $("#dialog").html('');
+            }
+            // this is kind of crap, but we need to be sure the html is rendered before binding
+            if(content.init) {
+               setTimeout(content.init, 100); // register the init function to run 
             }
          });
       };
       w2popup.open({
          title : dialogTitle,
-         body : dialogBody,
+         body : dialogBody.content,
          buttons : '<button id="dialogCancel" class="btn dialogButton">Cancel</button>',
          width : 800,
          height : 400, 
@@ -275,6 +295,7 @@ module DialogBuilder {
          showMax : true,
          onOpen : function(event) {
             setTimeout(function() {
+               dialogBody.init();
                $('#searchText').on('change keyup paste', executeSearch);
 //               $('#inputCaseSensitive').change(executeSearch);
 //               $('#inputRegularExpression').change(executeSearch);
@@ -315,24 +336,28 @@ module DialogBuilder {
          
          if(fileFilterPatterns) {
             expressionPattern = $("#fileFilterPatterns").html();
-            expressionPattern = clearHtml(expressionPattern);
+            expressionPattern = Common.clearHtml(expressionPattern);
          }
          if(expressionText) {
-            expressionText = clearHtml(expressionText);
+            expressionText = Common.clearHtml(expressionText);
          } 
          listFunction(expressionText, expressionPattern, searchCriteria, function(list) {
             var content = createDialogListTable(list);
             
-            if(content){
-               $("#dialog").html(content);
+            if(content.content){
+               $("#dialog").html(content.content);
             }else {
                $("#dialog").html('');
+            }
+            // this is kind of crap, but we need to be sure the html is rendered before binding
+            if(content.init) {
+               setTimeout(content.init, 100); // register the init function to run 
             }
          });
       };
       w2popup.open({
          title : dialogTitle,
-         body : dialogBody,
+         body : dialogBody.content,
          buttons : '<button id="dialogSave" class="btn dialogButton">Replace</button><button id="dialogCancel" class="btn dialogButton">Cancel</button>',
          width : 800,
          height : 400, 
@@ -345,6 +370,7 @@ module DialogBuilder {
          showMax : true,
          onOpen : function(event) {
             setTimeout(function() {
+               dialogBody.init();
                $('#searchText').on('change keyup paste', executeSearch);
 //               $('#inputCaseSensitive').change(executeSearch);
 //               $('#inputRegularExpression').change(executeSearch);
@@ -385,10 +411,10 @@ module DialogBuilder {
    }
    
    function createEvaluateDialog(inputText, dialogTitle) { 
-      var dialogBody = createGridDialogLayout(inputText ? escapeHtml(inputText) : '');
+      var dialogBody = createGridDialogLayout(inputText ? Common.escapeHtml(inputText) : '');
       w2popup.open({
          title : dialogTitle,
-         body : dialogBody,
+         body : dialogBody.content,
          buttons : '<button id="dialogSave" class="btn dialogButton">Evaluate</button>',
          width : 700,
          height : 400,
@@ -401,6 +427,7 @@ module DialogBuilder {
          showMax : true,
          onOpen : function(event) {
             setTimeout(function() {
+               dialogBody.init(); // bind the functions
                $('#dialog').w2grid({
                   recordTitles: false, // show tooltips
                   name : 'evaluation',
@@ -426,7 +453,7 @@ module DialogBuilder {
                         if (sel.length == 1) {
                            var record = grid.get(sel[0]);
                            var text = $("#dialogPath").html();
-                           var expression = clearHtml(text);
+                           var expression = Common.clearHtml(text);
                            
                            VariableManager.toggleExpandEvaluation(record.path, expression);
                         }
@@ -464,7 +491,7 @@ module DialogBuilder {
       });
       $("#dialogSave").click(function() {
          var text = $("#dialogPath").html();
-         var expression = clearHtml(text);
+         var expression = Common.clearHtml(text);
          
          Command.browseScriptEvaluation([], expression, true); // clear the variables
       });
@@ -472,6 +499,7 @@ module DialogBuilder {
    
    function createDialogListTable(list) {
       var content = "<table class='dialogListTable' width='100%'>";
+      var initFunctions = {};
       
       for(var i = 0; i < list.length; i++) {
          var row = list[i];
@@ -479,56 +507,98 @@ module DialogBuilder {
          
          for(var j = 0; j < row.length; j++) {
             var cell = row[j];
-            content += "<td width='50%'><div class='";
-            content += cell.style;
-            content += "' onclick='return DialogBuilder.submitDialogListResource";
+            var entryId = "listEntry_" + i + "_" + j;
             
-            if(cell.line) { // ("resource", line)
-               content += "(\"";
-               content += cell.resource;
-               content += "\", ";
-               content += cell.line;
-               content += ")";
-            } else {
-               content += "(\""; // ("link")
-               content += cell.link;
-               content += "\")";
-            }
+            content += "<td width='50%'><div id='" + entryId + "' class='";
+            content += cell.style;
             content += "'>";
             content += cell.text;
             content += "</div></td>";
+            
+            initFunctions[entryId] = function() {
+               if(cell.line) {
+                  return submitDialogListResource(cell.resource, cell.line);
+               } else {
+                  return submitDialogListResource(cell.link);
+               }
+            }
          }
          content += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>"; 
          content += "</tr>";
       }
       content +="</table>";
-      return content;
+      return {
+         content: content,
+         init: function() {
+            // initialize all functions
+            for (var initFunctionId in initFunctions) {
+               if (initFunctions.hasOwnProperty(initFunctionId)) {
+                  var initFunction = initFunctions[initFunctionId];
+               
+                  $('#' + initFunctionId).on('click', function(e) {
+                     return initFunction();
+                  });
+               }
+            }
+         }
+      };
    }
    
    function createGridDialogLayout(inputText) {
       if(!inputText) {
          inputText = '';
       }
-      return '<div id="dialogContainerBig">'+
-         '   <div id="dialog" class="dialog"></div>'+
-         '</div>'+
-         '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'dialogPath\');">' + inputText + '</div>';
-
+      return {
+         content: '<div id="dialogContainerBig">'+
+                  '   <div id="dialog" class="dialog"></div>'+
+                  '</div>'+
+                  '<div id="dialogPath" contenteditable="true">' + inputText + '</div>',
+                  
+         init: function() {
+            $('#dialogPath').on('keydown', function(e) {
+               return submitDialog(e);
+            });
+            $('#dialogPath').on('click', function(e) {
+               return focusDialogInput('dialogPath');
+            }); 
+         }        
+      };
    }
    
    function createListDialogLayout() {
-      return '<div id="dialogContainerBig">'+
-         '   <div id="dialog" class="dialog"></div>'+
-         '</div>'+
-         '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'dialogPath\');"></div>';
-
+      return {
+         content: '<div id="dialogContainerBig">'+
+                  '   <div id="dialog" class="dialog"></div>'+
+                  '</div>'+
+                  '<div id="dialogPath" contenteditable="true"></div>',
+                  
+         init: function() {
+            $('#dialogPath').on('keydown', function(e) {
+               return submitDialog(e);
+            });
+            $('#dialogPath').on('click', function(e) {
+               return focusDialogInput('dialogPath');
+            }); 
+         }
+      };                  
    }
    
    function createFileFolderSelectionDialogLayout() {
-      return '<div id="dialogContainerBig">\n'+
-         '   <div id="dialog" class="dialogTree"></div>\n'+
-         '</div>\n'+
-         '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'dialogPath\');"></div>';
+      return {
+         content: '<div id="dialogContainerBig">\n'+
+                  '   <div id="dialog" class="dialogTree"></div>\n'+
+                  '</div>\n'+
+                  '<div id="dialogPath" contenteditable="true"></div>',
+                
+         init: function() {
+            $('#dialogPath').on('keydown', function(e) {
+               return submitDialog(e);
+            });
+            $('#dialogPath').on('click', function(e) {
+               return focusDialogInput('dialogPath');
+            }); 
+         }
+      };
 
    }
    
@@ -539,11 +609,22 @@ module DialogBuilder {
       if(!selectedFile) {
          selectedFile = '';
       }
-      return '<div id="dialogContainer">\n'+
-         '   <div id="dialog" class="dialogTree"></div>\n'+
-         '</div>\n'+
-         '<div id="dialogFolder">'+selectedFileFolder+'</div>\n'+
-         '<div id="dialogPath" onkeydown="return DialogBuilder.submitDialog(event);" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'dialogPath\');">'+selectedFile+'</div>';
+      return {
+         content: '<div id="dialogContainer">\n'+
+                  '   <div id="dialog" class="dialogTree"></div>\n'+
+                  '</div>\n'+
+                  '<div id="dialogFolder">'+selectedFileFolder+'</div>\n'+
+                  '<div id="dialogPath" contenteditable="true">'+selectedFile+'</div>',
+                  
+         init: function() {
+            $('#dialogPath').on('keydown', function(e) {
+               return submitDialog(e);
+            });
+            $('#dialogPath').on('click', function(e) {
+               return focusDialogInput('dialogPath');
+            });
+         }
+      };                    
 
    }
    
@@ -551,53 +632,105 @@ module DialogBuilder {
       if(!searchText) {
          searchText = '';
       }
-      return '<div id="dialogContainer">\n'+
-         '   <div id="dialog" class="dialog"></div>\n'+
-         '</div>\n'+
-         '<div id="fileFilterPatterns" class="searchFileFilterInputBox" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'fileFilterPatterns\');">'+fileFilterPatterns+'</div>\n'+
-         '<div id="searchText" class="searchValueInputBox" onkeydown="contenteditable="true" return DialogBuilder.submitDialog(event);" onclick="return DialogBuilder.focusDialogInput(\'searchText\');">'+searchText+'</div>\n'+
-         '<div class="searchCheckBoxPanel">\n'+
-         '   <table border="0" cellspacing="5">\n'+
-         '      <tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputCaseSensitive\')">\n'+
-         '         <td><input type="checkbox" name="caseSensitive" id="inputCaseSensitive"><label></label>&nbsp;&nbsp;Case sensitive</td>\n'+
-         '      </tr>\n'+
-         '      <tr><td height="5px"></td></tr>\n'+
-         '      <tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputRegularExpression\')">\n'+
-         '         <td><input type="checkbox" name="regex" id="inputRegularExpression"><label></label>&nbsp;&nbsp;Regular expression</td>\n'+
-         '      </tr>\n'+
-         '      <tr><td height="5px"></td></tr>\n'+
-         '      <!--tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputWholeWord\')">\n'+
-         '         <td><input type="checkbox" name="wholeWord" id="inputWholeWord"><label></label>&nbsp;&nbsp;Whole word</td>\n'+
-         '      </tr-->\n'+                 
-         '   </table>\n'+  
-         '</div>';
+      return {
+         content: '<div id="dialogContainer">\n'+
+                  '   <div id="dialog" class="dialog"></div>\n'+
+                  '</div>\n'+
+                  '<div id="fileFilterPatterns" class="searchFileFilterInputBox" contenteditable="true"">'+fileFilterPatterns+'</div>\n'+
+                  '<div id="searchText" class="searchValueInputBox" contenteditable="true"">'+searchText+'</div>\n'+
+                  '<div class="searchCheckBoxPanel">\n'+
+                  '   <table border="0" cellspacing="5">\n'+
+                  '      <tr id="inputCaseSensitiveRow">\n'+
+                  '         <td><input type="checkbox" name="caseSensitive" id="inputCaseSensitive"><label></label>&nbsp;&nbsp;Case sensitive</td>\n'+
+                  '      </tr>\n'+
+                  '      <tr><td height="5px"></td></tr>\n'+
+                  '      <tr id="inputRegularExpressionRow">\n'+
+                  '         <td><input type="checkbox" name="regex" id="inputRegularExpression"><label></label>&nbsp;&nbsp;Regular expression</td>\n'+
+                  '      </tr>\n'+
+                  '      <tr><td height="5px"></td></tr>\n'+
+                  '      <!--tr id="inputWholeWordRow">\n'+
+                  '         <td><input type="checkbox" name="wholeWord" id="inputWholeWord"><label></label>&nbsp;&nbsp;Whole word</td>\n'+
+                  '      </tr-->\n'+                 
+                  '   </table>\n'+  
+                  '</div>',
+                  
+         init: function() {
+            $('#fileFilterPatterns').on('click', function(e) {
+               return focusDialogInput('fileFilterPatterns');
+            });
+            $('#searchText').on('keydown', function(e) {
+               return submitDialog(e);
+            });
+            $('#searchText').on('click', function(e) {
+               return focusDialogInput('searchText');
+            });
+            $('#inputCaseSensitiveRow').on('click', function(e) {
+               return toggleCheckboxSelection('inputCaseSensitive');
+            });
+            $('#inputRegularExpressionRow').on('click', function(e) {
+               return toggleCheckboxSelection('inputRegularExpression');
+            });
+//                     $('#inputWholeWordRow').on('click', function(e) {
+//                        return toggleCheckboxSelection('inputWholeWord');
+//                     });
+         }
+      };                            
    }
    
    function createTextSearchAndReplaceDialogLayout(fileFilterPatterns, searchText) {
       if(!searchText) {
          searchText = '';
       }
-      return '<div id="dialogContainerSmall">\n'+
-         '   <div id="dialog" class="dialog"></div>\n'+
-         '</div>\n'+
-         '<div id="fileFilterPatterns" class="searchAndReplaceFileFilterInputBox" contenteditable="true" onclick="return DialogBuilder.focusDialogInput(\'fileFilterPatterns\');">'+fileFilterPatterns+'</div>\n'+
-         '<div id="searchText" class="searchAndReplaceValueInputBox" contenteditable="true" onkeydown="return DialogBuilder.submitDialog(event);" onclick="return DialogBuilder.focusDialogInput(\'searchText\');">'+searchText+'</div>\n'+
-         '<div id="replaceText" class="searchAndReplaceInputBox" contenteditable="true" onkeydown="return DialogBuilder.submitDialog(event);" onclick="return DialogBuilder.focusDialogInput(\'replaceText\');"></div>\n'+
-         '<div class="searchAndReplaceCheckBoxPanel">\n'+
-         '   <table border="0" cellspacing="5">\n'+
-         '      <tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputCaseSensitive\')">\n'+
-         '         <td><input type="checkbox" name="caseSensitive" id="inputCaseSensitive"><label></label>&nbsp;&nbsp;Case sensitive</td>\n'+
-         '      </tr>\n'+
-         '      <tr><td height="5px"></td></tr>\n'+
-         '      <tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputRegularExpression\')">\n'+
-         '         <td><input type="checkbox" name="regex" id="inputRegularExpression"><label></label>&nbsp;&nbsp;Regular expression</td>\n'+
-         '      </tr>\n'+
-         '      <tr><td height="5px"></td></tr>\n'+
-         '      <!--tr onclick="return DialogBuilder.toggleCheckboxSelection(\'inputWholeWord\')">\n'+
-         '         <td><input type="checkbox" name="wholeWord" id="inputWholeWord"><label></label>&nbsp;&nbsp;Whole word</td>\n'+
-         '      </tr-->\n'+                 
-         '   </table>\n'+  
-         '</div>';
+      return { 
+         content: '<div id="dialogContainerSmall">\n'+
+                  '   <div id="dialog" class="dialog"></div>\n'+
+                  '</div>\n'+
+                  '<div id="fileFilterPatterns" class="searchAndReplaceFileFilterInputBox" contenteditable="true"">'+fileFilterPatterns+'</div>\n'+
+                  '<div id="searchText" class="searchAndReplaceValueInputBox" contenteditable="true">'+searchText+'</div>\n'+
+                  '<div id="replaceText" class="searchAndReplaceInputBox" contenteditable="true"></div>\n'+
+                  '<div class="searchAndReplaceCheckBoxPanel">\n'+
+                  '   <table border="0" cellspacing="5">\n'+
+                  '      <tr id="inputCaseSensitiveRow">\n'+
+                  '         <td><input type="checkbox" name="caseSensitive" id="inputCaseSensitive"><label></label>&nbsp;&nbsp;Case sensitive</td>\n'+
+                  '      </tr>\n'+
+                  '      <tr><td height="5px"></td></tr>\n'+
+                  '      <tr id="inputRegularExpressionRow">\n'+
+                  '         <td><input type="checkbox" name="regex" id="inputRegularExpression"><label></label>&nbsp;&nbsp;Regular expression</td>\n'+
+                  '      </tr>\n'+
+                  '      <tr><td height="5px"></td></tr>\n'+
+                  '      <!--tr id="inputWholeWordRow">\n'+
+                  '         <td><input type="checkbox" name="wholeWord" id="inputWholeWord"><label></label>&nbsp;&nbsp;Whole word</td>\n'+
+                  '      </tr-->\n'+                 
+                  '   </table>\n'+  
+                  '</div>',
+                  
+         init: function() {
+            $('#fileFilterPatterns').on('click', function(e) {
+               return focusDialogInput('fileFilterPatterns');
+            });
+            $('#searchText').on('keydown', function(e) {
+               return submitDialog(e);
+            });
+            $('#searchText').on('click', function(e) {
+               return focusDialogInput('searchText');
+            });
+            $('#replaceText').on('keydown', function(e) { // really??
+               return submitDialog(e);
+            });
+            $('#replaceText').on('click', function(e) {
+               return focusDialogInput('replaceText');
+            });
+            $('#inputCaseSensitiveRow').on('click', function(e) {
+               return toggleCheckboxSelection('inputCaseSensitive');
+            });
+            $('#inputRegularExpressionRow').on('click', function(e) {
+               return toggleCheckboxSelection('inputRegularExpression');
+            });
+//            $('#inputWholeWordRow').on('click', function(e) {
+//               return toggleCheckboxSelection('inputWholeWord');
+//            });
+         }
+      };
    }
     
    export function submitDialogListResource(resource, line) {
@@ -653,4 +786,4 @@ module DialogBuilder {
    }
 }
 
-ModuleSystem.registerModule("dialog", "Dialog module: dialog.js", null, null, [ "common", "tree" ]);
+//ModuleSystem.registerModule("dialog", "Dialog module: dialog.js", null, null, [ "common", "tree" ]);

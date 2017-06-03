@@ -1,5 +1,12 @@
+import * as $ from "jquery"
+import * as Mousetrap from "mousetrap"
+import {w2ui} from "w2ui"
+import {Common} from "./common"
+import {FileEditor} from "./editor"
+import {Command} from "./commands"
+import {Project} from "./project"
 
-module KeyBinder {
+export module KeyBinder {
 
    const MAX_PRESS_REPEAT = 250; // 250 milliseconds
    const pressTimes = {};
@@ -128,7 +135,7 @@ module KeyBinder {
       for(var i = 0; i < keyParts.length; i++) {
          var keyPart = keyParts[i];
          
-         if(isMacintosh() && keyPart == 'ctrl') {
+         if(Common.isMacintosh() && keyPart == 'ctrl') {
             keyPart = 'command';
          }
          keyBindingParts[i] = keyPart.charAt(0).toUpperCase() + keyPart.slice(1);
@@ -191,4 +198,4 @@ module KeyBinder {
    }
 }
 
-ModuleSystem.registerModule("keys", "Key binder: key.js", null, KeyBinder.bindKeys, [ "common", "spinner", "tree", "commands", "editor" ]);
+//ModuleSystem.registerModule("keys", "Key binder: key.js", null, KeyBinder.bindKeys, [ "common", "spinner", "tree", "commands", "editor" ]);
