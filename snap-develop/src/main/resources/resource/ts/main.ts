@@ -34,7 +34,7 @@ require.config({
       },
       "fancytree": {
          deps: ["jquery", "jquery-ui"]
-      }
+      },
       "fancytree-dnd": {
          deps: ["fancytree"]         
       },
@@ -87,7 +87,8 @@ define(["require",
         "./threads",
         "./debug",
         "./profiler",
-        "./alert"], 
+        "./alert",
+        "./select"], 
         
    function (require, 
               exports, 
@@ -107,23 +108,30 @@ define(["require",
               threads, 
               debug, 
               profiler, 
-              alert) 
+              alert,
+              select) 
    {
       "use strict";
-      spinner.LoadSpinner.create();
-      socket.EventBus.startSocket();
-      project.Project.createMainLayout();
+      var path = window.location.pathname;
       
-      setTimeout(function() { // wait until the paint has finished
-         alert.Alerts.registerAlerts();
-         console.ProcessConsole.registerConsole();
-         explorer.FileExplorer.showTree();
-         editor.FileEditor.createEditor();
-         project.Project.startMainLayout();
-         history.History.trackHistory();
-         threads.ThreadManager.createThreads();
-         debug.DebugManager.createStatus();
-         profiler.Profiler.startProfiler();
-      }, 200);
+      if(path == "/") {
+         select.ProjectSelector.showProjectDialog();
+      } else {
+         spinner.LoadSpinner.create();
+         socket.EventBus.startSocket();
+         project.Project.createMainLayout();
+         
+         setTimeout(function() { // wait until the paint has finished
+            alert.Alerts.registerAlerts();
+            console.ProcessConsole.registerConsole();
+            explorer.FileExplorer.showTree();
+            editor.FileEditor.createEditor();
+            project.Project.startMainLayout();
+            history.History.trackHistory();
+            threads.ThreadManager.createThreads();
+            debug.DebugManager.createStatus();
+            profiler.Profiler.startProfiler();
+         }, 200);
+      }
    }
 );

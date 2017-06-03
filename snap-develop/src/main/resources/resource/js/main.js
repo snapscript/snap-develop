@@ -86,20 +86,27 @@ define(["require",
     "./threads",
     "./debug",
     "./profiler",
-    "./alert"], function (require, exports, fancytree, fancytreeDnd, ace, aceLanguageTools, mousetrap, mousetrapBindGlobal, socket, spinner, project, explorer, editor, history, console, threads, debug, profiler, alert) {
+    "./alert",
+    "./select"], function (require, exports, fancytree, fancytreeDnd, ace, aceLanguageTools, mousetrap, mousetrapBindGlobal, socket, spinner, project, explorer, editor, history, console, threads, debug, profiler, alert, select) {
     "use strict";
+    var path = window.location.pathname;
     spinner.LoadSpinner.create();
-    socket.EventBus.startSocket();
-    project.Project.createMainLayout();
-    setTimeout(function () {
-        alert.Alerts.registerAlerts();
-        console.ProcessConsole.registerConsole();
-        explorer.FileExplorer.showTree();
-        editor.FileEditor.createEditor();
-        project.Project.startMainLayout();
-        history.History.trackHistory();
-        threads.ThreadManager.createThreads();
-        debug.DebugManager.createStatus();
-        profiler.Profiler.startProfiler();
-    }, 200);
+    if (path == "/") {
+        select.ProjectSelector.showProjectDialog();
+    }
+    else {
+        socket.EventBus.startSocket();
+        project.Project.createMainLayout();
+        setTimeout(function () {
+            alert.Alerts.registerAlerts();
+            console.ProcessConsole.registerConsole();
+            explorer.FileExplorer.showTree();
+            editor.FileEditor.createEditor();
+            project.Project.startMainLayout();
+            history.History.trackHistory();
+            threads.ThreadManager.createThreads();
+            debug.DebugManager.createStatus();
+            profiler.Profiler.startProfiler();
+        }, 200);
+    }
 });

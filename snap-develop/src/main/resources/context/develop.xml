@@ -169,7 +169,7 @@
     <constructor-arg ref="DisplayModelResolver" />
     <constructor-arg ref="ProjectBuilder" />
     <constructor-arg ref="TemplateEngine" />
-    <constructor-arg value="start.vm" />
+    <constructor-arg value="select.vm" />
   </bean>
 
   <bean id="ProjectFileResource" class="org.snapscript.develop.resource.project.ProjectFileResource">

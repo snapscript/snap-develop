@@ -1,7 +1,7 @@
 import * as $ from "jquery"
 import {DialogBuilder} from "./dialog"
 
-export module Start {
+export module ProjectSelector {
 
    export function showProjectDialog() {
       DialogBuilder.createTreeOpenDialog(function(dialogPathDetails, projectName) {

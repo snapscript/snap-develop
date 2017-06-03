@@ -28,6 +28,18 @@ define(["require", "exports", "jquery", "w2ui", "./console", "./problem", "./edi
         }
         Project.startMainLayout = startMainLayout;
         function attachClickEvents() {
+            $('#toolbarResize').on('click', function (e) {
+                toggleFullScreen();
+                e.preventDefault();
+            });
+            $('#toolbarSwitchLayout').on('click', function (e) {
+                commands_1.Command.switchLayout();
+                e.preventDefault();
+            });
+            $('#toolbarSwitchProject').on('click', function (e) {
+                commands_1.Command.switchProject();
+                e.preventDefault();
+            });
             $('#toolbarNavigateBack').on('click', function (e) {
                 history_1.History.navigateBackward();
                 e.preventDefault();
@@ -37,15 +49,15 @@ define(["require", "exports", "jquery", "w2ui", "./console", "./problem", "./edi
                 e.preventDefault();
             });
             $('#editorTheme').on('click', function (e) {
-                Project.changeEditorTheme();
+                changeEditorTheme();
                 e.preventDefault();
             });
             $('#fontFamily').on('click', function (e) {
-                Project.changeProjectFont();
+                changeProjectFont();
                 e.preventDefault();
             });
             $('#fontSize').on('click', function (e) {
-                Project.changeProjectFont();
+                changeProjectFont();
                 e.preventDefault();
             });
             $('#newFile').on('click', function (e) {
@@ -387,7 +399,7 @@ define(["require", "exports", "jquery", "w2ui", "./console", "./problem", "./edi
                 // this is pretty rubbish, it would be good if there was a promise after redraw/repaint
                 setTimeout(function () {
                     $('#editFileName').on('click', function (e) {
-                        Project.clickOnTab(editorData.resource.resourcePath, Project.toggleFullScreen);
+                        clickOnTab(editorData.resource.resourcePath, toggleFullScreen);
                         e.preventDefault();
                     });
                 }, 100);
