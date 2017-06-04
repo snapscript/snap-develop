@@ -1,4 +1,4 @@
-define(["require", "exports", "w2ui", "./threads", "./common", "./commands"], function (require, exports, w2ui_1, threads_1, common_1, commands_1) {
+define(["require", "exports", "w2ui", "threads", "common", "commands"], function (require, exports, w2ui_1, threads_1, common_1, commands_1) {
     "use strict";
     var VariableManager;
     (function (VariableManager) {

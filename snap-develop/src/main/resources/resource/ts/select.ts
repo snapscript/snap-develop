@@ -1,5 +1,5 @@
 import * as $ from "jquery"
-import {DialogBuilder} from "./dialog"
+import {DialogBuilder} from "dialog"
 
 export module ProjectSelector {
 

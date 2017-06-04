@@ -1,5 +1,5 @@
 import * as $ from "jquery"
-import {FileTree} from "./tree"
+import {FileTree} from "tree"
 
 export module StatusPanel {
    

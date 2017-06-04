@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "w2ui", "./socket", "./common", "./tree", "./editor", "./variables", "./explorer", "./profiler", "./status"], function (require, exports, $, w2ui_1, socket_1, common_1, tree_1, editor_1, variables_1, explorer_1, profiler_1, status_1) {
+define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "editor", "variables", "explorer", "profiler", "status"], function (require, exports, $, w2ui_1, socket_1, common_1, tree_1, editor_1, variables_1, explorer_1, profiler_1, status_1) {
     "use strict";
     var ThreadManager;
     (function (ThreadManager) {

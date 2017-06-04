@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "filesaver", "./common", "./socket", "./tree", "./editor", "./commands", "./alert"], function (require, exports, $, filesaver_1, common_1, socket_1, tree_1, editor_1, commands_1, alert_1) {
+define(["require", "exports", "jquery", "filesaver", "common", "socket", "tree", "editor", "commands", "alert"], function (require, exports, $, filesaver_1, common_1, socket_1, tree_1, editor_1, commands_1, alert_1) {
     "use strict";
     var FileExplorer;
     (function (FileExplorer) {

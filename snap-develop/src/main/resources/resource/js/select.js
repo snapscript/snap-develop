@@ -1,4 +1,4 @@
-define(["require", "exports", "./dialog"], function (require, exports, dialog_1) {
+define(["require", "exports", "dialog"], function (require, exports, dialog_1) {
     "use strict";
     var ProjectSelector;
     (function (ProjectSelector) {

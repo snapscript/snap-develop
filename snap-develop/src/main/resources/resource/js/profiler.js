@@ -1,4 +1,4 @@
-define(["require", "exports", "w2ui", "./socket", "./tree"], function (require, exports, w2ui_1, socket_1, tree_1) {
+define(["require", "exports", "w2ui", "socket", "tree"], function (require, exports, w2ui_1, socket_1, tree_1) {
     "use strict";
     var Profiler;
     (function (Profiler) {

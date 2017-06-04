@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./editor", "./profiler", "./variables", "./console", "./threads", "./status", "./commands", "./tree"], function (require, exports, $, w2ui_1, common_1, socket_1, editor_1, profiler_1, variables_1, console_1, threads_1, status_1, commands_1, tree_1) {
+define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./editor", "./profiler", "./variables", "./console", "./threads", "status", "commands", "tree"], function (require, exports, $, w2ui_1, common_1, socket_1, editor_1, profiler_1, variables_1, console_1, threads_1, status_1, commands_1, tree_1) {
     "use strict";
     var DebugManager;
     (function (DebugManager) {

@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "w2ui", "./tree", "./editor", "./explorer"], function (require, exports, $, w2ui_1, tree_1, editor_1, explorer_1) {
+define(["require", "exports", "jquery", "w2ui", "tree", "editor", "explorer"], function (require, exports, $, w2ui_1, tree_1, editor_1, explorer_1) {
     "use strict";
     var History;
     (function (History) {

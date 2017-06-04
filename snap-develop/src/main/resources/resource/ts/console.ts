@@ -1,7 +1,7 @@
 import * as $ from "jquery"
-import {Common} from "./common"
-import {Command} from "./commands"
-import {EventBus} from "./socket"
+import {Common} from "common"
+import {Command} from "commands"
+import {EventBus} from "socket"
 
 export module ProcessConsole {
    

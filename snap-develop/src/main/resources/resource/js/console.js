@@ -1,4 +1,4 @@
-define(["require", "exports", "./socket"], function (require, exports, socket_1) {
+define(["require", "exports", "socket"], function (require, exports, socket_1) {
     "use strict";
     var ProcessConsole;
     (function (ProcessConsole) {

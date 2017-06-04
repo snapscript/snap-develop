@@ -7,9 +7,9 @@ import {Profiler} from "./profiler"
 import {VariableManager} from "./variables"
 import {ProcessConsole} from "./console"
 import {ThreadManager} from "./threads"
-import {StatusPanel} from "./status"
-import {Command} from "./commands"
-import {FileTree} from "./tree"
+import {StatusPanel} from "status"
+import {Command} from "commands"
+import {FileTree} from "tree"
 
 export module DebugManager {
    

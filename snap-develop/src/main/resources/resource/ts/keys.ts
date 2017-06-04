@@ -1,10 +1,10 @@
 import * as $ from "jquery"
 import * as Mousetrap from "mousetrap"
 import {w2ui} from "w2ui"
-import {Common} from "./common"
-import {FileEditor} from "./editor"
-import {Command} from "./commands"
-import {Project} from "./project"
+import {Common} from "common"
+import {FileEditor} from "editor"
+import {Command} from "commands"
+import {Project} from "project"
 
 export module KeyBinder {
 

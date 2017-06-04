@@ -1,6 +1,6 @@
 import {w2ui} from "w2ui"
-import {EventBus} from "./socket"
-import {Common} from "./common"
+import {EventBus} from "socket"
+import {Common} from "common"
 
 export module Alerts {
    

@@ -1,8 +1,8 @@
 import * as $ from "jquery"
 import {w2ui} from "w2ui"
-import {FileTree} from "./tree"
-import {FileEditor} from "./editor"
-import {FileExplorer} from "./explorer"
+import {FileTree} from "tree"
+import {FileEditor} from "editor"
+import {FileExplorer} from "explorer"
 
 export module History {
 

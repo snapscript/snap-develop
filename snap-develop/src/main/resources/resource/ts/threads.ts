@@ -1,13 +1,13 @@
 import * as $ from "jquery"
 import {w2ui} from "w2ui"
-import {EventBus} from "./socket"
-import {Common} from "./common"
-import {FileTree} from "./tree"
-import {FileEditor} from "./editor"
-import {VariableManager} from "./variables"
-import {FileExplorer} from "./explorer"
-import {Profiler} from "./profiler"
-import {StatusPanel} from "./status"
+import {EventBus} from "socket"
+import {Common} from "common"
+import {FileTree} from "tree"
+import {FileEditor} from "editor"
+import {VariableManager} from "variables"
+import {FileExplorer} from "explorer"
+import {Profiler} from "profiler"
+import {StatusPanel} from "status"
 
 export module ThreadManager {
    

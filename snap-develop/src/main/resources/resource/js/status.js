@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "./tree"], function (require, exports, $, tree_1) {
+define(["require", "exports", "jquery", "tree"], function (require, exports, $, tree_1) {
     "use strict";
     var StatusPanel;
     (function (StatusPanel) {

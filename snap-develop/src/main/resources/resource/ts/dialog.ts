@@ -1,11 +1,11 @@
 import * as $ from "jquery"
 import {w2ui, w2popup} from "w2ui"
-import {Common} from "./common"
-import {Command} from "./commands"
-import {VariableManager} from "./variables"
-import {FileExplorer} from "./explorer"
-import {FileEditor} from "./editor"
-import {FileTree} from "./tree"
+import {Common} from "common"
+import {Command} from "commands"
+import {VariableManager} from "variables"
+import {FileExplorer} from "explorer"
+import {FileEditor} from "editor"
+import {FileTree} from "tree"
  
 export module DialogBuilder {
    

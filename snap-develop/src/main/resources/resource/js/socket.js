@@ -1,4 +1,4 @@
-define(["require", "exports", "./spinner"], function (require, exports, spinner_1) {
+define(["require", "exports", "spinner"], function (require, exports, spinner_1) {
     "use strict";
     var EventBus;
     (function (EventBus) {

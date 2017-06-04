@@ -1,9 +1,9 @@
 import * as $ from "jquery"
 import {w2ui, w2popup} from "w2ui"
-import {Common} from "./common"
-import {EventBus} from "./socket"
-import {FileTree} from "./tree"
-import {FileEditor} from "./editor"
+import {Common} from "common"
+import {EventBus} from "socket"
+import {FileTree} from "tree"
+import {FileEditor} from "editor"
 
 export module ProblemManager {
    

@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "./common", "./commands"], function (require, exports, $, common_1, commands_1) {
+define(["require", "exports", "jquery", "common", "commands"], function (require, exports, $, common_1, commands_1) {
     "use strict";
     var FileTree;
     (function (FileTree) {

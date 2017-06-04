@@ -1,7 +1,7 @@
 import * as $ from "jquery"
 import * as fancytree from "fancytree"
-import {Common} from "./common"
-import {Command} from "./commands"
+import {Common} from "common"
+import {Command} from "commands"
 
 export module FileTree {
    

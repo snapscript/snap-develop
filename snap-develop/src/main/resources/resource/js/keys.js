@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "mousetrap", "./common", "./editor", "./commands", "./project"], function (require, exports, $, Mousetrap, common_1, editor_1, commands_1, project_1) {
+define(["require", "exports", "jquery", "mousetrap", "common", "editor", "commands", "project"], function (require, exports, $, Mousetrap, common_1, editor_1, commands_1, project_1) {
     "use strict";
     var KeyBinder;
     (function (KeyBinder) {

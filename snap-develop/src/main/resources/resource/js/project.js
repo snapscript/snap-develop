@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "w2ui", "./console", "./problem", "./editor", "./tree", "./threads", "./history", "./variables", "./explorer", "./commands", "./debug"], function (require, exports, $, w2ui_1, console_1, problem_1, editor_1, tree_1, threads_1, history_1, variables_1, explorer_1, commands_1, debug_1) {
+define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", "tree", "threads", "history", "variables", "explorer", "commands", "debug"], function (require, exports, $, w2ui_1, console_1, problem_1, editor_1, tree_1, threads_1, history_1, variables_1, explorer_1, commands_1, debug_1) {
     "use strict";
     var Project;
     (function (Project) {

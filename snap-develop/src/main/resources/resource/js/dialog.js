@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "w2ui", "./common", "./commands", "./variables", "./explorer", "./editor", "./tree"], function (require, exports, $, w2ui_1, common_1, commands_1, variables_1, explorer_1, editor_1, tree_1) {
+define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables", "explorer", "editor", "tree"], function (require, exports, $, w2ui_1, common_1, commands_1, variables_1, explorer_1, editor_1, tree_1) {
     "use strict";
     var DialogBuilder;
     (function (DialogBuilder) {

@@ -1,4 +1,4 @@
-define(["require", "exports", "w2ui", "./common", "./socket", "./tree", "./editor"], function (require, exports, w2ui_1, common_1, socket_1, tree_1, editor_1) {
+define(["require", "exports", "w2ui", "common", "socket", "tree", "editor"], function (require, exports, w2ui_1, common_1, socket_1, tree_1, editor_1) {
     "use strict";
     var ProblemManager;
     (function (ProblemManager) {

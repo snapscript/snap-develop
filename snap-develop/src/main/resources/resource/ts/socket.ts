@@ -1,4 +1,4 @@
-import {LoadSpinner} from "./spinner"
+import {LoadSpinner} from "spinner"
 
 export module EventBus {
    

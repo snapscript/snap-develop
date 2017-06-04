@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "md5", "ace", "w2ui", "./common", "./socket", "./problem", "./spinner", "./tree", "./history", "./project", "./status", "./keys", "./commands"], function (require, exports, $, md5_1, ace_1, w2ui_1, common_1, socket_1, problem_1, spinner_1, tree_1, history_1, project_1, status_1, keys_1, commands_1) {
+define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket", "problem", "spinner", "tree", "history", "project", "status", "keys", "commands"], function (require, exports, $, md5_1, ace_1, w2ui_1, common_1, socket_1, problem_1, spinner_1, tree_1, history_1, project_1, status_1, keys_1, commands_1) {
     "use strict";
     var FileEditor;
     (function (FileEditor) {

@@ -2,12 +2,12 @@ import * as $ from "jquery"
 import * as w2ui from "w2ui"
 import {ace} from "ace"
 import {saveAs} from "filesaver"
-import {Common} from "./common"
-import {EventBus} from "./socket"
-import {FileTree} from "./tree"
-import {FileEditor} from "./editor"
-import {Command} from "./commands"
-import {Alerts} from "./alert"
+import {Common} from "common"
+import {EventBus} from "socket"
+import {FileTree} from "tree"
+import {FileEditor} from "editor"
+import {Command} from "commands"
+import {Alerts} from "alert"
  
 export module FileExplorer {
    

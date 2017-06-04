@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "./project", "./alert", "./socket", "./console", "./editor", "./tree", "./threads", "./dialog", "./explorer", "./debug"], function (require, exports, $, project_1, alert_1, socket_1, console_1, editor_1, tree_1, threads_1, dialog_1, explorer_1, debug_1) {
+define(["require", "exports", "jquery", "project", "alert", "socket", "console", "editor", "tree", "threads", "dialog", "explorer", "debug"], function (require, exports, $, project_1, alert_1, socket_1, console_1, editor_1, tree_1, threads_1, dialog_1, explorer_1, debug_1) {
     "use strict";
     var Command;
     (function (Command) {

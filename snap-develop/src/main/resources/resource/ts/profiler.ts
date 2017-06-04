@@ -1,8 +1,8 @@
 import * as $ from "jquery"
 import {w2ui} from "w2ui"
-import {Common} from "./common"
-import {EventBus} from "./socket"
-import {FileTree} from "./tree"
+import {Common} from "common"
+import {EventBus} from "socket"
+import {FileTree} from "tree"
 
 export module Profiler {
    

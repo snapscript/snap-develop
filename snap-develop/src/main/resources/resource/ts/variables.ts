@@ -1,8 +1,8 @@
 import * as $ from "jquery"
 import {w2ui} from "w2ui"
-import {ThreadManager} from "./threads"
-import {Common} from "./common"
-import {Command} from "./commands"
+import {ThreadManager} from "threads"
+import {Common} from "common"
+import {Command} from "commands"
 
 export module VariableManager {
 
