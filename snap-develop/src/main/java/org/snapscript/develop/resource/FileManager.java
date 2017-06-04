@@ -35,7 +35,7 @@ public class FileManager {
                return new FileContent(path, file, resource, encoding);
             }
          }catch(Exception e) {
-            throw new IllegalStateException("Error resolving location of " + path, e);
+            return new ClassPathContent(path, resource, encoding);
          }
       }
       return new ClassPathContent(path, resource, encoding);
