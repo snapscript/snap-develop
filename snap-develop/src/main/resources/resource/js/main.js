@@ -108,6 +108,7 @@ define(["require",
     "socket",
     "spinner",
     "project",
+    "problem",
     "explorer",
     "editor",
     "history",
@@ -121,7 +122,7 @@ define(["require",
     jqueryContextMenu, // force load
     ace, aceLanguageTools, // force load
     mousetrap, mousetrapBindGlobal, // force load
-    socket, spinner, project, explorer, editor, history, console, threads, debug, profiler, alert, select) {
+    socket, spinner, project, problem, explorer, editor, history, console, threads, debug, profiler, alert, select) {
     "use strict";
     var path = window.location.pathname;
     if (path == "/") {
@@ -141,6 +142,7 @@ define(["require",
             threads.ThreadManager.createThreads();
             debug.DebugManager.createStatus();
             profiler.Profiler.startProfiler();
+            problem.ProblemManager.registerProblems();
         }, 200);
     }
 });

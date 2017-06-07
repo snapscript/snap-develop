@@ -1,6 +1,8 @@
 
 package org.snapscript.develop.complete;
 
+import static org.snapscript.core.Reserved.GRAMMAR_FILE;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -8,12 +10,14 @@ import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.develop.configuration.ConfigurationClassLoader;
 import org.snapscript.parse.Grammar;
 import org.snapscript.parse.GrammarCompiler;
+import org.snapscript.parse.GrammarDefinition;
 import org.snapscript.parse.GrammarIndexer;
+import org.snapscript.parse.GrammarReader;
 import org.snapscript.parse.GrammarResolver;
-import org.snapscript.parse.Syntax;
 
 public class CompletionCompiler {
    
+   private final Iterable<GrammarDefinition> definitions;
    private final Map<String, Grammar> grammars;
    private final GrammarCompiler compiler;
    private final GrammarResolver resolver;
@@ -25,16 +29,15 @@ public class CompletionCompiler {
       this.resolver = new GrammarResolver(grammars);
       this.indexer = new GrammarIndexer();
       this.matcher = new CompletionMatcher(resolver, indexer, loader, logger);      
-      this.compiler = new GrammarCompiler(resolver, indexer);      
+      this.compiler = new GrammarCompiler(resolver, indexer);    
+      this.definitions = new GrammarReader(GRAMMAR_FILE);
    } 
 
    public synchronized CompletionMatcher compile() {
       if(grammars.isEmpty()) {
-         Syntax[] language = Syntax.values();
-         
-         for(Syntax syntax : language) {
-            String name = syntax.getName();
-            String value = syntax.getGrammar();
+         for(GrammarDefinition definition : definitions){
+            String name = definition.getName();
+            String value = definition.getDefinition();
             Grammar grammar = compiler.process(name, value);
             
             grammars.put(name, grammar);

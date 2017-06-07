@@ -108,7 +108,8 @@ define(["require",
         "mousetrap-global-bind", 
         "socket", 
         "spinner",
-        "project", 
+        "project",
+        "problem",
         "explorer", 
         "editor", 
         "history", 
@@ -132,6 +133,7 @@ define(["require",
               socket, 
               spinner, 
               project, 
+              problem,
               explorer, 
               editor, 
               history, 
@@ -162,6 +164,7 @@ define(["require",
             threads.ThreadManager.createThreads();
             debug.DebugManager.createStatus();
             profiler.Profiler.startProfiler();
+            problem.ProblemManager.registerProblems();
          }, 200);
       }
    }

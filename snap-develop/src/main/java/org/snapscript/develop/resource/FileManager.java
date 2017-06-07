@@ -143,7 +143,7 @@ public class FileManager {
 
       @Override
       public long getModificationTime() {
-         return -1;
+         return Long.MAX_VALUE;
       }
 
       @Override
