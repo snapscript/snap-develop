@@ -608,7 +608,7 @@ export module DialogBuilder {
       
       if(nextRow) {
          var container = document.getElementById("dialog");
-         var offsetY = calculateScrollOffset(container, nextRow);
+         var offsetY = Common.calculateScrollOffset(container, nextRow);
          
          console.log("offset: " + offsetY)
 
@@ -854,24 +854,7 @@ export module DialogBuilder {
       return true;
    }
 
-   function calculateScrollOffset(parentElement, childElement) {
-       var childRect = childElement.getBoundingClientRect();
-       var parentRect = parentElement.getBoundingClientRect();
-       var topOfChildRect = childRect.top;
-       var topOfParentRect = parentRect.top;
-       
-       if(topOfChildRect < topOfParentRect) {
-          return topOfChildRect - topOfParentRect;
-       }
-       var bottomOfChildRect = childRect.top + childRect.height;
-       //var bottomOfParentRect = parentRect.top + parentRect.height;
-       var bottomOfParentRect = parentRect.top + parentElement.clientHeight;
-       
-       if(bottomOfChildRect > bottomOfParentRect) {
-          return bottomOfChildRect - bottomOfParentRect;
-       } 
-       return 0;
-   }
+
    
    function isCheckboxSelected(input) {
       var inputField = document.getElementById(input);

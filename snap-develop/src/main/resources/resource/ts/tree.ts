@@ -32,9 +32,21 @@ export module FileTree {
    export function showTreeNode(id, treePath) {
       if(id && treePath) {
          if(treePath.resourcePath) {
-            $("#" + id).fancytree("getTree").getNodeByKey(treePath.resourcePath).setActive();
+            showNodeAndScroll(id, treePath.resourcePath);
+            showNodeAndScroll(id, treePath.resourcePath); // do it twice
          }
       }
+   }
+   
+   function showNodeAndScroll(treeId, nodeId) {
+      var container = document.getElementById("browseParent");
+      var treeNode = $("#" + treeId).fancytree("getTree").getNodeByKey(nodeId);
+
+      if(treeNode && treeNode.li && container) {
+         container.scrollTop = 0; // reset the scroll for better calculation
+         container.scrollTop = Common.calculateScrollOffset(container, treeNode.li);
+      }
+      treeNode.setActive();
    }
    
    function showFancyTree(id, dragAndDrop, treeMenuHandler, clickCallback) {
@@ -96,6 +108,7 @@ export module FileTree {
        
        // using default options
        $('#' + id).fancytree({
+         //autoScroll: true,
          extensions: dragAndDrop ? ["dnd"] : [],
          click : clickCallback,
          expand: function(event, data) {

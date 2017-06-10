@@ -580,7 +580,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             var nextRow = document.getElementById("dialogListEntry" + nextRowIndex);
             if (nextRow) {
                 var container = document.getElementById("dialog");
-                var offsetY = calculateScrollOffset(container, nextRow);
+                var offsetY = common_1.Common.calculateScrollOffset(container, nextRow);
                 console.log("offset: " + offsetY);
                 if (selectedRow) {
                     selectedRow.className = "";
@@ -802,22 +802,6 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             document.getElementById(name).focus();
             document.getElementById(name).focus();
             return true;
-        }
-        function calculateScrollOffset(parentElement, childElement) {
-            var childRect = childElement.getBoundingClientRect();
-            var parentRect = parentElement.getBoundingClientRect();
-            var topOfChildRect = childRect.top;
-            var topOfParentRect = parentRect.top;
-            if (topOfChildRect < topOfParentRect) {
-                return topOfChildRect - topOfParentRect;
-            }
-            var bottomOfChildRect = childRect.top + childRect.height;
-            //var bottomOfParentRect = parentRect.top + parentRect.height;
-            var bottomOfParentRect = parentRect.top + parentElement.clientHeight;
-            if (bottomOfChildRect > bottomOfParentRect) {
-                return bottomOfChildRect - bottomOfParentRect;
-            }
-            return 0;
         }
         function isCheckboxSelected(input) {
             var inputField = document.getElementById(input);

@@ -27,11 +27,21 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
         function showTreeNode(id, treePath) {
             if (id && treePath) {
                 if (treePath.resourcePath) {
-                    $("#" + id).fancytree("getTree").getNodeByKey(treePath.resourcePath).setActive();
+                    showNodeAndScroll(id, treePath.resourcePath);
+                    showNodeAndScroll(id, treePath.resourcePath); // do it twice
                 }
             }
         }
         FileTree.showTreeNode = showTreeNode;
+        function showNodeAndScroll(treeId, nodeId) {
+            var container = document.getElementById("browseParent");
+            var treeNode = $("#" + treeId).fancytree("getTree").getNodeByKey(nodeId);
+            if (treeNode && treeNode.li && container) {
+                container.scrollTop = 0; // reset the scroll for better calculation
+                container.scrollTop = common_1.Common.calculateScrollOffset(container, treeNode.li);
+            }
+            treeNode.setActive();
+        }
         function showFancyTree(id, dragAndDrop, treeMenuHandler, clickCallback) {
             var dnd = {
                 autoExpandMS: 400,
@@ -89,6 +99,7 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
             };
             // using default options
             $('#' + id).fancytree({
+                //autoScroll: true,
                 extensions: dragAndDrop ? ["dnd"] : [],
                 click: clickCallback,
                 expand: function (event, data) {
