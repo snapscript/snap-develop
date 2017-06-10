@@ -8,7 +8,7 @@
   <value key="DIALOG_BACKGROUND_COLOR">#FFFFFF</value>
   <value key="DIALOG_FONT_COLOR">#000000</value>
   <value key="DIALOG_PANEL_COLOR">#FFFFFF</value>
-  <value key="DIALOG_ENTRY_HIGHLIGHT_COLOR">#EFF9FE</value>
+  <value key="DIALOG_ENTRY_HIGHLIGHT_COLOR">#c3eafe</value>
   <value key="DIALOG_ENTRY_BORDER_COLOR">#70C0E7</value>
   <value key="TREE_BACKGROUND_COLOR">#FFFFFF</value>
   <value key="TREE_FONT_COLOR">#000000</value>

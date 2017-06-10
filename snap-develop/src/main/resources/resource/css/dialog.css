@@ -41,6 +41,7 @@
  	border-style: solid;
     border-width: 1px;
     border-color: #c0c0c0;
+    /*border-color: red;*/
     padding: 5px;
     position: absolute;
     padding: 2px;
@@ -256,7 +257,14 @@
 	border-collapse: collapse;
 }
 
-.dialogListTable tr:hover {
+/*.dialogListTable tr:hover {
+    background-color: ${DIALOG_ENTRY_HIGHLIGHT_COLOR};
+    border-color: ${DIALOG_ENTRY_BORDER_COLOR};
+    color: ${DIALOG_FONT_COLOR}; 
+	cursor: pointer;
+}*/
+
+.dialogListTableRowSelected {
     background-color: ${DIALOG_ENTRY_HIGHLIGHT_COLOR};
     border-color: ${DIALOG_ENTRY_BORDER_COLOR};
     color: ${DIALOG_FONT_COLOR}; 

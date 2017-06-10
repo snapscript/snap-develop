@@ -42,7 +42,10 @@ public class DisplayTheme {
       }
       if(values != null) {
          for(ThemeValue value : values) {
-            variables.put(value.key, value.value);
+            String text = value.getValue();
+            String key = value.getName();
+            
+            variables.put(key, text);
          }
       }
       return new TemplateModel(variables);
@@ -53,8 +56,12 @@ public class DisplayTheme {
       @Attribute
       private String key;
       
-      @Text
+      @Text(required=false)
       private String value;
+      
+      public String getValue() {
+         return value == null ? "" : value;
+      }
 
       @Override
       public String getName() {

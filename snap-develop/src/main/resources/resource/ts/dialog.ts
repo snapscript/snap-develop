@@ -498,16 +498,29 @@ export module DialogBuilder {
    }
    
    function createDialogListTable(list) {
-      var content = "<table class='dialogListTable' width='100%'>";
-      var initFunctions = {};
+      var content = "<table id='dialogListTable' class='dialogListTable' width='100%'>";
+      var selectedIndex = selectedIndexOfDialogListTable();
+      var mouseOverFunctions = {};
+      var clickFunctions = {};
       
       for(var i = 0; i < list.length; i++) {
+         var dialogListEntryId = "dialogListEntry" + i;
          var row = list[i];
-         content += "<tr id='dialogListEntry" + i + "'>";
          
+         content += "<tr ";
+         
+         if(i == selectedIndex) {
+            content+= " class='dialogListTableRowSelected' ";
+         }
+         content += " id='" + dialogListEntryId + "'>";
+
+         mouseOverFunctions[i] = function(rowId) {
+            var selectedIndex = selectedIndexOfDialogListTable();
+            selectDialogListTableRow(selectedIndex, rowId);
+         };
          for(var j = 0; j < row.length; j++) {
-            var cell = row[j];
-            var entryId = "listEntry_" + i + "_" + j;
+            const cell = row[j];
+            const entryId = "listEntry_" + i + "_" + j;
             
             content += "<td width='50%'><div id='" + entryId + "' class='";
             content += cell.style;
@@ -515,7 +528,7 @@ export module DialogBuilder {
             content += cell.text;
             content += "</div></td>";
             
-            initFunctions[entryId] = function() {
+            clickFunctions[i] = function() { // this is a little rubbish, we are overriding the row click
                if(cell.line) {
                   return submitDialogListResource(cell.resource, cell.line);
                } else {
@@ -531,17 +544,100 @@ export module DialogBuilder {
          content: content,
          init: function() {
             // initialize all functions
-            for (var initFunctionId in initFunctions) {
-               if (initFunctions.hasOwnProperty(initFunctionId)) {
-                  var initFunction = initFunctions[initFunctionId];
-               
-                  $('#' + initFunctionId).on('click', function(e) {
-                     return initFunction();
+            for (var clickFunctionId in clickFunctions) {
+               if (clickFunctions.hasOwnProperty(clickFunctionId)) {
+                  const clickFunction = clickFunctions[clickFunctionId];
+                  const rowId = clickFunctionId;
+                  
+                  $('#dialogListEntry' + rowId).on('click', function(e) {
+                     return clickFunction();
+                  });
+               }
+            }
+            for (var mouseOverFunctionId in mouseOverFunctions) {
+               if (mouseOverFunctions.hasOwnProperty(mouseOverFunctionId)) {
+                  const mouseOverFunction = mouseOverFunctions[mouseOverFunctionId];
+                  const rowId = mouseOverFunctionId;
+                  
+                  $('#dialogListEntry' + rowId).on('mouseenter', function(e) {
+                     return mouseOverFunction(rowId);
                   });
                }
             }
          }
       };
+   }
+   
+   function navigateDialogListTable(event) {
+      if(isKeyReturn(event)) {
+         var selectedRowIndex = selectedIndexOfDialogListTable();
+         
+         if(selectedRowIndex >= 0) {
+            $('#dialogListEntry' + selectedRowIndex).click(); // click on return
+         }
+      } else if(isKeyDown(event)) {
+         navigateDialogListTableDown();
+      } else if(isKeyUp(event)) {
+         navigateDialogListTableUp();
+      }
+   }
+   
+   function navigateDialogListTableDown() {
+      var selectedRowIndex = selectedIndexOfDialogListTable();
+      
+      if(selectedRowIndex == -1) {
+         selectDialogListTableRow(selectedRowIndex, 0);
+      } else {
+         selectDialogListTableRow(selectedRowIndex, selectedRowIndex + 1);
+      }
+   }
+   
+   function navigateDialogListTableUp() {
+      var selectedRowIndex = selectedIndexOfDialogListTable();
+      
+      if(selectedRowIndex == -1) {
+         selectDialogListTableRow(selectedRowIndex, 0);
+      } else {
+         selectDialogListTableRow(selectedRowIndex, selectedRowIndex - 1);
+      }
+   }
+   
+   function selectDialogListTableRow(selectedRowIndex, nextRowIndex) {
+      var selectedRow = document.getElementById("dialogListEntry" + selectedRowIndex);
+      var nextRow = document.getElementById("dialogListEntry" + nextRowIndex);
+      
+      if(nextRow) {
+         var container = document.getElementById("dialog");
+         var offsetY = calculateScrollOffset(container, nextRow);
+         
+         console.log("offset: " + offsetY)
+
+         if(selectedRow) {
+            selectedRow.className = "";
+         }
+         container.scrollTop = container.scrollTop + offsetY;
+         nextRow.className = "dialogListTableRowSelected";
+      }
+   }
+   
+   function selectedIndexOfDialogListTable() {
+      var table = document.getElementById("dialogListTable");
+      
+      if(table) {
+         var dialogRows = table.rows;
+      
+         for(var i = 0; i < dialogRows.length; i++) {
+            var dialogRow = dialogRows[i];
+            
+            if(dialogRow) {
+               if(dialogRow.classList.contains("dialogListTableRowSelected")){
+                  var rowIndex = dialogRow.id.replace("dialogListEntry", "");
+                  return parseInt(rowIndex);
+               }
+            }
+         }
+      }
+      return -1;
    }
    
    function createGridDialogLayout(inputText) {
@@ -556,6 +652,7 @@ export module DialogBuilder {
                   
          init: function() {
             $('#dialogPath').on('keydown', function(e) {
+               navigateDialogListTable(e);
                return submitDialog(e);
             });
             $('#dialogPath').on('click', function(e) {
@@ -574,6 +671,7 @@ export module DialogBuilder {
                   
          init: function() {
             $('#dialogPath').on('keydown', function(e) {
+               navigateDialogListTable(e);
                return submitDialog(e);
             });
             $('#dialogPath').on('click', function(e) {
@@ -592,6 +690,7 @@ export module DialogBuilder {
                 
          init: function() {
             $('#dialogPath').on('keydown', function(e) {
+               navigateDialogListTable(e);
                return submitDialog(e);
             });
             $('#dialogPath').on('click', function(e) {
@@ -618,6 +717,7 @@ export module DialogBuilder {
                   
          init: function() {
             $('#dialogPath').on('keydown', function(e) {
+               navigateDialogListTable(e);
                return submitDialog(e);
             });
             $('#dialogPath').on('click', function(e) {
@@ -659,10 +759,15 @@ export module DialogBuilder {
                return focusDialogInput('fileFilterPatterns');
             });
             $('#searchText').on('keydown', function(e) {
+               navigateDialogListTable(e);
                return submitDialog(e);
             });
             $('#searchText').on('click', function(e) {
                return focusDialogInput('searchText');
+            });
+            $('#dialog').on('keydown', function(e) {
+               navigateDialogListTable(e);
+               return submitDialog(e);
             });
             $('#inputCaseSensitiveRow').on('click', function(e) {
                return toggleCheckboxSelection('inputCaseSensitive');
@@ -709,16 +814,22 @@ export module DialogBuilder {
                return focusDialogInput('fileFilterPatterns');
             });
             $('#searchText').on('keydown', function(e) {
+               navigateDialogListTable(e);
                return submitDialog(e);
             });
             $('#searchText').on('click', function(e) {
                return focusDialogInput('searchText');
             });
             $('#replaceText').on('keydown', function(e) { // really??
+               navigateDialogListTable(e);
                return submitDialog(e);
             });
             $('#replaceText').on('click', function(e) {
                return focusDialogInput('replaceText');
+            });
+            $('#dialog').on('keydown', function(e) {
+               navigateDialogListTable(e);
+               return submitDialog(e);
             });
             $('#inputCaseSensitiveRow').on('click', function(e) {
                return toggleCheckboxSelection('inputCaseSensitive');
@@ -733,7 +844,7 @@ export module DialogBuilder {
       };
    }
     
-   export function submitDialogListResource(resource, line) {
+   function submitDialogListResource(resource, line) {
       $("#dialogCancel").click(); // force the click
       
       if(line) {
@@ -748,11 +859,30 @@ export module DialogBuilder {
       return false
    }
    
-   export function focusDialogInput(name) {
+   function focusDialogInput(name) {
       document.getElementById(name).contentEditable = true;
       document.getElementById(name).focus();
       document.getElementById(name).focus();
       return true;
+   }
+
+   function calculateScrollOffset(parentElement, childElement) {
+       var childRect = childElement.getBoundingClientRect();
+       var parentRect = parentElement.getBoundingClientRect();
+       var topOfChildRect = childRect.top;
+       var topOfParentRect = parentRect.top;
+       
+       if(topOfChildRect < topOfParentRect) {
+          return topOfChildRect - topOfParentRect;
+       }
+       var bottomOfChildRect = childRect.top + childRect.height;
+       //var bottomOfParentRect = parentRect.top + parentRect.height;
+       var bottomOfParentRect = parentRect.top + parentElement.clientHeight;
+       
+       if(bottomOfChildRect > bottomOfParentRect) {
+          return bottomOfChildRect - bottomOfParentRect;
+       } 
+       return 0;
    }
    
    function isCheckboxSelected(input) {
@@ -764,7 +894,7 @@ export module DialogBuilder {
       return false;
    }
    
-   export function toggleCheckboxSelection(input) {
+   function toggleCheckboxSelection(input) {
       var inputField = document.getElementById(input);
       
       if(inputField) {
@@ -773,16 +903,29 @@ export module DialogBuilder {
       return false;
    }
    
-   export function submitDialog(e) {
+   function isKeyUp(e) {
+      var evt = e || window.event
+      return evt.keyCode === 38;
+   }
+   
+   function isKeyDown(e) {
+      var evt = e || window.event
+      return evt.keyCode === 40;
+   }
+   
+   function isKeyReturn(e) {
+      var evt = e || window.event
+      return evt.keyCode === 13;
+   }
+   
+   function submitDialog(e) {
       var evt = e || window.event
       // "e" is the standard behavior (FF, Chrome, Safari, Opera),
       // while "window.event" (or "event") is IE's behavior
-      if(evt.keyCode === 13) {
+      if(isKeyReturn(e)) {
          $("#dialogSave").click(); // force the click
-          // Do something
-          // You can disable the form submission this way:
           return false
-      }
+      } 
    }
 }
 

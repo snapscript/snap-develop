@@ -472,12 +472,23 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             });
         }
         function createDialogListTable(list) {
-            var content = "<table class='dialogListTable' width='100%'>";
-            var initFunctions = {};
+            var content = "<table id='dialogListTable' class='dialogListTable' width='100%'>";
+            var selectedIndex = selectedIndexOfDialogListTable();
+            var mouseOverFunctions = {};
+            var clickFunctions = {};
             for (var i = 0; i < list.length; i++) {
+                var dialogListEntryId = "dialogListEntry" + i;
                 var row = list[i];
-                content += "<tr id='dialogListEntry" + i + "'>";
-                for (var j = 0; j < row.length; j++) {
+                content += "<tr ";
+                if (i == selectedIndex) {
+                    content += " class='dialogListTableRowSelected' ";
+                }
+                content += " id='" + dialogListEntryId + "'>";
+                mouseOverFunctions[i] = function (rowId) {
+                    var selectedIndex = selectedIndexOfDialogListTable();
+                    selectDialogListTableRow(selectedIndex, rowId);
+                };
+                var _loop_1 = function() {
                     var cell = row[j];
                     var entryId = "listEntry_" + i + "_" + j;
                     content += "<td width='50%'><div id='" + entryId + "' class='";
@@ -485,7 +496,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                     content += "'>";
                     content += cell.text;
                     content += "</div></td>";
-                    initFunctions[entryId] = function () {
+                    clickFunctions[i] = function () {
                         if (cell.line) {
                             return submitDialogListResource(cell.resource, cell.line);
                         }
@@ -493,6 +504,9 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                             return submitDialogListResource(cell.link);
                         }
                     };
+                };
+                for (var j = 0; j < row.length; j++) {
+                    _loop_1();
                 }
                 content += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
                 content += "</tr>";
@@ -502,16 +516,94 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 content: content,
                 init: function () {
                     // initialize all functions
-                    for (var initFunctionId in initFunctions) {
-                        if (initFunctions.hasOwnProperty(initFunctionId)) {
-                            var initFunction = initFunctions[initFunctionId];
-                            $('#' + initFunctionId).on('click', function (e) {
-                                return initFunction();
+                    var _loop_2 = function() {
+                        if (clickFunctions.hasOwnProperty(clickFunctionId)) {
+                            var clickFunction_1 = clickFunctions[clickFunctionId];
+                            var rowId = clickFunctionId;
+                            $('#dialogListEntry' + rowId).on('click', function (e) {
+                                return clickFunction_1();
                             });
                         }
+                    };
+                    for (var clickFunctionId in clickFunctions) {
+                        _loop_2();
+                    }
+                    var _loop_3 = function() {
+                        if (mouseOverFunctions.hasOwnProperty(mouseOverFunctionId)) {
+                            var mouseOverFunction_1 = mouseOverFunctions[mouseOverFunctionId];
+                            var rowId_1 = mouseOverFunctionId;
+                            $('#dialogListEntry' + rowId_1).on('mouseenter', function (e) {
+                                return mouseOverFunction_1(rowId_1);
+                            });
+                        }
+                    };
+                    for (var mouseOverFunctionId in mouseOverFunctions) {
+                        _loop_3();
                     }
                 }
             };
+        }
+        function navigateDialogListTable(event) {
+            if (isKeyReturn(event)) {
+                var selectedRowIndex = selectedIndexOfDialogListTable();
+                if (selectedRowIndex >= 0) {
+                    $('#dialogListEntry' + selectedRowIndex).click(); // click on return
+                }
+            }
+            else if (isKeyDown(event)) {
+                navigateDialogListTableDown();
+            }
+            else if (isKeyUp(event)) {
+                navigateDialogListTableUp();
+            }
+        }
+        function navigateDialogListTableDown() {
+            var selectedRowIndex = selectedIndexOfDialogListTable();
+            if (selectedRowIndex == -1) {
+                selectDialogListTableRow(selectedRowIndex, 0);
+            }
+            else {
+                selectDialogListTableRow(selectedRowIndex, selectedRowIndex + 1);
+            }
+        }
+        function navigateDialogListTableUp() {
+            var selectedRowIndex = selectedIndexOfDialogListTable();
+            if (selectedRowIndex == -1) {
+                selectDialogListTableRow(selectedRowIndex, 0);
+            }
+            else {
+                selectDialogListTableRow(selectedRowIndex, selectedRowIndex - 1);
+            }
+        }
+        function selectDialogListTableRow(selectedRowIndex, nextRowIndex) {
+            var selectedRow = document.getElementById("dialogListEntry" + selectedRowIndex);
+            var nextRow = document.getElementById("dialogListEntry" + nextRowIndex);
+            if (nextRow) {
+                var container = document.getElementById("dialog");
+                var offsetY = calculateScrollOffset(container, nextRow);
+                console.log("offset: " + offsetY);
+                if (selectedRow) {
+                    selectedRow.className = "";
+                }
+                container.scrollTop = container.scrollTop + offsetY;
+                nextRow.className = "dialogListTableRowSelected";
+            }
+        }
+        function selectedIndexOfDialogListTable() {
+            var table = document.getElementById("dialogListTable");
+            if (table) {
+                var dialogRows = table.rows;
+                for (var i = 0; i < dialogRows.length; i++) {
+                    var dialogRow = dialogRows[i];
+                    if (dialogRow) {
+                        if (dialogRow.classList.contains("dialogListTableRowSelected")) {
+                            var rowIndex = dialogRow.id.replace("dialogListEntry", "");
+                            return parseInt(rowIndex);
+                        }
+                    }
+                }
+            }
+            return -1;
         }
         function createGridDialogLayout(inputText) {
             if (!inputText) {
@@ -524,6 +616,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                     '<div id="dialogPath" contenteditable="true">' + inputText + '</div>',
                 init: function () {
                     $('#dialogPath').on('keydown', function (e) {
+                        navigateDialogListTable(e);
                         return submitDialog(e);
                     });
                     $('#dialogPath').on('click', function (e) {
@@ -540,6 +633,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                     '<div id="dialogPath" contenteditable="true"></div>',
                 init: function () {
                     $('#dialogPath').on('keydown', function (e) {
+                        navigateDialogListTable(e);
                         return submitDialog(e);
                     });
                     $('#dialogPath').on('click', function (e) {
@@ -556,6 +650,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                     '<div id="dialogPath" contenteditable="true"></div>',
                 init: function () {
                     $('#dialogPath').on('keydown', function (e) {
+                        navigateDialogListTable(e);
                         return submitDialog(e);
                     });
                     $('#dialogPath').on('click', function (e) {
@@ -579,6 +674,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                     '<div id="dialogPath" contenteditable="true">' + selectedFile + '</div>',
                 init: function () {
                     $('#dialogPath').on('keydown', function (e) {
+                        navigateDialogListTable(e);
                         return submitDialog(e);
                     });
                     $('#dialogPath').on('click', function (e) {
@@ -617,10 +713,15 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                         return focusDialogInput('fileFilterPatterns');
                     });
                     $('#searchText').on('keydown', function (e) {
+                        navigateDialogListTable(e);
                         return submitDialog(e);
                     });
                     $('#searchText').on('click', function (e) {
                         return focusDialogInput('searchText');
+                    });
+                    $('#dialog').on('keydown', function (e) {
+                        navigateDialogListTable(e);
+                        return submitDialog(e);
                     });
                     $('#inputCaseSensitiveRow').on('click', function (e) {
                         return toggleCheckboxSelection('inputCaseSensitive');
@@ -665,16 +766,22 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                         return focusDialogInput('fileFilterPatterns');
                     });
                     $('#searchText').on('keydown', function (e) {
+                        navigateDialogListTable(e);
                         return submitDialog(e);
                     });
                     $('#searchText').on('click', function (e) {
                         return focusDialogInput('searchText');
                     });
                     $('#replaceText').on('keydown', function (e) {
+                        navigateDialogListTable(e);
                         return submitDialog(e);
                     });
                     $('#replaceText').on('click', function (e) {
                         return focusDialogInput('replaceText');
+                    });
+                    $('#dialog').on('keydown', function (e) {
+                        navigateDialogListTable(e);
+                        return submitDialog(e);
                     });
                     $('#inputCaseSensitiveRow').on('click', function (e) {
                         return toggleCheckboxSelection('inputCaseSensitive');
@@ -702,14 +809,28 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             }
             return false;
         }
-        DialogBuilder.submitDialogListResource = submitDialogListResource;
         function focusDialogInput(name) {
             document.getElementById(name).contentEditable = true;
             document.getElementById(name).focus();
             document.getElementById(name).focus();
             return true;
         }
-        DialogBuilder.focusDialogInput = focusDialogInput;
+        function calculateScrollOffset(parentElement, childElement) {
+            var childRect = childElement.getBoundingClientRect();
+            var parentRect = parentElement.getBoundingClientRect();
+            var topOfChildRect = childRect.top;
+            var topOfParentRect = parentRect.top;
+            if (topOfChildRect < topOfParentRect) {
+                return topOfChildRect - topOfParentRect;
+            }
+            var bottomOfChildRect = childRect.top + childRect.height;
+            //var bottomOfParentRect = parentRect.top + parentRect.height;
+            var bottomOfParentRect = parentRect.top + parentElement.clientHeight;
+            if (bottomOfChildRect > bottomOfParentRect) {
+                return bottomOfChildRect - bottomOfParentRect;
+            }
+            return 0;
+        }
         function isCheckboxSelected(input) {
             var inputField = document.getElementById(input);
             if (inputField) {
@@ -724,19 +845,27 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             }
             return false;
         }
-        DialogBuilder.toggleCheckboxSelection = toggleCheckboxSelection;
+        function isKeyUp(e) {
+            var evt = e || window.event;
+            return evt.keyCode === 38;
+        }
+        function isKeyDown(e) {
+            var evt = e || window.event;
+            return evt.keyCode === 40;
+        }
+        function isKeyReturn(e) {
+            var evt = e || window.event;
+            return evt.keyCode === 13;
+        }
         function submitDialog(e) {
             var evt = e || window.event;
             // "e" is the standard behavior (FF, Chrome, Safari, Opera),
             // while "window.event" (or "event") is IE's behavior
-            if (evt.keyCode === 13) {
+            if (isKeyReturn(e)) {
                 $("#dialogSave").click(); // force the click
-                // Do something
-                // You can disable the form submission this way:
                 return false;
             }
         }
-        DialogBuilder.submitDialog = submitDialog;
     })(DialogBuilder = exports.DialogBuilder || (exports.DialogBuilder = {}));
 });
 //ModuleSystem.registerModule("dialog", "Dialog module: dialog.js", null, null, [ "common", "tree" ]);
