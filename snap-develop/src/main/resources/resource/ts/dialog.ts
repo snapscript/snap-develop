@@ -249,7 +249,6 @@ export module DialogBuilder {
    }
    
    export function createTextSearchOnlyDialog(listFunction, fileFilterPatterns, dialogTitle) { // listFunction(token): [a, b, c]
-      var dialogBody = createTextSearchOnlyDialogLayout(fileFilterPatterns, '');
       var executeSearch = function() {
          var expressionText = $("#searchText").html();
          var searchCriteria = {
@@ -280,6 +279,7 @@ export module DialogBuilder {
             }
          });
       };
+      var dialogBody = createTextSearchOnlyDialogLayout(fileFilterPatterns, '', executeSearch);
       w2popup.open({
          title : dialogTitle,
          body : dialogBody.content,
@@ -324,7 +324,6 @@ export module DialogBuilder {
    }  
    
    export function createTextSearchAndReplaceDialog(listFunction, fileFilterPatterns, dialogTitle) { // listFunction(token): [a, b, c]
-      var dialogBody = createTextSearchAndReplaceDialogLayout(fileFilterPatterns, '');
       var executeSearch = function() {
          var expressionText = $("#searchText").html();
          var searchCriteria = {
@@ -355,6 +354,7 @@ export module DialogBuilder {
             }
          });
       };
+      var dialogBody = createTextSearchAndReplaceDialogLayout(fileFilterPatterns, '', executeSearch);
       w2popup.open({
          title : dialogTitle,
          body : dialogBody.content,
@@ -728,7 +728,7 @@ export module DialogBuilder {
 
    }
    
-   function createTextSearchOnlyDialogLayout(fileFilterPatterns, searchText) {
+   function createTextSearchOnlyDialogLayout(fileFilterPatterns, searchText, refreshFunction) {
       if(!searchText) {
          searchText = '';
       }
@@ -762,10 +762,14 @@ export module DialogBuilder {
                return focusDialogInput('searchText');
             });
             $('#inputCaseSensitiveRow').on('click', function(e) {
-               return toggleCheckboxSelection('inputCaseSensitive');
+               toggleCheckboxSelection('inputCaseSensitive');
+               refreshFunction();
+               return false;
             });
             $('#inputRegularExpressionRow').on('click', function(e) {
-               return toggleCheckboxSelection('inputRegularExpression');
+               toggleCheckboxSelection('inputRegularExpression');
+               refreshFunction();
+               return false;
             });
             $('#w2ui-popup').on('keydown', function(e) {
                navigateDialogListTable(e);
@@ -778,7 +782,7 @@ export module DialogBuilder {
       };                            
    }
    
-   function createTextSearchAndReplaceDialogLayout(fileFilterPatterns, searchText) {
+   function createTextSearchAndReplaceDialogLayout(fileFilterPatterns, searchText, refreshFunction) {
       if(!searchText) {
          searchText = '';
       }
@@ -816,10 +820,14 @@ export module DialogBuilder {
                return focusDialogInput('replaceText');
             });
             $('#inputCaseSensitiveRow').on('click', function(e) {
-               return toggleCheckboxSelection('inputCaseSensitive');
+               toggleCheckboxSelection('inputCaseSensitive');
+               refreshFunction();
+               return false;
             });
             $('#inputRegularExpressionRow').on('click', function(e) {
-               return toggleCheckboxSelection('inputRegularExpression');
+               toggleCheckboxSelection('inputRegularExpression');
+               refreshFunction();
+               return false;
             });
             $('#w2ui-popup').on('keydown', function(e) {
                navigateDialogListTable(e);

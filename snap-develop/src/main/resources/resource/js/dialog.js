@@ -231,7 +231,6 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
         }
         DialogBuilder.createListDialog = createListDialog;
         function createTextSearchOnlyDialog(listFunction, fileFilterPatterns, dialogTitle) {
-            var dialogBody = createTextSearchOnlyDialogLayout(fileFilterPatterns, '');
             var executeSearch = function () {
                 var expressionText = $("#searchText").html();
                 var searchCriteria = {
@@ -261,6 +260,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                     }
                 });
             };
+            var dialogBody = createTextSearchOnlyDialogLayout(fileFilterPatterns, '', executeSearch);
             w2ui_1.w2popup.open({
                 title: dialogTitle,
                 body: dialogBody.content,
@@ -304,7 +304,6 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
         }
         DialogBuilder.createTextSearchOnlyDialog = createTextSearchOnlyDialog;
         function createTextSearchAndReplaceDialog(listFunction, fileFilterPatterns, dialogTitle) {
-            var dialogBody = createTextSearchAndReplaceDialogLayout(fileFilterPatterns, '');
             var executeSearch = function () {
                 var expressionText = $("#searchText").html();
                 var searchCriteria = {
@@ -334,6 +333,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                     }
                 });
             };
+            var dialogBody = createTextSearchAndReplaceDialogLayout(fileFilterPatterns, '', executeSearch);
             w2ui_1.w2popup.open({
                 title: dialogTitle,
                 body: dialogBody.content,
@@ -683,7 +683,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 }
             };
         }
-        function createTextSearchOnlyDialogLayout(fileFilterPatterns, searchText) {
+        function createTextSearchOnlyDialogLayout(fileFilterPatterns, searchText, refreshFunction) {
             if (!searchText) {
                 searchText = '';
             }
@@ -716,10 +716,14 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                         return focusDialogInput('searchText');
                     });
                     $('#inputCaseSensitiveRow').on('click', function (e) {
-                        return toggleCheckboxSelection('inputCaseSensitive');
+                        toggleCheckboxSelection('inputCaseSensitive');
+                        refreshFunction();
+                        return false;
                     });
                     $('#inputRegularExpressionRow').on('click', function (e) {
-                        return toggleCheckboxSelection('inputRegularExpression');
+                        toggleCheckboxSelection('inputRegularExpression');
+                        refreshFunction();
+                        return false;
                     });
                     $('#w2ui-popup').on('keydown', function (e) {
                         navigateDialogListTable(e);
@@ -731,7 +735,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 }
             };
         }
-        function createTextSearchAndReplaceDialogLayout(fileFilterPatterns, searchText) {
+        function createTextSearchAndReplaceDialogLayout(fileFilterPatterns, searchText, refreshFunction) {
             if (!searchText) {
                 searchText = '';
             }
@@ -768,10 +772,14 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                         return focusDialogInput('replaceText');
                     });
                     $('#inputCaseSensitiveRow').on('click', function (e) {
-                        return toggleCheckboxSelection('inputCaseSensitive');
+                        toggleCheckboxSelection('inputCaseSensitive');
+                        refreshFunction();
+                        return false;
                     });
                     $('#inputRegularExpressionRow').on('click', function (e) {
-                        return toggleCheckboxSelection('inputRegularExpression');
+                        toggleCheckboxSelection('inputRegularExpression');
+                        refreshFunction();
+                        return false;
                     });
                     $('#w2ui-popup').on('keydown', function (e) {
                         navigateDialogListTable(e);
