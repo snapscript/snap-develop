@@ -651,13 +651,13 @@ export module DialogBuilder {
                   '<div id="dialogPath" contenteditable="true">' + inputText + '</div>',
                   
          init: function() {
-            $('#dialogPath').on('keydown', function(e) {
-               navigateDialogListTable(e);
-               return submitDialog(e);
-            });
             $('#dialogPath').on('click', function(e) {
                return focusDialogInput('dialogPath');
-            }); 
+            });
+            $('#w2ui-popup').on('keydown', function(e) {
+               navigateDialogListTable(e);
+               return submitDialog(e);
+            });   
          }        
       };
    }
@@ -670,13 +670,13 @@ export module DialogBuilder {
                   '<div id="dialogPath" contenteditable="true"></div>',
                   
          init: function() {
-            $('#dialogPath').on('keydown', function(e) {
-               navigateDialogListTable(e);
-               return submitDialog(e);
-            });
             $('#dialogPath').on('click', function(e) {
                return focusDialogInput('dialogPath');
             }); 
+            $('#w2ui-popup').on('keydown', function(e) {
+               navigateDialogListTable(e);
+               return submitDialog(e);
+            });   
          }
       };                  
    }
@@ -689,13 +689,13 @@ export module DialogBuilder {
                   '<div id="dialogPath" contenteditable="true"></div>',
                 
          init: function() {
-            $('#dialogPath').on('keydown', function(e) {
-               navigateDialogListTable(e);
-               return submitDialog(e);
-            });
             $('#dialogPath').on('click', function(e) {
                return focusDialogInput('dialogPath');
             }); 
+            $('#w2ui-popup').on('keydown', function(e) {
+               navigateDialogListTable(e);
+               return submitDialog(e);
+            });   
          }
       };
 
@@ -716,13 +716,13 @@ export module DialogBuilder {
                   '<div id="dialogPath" contenteditable="true">'+selectedFile+'</div>',
                   
          init: function() {
-            $('#dialogPath').on('keydown', function(e) {
-               navigateDialogListTable(e);
-               return submitDialog(e);
-            });
             $('#dialogPath').on('click', function(e) {
                return focusDialogInput('dialogPath');
             });
+            $('#w2ui-popup').on('keydown', function(e) {
+               navigateDialogListTable(e);
+               return submitDialog(e);
+            });   
          }
       };                    
 
@@ -758,16 +758,8 @@ export module DialogBuilder {
             $('#fileFilterPatterns').on('click', function(e) {
                return focusDialogInput('fileFilterPatterns');
             });
-            $('#searchText').on('keydown', function(e) {
-               navigateDialogListTable(e);
-               return submitDialog(e);
-            });
             $('#searchText').on('click', function(e) {
                return focusDialogInput('searchText');
-            });
-            $('#dialog').on('keydown', function(e) {
-               navigateDialogListTable(e);
-               return submitDialog(e);
             });
             $('#inputCaseSensitiveRow').on('click', function(e) {
                return toggleCheckboxSelection('inputCaseSensitive');
@@ -775,6 +767,10 @@ export module DialogBuilder {
             $('#inputRegularExpressionRow').on('click', function(e) {
                return toggleCheckboxSelection('inputRegularExpression');
             });
+            $('#w2ui-popup').on('keydown', function(e) {
+               navigateDialogListTable(e);
+               return submitDialog(e);
+            });            
 //                     $('#inputWholeWordRow').on('click', function(e) {
 //                        return toggleCheckboxSelection('inputWholeWord');
 //                     });
@@ -813,29 +809,21 @@ export module DialogBuilder {
             $('#fileFilterPatterns').on('click', function(e) {
                return focusDialogInput('fileFilterPatterns');
             });
-            $('#searchText').on('keydown', function(e) {
-               navigateDialogListTable(e);
-               return submitDialog(e);
-            });
             $('#searchText').on('click', function(e) {
                return focusDialogInput('searchText');
             });
-            $('#replaceText').on('keydown', function(e) { // really??
-               navigateDialogListTable(e);
-               return submitDialog(e);
-            });
             $('#replaceText').on('click', function(e) {
                return focusDialogInput('replaceText');
-            });
-            $('#dialog').on('keydown', function(e) {
-               navigateDialogListTable(e);
-               return submitDialog(e);
             });
             $('#inputCaseSensitiveRow').on('click', function(e) {
                return toggleCheckboxSelection('inputCaseSensitive');
             });
             $('#inputRegularExpressionRow').on('click', function(e) {
                return toggleCheckboxSelection('inputRegularExpression');
+            });
+            $('#w2ui-popup').on('keydown', function(e) {
+               navigateDialogListTable(e);
+               return submitDialog(e);
             });
 //            $('#inputWholeWordRow').on('click', function(e) {
 //               return toggleCheckboxSelection('inputWholeWord');
