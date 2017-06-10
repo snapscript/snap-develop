@@ -615,12 +615,12 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                     '</div>' +
                     '<div id="dialogPath" contenteditable="true">' + inputText + '</div>',
                 init: function () {
-                    $('#dialogPath').on('keydown', function (e) {
-                        navigateDialogListTable(e);
-                        return submitDialog(e);
-                    });
                     $('#dialogPath').on('click', function (e) {
                         return focusDialogInput('dialogPath');
+                    });
+                    $('#w2ui-popup').on('keydown', function (e) {
+                        navigateDialogListTable(e);
+                        return submitDialog(e);
                     });
                 }
             };
@@ -632,12 +632,12 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                     '</div>' +
                     '<div id="dialogPath" contenteditable="true"></div>',
                 init: function () {
-                    $('#dialogPath').on('keydown', function (e) {
-                        navigateDialogListTable(e);
-                        return submitDialog(e);
-                    });
                     $('#dialogPath').on('click', function (e) {
                         return focusDialogInput('dialogPath');
+                    });
+                    $('#w2ui-popup').on('keydown', function (e) {
+                        navigateDialogListTable(e);
+                        return submitDialog(e);
                     });
                 }
             };
@@ -649,12 +649,12 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                     '</div>\n' +
                     '<div id="dialogPath" contenteditable="true"></div>',
                 init: function () {
-                    $('#dialogPath').on('keydown', function (e) {
-                        navigateDialogListTable(e);
-                        return submitDialog(e);
-                    });
                     $('#dialogPath').on('click', function (e) {
                         return focusDialogInput('dialogPath');
+                    });
+                    $('#w2ui-popup').on('keydown', function (e) {
+                        navigateDialogListTable(e);
+                        return submitDialog(e);
                     });
                 }
             };
@@ -673,12 +673,12 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                     '<div id="dialogFolder">' + selectedFileFolder + '</div>\n' +
                     '<div id="dialogPath" contenteditable="true">' + selectedFile + '</div>',
                 init: function () {
-                    $('#dialogPath').on('keydown', function (e) {
-                        navigateDialogListTable(e);
-                        return submitDialog(e);
-                    });
                     $('#dialogPath').on('click', function (e) {
                         return focusDialogInput('dialogPath');
+                    });
+                    $('#w2ui-popup').on('keydown', function (e) {
+                        navigateDialogListTable(e);
+                        return submitDialog(e);
                     });
                 }
             };
@@ -712,22 +712,18 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                     $('#fileFilterPatterns').on('click', function (e) {
                         return focusDialogInput('fileFilterPatterns');
                     });
-                    $('#searchText').on('keydown', function (e) {
-                        navigateDialogListTable(e);
-                        return submitDialog(e);
-                    });
                     $('#searchText').on('click', function (e) {
                         return focusDialogInput('searchText');
-                    });
-                    $('#dialog').on('keydown', function (e) {
-                        navigateDialogListTable(e);
-                        return submitDialog(e);
                     });
                     $('#inputCaseSensitiveRow').on('click', function (e) {
                         return toggleCheckboxSelection('inputCaseSensitive');
                     });
                     $('#inputRegularExpressionRow').on('click', function (e) {
                         return toggleCheckboxSelection('inputRegularExpression');
+                    });
+                    $('#w2ui-popup').on('keydown', function (e) {
+                        navigateDialogListTable(e);
+                        return submitDialog(e);
                     });
                     //                     $('#inputWholeWordRow').on('click', function(e) {
                     //                        return toggleCheckboxSelection('inputWholeWord');
@@ -765,29 +761,21 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                     $('#fileFilterPatterns').on('click', function (e) {
                         return focusDialogInput('fileFilterPatterns');
                     });
-                    $('#searchText').on('keydown', function (e) {
-                        navigateDialogListTable(e);
-                        return submitDialog(e);
-                    });
                     $('#searchText').on('click', function (e) {
                         return focusDialogInput('searchText');
                     });
-                    $('#replaceText').on('keydown', function (e) {
-                        navigateDialogListTable(e);
-                        return submitDialog(e);
-                    });
                     $('#replaceText').on('click', function (e) {
                         return focusDialogInput('replaceText');
-                    });
-                    $('#dialog').on('keydown', function (e) {
-                        navigateDialogListTable(e);
-                        return submitDialog(e);
                     });
                     $('#inputCaseSensitiveRow').on('click', function (e) {
                         return toggleCheckboxSelection('inputCaseSensitive');
                     });
                     $('#inputRegularExpressionRow').on('click', function (e) {
                         return toggleCheckboxSelection('inputRegularExpression');
+                    });
+                    $('#w2ui-popup').on('keydown', function (e) {
+                        navigateDialogListTable(e);
+                        return submitDialog(e);
                     });
                     //            $('#inputWholeWordRow').on('click', function(e) {
                     //               return toggleCheckboxSelection('inputWholeWord');
