@@ -104,6 +104,10 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                 commands_1.Command.evaluateExpression();
                 e.preventDefault();
             });
+            $('#navigateToTreeArrow').on('click', function (e) {
+                editor_1.FileEditor.showEditorFileInTree();
+                e.preventDefault();
+            });
         }
         function determineProjectLayout() {
             var debugToggle = ";debug";
@@ -531,7 +535,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                         name: 'tabs',
                         tabs: {
                             active: 'browseTab',
-                            right: '<div id="navigateToTreeArrow" onclick="FileEditor.showEditorFileInTree()"></div>',
+                            right: '<div id="navigateToTreeArrow"></div>',
                             tabs: [{
                                     id: 'browseTab',
                                     caption: '<div class="browseTab">Project&nbsp;</div>',

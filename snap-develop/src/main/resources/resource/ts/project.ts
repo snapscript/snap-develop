@@ -120,6 +120,10 @@ export module Project {
          Command.evaluateExpression();
          e.preventDefault();
       });  
+      $('#navigateToTreeArrow').on('click', function(e) {
+         FileEditor.showEditorFileInTree();
+         e.preventDefault();
+      });  
    }
    
    function determineProjectLayout() {
@@ -609,7 +613,7 @@ export module Project {
             name : 'tabs',
             tabs : {
                active : 'browseTab',
-               right: '<div id="navigateToTreeArrow" onclick="FileEditor.showEditorFileInTree()"></div>',
+               right: '<div id="navigateToTreeArrow"></div>',
                tabs : [ {
                   id : 'browseTab',
                   caption : '<div class="browseTab">Project&nbsp;</div>',
