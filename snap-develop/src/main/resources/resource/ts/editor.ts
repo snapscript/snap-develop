@@ -575,6 +575,7 @@ export module FileEditor {
       Project.createEditorTab(); // update the tab name
       History.showFileHistory(); // update the history
       StatusPanel.showActiveFile(editorResource.projectPath);  
+      FileEditor.showEditorFileInTree();
    }
    
    export function showEditorFileInTree() {

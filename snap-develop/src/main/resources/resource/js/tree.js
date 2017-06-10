@@ -35,12 +35,15 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
         FileTree.showTreeNode = showTreeNode;
         function showNodeAndScroll(treeId, nodeId) {
             var container = document.getElementById("browseParent");
-            var treeNode = $("#" + treeId).fancytree("getTree").getNodeByKey(nodeId);
-            if (treeNode && treeNode.li && container) {
-                container.scrollTop = 0; // reset the scroll for better calculation
-                container.scrollTop = common_1.Common.calculateScrollOffset(container, treeNode.li);
+            var tree = $("#" + treeId).fancytree("getTree");
+            if (tree && (typeof tree.getNodeByKey === "function")) {
+                var treeNode = tree.getNodeByKey(nodeId);
+                if (treeNode && treeNode.li && container) {
+                    container.scrollTop = 0; // reset the scroll for better calculation
+                    container.scrollTop = common_1.Common.calculateScrollOffset(container, treeNode.li);
+                }
+                treeNode.setActive();
             }
-            treeNode.setActive();
         }
         function showFancyTree(id, dragAndDrop, treeMenuHandler, clickCallback) {
             var dnd = {

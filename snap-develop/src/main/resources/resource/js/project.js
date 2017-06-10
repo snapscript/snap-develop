@@ -516,7 +516,9 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                                     closable: true
                                 }],
                             onClick: function (event) {
-                                explorer_1.FileExplorer.openTreeFile(event.target, function () { });
+                                explorer_1.FileExplorer.openTreeFile(event.target, function () {
+                                    editor_1.FileEditor.showEditorFileInTree();
+                                });
                             },
                             onClose: function (event) {
                                 activateAnyEditorTab(event.target);
@@ -691,7 +693,9 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                                     closable: true
                                 }],
                             onClick: function (event) {
-                                explorer_1.FileExplorer.openTreeFile(event.target, function () { });
+                                explorer_1.FileExplorer.openTreeFile(event.target, function () {
+                                    editor_1.FileEditor.showEditorFileInTree();
+                                });
                             },
                             onClose: function (event) {
                                 activateAnyEditorTab(event.target);

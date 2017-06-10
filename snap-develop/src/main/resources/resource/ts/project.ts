@@ -593,7 +593,9 @@ export module Project {
                   closable: true 
                } ],
                onClick : function(event) {
-                  FileExplorer.openTreeFile(event.target, function(){});
+                  FileExplorer.openTreeFile(event.target, function(){
+                     FileEditor.showEditorFileInTree();
+                  });
                },
                onClose : function(event) {
                   activateAnyEditorTab(event.target);
@@ -780,7 +782,9 @@ export module Project {
                   closable: true 
                } ],
                onClick : function(event) {
-                  FileExplorer.openTreeFile(event.target, function(){});
+                  FileExplorer.openTreeFile(event.target, function(){
+                     FileEditor.showEditorFileInTree();
+                  });
                },
                onClose : function(event) {
                   activateAnyEditorTab(event.target);

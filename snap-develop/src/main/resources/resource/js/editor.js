@@ -509,6 +509,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             project_1.Project.createEditorTab(); // update the tab name
             history_1.History.showFileHistory(); // update the history
             status_1.StatusPanel.showActiveFile(editorResource.projectPath);
+            FileEditor.showEditorFileInTree();
         }
         FileEditor.updateEditor = updateEditor;
         function showEditorFileInTree() {

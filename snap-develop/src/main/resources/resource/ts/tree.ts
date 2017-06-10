@@ -40,13 +40,17 @@ export module FileTree {
    
    function showNodeAndScroll(treeId, nodeId) {
       var container = document.getElementById("browseParent");
-      var treeNode = $("#" + treeId).fancytree("getTree").getNodeByKey(nodeId);
-
-      if(treeNode && treeNode.li && container) {
-         container.scrollTop = 0; // reset the scroll for better calculation
-         container.scrollTop = Common.calculateScrollOffset(container, treeNode.li);
+      var tree = $("#" + treeId).fancytree("getTree");
+      
+      if(tree && (typeof tree.getNodeByKey === "function")) { // make sure the function exists
+         var treeNode = tree.getNodeByKey(nodeId);
+   
+         if(treeNode && treeNode.li && container) {
+            container.scrollTop = 0; // reset the scroll for better calculation
+            container.scrollTop = Common.calculateScrollOffset(container, treeNode.li);
+         }
+         treeNode.setActive();
       }
-      treeNode.setActive();
    }
    
    function showFancyTree(id, dragAndDrop, treeMenuHandler, clickCallback) {
