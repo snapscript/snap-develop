@@ -1,4 +1,5 @@
 import static util.stream.Collectors.toMap;
+import util.stream.IntStream;
 import test.TestCase;
 
 class StreamTest with TestCase {
@@ -16,5 +17,9 @@ class StreamTest with TestCase {
       assert map.a == "2";
       assert map.b == "4";
       assert map.c == "6";
+   }
+   
+   testIntStream() {
+      IntStream.iterate(0, i -> i + 2).limit(10).forEach(i -> println(i));
    }
 }

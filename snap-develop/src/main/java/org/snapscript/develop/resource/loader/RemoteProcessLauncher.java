@@ -31,6 +31,7 @@ public class RemoteProcessLauncher {
       Class type = loader.loadClass(name);
       Method method = type.getDeclaredMethod("main", String[].class);
 
+      //Thread.currentThread().setContextClassLoader(loader); // for some reason this does not work
       method.invoke(null, (Object)arguments);
    }
    
@@ -64,7 +65,7 @@ public class RemoteProcessLauncher {
                
                array[i] = location.toURL();
             }
-            return new URLClassLoader(array, loader);  
+            return new URLClassLoader(array, loader);
          }
          return loader;
       } finally {

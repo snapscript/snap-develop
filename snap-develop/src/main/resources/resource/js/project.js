@@ -48,15 +48,15 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                 history_1.History.navigateForward();
                 e.preventDefault();
             });
-            $('#editorTheme').on('click', function (e) {
+            $('#editorTheme').on('change', function (e) {
                 changeEditorTheme();
                 e.preventDefault();
             });
-            $('#fontFamily').on('click', function (e) {
+            $('#fontFamily').on('change', function (e) {
                 changeProjectFont();
                 e.preventDefault();
             });
-            $('#fontSize').on('click', function (e) {
+            $('#fontSize').on('change', function (e) {
                 changeProjectFont();
                 e.preventDefault();
             });

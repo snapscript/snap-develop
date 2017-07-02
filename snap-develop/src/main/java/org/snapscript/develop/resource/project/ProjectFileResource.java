@@ -36,7 +36,7 @@ public class ProjectFileResource implements Resource {
       
       response.setStatus(Status.OK);
       response.setContentType(type);
-      
+
       if(logger.isTrace()) {
          logger.trace(method + ": " + path);
       }

@@ -6,7 +6,7 @@ function printIt(a){
 function func(a: String) {
    println("string=${a} type=${a.class}");
 }
-
+ 
 function printAll(a...) {
    a.stream().forEach(x -> println(x));
 }
@@ -17,7 +17,7 @@ function func(a, b){
 
 function func(x, y, func: (a,b)) {
    var result = func(x, y);
-   println(result);
+   println(result); 
 }
 
 function returnFunc1(){

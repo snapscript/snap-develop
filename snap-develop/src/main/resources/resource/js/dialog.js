@@ -4,37 +4,37 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
     (function (DialogBuilder) {
         function openTreeDialog(resourceDetails, foldersOnly, saveCallback) {
             if (resourceDetails != null) {
-                createProjectDialog(resourceDetails, foldersOnly, saveCallback, "Save Changes");
+                createProjectDialog(resourceDetails, foldersOnly, saveCallback, false, "Save Changes");
             }
             else {
-                createProjectDialog(resourceDetails, foldersOnly, saveCallback, "Save As");
+                createProjectDialog(resourceDetails, foldersOnly, saveCallback, false, "Save As");
             }
         }
         DialogBuilder.openTreeDialog = openTreeDialog;
         function renameFileTreeDialog(resourceDetails, foldersOnly, saveCallback) {
-            createProjectDialog(resourceDetails, foldersOnly, saveCallback, "Rename File");
+            createProjectDialog(resourceDetails, foldersOnly, saveCallback, false, "Rename File");
         }
         DialogBuilder.renameFileTreeDialog = renameFileTreeDialog;
         function renameDirectoryTreeDialog(resourceDetails, foldersOnly, saveCallback) {
-            createProjectDialog(resourceDetails, foldersOnly, saveCallback, "Rename Directory");
+            createProjectDialog(resourceDetails, foldersOnly, saveCallback, false, "Rename Directory");
         }
         DialogBuilder.renameDirectoryTreeDialog = renameDirectoryTreeDialog;
         function newFileTreeDialog(resourceDetails, foldersOnly, saveCallback) {
-            createProjectDialog(resourceDetails, foldersOnly, saveCallback, "New File");
+            createProjectDialog(resourceDetails, foldersOnly, saveCallback, true, "New File");
         }
         DialogBuilder.newFileTreeDialog = newFileTreeDialog;
         function newDirectoryTreeDialog(resourceDetails, foldersOnly, saveCallback) {
-            createProjectDialog(resourceDetails, foldersOnly, saveCallback, "New Directory");
+            createProjectDialog(resourceDetails, foldersOnly, saveCallback, true, "New Directory");
         }
         DialogBuilder.newDirectoryTreeDialog = newDirectoryTreeDialog;
         function evaluateExpressionDialog(expressionToEvaluate) {
             createEvaluateDialog(expressionToEvaluate, "Evaluate Expression");
         }
         DialogBuilder.evaluateExpressionDialog = evaluateExpressionDialog;
-        function createProjectDialog(resourceDetails, foldersOnly, saveCallback, dialogTitle) {
-            createTreeDialog(resourceDetails, foldersOnly, saveCallback, dialogTitle, "/" + document.title);
+        function createProjectDialog(resourceDetails, foldersOnly, saveCallback, nameIsBlank, dialogTitle) {
+            createTreeDialog(resourceDetails, foldersOnly, saveCallback, nameIsBlank, dialogTitle, "/" + document.title);
         }
-        function createTreeDialog(resourceDetails, foldersOnly, saveCallback, dialogTitle, treePath) {
+        function createTreeDialog(resourceDetails, foldersOnly, saveCallback, nameIsBlank, dialogTitle, treePath) {
             var dialogExpandPath = "/";
             if (resourceDetails != null) {
                 dialogExpandPath = resourceDetails.projectDirectory; // /src/blah
@@ -91,7 +91,9 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             });
             if (resourceDetails != null) {
                 $('#dialogFolder').html(tree_1.FileTree.cleanResourcePath(resourceDetails.projectDirectory)); // /src/blah
-                $('#dialogPath').html(tree_1.FileTree.cleanResourcePath(resourceDetails.fileName)); // script.snap
+                if (!nameIsBlank) {
+                    $('#dialogPath').html(tree_1.FileTree.cleanResourcePath(resourceDetails.fileName)); // script.snap
+                }
             }
             tree_1.FileTree.createTree(treePath, "dialog", "dialogTree", dialogExpandPath, foldersOnly, null, function (event, data) {
                 var selectedFileDetails = tree_1.FileTree.createResourcePath(data.node.tooltip);

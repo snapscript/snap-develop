@@ -1,31 +1,36 @@
+import swing.JPanelInterface;
+class FileClassLoader extends URLClassLoader {
 
-import util.stream.Collectors;
-
-var x = 0;
-var func = -> {
-   println(x);
-   var foo = -> {
-      println(x);
-   };
-   foo();
-};
-func();
-
-class Foo{
    const x;
-   new(x){
-      this.x = x;
+   new(x) : super([], String.class.type.getClassLoader()){
+      this.x=x;
    }
-   
-   override toString(){
-      return "x=${x}";
+   foo(){
+      println("FileClassLoader.foo(${x})");
+   }
+   override loadClass(name: String, resolve: Boolean): Class{
+    println("FileClassLoader::loadClass(x = ${x}); ${this}");
+    //return Class.forName(name);
+    return super.loadClass(name, resolve);
    }
 }
+var loader = new FileClassLoader(226);
+var result = loader.loadClass('java.lang.String');
 
-[1, 2, 3, 4].stream().map(Foo::new).forEach(foo -> println(foo));
+loader.foo();
+println(result);
 
-println([1, 2, 3, 4].stream().map(Foo::new).collect(Collectors.toList()));
+class MyOutputStream extends FilterOutputStream {
+   new(out):super(out){
+      println("${out}");
+   }
+   foo() {
+      println("foo=${out}");
+   }
+}
+var stream = new MyOutputStream(System.out);
+var printer = new PrintStream(stream);
+stream.foo();
 
-
-["1", "2", "3", "4"].stream().map(Foo::new).forEach(x -> println(x));
-
+printer.println("print 1");
+printer.println("print 2");

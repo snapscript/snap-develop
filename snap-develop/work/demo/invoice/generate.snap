@@ -10,7 +10,7 @@ function generateInvoices() {
    
    file.readLines().stream().forEach(line -> processInvoice(company, line));
 }
-
+ 
 /*
 {
    "bankAccount": {
