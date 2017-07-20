@@ -45,11 +45,13 @@ export module FileTree {
       if(tree && (typeof tree.getNodeByKey === "function")) { // make sure the function exists
          var treeNode = tree.getNodeByKey(nodeId);
    
-         if(treeNode && treeNode.li && container) {
-            container.scrollTop = 0; // reset the scroll for better calculation
-            container.scrollTop = Common.calculateScrollOffset(container, treeNode.li);
+         if(treeNode) {
+            if(treeNode.li && container) {
+               container.scrollTop = 0; // reset the scroll for better calculation
+               container.scrollTop = Common.calculateScrollOffset(container, treeNode.li);
+            }
+            treeNode.setActive();
          }
-         treeNode.setActive();
       }
    }
    
