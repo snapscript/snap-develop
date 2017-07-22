@@ -47,8 +47,10 @@ export module FileTree {
    
          if(treeNode) {
             if(treeNode.li && container) {
-               container.scrollTop = 0; // reset the scroll for better calculation
-               container.scrollTop = Common.calculateScrollOffset(container, treeNode.li);
+               if(!Common.isChildElementVisible(container, treeNode.li)) {
+                  container.scrollTop = 0; // reset the scroll for better calculation
+                  container.scrollTop = Common.calculateScrollOffset(container, treeNode.li);
+               }
             }
             treeNode.setActive();
          }

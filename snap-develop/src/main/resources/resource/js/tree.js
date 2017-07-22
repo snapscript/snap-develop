@@ -40,8 +40,10 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
                 var treeNode = tree.getNodeByKey(nodeId);
                 if (treeNode) {
                     if (treeNode.li && container) {
-                        container.scrollTop = 0; // reset the scroll for better calculation
-                        container.scrollTop = common_1.Common.calculateScrollOffset(container, treeNode.li);
+                        if (!common_1.Common.isChildElementVisible(container, treeNode.li)) {
+                            container.scrollTop = 0; // reset the scroll for better calculation
+                            container.scrollTop = common_1.Common.calculateScrollOffset(container, treeNode.li);
+                        }
                     }
                     treeNode.setActive();
                 }

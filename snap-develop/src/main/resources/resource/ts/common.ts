@@ -89,6 +89,17 @@ export module Common {
       }
    }
    
+   export function isChildElementVisible(parentElement, childElement) {
+      var childRect = childElement.getBoundingClientRect();
+      var parentRect = parentElement.getBoundingClientRect();
+      var topOfChildRect = childRect.top;
+      var topOfParentRect = parentRect.top;
+      var bottomOfChildRect = childRect.top + childRect.height;
+      var bottomOfParentRect = parentRect.top + parentElement.clientHeight;
+      
+      return topOfChildRect > topOfParentRect && bottomOfChildRect < bottomOfParentRect;
+   }
+   
    export function calculateScrollOffset(parentElement, childElement) {
       var childRect = childElement.getBoundingClientRect();
       var parentRect = parentElement.getBoundingClientRect();
