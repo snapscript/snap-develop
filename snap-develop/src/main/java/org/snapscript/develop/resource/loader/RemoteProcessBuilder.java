@@ -7,7 +7,7 @@ import static org.snapscript.develop.configuration.Configuration.TEMP_PATH;
 import java.io.File;
 
 import org.snapscript.develop.Workspace;
-import org.snapscript.core.extend.Extension;
+import org.snapscript.core.generate.Extension;
 
 public class RemoteProcessBuilder {
 
