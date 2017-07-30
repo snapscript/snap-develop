@@ -43,7 +43,51 @@ class ExtendOutputStream extends FilterOutputStream {
    }
 }
 
+
+class BufferStream extends OutputStream {
+
+   const buffer: ByteArrayOutputStream;
+      
+   new() {
+      this.buffer = new ByteArrayOutputStream();
+   }
+
+   override write(octet: Integer){
+      write([octet]);
+   }
+   
+   override write(array: Byte[], off: Integer, size: Integer) {
+      buffer.write(array, off, size);     
+   }
+   
+   override flush() { 
+      buffer.flush();
+   }  
+
+   override close() {
+      buffer.close();    
+   }
+   
+   override toString() {
+      return buffer.toString();
+   }
+}
+
 class ExtendClassTest with TestCase {
+
+   testBufferStream() {
+      var buffer = new BufferStream();
+      
+      buffer.write('hello world'.getBytes());
+      buffer.write(10);
+      buffer.write('next'.getBytes());
+      
+      var text = buffer.toString();
+      
+      println(text);
+      
+      assert text == 'hello world\nnext';
+   }
 
    testClassExtension() {
       var loader = new ExtendExtendClassLoader([]);
