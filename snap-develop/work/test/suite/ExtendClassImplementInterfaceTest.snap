@@ -43,6 +43,9 @@ class ExtendClassImplementInterfaceTest with TestCase {
       var closeable: Closeable = stream;
       closeable.close();
       
+      var task: Runnable = stream;
+      task.run();
+      
       assert stream instanceof Closeable;
       assert stream instanceof Runnable;
       assert closeable instanceof Closeable;

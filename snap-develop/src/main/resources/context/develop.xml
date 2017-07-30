@@ -74,6 +74,7 @@
         <entry key=".*.js" value="text/javascript" />
         <entry key=".*.json" value="application/json" />
         <entry key=".*.snap" value="text/plain" />
+        <entry key=".*.woff" value="text/plain" />
       </map>
     </constructor-arg>
   </bean>

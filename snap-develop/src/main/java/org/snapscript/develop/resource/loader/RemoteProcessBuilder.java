@@ -7,7 +7,6 @@ import static org.snapscript.develop.configuration.Configuration.TEMP_PATH;
 import java.io.File;
 
 import org.snapscript.develop.Workspace;
-import org.snapscript.core.generate.Extension;
 
 public class RemoteProcessBuilder {
 
@@ -31,7 +30,6 @@ public class RemoteProcessBuilder {
 
       builder.create(RemoteProcessLauncher.class)
                .addResource(RemoteClassLoader.class)
-               .addResource(Extension.class) // this is a hack for now
                .addResource(GRAMMAR_FILE)
                .saveFile(file);
    }
