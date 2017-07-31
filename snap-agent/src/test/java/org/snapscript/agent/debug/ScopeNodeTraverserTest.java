@@ -16,6 +16,9 @@ import java.util.TreeSet;
 
 import junit.framework.TestCase;
 
+import org.snapscript.common.store.ClassPathStore;
+import org.snapscript.compile.StoreContext;
+import org.snapscript.core.Context;
 import org.snapscript.core.MapModel;
 import org.snapscript.core.Model;
 import org.snapscript.core.ModelScope;
@@ -92,7 +95,10 @@ public class ScopeNodeTraverserTest extends TestCase {
       rootValues.put("example2", example2);
       
       Scope root = createRootScope(rootValues);
-      ScopeNodeTraverser traverser = new ScopeNodeTraverser(null, root);
+      
+      ClassPathStore store = new ClassPathStore();
+      Context context = new StoreContext(store);
+      ScopeNodeTraverser traverser = new ScopeNodeTraverser(context, root);
       TreeSet<String> expand = new TreeSet<String>();
       
       expand.add("invoice.invoiceCompany.invoiceDetails.*");
@@ -138,7 +144,7 @@ public class ScopeNodeTraverserTest extends TestCase {
    private static Instance createInstanceScope(Map<String, Object> values, String name) {
       Model model = new MapModel(Collections.EMPTY_MAP);
       Scope scope = new ModelScope(model, null);
-      Type type = new ScopeType(null, null, name, -1);
+      Type type = new ScopeType(null, null, name, 0);
       Instance instance = new PrimitiveInstance(null, model, scope, type);
       List<Property> properties = type.getProperties();
       State state = instance.getState();
