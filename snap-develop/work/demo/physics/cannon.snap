@@ -298,10 +298,10 @@ class PhysicsCannon {
         /*
          * Add default canvas.
          */
-        canvas.panel.setPreferredSize(new Dimension(w, h));
-        canvas.panel.setSize(new Dimension(w, h));
-        canvas.panel.setBackground(Color.BLACK);
-        panel.add(canvas.panel);
+        canvas.setPreferredSize(new Dimension(w, h));
+        canvas.setSize(new Dimension(w, h));
+        canvas.setBackground(Color.BLACK);
+        panel.add(canvas);
 
         // Panel setup, toggle visibility on frame, set visible
         frame.add(panel);
@@ -401,7 +401,7 @@ class UpdatableCanvas extends JPanel {
      * 
      * @see awt.Component#update(awt.Graphics)
      */
-    update(panel, g) {
+    override update(g) {
         const d = cannon.canvas.panel.getSize();
         if (offScreenImage == null) {
             offScreenImage = cannon.canvas.panel.createImage(d.width, d.height);
@@ -416,11 +416,11 @@ class UpdatableCanvas extends JPanel {
      * 
      * @see awt.Component#paint(awt.Graphics)
      */
-    paint(panel, g) {
+    override paint(g) {
         // Draw grid on background image, which is faster
         if (offScreenImageDrawed == null) {
-            const d = panel.getSize();
-            offScreenImageDrawed = panel.createImage(d.width, d.height);
+            const d = getSize();
+            offScreenImageDrawed = createImage(d.width, d.height);
             offScreenGraphicsDrawed = offScreenImageDrawed.getGraphics();
             offScreenGraphicsDrawed.setColor(Color.BLACK);                
             offScreenGraphicsDrawed.fillRect(0, 0, d.width, d.height);
@@ -456,7 +456,7 @@ class UpdatableCanvasTask with Runnable {
         if (!EventQueue.isDispatchThread()) {
             EventQueue.invokeLater(this);
         } else {
-           canvas.panel.repaint();
+           canvas.repaint();
         }
     }
 }
