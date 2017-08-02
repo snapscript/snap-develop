@@ -1,4 +1,3 @@
-
 package org.snapscript.agent.profiler;
 
 import java.util.Set;

@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.tunnel;
 
 import java.io.IOException;
@@ -37,5 +36,3 @@ public class ChannelOutputStream extends OutputStream {
       channel.close();    
    }
 }
-
-

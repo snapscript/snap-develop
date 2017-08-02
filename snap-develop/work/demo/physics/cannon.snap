@@ -1,6 +1,4 @@
 
-import swing.JPanelInterface;
-import swing.JPanelAdapter;
 import awt.BasicStroke;
 import awt.Color;
 import awt.Dimension;
@@ -12,6 +10,7 @@ import util.Date;
 import util.concurrent.ScheduledThreadPoolExecutor;
 import util.concurrent.TimeUnit;
 
+import swing.JPanel;
 import swing.JFrame;
 import swing.JPanel;
 import swing.SwingUtilities;
@@ -353,7 +352,7 @@ class TimerCounterTask with Runnable {
 /**
  * Canvas.
  */
-class UpdatableCanvas with JPanelInterface {
+class UpdatableCanvas extends JPanel {
 
     var offScreenImage = null;
     var offScreenGraphics = null;
@@ -364,10 +363,8 @@ class UpdatableCanvas with JPanelInterface {
 
     var canvasCounter = 0;
     var cannon;
-    var panel;
     
     new(cannon) {
-       this.panel = new JPanelAdapter(this);
        this.cannon = cannon;
         timer.scheduleAtFixedRate(new UpdatableCanvasTask(this), 0, cannon.timeInMsForRenderUpdate, TimeUnit.MILLISECONDS);
     }

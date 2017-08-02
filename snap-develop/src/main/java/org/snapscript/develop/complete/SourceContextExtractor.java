@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.complete;
 
 import static org.snapscript.develop.complete.BraceCounter.CLOSE_BRACE;

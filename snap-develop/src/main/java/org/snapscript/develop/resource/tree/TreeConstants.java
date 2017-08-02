@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.resource.tree;
 
 public interface TreeConstants {

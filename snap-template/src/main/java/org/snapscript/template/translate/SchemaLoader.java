@@ -1,6 +1,3 @@
-
-
-
 package org.snapscript.template.translate;
 
 import freemarker.template.Template;

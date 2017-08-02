@@ -1,5 +1,3 @@
-
-
 package org.snapscript.develop.find.text;
 
 public class TextMatch implements Comparable<TextMatch> {

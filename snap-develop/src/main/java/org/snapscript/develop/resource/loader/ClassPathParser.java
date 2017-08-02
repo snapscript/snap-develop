@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.resource.loader;
 
 import static org.snapscript.develop.configuration.Configuration.CLASS_EXTENSION;

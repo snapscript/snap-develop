@@ -1,5 +1,3 @@
-
-
 package org.snapscript.develop;
 
 import java.util.Map;

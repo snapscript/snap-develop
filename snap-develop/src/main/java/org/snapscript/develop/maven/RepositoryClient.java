@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.maven;
 
 import java.io.File;

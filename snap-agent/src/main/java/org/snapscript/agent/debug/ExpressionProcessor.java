@@ -1,5 +1,3 @@
-
-
 package org.snapscript.agent.debug;
 
 import java.util.Map;

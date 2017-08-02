@@ -29,4 +29,3 @@ public class TextMatchQuery {
       return MatchType.LITERAL;
    }
 }
-

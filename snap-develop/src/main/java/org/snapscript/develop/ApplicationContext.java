@@ -1,4 +1,3 @@
-
 package org.snapscript.develop;
 
 import static org.springframework.beans.factory.config.PropertyPlaceholderConfigurer.SYSTEM_PROPERTIES_MODE_FALLBACK;

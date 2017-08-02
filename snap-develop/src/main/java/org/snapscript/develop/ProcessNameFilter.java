@@ -1,4 +1,3 @@
-
 package org.snapscript.develop;
 
 public interface ProcessNameFilter {

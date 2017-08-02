@@ -1,5 +1,3 @@
-
-
 package org.snapscript.develop.resource.display;
 
 import static org.simpleframework.http.Protocol.CONTENT_ENCODING;

@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.resource;
 
 import static org.simpleframework.http.Method.CONNECT;

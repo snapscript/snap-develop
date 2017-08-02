@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.compile;
 
 import java.io.File;

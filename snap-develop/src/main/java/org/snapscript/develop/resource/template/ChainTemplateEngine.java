@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.resource.template;
 
 import java.util.List;

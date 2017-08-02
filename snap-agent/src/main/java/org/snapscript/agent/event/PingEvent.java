@@ -1,4 +1,3 @@
-
 package org.snapscript.agent.event;
 
 public class PingEvent implements ProcessEvent {

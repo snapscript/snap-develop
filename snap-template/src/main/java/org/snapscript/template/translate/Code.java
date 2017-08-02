@@ -1,6 +1,3 @@
-
-
-
 package org.snapscript.template.translate;
 
 import java.util.ArrayList;
@@ -132,4 +129,3 @@ class Code extends Token {
       line.clear();
    }
 }
-

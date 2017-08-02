@@ -1,4 +1,3 @@
-
 package org.snapscript.agent.log;
 
 import java.io.File;
@@ -98,4 +97,3 @@ public class FileLogCompressor {
       return false;
    }
 }
-

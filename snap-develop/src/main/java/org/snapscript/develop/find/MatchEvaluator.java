@@ -1,5 +1,3 @@
-
-
 package org.snapscript.develop.find;
 
 import java.util.List;
@@ -126,4 +124,3 @@ public abstract class MatchEvaluator {
    
    protected abstract List<MatchPart> match(String line, String source, String expression, String token);
 }
-

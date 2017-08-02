@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.resource.tree;
 
 import org.snapscript.develop.resource.display.DisplayModelResolver;

@@ -1,4 +1,3 @@
-
 package org.snapscript.agent;
 
 public class ProcessTerminator {

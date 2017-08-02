@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.resource;
 
 import static java.util.Collections.EMPTY_MAP;

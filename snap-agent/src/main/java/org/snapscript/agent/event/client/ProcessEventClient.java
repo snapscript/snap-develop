@@ -1,4 +1,3 @@
-
 package org.snapscript.agent.event.client;
 
 import java.io.IOException;

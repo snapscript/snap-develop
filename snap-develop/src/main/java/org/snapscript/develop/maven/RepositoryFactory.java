@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.maven;
 
 import org.apache.maven.repository.internal.DefaultServiceLocator;

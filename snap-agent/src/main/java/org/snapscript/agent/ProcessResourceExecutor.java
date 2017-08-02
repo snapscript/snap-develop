@@ -1,4 +1,3 @@
-
 package org.snapscript.agent;
 
 import java.util.concurrent.ThreadFactory;

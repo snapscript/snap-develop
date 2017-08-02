@@ -1,4 +1,3 @@
-
 package org.snapscript.agent.event;
 
 import org.snapscript.agent.debug.ScopeVariableTree;

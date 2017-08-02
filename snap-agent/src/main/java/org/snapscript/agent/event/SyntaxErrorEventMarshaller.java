@@ -1,4 +1,3 @@
-
 package org.snapscript.agent.event;
 
 import static org.snapscript.agent.event.ProcessEventType.SYNTAX_ERROR;
@@ -49,4 +48,3 @@ public class SyntaxErrorEventMarshaller implements ProcessEventMarshaller<Syntax
       return new MessageEnvelope(SYNTAX_ERROR.code, array, 0, array.length);
    }
 }
-

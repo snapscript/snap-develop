@@ -1,6 +1,3 @@
-
-
-
 package org.snapscript.template.translate;
 
 /**
@@ -632,4 +629,3 @@ final class Tokenizer implements Lexer {
       }
    }
 }
-

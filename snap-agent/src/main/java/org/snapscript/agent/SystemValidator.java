@@ -1,4 +1,3 @@
-
 package org.snapscript.agent;
 
 import org.snapscript.core.Path;

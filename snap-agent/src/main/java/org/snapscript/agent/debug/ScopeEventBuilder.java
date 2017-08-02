@@ -1,4 +1,3 @@
-
 package org.snapscript.agent.debug;
 
 import static org.snapscript.agent.event.ScopeEvent.RUNNING;

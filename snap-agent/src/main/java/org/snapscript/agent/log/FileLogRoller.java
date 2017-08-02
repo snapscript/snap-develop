@@ -1,4 +1,3 @@
-
 package org.snapscript.agent.log;
 
 import java.io.File;

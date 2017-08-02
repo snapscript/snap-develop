@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.complete;
 
 public interface HintToken {

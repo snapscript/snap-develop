@@ -1,4 +1,3 @@
-
 package org.snapscript.agent;
 
 import static org.snapscript.agent.event.ProcessEventType.WRITE_ERROR;

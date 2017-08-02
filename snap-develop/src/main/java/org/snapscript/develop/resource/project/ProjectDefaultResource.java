@@ -1,5 +1,3 @@
-
-
 package org.snapscript.develop.resource.project;
 
 import java.io.File;

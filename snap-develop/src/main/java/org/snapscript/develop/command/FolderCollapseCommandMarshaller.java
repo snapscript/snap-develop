@@ -1,5 +1,3 @@
-
-
 package org.snapscript.develop.command;
 
 public class FolderCollapseCommandMarshaller extends ObjectCommandMarshaller<FolderCollapseCommand>{

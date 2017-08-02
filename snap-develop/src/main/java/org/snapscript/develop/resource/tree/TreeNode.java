@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.resource.tree;
 
 import java.io.File;
@@ -142,4 +141,3 @@ public class TreeNode {
       
    }
 }
-

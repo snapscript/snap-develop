@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.command;
 
 import com.google.gson.Gson;

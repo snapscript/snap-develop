@@ -1,6 +1,3 @@
-
-
-
 package org.snapscript.template.translate;
 
 import java.lang.reflect.Constructor;

@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.common;
 
 import java.io.ByteArrayOutputStream;

@@ -98,4 +98,3 @@ public class StringTemplateEngine implements TemplateEngine {
       return new PropertyTemplateFilter(model, binder);
    }
 }
-

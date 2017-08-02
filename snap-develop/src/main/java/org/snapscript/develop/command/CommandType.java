@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.command;
 
 import static org.snapscript.develop.command.CommandOrigin.CLIENT;

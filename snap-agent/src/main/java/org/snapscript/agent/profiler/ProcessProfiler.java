@@ -1,4 +1,3 @@
-
 package org.snapscript.agent.profiler;
 
 import static org.snapscript.core.Reserved.SCRIPT_EXTENSION;

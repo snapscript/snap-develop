@@ -1,6 +1,3 @@
-
-
-
 package org.snapscript.template.translate;
 
 /**
@@ -80,4 +77,3 @@ class Declaration extends Token {
       }
    }
 }
-

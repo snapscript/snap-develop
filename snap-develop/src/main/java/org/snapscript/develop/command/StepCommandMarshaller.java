@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.command;
 
 public class StepCommandMarshaller extends ObjectCommandMarshaller<StepCommand> {

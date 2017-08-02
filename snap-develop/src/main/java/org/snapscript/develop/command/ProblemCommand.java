@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.command;
 
 import lombok.AllArgsConstructor;
@@ -17,4 +16,4 @@ public class ProblemCommand implements Command {
    private String resource;
    private int line;
    private long time;
-} 
+}

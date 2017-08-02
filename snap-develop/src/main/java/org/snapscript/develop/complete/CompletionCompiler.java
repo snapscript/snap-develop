@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.complete;
 
 import static org.snapscript.core.Reserved.GRAMMAR_FILE;

@@ -1,5 +1,3 @@
-
-
 package org.snapscript.develop.find.text;
 
 import java.util.ArrayList;

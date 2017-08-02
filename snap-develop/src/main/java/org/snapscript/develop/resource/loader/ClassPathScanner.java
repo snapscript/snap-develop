@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.resource.loader;
 
 import java.io.File;

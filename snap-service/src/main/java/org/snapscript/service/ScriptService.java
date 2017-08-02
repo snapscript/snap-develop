@@ -1,4 +1,3 @@
-
 package org.snapscript.service;
 
 import java.io.File;

@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.command;
 
 public class BreakpointsCommandMarshaller extends ObjectCommandMarshaller<BreakpointsCommand>{
@@ -7,4 +6,3 @@ public class BreakpointsCommandMarshaller extends ObjectCommandMarshaller<Breakp
       super(CommandType.BREAKPOINTS);
    }
 }
-

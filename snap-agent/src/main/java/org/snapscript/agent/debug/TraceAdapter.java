@@ -1,4 +1,3 @@
-
 package org.snapscript.agent.debug;
 
 import org.snapscript.core.Scope;

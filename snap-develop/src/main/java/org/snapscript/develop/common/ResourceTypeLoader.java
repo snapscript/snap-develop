@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.common;
 
 import static org.snapscript.tree.Instruction.SCRIPT;

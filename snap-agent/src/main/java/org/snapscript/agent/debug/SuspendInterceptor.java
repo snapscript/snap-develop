@@ -1,4 +1,3 @@
-
 package org.snapscript.agent.debug;
 
 import java.util.concurrent.atomic.AtomicBoolean;

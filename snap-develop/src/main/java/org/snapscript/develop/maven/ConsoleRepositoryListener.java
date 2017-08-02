@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.maven;
 
 import org.snapscript.agent.log.ProcessLogger;

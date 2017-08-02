@@ -1,4 +1,3 @@
-
 package org.snapscript.agent.profiler;
 
 public class ProfileResult implements Comparable<ProfileResult>{

@@ -1,4 +1,3 @@
-
 package org.snapscript.agent.debug;
 
 public interface ResumeListener {

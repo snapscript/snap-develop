@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.resource.tree;
 
 import static org.snapscript.develop.resource.tree.TreeConstants.INDENT;

@@ -46,4 +46,3 @@ public class ImageScaler {
       return new BufferedImage(width, height, TYPE_INT_ARGB);
    }
 }
-

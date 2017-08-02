@@ -1,4 +1,3 @@
-
 package org.snapscript.agent.event;
 
 import static org.snapscript.agent.event.ProcessEventType.PONG;
@@ -63,4 +62,3 @@ public class PongEventMarshaller implements ProcessEventMarshaller<PongEvent> {
       return new MessageEnvelope(PONG.code, array, 0, array.length);
    }
 }
-

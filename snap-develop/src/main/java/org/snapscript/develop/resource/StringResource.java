@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.resource;
 
 import static org.simpleframework.http.Protocol.CONTENT_TYPE;

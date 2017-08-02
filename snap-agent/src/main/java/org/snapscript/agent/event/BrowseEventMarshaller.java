@@ -1,4 +1,3 @@
-
 package org.snapscript.agent.event;
 
 import static org.snapscript.agent.event.ProcessEventType.BROWSE;

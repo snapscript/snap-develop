@@ -1,4 +1,3 @@
-
 package org.snapscript.swing;
 
 import java.awt.Color;

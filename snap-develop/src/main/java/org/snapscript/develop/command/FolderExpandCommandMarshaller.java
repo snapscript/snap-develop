@@ -1,5 +1,3 @@
-
-
 package org.snapscript.develop.command;
 
 public class FolderExpandCommandMarshaller extends ObjectCommandMarshaller<FolderExpandCommand>{

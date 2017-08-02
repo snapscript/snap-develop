@@ -1,4 +1,3 @@
-
 package org.snapscript.develop.resource.display;
 
 import org.simpleframework.xml.Element;

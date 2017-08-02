@@ -1,5 +1,3 @@
-
- 
 package org.snapscript.develop.find;
 
 import static java.lang.Character.toLowerCase;
@@ -104,4 +102,3 @@ public class ExpressionResolver {
       return null;
    }
 }
-

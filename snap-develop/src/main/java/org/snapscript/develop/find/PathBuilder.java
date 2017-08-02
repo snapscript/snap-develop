@@ -1,5 +1,3 @@
-
-
 package org.snapscript.develop.find;
 
 import java.io.File;

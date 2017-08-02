@@ -1,4 +1,3 @@
-
 package org.snapscript.develop;
 
 import static org.snapscript.develop.configuration.Configuration.CLASSPATH_FILE;
