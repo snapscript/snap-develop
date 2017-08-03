@@ -152,12 +152,12 @@ class SkyFrame with ChangeListener with ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         skyPanel = new SkyPanel(dt, xPixels, yPixels, mNumberOfPlanets, sun);
-        skyPanel.panel.setBackground(Color.black);
+        skyPanel.setBackground(Color.black);
 
         var masterPanelLayout = new BorderLayout();
         var pane = frame.getContentPane();
         pane.setLayout(masterPanelLayout);
-        pane.add(skyPanel.panel, masterPanelLayout.CENTER);
+        pane.add(skyPanel, masterPanelLayout.CENTER);
 
         slider = new JSlider(JSlider.VERTICAL,
            (sun.getMass()*minSunMassMultiplier),
@@ -295,7 +295,7 @@ class SkyFrame with ChangeListener with ActionListener {
      * @see SkyPanel
      */
     getPanel() {
-        return skyPanel.panel;
+        return skyPanel;
     }
     /**
      * Changes the sun's mass according to the input from the slider.

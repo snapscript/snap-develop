@@ -1,36 +1,14 @@
-import swing.JPanelInterface;
-class FileClassLoader extends URLClassLoader {
-
+import swing.JPanel;
+import awt.Color;
+class F extends JPanel{
    const x;
-   new(x) : super([], String.class.type.getClassLoader()){
+   new(x){
       this.x=x;
    }
-   foo(){
-      println("FileClassLoader.foo(${x})");
-   }
-   override loadClass(name: String, resolve: Boolean): Class{
-    println("FileClassLoader::loadClass(x = ${x}); ${this}");
-    //return Class.forName(name);
-    return super.loadClass(name, resolve);
+   override paint(g){
+      super.paint(g);
    }
 }
-var loader = new FileClassLoader(226);
-var result = loader.loadClass('java.lang.String');
-
-loader.foo();
-println(result);
-
-class MyOutputStream extends FilterOutputStream {
-   new(out):super(out){
-      println("${out}");
-   }
-   foo() {
-      println("foo=${out}");
-   }
-}
-var stream = new MyOutputStream(System.out);
-var printer = new PrintStream(stream);
-stream.foo();
-
-printer.println("print 1");
-printer.println("print 2");
+var f = new F("foo");
+f.setBackground(Color.black);
+println(f);

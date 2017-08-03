@@ -15,8 +15,6 @@ import awt.geom.Line2D;
 import awt.geom.Rectangle2D;
 import util.Vector;
 
-import swing.JPanelInterface;
-import swing.JPanelAdapter;
 import swing.JButton;
 import swing.JFrame;
 import swing.JPanel;
@@ -36,7 +34,7 @@ import solarsystem.model.Sun;
  * 
  * @see JPanel
  */
-class SkyPanel with JPanelInterface {
+class SkyPanel extends JPanel { 
     /**
      * The initial size of the panel in pixels
      */
@@ -94,7 +92,7 @@ class SkyPanel with JPanelInterface {
      * @see Sun
      */
     var sun;
-    var panel;
+    
     /**
      * SkyPanel constructor. The constructor calculates the maximum number of
      * planets that will be visible given mMaxXPosition, and then determines
@@ -113,7 +111,6 @@ class SkyPanel with JPanelInterface {
      * @see Sun
      */
     new(dt, mMaxXPosition, mMaxYPosition, mNumberOfPlanets, mSun){
-        panel = new JPanelAdapter(this);
         xMinPixels = 0;
         xMaxPixels = mMaxXPosition;
         yMinPixels = 0;
@@ -202,8 +199,8 @@ class SkyPanel with JPanelInterface {
         return 1.5*sun.getDiameter() + trialOrbitNum*maxPlanetDia;
     }
 
-    update(panel, comp) {
-      //paint(panel, comp);
+    override update(comp) {
+      //paint(comp);
     }
     
     /**
@@ -212,7 +209,7 @@ class SkyPanel with JPanelInterface {
      * @param comp A Graphics object.
      * @see Graphics
      */
-    paint(panel, comp) {
+    override paint(comp) {
         var comp2D = comp;
 
         comp2D.setPaint(Color.black);      
