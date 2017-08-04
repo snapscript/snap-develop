@@ -41,6 +41,11 @@
         <include name="**/*.class" />
       </fileset>
     </copy>
+    <copy todir="output">
+            <fileset dir="../../snap/snap-parse/target/classes">
+        <include name="**/*.bnf" />
+      </fileset>
+    </copy>    
     <jar destfile="jar/snap.jar">
       <fileset dir="output" />
       <manifest>
