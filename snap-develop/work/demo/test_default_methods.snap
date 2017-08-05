@@ -1,3 +1,4 @@
+import util.concurrent.atomic.AtomicInteger;
 
 trait Foo extends Iterator {
 
