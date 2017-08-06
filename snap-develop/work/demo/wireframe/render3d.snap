@@ -276,7 +276,7 @@ class Model3D {
    parse(is) {
          var st = new StreamTokenizer(is);
          st.eolIsSignificant(true);
-         //st.commentChar(35);
+         st.commentChar(35);
          try {
             while (true) {
                var token = st.nextToken();
@@ -582,7 +582,7 @@ class ThreeD with JPanelInterface with MouseMotionListener {
       var is = null;
       try {
          Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-         is = ThreeD.class.getModule().getResource("/wireframe/cube.spec");
+         is = ThreeD.class.getModule().getResource("/wireframe/hughes_500.spec");
          var m = new Model3D(is);
          md = m;
          m.findBB();
