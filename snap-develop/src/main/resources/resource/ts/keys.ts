@@ -124,11 +124,28 @@ export module KeyBinder {
       $(window).keydown(function(event) {
          if(event.ctrlKey) { 
             // do not prevent default for copy/cut/paste
-            if(e.keyCode != 67 && e.keyCode != 86 && e.keyCode == 88) {
+            if(isCopyChar(event) || isCutChar(event) || isPasteChar(event)) {
+               //console.log("ignore: "+event.keyCode);
+            } else {
                event.preventDefault(); 
             }
          }
        });
+   }
+   
+   function isCopyChar(e) {
+      var evt = e || window.event
+      return evt.keyCode === 67;
+   }
+   
+   function isCutChar(e) {
+      var evt = e || window.event
+      return evt.keyCode === 88;
+   }
+   
+   function isPasteChar(e) {
+      var evt = e || window.event
+      return evt.keyCode === 86;
    }
    
    function parseKeyBinding(name) {
