@@ -1,4 +1,4 @@
-ace.define("ace/mode/gherkin_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
+define("ace/mode/gherkin_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
 
 var oop = require("../lib/oop");
 var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
@@ -19,17 +19,17 @@ var GherkinHighlightRules = function() {
     }).join("|");
     this.$rules = {
         start : [{
-            token: 'constant.numeric',
+            token: "constant.numeric",
             regex: "(?:(?:[1-9]\\d*)|(?:0))"
         }, {
             token : "comment",
             regex : "#.*$"
         }, {
             token : "keyword",
-            regex : "(?:" + labels + "):|(?:" + keywords + ")\\b",
+            regex : "(?:" + labels + "):|(?:" + keywords + ")\\b"
         }, {
             token : "keyword",
-            regex : "\\*",
+            regex : "\\*"
         }, {
             token : "string",           // multi line """ string start
             regex : '"{3}',
@@ -43,7 +43,7 @@ var GherkinHighlightRules = function() {
             regex : "^\\s*(?=@[\\w])",
             next : [{
                 token : "text",
-                regex : "\\s+",
+                regex : "\\s+"
             }, {
                 token : "variable.parameter",
                 regex : "@[\\w]+"
@@ -110,7 +110,7 @@ oop.inherits(GherkinHighlightRules, TextHighlightRules);
 exports.GherkinHighlightRules = GherkinHighlightRules;
 });
 
-ace.define("ace/mode/gherkin",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/gherkin_highlight_rules"], function(require, exports, module) {
+define("ace/mode/gherkin",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/gherkin_highlight_rules"], function(require, exports, module) {
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
@@ -118,6 +118,7 @@ var GherkinHighlightRules = require("./gherkin_highlight_rules").GherkinHighligh
 
 var Mode = function() {
     this.HighlightRules = GherkinHighlightRules;
+    this.$behaviour = this.$defaultBehaviour;
 };
 oop.inherits(Mode, TextMode);
 
@@ -144,12 +145,12 @@ oop.inherits(Mode, TextMode);
         
 
         if (state == "start") {
-            if (line.match("Scenario:|Feature:|Scenario\ Outline:|Background:")) {
+            if (line.match("Scenario:|Feature:|Scenario Outline:|Background:")) {
                 indent += space2;
             } else if(line.match("(Given|Then).+(:)$|Examples:")) {
-            	indent += space2;
+                indent += space2;
             } else if(line.match("\\*.+")) {
-            	indent += "* ";
+                indent += "* ";
             } 
         }
         
