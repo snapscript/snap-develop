@@ -1,4 +1,4 @@
-ace.define("ace/theme/eclipse",["require","exports","module","ace/lib/dom"], function(require, exports, module) {
+define("ace/theme/eclipse",["require","exports","module","ace/lib/dom"], function(require, exports, module) {
 "use strict";
 
 exports.isDark = false;
@@ -22,7 +22,8 @@ background-color: rgb(60, 76, 114);\
 color: black;\
 }\
 .ace-eclipse .ace_storage,\
-.ace-eclipse .ace_keyword {\
+.ace-eclipse .ace_keyword,\
+.ace-eclipse .ace_variable {\
 color: rgb(127, 0, 85);\
 font-weight: bold;\
 }\

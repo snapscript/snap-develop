@@ -113,7 +113,10 @@ define(["require", "exports", "jquery", "mousetrap", "common", "editor", "comman
         function disableBrowserKeys() {
             $(window).keydown(function (event) {
                 if (event.ctrlKey) {
-                    event.preventDefault();
+                    // do not prevent default for copy/cut/paste
+                    if (e.keyCode != 67 && e.keyCode != 86 && e.keyCode == 88) {
+                        event.preventDefault();
+                    }
                 }
             });
         }
