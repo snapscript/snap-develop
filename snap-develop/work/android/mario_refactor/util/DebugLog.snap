@@ -1,0 +1,98 @@
+import android.util.Log;
+
+module DebugLog {
+   var mLoggingEnabled: Boolean = true;
+
+   public setDebugLogging(enabled: Boolean) {
+      mLoggingEnabled = enabled;
+   }
+   
+    public v(tag: String, msg: String): Integer {
+        var result: Integer = 0;
+        if (mLoggingEnabled) {
+           result = Log.v(tag, msg);
+        }
+        return result;
+    }
+
+   public v(tag: String, msg: String, tr: Throwable): Integer {
+      var result: Integer = 0;
+       if (mLoggingEnabled) {
+          result = Log.v(tag, msg, tr);
+       }
+       return result;    
+   }
+
+     public d(tag: String, msg: String): Integer {
+        var result: Integer = 0;
+         if (mLoggingEnabled) {
+            result = Log.d(tag, msg);
+         }
+         return result;
+    }
+
+    public d(tag: String, msg: String, tr: Throwable): Integer {
+       var result: Integer = 0;
+        if (mLoggingEnabled) {
+           result = Log.d(tag, msg, tr);
+        }
+        return result;
+    }
+
+    public i(tag: String, msg: String): Integer {
+       var result: Integer = 0;
+        if (mLoggingEnabled) {
+           result = Log.i(tag, msg);
+        }
+        return result;
+    }
+
+    public i(tag: String, msg: String, tr: Throwable): Integer {
+       var result: Integer = 0;
+        if (mLoggingEnabled) {
+           result = Log.i(tag, msg, tr);
+        }
+        return result;
+    }
+
+    public w(tag: String, msg: String): Integer {
+       var result: Integer = 0;
+        if (mLoggingEnabled) {
+           result = Log.w(tag, msg);
+        }
+        return result;
+    }
+
+    public w(tag: String, msg: String, tr: Throwable): Integer {
+       var result: Integer = 0;
+        if (mLoggingEnabled) {
+           result = Log.w(tag, msg, tr);
+        }
+        return result;
+    }
+
+    public w(tag: String, tr: Throwable): Integer {
+       var result: Integer = 0;
+        if (mLoggingEnabled) {
+           result = Log.w(tag, tr);
+        }
+        return result;
+    }
+
+    public e(tag: String, msg: String): Integer {
+       var result: Integer = 0;
+        if (mLoggingEnabled) {
+           result = Log.e(tag, msg);
+        }
+        return result;
+    }
+
+    public e(tag: String, msg: String, tr: Throwable): Integer {
+       var result: Integer = 0;
+        if (mLoggingEnabled) {
+           result = Log.e(tag, msg, tr);
+        }
+        return result;
+    }
+}
+

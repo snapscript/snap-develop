@@ -1,0 +1,49 @@
+import mario.core.MarioResourceManager;
+import mario.core.animation.Animation;
+import mario.core.tile.TileMap;
+import mario.objects.base.Creature;
+import android.graphics.Bitmap;
+
+
+
+
+
+class Score extends Creature {
+   
+   public var oneHundred: Animation;
+   private static var one_hundred: Bitmap;
+   private static var initialized: Boolean=false;
+   public new(x: Integer, y: Integer) {
+      super(x, y);
+      setIsItem(true);
+      
+      dy = -.45f;
+      if (!initialized){
+         one_hundred = MarioResourceManager.Score_100_New6;
+         initialized=true;
+      }
+      const class DeadAfterAnimation extends Animation {
+         public endOfAnimationAction() {
+            kill();
+         }
+      }
+      
+      oneHundred = new DeadAfterAnimation();
+      
+      oneHundred.addFrame(one_hundred, 380);
+      oneHundred.addFrame(one_hundred, 380);   
+      setAnimation(oneHundred);
+   }
+   
+   public updateCreature(map: TileMap, time: Integer) {
+      this.update((int) time);
+      y = y + dy * time;
+      if(dy < 0) {
+         dy = dy + .032f;
+      } else {
+         dy = 0;
+      }
+   }
+
+}
+
