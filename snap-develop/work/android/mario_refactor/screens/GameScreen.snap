@@ -312,22 +312,15 @@ class GameScreen extends Screen {
            state = GameState.Paused;
            var dialog: AlertDialog = new AlertDialog.Builder(game.getContext())
             .setTitle("Quit Game")
-             .setPositiveButton("Quit", new DialogInterface.OnClickListener() {
-                 public onClick(dialog: DialogInterface, whichButton: Integer) {
-                    goToMenu();
-                 }
+             .setPositiveButton("Quit", (dialog: DialogInterface, whichButton: Integer) -> {
+                  goToMenu();
              })
-             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                 public onClick(dialog: DialogInterface, whichButton: Integer) {
-                    state = GameState.Running;
-                 }
+             .setNegativeButton("Cancel", (dialog: DialogInterface, whichButton: Integer) -> {
+                  this.state = GameState.Running;
               })
              .setMessage("Return to main menu?")
-             .setOnCancelListener(new OnCancelListener(){
-                override
-                public onCancel(arg0: DialogInterface) {
-               state = GameState.Running;
-                }
+             .setOnCancelListener((arg0: DialogInterface) -> {
+                  this.state = GameState.Running;
               })
              .create();
            dialog.setCanceledOnTouchOutside(false);
@@ -362,8 +355,8 @@ class GameScreen extends Screen {
  
     }
     
-    private Boolean inBounds(event: TouchEvent, x: Integer, y: Integer, width: Integer,
-         Integer height) {
+    private inBounds(event: TouchEvent, x: Integer, y: Integer, width: Integer,
+          height: Integer): Boolean {
        
       if (event.x > x && event.x < x + width - 1 && event.y > y
             && event.y < y + height - 1)

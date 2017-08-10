@@ -1,7 +1,7 @@
 import util.stream.Collectors;
 import util.regex.Pattern;
 
-//var ROOT = "C:\\Work\\development\\snapscript\\snap-develop\\snap-develop\\work\\android";
+var ROOT = "C:\\Work\\development\\snapscript\\snap-develop\\snap-develop\\work\\demo";
 
 var SOURCE = new File("${ROOT}\\mario");
 var DESTINATION = new File("${ROOT}\\mario_refactor");
@@ -13,7 +13,7 @@ SOURCE.findFiles(file -> file.isDirectory())
    .filter(file -> {
       var matches = file.listFiles()
          .stream()
-         .filter(java -> java.name.endsWith(".snap"))
+         .filter(javaFile -> javaFile.name.endsWith(".java"))
          .collect(Collectors.toList());
          
       return !matches.isEmpty();
@@ -21,7 +21,7 @@ SOURCE.findFiles(file -> file.isDirectory())
    .forEach(file -> {
       var sources = file.listFiles()
          .stream()
-         .filter(source -> source.name.endsWith(".snap"))
+         .filter(source -> source.name.endsWith(".java"))
          .collect(Collectors.toList());
          
       build(file, file.name, sources);       
@@ -34,7 +34,7 @@ function build(path, name, sources){
       // if(source.getAbsolutePath().indexOf("${ROOT}") == -1){
       //    throw "Invalid source";
       // }
-      var result = new File(source.getCanonicalPath().replace("${SOURCE}", "${DESTINATION}"));
+      var result = new File(source.getCanonicalPath().replace("${SOURCE}", "${DESTINATION}").replace(".java", ".snap"));
          
       result.getParentFile().mkdirs();
       System.err.println(result);

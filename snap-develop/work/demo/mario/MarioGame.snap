@@ -1,0 +1,15 @@
+import static lang.Integer.*;
+import mario.core.GameFrame;
+
+function start() {
+   var g = new GameFrame();
+   
+   try {
+      g.start();
+      sleep(Integer.MAX_VALUE);
+   } catch(e) {
+      e.printStackTrace();
+   }
+}
+
+start();

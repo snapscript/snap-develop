@@ -1,27 +1,5 @@
-import util.regex.Pattern;
+import sound.sampled.AudioFormat;
+import sound.sampled.AudioInputStream;
+import sound.sampled.AudioSystem;
 
-function regexReplace(line, pattern, template) {
-   var matcher = Pattern.compile("(.*)${pattern}(.*)").matcher(line);
-   if(matcher.matches()){
-      var count = matcher.groupCount();
-      var result = template;
-      var first = matcher.group(1);
-      var last = matcher.group(count);
-      for(var i = 2; i < count; i++){
-         var token = matcher.group(i);
-         result = result.replace("%${i-1}", token);
-         result = result.replace("%{${i-1}}", token);
-      }
-      var next = "${first}${result}${last}";
-      println(">"+next);
-      return regexReplace(next, pattern, template);
-   }
-   return line;
-}
-
-var line = regexReplace("new(Integer x, Integer y, TileMap map, MarioSoundManager soundManager, Boolean isStill)", "(\\s|,|\\()([A-Z][a-zA-Z0-9]+)(\\s\\s*)([a-z][a-zA-Z0-9]*)", "%1%4:%3%2");
-
-println(line);
-
-println(Pattern.compile("([A-Z][a-zA-Z0-9]+)").matcher("Integer").matches());
-println(Pattern.compile("([A-Z][a-zA-Z0-9]+)(\\s\\s*)([a-z][a-zA-Z0-9]*)").matcher("Integer v").matches());
+println(AudioInputStream.class);
