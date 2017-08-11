@@ -42,13 +42,13 @@ class RotatingBlock extends GameTile {
 	
 			
   	class RotateAnimation extends Animation {
-  	   const tile: GameTile;
+  	   const tile: RotatingBlock;
   	   
-  	   new(tile: GameTile){
+  	   new(tile: RotatingBlock){
   	      this.tile = tile;
   	   }
   		public endOfAnimationAction() {
-  			tile.setAnimation(idle);
+  			tile.setAnimation(tile.idle);
   			tile.setIsCollidable(true);
   		}
 	}
