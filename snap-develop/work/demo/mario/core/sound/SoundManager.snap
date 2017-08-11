@@ -34,7 +34,7 @@ class SoundManager extends ThreadPool {
     private var localLine: ThreadLocal;
     private var localBuffer: ThreadLocal;
     private var pausedLock: Object;
-    private var paused: Boolean;
+    private var paused: Boolean = false;
 
     /**
         Creates a new SoundManager using the maximum number of
@@ -268,7 +268,7 @@ class SoundManager extends ThreadPool {
             	System.out.println("hellO");
                 is = new FilteredSoundStream(is, filter);
             }
-            runTask(new SoundPlayer(is));
+            runTask(new SoundPlayer(this, is));
         }
         return is;
     }
@@ -334,16 +334,18 @@ class SoundManager extends ThreadPool {
     */
     class SoundPlayer with Runnable {
 
+        private var manager: SoundManager;
         private var source: InputStream;
 
-        public SoundPlayer(source: InputStream) {
+        public new(manager: SoundManager, source: InputStream) {
             this.source = source;
+            this.manager = manager;
         }
 
         public run() {
             // get line and buffer from ThreadLocals
-            var line: SourceDataLine = localLine.get();
-            var buffer: Byte[] = localBuffer.get();
+            var line: SourceDataLine = manager.localLine.get();
+            var buffer: Byte[] = manager.localBuffer.get();
             if (line == null || buffer == null) {
                 // the line is unavailable
                 return;
@@ -354,10 +356,10 @@ class SoundManager extends ThreadPool {
                 var numBytesRead: Integer = 0;
                 while (numBytesRead != -1) {
                     // if paused, wait until unpaused
-                    synchronized (pausedLock) {
-                        if (paused) {
+                    synchronized (manager.pausedLock) {
+                        if (manager.paused) {
                             try {
-                                pausedLock.wait();
+                                manager.pausedLock.wait();
                             }
                             catch (e: InterruptedException) {
                                 return;

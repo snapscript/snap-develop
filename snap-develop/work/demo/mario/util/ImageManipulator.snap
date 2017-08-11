@@ -7,7 +7,7 @@ import awt.image.BufferedImage;
 import io.File;
 import io.IOException;
 
-import javax.imageio.ImageIO;
+import imageio.ImageIO;
 
 /**
  * ImageManipulator.java

@@ -10,7 +10,7 @@ import awt.Graphics2D;
 import awt.image.BufferedImage;
 import io.File;
 
-import javax.imageio.ImageIO;
+import imageio.ImageIO;
 
 class SpriteMap {
 	

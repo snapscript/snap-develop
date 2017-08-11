@@ -1,4 +1,4 @@
-import javax.sound.sampled.AudioFormat;
+import sound.sampled.AudioFormat;
 
 import mario.core.sound.Sound;
 import mario.core.sound.SoundManager;

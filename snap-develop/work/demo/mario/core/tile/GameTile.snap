@@ -18,8 +18,7 @@ class GameTile extends Tile {
 	 * Constructs a new GameTile at the pixel (x,y) position with the Animation anim
 	 * and Image img.
 	 */
-	public new(pixelX: Integer, pixelY: Integer, anim: Animation, img: BufferedImage) {
-		super(pixelX, pixelY, anim, img);
+	public new(pixelX: Integer, pixelY: Integer, anim: Animation, img: BufferedImage): super(pixelX, pixelY, anim, img) {
 		collidingCreatures = new LinkedList();
 	}
 	
@@ -27,8 +26,7 @@ class GameTile extends Tile {
 	 * Constructs a new GameTile at the pixel (x,y) position with no Animation
 	 * and the constant Image img.
 	 */
-	public new(pixelX: Integer, pixelY: Integer, img: BufferedImage) {
-		this(pixelX, pixelY, null, img);
+	public new(pixelX: Integer, pixelY: Integer, img: BufferedImage): this(pixelX, pixelY, null, img) {
 	}
 	
 	/**

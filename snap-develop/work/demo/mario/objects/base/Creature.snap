@@ -41,20 +41,19 @@ class Creature extends CollidableObject {
 	 * 			  and creatures can interact with. 
 	 * Invisible: When a creature is invisible, it isn't drawn.
 	 */
-	private var isAlwaysRelevant: Boolean; 
-	private var isAlive: Boolean; 
-	private var isSleeping: Boolean; 
-	private var isFlipped: Boolean;
-	private var isItem: Boolean;
-	private var isPlatform: Boolean;
-	private var isInvisible: Boolean;
+	private var isAlwaysRelevant: Boolean = false; 
+	private var isAlive: Boolean = false; 
+	private var isSleeping: Boolean = false; 
+	private var isFlipped: Boolean = false;
+	private var isItem: Boolean = false;
+	private var isPlatform: Boolean = false;
+	private var isInvisible: Boolean = false;
 	
-	public new() { 
-		this(0, 0, null);
+	public new(): this(0, 0, null) { 
+		
 	}
 	
-	public new(pixelX: Integer, pixelY: Integer) {
-		this(pixelX, pixelY, null);
+	public new(pixelX: Integer, pixelY: Integer): this(pixelX, pixelY, null) {
 	}
 	
 	/**
@@ -64,8 +63,7 @@ class Creature extends CollidableObject {
 	 * True: Collidable, Alive, Sleeping, Flipped.
 	 * False: OnScreen, Item, Platform, Relevant.
 	 */
-	public new(pixelX: Integer, pixelY: Integer, soundManager: MarioSoundManager22050Hz) {
-		super(pixelX, pixelY, soundManager);	
+	public new(pixelX: Integer, pixelY: Integer, soundManager: MarioSoundManager22050Hz): super(pixelX, pixelY, soundManager) {
 		setIsCollidable(true);
 		isAlive = true;
 		isSleeping = true;
@@ -238,7 +236,7 @@ class Creature extends CollidableObject {
 		}
 	}
 	
-	public updatenew(map: TileMap, time: Integer) {
+	public updateCreature(map: TileMap, time: Integer) {
 		
 		if(dy < gravityEffect) { // apply gravity...this must be done first
 			dy = dy + GRAVITY * time;

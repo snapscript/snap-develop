@@ -100,7 +100,7 @@ class ThreadPool extends ThreadGroup {
             try {
                 threads[i].join();
             }
-            catch (Interruptedex) { }
+            catch (e: InterruptedException) { }
         }
     }
     
@@ -126,19 +126,21 @@ class ThreadPool extends ThreadGroup {
         A PooledThread is a Thread in a ThreadPool group, designed
         to run tasks (Runnables).
     */
-    class PooledThread extends Thread {
+    class PooledThread with Runnable {
          const pool: ThreadPool;
-
-        public new(pool): 
-            super(pool/*,
-                "PooledThread-" + (pool.threadID++)*/){
+         const thread: Thread;
+        public new(pool) {
+            this.thread = new Thread(pool, this /*, "PooledThread-" + (pool.threadID++)*/);
             this.pool = pool;
         }
-
+        
+        public start(){
+           thread.start();
+        }
 
         public run() {
         	   pool.threadStarted();
-            while (!isInterrupted()) {
+            while (!thread.isInterrupted()) {
 
                 // get a task to run
                 var task: Runnable = null;
@@ -159,7 +161,8 @@ class ThreadPool extends ThreadGroup {
                     task.run();
                 }
                 catch (t: Throwable) {
-                    pool.uncaughtException(this, t);
+                     t.printStackTrace();
+                    pool.uncaughtException(thread, t);
                 }
             }
             pool.threadStopped();

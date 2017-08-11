@@ -8,8 +8,7 @@ class Sprite extends Animatible {
     public var dx: Float = 0f;
     public var dy: Float = 0f;
 	
-	public new() { 
-		this(0, 0);
+	public new(): this(0, 0) { 
 	}
 	
 	public new(x: Integer, y: Integer) {

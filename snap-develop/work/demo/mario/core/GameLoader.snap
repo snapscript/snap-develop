@@ -6,7 +6,7 @@ import io.IOException;
 import util.ArrayList;
 import util.Scanner;
 
-import javax.imageio.ImageIO;
+import imageio.ImageIO;
 
 import mario.core.sound.specific.MarioSoundManager22050Hz;
 import mario.core.tile.GameTile;
@@ -126,7 +126,7 @@ class GameLoader {
 			var line: String = lines.get(y);
 			for (var x=0; x < line.length(); x++) {
 				var ch: Character = line.charAt(x);
-				
+
 				var pixelX: Integer = GameRenderer.tilesToPixels(x);
 				var pixelY: Integer = GameRenderer.tilesToPixels(y);
 				// enumerate the possible tiles...

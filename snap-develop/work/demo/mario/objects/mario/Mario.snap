@@ -5,7 +5,7 @@ import util.ArrayList;
 import util.LinkedList;
 import util.List;
 
-import javax.sound.sampled.AudioFormat;
+import sound.sampled.AudioFormat;
 
 import mario.core.GameRenderer;
 import mario.core.animation.Animation;

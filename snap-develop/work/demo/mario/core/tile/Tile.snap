@@ -24,8 +24,7 @@ class Tile extends Animatible {
 		setAnimation(anim);
 	}
 	
-	public new(pixelX: Integer, pixelY: Integer, img: BufferedImage) {
-		this(pixelX, pixelY, null, img);
+	public new(pixelX: Integer, pixelY: Integer, img: BufferedImage): this(pixelX, pixelY, null, img) {
 	}
 	
 	public draw(g: Graphics, pixelX: Integer, pixelY: Integer) {
