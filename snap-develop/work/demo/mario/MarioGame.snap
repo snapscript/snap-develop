@@ -1,8 +1,8 @@
 import static lang.Integer.*;
 import mario.core.GameFrame;
 
-function start() {
-   var g = new GameFrame();
+function start(scale) {
+   var g = new GameFrame(3);
    
    try {
       g.start();
@@ -12,4 +12,4 @@ function start() {
    }
 }
 
-start();
+start(2);

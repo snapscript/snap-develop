@@ -6,20 +6,21 @@ class GameFrame extends JFrame {
    
    private static const RESOLUTION_WIDTH: Integer = 420;
    private static const RESOLUTION_HEIGHT: Integer = 330;
-   private static const RESOLUTION_SCALE: Integer = 1;
-   private static const FRAME_WIDTH: Integer = RESOLUTION_WIDTH * RESOLUTION_SCALE;
-   private static const FRAME_HEIGHT: Integer = RESOLUTION_HEIGHT * RESOLUTION_SCALE;
    
    private const panel: GamePanel;
+   private const width: Integer;
+   private const height: Integer;
    
-	public new() {	 
-	   this.panel = new GamePanel(RESOLUTION_WIDTH, RESOLUTION_HEIGHT, RESOLUTION_SCALE);
+	public new(scale) {	 
+	   this.panel = new GamePanel(RESOLUTION_WIDTH, RESOLUTION_HEIGHT, scale);
+	   this.width = RESOLUTION_WIDTH * scale;
+	   this.height = RESOLUTION_HEIGHT * scale;
 	}
 	
 	public start(){
-	   setSize(FRAME_WIDTH, FRAME_HEIGHT);
+	   setSize(width, height);
 	   setResizable(false);
-	   setTitle("Game Frame"); 
+	   setTitle("Mario"); 
 	   add(panel);
 	   setDefaultCloseOperation(EXIT_ON_CLOSE);
 	   setVisible(true);

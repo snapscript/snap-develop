@@ -182,7 +182,7 @@ class GamePanel extends JPanel with Runnable {
 			
 			for(var tile in map.animatedTiles()) {
 	            tile.collidingCreatures().clear();  // clear the colliding sprites on the tile
-	            tile.update(20);
+	            tile.update(period);
 			}
         
 			// Add creatures that need to be created. They are added here to aconcurrent modifcation errors.

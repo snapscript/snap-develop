@@ -54,7 +54,6 @@ class SoundManager extends ThreadPool {
     public new(playbackFormat: AudioFormat, maxSimultaneousSounds: Integer): 
         super(Math.min(maxSimultaneousSounds, getMaxSimultaneousSounds(playbackFormat))) 
    {
-           System.err.println(playbackFormat);
         this.playbackFormat = playbackFormat;
         localLine = new ThreadLocal();
         localBuffer = new ThreadLocal();
