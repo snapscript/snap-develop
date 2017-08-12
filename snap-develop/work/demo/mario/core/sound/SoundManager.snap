@@ -14,6 +14,8 @@ import sound.sampled.Mixer;
 import sound.sampled.SourceDataLine;
 import sound.sampled.UnsupportedAudioFileException;
 
+import mario.util.Digest;
+
 /**
     The SoundManager class manages sound playback. The
     SoundManager is a ThreadPool, with each thread playing back
@@ -52,6 +54,7 @@ class SoundManager extends ThreadPool {
     public new(playbackFormat: AudioFormat, maxSimultaneousSounds: Integer): 
         super(Math.min(maxSimultaneousSounds, getMaxSimultaneousSounds(playbackFormat))) 
    {
+           System.err.println(playbackFormat);
         this.playbackFormat = playbackFormat;
         localLine = new ThreadLocal();
         localBuffer = new ThreadLocal();
@@ -130,34 +133,11 @@ class SoundManager extends ThreadPool {
         error occurs.
     */
     public getSound(filename: String): Sound {
-         var audioStream: AudioInputStream = getAudioInputStream(filename);
-         if(audioStream != null) {
-            return getSound(audioStream);
-         }
-         return null;
-        
-    }
-
-    /**
-        Loads a Sound from an input stream. Returns null if an
-        error occurs.
-    */
-    public getSound(is: InputStream): Sound {
-         var audioStream: AudioInputStream = getAudioInputStream(is);
-         if(audioStream != null) {
-            return getSound(audioStream);
-         }
-         return null;
-    }
-
-    /**
-        Loads a Sound from an AudioInputStream.
-    */
-    public getSound(audioStream: AudioInputStream): Sound {
+        var audioStream: AudioInputStream = getAudioInputStream(filename);
+    
         if (audioStream == null) {
             return null;
         }
-
         // get the number of bytes to read
         var length: Integer = audioStream.getFrameLength() * audioStream.getFormat().getFrameSize();
 
@@ -171,9 +151,8 @@ class SoundManager extends ThreadPool {
         catch (e: IOException) {
             e.printStackTrace();
         }
-
         // return the samples
-        return new Sound(samples);
+        return new Sound(filename, samples);
     }
 
     /**
@@ -265,7 +244,6 @@ class SoundManager extends ThreadPool {
     public play(is: InputStream, filter: SoundFilter): InputStream {
         if (is != null) {
             if (filter != null) {
-            	System.out.println("hellO");
                 is = new FilteredSoundStream(is, filter);
             }
             runTask(new SoundPlayer(this, is));
@@ -293,6 +271,7 @@ class SoundManager extends ThreadPool {
         // create, open, and start the line
         var line: SourceDataLine;
         var lineInfo: DataLine.Info = new DataLine.Info(SourceDataLine.class.type, playbackFormat);
+
         try {
             line = AudioSystem.getLine(lineInfo);
             line.open(playbackFormat, bufferSize);
@@ -379,6 +358,5 @@ class SoundManager extends ThreadPool {
 
         }
     }
-
 }
 

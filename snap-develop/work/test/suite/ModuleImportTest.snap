@@ -51,4 +51,3 @@ class ModuleImportTest with TestCase {
       assert L.class.name == 'CountDownLatch';
    }
 }
-new ModuleImportTest().runTests();

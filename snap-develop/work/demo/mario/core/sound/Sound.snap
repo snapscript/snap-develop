@@ -1,16 +1,20 @@
+import mario.util.Digest;
+
 /**
     The Sound class is a container for sound samples. The sound
     samples are format-agnostic and are stored as a Byte array.
 */
 class Sound {
 
-    private var samples: Byte[];
+    private const filename: String;
+    private const samples: Byte[];
 
     /**
         Create a new Sound object with the specified Byte array.
         The array is not copied.
     */
-    public new(samples: Byte[]) {
+    public new(filename: String, samples: Byte[]) {
+        this.filename = filename;
         this.samples = samples;
     }
 
