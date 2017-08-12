@@ -119,7 +119,7 @@ class MidiPlayer with MetaEventListener {
     // looping is on.
     public meta(event: MetaMessage) {
         if (event.getType() == END_OF_TRACK_MESSAGE) {
-            if (sequencer != null && sequencer.isOpen() && loop) {
+            if (sequencer != null && sequencer.isOpen() && loopFlag) {
             	// tick postion required to reset the sequencer
             	sequencer.setTickPosition(0);
                 sequencer.start();
