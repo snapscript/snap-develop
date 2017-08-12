@@ -2,4 +2,11 @@ import sound.sampled.AudioFormat;
 import sound.sampled.AudioInputStream;
 import sound.sampled.AudioSystem;
 
-println(AudioInputStream.class);
+new File("C:\\Work\\development\\snapscript\\snap-develop\\snap-develop\\work\\demo\\mario")
+   .findFiles(file -> file.name.endsWith(".snap"))
+   .stream()
+   .filter(file -> file.readText().contains("\t"))
+   .forEach(file -> {
+      var text = file.readText();
+      file.writeText(text.replace("\t", "   "));
+   });

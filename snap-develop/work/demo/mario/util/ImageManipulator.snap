@@ -17,25 +17,25 @@ import imageio.ImageIO;
  * 
  */
 class ImageManipulator {
-	
-	/** Reads in a BufferedImage using the standard ImageIO.read() */
-	public static loadImage(filename: String): BufferedImage {
-		var img: BufferedImage = null;
-		try {
-		    img = ImageIO.read(loadResource(filename));
-		} catch (e: Exception) { 
-		   e.printStackTrace();
-		}
-		return img;
-	} 
-	
+   
+   /** Reads in a BufferedImage using the standard ImageIO.read() */
+   public static loadImage(filename: String): BufferedImage {
+      var img: BufferedImage = null;
+      try {
+          img = ImageIO.read(loadResource(filename));
+      } catch (e: Exception) { 
+         e.printStackTrace();
+      }
+      return img;
+   } 
+   
    private static loadResource(filename: String) {
       return ImageManipulator.class.getModule()
                .getContext().getManager().getInputStream(filename);
     }
-	
-	public static scaleImage(img: BufferedImage, factor: Integer): BufferedImage {
-	   if(factor.compareTo(1) != 0) {
+   
+   public static scaleImage(img: BufferedImage, factor: Integer): BufferedImage {
+      if(factor.compareTo(1) != 0) {
          var w: Integer = img.getWidth();   
          var h: Integer = img.getHeight();  
          var scaled: Image = img.getScaledInstance(-1, h * factor, BufferedImage.SCALE_SMOOTH);
@@ -45,13 +45,13 @@ class ImageManipulator {
          g.drawImage(scaled, 0, 0, null);
          g.dispose();
          return dimg;
-	   }
-	   return img;
-	   
-	}
+      }
+      return img;
+      
+   }
 
-	/** Horizontally flips img. */
-	public static horizontalFlip(img: BufferedImage): BufferedImage {   
+   /** Horizontally flips img. */
+   public static horizontalFlip(img: BufferedImage): BufferedImage {   
         var w: Integer = img.getWidth();   
         var h: Integer = img.getHeight();   
         var dimg: BufferedImage = new BufferedImage(w, h, img.getColorModel().getTransparency());     
@@ -60,9 +60,9 @@ class ImageManipulator {
         g.dispose();   
         return dimg;   
     }  
-	
-	/** Vertically flips img. */
-	public static verticalFlip(img: BufferedImage): BufferedImage {   
+   
+   /** Vertically flips img. */
+   public static verticalFlip(img: BufferedImage): BufferedImage {   
         var w: Integer = img.getWidth();   
         var h: Integer = img.getHeight();   
         var dimg: BufferedImage = new BufferedImage(w, h, img.getColorModel().getTransparency());   

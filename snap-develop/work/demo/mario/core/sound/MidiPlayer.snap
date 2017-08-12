@@ -47,8 +47,8 @@ class MidiPlayer with MetaEventListener {
     // Gets the sequencer to play a sequence
     public new() {
         try {
-        	// MidiSystem is a lot like AudioSystem, in that it allows you to
-        	// get the proper materials needed to begin.
+           // MidiSystem is a lot like AudioSystem, in that it allows you to
+           // get the proper materials needed to begin.
             sequencer = MidiSystem.getSequencer();
             sequencer.open();
             sequencer.addMetaEventListener(this);
@@ -99,7 +99,7 @@ class MidiPlayer with MetaEventListener {
     // Plays a sequence, optionally looping. This method returns
     // immediately. The sequence is not played if it is invalid.
     public play(sequence: Sequence, loopFlag: Boolean) {
-    	// must have a sequencer, sequence, and sequencer must be open
+       // must have a sequencer, sequence, and sequencer must be open
         if (sequencer != null && sequence != null && sequencer.isOpen()) {
             try {
                 sequencer.setSequence(sequence);
@@ -120,11 +120,11 @@ class MidiPlayer with MetaEventListener {
     public meta(event: MetaMessage) {
         if (event.getType() == END_OF_TRACK_MESSAGE) {
             if (sequencer != null && sequencer.isOpen() && loopFlag) {
-            	// tick postion required to reset the sequencer
-            	sequencer.setTickPosition(0);
+               // tick postion required to reset the sequencer
+               sequencer.setTickPosition(0);
                 sequencer.start();
             } else {
-            	System.exit(0);
+               System.exit(0);
             }
         }
     }

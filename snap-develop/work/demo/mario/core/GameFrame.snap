@@ -11,20 +11,20 @@ class GameFrame extends JFrame {
    private const width: Integer;
    private const height: Integer;
    
-	public new(scale) {	 
-	   this.panel = new GamePanel(RESOLUTION_WIDTH, RESOLUTION_HEIGHT, scale);
-	   this.width = RESOLUTION_WIDTH * scale;
-	   this.height = RESOLUTION_HEIGHT * scale;
-	}
-	
-	public start(){
-	   setSize(width, height);
-	   setResizable(false);
-	   setTitle("Mario"); 
-	   add(panel);
-	   setDefaultCloseOperation(EXIT_ON_CLOSE);
-	   setVisible(true);
-	}
+   public new(scale) {    
+      this.panel = new GamePanel(RESOLUTION_WIDTH, RESOLUTION_HEIGHT, scale);
+      this.width = RESOLUTION_WIDTH * scale;
+      this.height = RESOLUTION_HEIGHT * scale;
+   }
+   
+   public start(){
+      setSize(width, height);
+      setResizable(false);
+      setTitle("Mario"); 
+      add(panel);
+      setDefaultCloseOperation(EXIT_ON_CLOSE);
+      setVisible(true);
+   }
 }
 
 

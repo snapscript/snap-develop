@@ -54,7 +54,7 @@ class ThreadPool extends ThreadGroup {
     public getTask(): Runnable
     {
          synchronized(this){
-       	   // if there are no tasks to run, just wait
+             // if there are no tasks to run, just wait
            while (taskQueue.size() == 0) {
                if (!isAlive) {
                    return null;
@@ -104,23 +104,23 @@ class ThreadPool extends ThreadGroup {
         }
     }
     
-	/**
-	 * Signals that a PooledThread has started. This method does nothing by
-	 * default; subclasses should override to do any thread-specific startup
-	 * tasks.
-	 */
-	public threadStarted() {
-		// do nothing
-	}
+   /**
+    * Signals that a PooledThread has started. This method does nothing by
+    * default; subclasses should override to do any thread-specific startup
+    * tasks.
+    */
+   public threadStarted() {
+      // do nothing
+   }
 
-	/**
-	 * Signals that a PooledThread has stopped. This method does nothing by
-	 * default; subclasses should override to do any thread-specific cleanup
-	 * tasks.
-	 */
-	public threadStopped() {
-		// do nothing
-	}
+   /**
+    * Signals that a PooledThread has stopped. This method does nothing by
+    * default; subclasses should override to do any thread-specific cleanup
+    * tasks.
+    */
+   public threadStopped() {
+      // do nothing
+   }
 
     /**
         A PooledThread is a Thread in a ThreadPool group, designed
@@ -139,7 +139,7 @@ class ThreadPool extends ThreadGroup {
         }
 
         public run() {
-        	   pool.threadStarted();
+              pool.threadStarted();
             while (!thread.isInterrupted()) {
 
                 // get a task to run

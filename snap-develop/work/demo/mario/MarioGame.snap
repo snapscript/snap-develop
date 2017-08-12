@@ -2,7 +2,7 @@ import static lang.Integer.*;
 import mario.core.GameFrame;
 
 function start(scale) {
-   var g = new GameFrame(3);
+   var g = new GameFrame(scale);
    
    try {
       g.start();

@@ -70,7 +70,7 @@ class SoundManager extends ThreadPool {
         specified AudioFormat that the default mixer can play.
     */
     public static getMaxSimultaneousSounds(playbackFormat: AudioFormat): Integer {
-        var lineInfo: DataLine.Info = new DataLine.Info( SourceDataLine.class.type, playbackFormat);
+        var lineInfo: DataLine.Info = new DataLine.Info( SourceDataLine.class, playbackFormat);
         var mixer: Mixer = AudioSystem.getMixer(null);
         var maxLines: Integer = mixer.getMaxLines(lineInfo);
         if (maxLines == AudioSystem.NOT_SPECIFIED) {
@@ -269,7 +269,7 @@ class SoundManager extends ThreadPool {
 
         // create, open, and start the line
         var line: SourceDataLine;
-        var lineInfo: DataLine.Info = new DataLine.Info(SourceDataLine.class.type, playbackFormat);
+        var lineInfo: DataLine.Info = new DataLine.Info(SourceDataLine.class, playbackFormat);
 
         try {
             line = AudioSystem.getLine(lineInfo);
