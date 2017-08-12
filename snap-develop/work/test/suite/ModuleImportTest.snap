@@ -7,7 +7,7 @@ module Mod {
    import util.concurrent.CopyOnWriteArrayList as L;
    getM(){
       println(M.class);
-      return new M();
+      return new M(1);
    }
    getL(){
       println(L.class);
@@ -51,3 +51,4 @@ class ModuleImportTest with TestCase {
       assert L.class.name == 'CountDownLatch';
    }
 }
+new ModuleImportTest().runTests();

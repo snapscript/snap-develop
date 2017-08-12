@@ -6,22 +6,22 @@ class GameFrame extends JFrame {
    
    private static const RESOLUTION_WIDTH: Integer = 420;
    private static const RESOLUTION_HEIGHT: Integer = 330;
-   private static const RESOLUTION_SCALE: Integer = 1;
+   private static const RESOLUTION_SCALE: Integer = 2;
    private static const FRAME_WIDTH: Integer = RESOLUTION_WIDTH * RESOLUTION_SCALE;
    private static const FRAME_HEIGHT: Integer = RESOLUTION_HEIGHT * RESOLUTION_SCALE;
    
    private const panel: GamePanel;
    
 	public new() {	 
-	   this.panel = new GamePanel(GameFrame.RESOLUTION_WIDTH, GameFrame.RESOLUTION_HEIGHT, GameFrame.RESOLUTION_SCALE);
+	   this.panel = new GamePanel(RESOLUTION_WIDTH, RESOLUTION_HEIGHT, RESOLUTION_SCALE);
 	}
 	
 	public start(){
-	   setSize(GameFrame.FRAME_WIDTH, GameFrame.FRAME_HEIGHT);
+	   setSize(FRAME_WIDTH, FRAME_HEIGHT);
 	   setResizable(false);
 	   setTitle("Game Frame"); 
 	   add(panel);
-	   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	   setDefaultCloseOperation(EXIT_ON_CLOSE);
 	   setVisible(true);
 	}
 }
