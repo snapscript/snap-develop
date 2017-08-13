@@ -31,7 +31,7 @@ class TileMap {
     */
    public new(width: Integer, height: Integer) {
       tiles = new GameTile[width][height];
-      creatures = new LinkedList();
+      creatures = new ArrayList();
       relevantCreatures = new ArrayList();
       creaturesToAdd = new ArrayList();
       platforms = new ArrayList();
