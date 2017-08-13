@@ -1,4 +1,4 @@
-define(["require", "exports"], function (require, exports) {
+define(["require", "exports", "jquery"], function (require, exports, $) {
     "use strict";
     var Common;
     (function (Common) {
@@ -45,39 +45,47 @@ define(["require", "exports"], function (require, exports) {
         }
         Common.decodeValue = decodeValue;
         function updateTableRecords(update, name) {
-            var current = w2ui[name].records; // find the table
-            if (update.length == current.length) {
-                var different = false;
-                for (var i = 0; i < update.length; i++) {
-                    var currentRow = current[i];
-                    var updateRow = update[i];
-                    if (currentRow.length != updateRow.length) {
-                        different = true;
-                        break;
-                    }
-                    for (var currentColumn in currentRow) {
-                        if (currentRow.hasOwnProperty(currentColumn)) {
-                            if (!updateRow.hasOwnProperty(currentColumn)) {
-                                different = true;
-                                break;
-                            }
-                            var currentCell = currentRow[currentColumn];
-                            var updateCell = updateRow[currentColumn];
-                            if (currentCell != updateCell) {
-                                different = true;
-                                break;
+            var grid = w2ui[name];
+            if (grid) {
+                var scrollTop = $('#grid_' + name + '_records').prop('scrollTop');
+                var current = grid.records; // find the table
+                if (update.length == current.length) {
+                    var different = false;
+                    for (var i = 0; i < update.length; i++) {
+                        var currentRow = current[i];
+                        var updateRow = update[i];
+                        if (currentRow.length != updateRow.length) {
+                            different = true;
+                            break;
+                        }
+                        for (var currentColumn in currentRow) {
+                            if (currentRow.hasOwnProperty(currentColumn)) {
+                                if (!updateRow.hasOwnProperty(currentColumn)) {
+                                    different = true;
+                                    break;
+                                }
+                                var currentCell = currentRow[currentColumn];
+                                var updateCell = updateRow[currentColumn];
+                                if (currentCell != updateCell) {
+                                    different = true;
+                                    break;
+                                }
                             }
                         }
                     }
+                    if (different) {
+                        grid.records = update;
+                        grid.refresh();
+                    }
                 }
-                if (different) {
-                    w2ui[name].records = update;
-                    w2ui[name].refresh();
+                else {
+                    grid.records = update;
+                    grid.refresh();
                 }
-            }
-            else {
-                w2ui[name].records = update;
-                w2ui[name].refresh();
+                if (update.length > current.length) {
+                    grid.reload();
+                    $('#grid_' + name + '_records').prop('scrollTop', scrollTop);
+                }
             }
         }
         Common.updateTableRecords = updateTableRecords;

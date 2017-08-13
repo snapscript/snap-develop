@@ -222,6 +222,7 @@ export module ThreadManager {
             change: threadScope.change,
             key: threadScope.key
          }; 
+      updateThreadPanels(threadScope); // update the thread variables etc..
    } 
    
    export function updateThreadFocusByName(threadName) {

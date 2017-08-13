@@ -139,50 +139,54 @@ public class BackupManager {
    }
    
    public synchronized List<BackupFile> findAllBackups(File file, String project) {
+      List<BackupFile> backupHistory = new ArrayList<BackupFile>();
+      Map<Long, BackupFile> timeStampFiles = new TreeMap<Long, BackupFile>();
+      
       try {
-         List<BackupFile> backupHistory = new ArrayList<BackupFile>();
-         Map<Long, BackupFile> timeStampFiles = new TreeMap<Long, BackupFile>();
          File backupFile = createBackupFile(file, project);
          File backupDirectory = backupFile.getParentFile();
          File[] list = backupDirectory.listFiles();
-         Project proj = builder.getProject(project);
          
-         if(proj == null) {
-            throw new IllegalArgumentException("Project " + project + " does not exist");
-         }
-         File root = proj.getProjectPath();
-         String rootPath = root.getCanonicalPath();
-         String matchName = file.getName();
-         
-         for(File entry : list) {
-            String name = entry.getName();
+         if(list != null) {
+            Project proj = builder.getProject(project);
             
-            if(name.matches(DATE_PATTERN) && name.startsWith(matchName) && entry.exists()) {
-               int index = name.lastIndexOf(".");
-               int length = name.length();
-               String timeStamp = name.substring(index + 1, length);
-               Date date = DateFormatter.parse(DATE_FORMAT, timeStamp);
-               long time = date.getTime();
-               String fullFile = file.getCanonicalPath();
-               String relativeFile = fullFile.replace(rootPath, "").replace(File.separatorChar, '/');
-               String projectPath = relativeFile.startsWith("/") ? relativeFile : ("/" + relativeFile);
-               BackupFile backupData = new BackupFile(entry, projectPath, date, timeStamp, project);
-               
-               timeStampFiles.put(time, backupData);
+            if(proj == null) {
+               throw new IllegalArgumentException("Project " + project + " does not exist");
             }
+            File root = proj.getProjectPath();
+            String rootPath = root.getCanonicalPath();
+            String matchName = file.getName();
+            
+            for(File entry : list) {
+               String name = entry.getName();
+               
+               if(name.matches(DATE_PATTERN) && name.startsWith(matchName) && entry.exists()) {
+                  int index = name.lastIndexOf(".");
+                  int length = name.length();
+                  String timeStamp = name.substring(index + 1, length);
+                  Date date = DateFormatter.parse(DATE_FORMAT, timeStamp);
+                  long time = date.getTime();
+                  String fullFile = file.getCanonicalPath();
+                  String relativeFile = fullFile.replace(rootPath, "").replace(File.separatorChar, '/');
+                  String projectPath = relativeFile.startsWith("/") ? relativeFile : ("/" + relativeFile);
+                  BackupFile backupData = new BackupFile(entry, projectPath, date, timeStamp, project);
+                  
+                  timeStampFiles.put(time, backupData);
+               }
+            }
+            Set<Long> timeStamps = timeStampFiles.keySet();
+            
+            for(Long timeStamp : timeStamps) {
+               BackupFile timeStampFile = timeStampFiles.get(timeStamp);
+               backupHistory.add(timeStampFile);
+            }
+            Collections.reverse(backupHistory);
+            return backupHistory;
          }
-         Set<Long> timeStamps = timeStampFiles.keySet();
-         
-         for(Long timeStamp : timeStamps) {
-            BackupFile timeStampFile = timeStampFiles.get(timeStamp);
-            backupHistory.add(timeStampFile);
-         }
-         Collections.reverse(backupHistory);
-         return backupHistory;
       } catch(Exception e) {
          logger.info("Could not find backup from " + file, e);
       }
-      return Collections.emptyList();
+      return backupHistory;
    }
    
    public synchronized void copyFile(File from, File to) {

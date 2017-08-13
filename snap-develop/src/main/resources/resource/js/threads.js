@@ -195,6 +195,7 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
                 change: threadScope.change,
                 key: threadScope.key
             };
+            updateThreadPanels(threadScope); // update the thread variables etc..
         }
         function updateThreadFocusByName(threadName) {
             var threadScope = suspendedThreads[threadName];

@@ -17,6 +17,7 @@ export module Profiler {
       var profilerWidths = [];
       var profilerIndex = 1;
       var totalTime = 0;
+      var currentHeight = w2ui['profiler'].records;
      
       for(var i = 0; i < profileRecords.length; i++) {
          totalTime += profileRecords[i].time;
@@ -49,9 +50,7 @@ export module Profiler {
             script: resourcePath.resourcePath
          });
       }
-      //console.log(text);
-      w2ui['profiler'].records = profilerRecords;
-      w2ui['profiler'].refresh();
+      Common.updateTableRecords(profilerRecords, 'profiler');
    }
    
    export function clearProfiler() {

@@ -1,4 +1,4 @@
-define(["require", "exports", "w2ui", "socket", "tree"], function (require, exports, w2ui_1, socket_1, tree_1) {
+define(["require", "exports", "w2ui", "common", "socket", "tree"], function (require, exports, w2ui_1, common_1, socket_1, tree_1) {
     "use strict";
     var Profiler;
     (function (Profiler) {
@@ -13,6 +13,7 @@ define(["require", "exports", "w2ui", "socket", "tree"], function (require, expo
             var profilerWidths = [];
             var profilerIndex = 1;
             var totalTime = 0;
+            var currentHeight = w2ui_1.w2ui['profiler'].records;
             for (var i = 0; i < profileRecords.length; i++) {
                 totalTime += profileRecords[i].time;
             }
@@ -41,9 +42,7 @@ define(["require", "exports", "w2ui", "socket", "tree"], function (require, expo
                     script: resourcePath.resourcePath
                 });
             }
-            //console.log(text);
-            w2ui_1.w2ui['profiler'].records = profilerRecords;
-            w2ui_1.w2ui['profiler'].refresh();
+            common_1.Common.updateTableRecords(profilerRecords, 'profiler');
         }
         function clearProfiler() {
             w2ui_1.w2ui['profiler'].records = [];
