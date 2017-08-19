@@ -1,5 +1,7 @@
 package org.snapscript.develop.resource.loader;
 
+import static org.snapscript.core.Reserved.GRAMMAR_FILE;
+import static org.snapscript.core.Reserved.IMPORT_FILE;
 import static org.snapscript.develop.configuration.Configuration.JAR_FILE;
 import static org.snapscript.develop.configuration.Configuration.TEMP_PATH;
 
@@ -8,8 +10,6 @@ import java.io.File;
 import org.snapscript.develop.Workspace;
 
 public class RemoteProcessBuilder {
-
-   public static final String GRAMMAR_FILE = "/grammar.bnf";
    
    private final JarFileBuilder builder;
    private final Workspace workspace;
@@ -29,7 +29,8 @@ public class RemoteProcessBuilder {
 
       builder.create(RemoteProcessLauncher.class)
                .addResource(RemoteClassLoader.class)
-               .addResource(GRAMMAR_FILE)
+               .addResource("/" + GRAMMAR_FILE)
+               .addResource("/" + IMPORT_FILE)
                .saveFile(file);
    }
 }

@@ -1,5 +1,6 @@
-import static lang.Integer.*;
+import static lang.Integer.*; // this does not really work
 import mario.core.GameFrame;
+import mario.core.GamePanel;
 
 function start(scale) {
    var g = new GameFrame(scale);

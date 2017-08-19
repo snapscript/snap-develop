@@ -1,4 +1,5 @@
 import swing.JFrame;
+import mario.core.GamePanel;
 
 // This is the main entry point..
 

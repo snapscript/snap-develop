@@ -38,7 +38,7 @@ class ImageManipulator {
       if(factor.compareTo(1) != 0) {
          var w: Integer = img.getWidth();   
          var h: Integer = img.getHeight();  
-         var scaled: Image = img.getScaledInstance(-1, h * factor, BufferedImage.SCALE_SMOOTH);
+         var scaled: Image = img.getScaledInstance(-1, h * factor, 4 /*BufferedImage.SCALE_SMOOTH*/);
          var dimg: BufferedImage = new BufferedImage(w * factor, h * factor, img.getColorModel().getTransparency());    
          var g: Graphics = dimg.getGraphics();
    

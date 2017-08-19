@@ -15,8 +15,6 @@ import awt.geom.Line2D;
 import awt.geom.Rectangle2D;
 import util.Vector;
 
-import swing.JPanelInterface;
-import swing.JPanelAdapter;
 import swing.JButton;
 import swing.JFrame;
 import swing.JPanel;

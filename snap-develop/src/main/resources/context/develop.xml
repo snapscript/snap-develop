@@ -246,7 +246,8 @@
     <constructor-arg>
       <list>
         <value>org.snapscript.</value>
-        <value>/grammar.bnf</value>
+        <value>/grammar.txt</value>
+        <value>/import.txt</value>        
       </list>
     </constructor-arg>
   </bean>
