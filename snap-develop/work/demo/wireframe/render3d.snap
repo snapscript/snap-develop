@@ -1,5 +1,3 @@
-import swing.JPanelInterface;
-import swing.JPanelAdapter;
 import awt.Color;
 import awt.Dimension;
 import awt.Graphics;
@@ -554,7 +552,7 @@ class Model3D {
 }
 
 /** An applet to put a 3D model into a page */
-class ThreeD with JPanelInterface with MouseMotionListener {
+class ThreeD extends JPanel with MouseMotionListener {
    var md;
    var painted = true;
    var xfac;
@@ -634,11 +632,11 @@ class ThreeD with JPanelInterface with MouseMotionListener {
       prevy = y;
    }
 
-   update(panel, g) {
-      paint(panel, g);
+   update(g) {
+      paint(g);
    }
 
-   paint(panel, g) {
+   paint(g) {
       g.clearRect(0, 0, panel.getSize().width, panel.getSize().height);
       if (md != null) {
          md.mat.unit();
@@ -660,10 +658,9 @@ class ThreeD with JPanelInterface with MouseMotionListener {
 
 function start()  {
     var d = new ThreeD();
-    var panel = new JPanelAdapter(d);
     var f = new JFrame();
-    d.init(panel);
-    f.add(panel);
+    d.init(d);
+    f.add(d);
     f.getContentPane().addMouseMotionListener(d);
     f.setSize(new Dimension(600, 600));
     f.setVisible(true);
