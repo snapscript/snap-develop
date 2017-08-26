@@ -7,7 +7,7 @@ import android.graphics.Canvas;
 class ParticleSystem {
    private var particles: Particle[];
    private var bitmap: Bitmap;
-   public const var numParticles: Integer = 6;
+   public var numParticles: Integer = 6;
    public var respawnParticle: Boolean = false;
    public var isBursting: Boolean = true;
     private var active: Boolean;

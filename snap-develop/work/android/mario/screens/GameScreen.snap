@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.util.Log;
 
 class GameScreen extends Screen {
@@ -56,14 +57,14 @@ class GameScreen extends Screen {
         // Defining a paint object
         paint = new Paint();
         paint.setTextSize(12);
-        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setTextAlign(Align.CENTER);
         //paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
        // paint.setFilterBitmap(true);
         
         paint2 = new Paint();
          paint2.setTextSize(60);
-         paint2.setTextAlign(Paint.Align.CENTER);
+         paint2.setTextAlign(Align.CENTER);
          paint2.setAntiAlias(true);
          paint2.setColor(Color.WHITE);
         loadGame();

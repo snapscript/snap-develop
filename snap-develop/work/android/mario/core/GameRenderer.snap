@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.Paint.Style;
 import android.graphics.Point;
@@ -258,7 +259,7 @@ class GameRenderer {
         //float dd2dec = new Float(df2.format(player.getdX())).floatValue();
         //g.drawText("dx: " + dd2dec, 300, 17,paint);
        
-        if(lastLife != player.getHealth()); {
+        //if(lastLife != player.getHealth()); {
            lastLife = player.getHealth();
            
            var myColor: Integer = Color.argb(50, 50, 50, 50);
@@ -266,7 +267,7 @@ class GameRenderer {
            paint.setStyle(Style.FILL_AND_STROKE);
            paint.setTextSize(16);
            paint.setTypeface(Typeface.DEFAULT_BOLD);
-           paint.setTextAlign(Paint.Align.LEFT);
+           paint.setTextAlign(Align.LEFT);
            paint.setAntiAlias(true);
            paint.setColor(Color.WHITE);
            //g.draw3DRect(2, 2, screenWidth - 10, 18, true);
@@ -274,7 +275,7 @@ class GameRenderer {
            g.drawText(" x "+lastLife, MarioResourceManager.Mario_Big_Crouch_Right.getWidth()+8, 6+14,paint);
            
            g.drawBitmap(MarioResourceManager.Coin_1, screenWidth-MarioResourceManager.Coin_1.getWidth()-3,5, null);
-           paint.setTextAlign(Paint.Align.RIGHT);
+           paint.setTextAlign(Align.RIGHT);
            g.drawText(Settings.getScore()+" - ", screenWidth-MarioResourceManager.Coin_1.getWidth()-4, 6+14,paint);
            
            /*
@@ -300,7 +301,7 @@ class GameRenderer {
               g.drawRect(hbStart + i*hbWidth, 4, hbWidth, 13, paint);
            } 
            */
-       }
+       //}
        // drawHud( g);
         maps.clear(); 
     }

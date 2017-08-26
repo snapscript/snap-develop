@@ -32,7 +32,7 @@ class TileMap {
     * Constructs a new TileMap with the specified width and height (in number of tiles)
     * of the map.
     */
-   public TileMap(width: Integer, height: Integer) {
+   public new(width: Integer, height: Integer) {
       tiles = new GameTile[width][height];
       creatures = new LinkedList();
       relevantCreatures = new ArrayList();

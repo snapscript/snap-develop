@@ -1,3 +1,11 @@
+# constructor cannot access static variables
+
+new() {
+   Coin.c //  see Coin.snap
+   Coin.turn // see Coin.snap
+}
+
+
 # stack overflow importing, perhaps we should parse on an async thread
 
 org.snapscript.core.ModuleException: Could not find 'GameScreen' in 'mario.screens'
