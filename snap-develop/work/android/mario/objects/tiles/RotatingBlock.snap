@@ -4,35 +4,31 @@ import mario.core.tile.GameTile;
 import android.graphics.Bitmap;
 
 
-public class RotatingBlock extends GameTile {
+class RotatingBlock extends GameTile {
    
-   private Animation rotate;
-   private Animation idle;
+   private var rotate: Animation;
+   private var idle: Animation;
    
-   public RotatingBlock(int pixelX, int pixelY) {
+   public new(pixelX: Integer, pixelY: Integer): super(pixelX, pixelY, null, null) {
       
-      // int pixelX, int pixelY, Animation anim, Image img, boolean isUpdateable
-      super(pixelX, pixelY, null, null);
+      // Integer pixelX, pixelY: Integer, anim: Animation, img: Image, Boolean isUpdateable
       setIsSloped(false);
       
-      Bitmap rotate_1 = MarioResourceManager.Rotating_Block_Hit_1;
-      Bitmap rotate_2 = MarioResourceManager.Rotating_Block_Hit_2;
-      Bitmap rotate_3 = MarioResourceManager.Rotating_Block_Hit_3;
-      Bitmap still = MarioResourceManager.Rotating_Block_Still;
-      
-        final class RotateAnimation extends Animation {
-           public void endOfAnimationAction() {
-              setAnimation(idle);
-              setIsCollidable(true);
-           }
-      }
+      var rotate_1: Bitmap = MarioResourceManager.Rotating_Block_Hit_1;
+      var rotate_2: Bitmap = MarioResourceManager.Rotating_Block_Hit_2;
+      var rotate_3: Bitmap = MarioResourceManager.Rotating_Block_Hit_3;
+      var still: Bitmap = MarioResourceManager.Rotating_Block_Still;
+
       
       idle = new Animation(10000).addFrame(still);
-      rotate = new RotateAnimation();
+      rotate = new Animation(-> {
+         setAnimation(idle);
+           setIsCollidable(true);
+      });
       
-      int rotateTime = 90;
-      for(int i = 1; i <= 3; i++) {
-         for(int j = 1; j <= 3; j++) {
+      var rotateTime: Integer = 90;
+      for(var i = 1; i <= 3; i++) {
+         for(var j = 1; j <= 3; j++) {
             rotate.addFrame(rotate_1, rotateTime);
             rotate.addFrame(rotate_2, rotateTime);
             rotate.addFrame(rotate_3, rotateTime);
@@ -42,8 +38,9 @@ public class RotatingBlock extends GameTile {
       setAnimation(idle);
    }
    
-   public void doAction() {
+   public doAction() {
       setAnimation(rotate);
       setIsCollidable(false);
    }
 }
+

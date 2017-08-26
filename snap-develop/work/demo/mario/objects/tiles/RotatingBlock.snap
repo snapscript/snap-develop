@@ -21,7 +21,10 @@ class RotatingBlock extends GameTile {
       var still: BufferedImage = ImageManipulator.loadImage("/mario/resources/items/Rotating_Block_Still.png");
       
       idle = new Animation(10000).addFrame(still);
-      rotate = new RotateAnimation(this);
+      rotate = new Animation(-> {
+         setAnimation(idle);
+         setIsCollidable(true);
+      });
       
       var rotateTime: Integer = 90;
       for(var i = 1; i <= 3; i++) {
@@ -38,19 +41,6 @@ class RotatingBlock extends GameTile {
    public doAction() {
       setAnimation(rotate);
       setIsCollidable(false);
-   }
-   
-         
-     class RotateAnimation extends Animation {
-        const tile: RotatingBlock;
-        
-        new(tile: RotatingBlock){
-           this.tile = tile;
-        }
-        public endOfAnimationAction() {
-           tile.setAnimation(tile.idle);
-           tile.setIsCollidable(true);
-        }
    }
 }
 

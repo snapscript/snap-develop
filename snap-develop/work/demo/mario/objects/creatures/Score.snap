@@ -18,7 +18,7 @@ class Score extends Creature {
 
       var one_hundred: BufferedImage = ImageManipulator.loadImage("/mario/resources/items/Score_100_New6.png");
 
-      oneHundred = new DeadAfterAnimation(this);
+      oneHundred = new Animation(-> kill());
       
       oneHundred.addFrame(one_hundred, 380);
       oneHundred.addFrame(one_hundred, 380);   
@@ -34,18 +34,5 @@ class Score extends Creature {
          dy = 0;
       }
    }
-   
-   class DeadAfterAnimation extends Animation {
-      const creature; Creature;
-      
-      new(creature: Creature) {
-         this.creature = creature;
-      }
-      
-      public endOfAnimationAction() {
-         creature.kill();
-      }
-   }
-
 }
 

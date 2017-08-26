@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import game.framework.Game;
+import org.snapscript.game.framework.Game;
 
 import mario.core.tile.GameTile;
 import mario.core.tile.TileMap;
@@ -28,21 +28,21 @@ import android.graphics.Bitmap;
  * @author mahesh
  *
  */
-public class GameLoader {
+class GameLoader {
    
-   private ArrayList<Bitmap> plain;
-   private Bitmap[] plainTiles;
+   private var plain: ArrayList;
+   private var plainTiles: Bitmap[];
    
-   private Bitmap sloped_image;
-   private Bitmap grass_edge;
-   private Bitmap grass_center;
-   private Game gameActivity;
-   public GameLoader(Game activity) {
+   private var sloped_image: Bitmap;
+   private var grass_edge: Bitmap;
+   private var grass_center: Bitmap;
+   private var gameActivity: Game;
+   public new(activity: Game) {
       this.gameActivity=activity;
-      plain = new ArrayList<Bitmap>();
-      plainTiles = (new SpriteMap(MarioResourceManager.Plain_Tiles, 6, 17)).getSprites();
+      plain = new ArrayList();
+      plainTiles = new SpriteMap(MarioResourceManager.Plain_Tiles, 6, 17).getSprites();
       
-      for (Bitmap bImage : plainTiles) {
+      for (var bImage in plainTiles) {
          plain.add(bImage);
       }
       
@@ -53,24 +53,24 @@ public class GameLoader {
    
    
    // BufferedImage -> Image
-   // public static Image toImage(BufferedImage bufferedImage) {
+   // public static toImage(bufferedImage: BufferedImage): Image {
    //    return Toolkit.getDefaultToolkit().createImage(bufferedImage.getSource());
    // }
 
    // loads a tile map, given a map to load..
     // use this to load the background and foreground. Note: the status of the tiles (ie collide etc)
     // is irrelevant. Why? I don't check collision on maps other than the main map. 
-    public TileMap loadOtherMaps(String filename) throws IOException {
+    public loadOtherMaps(filename: String): TileMap  {
       // lines is a list of strings, each element is a row of the map
-      ArrayList<String> lines = new ArrayList<String>();
-      int width = 0;
-      int height = 0;
+      var lines: ArrayList = new ArrayList();
+      var width: Integer = 0;
+      var height: Integer = 0;
       
       // read in each line of the map into lines
       
-      Scanner reader = new Scanner(gameActivity.getContext().getAssets().open(filename));
+      var reader: Scanner = new Scanner(gameActivity.getContext().getAssets().open(filename));
       while(reader.hasNextLine()) {
-         String line = reader.nextLine();
+         var line: String = reader.nextLine();
          if(!line.startsWith("#")) {
             lines.add(line);
             width = Math.max(width, line.length());
@@ -78,13 +78,13 @@ public class GameLoader {
       }
       height = lines.size(); // number of elements in lines is the height
       
-      TileMap newMap = new TileMap(width, height);
-      for (int y=0; y < height; y++) {
-         String line = lines.get(y);
-         for (int x=0; x < line.length(); x++) {
-            char ch = line.charAt(x);
-            int pixelX = GameRenderer.tilesToPixels(x);
-            int pixelY = GameRenderer.tilesToPixels(y);
+      var newMap: TileMap = new TileMap(width, height);
+      for (var y=0; y < height; y++) {
+         var line: String = lines.get(y);
+         for (var x=0; x < line.length(); x++) {
+            var ch: Character = line.charAt(x);
+            var pixelX: Integer = GameRenderer.tilesToPixels(x);
+            var pixelY: Integer = GameRenderer.tilesToPixels(y);
             if (ch == 'n') {
                newMap.setTile(x, y, plain.get(92));
             } else if (ch == 'm') {
@@ -100,51 +100,51 @@ public class GameLoader {
             } else if (ch == 'z') { // tree stem
                newMap.setTile(x, y, plain.get(75));
             } else if (ch=='T') {
-               Tree t = new Tree(pixelX, pixelY);
+               var t: Tree = new Tree(pixelX, pixelY);
                newMap.setTile(x, y, t);
                newMap.animatedTiles().add(t);
             } else if (ch == 'V') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(56));
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(56));
                newMap.setTile(x, y, t);
             } else if (ch == '3') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(4));
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(4));
                newMap.setTile(x, y, t);
             } else if (ch == '4') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(10));
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(10));
                newMap.setTile(x, y, t);
             } else if (ch == '2') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(86));
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(86));
                newMap.setTile(x, y, t);
             }else if(ch == '9') {
-               SlopedTile t = new SlopedTile(pixelX, pixelY, sloped_image, true);
+               var t: SlopedTile = new SlopedTile(pixelX, pixelY, sloped_image, true);
                newMap.setTile(x, y, t);
                newMap.slopedTiles().add(t);
             } else if(ch == '8') {
-               GameTile t = new GameTile(pixelX, pixelY, grass_edge);
+               var t: GameTile = new GameTile(pixelX, pixelY, grass_edge);
                newMap.setTile(x, y, t);
             } else if(ch == '7') {
-               GameTile t = new GameTile(pixelX, pixelY, grass_center);
+               var t: GameTile = new GameTile(pixelX, pixelY, grass_center);
                newMap.setTile(x, y, t);
             } else if(ch == 't') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(96)); //pipe top left
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(96)); //pipe top left
                newMap.setTile(x, y, t);
             } else if(ch == 'u') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(97)); //pipe top middle
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(97)); //pipe top middle
                newMap.setTile(x, y, t);
             } else if(ch == 'v') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(98)); //pipe top right
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(98)); //pipe top right
                newMap.setTile(x, y, t);
             } else if(ch == 'w') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(99)); //pipe base left
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(99)); //pipe base left
                newMap.setTile(x, y, t);
             } else if(ch == 'x') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(100)); //pipe base middle
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(100)); //pipe base middle
                newMap.setTile(x, y, t);
             } else if(ch == 'y') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(101)); //pipe base right
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(101)); //pipe base right
                newMap.setTile(x, y, t);
             } else if(ch == 'z') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(75)); //tree stem
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(75)); //tree stem
                newMap.setTile(x, y, t);
             }else if(ch == 'n') {
                newMap.setTile(x, y, plain.get(92));
@@ -165,16 +165,16 @@ public class GameLoader {
    }
        
     // Use this to load the main map
-   public TileMap loadMap(String filename, MarioSoundManager soundManager) throws IOException {
+   public loadMap(filename: String, soundManager: MarioSoundManager): TileMap  {
       // lines is a list of strings, each element is a row of the map
-      ArrayList<String> lines = new ArrayList<String>();
-      int width = 0;
-      int height = 0;
+      var lines: ArrayList = new ArrayList();
+      var width: Integer = 0;
+      var height: Integer = 0;
       
       // read in each line of the map into lines
-      Scanner reader = new Scanner(gameActivity.getContext().getAssets().open(filename));
+      var reader: Scanner = new Scanner(gameActivity.getContext().getAssets().open(filename));
       while(reader.hasNextLine()) {
-         String line = reader.nextLine();
+         var line: String = reader.nextLine();
          if(!line.startsWith("#")) {
             lines.add(line);
             width = Math.max(width, line.length());
@@ -182,14 +182,14 @@ public class GameLoader {
       }
       height = lines.size(); // number of elements in lines is the height
       
-      TileMap newMap = new TileMap(width, height);
-      for (int y=0; y < height; y++) {
-         String line = lines.get(y);
-         for (int x=0; x < line.length(); x++) {
-            char ch = line.charAt(x);
+      var newMap: TileMap = new TileMap(width, height);
+      for (var y=0; y < height; y++) {
+         var line: String = lines.get(y);
+         for (var x=0; x < line.length(); x++) {
+            var ch: Character = line.charAt(x);
             
-            int pixelX = GameRenderer.tilesToPixels(x);
-            int pixelY = GameRenderer.tilesToPixels(y);
+            var pixelX: Integer = GameRenderer.tilesToPixels(x);
+            var pixelY: Integer = GameRenderer.tilesToPixels(y);
             // enumerate the possible tiles...
             if (ch == 'G') {
                newMap.creatures().add(new Goomba(pixelX, pixelY, soundManager));
@@ -198,34 +198,34 @@ public class GameLoader {
             } else if (ch == 'H') {
                newMap.creatures().add(new Thorny(pixelX, pixelY, soundManager));
             } else if (ch == 'V') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(56));
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(56));
                newMap.setTile(x, y, t);
             } else if (ch == 'J') {
-               Piranha t = new Piranha(pixelX, pixelY,soundManager);
+               var t: Piranha = new Piranha(pixelX, pixelY,soundManager);
                newMap.creatures().add(t);
             } else if (ch=='B') {
-               Brick b = new Brick(pixelX, pixelY,newMap, plain.get(77),soundManager,10*(int)(Math.random()*1.1),false);
+               var b: Brick = new Brick(pixelX, pixelY,newMap, plain.get(77),soundManager,10*Math.floor(Math.random()*1.1),false);
                newMap.setTile(x, y, b);
                newMap.animatedTiles().add(b);   
             } else if (ch == 'R') {
-               RotatingBlock r = new RotatingBlock(pixelX, pixelY);
+               var r: RotatingBlock = new RotatingBlock(pixelX, pixelY);
                newMap.setTile(x, y, r);
                newMap.animatedTiles().add(r);
             } else if (ch == '3') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(4));
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(4));
                newMap.setTile(x, y, t);
             } else if (ch == '4') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(10));
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(10));
                newMap.setTile(x, y, t);
             } else if (ch == '2') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(86));
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(86));
                newMap.setTile(x, y, t);
             } else if (ch == 'Q') {
-               QuestionBlock q = new QuestionBlock(pixelX, pixelY, newMap, soundManager, true, false);
+               var q: QuestionBlock = new QuestionBlock(pixelX, pixelY, newMap, soundManager, true, false);
                newMap.setTile(x, y, q);
                newMap.animatedTiles().add(q);
             } else if (ch == 'W') {
-               QuestionBlock q = new QuestionBlock(pixelX, pixelY, newMap, soundManager, false, true);
+               var q: QuestionBlock = new QuestionBlock(pixelX, pixelY, newMap, soundManager, false, true);
                newMap.setTile(x, y, q);
                newMap.animatedTiles().add(q);
             } else if (ch == 'S') {
@@ -233,43 +233,43 @@ public class GameLoader {
             } else if(ch == 'C') {
                newMap.creatures().add(new Coin(pixelX, pixelY));
             } else if(ch == 'P') {
-               Platform p = new Platform(pixelX, pixelY);
+               var p: Platform = new Platform(pixelX, pixelY);
                newMap.creatures().add(p);
             } else if (ch=='T') {
-               Tree t = new Tree(pixelX, pixelY);
+               var t: Tree = new Tree(pixelX, pixelY);
                newMap.setTile(x, y, t);
                newMap.animatedTiles().add(t);
             }else if(ch == '9') {
-               SlopedTile t = new SlopedTile(pixelX, pixelY, sloped_image, true);
+               var t: SlopedTile = new SlopedTile(pixelX, pixelY, sloped_image, true);
                newMap.setTile(x, y, t);
                newMap.slopedTiles().add(t);
             } else if(ch == '8') {
-               GameTile t = new GameTile(pixelX, pixelY, grass_edge);
+               var t: GameTile = new GameTile(pixelX, pixelY, grass_edge);
                newMap.setTile(x, y, t);
             } else if(ch == '7') {
-               GameTile t = new GameTile(pixelX, pixelY, grass_center);
+               var t: GameTile = new GameTile(pixelX, pixelY, grass_center);
                newMap.setTile(x, y, t);
          
             } else if(ch == 't') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(96)); //pipe top left
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(96)); //pipe top left
                newMap.setTile(x, y, t);
             } else if(ch == 'u') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(97)); //pipe top middle
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(97)); //pipe top middle
                newMap.setTile(x, y, t);
             } else if(ch == 'v') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(98)); //pipe top right
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(98)); //pipe top right
                newMap.setTile(x, y, t);
             } else if(ch == 'w') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(99)); //pipe base left
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(99)); //pipe base left
                newMap.setTile(x, y, t);
             } else if(ch == 'x') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(100)); //pipe base middle
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(100)); //pipe base middle
                newMap.setTile(x, y, t);
             } else if(ch == 'y') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(101)); //pipe base right
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(101)); //pipe base right
                newMap.setTile(x, y, t);
             } else if(ch == 'z') {
-               GameTile t = new GameTile(pixelX, pixelY, plain.get(75)); //tree stem
+               var t: GameTile = new GameTile(pixelX, pixelY, plain.get(75)); //tree stem
                newMap.setTile(x, y, t);
             }
          }
@@ -278,16 +278,16 @@ public class GameLoader {
    }
 
    // Fills given tile mapFrom file. Used in Editor
-    public void fillMap(String filename, TileMap map) throws IOException {
+    public fillMap(filename: String, map: TileMap)  {
       // lines is a list of strings, each element is a row of the map
-      ArrayList<String> lines = new ArrayList<String>();
-      int width = 0;
-      int height = 0;
+      var lines: ArrayList = new ArrayList();
+      var width: Integer = 0;
+      var height: Integer = 0;
       
       // read in each line of the map into lines
-      Scanner reader = new Scanner(new File(filename));
+      var reader: Scanner = new Scanner(new File(filename));
       while(reader.hasNextLine()) {
-         String line = reader.nextLine();
+         var line: String = reader.nextLine();
          if(!line.startsWith("#")) {
             lines.add(line);
             width = Math.max(width, line.length());
@@ -298,10 +298,10 @@ public class GameLoader {
       height=Math.min(height,map.getHeight());
       width=Math.min(width, map.getWidth());
       
-      for (int y=0; y < height; y++) {
-         String line = lines.get(y);
-         for (int x=0; x < line.length(); x++) {
-            char ch = line.charAt(x);
+      for (var y=0; y < height; y++) {
+         var line: String = lines.get(y);
+         for (var x=0; x < line.length(); x++) {
+            var ch: Character = line.charAt(x);
             
             if (ch == 'n') {
                map.setTile(x, y, plain.get(92));
@@ -318,9 +318,9 @@ public class GameLoader {
             } else if (ch == 'z') { // tree stem
                map.setTile(x, y, plain.get(75));
             } else if (ch=='T') {
-               int pixelX = GameRenderer.tilesToPixels(x);
-               int pixelY = GameRenderer.tilesToPixels(y);
-               Tree t = new Tree(pixelX, pixelY);
+               var pixelX: Integer = GameRenderer.tilesToPixels(x);
+               var pixelY: Integer = GameRenderer.tilesToPixels(y);
+               var t: Tree = new Tree(pixelX, pixelY);
                map.setTile(x, y, t);
                map.animatedTiles().add(t);
             }
@@ -330,3 +330,4 @@ public class GameLoader {
    }
    
 }
+

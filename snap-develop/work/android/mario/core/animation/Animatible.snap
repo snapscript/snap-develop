@@ -1,46 +1,48 @@
 import android.graphics.Canvas;
 
+
 /**
- * Animatible is an abstract class that a class should extend if it wants to be
- * drawn using an Animation.
+ * Animatible is an abstract class that a class should extend if it wants to be drawn using
+ * an Animation. 
  */
 
-abstract class Animatible {
+class Animatible {
    
-   private Animation currAnim;
-   private int offsetX;
-   private int offsetY;
+   private var currAnim: Animation;
+   private var offsetX: Integer = 0;
+   private var offsetY: Integer = 0;
 
-   public abstract void draw(Canvas g, int pixelX, int pixelY);
-   public abstract void draw(Canvas g, int pixelX, int pixelY, int offsetX, int offsetY);
-   public abstract int getHeight();
-   public abstract int getWidth();
+   public abstract draw(g: Canvas, pixelX: Integer, pixelY: Integer);
+   public abstract draw(g: Canvas, pixelX: Integer, pixelY: Integer, offsetX: Integer, offsetY: Integer);
+   public abstract getHeight(): Integer;
+   public abstract getWidth(): Integer;
 
-   public Animation currentAnimation() {
+   public currentAnimation(): Animation {
       return currAnim;
    }
    
-   public void setAnimation(Animation currAnim) {
+   public setAnimation(currAnim: Animation) {
       this.currAnim = currAnim;
    }
    
-   public void update(int time) {
+   public update(time: Integer) {
       currAnim.update(time);
    }
    
-   public void setOffsetX(int offsetX) {
+   public setOffsetX(offsetX: Integer) {
       this.offsetX = offsetX;
    }
    
-   public void setOffsetY(int offsetY) {
+   public setOffsetY(offsetY: Integer) {
       this.offsetY = offsetY;
    }
    
-   public int getOffsetX() {
+   public getOffsetX(): Integer {
       return offsetX;
    }
    
-   public int getOffsetY() {
+   public getOffsetY(): Integer {
       return offsetY;
    }
 }
+

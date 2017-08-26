@@ -5,31 +5,27 @@ import mario.objects.base.Creature;
 import android.graphics.Bitmap;
 
 
-
-
-
-public class Platform extends Creature {
+class Platform extends Creature {
    
-   protected Animation move;
-   protected int turn;
-   protected boolean isVertical = false;
-   protected boolean isHorizontal = false;
-   protected boolean switchedVertical = false;
-   protected boolean switchedHorizontal = false;
-   protected boolean canJumpThrough = false;
-   protected float oldX;
-   protected float oldY;
-   protected float oldDx;
-   protected float oldDy;
+   public var move: Animation;
+   public var turn: Integer = 0;
+   public var isVertical: Boolean = false;
+   public var isHorizontal: Boolean = false;
+   public var switchedVertical: Boolean = false;
+   public var switchedHorizontal: Boolean = false;
+   public var canJumpThrough: Boolean = false;
+   public var oldX: Float = 0f;
+   public var oldY: Float = 0f;
+   public var oldDx: Float = 0f;
+   public var oldDy: Float = 0f;
    
-   public Platform(int pixelX, int pixelY) {
-      super(pixelX, pixelY);
+   public new(pixelX: Integer, pixelY: Integer): super(pixelX, pixelY) {
       setIsAlwaysRelevant(true);
-      setIsPlatform(true);
+      setIsnew(true);
       turn = 1;
       dx = 0;
       dy = 0;
-      Bitmap red_platform = MarioResourceManager.Red_Platform_2;
+      var red_platform: Bitmap = MarioResourceManager.Red_Platform_2;
       move = new Animation(2000).addFrame(red_platform);
       setAnimation(move);
    }
@@ -37,59 +33,59 @@ public class Platform extends Creature {
    /**
     * @return the oldX
     */
-   public float getOldX() {
+   public getOldX(): Float {
       return oldX;
    }
 
    /**
     * @param oldX the oldX to set
     */
-   public void setOldX(float oldX) {
+   public setOldX(oldX: Float) {
       this.oldX = oldX;
    }
 
    /**
     * @return the oldY
     */
-   public float getOldY() {
+   public getOldY(): Float {
       return oldY;
    }
 
    /**
     * @param oldY the oldY to set
     */
-   public void setOldY(float oldY) {
+   public setOldY(oldY: Float) {
       this.oldY = oldY;
    }
 
-   public boolean canJumpThrough() {
+   public canJumpThrough(): Boolean {
       return canJumpThrough;
    }
-   public boolean isHorizontal() {
+   public isHorizontal(): Boolean {
       return isHorizontal;
    }
    
-   public boolean isVertical() {
+   public isVertical(): Boolean {
       return isVertical;
    }
    
-   public float getLastdX() {
+   public getLastdX(): Float {
       return oldDx;
    }
    
-   public float getLastdY() {
+   public getLastdY(): Float {
       return oldDy;
    }
    
-   public boolean switchedVertical() {
+   public switchedVertical(): Boolean {
       return switchedVertical;
    }
    
-   public boolean switchedHorizontal() {
+   public switchedHorizontal(): Boolean {
       return switchedHorizontal;
    }
    
-   public void updateCreature(TileMap map, int time) {
+   public updateCreature(map: TileMap, time: Integer) {
 
       
       if(dx != 0) {
@@ -104,13 +100,13 @@ public class Platform extends Creature {
       if(turn <= 400) {
          oldDx = dx;
          oldDy = dy;
-         dx = .05f;
-         dy = .025f;
+         dx = 0.05f;
+         dy = 0.025f;
       } else if(turn > 400) {
          oldDy = dy;
          oldDx = dx;
-         dx = -.05f;
-         dy = -.025f;
+         dx = -0.05f;
+         dy = -0.025f;
       } 
       turn = turn + 1;
       oldX = x;
@@ -135,3 +131,4 @@ public class Platform extends Creature {
    }
 
 }
+

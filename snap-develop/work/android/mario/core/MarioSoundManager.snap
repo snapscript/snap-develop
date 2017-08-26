@@ -1,38 +1,50 @@
 import java.util.Random;
 
-import game.framework.Game;
-import game.framework.Music;
-import game.framework.Sound;
-import game.framework.sfx.AndroidAudio;
+import org.snapscript.game.framework.Game;
+import org.snapscript.game.framework.Music;
+import org.snapscript.game.framework.Sound;
+import org.snapscript.game.framework.sfx.AndroidAudio;
 
 /**
  * Manages sound and musics for the game
  * @author mahesh
  *
  */
-public class MarioSoundManager extends AndroidAudio{
-   private static Sound bump, kick, coin, jump, pause, itemSprout, bonusPoints, healthUp, healthDown, brick_shatter,fireball;
+class MarioSoundManager extends AndroidAudio{
+   private static var bump: Sound;
+   private static var kick: Sound; 
+   private static var coin: Sound;
+   private static var jump: Sound;
+   private static var pause: Sound;
+   private static var itemSprout: Sound;
+   private static var bonusPoints: Sound;
+   private static var healthUp: Sound;
+   private static var healthDown: Sound;
+   private static var brick_shatter: Sound;
+   private static var fireball: Sound;
     
-   private static Sound hurt1, hurt2, yahoo1, yahoo2;
+   private static var hurt1: Sound; 
+   private static var hurt2: Sound;  
+   private static var yahoo1: Sound; 
+   private static var yahoo2: Sound; 
 
-   private static Music music;
-   /**volume of sound in float (0 to 1)*/
-   private  float soundVolume=0.9f;
-    /**volume of music in float (0 to 1)*/
-   private  float musicVolume=0.7f;
+   private static var music: Music;
+   /**volume of sound in Float (0 to 1)*/
+   private  var soundVolume: Float=0.9f;
+    /**volume of music in Float (0 to 1)*/
+   private  var musicVolume: Float=0.7f;
     
-   private static boolean firstTimeCreate = true;
+   private static var firstTimeCreate: Boolean = true;
    
-   public static boolean musicEnabled=true;
-   public static boolean soundEnabled=true;
-   public MarioSoundManager(Game game) {
-      super(game);
+   public static var musicEnabled: Boolean=true;
+   public static var soundEnabled: Boolean=true;
+   public new(game: Game):super(game) {
     }
    
    /**
     * loads resources in memory if resources are not already loaded
     */
-   public  void loadResouces(){
+   public  loadResouces(){
       if (firstTimeCreate==true){
          bump = createSound("sounds/bump.wav");
           kick = createSound("sounds/kick.wav");
@@ -59,14 +71,14 @@ public class MarioSoundManager extends AndroidAudio{
     * returns true if resources are ready (loaded in memory)
     * @return
     */
-   public boolean isReady(){
+   public isReady(): Boolean{
       return !firstTimeCreate;
    }
    
-   private void loadMusic(){
+   private loadMusic(){
       //music=createMusic(filename);
-      Random r = new Random();
-      int rNum = r.nextInt(4);
+      var r: Random = new Random();
+      var rNum: Integer = r.nextInt(4);
       if(rNum == 0) {
          music=createMusic("sounds/smwovr2.mid");
       } else if(rNum == 1) {
@@ -80,53 +92,53 @@ public class MarioSoundManager extends AndroidAudio{
    }
    
    
-   public void playHealthUp() {
+   public playHealthUp() {
       if (soundEnabled) healthUp.play(soundVolume);
    }
    
-   public void playHealthDown() {
+   public playHealthDown() {
       if (soundEnabled) healthDown.play(soundVolume);
    }
    
-   public void playBonusPoints() {
+   public playBonusPoints() {
       if (soundEnabled) bonusPoints.play(soundVolume);
    }
    
-   public void playItemSprout() {
+   public playItemSprout() {
       if (soundEnabled) itemSprout.play(soundVolume);
    }
    
-   public void playCoin() {
+   public playCoin() {
       if (soundEnabled) coin.play(soundVolume);
    }
    
-   public void playKick() {
+   public playKick() {
       //kick.play(soundVolume);
    }
    
-   public void playBump() {
+   public playBump() {
       if (soundEnabled) bump.play(soundVolume);
    }
    
-   public void playJump() {
+   public playJump() {
       if (soundEnabled) jump.play(soundVolume);
    }
    
-   public void playPause() {
+   public playPause() {
       if (soundEnabled) pause.play(soundVolume);
    }
 
-   public void playBrickShatter() {
+   public playBrickShatter() {
       if (soundEnabled) brick_shatter.play(soundVolume);
    }
 
-   public void playFireBall() {
+   public playFireBall() {
       if (soundEnabled) fireball.play(soundVolume);
    }
    
-   public void playHurt() {
-      Random r = new Random();
-      int rNum = r.nextInt(2);
+   public playHurt() {
+      var r: Random = new Random();
+      var rNum: Integer = r.nextInt(2);
       if(rNum == 0) {
          hurt1.play(soundVolume);
       } else {
@@ -134,9 +146,9 @@ public class MarioSoundManager extends AndroidAudio{
       }
    }
    
-   public void playCelebrate() {
-      Random r = new Random();
-      int rNum = r.nextInt(2);
+   public playCelebrate() {
+      var r: Random = new Random();
+      var rNum: Integer = r.nextInt(2);
       if(rNum == 0) {
          yahoo1.play(soundVolume);
       } else {
@@ -144,31 +156,32 @@ public class MarioSoundManager extends AndroidAudio{
       }
    }
    
-   public void playMusic(){
+   public playMusic(){
       if (music!=null)music.play();
    }
    
-   public void pauseMusic(){
+   public pauseMusic(){
       if (music!=null)music.pause();
    }
    
-   public void stopMusic(){
+   public stopMusic(){
       if (music!=null)music.stop();
    }
    
-   public float getSoundVolume() {
+   public getSoundVolume(): Float {
       return soundVolume;
    }
 
-   public void setSoundVolume(float soundVolume) {
+   public setSoundVolume(soundVolume: Float) {
       this.soundVolume = soundVolume;
    }
 
-   public float getMusicVolume() {
+   public getMusicVolume(): Float {
       return musicVolume;
    }
 
-   public void setMusicVolume(float musicVolume) {
+   public setMusicVolume(musicVolume: Float) {
       this.musicVolume = musicVolume;
    }
 }
+

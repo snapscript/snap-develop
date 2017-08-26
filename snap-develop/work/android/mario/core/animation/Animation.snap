@@ -18,17 +18,18 @@ import android.graphics.Bitmap;
 class Animation {
    
    // fields
-   private ArrayList<AnimFrame> frames;
-   private int currFrameIndex; // index of current frame
-   private long animTime; // current time in animation
-   private long totalDuration; // length of entire animation
-   private long defaultAnimLength;
+   private var frames: ArrayList;
+   private var currFrameIndex: Integer = 0; // index of current frame
+   private var animTime: Long = 0L; // current time in animation
+   private var totalDuration: Long = 0L; // length of entire animation
+   private var defaultAnimLength: Long = 0L;
+   private var endOfAnimation: Runnable;
    
    /**
     * Constructs a new Animation object with no frames.
     */
-   public Animation() {
-      frames = new ArrayList<AnimFrame>();
+   public new() {
+      frames = new ArrayList();
       totalDuration = 0;
       defaultAnimLength = 0;
       start();
@@ -38,10 +39,21 @@ class Animation {
     * Constructs a new Animation object with no frames and with the
     * specified default animation length;
     */
-   public Animation(long defaultAnimLength) {
-      frames = new ArrayList<AnimFrame>();
+   public new(defaultAnimLength: Long) {
+      frames = new ArrayList();
       totalDuration = 0;
       this.defaultAnimLength = defaultAnimLength;
+      start();
+   }
+   
+   /**
+    * Constructs a new Animation that runs a task at the end of animation.
+    */
+   public new(endOfAnimation: Runnable) {
+      frames = new ArrayList();
+      totalDuration = 0;
+      this.defaultAnimLength = defaultAnimLength;
+      this.endOfAnimation = endOfAnimation;
       start();
    }
    
@@ -49,7 +61,7 @@ class Animation {
     * Sets the default animation length (DAL);
     * @return this Animation with the default animation length changed.
     */
-   public Animation setDAL(long defaultAnimLength) {
+   public setDAL(defaultAnimLength: Long): Animation {
       this.defaultAnimLength = defaultAnimLength;
       return this;
    }
@@ -59,9 +71,9 @@ class Animation {
     * @modifies defaultAnimLength == duration.
     * @returns this Animation with the added frame.
     */
-   public Animation addFrame(Bitmap image) {
+   public addFrame(image: Bitmap): Animation {
       totalDuration += defaultAnimLength;
-      frames.add(new AnimFrame(image, totalDuration));
+      frames.add({'image': image, 'endTime': totalDuration});
       return this;
    }
    
@@ -70,9 +82,9 @@ class Animation {
     * @modifies defaultAnimLength == duration.
     * @returns this Animation with the added frame.
     */
-   public Animation addFrame(Bitmap image, long duration) {
+   public addFrame(image: Bitmap, duration: Long): Animation {
       totalDuration += duration;
-      frames.add(new AnimFrame(image, totalDuration));
+      frames.add({'image': image, 'endTime': totalDuration});
       defaultAnimLength = duration;
       return this;
    }
@@ -80,7 +92,7 @@ class Animation {
    /**
     * Starts this animation.
     */
-   public void start() {
+   public start() {
       animTime = 0;
       currFrameIndex = 0;
    }
@@ -88,14 +100,14 @@ class Animation {
    /**
     * @return the height of the current animation in pixels.
     */
-   public int getHeight() {
+   public getHeight(): Integer {
       return getFrame(currFrameIndex).image.getHeight();
    }
    
    /**
     * @return the width of the current animation in pixels.
     */
-   public int getWidth() {
+   public getWidth(): Integer {
       return getFrame(currFrameIndex).image.getWidth();
    }
    
@@ -103,7 +115,7 @@ class Animation {
     * Updates the animation by a give amount of time.
     * The frames are updated accordingly to the internal timer of this animation.
     */
-    public void update(long elapsedTime) {
+    public update(elapsedTime: Long) {
        
         if (frames.size() > 1) { // must have at least 2 frames to animate
             animTime += elapsedTime; // animation time increase here
@@ -124,24 +136,28 @@ class Animation {
     /**
      * Override this method to add an action when animation finishes its entire duration.
      */
-    public void endOfAnimationAction() { }
+    public endOfAnimationAction() { 
+      if(endOfAnimation != null) {
+         endOfAnimation.run();
+      }
+    }
 
     /**
      * @return an array of the images in this animation.
      * note: this method is never called.
      */
-    public Bitmap[] getImages() {
+    public getImages(): Bitmap[]  {
        if(frames.size() == 0) {
           return null;
        } else {
-          return (Bitmap[]) frames.toArray();
+          return frames.toArray();
        }
     }
     
     /**
      * @return the Image of the current frame of this animation.
      */
-    public Bitmap getImage() {
+    public getImage(): Bitmap {
         if (frames.size() == 0) {
             return null;
         }
@@ -154,23 +170,9 @@ class Animation {
      * @return the AnimFrame of the given frame.
      * This is used in update to get the end time of the current frame.
      */
-    private AnimFrame getFrame(int i) {
+    private getFrame(i: Integer): {} {
         return frames.get(i);
     }
 
-    /**
-     * An inner class used to help manage timing of each frame in the animation.
-     */
-    private class AnimFrame {
-
-       Bitmap image;
-        long endTime; // the totalDuration up to the end of this frame
-                   // is the endTime for this frame
- 
-        public AnimFrame(Bitmap image, long endTime) {
-            this.image = image;
-            this.endTime = endTime;
-        }
-    }
-
 }
+

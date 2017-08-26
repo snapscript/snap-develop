@@ -32,7 +32,7 @@ class RedShell extends Creature {
       
       still = new Animation();
       rotate = new Animation();
-      flip = new DeadAfterAnimation(this);
+      flip = new Animation(-> kill());
       
       still.addFrame(stay, 150);
       rotate.addFrame(rotate_1, 30);
@@ -98,18 +98,6 @@ class RedShell extends Creature {
                dx = -0.16f;
             }
          }
-      }
-   }
-   
-   class DeadAfterAnimation extends Animation {
-      const creature; Creature;
-      
-      new(creature: Creature) {
-         this.creature = creature;
-      }
-      
-      public endOfAnimationAction() {
-         creature.kill();
       }
    }
 }

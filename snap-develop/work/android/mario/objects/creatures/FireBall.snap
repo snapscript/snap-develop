@@ -8,18 +8,21 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 
 
-public class FireBall extends Creature {
+class FireBall extends Creature {
 
 
-   private Animation dead;
-   private Animation ball;
-   private static Bitmap fb_1, fb_2, fb_3, fb_4, fb_5,fb_6;
-   private static boolean initialized = false;
-   public static int fireballsCount=0;
+   private var dead: Animation;
+   private var ball: Animation;
+   private static var fb_1: Bitmap; 
+   private static var fb_2: Bitmap; 
+   private static var fb_3: Bitmap; 
+   private static var fb_4: Bitmap; 
+   private static var fb_5: Bitmap;
+   private static var fb_6: Bitmap;
+   private static var initialized: Boolean = false;
+   public static var fireballsCount: Integer=0;
 
-   public FireBall(int x, int y, float direction, MarioSoundManager soundManager) {
-
-      super(x, y, soundManager);
+   public new(x: Integer, y: Integer, direction: Float, soundManager: MarioSoundManager): super(x, y, soundManager) {
       fireballsCount++;
       if (!initialized) {
          fb_1 =  MarioResourceManager.fb_1;//loadImage("baddies/fireball_1.png");
@@ -33,23 +36,20 @@ public class FireBall extends Creature {
       }
       ball = new Animation(150).addFrame(fb_1).addFrame(fb_2).addFrame(fb_3).addFrame(fb_4);
       
-      final class DeadAfterAnimation extends Animation {
-         public void endOfAnimationAction() {
-            kill();
-            fireballsCount--;
-         }
-      }
-      dead = new DeadAfterAnimation().setDAL(50).addFrame(fb_5).setDAL(100).addFrame(fb_6);
+
+      dead = new Animation(-> {
+         kill();
+         fireballsCount--;
+      }).setDAL(50).addFrame(fb_5).setDAL(100).addFrame(fb_6);
       //dead = new DeadAfterAnimation();
       // dead.addFrame(fb_5, 10);
       //dead.addFrame(fb_6, 10);
       setAnimation(ball);
-      dx=direction*.12f;
+      dx=direction*0.12f;
       //dy=0.3f;
    }
 
-   @Override
-   public void xCollide(Point p) {
+   public override xCollide(p: Point) {
       dx=0;
       dy=0;
       //super.xCollide(p);
@@ -59,6 +59,5 @@ public class FireBall extends Creature {
       //dx = 0;
       //dy=0;
    }
-
-
 }
+

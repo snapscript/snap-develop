@@ -4,48 +4,50 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-import game.framework.FileIO;
+import org.snapscript.game.framework.FileIO;
 
-public class Settings {
-   public static boolean soundEnabled = true;
-   public static boolean musicEnabled = true;
+class Settings {
+   public static var soundEnabled: Boolean = true;
+   public static var musicEnabled: Boolean = true;
 
-   public final static int[] highscores = new int[] { 100, 80, 50, 30, 10 };
-   public final static String file = ".supermario";
+   public static var highscores: Integer[] = [ 100, 80, 50, 30, 10 ];
+   public static var file: String = ".supermario";
 
-   private static int score = 0;
-   private static int lives = 0;
+   private static var score: Integer = 0;
+   private static var lives: Integer = 0;
 
-   public static final int COIN_BONUS = 100;
-   public static final int GOOMBA_BONUS = 300;
-   public static final int KOOPA_BONUS = 500;
-   public static final int LIFE_BONUS = 1000;
+   public static const COIN_BONUS: Integer = 100;
+   public static const GOOMBA_BONUS: Integer = 300;
+   public static const KOOPA_BONUS: Integer = 500;
+   public static const LIFE_BONUS: Integer = 1000;
 
-   public static void load(FileIO files) {
-      BufferedReader in = null;
+   public static load(files: FileIO) {
+      var input: BufferedReader = null;
       try {
-         in = new BufferedReader(new InputStreamReader(files.readFile(file)));
-         soundEnabled = Boolean.parseBoolean(in.readLine());
-         musicEnabled = Boolean.parseBoolean(in.readLine());
+         input = new BufferedReader(new InputStreamReader(files.readFile(file)));
+         soundEnabled = Boolean.parseBoolean(input.readLine());
+         musicEnabled = Boolean.parseBoolean(input.readLine());
 
-         for (int i = 0; i < 5; i++) {
-            highscores[i] = Integer.parseInt(in.readLine());
+         for (var i = 0; i < 5; i++) {
+            highscores[i] = Integer.parseInt(input.readLine());
          }
-      } catch (IOException e) {
+      } catch (e: IOException) {
+         e.printStackTrace();
          // :( It's ok we have defaults
-      } catch (NumberFormatException e) {
+      } catch (e: NumberFormatException) {
+         e.printStackTrace();
          // :/ It's ok, defaults save our day
       } finally {
          try {
-            if (in != null)
-               in.close();
-         } catch (IOException e) {
+            if (input != null)
+               input.close();
+         } catch (e: IOException) {
          }
       }
    }
 
-   public static void save(FileIO files) {
-      BufferedWriter out = null;
+   public static save(files: FileIO) {
+      var out: BufferedWriter = null;
       try {
          out = new BufferedWriter(new OutputStreamWriter(files.writeFile(file)));
          out.write(Boolean.toString(soundEnabled));
@@ -53,48 +55,48 @@ public class Settings {
          out.write(Boolean.toString(musicEnabled));
          out.write("\n");
 
-         for (int i = 0; i < 5; i++) {
+         for (var i = 0; i < 5; i++) {
             out.write(Integer.toString(highscores[i]));
             out.write("\n");
          }
 
-      } catch (IOException e) {
+      } catch (e: IOException) {
       } finally {
          try {
             if (out != null)
                out.close();
-         } catch (IOException e) {
+         } catch (e: IOException) {
          }
       }
    }
 
-   public static int getLives() {
+   public static getLives(): Integer {
       return lives;
    }
 
-   public static int getScore() {
+   public static getScore(): Integer {
       return score;
    }
 
-   public static void addScore(int newScore) {
+   public static addScore(newScore: Integer) {
       score += newScore;
    }
 
-   public static void addLife() {
+   public static addLife() {
       if (lives < 3)
          lives++;
    }
 
-   public static void subtractLife() {
+   public static subtractLife() {
       if (lives > 0)
          lives--;
    }
 
-   public static void addHighScore(int newHighScore) {
+   public static addHighScore(newHighScore: Integer) {
 
-      for (int i = 0; i < 5; i++) {
+      for (var i = 0; i < 5; i++) {
          if (highscores[i] < score) {
-            for (int j = 4; j > i; j--)
+            for (var j = 4; j > i; j--)
                highscores[j] = highscores[j - 1];
             highscores[i] = score;
             break;
@@ -104,3 +106,4 @@ public class Settings {
    }
 
 }
+

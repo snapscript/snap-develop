@@ -1,37 +1,36 @@
 import mario.core.MarioSoundManager;
 
 
-
-public class CollidableObject extends Sprite {
+class CollidableObject extends Sprite {
    
-   protected MarioSoundManager soundManager;
-   private boolean isCollidable;
-   private boolean isOnScreen;
+   public var soundManager: MarioSoundManager;
+   private var isCollidable: Boolean = false;
+   private var isOnScreen: Boolean = false;
    
-   public CollidableObject(int pixelX, int pixelY, MarioSoundManager soundManager) {
-      super(pixelX, pixelY);
+   public new(pixelX: Integer, pixelY: Integer, soundManager: MarioSoundManager): super(pixelX, pixelY){
       this.isCollidable = true;
       setIsOnScreen(false);
       this.soundManager = soundManager;
    }
    
-   public CollidableObject(int pixelX, int pixelY) {
+   public new(pixelX: Integer, pixelY: Integer) {
       this(pixelX, pixelY, null);
    }
    
-   public boolean isCollidable() {
+   public isCollidable(): Boolean {
       return isCollidable;
    }
    
-   public void setIsCollidable(boolean isCollidable) {
+   public setIsCollidable(isCollidable: Boolean) {
       this.isCollidable = isCollidable;
    }
    
-   public boolean isOnScreen() {
+   public isOnScreen(): Boolean {
       return isOnScreen;
    }
    
-   public void setIsOnScreen(boolean isOnScreen) {
+   public setIsOnScreen(isOnScreen: Boolean) {
       this.isOnScreen = isOnScreen;
    }
 }
+

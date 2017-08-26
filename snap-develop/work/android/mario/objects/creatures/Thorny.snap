@@ -11,18 +11,20 @@ import android.graphics.Point;
 
 
 
-public class Thorny extends Creature {
+class Thorny extends Creature {
    
-   private Animation left;
-   private Animation right;
-   private Animation flip;
-   private Random r;
+   private var left: Animation;
+   private var right: Animation;
+   private var flip: Animation;
+   private var r: Random;
    
-   private static Bitmap left_1,left_2,right_1,right_2,flipped;
-   private static boolean initialized=false;
-   public Thorny(int x, int y, MarioSoundManager soundManager) {
-      
-      super(x, y, soundManager);
+   private static var left_1: Bitmap;
+   private static var left_2: Bitmap;
+   private static var right_1: Bitmap;
+   private static var right_2: Bitmap;
+   private static var flipped: Bitmap;
+   private static var initialized: Boolean=false;
+   public new(x: Integer, y: Integer, soundManager: MarioSoundManager): super(x, y, soundManager) {
       r = new Random();
       if (!initialized){
           left_1 = MarioResourceManager.Thorny[0];
@@ -34,15 +36,9 @@ public class Thorny extends Creature {
       }
       left = new Animation(150).addFrame(left_1).addFrame(left_2);
       right = new Animation(150).addFrame(right_1).addFrame(right_2);
-      
-      final class DeadAfterAnimation extends Animation {
-         public void endOfAnimationAction() {
-            kill();
-         }
-      }
-      
+
       //dead = new DeadAfterAnimation();
-      flip = new DeadAfterAnimation();
+      flip = new Animation(-> kill());
       //dead.addFrame(shell, 10);
       //dead.addFrame(shell, 10);
       flip.addFrame(flipped, 1200);
@@ -50,7 +46,7 @@ public class Thorny extends Creature {
       setAnimation(left);
    }
    
-   public void xCollide(Point p) {
+   public xCollide(p: Point) {
       super.xCollide(p);
       if(currentAnimation() == left) {
          setAnimation(right);
@@ -59,7 +55,7 @@ public class Thorny extends Creature {
       }
    }
    
-   public void creatureXCollide() {
+   public creatureXCollide() {
       if(dx > 0) {
          x = x - 2;
          setAnimation(left);
@@ -70,29 +66,30 @@ public class Thorny extends Creature {
       dx = -dx;
    }
    
-   public void flip() {
+   public flip() {
       setAnimation(flip);
       setIsFlipped(true);
       setIsCollidable(false);
-      dy = -.2f;
+      dy = -0.2f;
       dx = 0;
    }
    
-   public void wakeUp() {
+   public wakeUp() {
       super.wakeUp();
-      int rNum = r.nextInt(3);
+      var rNum: Integer = r.nextInt(3);
          if(rNum == 0 || rNum == 1) {
-            dx = -.03f;
+            dx = -0.03f;
             setAnimation(left);
          } else {
-            dx = .03f;
+            dx = 0.03f;
             setAnimation(right);
          }
    }
    
-   public void jumpedOn() {
+   public jumpedOn() {
       //setAnimation(dead);
       //setIsCollidable(false);
       //dx = 0;
    }
 }
+

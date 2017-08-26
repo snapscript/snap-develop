@@ -8,41 +8,36 @@ import android.graphics.Bitmap;
 
 
 
-public class Score extends Creature {
+class Score extends Creature {
    
-   public Animation oneHundred;
-   private static Bitmap one_hundred;
-   private static boolean initialized=false;
-   public Score(int x, int y) {
-      super(x, y);
+   public var oneHundred: Animation;
+   private static var one_hundred: Bitmap;
+   private static var initialized: Boolean=false;
+   public new(x: Integer, y: Integer): super(x, y) {
       setIsItem(true);
       
-      dy = -.45f;
+      dy = -0.45f;
       if (!initialized){
          one_hundred = MarioResourceManager.Score_100_New6;
          initialized=true;
       }
-      final class DeadAfterAnimation extends Animation {
-         public void endOfAnimationAction() {
-            kill();
-         }
-      }
-      
-      oneHundred = new DeadAfterAnimation();
+
+      oneHundred = new Animation(-> kill());
       
       oneHundred.addFrame(one_hundred, 380);
       oneHundred.addFrame(one_hundred, 380);   
       setAnimation(oneHundred);
    }
    
-   public void updateCreature(TileMap map, int time) {
-      this.update((int) time);
+   public updateCreature(map: TileMap, time: Integer) {
+      this.update(time);
       y = y + dy * time;
       if(dy < 0) {
-         dy = dy + .032f;
+         dy = dy + 0.032f;
       } else {
          dy = 0;
       }
    }
 
 }
+

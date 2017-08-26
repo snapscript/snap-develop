@@ -30,8 +30,8 @@ class RedKoopa extends Creature {
       left = new Animation(150).addFrame(left_1).addFrame(left_2);
       right = new Animation(150).addFrame(right_1).addFrame(right_2);
 
-      dead = new DeadAfterAnimation(this);
-      flip = new DeadAfterAnimation(this);
+      dead = new Animation(-> kill());
+      flip = new Animation(-> kill());
       dead.addFrame(shell, 10);
       dead.addFrame(shell, 10);
       flip.addFrame(flipped, 1200);
@@ -83,18 +83,6 @@ class RedKoopa extends Creature {
       setAnimation(dead);
       setIsCollidable(false);
       dx = 0;
-   }
-   
-   class DeadAfterAnimation extends Animation {
-      const creature; Creature;
-      
-      new(creature: Creature) {
-         this.creature = creature;
-      }
-      
-      public endOfAnimationAction() {
-         creature.kill();
-      }
    }
 }
 

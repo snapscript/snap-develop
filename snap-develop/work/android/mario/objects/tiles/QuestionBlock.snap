@@ -11,22 +11,21 @@ import mario.objects.creatures.Score;
 import android.graphics.Bitmap;
 
 
-public class QuestionBlock extends GameTile {
+class QuestionBlock extends GameTile {
 
-   private MarioSoundManager soundManager;
-   private TileMap map;
+   private var soundManager: MarioSoundManager;
+   private var map: TileMap;
    
-   private Animation active;
-   private Animation dead;
-   private boolean isActive;
-   private boolean hasCoin;
-   private boolean hasMushroom;
+   private var active: Animation;
+   private var dead: Animation;
+   private var isActive: Boolean = false;
+   private var hasCoin: Boolean = false;
+   private var hasMushroom: Boolean = false;
    
-   public QuestionBlock(int pixelX, int pixelY, TileMap map, MarioSoundManager soundManager, boolean hasCoin,
-         boolean hasMushroom) {
+   public new(pixelX: Integer, pixelY: Integer, map: TileMap, soundManager: MarioSoundManager, hasCoin: Boolean,
+          hasMushroom: Boolean): super(pixelX, pixelY, null, null) {
       
-      // int pixelX, int pixelY, Animation anim, Image img
-      super(pixelX, pixelY, null, null);
+      // Integer pixelX, pixelY: Integer, anim: Animation, Image img
       
       setIsSloped(false);
       isActive = true;
@@ -35,35 +34,39 @@ public class QuestionBlock extends GameTile {
       this.soundManager = soundManager;
       this.map = map;
 
-      Bitmap q[] = { MarioResourceManager.Question_Block_0, MarioResourceManager.Question_Block_1,
-      MarioResourceManager.Question_Block_2, MarioResourceManager.Question_Block_3,
-      MarioResourceManager.Question_Block_Dead};
+      var q: Bitmap[] = [ 
+         MarioResourceManager.Question_Block_0, 
+         MarioResourceManager.Question_Block_1,
+         MarioResourceManager.Question_Block_2, 
+         MarioResourceManager.Question_Block_3,
+         MarioResourceManager.Question_Block_Dead
+      ];
       
-      Random r = new Random();
+      var r: Random = new Random();
       active = new Animation(r.nextInt(20) + 140).addFrame(q[0]).addFrame(q[1]).addFrame(q[2]).addFrame(q[3]);
       dead = new Animation(2000).addFrame(q[4]);
       setAnimation(active);
    }
    
-   public void update(int time) {
+   public update(time: Integer) {
       super.update(time);
       if(getOffsetY() != 0) { setOffsetY(getOffsetY() + 2); }
    }
    
-   public void doAction() {
+   public doAction() {
       if(isActive) {
          if(hasCoin) {
             setOffsetY(-10);
             soundManager.playCoin();
-            Coin newCoin = new Coin(getPixelX(), getPixelY());
-            Score score = new Score(getPixelX(), getPixelY());
+            var newCoin: Coin = new Coin(getPixelX(), getPixelY());
+            var score: Score = new Score(getPixelX(), getPixelY());
             map.creaturesToAdd().add(newCoin);
             map.creaturesToAdd().add(score);
             newCoin.shoot();
          } else if(hasMushroom) {
             setOffsetY(-10);
             soundManager.playItemSprout();
-            Mushroom shroom = new Mushroom(getPixelX(), getPixelY()-26);
+            var shroom: Mushroom = new Mushroom(getPixelX(), getPixelY()-26);
             map.creaturesToAdd().add(shroom);
          }
          setAnimation(dead);
@@ -71,3 +74,4 @@ public class QuestionBlock extends GameTile {
       }
    }
 }
+

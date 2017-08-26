@@ -9,26 +9,25 @@ import android.graphics.Bitmap;
 
 
 
-public class Mushroom extends Creature {
+class Mushroom extends Creature {
    
-   private Animation redMushroom;
-   private int updateNum;
+   private var redMushroom: Animation;
+   private var updateNum: Integer;
 
-   public Mushroom(int pixelX, int pixelY) {
-      super(pixelX, pixelY);
+   public new(pixelX: Integer, pixelY: Integer): super(pixelX, pixelY) {
       setIsItem(true);
       setIsAlwaysRelevant(true);
-      Bitmap shroom = MarioResourceManager.Mushroom;
+      var shroom: Bitmap = MarioResourceManager.Mushroom;
       redMushroom = new Animation();
       redMushroom.addFrame(shroom, 1000);
       redMushroom.addFrame(shroom, 1000);
       setAnimation(redMushroom);
       updateNum = 0;
-      dy = -.15f;
-      dx = .07f;
+      dy = -0.15f;
+      dx = 0.07f;
    }
    
-   public void updateCreature(TileMap map, int time) {
+   public updateCreature(map: TileMap, time: Integer) {
       if(updateNum < 10) {
          setX(getX() + getdX()*time);
          setY(getY() + getdY()*time);
@@ -47,3 +46,4 @@ public class Mushroom extends Creature {
       updateNum += 1;
    }
 }
+

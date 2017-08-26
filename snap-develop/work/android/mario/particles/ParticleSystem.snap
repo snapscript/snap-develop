@@ -4,45 +4,46 @@ import android.graphics.Canvas;
 
 
 
-public class ParticleSystem {
-   private Particle particles[];
-   private Bitmap bitmap;
-   public final int numParticles = 6;
-   public boolean respawnParticle = false;
-   public boolean isBursting = true;
-    private boolean active;
-    private int count=0;
+class ParticleSystem {
+   private var particles: Particle[];
+   private var bitmap: Bitmap;
+   public const var numParticles: Integer = 6;
+   public var respawnParticle: Boolean = false;
+   public var isBursting: Boolean = true;
+    private var active: Boolean;
+    private var count: Integer=0;
     
-   public ParticleSystem(int startXPos, int startYPos,   int numParticles) {
+   public new(startXPos: Integer, startYPos: Integer, numParticles: Integer) {
       bitmap=MarioResourceManager.brick_particle;
       this.active=true;
       particles = new Particle[numParticles];
 
-      for (int i = 0; i < particles.length; i++) {
+      for (var i = 0; i < particles.length; i++) {
          particles[i] = new Particle(startXPos, startYPos, bitmap);
       }
    }
 
-   public void doDraw(Canvas canvas,int offsetX,int offsetY) {
+   public doDraw(canvas: Canvas, offsetX: Integer, offsetY: Integer) {
       if (count>500) return;
-      for (int i = 0; i < particles.length; i++) {
-         Particle particle = particles[i];
+      for (var i = 0; i < particles.length; i++) {
+         var particle: Particle = particles[i];
          particle.doDraw(canvas,offsetX,offsetY);
       }
    }
 
-   public void updatePhysics(int altDelta) {
+   public updatePhysics(altDelta: Integer) {
       if (count>500) return;
       count++;
-      for (int i = 0; i < particles.length; i++) {
-         Particle particle = particles[i];
+      for (var i = 0; i < particles.length; i++) {
+         var particle: Particle = particles[i];
          particle.updatePhysics(altDelta);
 
       }
    }
    
    
-   public boolean isActive(){
+   public isActive(): Boolean{
       return active;
    }
 }
+

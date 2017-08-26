@@ -1,33 +1,33 @@
 import java.util.List;
 
-import game.framework.Game;
-import game.framework.Graphics;
-import game.framework.Screen;
-import game.framework.Input.TouchEvent;
+import org.snapscript.game.framework.Game;
+import org.snapscript.game.framework.Graphics;
+import org.snapscript.game.framework.Screen;
+import org.snapscript.game.framework.Input.TouchEvent;
 
 import mario.core.Assets;
 import android.graphics.Rect;
 import android.util.Log;
 
-public class MainMenuScreen extends Screen {
-   Rect playBound=new Rect(6,42,100,77);
-   Rect scoreBound=new Rect(6,95,150,117);
-   Rect optionBound=new Rect(6,141,99,163);
+class MainMenuScreen extends Screen {
+   var playBound: Rect=new Rect(6,42,100,77);
+   var scoreBound: Rect=new Rect(6,95,150,117);
+   var optionBound: Rect=new Rect(6,141,99,163);
    
-   public MainMenuScreen(Game game) {
-        super(game);
+   public new(game: Game): super(game) {
     }
 
-    @Override
-    public void update(float deltaTime) {
-        List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+    
+    public override update(deltaTime: Float) {
+      try {
+        var touchEvents: List = game.getInput().getTouchEvents();
 
-        int len = touchEvents.size();
-        for (int i = 0; i < len; i++) {
-            TouchEvent event = touchEvents.get(i);
+        var len: Integer = touchEvents.size();
+        for (var i = 0; i < len; i++) {
+            var event: TouchEvent = touchEvents.get(i);
             if (event.type == TouchEvent.TOUCH_UP) {
                if (inBounds(event, playBound)) {
-                   GameScreen gameScreen=new GameScreen(game);
+                   var gameScreen: GameScreen=new GameScreen(game);
                   game.setScreen(gameScreen);
                   gameScreen.loadGame();
                   Log.i("Game","starts");
@@ -38,12 +38,14 @@ public class MainMenuScreen extends Screen {
                }
             }
         }
+      }catch(e){
+         e.printStackTrace();
+      }
     }
 
      
-    @SuppressWarnings("unused")
-   private boolean inBounds(TouchEvent event, int x, int y, int width,
-            int height) {
+   private inBounds(event: TouchEvent, x: Integer, y: Integer, width: Integer,
+             height: Integer): Boolean {
         if (event.x > x && event.x < x + width - 1 && event.y > y
                 && event.y < y + height - 1)
             return true;
@@ -51,7 +53,7 @@ public class MainMenuScreen extends Screen {
             return false;
     }
 
-    private boolean inBounds(TouchEvent event, Rect r) {
+    private inBounds(event: TouchEvent, r: Rect): Boolean {
           if (event.x > r.left && event.x < r.right && event.y > r.top
                 && event.y < r.bottom)
             return true;
@@ -61,30 +63,25 @@ public class MainMenuScreen extends Screen {
     }
 
     
-    
-    @Override
-    public void paint(float deltaTime) {
-        Graphics g = game.getGraphics();
+    public override paint(deltaTime: Float) {
+        var g: Graphics = game.getGraphics();
         g.drawImage(Assets.menu, 0, 0);
     }
 
-    @Override
-    public void pause() {
+    public override pause() {
     }
 
-    @Override
-    public void resume() {
+    public override resume() {
 
     }
-
-    @Override
-    public void dispose() {
+    
+    public override dispose() {
 
     }
-
-    @Override
-    public void onBackPressed() {
+    
+    public override onBackPressed() {
         android.os.Process.killProcess(android.os.Process.myPid());
 
     }
 }
+

@@ -2,12 +2,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
 
-import game.framework.Game;
+import org.snapscript.game.framework.Game;
 
 import mario.util.SpriteMap;
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.util.Log;
 
 
@@ -16,83 +18,123 @@ import android.util.Log;
  * this class will be responsible for loading/unloading our game resources (art, fonts, audio) 
  * this class will use singleton holder, which means we will be able to access this class from the global level.
  */
-public class MarioResourceManager
+class MarioResourceManager
 {
     //---------------------------------------------
     // VARIABLES
     //---------------------------------------------
-    public static Activity activity;
-    public static InputStream inputStream;
-    public static BitmapFactory.Options options;
+    public static var activity: Activity;
+    public static var inputStream: InputStream;
+    public static var options: Options;
     
-   private static boolean firstTimeCreate = true;
+   private static var firstTimeCreate: Boolean = true;
 
    //left mario
-   public static Bitmap Mario_Big_Left_Still, Mario_Big_Left_1,Mario_Big_Left_2,
-         Mario_Big_Left_Run_1,Mario_Big_Left_Run_2, Mario_Big_Crouch_Left,
-         Mario_Big_Jump_Left, Mario_Big_Change_Direction_Left;
+   public static var Mario_Big_Left_Still: Bitmap; 
+   public static var Mario_Big_Left_1: Bitmap; 
+   public static var Mario_Big_Left_2: Bitmap; 
+   public static var Mario_Big_Left_Run_1: Bitmap; 
+   public static var Mario_Big_Left_Run_2: Bitmap; 
+   public static var Mario_Big_Crouch_Left: Bitmap; 
+   public static var Mario_Big_Jump_Left: Bitmap; 
+   public static var Mario_Big_Change_Direction_Left: Bitmap; 
    //Right mario
-   public static Bitmap Mario_Big_Right_Still, Mario_Big_Right_1,Mario_Big_Right_2,
-         Mario_Big_Right_Run_1,Mario_Big_Right_Run_2, Mario_Big_Crouch_Right,
-         Mario_Big_Jump_Right, Mario_Big_Change_Direction_Right;
+   public static var Mario_Big_Right_Still: Bitmap; 
+   public static var Mario_Big_Right_1: Bitmap;
+   public static var Mario_Big_Right_2: Bitmap;
+   public static var Mario_Big_Right_Run_1: Bitmap;
+   public static var Mario_Big_Right_Run_2: Bitmap;
+   public static var Mario_Big_Crouch_Right: Bitmap;
+   public static var Mario_Big_Jump_Right: Bitmap;
+   public static var Mario_Big_Change_Direction_Right: Bitmap;
     //coin
-   public static Bitmap Coin_1, Coin_2,Coin_3,Coin_4;
-   public static Bitmap Coin_5, Coin_6,Coin_7,Coin_8;
+   public static var Coin_1: Bitmap;
+   public static var Coin_2: Bitmap;
+   public static var Coin_3: Bitmap;
+   public static var Coin_4: Bitmap;
+   public static var Coin_5: Bitmap;
+   public static var Coin_6: Bitmap;
+   public static var Coin_7: Bitmap;
+   public static var Coin_8: Bitmap;
    //goomba
-   public static Bitmap Goomba_Normal_1,Goomba_Normal_2,Goomba_Dead,Goomba_Flip;
+   public static var Goomba_Normal_1: Bitmap;
+   public static var Goomba_Normal_2: Bitmap;
+   public static var Goomba_Dead: Bitmap;
+   public static var Goomba_Flip: Bitmap;
    //mushroom
-   public static Bitmap Mushroom;
+   public static var Mushroom: Bitmap;
    //platform
-   public static Bitmap Red_Platform_2;
+   public static var Red_Platform_2: Bitmap;
    //redKoopa
-   public static Bitmap  Koopa_Red_Left_1,Koopa_Red_Left_2,Koopa_Red_Right_1,Koopa_Red_Right_2;
+   public static var  Koopa_Red_Left_1: Bitmap;
+   public static var Koopa_Red_Left_2: Bitmap;
+   public static var Koopa_Red_Right_1: Bitmap;
+   public static var Koopa_Red_Right_2: Bitmap;
    //redShell
-   public static Bitmap  Red_Shell_1,Red_Shell_2,Red_Shell_3,Red_Shell_4,Red_Shell_Flip;
+   public static var Red_Shell_1: Bitmap;
+   public static var Red_Shell_2: Bitmap;
+   public static var Red_Shell_3: Bitmap;
+   public static var Red_Shell_4: Bitmap;
+   public static var Red_Shell_Flip: Bitmap;
    //Thorny
-   public static Bitmap[] Thorny;
+   public static var Thorny: Bitmap[];
    //Score
-   public static Bitmap  Score_100_New6;
+   public static var Score_100_New6: Bitmap;
    //tree
-   public static Bitmap  Tree_1,Tree_2;
+   public static var Tree_1: Bitmap;
+   public static var Tree_2: Bitmap;
    //QuestionBlock
-   public static Bitmap  Question_Block_0,Question_Block_1,Question_Block_2,Question_Block_3,Question_Block_Dead;
+   public static var Question_Block_0: Bitmap;
+   public static var Question_Block_1: Bitmap;
+   public static var Question_Block_2: Bitmap;
+   public static var Question_Block_3: Bitmap;
+   public static var Question_Block_Dead: Bitmap;
    //RotatingBlock
-   public static Bitmap  Rotating_Block_Hit_1,Rotating_Block_Hit_2,Rotating_Block_Hit_3,Rotating_Block_Still;
+   public static var Rotating_Block_Hit_1: Bitmap;
+   public static var Rotating_Block_Hit_2: Bitmap;
+   public static var Rotating_Block_Hit_3: Bitmap;
+   public static var Rotating_Block_Still: Bitmap;
    //PlainTileMap
-   public static Bitmap Plain_Tiles;
+   public static var Plain_Tiles: Bitmap;
    //Background
-   public static Bitmap Background;
+   public static var Background: Bitmap;
    //splash
-   public static Bitmap Splash;
+   public static var Splash: Bitmap;
    //menu
-   public static Bitmap menu;
+   public static var menu: Bitmap;
    //grass
-   public static Bitmap Sloped_Tile;
-   public static Bitmap Grass_Edge; 
-   public static Bitmap Grass_Center; 
+   public static var Sloped_Tile: Bitmap;
+   public static var Grass_Edge: Bitmap;
+   public static var Grass_Center: Bitmap;
    //bricks shatter
-   public static Bitmap brick_particle;
+   public static var brick_particle: Bitmap;
    //fireball
-   public static Bitmap fb_1,fb_2,fb_3,fb_4,fb_5,fb_6;
+   public static var fb_1: Bitmap;
+   public static var fb_2: Bitmap;
+   public static var fb_3: Bitmap;
+   public static var fb_4: Bitmap;
+   public static var fb_5: Bitmap;
+   public static var fb_6: Bitmap;
    //piranha
-   public static Bitmap Piranha_1,Piranha_2;
+   public static var Piranha_1: Bitmap;
+   public static var Piranha_2: Bitmap;
    //Hud
-   public static Bitmap[] digits;
+   public static var digits: Bitmap[];
    
    
-   public  MarioResourceManager(Game game)
+   public  new(game: Game)
     {
        activity=game.getContext();
        options=new BitmapFactory.Options();
-       options.inPreferredConfig = Bitmap.Config.RGB_565;
+       options.inPreferredConfig = Config.RGB_565;
     }
     
     /**
     * loads resources in memory if resources are not already loaded
     */
-   public  void loadResouces(){
+   public  loadResouces(){
       if (firstTimeCreate==true){
-         options.inPreferredConfig = Bitmap.Config.ARGB_4444;
+         options.inPreferredConfig = Config.ARGB_4444;
          // left mario
          Mario_Big_Left_Still = loadImage("mario/Mario_Big_Left_Still.png");
          Mario_Big_Left_1 = loadImage("mario/Mario_Big_Left_1.png");
@@ -159,7 +201,7 @@ public class MarioResourceManager
          Rotating_Block_Hit_2 = loadImage("items/Rotating_Block_Hit_2.png");
          Rotating_Block_Hit_3 = loadImage("items/Rotating_Block_Hit_3.png");
          Rotating_Block_Still = loadImage("items/Rotating_Block_Still.png");
-         options.inPreferredConfig = Bitmap.Config.RGB_565;
+         options.inPreferredConfig = Config.RGB_565;
          //plainTiles
          Plain_Tiles=loadImage("tiles/Plain_Tiles.png");
          //grass
@@ -193,9 +235,9 @@ public class MarioResourceManager
    }
    
    //loads random background
-   private void loadBackground(){
-      Random r = new Random();
-      int rNum = r.nextInt(4);
+   private loadBackground(){
+      var r: Random = new Random();
+      var rNum: Integer = r.nextInt(4);
       if(rNum == 0) {
          Background=loadImage("backgrounds/Icy_Background.png");
       } else if(rNum == 1) {
@@ -208,7 +250,7 @@ public class MarioResourceManager
    }
    
    
-    public static Bitmap loadImage(String fileName)
+    public static loadImage(fileName: String): Bitmap
     {
        try {
           Log.i("resource",fileName);
@@ -216,7 +258,7 @@ public class MarioResourceManager
          
          return BitmapFactory.decodeStream(inputStream, null, new BitmapFactory.Options());
       
-      } catch (IOException e) {
+      } catch (e: IOException) {
          // TODO Auto-generated catch block
          //e.printStackTrace();
          Log.e("resource",e.getMessage()+fileName);
@@ -225,15 +267,16 @@ public class MarioResourceManager
     }
     
    /** Horizontally flips img. */
-   public static Bitmap horizontalFlip(Bitmap img) {   
+   public static horizontalFlip(img: Bitmap): Bitmap {   
         /*
       int w = img.getWidth();   
-        int h = img.getHeight();   
-        Bitmap dimg = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);     
-        Canvas g = new Canvas(dimg); 
+        var h: Integer = img.getHeight();   
+        var dimg: Bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);     
+        var g: Canvas = new Canvas(dimg); 
         g.drawBitmap(img, new Rect(w, 0, 0, h),new Rect(0, 0, w, h), null);   
         */
         return img;   
     }  
  
 }
+

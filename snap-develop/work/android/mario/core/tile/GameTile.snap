@@ -8,61 +8,60 @@ import android.graphics.Bitmap;
 
 
 
-public class GameTile extends Tile {
+class GameTile extends Tile {
    
    // fields
-   private boolean isCollidable = true;
-   private boolean isSloped = false;
-   private List<Creature> collidingCreatures;
+   private var isCollidable: Boolean = true;
+   private var isSloped: Boolean = false;
+   private var collidingCreatures: List;
    
    /**
     * Constructs a new GameTile at the pixel (x,y) position with the Animation anim
     * and Image img.
     */
-   public GameTile(int pixelX, int pixelY, Animation anim, Bitmap img) {
-      super(pixelX, pixelY, anim, img);
-      collidingCreatures = new LinkedList<Creature>();
+   public new(pixelX: Integer, pixelY: Integer, anim: Animation, img: Bitmap): super(pixelX, pixelY, anim, img) {
+      collidingCreatures = new LinkedList();
    }
    
    /**
     * Constructs a new GameTile at the pixel (x,y) position with no Animation
     * and the constant Image img.
     */
-   public GameTile(int pixelX, int pixelY, Bitmap img) {
-      this(pixelX, pixelY, null, img);
+   public new(pixelX: Integer, pixelY: Integer, img: Bitmap): this(pixelX, pixelY, null, img) {
    }
    
    /**
     * Override to add action to this GameTile.
     */
-   public void doAction() { }
+   public doAction() { }
    
    /**
     * @return true if this GameTile is collidable, else false.
     */
-   public boolean isCollidable() {
+   public isCollidable(): Boolean {
       return isCollidable;
    }
    
    /**
     * @effects sets isCollidable to true or false.
     */
-   public void setIsCollidable(boolean isCollidable) {
+   public setIsCollidable(isCollidable: Boolean) {
       this.isCollidable = isCollidable;
    }
    
-   public boolean isSloped() {
+   public isSloped(): Boolean {
       return isSloped;
    }
    
-   public void setIsSloped(boolean isSloped) {
+   public setIsSloped(isSloped: Boolean) {
       this.isSloped = isSloped;
    }
 
    /**
     * @return a list of Creatures who are currently colliding with this GameTile.
     */
-   public List<Creature> collidingCreatures() {
+   public collidingCreatures(): List {
       return collidingCreatures;
    }
 }
+

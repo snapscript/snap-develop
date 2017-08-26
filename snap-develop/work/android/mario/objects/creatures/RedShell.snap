@@ -8,25 +8,18 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 
 
-
-
-
-
-
-public class RedShell extends Creature {
+class RedShell extends Creature {
    
-   private Animation still;
-   private Animation rotate;
-   private Animation flip;
+   private var still: Animation;
+   private var rotate: Animation;
+   private var flip: Animation;
    
-   private TileMap map;
-   private boolean isMoving;
+   private var map: TileMap;
+   private var isMoving: Boolean;
    
-   private static Bitmap stay,rotate_1,rotate_2,rotate_3, flipped;
-   private static boolean initialized=false;
-   public RedShell(int x, int y, TileMap map, MarioSoundManager soundManager, boolean isStill) {
-      
-      super(x, y, soundManager);
+   private static var stay: Bitmap,rotate_1,rotate_2,rotate_3, flipped;
+   private static var initialized: Boolean=false;
+   public new(x: Integer, y: Integer, map: TileMap, soundManager: MarioSoundManager, isStill: Boolean): super(x, y, soundManager) {
       this.map = map;
       setIsAlwaysRelevant(true);
        
@@ -38,15 +31,10 @@ public class RedShell extends Creature {
           flipped = MarioResourceManager.Red_Shell_Flip;
           initialized=true;
       }
-      final class DeadAfterAnimation extends Animation {
-         public void endOfAnimationAction() {
-            kill();
-         }
-      }
-      
+
       still = new Animation();
       rotate = new Animation();
-      flip = new DeadAfterAnimation();
+      flip = new Animation(-> kill());
       
       still.addFrame(stay, 150);
       rotate.addFrame(rotate_1, 30);
@@ -63,13 +51,13 @@ public class RedShell extends Creature {
       dx = 0;
    }
    
-   public boolean isMoving() {
+   public isMoving(): Boolean {
       return isMoving;
    }
    
-   public void xCollide(Point p) {
+   public xCollide(p: Point) {
       super.xCollide(p);
-      GameTile tile = map.getTile(p.x, p.y);
+      var tile: GameTile = map.getTile(p.x, p.y);
       if(this.isOnScreen()) {
          soundManager.playBump();
          if(tile != null) {
@@ -78,16 +66,16 @@ public class RedShell extends Creature {
       }
    }
    
-   public void flip() {
+   public flip() {
       setAnimation(flip);
       setIsFlipped(true);
       setIsCollidable(false);
-      dy = -.2f;
+      dy = -0.2f;
       dx = 0;
    }
    
    // if you run or jump on the shell faster, the shell moves faster.
-   public void jumpedOn(boolean fromRight, float attackerSpeed) {
+   public jumpedOn(fromRight: Boolean, attackerSpeed: Float) {
       if(isMoving) {
          isMoving = false;
          setAnimation(still);
@@ -96,22 +84,23 @@ public class RedShell extends Creature {
          isMoving = true;
          setAnimation(rotate);
          if(fromRight) {
-            if(attackerSpeed > .2f) {
-               dx = .24f;
-            } else if(attackerSpeed > .16) { 
-               dx = .23f;
+            if(attackerSpeed > 0.2f) {
+               dx = 0.24f;
+            } else if(attackerSpeed > 0.16) { 
+               dx = 0.23f;
             } else {
-               dx = .16f;
+               dx = 0.16f;
             }
          } else {
-            if(attackerSpeed < -.2f) {
-               dx = -.24f;
-            } else if(attackerSpeed < -.16) {
-               dx = -.23f;
+            if(attackerSpeed < -0.2f) {
+               dx = -0.24f;
+            } else if(attackerSpeed < -0.16) {
+               dx = -0.23f;
             } else {
-               dx = -.16f;
+               dx = -0.16f;
             }
          }
       }
    }
 }
+

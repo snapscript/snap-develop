@@ -1,45 +1,46 @@
-import game.framework.Game;
-import game.framework.Graphics;
-import game.framework.Screen;
-import game.framework.Graphics.ImageFormat;
+import org.snapscript.game.framework.Game;
+import org.snapscript.game.framework.Graphics;
+import org.snapscript.game.framework.Screen;
+import org.snapscript.game.framework.Graphics.ImageFormat;
 
 import mario.core.Assets;
 
-public class SplashLoadingScreen extends Screen {
+class SplashLoadingScreen extends Screen {
     
-   public SplashLoadingScreen(Game game) {
-        super(game);
+   public new(game: Game): super(game) {
     }
 
-    @Override
-    public void update(float deltaTime) {
-       Graphics g = game.getGraphics();
+    
+    public override update(deltaTime: Float) {
+      println("SplashLoadingScreen.update");
+       var g: Graphics = game.getGraphics();
        Assets.splash= g.newImage("backgrounds/splash.png",ImageFormat.RGB565);
-       game.setScreen(new LoadingScreen(game));
+       try {
+         var s = new LoadingScreen(game);
+         game.setScreen(s);
+       }catch(e) {
+         e.printStackTrace();
+       }
     }
 
-    @Override
-    public void paint(float deltaTime) {
+    public override paint(deltaTime: Float) {
         
     }
 
-    @Override
-    public void pause() {
+    public override pause() {
+
+    }
+    
+    public override resume() {
 
     }
 
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void dispose() {
+    public override dispose() {
        
     }
 
-    @Override
-    public void onBackPressed() {
+    public override onBackPressed() {
 
     }
 }
+

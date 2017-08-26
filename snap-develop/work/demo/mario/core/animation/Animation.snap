@@ -22,6 +22,7 @@ class Animation {
    private var animTime: Long = 0; // current time in animation
    private var totalDuration: Long = 0; // length of entire animation
    private var defaultAnimLength: Long = 0;
+   private var endOfAnimation: Runnable;
    
    /**
     * Constructs a new Animation object with no frames.
@@ -44,6 +45,17 @@ class Animation {
       start();
    }
    
+      /**
+    * Constructs a new Animation object with a termination task.
+    */
+   public new(endOfAnimation: Runnable) {
+      frames = new ArrayList();
+      totalDuration = 0;
+      this.defaultAnimLength = defaultAnimLength;
+      this.endOfAnimation = endOfAnimation;
+      start();
+   }
+   
    /**
     * Sets the default animation length (DAL);
     * @return this Animation with the default animation length changed.
@@ -60,7 +72,7 @@ class Animation {
     */
    public addFrame(image: BufferedImage): Animation {
       totalDuration += defaultAnimLength;
-      frames.add(new AnimFrame(image, totalDuration));
+      frames.add({'image': image, 'endTime': totalDuration});
       return this;
    }
    
@@ -71,7 +83,7 @@ class Animation {
     */
    public addFrame(image: BufferedImage, duration: Long): Animation {
       totalDuration += duration;
-      frames.add(new AnimFrame(image, totalDuration));
+      frames.add({'image': image, 'endTime': totalDuration});
       defaultAnimLength = duration;
       return this;
    }
@@ -123,7 +135,11 @@ class Animation {
     /**
      * Override this method to add an action when animation finishes its entire duration.
      */
-    public endOfAnimationAction() { }
+    public endOfAnimationAction() { 
+      if(endOfAnimation != null){
+         endOfAnimation.run();
+      }
+    }
 
     /**
      * @return an array of the images in this animation.
@@ -153,23 +169,8 @@ class Animation {
      * @return the AnimFrame of the given frame.
      * This is used in update to get the end time of the current frame.
      */
-    private getFrame(i: Integer): AnimFrame {
+    private getFrame(i: Integer): {} {
         return frames.get(i);
-    }
-
-    /**
-     * An inner class used to help manage timing of each frame in the animation.
-     */
-    class AnimFrame {
-
-        var image: BufferedImage;
-        var endTime: Long; // the totalDuration up to the end of this frame
-                   // is the endTime for this frame
- 
-        public new(image: BufferedImage, endTime: Long) {
-            this.image = image;
-            this.endTime = endTime;
-        }
     }
 
 }

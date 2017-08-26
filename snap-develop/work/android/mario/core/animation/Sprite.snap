@@ -1,100 +1,100 @@
-import game.framework.Input.KeyEvent;
+import org.snapscript.game.framework.Input.KeyEvent;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 
-public class Sprite extends Animatible {
+class Sprite extends Animatible {
    
-   protected float x;
-    protected float y;
-    protected float dx;
-    protected float dy;
+   public var x: Float = 0f;
+    public var y: Float = 0f;
+    public var dx: Float = 0f;
+    public var dy: Float = 0f;
    
-   public Sprite() { 
-      this(0, 0);
+   public new(): this(0, 0){
    }
    
-   public Sprite(int x, int y) {
+   public new(x: Integer, y: Integer) {
       this.x = x;
       this.y = y;
       dx = 0;
       dy = 0;
    }
    
-   public void draw(Canvas g, int x, int y) {
+   public draw(g: Canvas, x: Integer, y: Integer) {
       g.drawBitmap(currentAnimation().getImage(), x, y, null);
    }
    
-   public void draw(Canvas g, int x, int y, int offsetX, int offsetY) {
+   public draw(g: Canvas, x: Integer, y: Integer, offsetX: Integer, offsetY: Integer) {
       draw(g, x + offsetX, y + offsetY);
       
    }
-   public Bitmap getImage() {
+   public getImage(): Bitmap {
       return (currentAnimation() == null) ? null : currentAnimation().getImage();
    }
    
-    public float getX() {
+    public getX(): Float {
         return x;
     }
     
-    public void setX(float x) {
+    public setX(x: Float) {
        this.x = x;
     }
     
-    public float getY() {
+    public getY(): Float {
         return y;
     }
     
-    public void setY(float y) {
+    public setY(y: Float) {
        this.y = y;
     }
     
-    public float getdX() {
+    public getdX(): Float {
        return dx;
     }
     
-    public void setdX(float dx) {
+    public setdX(dx: Float) {
        this.dx = dx;   
     }
     
-    public void setdY(float dy) {
+    public setdY(dy: Float) {
        this.dy = dy;
     }
     
-    public float getdY() {
+    public getdY(): Float {
        return dy;
     }
     
-    public int getHeight() {
+    public getHeight(): Integer {
        return currentAnimation().getHeight();
     }
     
-    public int getWidth() {
+    public getWidth(): Integer {
        return currentAnimation().getWidth();
     }
     
-    public void keyReleased(KeyEvent e) {}
-    public void keyPressed(KeyEvent e) {} 
-    public void keyTyped(KeyEvent e) {} 
+    public keyReleased(e: KeyEvent) {}
+    public keyPressed(e: KeyEvent) {} 
+    public keyTyped(e: KeyEvent) {} 
     
    // Checks simple collision between sprites.
    // Checks if two Sprites collide with one another. Returns false if the two Sprites 
    // are the same. Returns false if one of the Sprites is a Creature that is not alive.
-   public static boolean isCollision(Sprite s1, Sprite s2) {
+   public static isCollision(s1: Sprite, s2: Sprite): Boolean {
        // if the Sprites are the same, return false
        if (s1 == s2) {
            return false;
        }
    
        // get the pixel location of the Sprites
-       int s1x = Math.round(s1.getX());
-       int s1y = Math.round(s1.getY());
-       int s2x = Math.round(s2.getX());
-       int s2y = Math.round(s2.getY());
+       var s1x: Integer = Math.round(s1.getX());
+       var s1y: Integer = Math.round(s1.getY());
+       var s2x: Integer = Math.round(s2.getX());
+       var s2y: Integer = Math.round(s2.getY());
    
        // check if the two sprites' boundaries intersect
        return (s1x < s2x + s2.getWidth() && s2x < s1x + s1.getWidth() && 
              s1y < s2y + s2.getHeight() && s2y < s1y + s1.getHeight());
    }
 }
+

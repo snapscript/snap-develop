@@ -3,15 +3,13 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 
 
-public class SlopedTile extends GameTile {
+class SlopedTile extends GameTile {
    
-   private Point startingPoint;
-   private Point endingPoint;
-   private boolean hasPositiveSlope;
+   private var startingPoint: Point;
+   private var endingPoint: Point;
+   private var hasPositiveSlope: Boolean = false;
       
-   public SlopedTile(int pixelX, int pixelY, Bitmap img, boolean hasPositiveSlope) {
-      
-      super(pixelX, pixelY, null, img);
+   public new(pixelX: Integer, pixelY: Integer, img: Bitmap, hasPositiveSlope: Boolean): super(pixelX, pixelY, null, img) {
       setIsCollidable(false);
       setIsCollidable(true);
       setIsSloped(true);
@@ -27,41 +25,41 @@ public class SlopedTile extends GameTile {
       }
    }
    
-   public Point getStartingPoint() {
+   public getStartingPoint(): Point {
       return startingPoint;
    }
    
-   public Point getEndingPoint() {
+   public getEndingPoint(): Point {
       return endingPoint;
    }
    
-   public boolean hasPositiveSlope() {
+   public hasPositiveSlope(): Boolean {
       return hasPositiveSlope;
    }
    
-   private int correlateY(float pixelX) {
+   private correlateY(pixelX: Float): Integer {
       if(pixelX >= endingPoint.x) {
          return endingPoint.y;
       } else if(pixelX <= startingPoint.x) {
          return startingPoint.y;
       } else {
-         return -((int) pixelX) + startingPoint.x + startingPoint.y;
+         return -Math.floor(pixelX) + startingPoint.x + startingPoint.y;
       }
    }
    
-   private int correlateX(float pixelY) {
+   private correlateX(pixelY: Float): Integer {
       if(pixelY >= startingPoint.y) {
          return startingPoint.x;
       } else if(pixelY <= endingPoint.y) {
          return endingPoint.x;
       } else {
-         return ((int) pixelY) - startingPoint.y + startingPoint.x;
+         return Math.floor(pixelY) - startingPoint.y + startingPoint.x;
       }
    }
    
-   public Point isWithin(float pixelX, float pixelY, float deltaX, float deltaY) {
-      int xOnLine = correlateX(pixelY);
-      int yOnLine = correlateY(pixelX);
+   public isWithin(pixelX: Float, pixelY: Float, deltaX: Float, deltaY: Float): Point {
+      var xOnLine: Integer = correlateX(pixelY);
+      var yOnLine: Integer = correlateY(pixelX);
 //      System.out.println();
 //      System.out.println("X on Line: " + xOnLine);
 //      System.out.println("Starting Point X: " + startingPoint.x);
@@ -81,3 +79,4 @@ public class SlopedTile extends GameTile {
       }
    }
 }
+

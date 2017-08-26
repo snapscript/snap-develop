@@ -11,19 +11,18 @@ import android.graphics.Rect;
 
 
 
-public class Piranha extends Creature {
+class Piranha extends Creature {
    
-   private static Bitmap p1;
-   private static Bitmap p2;
-   public static Animation turn ;
-   private static boolean initialized = false;
+   private static var p1: Bitmap;
+   private static var p2: Bitmap;
+   public static var turn: Animation ;
+   private static var initialized: Boolean = false;
 
-   float dy=0.3f;
-   float y1=0;
-   float initY;
-   static int wait=0;
-   public Piranha(int pixelX, int pixelY, MarioSoundManager soundManager) {
-      super(pixelX, pixelY,soundManager);
+   var dy: Float=0.3f;
+   var y1: Float=0f;
+   var initY: Float=0f;
+   static var wait: Integer=0;
+   public new(pixelX: Integer, pixelY: Integer, soundManager: MarioSoundManager): super(pixelX, pixelY,soundManager) {
       if (!initialized) {
          p1 =  MarioResourceManager.Piranha_1;
          p2 =  MarioResourceManager.Piranha_2;
@@ -37,13 +36,13 @@ public class Piranha extends Creature {
       setOffsetX(-3);
    }
    
-   @Override
-   public void draw(Canvas g, int x, int y) {
-      g.drawBitmap(currentAnimation().getImage(),new Rect(0,0,getWidth(),getHeight()-(int)y1),new Rect(x+getOffsetX() , y+getOffsetY(),x +getWidth()+getOffsetX(),y+getOffsetY() +  getHeight()-(int)y1),null);
+   public override draw(g: Canvas, x: Integer, y: Integer) {
+      g.drawBitmap(currentAnimation().getImage(),
+         new Rect(0,0,getWidth(),getHeight()-Math.floor(y1)),
+         new Rect(x+getOffsetX() , y+getOffsetY(),x +getWidth()+getOffsetX(),y+getOffsetY() +  getHeight()-Math.floor(y1)),null);
    }
    
-   @Override
-   public void updateCreature(TileMap map, int time) {
+   public override updateCreature(map: TileMap, time: Integer) {
       if (wait>0){
          wait--;
          return;
@@ -62,7 +61,8 @@ public class Piranha extends Creature {
       //setOffsetY(getOffsetY()+1); 
    }
    
-   public void flip() {
+   public flip() {
       kill();
    }
 }
+

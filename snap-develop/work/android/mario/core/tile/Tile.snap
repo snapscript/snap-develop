@@ -6,16 +6,16 @@ import android.graphics.Canvas;
 
 
 
-public class Tile extends Animatible {
+class Tile extends Animatible {
    
    // fields
-   private int tileX;
-   private int tileY;
-   private int pixelX;
-   private int pixelY;
-   protected Bitmap img;
+   private var tileX: Integer = 0;
+   private var tileY: Integer = 0;
+   private var pixelX: Integer = 0;
+   private var pixelY: Integer = 0;
+   public var img: Bitmap;
    
-   public Tile(int pixelX, int pixelY, Animation anim, Bitmap img) {
+   public new(pixelX: Integer, pixelY: Integer, anim: Animation, img: Bitmap) {
       setTileX(GameRenderer.pixelsToTiles(pixelX));
       setTileY(GameRenderer.pixelsToTiles(pixelY));
       this.pixelX = pixelX;
@@ -24,51 +24,51 @@ public class Tile extends Animatible {
       setAnimation(anim);
    }
    
-   public Tile(int pixelX, int pixelY, Bitmap img) {
-      this(pixelX, pixelY, null, img);
+   public new(pixelX: Integer, pixelY: Integer, img: Bitmap): this(pixelX, pixelY, null, img) {
    }
    
-   public void draw(Canvas g, int pixelX, int pixelY) {
+   public draw(g: Canvas, pixelX: Integer, pixelY: Integer) {
       g.drawBitmap(getImage(), pixelX, pixelY, null);
    }
    
-   public void draw(Canvas g, int pixelX, int pixelY, int offsetX, int offsetY) {
+   public draw(g: Canvas, pixelX: Integer, pixelY: Integer, offsetX: Integer, offsetY: Integer) {
       draw(g, pixelX + offsetX, pixelY + offsetY);
    }
    
-   public Bitmap getImage() {
+   public getImage(): Bitmap {
       return (currentAnimation() == null) ? img : currentAnimation().getImage();
    }
    
-   public int getPixelX() {
+   public getPixelX(): Integer {
       return pixelX;
    }
    
-   public int getPixelY() {
+   public getPixelY(): Integer {
       return pixelY;
    }
    
-   public int getWidth() {
+   public getWidth(): Integer {
       return getImage().getWidth();
    }
    
-   public int getHeight() {
+   public getHeight(): Integer {
       return getImage().getHeight();
    }
 
-   public int getTileX() {
+   public getTileX(): Integer {
       return tileX;
    }
 
-   public void setTileX(int tileX) {
+   public setTileX(tileX: Integer) {
       this.tileX = tileX;
    }
 
-   public int getTileY() {
+   public getTileY(): Integer {
       return tileY;
    }
 
-   public void setTileY(int tileY) {
+   public setTileY(tileY: Integer) {
       this.tileY = tileY;
    }
 } // Tile
+

@@ -1,30 +1,29 @@
-import game.framework.Game;
-import game.framework.Graphics;
-import game.framework.Screen;
-import game.framework.Graphics.ImageFormat;
+import org.snapscript.game.framework.Game;
+import org.snapscript.game.framework.Graphics;
+import org.snapscript.game.framework.Screen;
+import org.snapscript.game.framework.Graphics.ImageFormat;
 
 import mario.core.Assets;
 import mario.core.MarioGame;
 import mario.core.MarioSoundManager;
 import mario.core.Settings;
 
-public class LoadingScreen extends Screen {
-    public LoadingScreen(Game game) {
-         super(game);
+class LoadingScreen extends Screen {
+    public new(game: Game): super(game) {
     }
 
-    @Override
-    public void update(float deltaTime) {
-       Graphics g = game.getGraphics();
-        Settings.load(game.getFileIO());
+    public override update(deltaTime: Float) {
+      println("LoadingScreen.update");
+       var g: Graphics = game.getGraphics();
+        //Settings.load(game.getFileIO());
         
-        ((MarioGame)game).soundManager.loadResouces();
+        game.soundManager.loadResouces();
         MarioSoundManager.musicEnabled=Settings.musicEnabled;
         if(Settings.musicEnabled){
-            ((MarioGame)game).soundManager.playMusic();
+            game.soundManager.playMusic();
         }
         Assets.menu = g.newImage("menu/menu.png", ImageFormat.RGB565);
-        ((MarioGame)game).resourceManager.loadResouces();
+        game.resourceManager.loadResouces();
        
        //
         /*Assets.background = g.newImage("background.png", ImageFormat.RGB565);
@@ -65,35 +64,31 @@ public class LoadingScreen extends Screen {
         Assets.yahoo1 = game.getAudio().createSound("sounds/mario_waha.wav");
         Assets.yahoo2 = game.getAudio().createSound("sounds/mario_woohoo.wav");
         */
-       // MainMenuScreen mainMenuScreen=new MainMenuScreen(game);
+       // var mainMenuScreen: MainMenuScreen=new MainMenuScreen(game);
         //mainMenuScreen.loadGameScreen();
         game.setScreen(new MainMenuScreen(game));//mainMenuScreen);
     }
 
-    @Override
-    public void paint(float deltaTime) {
-        Graphics g = game.getGraphics();
+    public override paint(deltaTime: Float) {
+        var g: Graphics = game.getGraphics();
         //g.drawARGB(200, , g, b)
         g.drawImage(Assets.splash,0, 0);
     }
 
-    @Override
-    public void pause() {
+    public override pause() {
 
     }
 
-    @Override
-    public void resume() {
+    public override resume() {
 
     }
 
-    @Override
-    public void dispose() {
+    public override dispose() {
 
     }
 
-    @Override
-    public void onBackPressed() {
+    public override onBackPressed() {
 
     }
 }
+
