@@ -1,24 +1,25 @@
-import sound.sampled.AudioFormat;
-import sound.sampled.AudioInputStream;
-import sound.sampled.AudioSystem;
-import util.concurrent.atomic.AtomicInteger;
+var x = 0;
+var y = 10000000;
 
-class OuterClass{
-
-   var fireball: Integer = 0;
-   
-   public test(){
-      var func = () ->{
-         println(this);
-      };
-      func();
-      fireball++;
-      return this;
-   }
-   public dump(){
-      println(fireball);
-   }
+for(i in x..10){
+   println(i);
 }
-   
-new OuterClass().test().dump();
 
+time("for in", -> {
+   for(var i in x .. y -1){
+   
+   }
+});
+
+time("for", -> {
+   for(var i = 0; i < y; i++){
+      
+   }
+});
+
+function time(message, func: ()) {
+   var s = System.currentTimeMillis();
+   func();
+   var f = System.currentTimeMillis();
+   println("${message}: ${f-s}");
+}

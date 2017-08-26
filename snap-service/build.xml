@@ -37,13 +37,18 @@
       </fileset>
     </copy>
     <copy todir="output">
+            <fileset dir="../../snap/snap-core/target/classes">
+        <include name="**/*.txt" />
+      </fileset>
+    </copy>    
+    <copy todir="output">
             <fileset dir="../../snap/snap-parse/target/classes">
         <include name="**/*.class" />
       </fileset>
     </copy>
     <copy todir="output">
             <fileset dir="../../snap/snap-parse/target/classes">
-        <include name="**/*.bnf" />
+        <include name="**/*.txt" />
       </fileset>
     </copy>    
     <jar destfile="jar/snap.jar">

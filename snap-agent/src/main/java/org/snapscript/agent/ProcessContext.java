@@ -31,7 +31,7 @@ public class ProcessContext {
    private final String process;
 
    public ProcessContext(ProcessMode mode, URI root, String process, int port) {
-      this(mode, root, process, port, 4);
+      this(mode, root, process, port, 10);
    }
    
    public ProcessContext(ProcessMode mode, URI root, String process, int port, int threads) {
@@ -39,9 +39,9 @@ public class ProcessContext {
    }
    
    public ProcessContext(ProcessMode mode, URI root, String process, int port, int threads, int stack) {
+      this.executor = new ThreadPool(threads < 5 ? 5 : threads, stack);
       this.latch = new CountDownLatch(1);
       this.store = new ProcessStore(root);
-      this.executor = new ThreadPool(threads, stack);
       this.context = new StoreContext(store, executor);
       this.compiler = new ResourceCompiler(context);
       this.controller = new SuspendController();

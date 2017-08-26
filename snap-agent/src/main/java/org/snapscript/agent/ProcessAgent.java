@@ -29,7 +29,7 @@ public class ProcessAgent {
    private final URI root;
 
    public ProcessAgent(ProcessMode mode, URI root, String system, String process, String level) {
-      this(mode, root, system, process, level, 0);
+      this(mode, root, system, process, level, 10);
    }
    
    public ProcessAgent(ProcessMode mode, URI root,String system,  String process, String level, int threads) {
