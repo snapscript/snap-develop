@@ -18,14 +18,14 @@ class Score extends Creature {
       
       dy = -0.45f;
       if (!initialized){
-         one_hundred = MarioResourceManager.Score_100_New6;
-         initialized=true;
+         Score.one_hundred = MarioResourceManager.Score_100_New6;
+         Score.initialized=true;
       }
 
       oneHundred = new Animation(-> kill());
       
-      oneHundred.addFrame(one_hundred, 380);
-      oneHundred.addFrame(one_hundred, 380);   
+      oneHundred.addFrame(Score.one_hundred, 380);
+      oneHundred.addFrame(Score.one_hundred, 380);   
       setAnimation(oneHundred);
    }
    

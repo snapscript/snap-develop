@@ -13,7 +13,6 @@ class LoadingScreen extends Screen {
     }
 
     public override update(deltaTime: Float) {
-      println("LoadingScreen.update");
        var g: Graphics = game.getGraphics();
         //Settings.load(game.getFileIO());
         

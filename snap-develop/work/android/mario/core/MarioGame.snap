@@ -21,7 +21,6 @@ class MarioGame extends AndroidGame {
    public static const QUIT_GAME_DIALOG: Integer = 0;
    
    public new(activity: Activity, w: Float, h: Float, isLandscape: Boolean): super(activity, w, h, isLandscape) {
-      println("MarioGame");
       this.soundManager = new MarioSoundManager(this);
       this.resourceManager = new MarioResourceManager(this);
    }

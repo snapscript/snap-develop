@@ -12,7 +12,6 @@ class SplashLoadingScreen extends Screen {
 
     
     public override update(deltaTime: Float) {
-      println("SplashLoadingScreen.update");
        var g: Graphics = game.getGraphics();
        Assets.splash= g.newImage("backgrounds/splash.png",ImageFormat.RGB565);
        try {
