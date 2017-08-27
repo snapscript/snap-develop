@@ -23,14 +23,16 @@ public class ProcessTask implements Runnable {
    private final String resource;
    private final String project;
    private final Model model;
+   private final boolean debug;
    
-   public ProcessTask(ProcessEventChannel client, ProcessContext context, ProcessMode mode, Model model, String project, String resource) {
+   public ProcessTask(ProcessEventChannel client, ProcessContext context, ProcessMode mode, Model model, String project, String resource, boolean debug) {
       this.client = client;
       this.resource = resource;
       this.project = project;
       this.context = context;
       this.model = model;
       this.mode = mode;
+      this.debug = debug;
    }
    
    @Override
@@ -51,6 +53,7 @@ public class ProcessTask implements Runnable {
             .withResource(resource)
             .withMode(context.getMode())
             .withDuration(TimeUnit.NANOSECONDS.toMillis(middle-start))
+            .withDebug(debug)
             .build();
          
          client.send(event);

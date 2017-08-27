@@ -9,13 +9,15 @@ public class ExecuteEvent implements ProcessEvent {
    private final String project;
    private final String resource;
    private final String process;
+   private final boolean debug;
    
    private ExecuteEvent(Builder builder) {
-      this.data = new ExecuteData(builder.process, builder.project, builder.resource);
+      this.data = new ExecuteData(builder.process, builder.project, builder.resource, builder.debug);
       this.breakpoints = builder.breakpoints;
       this.project = builder.project;
       this.resource = builder.resource;
       this.process = builder.process;
+      this.debug = builder.debug;
    }
    
    @Override
@@ -39,12 +41,17 @@ public class ExecuteEvent implements ProcessEvent {
       return project;
    }
    
+   public boolean isDebug(){
+      return debug;
+   }
+   
    public static class Builder {
       
       private Map<String, Map<Integer, Boolean>> breakpoints;
       private String project;
       private String resource;
       private String process;
+      private boolean debug;
       
       public Builder(String process) {
          this.process = process;
@@ -67,6 +74,11 @@ public class ExecuteEvent implements ProcessEvent {
 
       public Builder withProcess(String process) {
          this.process = process;
+         return this;
+      }
+      
+      public Builder withDebug(boolean debug) {
+         this.debug = debug;
          return this;
       }
       

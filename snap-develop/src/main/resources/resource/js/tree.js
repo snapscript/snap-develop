@@ -133,6 +133,7 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
                         { title: "&nbsp;Rename", cmd: "renameFile", uiIcon: "menu-rename" },
                         { title: "&nbsp;Delete", cmd: "deleteFile", uiIcon: "menu-trash", disabled: false },
                         { title: "&nbsp;Run", cmd: "runScript", uiIcon: "menu-run" },
+                        { title: "&nbsp;Debug", cmd: "debugScript", uiIcon: "menu-debug" },
                         { title: "&nbsp;Explore", cmd: "exploreDirectory", uiIcon: "menu-explore" } //,              
                     ],
                     beforeOpen: function (event, ui) {

@@ -122,6 +122,13 @@
 	background-repeat: no-repeat !important;
 }
 
+.menu-debug {
+	background-image: url('${IMAGE_FOLDER}/debug.png') !important;
+	background-size: 16px 16px !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+}
+
 .menu-stop {
 	background-image: url('${IMAGE_FOLDER}/stop.png') !important;
 	background-size: 16px 16px !important;

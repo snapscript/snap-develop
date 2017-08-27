@@ -18,7 +18,7 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
             variables_1.VariableManager.clearVariables();
             profiler_1.Profiler.clearProfiler();
             clearThreads();
-            status_1.StatusPanel.showProcessStatus(message.resource, message.process);
+            status_1.StatusPanel.showProcessStatus(message.resource, message.process, message.debug);
         }
         function deleteThreads(socket, type, text) {
             var terminateProcess = text;

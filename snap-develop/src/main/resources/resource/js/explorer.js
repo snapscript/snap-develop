@@ -98,6 +98,11 @@ define(["require", "exports", "jquery", "filesaver", "common", "socket", "tree",
                     commands_1.Command.runScript();
                 });
             }
+            else if (commandName == "debugScript") {
+                openTreeFile(resourcePath.resourcePath, function () {
+                    commands_1.Command.debugScript();
+                });
+            }
             else if (commandName == "newFile") {
                 commands_1.Command.newFile(resourcePath);
             }

@@ -23,12 +23,14 @@ public class PongEventMarshaller implements ProcessEventMarshaller<PongEvent> {
       if(input.readBoolean()) {
          String project = input.readUTF();
          String resource = input.readUTF();
+         boolean debug = input.readBoolean();
          
          return new PongEvent.Builder(process)
             .withSystem(system)
             .withProject(project)
             .withResource(resource)
             .withRunning(true)
+            .withDebug(debug)
             .build();
       }
       return new PongEvent.Builder(process)
@@ -45,6 +47,7 @@ public class PongEventMarshaller implements ProcessEventMarshaller<PongEvent> {
       String resource = event.getResource();
       String project = event.getProject();
       String system = event.getSystem();
+      boolean debug = event.isDebug();
       
       output.writeUTF(process);
       output.writeUTF(system);
@@ -53,6 +56,7 @@ public class PongEventMarshaller implements ProcessEventMarshaller<PongEvent> {
          output.writeBoolean(true);
          output.writeUTF(project);
          output.writeUTF(resource);
+         output.writeBoolean(debug);
       } else {
          output.writeBoolean(false);
       }

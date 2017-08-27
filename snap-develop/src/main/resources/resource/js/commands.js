@@ -407,18 +407,26 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
         }
         Command.deleteDirectory = deleteDirectory;
         function runScript() {
+            executeScript(false);
+        }
+        Command.runScript = runScript;
+        function debugScript() {
+            executeScript(true);
+        }
+        Command.debugScript = debugScript;
+        function executeScript(debug) {
             saveFileWithAction(function () {
                 var editorData = editor_1.FileEditor.loadEditor();
                 var message = {
                     breakpoints: editorData.breakpoints,
                     project: document.title,
                     resource: editorData.resource.filePath,
-                    source: editorData.source
+                    source: editorData.source,
+                    debug: debug ? true : false
                 };
                 socket_1.EventBus.sendEvent("EXECUTE", message);
             }, true); // save editor
         }
-        Command.runScript = runScript;
         function updateScriptBreakpoints() {
             var editorData = editor_1.FileEditor.loadEditor();
             var message = {

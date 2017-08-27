@@ -54,14 +54,16 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
             var processSystem = message.system;
             var processSystemTime = message.time;
             var processProject = message.project;
-            var processRunning = message.running == "true";
+            var processRunning = "" + message.running == "true";
+            var processDebug = "" + message.debug == "true";
             statusProcesses[process] = {
                 resource: processResource,
                 system: processSystem,
                 time: processSystemTime,
                 running: processRunning,
                 focus: processFocus,
-                project: processProject
+                project: processProject,
+                debug: processDebug
             };
             if (processFocus == "true") {
                 updateStatusFocus(process);
@@ -93,7 +95,7 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
                 var statusResourcePath = tree_1.FileTree.createResourcePath(statusInfo.resource);
                 $("#toolbarDebug").css('opacity', '1.0');
                 $("#toolbarDebug").css('filter', 'alpha(opacity=100)'); // msie
-                status_1.StatusPanel.showProcessStatus(statusInfo.resource, process);
+                status_1.StatusPanel.showProcessStatus(statusInfo.resource, process, statusInfo.debug);
             }
             else {
                 $("#toolbarDebug").css('opacity', '0.4');
@@ -138,13 +140,14 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
                             var status = "WAITING";
                             var active = "&nbsp;<input type='radio'><label></label>";
                             var resourcePath = "";
+                            var debugging = statusProcessInfo.debug;
                             var running = false;
                             if (statusFocus == statusProcess) {
                                 active = "&nbsp;<input type='radio' checked><label></label>";
                             }
                             if (statusProcessInfo.resource != null) {
                                 var resourcePathDetails = tree_1.FileTree.createResourcePath(statusProcessInfo.resource);
-                                if (statusFocus == statusProcess) {
+                                if (statusFocus == statusProcess && debugging) {
                                     displayName = "<div class='debugFocusRecord'>" + statusProcess + "</div>";
                                     status = "DEBUGGING";
                                 }

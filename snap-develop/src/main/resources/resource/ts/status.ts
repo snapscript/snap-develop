@@ -3,14 +3,18 @@ import {FileTree} from "tree"
 
 export module StatusPanel {
    
-   export function showProcessStatus(resource, agent) {
+   export function showProcessStatus(resource, agent, debug) {
       var resourcePath = FileTree.createResourcePath(resource);
       var processFile = resourcePath.fileName;
+      var statusClass = "statusPanelRunning";
       var processDetail = "";
       
+      if(debug) {
+         statusClass = "statusPanelDebugging";
+      }
       processDetail += "<table border='0'>\n";
       processDetail += "<tr>\n";
-      processDetail += "<td><div class='statusPanelRunning'></div></td>\n";
+      processDetail += "<td><div class='" + statusClass + "'></div></td>\n";
       processDetail += "<td>"+processFile+"</td>\n";
       processDetail += "</tr>";
       processDetail += "</table>";

@@ -88,6 +88,9 @@ define(["require", "exports", "jquery", "mousetrap", "common", "editor", "comman
             createKeyBinding("ctrl r", true, function () {
                 commands_1.Command.runScript();
             });
+            createKeyBinding("ctrl b", true, function () {
+                commands_1.Command.debugScript();
+            });
             createKeyBinding("f8", true, function () {
                 console.log("F8");
                 commands_1.Command.resumeScript();

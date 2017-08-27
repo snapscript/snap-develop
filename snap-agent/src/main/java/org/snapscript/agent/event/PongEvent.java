@@ -7,6 +7,7 @@ public class PongEvent implements ProcessEvent {
    private final String resource;
    private final String system;
    private final boolean running;
+   private final boolean debug;
 
    public PongEvent(Builder builder) {
       this.resource = builder.resource;
@@ -14,6 +15,7 @@ public class PongEvent implements ProcessEvent {
       this.running = builder.running;
       this.project = builder.project;
       this.system = builder.system;
+      this.debug = builder.debug;
    }
    
    @Override
@@ -37,6 +39,10 @@ public class PongEvent implements ProcessEvent {
       return running;
    }
    
+   public boolean isDebug() {
+      return debug;
+   }
+   
    public static class Builder {
       
       private String project;
@@ -44,6 +50,7 @@ public class PongEvent implements ProcessEvent {
       private String resource;
       private String system;
       private boolean running;
+      private boolean debug;
    
       public Builder(String process) {
          this.process = process;
@@ -71,6 +78,11 @@ public class PongEvent implements ProcessEvent {
 
       public Builder withRunning(boolean running) {
          this.running = running;
+         return this;
+      }
+      
+      public Builder withDebug(boolean debug) {
+         this.debug = debug;
          return this;
       }
       

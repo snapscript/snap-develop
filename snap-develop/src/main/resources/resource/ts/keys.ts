@@ -98,6 +98,9 @@ export module KeyBinder {
       createKeyBinding("ctrl r", true, function() {
          Command.runScript();
       });
+      createKeyBinding("ctrl b", true, function() {
+         Command.debugScript();
+      });
       createKeyBinding("f8", true, function() {
          console.log("F8");
          Command.resumeScript();

@@ -96,6 +96,10 @@ export module Project {
          Command.runScript();
          e.preventDefault();
       });
+      $('#debugScript').on('click', function(e) {
+         Command.debugScript();
+         e.preventDefault();
+      });
       $('#stopScript').on('click', function(e) {
          Command.stopScript();
          e.preventDefault();
@@ -967,6 +971,7 @@ export module Project {
                            + "         <td><div id='deleteFile' title='Delete File'></div></td>"   
                            + "         <td><div id='searchTypes' title='Search Types&nbsp;&nbsp;&nbsp;Ctrl+Shift+S'></div></td>"                             
                            + "         <td><div id='runScript' title='Run Script&nbsp;&nbsp;&nbsp;Ctrl+R'></div></td>" 
+                           + "         <td><div id='debugScript' title='Debug Script&nbsp;&nbsp;&nbsp;Ctrl+B'></div></td>"                            
                            + "      </tr>"
                            + "      </table>"
                            + "   </td>" 

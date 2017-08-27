@@ -71,6 +71,7 @@ public class CommandEventConverter {
             .process(event.getProcess())
             .resource(event.getResource())
             .duration(event.getDuration())
+            .debug(event.isDebug())
             .build();
    }
    
@@ -90,6 +91,7 @@ public class CommandEventConverter {
             .project(null)
             .resource(null)
             .time(System.currentTimeMillis())
+            .debug(false)
             .running(false)
             .focus(process.equals(focus))
             .build();
@@ -104,6 +106,7 @@ public class CommandEventConverter {
             .project(event.getProject())
             .resource(event.getResource())
             .time(System.currentTimeMillis())
+            .debug(event.isDebug())
             .running(event.isRunning())
             .focus(process.equals(focus))
             .build();

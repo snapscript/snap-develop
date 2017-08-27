@@ -2,13 +2,17 @@ define(["require", "exports", "jquery", "tree"], function (require, exports, $, 
     "use strict";
     var StatusPanel;
     (function (StatusPanel) {
-        function showProcessStatus(resource, agent) {
+        function showProcessStatus(resource, agent, debug) {
             var resourcePath = tree_1.FileTree.createResourcePath(resource);
             var processFile = resourcePath.fileName;
+            var statusClass = "statusPanelRunning";
             var processDetail = "";
+            if (debug) {
+                statusClass = "statusPanelDebugging";
+            }
             processDetail += "<table border='0'>\n";
             processDetail += "<tr>\n";
-            processDetail += "<td><div class='statusPanelRunning'></div></td>\n";
+            processDetail += "<td><div class='" + statusClass + "'></div></td>\n";
             processDetail += "<td>" + processFile + "</td>\n";
             processDetail += "</tr>";
             processDetail += "</table>";

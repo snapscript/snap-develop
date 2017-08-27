@@ -2,6 +2,7 @@ package org.snapscript.agent;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.snapscript.agent.debug.BreakpointMatcher;
 import org.snapscript.agent.debug.ResumeType;
@@ -16,6 +17,7 @@ import org.snapscript.agent.event.ProcessEventAdapter;
 import org.snapscript.agent.event.ProcessEventChannel;
 import org.snapscript.agent.event.StepEvent;
 import org.snapscript.core.Model;
+import org.snapscript.core.trace.TraceInterceptor;
 
 public class ProcessEventReceiver extends ProcessEventAdapter {
    
@@ -34,18 +36,23 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
       ExecuteData data = event.getData();
       Map<String, Map<Integer, Boolean>> breakpoints = event.getBreakpoints();
       BreakpointMatcher matcher = context.getMatcher();
+      TraceInterceptor interceptor = context.getInterceptor();
       ProcessStore store = context.getStore();
       String actual = context.getProcess();
       String target = data.getProcess();
       String project = data.getProject();
       String resource = data.getResource();
+      boolean debug = data.isDebug();
       
       if(!target.equals(actual)) {
          throw new IllegalArgumentException("Process '" +actual+ "' received event for '"+target+"'");
       }
+      if(!data.isDebug()) {
+         interceptor.clear(); // disable interceptors
+      }
       matcher.update(breakpoints);
       store.update(project); // XXX rubbish
-      executor.execute(channel, actual, project, resource);
+      executor.execute(channel, actual, project, resource, debug);
    }
    
    @Override
@@ -99,10 +106,11 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
       if(data != null) {
          String project = data.getProject();
          String resource = data.getResource();
+         boolean debug = data.isDebug();
          
-         checker.update(channel, event, project, resource);
+         checker.update(channel, event, project, resource, debug);
       } else {
-         checker.update(channel, event, null, null); 
+         checker.update(channel, event, null, null, false); 
       }
    }
 

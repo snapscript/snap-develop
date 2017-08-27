@@ -6,6 +6,14 @@
     padding: 12px;
 }
 
+.statusPanelDebugging {
+	background-image: url('${IMAGE_FOLDER}/debug.png');
+	background-size: 16px 16px;	
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px;
+}
+
 .statusPanelWaiting {
 	background-image: url('${IMAGE_FOLDER}/resume.png');
 	background-size: 16px 16px;	

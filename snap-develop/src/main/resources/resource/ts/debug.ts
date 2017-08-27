@@ -70,7 +70,8 @@ export module DebugManager {
       var processSystem = message.system;
       var processSystemTime = message.time;
       var processProject = message.project;
-      var processRunning = message.running == "true";
+      var processRunning = "" + message.running == "true";
+      var processDebug = "" + message.debug == "true";
       
       statusProcesses[process] = {
          resource: processResource,
@@ -78,7 +79,8 @@ export module DebugManager {
          time: processSystemTime,
          running: processRunning, // is anything running
          focus: processFocus,
-         project: processProject
+         project: processProject,
+         debug: processDebug
       };
       if(processFocus == "true") {
          updateStatusFocus(process);
@@ -114,7 +116,7 @@ export module DebugManager {
          $("#toolbarDebug").css('opacity', '1.0');
          $("#toolbarDebug").css('filter', 'alpha(opacity=100)'); // msie
          
-         StatusPanel.showProcessStatus(statusInfo.resource, process);
+         StatusPanel.showProcessStatus(statusInfo.resource, process, statusInfo.debug);
          //$("#process").html("<i>&nbsp;RUNNING: " + statusInfo.resource + " ("+process+")</i>");
       } else {
          $("#toolbarDebug").css('opacity', '0.4');
@@ -165,6 +167,7 @@ export module DebugManager {
                   var status = "WAITING";
                   var active = "&nbsp;<input type='radio'><label></label>";
                   var resourcePath = "";
+                  var debugging = statusProcessInfo.debug;
                   var running = false;
                   
                   if(statusFocus == statusProcess) {
@@ -173,7 +176,7 @@ export module DebugManager {
                   if(statusProcessInfo.resource != null) {
                      var resourcePathDetails = FileTree.createResourcePath(statusProcessInfo.resource);
                      
-                     if(statusFocus == statusProcess) {
+                     if(statusFocus == statusProcess && debugging) {
                         displayName = "<div class='debugFocusRecord'>"+statusProcess+"</div>";
                         status = "DEBUGGING";
                      } else {

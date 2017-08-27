@@ -25,11 +25,13 @@ public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> 
       String type = input.readUTF();
       ProcessMode mode = ProcessMode.resolveMode(type);
       long duration = input.readLong();
+      boolean debug = input.readBoolean();
       
       return new BeginEvent.Builder(process)
          .withProject(project)
          .withResource(resource)
          .withDuration(duration)
+         .withDebug(debug)
          .withMode(mode)
          .build();
    }
@@ -43,6 +45,7 @@ public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> 
       String project = event.getProject();
       String resource = event.getResource();
       String type = mode.name();
+      boolean debug = event.isDebug();
       long duration = event.getDuration();
       
       output.writeUTF(process);
@@ -50,6 +53,7 @@ public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> 
       output.writeUTF(resource);
       output.writeUTF(type);
       output.writeLong(duration);
+      output.writeBoolean(debug);
       output.flush();
       
       byte[] array = buffer.toByteArray();

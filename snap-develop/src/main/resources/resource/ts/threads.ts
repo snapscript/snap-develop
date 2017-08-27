@@ -30,7 +30,7 @@ export module ThreadManager {
       Profiler.clearProfiler();
       clearThreads();
       
-      StatusPanel.showProcessStatus(message.resource, message.process);
+      StatusPanel.showProcessStatus(message.resource, message.process, message.debug);
    }
    
    function deleteThreads(socket, type, text) {

@@ -61,13 +61,14 @@ public class ProcessManager implements ProcessAgentController {
          String project = command.getProject();
          String resource = command.getResource();
          String process = connection.toString();
+         boolean debug = command.isDebug();
          
          if(filter != null) {
             filter.setFocus(process);
          }
          connections.put(process, connection);
          
-         return connection.execute(project, resource, breakpoints);
+         return connection.execute(project, resource, breakpoints, debug);
       }
       return true;
    }

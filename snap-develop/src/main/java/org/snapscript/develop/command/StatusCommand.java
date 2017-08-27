@@ -17,5 +17,6 @@ public class StatusCommand implements Command {
    private String system;
    private boolean focus;
    private boolean running;
+   private boolean debug;
    private long time;
 }

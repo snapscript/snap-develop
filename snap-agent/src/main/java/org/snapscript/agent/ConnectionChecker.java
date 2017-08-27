@@ -30,12 +30,13 @@ public class ConnectionChecker {
       this.system = system;
    }
    
-   public void update(ProcessEventChannel channel, PingEvent event, String project, String resource) {
+   public void update(ProcessEventChannel channel, PingEvent event, String project, String resource, boolean debug) {
       PongEvent pong = new PongEvent.Builder(process)
          .withSystem(system)
          .withProject(project)
          .withResource(resource)
          .withRunning(resource != null)
+         .withDebug(debug)
          .build();
       
       try {

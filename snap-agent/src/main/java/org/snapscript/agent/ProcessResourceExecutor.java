@@ -24,11 +24,11 @@ public class ProcessResourceExecutor {
       this.mode = mode;
    }
 
-   public void execute(ProcessEventChannel channel, String process, String project, String resource) {
+   public void execute(ProcessEventChannel channel, String process, String project, String resource, boolean debug) {
       try {
-         ExecuteData data = new ExecuteData(process, project, resource);
+         ExecuteData data = new ExecuteData(process, project, resource, debug);
          ConsoleConnector connector = new ConsoleConnector(channel, process);
-         ProcessTask task = new ProcessTask(channel, context, mode, model, project, resource);
+         ProcessTask task = new ProcessTask(channel, context, mode, model, project, resource, debug);
          
          if(resource != null) {
             Thread thread = factory.newThread(task);

@@ -9,6 +9,7 @@ public class BeginEvent implements ProcessEvent {
    private final String process;
    private final String project;
    private final long duration;
+   private final boolean debug;
    
    private BeginEvent(Builder builder) {
       this.process = builder.process;
@@ -16,6 +17,7 @@ public class BeginEvent implements ProcessEvent {
       this.resource = builder.resource;
       this.duration = builder.duration;
       this.mode = builder.mode;
+      this.debug = builder.debug;
    }
    
    public ProcessMode getMode() {
@@ -37,6 +39,10 @@ public class BeginEvent implements ProcessEvent {
    public long getDuration() {
       return duration;
    }
+   
+   public boolean isDebug(){
+      return debug;
+   }
 
    public static class Builder {
       
@@ -45,6 +51,7 @@ public class BeginEvent implements ProcessEvent {
       private String process;
       private String project;
       private long duration;
+      private boolean debug;
       
       public Builder(String process){
          this.process = process;
@@ -72,6 +79,11 @@ public class BeginEvent implements ProcessEvent {
 
       public Builder withDuration(long duration) {
          this.duration = duration;
+         return this;
+      }
+      
+      public Builder withDebug(boolean debug) {
+         this.debug = debug;
          return this;
       }
       

@@ -13,6 +13,20 @@
 	background-repeat: no-repeat;
     padding: 12px;
 }
+#debugScript {
+	background-image: url('${IMAGE_FOLDER}/debug.png');
+	background-size: 16px 16px;		
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px;
+}
+#debugScript:active {
+	background-image: url('${IMAGE_FOLDER}/debug.png');
+	background-size: 10px 10px;		
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px;
+}
 #resumeScript {
 	background-image: url('${IMAGE_FOLDER}/resume.png');	
 	background-size: 16px 16px;	

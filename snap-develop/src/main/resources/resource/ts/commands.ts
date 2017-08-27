@@ -449,13 +449,22 @@ export module Command {
    }
    
    export function runScript() {
+      executeScript(false);
+   }
+   
+   export function debugScript() {
+      executeScript(true);
+   }
+   
+   function executeScript(debug) {
       saveFileWithAction(function() {
          var editorData = FileEditor.loadEditor();
          var message = {
             breakpoints : editorData.breakpoints,
             project : document.title,
             resource : editorData.resource.filePath,
-            source : editorData.source
+            source : editorData.source,
+            debug: debug ? true: false
          };
          EventBus.sendEvent("EXECUTE", message);
       }, true); // save editor

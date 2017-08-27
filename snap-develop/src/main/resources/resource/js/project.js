@@ -80,6 +80,10 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                 commands_1.Command.runScript();
                 e.preventDefault();
             });
+            $('#debugScript').on('click', function (e) {
+                commands_1.Command.debugScript();
+                e.preventDefault();
+            });
             $('#stopScript').on('click', function (e) {
                 commands_1.Command.stopScript();
                 e.preventDefault();
@@ -868,6 +872,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                             + "         <td><div id='deleteFile' title='Delete File'></div></td>"
                             + "         <td><div id='searchTypes' title='Search Types&nbsp;&nbsp;&nbsp;Ctrl+Shift+S'></div></td>"
                             + "         <td><div id='runScript' title='Run Script&nbsp;&nbsp;&nbsp;Ctrl+R'></div></td>"
+                            + "         <td><div id='debugScript' title='Debug Script&nbsp;&nbsp;&nbsp;Ctrl+B'></div></td>"
                             + "      </tr>"
                             + "      </table>"
                             + "   </td>"

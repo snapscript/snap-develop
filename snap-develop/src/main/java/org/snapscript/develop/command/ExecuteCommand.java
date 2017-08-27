@@ -18,4 +18,5 @@ public class ExecuteCommand implements Command {
    private String resource;
    private String system;
    private String source;
+   private boolean debug;
 }

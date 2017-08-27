@@ -113,6 +113,10 @@ export module FileExplorer {
          openTreeFile(resourcePath.resourcePath, function(){
             Command.runScript();
          });
+      } else if(commandName == "debugScript") {
+         openTreeFile(resourcePath.resourcePath, function(){
+            Command.debugScript();
+         });
       }else if(commandName == "newFile") {
          Command.newFile(resourcePath);
       }else if(commandName == "newDirectory") {

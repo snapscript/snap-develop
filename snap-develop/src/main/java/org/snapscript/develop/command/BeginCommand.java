@@ -14,4 +14,5 @@ public class BeginCommand implements Command {
    private String resource;
    private String process;
    private long duration;
+   private boolean debug;
 }
