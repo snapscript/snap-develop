@@ -34,7 +34,6 @@ public class FileCacheStore implements Store {
 
    @Override
    public InputStream getInputStream(String path) {
-      System.err.println(path);
       CacheInputStream stream = getTempInputStream(path);
       
       if(stream == null) {
