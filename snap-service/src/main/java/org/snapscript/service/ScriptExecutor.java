@@ -15,6 +15,7 @@ import org.snapscript.core.Context;
 import org.snapscript.core.ExpressionEvaluator;
 import org.snapscript.core.FilePathConverter;
 import org.snapscript.core.Model;
+import org.snapscript.core.Path;
 import org.snapscript.core.PathConverter;
 
 public class ScriptExecutor implements Callable<Context> {
@@ -29,7 +30,7 @@ public class ScriptExecutor implements Callable<Context> {
    public Context call() throws Exception {
       Store store = line.getStore();
       String evaluate = line.getEvaluation();
-      String script = line.getScript();
+      Path script = line.getScript();
       Model model = line.getModel();
       String module = DEFAULT_PACKAGE;
       
@@ -44,8 +45,10 @@ public class ScriptExecutor implements Callable<Context> {
       Executable executable = null;
       
       if(script != null) {
-         module = converter.createModule(script);
-         executable = compiler.compile(script);
+         String file = script.getPath();
+         
+         module = converter.createModule(file);
+         executable = compiler.compile(file);
       }
       if(evaluate != null) {
          ExpressionEvaluator evaluator = context.getEvaluator();

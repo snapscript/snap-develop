@@ -2,40 +2,35 @@ package org.snapscript.service;
 
 import java.io.File;
 
-import org.snapscript.common.store.FileStore;
 import org.snapscript.common.store.Store;
 import org.snapscript.core.Model;
+import org.snapscript.core.Path;
 
 public class CommandLine {
 
-   private final FileStore store;
-   private final File directory;
-   private final File classpath;
-   private final String script;
+   private final StoreBuilder builder;
    private final String evaluation;
+   private final File classpath;
+   private final Path script;
    private final Model model;
    
-   public CommandLine(Model model, File directory, File classpath, String script, String evaluation) {
-      this.store = new FileStore(directory);
+   public CommandLine(Model model, String root, File classpath, Path script, String evaluation) {
+      this.builder = new StoreBuilder(root, script);
       this.evaluation = evaluation;
       this.classpath = classpath;
-      this.directory = directory;
       this.script = script;
       this.model = model;
    }
    
    public void validate() {
-      if(!directory.exists()) {
-         throw new IllegalArgumentException("Could not find work directory " + directory);
-      }
       if(!classpath.exists()) {
          throw new IllegalArgumentException("Could not find classpath directory " + classpath);
       }
-      if(!directory.isDirectory()) {
-         throw new IllegalArgumentException("Work directory " + directory + " is not a directory");
-      }
       if(script != null) {
-         store.getInputStream(script);
+         String resource = script.getPath();
+         Store store = builder.create();
+         
+         store.getInputStream(resource);
       }
    }
    
@@ -44,18 +39,14 @@ public class CommandLine {
    }
    
    public Store getStore() {
-      return store;
+      return builder.create();
    }
    
    public File getClasspath() {
       return classpath;
    }
-
-   public File getDirectory() {
-      return directory;
-   }
-
-   public String getScript() {
+   
+   public Path getScript() {
       return script;
    }
 
