@@ -34,10 +34,11 @@ export module Profiler {
       }
       for(var i = 0; i < profileRecords.length; i++) {
          var profileRecord = profileRecords[i];
+         var sortableProfilerWidth = ('0000'+ profilerWidths[i]).slice(-4); // padd with leading zeros
          var resourcePath = FileTree.createResourcePath(profileRecord.resource);
          var displayName = "<div class='profilerRecord'>"+resourcePath.projectPath+"</div>";
-         var percentageBar = "<div style='padding: 2px;'><div style='height: 10px; background: #ed6761; width: "+profilerWidths[i]+"%;'></div></div>";
-         var averageTime = (profileRecord.count / profileRecord.time) / 1000; // average time in seconds
+         var percentageBar = "<!-- " + sortableProfilerWidth + " --><div style='padding: 2px;'><div style='height: 10px; background: #ed6761; width: "+profilerWidths[i]+"%;'></div></div>";
+         var averageTime = (profileRecord.time / profileRecord.count) / 1000; // average time in seconds
 
          profilerRecords.push({
             recid: profilerIndex++,

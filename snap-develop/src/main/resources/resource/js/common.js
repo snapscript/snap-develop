@@ -49,12 +49,13 @@ define(["require", "exports", "jquery"], function (require, exports, $) {
             if (grid) {
                 var scrollTop = $('#grid_' + name + '_records').prop('scrollTop');
                 var current = grid.records; // find the table
+                var sortData = grid.sortData;
                 if (update.length == current.length) {
                     var different = false;
                     for (var i = 0; i < update.length; i++) {
                         var currentRow = current[i];
                         var updateRow = update[i];
-                        if (currentRow.length != updateRow.length) {
+                        if (!currentRow || currentRow.length != updateRow.length) {
                             different = true;
                             break;
                         }
@@ -74,12 +75,12 @@ define(["require", "exports", "jquery"], function (require, exports, $) {
                         }
                     }
                     if (different) {
-                        grid.records = update;
+                        grid.records = sortRecords(update, sortData); // maintain the sort
                         grid.refresh();
                     }
                 }
                 else {
-                    grid.records = update;
+                    grid.records = sortRecords(update, sortData); // maintain the sort
                     grid.refresh();
                 }
                 if (update.length > current.length) {
@@ -89,6 +90,60 @@ define(["require", "exports", "jquery"], function (require, exports, $) {
             }
         }
         Common.updateTableRecords = updateTableRecords;
+        function sortRecords(records, sortData) {
+            if (sortData && sortData.length > 0) {
+                return sortOnSingleColumn(records, sortData[0].field, sortData[0].direction);
+            }
+            return records;
+        }
+        function sortOnMultipleColumns(records, columns, types) {
+            for (var i = columns.length - 1; i <= 0; i++) {
+                var type = types[i];
+                var column = columns[i];
+                if (type) {
+                    records = sortOnSingleColumn(records, column, type);
+                }
+                else {
+                    records = sortOnSingleColumn(records, column, 'asc');
+                }
+            }
+        }
+        function sortOnSingleColumn(records, column, type) {
+            var sortedRecords = [];
+            var sortGroups = {};
+            for (var i = 0; i < records.length; i++) {
+                var record = records[i];
+                if (record) {
+                    var columnToSort = record[column];
+                    var keyToSort = columnToSort.toLowerCase();
+                    var sortGroup = sortGroups[keyToSort];
+                    if (sortGroup == null) {
+                        sortGroup = [];
+                        sortGroups[keyToSort] = sortGroup;
+                    }
+                    sortGroup.push(record);
+                }
+            }
+            var sortedKeys = [];
+            for (var keyToSort in sortGroups) {
+                if (sortGroups.hasOwnProperty(keyToSort)) {
+                    sortedKeys.push(keyToSort);
+                }
+            }
+            sortedKeys.sort();
+            if (type != 'asc') {
+                sortedKeys.reverse();
+            }
+            for (var i = 0; i < sortedKeys.length; i++) {
+                var keyToSort = sortedKeys[i];
+                var sortGroup = sortGroups[keyToSort];
+                for (var j = 0; j < sortGroup.length; j++) {
+                    var record = sortGroup[j];
+                    sortedRecords.push(record);
+                }
+            }
+            return sortedRecords;
+        }
         function isChildElementVisible(parentElement, childElement) {
             var childRect = childElement.getBoundingClientRect();
             var parentRect = parentElement.getBoundingClientRect();

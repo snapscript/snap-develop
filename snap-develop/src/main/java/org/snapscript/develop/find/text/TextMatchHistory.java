@@ -2,6 +2,8 @@ package org.snapscript.develop.find.text;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.snapscript.common.Cache;
@@ -11,11 +13,11 @@ import org.snapscript.common.thread.ThreadPool;
 public class TextMatchHistory {
 
    private final Cache<String, ProjectHistory> cache; // reduce the set of files to look at
-   private final ThreadPool pool;
+   private final ScheduledExecutorService service;
    
    public TextMatchHistory(ThreadPool pool) {
       this.cache = new LeastRecentlyUsedCache<String, ProjectHistory>();
-      this.pool = pool;
+      this.service = new ScheduledThreadPoolExecutor(2);
    }
    
    public synchronized void saveMatches(TextMatchQuery query, Set<TextFile> matches) {
@@ -28,7 +30,7 @@ public class TextMatchHistory {
       }
       ExpiryTask task = new ExpiryTask(query);
       
-      pool.schedule(task, 10, TimeUnit.SECONDS); // clear the cache entry in 10 seconds
+      service.schedule(task, 10, TimeUnit.SECONDS); // clear the cache entry in 10 seconds
       history.put(query, matches);
    }
    

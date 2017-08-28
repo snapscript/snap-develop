@@ -1067,11 +1067,12 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                         field: 'resource',
                         caption: 'Resource',
                         size: '40%',
-                        sortable: false
+                        sortable: true
                     }, {
                         field: 'percentage',
                         caption: 'Percentage',
-                        size: '15%'
+                        size: '15%',
+                        sortable: true
                     }, {
                         field: 'line',
                         caption: 'Line',
@@ -1079,18 +1080,22 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                     }, {
                         field: 'count',
                         caption: 'Count',
-                        size: '10%'
+                        size: '10%',
+                        sortable: true
                     }, {
                         field: 'duration',
                         caption: 'Duration',
                         size: '10%',
-                        sortable: false
+                        sortable: true
                     }, {
                         field: 'average',
                         caption: 'Average',
                         size: '10%',
-                        sortable: false
+                        sortable: true
                     }],
+                sortData: [
+                    { field: 'percentage', direction: 'dsc' }
+                ],
                 onClick: function (event) {
                     var grid = this;
                     event.onComplete = function () {

@@ -39,7 +39,7 @@ public class ScriptExecutor implements Callable<Context> {
          System.exit(0);
       }
       PathConverter converter = new FilePathConverter();
-      Executor executor = new ThreadPool(6);
+      Executor executor = new ThreadPool(8);
       Context context = new StoreContext(store, executor);
       Compiler compiler = new ResourceCompiler(context);
       Executable executable = null;
