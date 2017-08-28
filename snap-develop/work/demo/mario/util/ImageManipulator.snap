@@ -1,5 +1,6 @@
 import static awt.Image.*;
 
+import util.concurrent.ConcurrentHashMap;
 import awt.Graphics;
 import awt.Graphics2D;
 import awt.Image;
@@ -16,25 +17,30 @@ import imageio.ImageIO;
  * Provides a set of methods used to modify a BufferedImage.
  * 
  */
-class ImageManipulator {
+module ImageManipulator {
+
+   const cache: Map = new ConcurrentHashMap();
    
    /** Reads in a BufferedImage using the standard ImageIO.read() */
-   public static loadImage(filename: String): BufferedImage {
-      var img: BufferedImage = null;
+   public loadImage(filename: String): BufferedImage {
+      var img: BufferedImage = cache.get(filename);
       try {
-          img = ImageIO.read(loadResource(filename));
+         if(img == null) {
+            img = ImageIO.read(loadResource(filename));
+            cache.put(filename, img);
+          }
       } catch (e: Exception) { 
          e.printStackTrace();
       }
       return img;
    } 
    
-   private static loadResource(filename: String) {
+   private loadResource(filename: String) {
       return ImageManipulator.class.getModule()
                .getContext().getManager().getInputStream(filename);
     }
    
-   public static scaleImage(img: BufferedImage, factor: Integer): BufferedImage {
+   public scaleImage(img: BufferedImage, factor: Integer): BufferedImage {
       if(factor.compareTo(1) != 0) {
          var w: Integer = img.getWidth();   
          var h: Integer = img.getHeight();  
@@ -51,7 +57,7 @@ class ImageManipulator {
    }
 
    /** Horizontally flips img. */
-   public static horizontalFlip(img: BufferedImage): BufferedImage {   
+   public horizontalFlip(img: BufferedImage): BufferedImage {   
         var w: Integer = img.getWidth();   
         var h: Integer = img.getHeight();   
         var dimg: BufferedImage = new BufferedImage(w, h, img.getColorModel().getTransparency());     
@@ -62,7 +68,7 @@ class ImageManipulator {
     }  
    
    /** Vertically flips img. */
-   public static verticalFlip(img: BufferedImage): BufferedImage {   
+   public verticalFlip(img: BufferedImage): BufferedImage {   
         var w: Integer = img.getWidth();   
         var h: Integer = img.getHeight();   
         var dimg: BufferedImage = new BufferedImage(w, h, img.getColorModel().getTransparency());   
