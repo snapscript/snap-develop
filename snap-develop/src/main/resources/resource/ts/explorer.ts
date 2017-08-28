@@ -1,7 +1,7 @@
 import * as $ from "jquery"
 import * as w2ui from "w2ui"
 import {ace} from "ace"
-import {saveAs} from "filesaver"
+//import {saveAs} from "filesaver"
 import {Common} from "common"
 import {EventBus} from "socket"
 import {FileTree} from "tree"
@@ -34,16 +34,34 @@ export module FileExplorer {
       var filePath = resourcePath.toLowerCase();
       
       if(Common.stringEndsWith(filePath, ".json") || Common.stringEndsWith(filePath, ".js")) { // is it json or javascript
-         $.get(resourcePath, function(response) {
-            handleOpenTreeFile(resourcePath, afterLoad, response);
-         }, "text").fail(function() {
-            handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath);
+         //var type = header.getResponseHeader("content-type");
+         
+         $.ajax({
+            url: resourcePath, 
+            type: "get",
+            dataType: 'text',
+            success: function(response, status, header) {
+               var contentType = header.getResponseHeader("content-type");
+               handleOpenTreeFile(resourcePath, afterLoad, response, contentType, resourcePath);
+            },
+            error: function(response) {
+               var type = header.getResponseHeader("content-type");
+               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath, "text/plain", resourcePath);
+            },
+            async: false
          });
       } else {
-         $.get(resourcePath, function(response) {
-            handleOpenTreeFile(resourcePath, afterLoad, response);
-         }).fail(function() {
-            handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath);
+         $.ajax({
+            url: resourcePath,
+            type: "get",
+            success: function(response, status, header) {
+               var contentType = header.getResponseHeader("content-type");
+               handleOpenTreeFile(resourcePath, afterLoad, response, contentType, resourcePath);
+            },
+            error: function(response) {
+               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath, "text/plain", resourcePath);
+            },
+            async: false
          });
       }
    }
@@ -54,41 +72,45 @@ export module FileExplorer {
       //var backupUrl = backupResourcePath + "?time=" + timeStamp;
       
       if(Common.stringEndsWith(filePath, ".json") || Common.stringEndsWith(filePath, ".js")) { // is it json or javascript
+         var downloadURL = backupResourcePath + "?time=" + timeStamp;
          $.ajax({
-            url: backupResourcePath + "?time=" + timeStamp,
+            url: downloadURL,
             type: "get",
-            success: function (response) {
-               handleOpenTreeFile(resourcePath, afterLoad, response);
+            dataType: 'text',
+            success: function (response, status, header) {
+               var contentType = header.getResponseHeader("content-type");
+               handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL);
             },
             error: function (response) {
-               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath);
+               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath, "text/plain", downloadURL);
             },
             async: false
          });
       } else {
+         var downloadURL = backupResourcePath + "?time=" + timeStamp;
          $.ajax({
-            url: backupResourcePath + "?time=" + timeStamp,
+            url: downloadURL,
             type: "get",            
-            success: function (response) {
-               handleOpenTreeFile(resourcePath, afterLoad, response);
+            success: function (response, status, header) {
+               var contentType = header.getResponseHeader("content-type");
+               handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL);
             },
             error: function (response) {
-               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath);
+               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath, "text/plain", downloadURL);
             },
             async: false
          });
       }
    }
    
-   function handleOpenTreeFile(resourcePath, afterLoad, response) {
-      var mode = FileEditor.resolveEditorMode(resourcePath);
-      
-      if(mode == null) {
-         var resourceBlob = new Blob([response], {type: "application/octet-stream"});
-         var resourceFile = resourcePath.replace(/.*\//, "");
-         
-         saveAs(resourceBlob, resourceFile);
+   function handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL) {
+      if(isImageFileType(contentType)) {
+         handleOpenFileInNewTab(downloadURL);
+      } else if(isBinaryFileType(contentType)) {
+         handleDownloadFile(downloadURL);
       } else {
+         var mode = FileEditor.resolveEditorMode(resourcePath);
+         
          if(FileEditor.isEditorChanged()) {
             var editorData = FileEditor.loadEditor();
             var editorResource = editorData.resource;
@@ -106,6 +128,46 @@ export module FileExplorer {
          }
       }
       afterLoad();
+   }
+   
+   function handleOpenFileInNewTab(downloadURL) {
+      var newTab = window.open(downloadURL, '_blank');
+      newTab.focus();
+    }
+   
+   function handleDownloadFile(downloadURL) {
+      window.location.href = downloadURL;
+    }
+   
+   function isImageFileType(contentType) {
+      if(contentType) {
+         if(Common.stringStartsWith(contentType, "image")) {
+            return true;
+         }
+      }
+      return false;
+   }
+   
+   function isBinaryFileType(contentType) {
+      if(contentType) {
+         if(contentType == "application/json") {
+            return false;
+         }
+         if(contentType == "application/x-javascript") {
+            return false;
+         }
+         if(Common.stringStartsWith(contentType, "application")) {
+            return true;
+         }
+         if(Common.stringStartsWith(contentType, "image")) {
+            return true;
+         }
+         if(Common.stringStartsWith(contentType, "text")) {
+            return false;
+         }
+         return true; // unknown
+      }
+      return false;
    }
    
    function handleTreeMenu(resourcePath, commandName, elementId, isDirectory) {

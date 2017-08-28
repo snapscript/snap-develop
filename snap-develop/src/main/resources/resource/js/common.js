@@ -172,12 +172,19 @@ define(["require", "exports", "jquery"], function (require, exports, $) {
         }
         Common.calculateScrollOffset = calculateScrollOffset;
         function stringEndsWith(text, token) {
-            if (text && token) {
+            if (text && token && text.length >= token.length) {
                 return text.slice(-token.length) == token;
             }
             return false;
         }
         Common.stringEndsWith = stringEndsWith;
+        function stringStartsWith(text, token) {
+            if (text && token && text.length >= token.length) {
+                return text.substring(0, token.length) === token;
+            }
+            return false;
+        }
+        Common.stringStartsWith = stringStartsWith;
         function isMacintosh() {
             return navigator.platform.indexOf('Mac') > -1;
         }

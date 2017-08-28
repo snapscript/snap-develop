@@ -68,6 +68,18 @@
         <entry key=".*.vm" value="text/html" />
         <entry key=".*.html" value="text/html" />
         <entry key=".*.png" value="image/png" />
+        <entry key=".*.txt" value="text/plain" />
+        <entry key=".*.md" value="text/plain" />
+        <entry key=".*.java" value="text/plain" />
+        <entry key=".*.sh" value="text/plain" />
+        <entry key=".*.kt" value="text/plain" />
+        <entry key=".*.bat" value="text/plain" />
+        <entry key=".*.log" value="text/plain" />
+        <entry key=".*.properties" value="text/plain" />
+        <entry key=".*.xml" value="text/xml" />
+        <entry key=".*.htm" value="text/html" />
+        <entry key=".*.sql" value="text/sql" />
+        <entry key=".*.gitignore" value="text/plain" />
         <entry key=".*.jpg" value="image/png" />
         <entry key=".*.gif" value="image/gif" />
         <entry key=".*.css" value="text/css" />
@@ -247,7 +259,7 @@
       <list>
         <value>org.snapscript.</value>
         <value>/grammar.txt</value>
-        <value>/import.txt</value>        
+        <value>/import.txt</value>
       </list>
     </constructor-arg>
   </bean>

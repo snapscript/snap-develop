@@ -193,8 +193,15 @@ export module Common {
   }
    
    export function stringEndsWith(text, token) {
-      if(text && token) {
+      if(text && token && text.length >= token.length) {
          return text.slice(-token.length) == token;
+      }
+      return false;
+   }
+   
+   export function stringStartsWith(text, token) {
+      if(text && token && text.length >= token.length) {
+         return text.substring(0, token.length) === token;
       }
       return false;
    }
