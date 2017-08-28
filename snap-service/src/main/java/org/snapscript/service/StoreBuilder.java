@@ -36,6 +36,11 @@ public class StoreBuilder {
    
    private Store createRemoteStore() {
       try {
+         String location = root.toLowerCase();
+         
+         if(!location.startsWith("http:") && !location.startsWith("https:")) {
+            throw new IllegalStateException("Resource '" + location + "' is not a url");
+         }
          URI file = new URI(root);
          Store delegate = new RemoteStore(file);
          return new FileCacheStore(delegate, script, root);

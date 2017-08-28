@@ -14,34 +14,36 @@ public class BreakpointMatcher {
    
    public void update(Map<String, Map<Integer, Boolean>> breakpoints) {
       Set[] copy = new Set[1024];
-      Set<String> resources = breakpoints.keySet();
       
-      for(String resource : resources) {
-         Map<Integer, Boolean> locations = breakpoints.get(resource);
-         Set<Integer> lines = locations.keySet();
+      if(breakpoints != null) {
+         Set<String> resources = breakpoints.keySet();
          
-         for(Integer line : lines) {
-            Boolean enabled = locations.get(line); 
-                  
-            if(enabled.booleanValue()) {
-               if(line > copy.length) {
-                  Set[] temp = new Set[line * 2];
-                  
-                  for(int i = 0; i < copy.length; i++) {
-                     temp[i] = copy[i];
+         for(String resource : resources) {
+            Map<Integer, Boolean> locations = breakpoints.get(resource);
+            
+            if(locations != null) {
+               Set<Integer> lines = locations.keySet();
+               
+               for(Integer line : lines) {
+                  Boolean enabled = locations.get(line); 
+                        
+                  if(enabled != null && enabled.booleanValue()) {
+                     if(line > copy.length) {
+                        copy = copyOf(copy, line * 2);
+                     }
+                     Set set = copy[line];
+                     
+                     if(set == null) {
+                        set = new HashSet();
+                        copy[line] = set;
+                     }
+                     String module = ResourceExtractor.extractModule(resource);
+                     
+                     set.add(module); // add module 
+                     set.add(resource); // add module resource file
+                     
                   }
-                  copy = temp;
                }
-               Set set = copy[line];
-               
-               if(set == null) {
-                  set = new HashSet();
-                  copy[line] = set;
-               }
-               String module = ResourceExtractor.extractModule(resource);
-               
-               set.add(module); // add module 
-               set.add(resource); // add module resource file
             }
          }
       }
@@ -59,5 +61,11 @@ public class BreakpointMatcher {
          }
       }
       return false;
+   }
+   
+   private Set[] copyOf(Set[] array, int newSize) {
+      Set[] copy = new Set[newSize];
+      System.arraycopy(array, 0, copy, 0, Math.min(newSize, array.length));
+      return copy;
    }
 }

@@ -170,7 +170,7 @@ class Animation {
      * This is used in update to get the end time of the current frame.
      */
     private getFrame(i: Integer): {} {
-        return frames.get(i);
+        return frames[i];
     }
 
 }

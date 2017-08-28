@@ -145,15 +145,27 @@ class GamePanel extends JPanel with Runnable {
       
       running = true;
       while(running) {
-         if(!gameFreeze) {
-            gameAction();
-         }
-         
+         timeAction(-> {
+            if(!gameFreeze) {
+               gameAction();
+            }
+         });
          try {
             Thread.sleep(period);
          } catch(e: InterruptedException){}
       }
       System.exit(0); // so enclosing JFrame/JApplet exits
+   }
+   
+   private timeAction(action: ()) {
+      var start = System.currentTimeMillis();
+      
+      try {
+         action();
+      }finally {
+         var finish = System.currentTimeMillis();
+         println(finish - start);
+      }
    }
    
    /**
