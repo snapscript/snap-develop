@@ -1,1 +1,9 @@
-println(new URI("."));
+class Foo{
+}
+class Bar{
+}
+function func(): Bar{
+   return new Foo();
+}
+var f = func();
+assert f.class == Foo.class;

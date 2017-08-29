@@ -51,6 +51,7 @@ public class FileCacheStore implements Store {
                      while((count = remote.read(data)) != -1){
                         output.write(data, 0, count);
                      }
+                     System.out.println("downloaded: " + path);
                      output.close();
                   } finally {
                      remote.close();

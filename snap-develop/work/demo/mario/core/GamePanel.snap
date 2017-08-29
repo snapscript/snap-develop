@@ -145,27 +145,25 @@ class GamePanel extends JPanel with Runnable {
       
       running = true;
       while(running) {
-         timeAction(-> {
-            if(!gameFreeze) {
-               gameAction();
-            }
-         });
+         var start: Long = System.currentTimeMillis();
+      
+         if(!gameFreeze) {
+            gameAction();
+         }
+         var finish: Long = System.currentTimeMillis();
+         var duration: Long = finish - start;
+         var slip: Long = Math.max(0, duration - 8);
+         
          try {
-            Thread.sleep(period);
+            var wait = period - slip;
+            
+            if(wait > 0) {
+               Thread.sleep(wait);
+            }
+            println(duration);
          } catch(e: InterruptedException){}
       }
       System.exit(0); // so enclosing JFrame/JApplet exits
-   }
-   
-   private timeAction(action: ()) {
-      var start = System.currentTimeMillis();
-      
-      try {
-         action();
-      }finally {
-         var finish = System.currentTimeMillis();
-         println(finish - start);
-      }
    }
    
    /**
