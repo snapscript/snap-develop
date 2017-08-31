@@ -8,12 +8,12 @@ public enum CommandType {
    PRINT_OUTPUT(PrintOutputCommandMarshaller.class, PrintOutputCommand.class, PROCESS),
    PRINT_ERROR(PrintErrorCommandMarshaller.class, PrintErrorCommand.class, PROCESS),
    EXECUTE(ExecuteCommandMarshaller.class, ExecuteCommand.class, CLIENT),
-   SAVE(SaveCommandMarshaller.class, SaveCommand.class, CommandOrigin.CLIENT),
-   RENAME(RenameCommandMarshaller.class, RenameCommand.class, CommandOrigin.CLIENT),   
-   EXPLORE(ExploreCommandMarshaller.class, ExploreCommand.class, CommandOrigin.CLIENT),
-   DELETE(DeleteCommandMarshaller.class, DeleteCommand.class, CommandOrigin.CLIENT),
+   SAVE(SaveCommandMarshaller.class, SaveCommand.class, CLIENT),
+   RENAME(RenameCommandMarshaller.class, RenameCommand.class, CLIENT),   
+   EXPLORE(ExploreCommandMarshaller.class, ExploreCommand.class, CLIENT),
+   DELETE(DeleteCommandMarshaller.class, DeleteCommand.class, CLIENT),
    RELOAD_TREE(ReloadTreeCommandMarshaller.class, ReloadTreeCommand.class, ENGINE),
-   BREAKPOINTS(BreakpointsCommandMarshaller.class, BreakpointsCommand.class, CommandOrigin.CLIENT),
+   BREAKPOINTS(BreakpointsCommandMarshaller.class, BreakpointsCommand.class, CLIENT),
    TERMINATE(TerminateCommandMarshaller.class, TerminateCommand.class, ENGINE),
    EXIT(ExitCommandMarshaller.class, ExitCommand.class, PROCESS),
    STOP(StopCommandMarshaller.class, StopCommand.class, CLIENT),
@@ -30,7 +30,8 @@ public enum CommandType {
    PING(PingCommandMarshaller.class, PingCommand.class, CLIENT),
    FOLDER_EXPAND(FolderExpandCommandMarshaller.class, FolderExpandCommand.class, CLIENT),
    FOLDER_COLLAPSE(FolderCollapseCommandMarshaller.class, FolderCollapseCommand.class, CLIENT),
-   DISPLAY_UPDATE(DisplayUpdateCommandMarshaller.class, DisplayUpdateCommand.class, CLIENT);
+   DISPLAY_UPDATE(DisplayUpdateCommandMarshaller.class, DisplayUpdateCommand.class, CLIENT),
+   UPLOAD(UploadCommandMarshaller.class, UploadCommand.class, CLIENT);
    
    public final Class<? extends CommandMarshaller> marshaller;
    public final Class<? extends Command> command;

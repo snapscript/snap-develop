@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.simpleframework.common.encode.Base64Encoder;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.socket.FrameChannel;
 import org.snapscript.agent.log.ProcessLogger;
@@ -93,6 +94,36 @@ public class CommandListener {
       }
    }
    
+   public void onUpload(UploadCommand command) {
+      Boolean dragAndDrop = command.getDragAndDrop();
+      String to = command.getTo();
+      String name = command.getName();
+      String project = command.getProject();
+      
+      try {
+         if(Boolean.TRUE.equals(dragAndDrop)) {
+            processLogger.info("Drag and drop file: " + name + " to: " + to);
+         }
+         File file = new File(root, to);
+         boolean exists = file.exists();
+         
+         if(exists) {
+            backupManager.backupFile(file, project);
+         }
+         String text = command.getData();
+         char[] source = text.toCharArray();
+         byte[] data = Base64Encoder.decode(source);
+               
+         backupManager.saveFile(file, data);
+            
+         if(!exists) {
+            commandClient.sendReloadTree();
+         }
+      } catch(Exception e) {
+         processLogger.info("Error saving " + to, e);
+      }
+   }
+   
    public void onSave(SaveCommand command) {
       String resource = command.getResource();
       String source = command.getSource();
@@ -149,7 +180,7 @@ public class CommandListener {
          File fromFile = new File(root, "/" + from);
          File toFile = new File(root, "/" + to); 
          
-         if(!fromFile.equals(root)) { // don't rename root
+         if(!fromFile.equals(root) && toFile.getParentFile().isDirectory()) { // don't rename root
             boolean fromExists = fromFile.exists();
             boolean toExists = toFile.exists();
             

@@ -58,116 +58,190 @@ export module FileTree {
    }
    
    function showFancyTree(id, dragAndDrop, treeMenuHandler, clickCallback) {
-      var dnd = {
-         autoExpandMS: 400,
-         focusOnClick: true,
-         preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-         preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
-         dragStart: function(node, data) {
-           /** This function MUST be defined to enable dragging for the tree.
-            *  Return false to cancel dragging of node.
-            */
-           return true;
-         },
-         dragEnter: function(node, data) {
-           /** data.otherNode may be null for non-fancytree droppables.
-            *  Return false to disallow dropping on node. In this case
-            *  dragOver and dragLeave are not called.
-            *  Return 'over', 'before, or 'after' to force a hitMode.
-            *  Return ['before', 'after'] to restrict available hitModes.
-            *  Any other return value will calc the hitMode from the cursor position.
-            */
-           // Prevent dropping a parent below another parent (only sort
-           // nodes under the same parent)
-           /* if(node.parent !== data.otherNode.parent){
-             return false;
-           }
-           // Don't allow dropping *over* a node (would create a child)
-           return ["before", "after"];
-           */
-            if(typeof Command !== 'undefined') {
-               return Command.isDragAndDropFilePossible({
-                  name: data.otherNode.key,
-                  folder: data.otherNode.folder == true
-               }, {
-                  name: node.key,
-                  folder: node.folder == true
-               });
-            }
-            return false;
-         },
-         dragDrop: function(node, data) {
-           /** This function MUST be defined to enable dropping of items on
-            *  the tree.
-            */
-           //data.otherNode.moveTo(node, data.hitMode); 
-            
-            if(typeof Command !== 'undefined') {
-               Command.dragAndDropFile({
-                  name: data.otherNode.key,
-                  folder: data.otherNode.folder == true
-               }, {
-                  name: node.key,
-                  folder: node.folder == true
-               });
-            }
-         }
-       };
-       
        // using default options
+       // https://github.com/mar10/fancytree/blob/master/demo/sample-events.html
        $('#' + id).fancytree({
          //autoScroll: true,
-         extensions: dragAndDrop ? ["dnd"] : [],
+         //extensions: dragAndDrop ? ["dnd"] : [],
          click : clickCallback,
          expand: function(event, data) {
             if(typeof Command !== 'undefined') {
                Command.folderExpand(data.node.key);
+               setTimeout(function() {
+                  addTreeMenuHandler(id, treeMenuHandler);
+                  addDragAndDropHandlers(id);
+               }, 10);
             }
          },
          collapse: function(event, data) {
             if(typeof Command !== 'undefined') {
                Command.folderCollapse(data.node.key);
+               setTimeout(function() {
+                  addTreeMenuHandler(id, treeMenuHandler);
+                  addDragAndDropHandlers(id);
+               }, 10);
             }
          },
-         dnd: (dragAndDrop ? dnd : null)         
+         init: function(event, data, flag) {
+            addTreeMenuHandler(id, treeMenuHandler);
+            addDragAndDropHandlers(id);
+         }  
       });
-      if(treeMenuHandler != null) {
-          $("#" + id).contextmenu({
-               delegate: "span.fancytree-title",
-               menu: [
-                   {title: "&nbsp;New", uiIcon: "menu-new", children: [
-                      {title: "&nbsp;File", cmd: "newFile", uiIcon: "menu-new"},
-                      {title: "&nbsp;Directory", cmd: "newDirectory", uiIcon: "menu-new"}
-                      ]},              
-                   {title: "&nbsp;Save", cmd: "saveFile", uiIcon: "menu-save"}, 
-                   {title: "&nbsp;Rename", cmd: "renameFile", uiIcon: "menu-rename"},                       
-                   {title: "&nbsp;Delete", cmd: "deleteFile", uiIcon: "menu-trash", disabled: false },
-                   {title: "&nbsp;Run", cmd: "runScript", uiIcon: "menu-run"},
-                   {title: "&nbsp;Debug", cmd: "debugScript", uiIcon: "menu-debug"},
-                   {title: "&nbsp;Explore", cmd: "exploreDirectory", uiIcon: "menu-explore"} //,              
-                   //{title: "----"},
-                   //{title: "Edit", cmd: "edit", uiIcon: "ui-icon-pencil", disabled: true },
-                   //{title: "Delete", cmd: "delete", uiIcon: "ui-icon-trash", disabled: true }
-                   ],
-               beforeOpen: function(event, ui) {
-                 var node = $.ui.fancytree.getNode(ui.target);
-                 node.setActive();
-                 var $menu = ui.menu,
-                 $target = ui.target,
-                 extraData = ui.extraData; // passed when menu was opened by call to open()
+
+   }
    
-                 ui.menu.zIndex( $(event.target).zIndex() + 2000);
-               },
-               select: function(event, ui) {
-                 var node = $.ui.fancytree.getNode(ui.target);
-                 var resourcePath = createResourcePath(node.tooltip);
-                 var commandName = ui.cmd;
-                 var elementId = ui.key;
-                 
-                 treeMenuHandler(resourcePath, commandName, elementId, node.isFolder());
+   function addDragAndDropHandlers(id) {
+      var explorerTree = document.getElementById(id);
+      var folders = Common.getElementsByClassName(explorerTree, 'fancytree-folder');
+      
+      for(var i = 0; i < folders.length; i++) {
+         let child = folders[i];
+         
+         $(child).on("dragenter", function(event) {
+            $(child).find('.fancytree-title').addClass("treeFolderDragOver");
+         }).on("dragleave", function(event) {
+            $(child).find('.fancytree-title').removeClass("treeFolderDragOver");
+         }).on("drop", function (event) {
+            var folderElement = $(child).find('.fancytree-title');
+            var dataTransfer = event.target.dataTransfer || event.originalEvent.dataTransfer;
+            var target = event.target || event.currentTarger;
+            var fromPath = dataTransfer.getData("resource");
+            var folderPath = $(folderElement).attr("title");
+            
+            $(folderElement).removeClass("treeFolderDragOver");
+            event.stopPropagation();
+            event.preventDefault();
+            
+            if(fromPath) {
+               var toPath = {
+                     resource: folderPath,
+                     folder: isTreeNodeFolder(target)
                }
-          });         
+               handleNodeDroppedOverFolder(event, JSON.parse(fromPath), toPath);
+            }else {
+               handleFileDroppedOverFolder(event, folderPath);
+            }
+        }).on('dragover',function(event){
+            event.preventDefault();
+        });
+        updateNodesAsDraggable(explorerTree);
+      }  
+   }
+   
+   function updateNodesAsDraggable(nodeElement) {
+      var childNodes = Common.getElementsByClassName(nodeElement, 'fancytree-node');
+      
+      for(var i = 0; i < childNodes.length; i++) {
+         let childNode = childNodes[i];
+         
+         if(childNode){
+            childNode.setAttribute("draggable", "true");
+            $(childNode).on('dragstart',function(event){
+               var dataTransfer = event.target.dataTransfer || event.originalEvent.dataTransfer
+               var target = event.target || event.currentTarger;
+               var titleNodes = Common.getElementsByClassName(childNode, 'fancytree-title');
+               
+               if(titleNodes && titleNodes.length > 0) {
+                  var titleNode = titleNodes[0];
+                  
+                  dataTransfer.setData("resource", JSON.stringify({
+                     resource: titleNode.getAttribute("title"),
+                     folder: isTreeNodeFolder(target) // this does not work
+                  }));
+               }
+            })
+         }
+      }  
+   }
+   
+   function addTreeMenuHandler(id, treeMenuHandler) {
+      if(treeMenuHandler != null) {
+         $("#" + id).contextmenu({
+              delegate: "span.fancytree-title",
+              menu: [
+                  {title: "&nbsp;New", uiIcon: "menu-new", children: [
+                     {title: "&nbsp;File", cmd: "newFile", uiIcon: "menu-new"},
+                     {title: "&nbsp;Directory", cmd: "newDirectory", uiIcon: "menu-new"}
+                     ]},              
+                  {title: "&nbsp;Save", cmd: "saveFile", uiIcon: "menu-save"}, 
+                  {title: "&nbsp;Rename", cmd: "renameFile", uiIcon: "menu-rename"},                       
+                  {title: "&nbsp;Delete", cmd: "deleteFile", uiIcon: "menu-trash", disabled: false },
+                  {title: "&nbsp;Run", cmd: "runScript", uiIcon: "menu-run"},
+                  {title: "&nbsp;Debug", cmd: "debugScript", uiIcon: "menu-debug"},
+                  {title: "&nbsp;Explore", cmd: "exploreDirectory", uiIcon: "menu-explore"} //,              
+                  //{title: "----"},
+                  //{title: "Edit", cmd: "edit", uiIcon: "ui-icon-pencil", disabled: true },
+                  //{title: "Delete", cmd: "delete", uiIcon: "ui-icon-trash", disabled: true }
+                  ],
+              beforeOpen: function(event, ui) {
+                var node = $.ui.fancytree.getNode(ui.target);
+                node.setActive();
+                var $menu = ui.menu,
+                $target = ui.target,
+                extraData = ui.extraData; // passed when menu was opened by call to open()
+  
+                ui.menu.zIndex( $(event.target).zIndex() + 2000);
+              },
+              select: function(event, ui) {
+                var node = $.ui.fancytree.getNode(ui.target);
+                var resourcePath = createResourcePath(node.tooltip);
+                var commandName = ui.cmd;
+                var elementId = ui.key;
+                
+                treeMenuHandler(resourcePath, commandName, elementId, node.isFolder());
+              }
+         });         
+     }
+   }
+
+   function handleFileDroppedOverFolder(dropEvent, folderPath) {
+      var droppedFiles = dropEvent.target.files || dropEvent.originalEvent.dataTransfer.files || dropEvent.dataTransfer.files;
+
+      if(droppedFiles) {
+         // process all File objects
+         for (var i = 0; i < droppedFiles.length; i++) {
+            var droppedFile = droppedFiles[i];
+            
+            if(isAdvancedFileUpload()) {
+               console.log("file="+droppedFile.name+" folder=" + folderPath);
+               
+               var reader = new FileReader();
+               
+               reader.onload = function (event) {
+                  var encodedFile = encodeFileArrayBufferAsBase64(event.target.result);
+                  Command.uploadFileTo(droppedFile.name, folderPath, encodedFile);
+               };
+               reader.readAsArrayBuffer(droppedFile);
+            } 
+         }
       }
+   }
+   
+   function handleNodeDroppedOverFolder(dropEvent, fromPath, toPath) {
+      Command.dragAndDropFile(fromPath, toPath);
+   }
+   
+   function isTreeNodeFolder(nodeElement) {
+      var folders = $(nodeElement).filter('.fancytree-folder');
+      if(folders) {
+         return folders.length > 0;
+      }
+      return false;
+   }
+   
+   function encodeFileArrayBufferAsBase64(fileAsArrayBuffer) {
+      var binary = '';
+      var bytes = new Uint8Array(fileAsArrayBuffer);
+      var length = bytes.byteLength;
+      for (var i = 0; i < length; i++) {
+          binary += String.fromCharCode(bytes[ i ]);
+      }
+      return window.btoa(binary);
+   }
+   
+   function isAdvancedFileUpload() {
+      var div = document.createElement('div');
+      return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
    }
    
    export function isResourceFolder(path) {

@@ -144,6 +144,24 @@ define(["require", "exports", "jquery"], function (require, exports, $) {
             }
             return sortedRecords;
         }
+        function getElementsByClassName(element, className) {
+            var matches = [];
+            function traverse(node) {
+                for (var i = 0; i < node.childNodes.length; i++) {
+                    if (node.childNodes[i].childNodes.length > 0) {
+                        traverse(node.childNodes[i]);
+                    }
+                    if (node.childNodes[i].getAttribute && node.childNodes[i].getAttribute('class')) {
+                        if (node.childNodes[i].getAttribute('class').split(" ").indexOf(className) >= 0) {
+                            matches.push(node.childNodes[i]);
+                        }
+                    }
+                }
+            }
+            traverse(element);
+            return matches;
+        }
+        Common.getElementsByClassName = getElementsByClassName;
         function isChildElementVisible(parentElement, childElement) {
             var childRect = childElement.getBoundingClientRect();
             var parentRect = parentElement.getBoundingClientRect();

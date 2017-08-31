@@ -55,6 +55,8 @@ public class CommandController implements FrameListener {
                listener.onFolderCollapse((FolderCollapseCommand)command);
             } else if(command instanceof DisplayUpdateCommand) {
                listener.onDisplayUpdate((DisplayUpdateCommand)command);
+            } else if(command instanceof UploadCommand) {
+               listener.onUpload((UploadCommand)command);
             }
          } else if(type == FrameType.PONG){
             listener.onPing();

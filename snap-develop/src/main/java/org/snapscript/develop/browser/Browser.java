@@ -10,6 +10,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
+// below is drag an drop
+//https://docs.oracle.com/javase/8/javafx/events-tutorial/hellodraganddropjava.htm#CHDEAEAI
 public class Browser extends Region {
 
    private final BrowserContext context;

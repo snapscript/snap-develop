@@ -245,14 +245,29 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
             }
         }
         Command.pingProcess = pingProcess;
+        function uploadFileTo(fileName, uploadToPath, encodedFile) {
+            var destinationPath = tree_1.FileTree.createResourcePath(uploadToPath);
+            var toPath = tree_1.FileTree.cleanResourcePath(destinationPath.filePath + "/" + fileName);
+            console.log("source: " + fileName + " destination: " + toPath);
+            var message = {
+                project: document.title,
+                name: fileName,
+                to: toPath,
+                data: encodedFile,
+                dragAndDrop: true
+            };
+            socket_1.EventBus.sendEvent("UPLOAD", message);
+        }
+        Command.uploadFileTo = uploadFileTo;
         function isDragAndDropFilePossible(fileToMove, moveTo) {
-            return moveTo.folder; // only move files and folders to different folders
+            //return moveTo.folder; // only move files and folders to different folders
+            return true;
         }
         Command.isDragAndDropFilePossible = isDragAndDropFilePossible;
         function dragAndDropFile(fileToMove, moveTo) {
             if (isDragAndDropFilePossible(fileToMove, moveTo)) {
-                var originalPath = tree_1.FileTree.createResourcePath(fileToMove.name);
-                var destinationPath = tree_1.FileTree.createResourcePath(moveTo.name);
+                var originalPath = tree_1.FileTree.createResourcePath(fileToMove.resource);
+                var destinationPath = tree_1.FileTree.createResourcePath(moveTo.resource);
                 var fromPath = tree_1.FileTree.cleanResourcePath(originalPath.filePath);
                 var toPath = tree_1.FileTree.cleanResourcePath(destinationPath.filePath + "/" + originalPath.fileName);
                 console.log("source: " + fromPath + " destination: " + toPath);

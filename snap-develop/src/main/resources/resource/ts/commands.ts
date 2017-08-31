@@ -278,14 +278,31 @@ export module Command {
       }
    }
    
+   export function uploadFileTo(fileName, uploadToPath, encodedFile) {
+      var destinationPath = FileTree.createResourcePath(uploadToPath);
+      var toPath = FileTree.cleanResourcePath(destinationPath.filePath + "/" + fileName);
+      
+      console.log("source: " + fileName + " destination: " + toPath);
+      
+      var message = {
+         project : document.title,   
+         name : fileName,
+         to: toPath,
+         data: encodedFile,
+         dragAndDrop: true
+      };
+      EventBus.sendEvent("UPLOAD", message);
+   }
+   
    export function isDragAndDropFilePossible(fileToMove, moveTo) {
-      return moveTo.folder; // only move files and folders to different folders
+      //return moveTo.folder; // only move files and folders to different folders
+      return true;
    }
    
    export function dragAndDropFile(fileToMove, moveTo) {
       if(isDragAndDropFilePossible(fileToMove, moveTo)) {
-         var originalPath = FileTree.createResourcePath(fileToMove.name);
-         var destinationPath = FileTree.createResourcePath(moveTo.name);
+         var originalPath = FileTree.createResourcePath(fileToMove.resource);
+         var destinationPath = FileTree.createResourcePath(moveTo.resource);
          var fromPath = FileTree.cleanResourcePath(originalPath.filePath);
          var toPath = FileTree.cleanResourcePath(destinationPath.filePath + "/" + originalPath.fileName);
          

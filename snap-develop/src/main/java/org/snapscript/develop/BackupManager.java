@@ -260,6 +260,17 @@ public class BackupManager {
       }
    }
    
+   public synchronized void saveFile(File file, byte[] content) {
+      try {
+         FileOutputStream out = new FileOutputStream(file);
+         
+         out.write(content);
+         out.close();
+      } catch(Exception e) {
+         logger.info("Could not save " + file);
+      }
+   }
+   
    private synchronized String relative(File root, File file) {
       return root.toURI().relativize(file.toURI()).getPath();
    }

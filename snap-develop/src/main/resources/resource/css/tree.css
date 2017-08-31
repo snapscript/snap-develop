@@ -83,6 +83,13 @@
 	display: block;
 }
 
+.treeFolderDragOver {
+	font-size: 30px !important;
+}
+
+.treeFolderDragDestination {
+	
+}
 
 .treeIndexFolder {
 	background-image: url('${IMAGE_FOLDER}/project_index.png');
