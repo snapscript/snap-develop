@@ -199,7 +199,7 @@ class SkyPanel extends JPanel {
         return 1.5*sun.getDiameter() + trialOrbitNum*maxPlanetDia;
     }
 
-    override update(comp) {
+    override update(comp: Graphics) {
       //paint(comp);
     }
     
@@ -209,7 +209,7 @@ class SkyPanel extends JPanel {
      * @param comp A Graphics object.
      * @see Graphics
      */
-    override paint(comp) {
+    override paint(comp: Graphics) {
         var comp2D = comp;
 
         comp2D.setPaint(Color.black);      

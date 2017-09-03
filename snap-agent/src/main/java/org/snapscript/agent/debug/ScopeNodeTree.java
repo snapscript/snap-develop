@@ -44,7 +44,7 @@ public class ScopeNodeTree implements ScopeNode {
          if(names.hasNext()) {
             while(names.hasNext()) {
                String name = names.next();
-               Value value = state.get(name);
+               Value value = state.getScope(name);
                
                if(value != null) {
                   Object object = value.getValue();

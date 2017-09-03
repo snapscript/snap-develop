@@ -1,23 +1,23 @@
 import util.stream.Collectors;
-import util.regex.Pattern;
-
-var ROOT = "C:\\Work\\development\\snapscript\\snap-develop\\snap-develop\\work\\games";
-
-new File(ROOT).findFiles(f -> f.name.endsWith(".snap"))
-   .stream()
-   .forEach(f -> {
-      strip(f);
-   });
-
-
-function strip(f){
-   var lines = f.readLines();
-   var builder = new StringBuilder();
-   for(var line in lines){
-      var line = line.replaceAll(": [A-Z][a-zA-Z0-9\[\]]+", "");
-      builder.append(line);
-      builder.append("\n");
-   }  
-   var result = builder.toString();
-   f.writeText(result);
-}  
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
+import util.stream.Collectors;
