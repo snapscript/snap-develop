@@ -15,11 +15,13 @@ public class ProcessAgentBeginListener extends ProcessEventAdapter {
       this.controller = controller;
    }
    
+   @Override
    public void onBegin(ProcessEventChannel channel, BeginEvent event) {
       String process = event.getProcess();
       controller.start(process);
    }
 
+   @Override
    public void onExit(ProcessEventChannel channel, ExitEvent event) {
       String process = event.getProcess();
       ProcessMode mode = event.getMode();

@@ -30,7 +30,6 @@
    <modules>
            <module>snap-agent</module>
            <module>snap-develop</module>           
-           <module>snap-graphics</module>
            <module>snap-service</module>          
 	</modules>
 

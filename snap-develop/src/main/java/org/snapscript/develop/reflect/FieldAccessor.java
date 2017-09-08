@@ -10,10 +10,12 @@ public class FieldAccessor implements Accessor {
       this.field = getField(name, type);
    }
 
+   @Override
    public Class getType() {
       return field.getType();
    }
 
+   @Override
    public <T> T getValue(Object source) {
       try {
          if (!field.isAccessible()) {

@@ -6,7 +6,6 @@ import static org.snapscript.core.Reserved.SCRIPT_EXTENSION;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.snapscript.core.Reserved;
 import org.snapscript.parse.SyntaxCompiler;
 import org.snapscript.parse.SyntaxNode;
 import org.snapscript.parse.SyntaxParser;

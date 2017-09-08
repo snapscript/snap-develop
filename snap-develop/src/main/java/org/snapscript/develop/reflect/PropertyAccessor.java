@@ -10,10 +10,12 @@ public class PropertyAccessor implements Accessor {
       this.method = getMethod(name, type);
    }
 
+   @Override
    public Class getType() {
       return method.getReturnType();
    }
 
+   @Override
    public <T> T getValue(Object source) {
       try {
          if(source != null) {

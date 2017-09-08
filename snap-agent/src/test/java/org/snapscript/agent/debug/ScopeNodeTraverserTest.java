@@ -136,7 +136,7 @@ public class ScopeNodeTraverserTest extends TestCase {
       for(String key : keys) {
          Object value = values.get(key);
          Reference reference = new Reference(value);
-         state.addScope(key, reference);
+         state.add(key, reference);
       }
       return scope;
    }
@@ -145,7 +145,7 @@ public class ScopeNodeTraverserTest extends TestCase {
       Model model = new MapModel(Collections.EMPTY_MAP);
       Scope scope = new ModelScope(model, null);
       Type type = new ScopeType(null, null,  null, name, 0);
-      Instance instance = new PrimitiveInstance(null, model, scope, type);
+      Instance instance = new PrimitiveInstance(null, scope, type);
       List<Property> properties = type.getProperties();
       State state = instance.getState();
       Set<String> keys = values.keySet();
@@ -155,7 +155,7 @@ public class ScopeNodeTraverserTest extends TestCase {
          Property property = new AccessorProperty(key, null, null, null, 0);
          Reference reference = new Reference(value);
          properties.add(property);
-         state.addScope(key, reference);
+         state.add(key, reference);
       }
       return instance;
    }

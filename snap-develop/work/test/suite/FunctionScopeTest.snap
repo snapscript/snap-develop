@@ -32,4 +32,4 @@ class FunctionScopeTest with TestCase {
       checkWithClosureCall();
    }
 }
-
+new FunctionScopeTest().runTests();

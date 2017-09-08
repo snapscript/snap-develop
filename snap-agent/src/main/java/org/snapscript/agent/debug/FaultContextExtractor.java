@@ -75,7 +75,7 @@ public class FaultContextExtractor extends TraceAdapter {
          
          while(iterator.hasNext()) {
             String name = iterator.next();
-            expand.add(name+".*");
+            expand.add(name+".*"); // are we grabbing too much here?
          }
          Map<String, Map<String, String>> variables = traverser.expand(expand);
          

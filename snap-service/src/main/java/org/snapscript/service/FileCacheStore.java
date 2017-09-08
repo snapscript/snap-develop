@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilterInputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,7 +42,7 @@ public class FileCacheStore implements Store {
             InputStream remote = store.getInputStream(path);
 
             try {
-               OutputStream output = getTempOutputStream(path);
+               CacheOutputStream output = getTempOutputStream(path);
                
                if(output != null) {
                   try {
@@ -51,7 +52,7 @@ public class FileCacheStore implements Store {
                      while((count = remote.read(data)) != -1){
                         output.write(data, 0, count);
                      }
-                     System.out.println("downloaded: " + path);
+                     System.out.println("downloaded: " + path + " to " + output.getFile());
                      output.close();
                   } finally {
                      remote.close();
@@ -74,6 +75,8 @@ public class FileCacheStore implements Store {
             throw e;
          }
       }
+      System.out.println("Loading " + path + " from "+ stream.getFile());
+      
       if(stream != null && stream.isFailure()) {
          throw new NotFoundException("Could not find resource '" + path + "' from '" + root + "'");
       }
@@ -85,7 +88,7 @@ public class FileCacheStore implements Store {
       return store.getOutputStream(path);
    }
    
-   private OutputStream getTempOutputStream(String path) {
+   private CacheOutputStream getTempOutputStream(String path) {
       try {
          File file = getTempFile(path);
          File parent = file.getParentFile();
@@ -93,7 +96,7 @@ public class FileCacheStore implements Store {
          if(!parent.exists()) {
             parent.mkdirs();
          }
-         return new FileOutputStream(file);
+         return new CacheOutputStream(new FileOutputStream(file), file);
       } catch(Exception e) {
          return null;
       }
@@ -134,6 +137,28 @@ public class FileCacheStore implements Store {
       return new File(temp, path);
    }
    
+   private static class CacheOutputStream extends FilterOutputStream {
+      
+      private final File file;
+      
+      public CacheOutputStream(OutputStream stream, File file) {
+         super(stream);
+         this.file = file;
+      }
+      
+      public String getFile(){
+         try {
+            return file.getCanonicalPath();
+         } catch(Exception e) {
+            throw new IllegalStateException("Could not get file " + file);
+         }
+      }
+      
+      public boolean isFailure(){
+         return file.length() <= 0;
+      }
+   }
+   
    private static class CacheInputStream extends FilterInputStream {
       
       private final File file;
@@ -141,6 +166,14 @@ public class FileCacheStore implements Store {
       public CacheInputStream(InputStream stream, File file) {
          super(stream);
          this.file = file;
+      }
+      
+      public String getFile(){
+         try {
+            return file.getCanonicalPath();
+         } catch(Exception e) {
+            throw new IllegalStateException("Could not get file " + file);
+         }
       }
       
       public boolean isFailure(){

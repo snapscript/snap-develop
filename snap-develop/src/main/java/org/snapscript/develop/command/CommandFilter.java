@@ -13,6 +13,7 @@ public class CommandFilter implements ProcessEventFilter {
       this.attachment = new AtomicReference<String>();
    }
    
+   @Override
    public String getFocus(){
       return attachment.get();
    }

@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.snapscript.develop.common.FilePatternMatcher;
 import org.snapscript.develop.find.ExpressionResolver;
-import org.snapscript.develop.find.LiteralMatchEvaluator;
 import org.snapscript.develop.find.MatchEvaluator;
 import org.snapscript.develop.find.MatchType;
 import org.snapscript.develop.find.PathBuilder;

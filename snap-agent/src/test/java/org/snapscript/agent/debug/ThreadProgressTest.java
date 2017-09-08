@@ -12,7 +12,7 @@ public class ThreadProgressTest extends TestCase {
       BreakpointMatcher matcher = new BreakpointMatcher();
       ThreadProgress progress = new ThreadProgress(matcher);
       
-//      progress.beforeInstruction(TraceType.INVOKE);
+//      progress.beforeInstruction(Trace.INVOKE);
 //      progress.isSuspendBefore(createNormalTrace("x", 1));
    }
 

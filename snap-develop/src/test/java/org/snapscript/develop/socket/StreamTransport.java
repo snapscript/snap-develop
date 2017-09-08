@@ -32,39 +32,48 @@ public class StreamTransport implements Transport {
       return null;
    }
 
+   @Override
    public void close() throws IOException {
       write.close();
       read.close();
    }
 
+   @Override
    public void flush() throws IOException {
       out.flush();
    }
 
+   @Override
    public int read(ByteBuffer buffer) throws IOException {
       return read.read(buffer);
    }
 
+   @Override
    public void write(ByteBuffer buffer) throws IOException {
       write.write(buffer);
    }
 
+   @Override
    public Map getAttributes() {
       return null;
    }
 
+   @Override
    public SocketChannel getChannel() {
       return null;
    }   
 
+   @Override
    public SSLEngine getEngine() {
       return null;
    }
 
+   @Override
    public Certificate getCertificate() {
       return null;
    }
 
+   @Override
    public Trace getTrace() {
       return null;
    }

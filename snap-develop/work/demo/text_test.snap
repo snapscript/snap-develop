@@ -1,9 +1,7 @@
-class Foo{
+
+for(var i in 0..10000){
+   for(var j in 0 .. 10000){
+      assert i+j >= 0;
+   }
 }
-class Bar{
-}
-function func(): Bar{
-   return new Foo();
-}
-var f = func();
-assert f.class == Foo.class;
+println("done");

@@ -48,8 +48,8 @@ class TestCaseCollector {
                expression = expression.replace(RECURSIVE_PATTERN, ".*");
                expression = expression.replace(SINGLE_PATTERN, "[a-zA-Z0-9_\\$\\-\\(\\)\\.\\s]+");
                
-               var pattern = Pattern.compile(expression);
-               var list = scan(pattern, directory);
+               var regex = Pattern.compile(expression);
+               var list = scan(regex, directory);
                var base = directory.toURI();
                var result = [];
                

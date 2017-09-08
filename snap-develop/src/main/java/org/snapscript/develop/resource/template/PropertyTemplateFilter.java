@@ -82,6 +82,7 @@ public class PropertyTemplateFilter implements TemplateFilter {
          this.name = name;
       }      
       
+      @Override
       public boolean isNull() {
          return true;
       }      
