@@ -100,7 +100,7 @@ public class FaultContextExtractor extends TraceAdapter {
          StringWriter builder = new StringWriter();
          PrintWriter writer = new PrintWriter(builder);
          
-         InternalError error = converter.create(cause);
+         InternalError error = converter.createError(cause);
          Object inner = error.getValue();
          
          if(Throwable.class.isInstance(inner)) {
