@@ -72,6 +72,8 @@ export module DebugManager {
       var processProject = message.project;
       var processRunning = "" + message.running == "true";
       var processDebug = "" + message.debug == "true";
+      var processThreads = message.threads;
+      var processMemory = Math.round((message.usedMemory / message.totalMemory) * 100);
       
       statusProcesses[process] = {
          resource: processResource,
@@ -80,6 +82,8 @@ export module DebugManager {
          running: processRunning, // is anything running
          focus: processFocus,
          project: processProject,
+         memory: processMemory,
+         threads: processThreads,
          debug: processDebug
       };
       if(processFocus == "true") {
@@ -115,6 +119,9 @@ export module DebugManager {
          
          $("#toolbarDebug").css('opacity', '1.0');
          $("#toolbarDebug").css('filter', 'alpha(opacity=100)'); // msie
+         
+         // debug the status info
+         console.log(statusInfo);
          
          StatusPanel.showProcessStatus(statusInfo.resource, process, statusInfo.debug);
          //$("#process").html("<i>&nbsp;RUNNING: " + statusInfo.resource + " ("+process+")</i>");

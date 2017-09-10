@@ -74,7 +74,7 @@ class SoundManager extends ThreadPool {
         var mixer: Mixer = AudioSystem.getMixer(null);
         var maxLines: Integer = mixer.getMaxLines(lineInfo);
         if (maxLines == AudioSystem.NOT_SPECIFIED) {
-            maxLines = 32;
+            maxLines = 5;
         }
         return maxLines;
 

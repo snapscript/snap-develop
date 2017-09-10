@@ -1,5 +1,6 @@
 package org.snapscript.agent.event;
 
+
 public class PongEvent implements ProcessEvent {
 
    private final String project;
@@ -8,8 +9,14 @@ public class PongEvent implements ProcessEvent {
    private final String system;
    private final boolean running;
    private final boolean debug;
+   private final long totalMemory;
+   private final long usedMemory;
+   private final int threads;
 
    public PongEvent(Builder builder) {
+      this.totalMemory = builder.totalMemory;
+      this.usedMemory = builder.usedMemory;
+      this.threads = builder.threads;
       this.resource = builder.resource;
       this.process = builder.process;
       this.running = builder.running;
@@ -35,6 +42,18 @@ public class PongEvent implements ProcessEvent {
       return resource;
    }
    
+   public long getUsedMemory() {
+      return usedMemory;
+   }
+
+   public long getTotalMemory() {
+      return totalMemory;
+   }
+
+   public int getThreads() {
+      return threads;
+   }
+   
    public boolean isRunning() {
       return running;
    }
@@ -51,6 +70,9 @@ public class PongEvent implements ProcessEvent {
       private String system;
       private boolean running;
       private boolean debug;
+      private long totalMemory;
+      private long usedMemory;
+      private int threads;
    
       public Builder(String process) {
          this.process = process;
@@ -78,6 +100,21 @@ public class PongEvent implements ProcessEvent {
 
       public Builder withRunning(boolean running) {
          this.running = running;
+         return this;
+      }
+      
+      public Builder withThreads(int threads){
+         this.threads = threads;
+         return this;
+      }
+      
+      public Builder withTotalMemory(long totalMemory){
+         this.totalMemory = totalMemory;
+         return this;
+      }
+      
+      public Builder withUsedMemory(long usedMemory){
+         this.usedMemory = usedMemory;
          return this;
       }
       

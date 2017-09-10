@@ -36,6 +36,9 @@ public class ConnectionChecker {
          .withProject(project)
          .withResource(resource)
          .withRunning(resource != null)
+         .withTotalMemory(Runtime.getRuntime().totalMemory())
+         .withUsedMemory(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())
+         .withThreads(Thread.getAllStackTraces().size()) // this might be expensive
          .withDebug(debug)
          .build();
       

@@ -56,6 +56,8 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
             var processProject = message.project;
             var processRunning = "" + message.running == "true";
             var processDebug = "" + message.debug == "true";
+            var processThreads = message.threads;
+            var processMemory = Math.round((message.usedMemory / message.totalMemory) * 100);
             statusProcesses[process] = {
                 resource: processResource,
                 system: processSystem,
@@ -63,6 +65,8 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
                 running: processRunning,
                 focus: processFocus,
                 project: processProject,
+                memory: processMemory,
+                threads: processThreads,
                 debug: processDebug
             };
             if (processFocus == "true") {
@@ -95,6 +99,8 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
                 var statusResourcePath = tree_1.FileTree.createResourcePath(statusInfo.resource);
                 $("#toolbarDebug").css('opacity', '1.0');
                 $("#toolbarDebug").css('filter', 'alpha(opacity=100)'); // msie
+                // debug the status info
+                console.log(statusInfo);
                 status_1.StatusPanel.showProcessStatus(statusInfo.resource, process, statusInfo.debug);
             }
             else {

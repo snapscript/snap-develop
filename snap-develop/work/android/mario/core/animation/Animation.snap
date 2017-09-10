@@ -39,7 +39,7 @@ class Animation {
     * Constructs a new Animation object with no frames and with the
     * specified default animation length;
     */
-   public new(defaultAnimLength) {
+   public new(defaultAnimLength: Integer) {
       frames = new ArrayList();
       totalDuration = 0;
       this.defaultAnimLength = defaultAnimLength;
@@ -49,7 +49,7 @@ class Animation {
    /**
     * Constructs a new Animation that runs a task at the end of animation.
     */
-   public new(endOfAnimation) {
+   public new(endOfAnimation: Runnable) {
       frames = new ArrayList();
       totalDuration = 0;
       this.defaultAnimLength = defaultAnimLength;

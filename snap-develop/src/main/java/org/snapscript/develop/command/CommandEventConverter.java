@@ -107,6 +107,9 @@ public class CommandEventConverter {
             .resource(event.getResource())
             .time(System.currentTimeMillis())
             .debug(event.isDebug())
+            .totalMemory(event.getTotalMemory())
+            .usedMemory(event.getUsedMemory())
+            .threads(event.getThreads())
             .running(event.isRunning())
             .focus(process.equals(focus))
             .build();

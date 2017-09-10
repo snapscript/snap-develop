@@ -23,6 +23,9 @@ public class PongEventMarshaller implements ProcessEventMarshaller<PongEvent> {
       if(input.readBoolean()) {
          String project = input.readUTF();
          String resource = input.readUTF();
+         long totalMemory = input.readLong();
+         long usedMemory = input.readLong();
+         int threads = input.readInt();
          boolean debug = input.readBoolean();
          
          return new PongEvent.Builder(process)
@@ -30,6 +33,9 @@ public class PongEventMarshaller implements ProcessEventMarshaller<PongEvent> {
             .withProject(project)
             .withResource(resource)
             .withRunning(true)
+            .withTotalMemory(totalMemory)
+            .withUsedMemory(usedMemory)
+            .withThreads(threads)
             .withDebug(debug)
             .build();
       }
@@ -48,6 +54,9 @@ public class PongEventMarshaller implements ProcessEventMarshaller<PongEvent> {
       String project = event.getProject();
       String system = event.getSystem();
       boolean debug = event.isDebug();
+      long totalMemory = event.getTotalMemory();
+      long usedMemory = event.getUsedMemory();
+      int threads = event.getThreads();
       
       output.writeUTF(process);
       output.writeUTF(system);
@@ -56,6 +65,9 @@ public class PongEventMarshaller implements ProcessEventMarshaller<PongEvent> {
          output.writeBoolean(true);
          output.writeUTF(project);
          output.writeUTF(resource);
+         output.writeLong(totalMemory);
+         output.writeLong(usedMemory);
+         output.writeInt(threads);
          output.writeBoolean(debug);
       } else {
          output.writeBoolean(false);

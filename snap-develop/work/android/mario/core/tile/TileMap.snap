@@ -96,7 +96,7 @@ class TileMap {
     * Sets tiles[x][y] equal to parameter tile.
     * This is used to set animated GameTiles.
     */
-   public setTile(x, y, tile) {
+   public setTile(x, y, tile: GameTile) {
       tiles[x][y] = tile;
    }
    
@@ -104,7 +104,7 @@ class TileMap {
     * Sets tiles[x][y] equal to a new Tile with no animation and the constant Image img.
     * This is used to set non-animated GameTiles.
     */
-   public setTile(x, y, img) {
+   public setTile(x, y, img: Bitmap) {
       tiles[x][y] = new GameTile(x, y, null, img);
    }
    
