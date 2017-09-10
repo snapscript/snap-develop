@@ -13,19 +13,19 @@ import android.graphics.Bitmap;
 
 class QuestionBlock extends GameTile {
 
-   private var soundManager: MarioSoundManager;
-   private var map: TileMap;
+   private var soundManager;
+   private var map;
    
-   private var active: Animation;
-   private var dead: Animation;
-   private var isActive: Boolean = false;
-   private var hasCoin: Boolean = false;
-   private var hasMushroom: Boolean = false;
+   private var active;
+   private var dead;
+   private var isActive = false;
+   private var hasCoin = false;
+   private var hasMushroom = false;
    
-   public new(pixelX: Integer, pixelY: Integer, map: TileMap, soundManager: MarioSoundManager, hasCoin: Boolean,
-          hasMushroom: Boolean): super(pixelX, pixelY, null, null) {
+   public new(pixelX, pixelY, map, soundManager, hasCoin,
+          hasMushroom): super(pixelX, pixelY, null, null) {
       
-      // Integer pixelX, pixelY: Integer, anim: Animation, Image img
+      // Integer pixelX, pixelY, anim, Image img
       
       setIsSloped(false);
       isActive = true;
@@ -34,7 +34,7 @@ class QuestionBlock extends GameTile {
       this.soundManager = soundManager;
       this.map = map;
 
-      var q: Bitmap[] = [ 
+      var q = [ 
          MarioResourceManager.Question_Block_0, 
          MarioResourceManager.Question_Block_1,
          MarioResourceManager.Question_Block_2, 
@@ -42,13 +42,13 @@ class QuestionBlock extends GameTile {
          MarioResourceManager.Question_Block_Dead
       ];
       
-      var r: Random = new Random();
+      var r = new Random();
       active = new Animation(r.nextInt(20) + 140).addFrame(q[0]).addFrame(q[1]).addFrame(q[2]).addFrame(q[3]);
       dead = new Animation(2000).addFrame(q[4]);
       setAnimation(active);
    }
    
-   public update(time: Integer) {
+   public update(time) {
       super.update(time);
       if(getOffsetY() != 0) { setOffsetY(getOffsetY() + 2); }
    }
@@ -58,15 +58,15 @@ class QuestionBlock extends GameTile {
          if(hasCoin) {
             setOffsetY(-10);
             soundManager.playCoin();
-            var newCoin: Coin = new Coin(getPixelX(), getPixelY());
-            var score: Score = new Score(getPixelX(), getPixelY());
+            var newCoin = new Coin(getPixelX(), getPixelY());
+            var score = new Score(getPixelX(), getPixelY());
             map.creaturesToAdd().add(newCoin);
             map.creaturesToAdd().add(score);
             newCoin.shoot();
          } else if(hasMushroom) {
             setOffsetY(-10);
             soundManager.playItemSprout();
-            var shroom: Mushroom = new Mushroom(getPixelX(), getPixelY()-26);
+            var shroom = new Mushroom(getPixelX(), getPixelY()-26);
             map.creaturesToAdd().add(shroom);
          }
          setAnimation(dead);

@@ -10,24 +10,24 @@ import android.graphics.Rect;
 import android.util.Log;
 
 class MainMenuScreen extends Screen {
-   var playBound: Rect=new Rect(6,42,100,77);
-   var scoreBound: Rect=new Rect(6,95,150,117);
-   var optionBound: Rect=new Rect(6,141,99,163);
+   var playBound=new Rect(6,42,100,77);
+   var scoreBound=new Rect(6,95,150,117);
+   var optionBound=new Rect(6,141,99,163);
    
-   public new(game: Game): super(game) {
+   public new(game): super(game) {
     }
 
     
     public override update(deltaTime: Float) {
       try {
-        var touchEvents: List = game.getInput().getTouchEvents();
+        var touchEvents = game.getInput().getTouchEvents();
 
-        var len: Integer = touchEvents.size();
+        var len = touchEvents.size();
         for (var i = 0; i < len; i++) {
-            var event: TouchEvent = touchEvents.get(i);
+            var event = touchEvents.get(i);
             if (event.type == TouchEvent.TOUCH_UP) {
                if (inBounds(event, playBound)) {
-                   var gameScreen: GameScreen=new GameScreen(game);
+                   var gameScreen=new GameScreen(game);
                   game.setScreen(gameScreen);
                   gameScreen.loadGame();
                   Log.i("Game","starts");
@@ -44,8 +44,8 @@ class MainMenuScreen extends Screen {
     }
 
      
-   private inBounds(event: TouchEvent, x: Integer, y: Integer, width: Integer,
-             height: Integer): Boolean {
+   private inBounds(event, x, y, width,
+             height) {
         if (event.x > x && event.x < x + width - 1 && event.y > y
                 && event.y < y + height - 1)
             return true;
@@ -53,7 +53,7 @@ class MainMenuScreen extends Screen {
             return false;
     }
 
-    private inBounds(event: TouchEvent, r: Rect): Boolean {
+    private inBounds(event, r) {
           if (event.x > r.left && event.x < r.right && event.y > r.top
                 && event.y < r.bottom)
             return true;
@@ -64,7 +64,7 @@ class MainMenuScreen extends Screen {
 
     
     public override paint(deltaTime: Float) {
-        var g: Graphics = game.getGraphics();
+        var g = game.getGraphics();
         g.drawImage(Assets.menu, 0, 0);
     }
 

@@ -11,15 +11,15 @@ import android.graphics.Bitmap;
 
 class Brick extends GameTile {
 
-   private var soundManager: MarioSoundManager;
-   private var map: TileMap;
+   private var soundManager;
+   private var map;
    
-   private var numCoins: Integer = 0;
-   private var hasMushroom: Boolean = false;
+   private var numCoins = 0;
+   private var hasMushroom = false;
    
-   public new(pixelX: Integer, pixelY: Integer, map: TileMap, img: Bitmap, soundManager: MarioSoundManager, numCoins: Integer,
-          hasMushroom: Boolean): super(pixelX, pixelY, null,img) {
-      // Integer pixelX, pixelY: Integer, anim: Animation, Image img
+   public new(pixelX, pixelY, map, img, soundManager, numCoins,
+          hasMushroom): super(pixelX, pixelY, null,img) {
+      // Integer pixelX, pixelY, anim, Image img
    
       setIsSloped(false);
       this.numCoins = numCoins;
@@ -28,7 +28,7 @@ class Brick extends GameTile {
       this.map = map;
    }
    
-   public override update(time: Integer) {
+   public override update(time) {
       //super.update(time);
       if(getOffsetY() != 0) { setOffsetY(getOffsetY() + 2); }
    }
@@ -39,15 +39,15 @@ class Brick extends GameTile {
          numCoins--;
          setOffsetY(-10);
          soundManager.playCoin();
-         var newCoin: Coin = new Coin(getPixelX(), getPixelY());
-         var score: Score = new Score(getPixelX(), getPixelY());
+         var newCoin = new Coin(getPixelX(), getPixelY());
+         var score = new Score(getPixelX(), getPixelY());
          map.creaturesToAdd().add(newCoin);
          map.creaturesToAdd().add(score);
          newCoin.shoot();
       } else if (hasMushroom) {
          setOffsetY(-10);
          soundManager.playItemSprout();
-         var shroom: Mushroom = new Mushroom(getPixelX(), getPixelY() - 26);
+         var shroom = new Mushroom(getPixelX(), getPixelY() - 26);
          map.creaturesToAdd().add(shroom);
       } else {// (((Mario)map.getPlayer()).){
          soundManager.playBrickShatter();

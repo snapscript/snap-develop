@@ -18,12 +18,12 @@ import android.graphics.Bitmap;
 class Animation {
    
    // fields
-   private var frames: ArrayList;
-   private var currFrameIndex: Integer = 0; // index of current frame
-   private var animTime: Long = 0L; // current time in animation
-   private var totalDuration: Long = 0L; // length of entire animation
-   private var defaultAnimLength: Long = 0L;
-   private var endOfAnimation: Runnable;
+   private var frames;
+   private var currFrameIndex = 0; // index of current frame
+   private var animTime = 0L; // current time in animation
+   private var totalDuration = 0L; // length of entire animation
+   private var defaultAnimLength = 0L;
+   private var endOfAnimation;
    
    /**
     * Constructs a new Animation object with no frames.
@@ -39,7 +39,7 @@ class Animation {
     * Constructs a new Animation object with no frames and with the
     * specified default animation length;
     */
-   public new(defaultAnimLength: Long) {
+   public new(defaultAnimLength) {
       frames = new ArrayList();
       totalDuration = 0;
       this.defaultAnimLength = defaultAnimLength;
@@ -49,7 +49,7 @@ class Animation {
    /**
     * Constructs a new Animation that runs a task at the end of animation.
     */
-   public new(endOfAnimation: Runnable) {
+   public new(endOfAnimation) {
       frames = new ArrayList();
       totalDuration = 0;
       this.defaultAnimLength = defaultAnimLength;
@@ -61,7 +61,7 @@ class Animation {
     * Sets the default animation length (DAL);
     * @return this Animation with the default animation length changed.
     */
-   public setDAL(defaultAnimLength: Long): Animation {
+   public setDAL(defaultAnimLength) {
       this.defaultAnimLength = defaultAnimLength;
       return this;
    }
@@ -71,7 +71,7 @@ class Animation {
     * @modifies defaultAnimLength == duration.
     * @returns this Animation with the added frame.
     */
-   public addFrame(image: Bitmap): Animation {
+   public addFrame(image) {
       totalDuration += defaultAnimLength;
       frames.add({'image': image, 'endTime': totalDuration});
       return this;
@@ -82,7 +82,7 @@ class Animation {
     * @modifies defaultAnimLength == duration.
     * @returns this Animation with the added frame.
     */
-   public addFrame(image: Bitmap, duration: Long): Animation {
+   public addFrame(image, duration) {
       totalDuration += duration;
       frames.add({'image': image, 'endTime': totalDuration});
       defaultAnimLength = duration;
@@ -100,14 +100,14 @@ class Animation {
    /**
     * @return the height of the current animation in pixels.
     */
-   public getHeight(): Integer {
+   public getHeight() {
       return getFrame(currFrameIndex).image.getHeight();
    }
    
    /**
     * @return the width of the current animation in pixels.
     */
-   public getWidth(): Integer {
+   public getWidth() {
       return getFrame(currFrameIndex).image.getWidth();
    }
    
@@ -115,7 +115,7 @@ class Animation {
     * Updates the animation by a give amount of time.
     * The frames are updated accordingly to the internal timer of this animation.
     */
-    public update(elapsedTime: Long) {
+    public update(elapsedTime) {
        
         if (frames.size() > 1) { // must have at least 2 frames to animate
             animTime += elapsedTime; // animation time increase here
@@ -146,7 +146,7 @@ class Animation {
      * @return an array of the images in this animation.
      * note: this method is never called.
      */
-    public getImages(): Bitmap[]  {
+    public getImages()  {
        if(frames.size() == 0) {
           return null;
        } else {
@@ -157,7 +157,7 @@ class Animation {
     /**
      * @return the Image of the current frame of this animation.
      */
-    public getImage(): Bitmap {
+    public getImage() {
         if (frames.size() == 0) {
             return null;
         }
@@ -170,7 +170,7 @@ class Animation {
      * @return the AnimFrame of the given frame.
      * This is used in update to get the end time of the current frame.
      */
-    private getFrame(i: Integer): {} {
+    private getFrame(i): {} {
         return frames.get(i);
     }
 

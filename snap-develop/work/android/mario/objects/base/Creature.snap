@@ -15,55 +15,55 @@ import android.graphics.Point;
 
 class Creature extends CollidableObject {
    
-   public static var xCollideOffset: Integer = 2; 
-   public static var offMapOffset: Integer = 15;
-   public static var GRAVITY: Float = 0.0008f;
-   public static var gravityEffect: Float = 0.22f; 
+   public static var xCollideOffset = 2; 
+   public static var offMapOffset = 15;
+   public static var GRAVITY = 0.0008f;
+   public static var gravityEffect = 0.22f; 
    
    // Wake up values are constants based on the number of tiles on the screen
    // that are used to determine when mario comes within range of a creature.
    // Used exclusively within GameRender.java.
-   public static const WAKE_UP_VALUE_DOWN_RIGHT: Integer = 30;
-   public static const WAKE_UP_VALUE_UP_LEFT: Integer = -3;
+   public static const WAKE_UP_VALUE_DOWN_RIGHT = 30;
+   public static const WAKE_UP_VALUE_UP_LEFT = -3;
    
    /* 
     * Creature Attributes:
     * 
-    * Relevant:  A creature that is always relevant must be updated every frame. By default, no creature
+    * Relevant creature that is always relevant must be updated every frame. By default, no creature
     *            is always relevant. 
-    * Alive:     A creature that is on the map is alive. All creatures start alive and can be killed using
+    * Alive creature that is on the map is alive. All creatures start alive and can be killed using
     *            the kill() method.
-    * Sleeping:  A creature that is sleeping has yet to be seen by the player. All creatures start out
+    * Sleeping creature that is sleeping has yet to be seen by the player. All creatures start out
     *            sleeping, and can be woken up using wakeUp(). They cannot be put back to sleep.
     * Flipped:   isFlipped is a flag used to determine when to change the animation of a creature to death.
     *            For example, a goomba that is hopped on is 'flipped', then removed from the game.
-    * Item:      A creature that is an item represents an item the player can interact with.
-    * Platform:  A creature is a platform if it is a non-aligned moving object the player
+    * Item creature that is an item represents an item the player can interact with.
+    * Platform creature is a platform if it is a non-aligned moving object the player
     *            and creatures can interact with. 
-    * Invisible: When a creature is invisible, it isn't drawn.
+    * Invisible a creature is invisible, it isn't drawn.
     */
-   private var isAlwaysRelevant: Boolean = false; 
-   private var isAlive: Boolean = false; 
-   private var isSleeping: Boolean = false; 
-   private var isFlipped: Boolean = false;
-   private var isItem: Boolean = false;
-   private var isPlatform: Boolean = false;
-   private var isInvisible: Boolean = false;
+   private var isAlwaysRelevant = false; 
+   private var isAlive = false; 
+   private var isSleeping = false; 
+   private var isFlipped = false;
+   private var isItem = false;
+   private var isPlatform = false;
+   private var isInvisible = false;
    
    public new(): this(0, 0, null) { 
    }
    
-   public new(pixelX: Integer, pixelY: Integer): this(pixelX, pixelY, null) {
+   public new(pixelX, pixelY): this(pixelX, pixelY, null) {
    }
    
    /**
     * @effects Creates a new Creature at the given pixelX, pixelY position that is capable
     * of producing sounds from the soundManager. 
     * 
-    * True: Collidable, Alive, Sleeping, Flipped.
-    * False: OnScreen, Item, Platform, Relevant.
+    * True, Alive, Sleeping, Flipped.
+    * False, Item, Platform, Relevant.
     */
-   public new(pixelX: Integer, pixelY: Integer, soundManager: MarioSoundManager): super(pixelX, pixelY, soundManager) {
+   public new(pixelX, pixelY, soundManager): super(pixelX, pixelY, soundManager) {
       setIsCollidable(true);
       isAlive = true;
       isSleeping = true;
@@ -77,49 +77,49 @@ class Creature extends CollidableObject {
    /**
     * @return true if this creature is a Platform, false otherwise.
     */
-   public isPlatform(): Boolean {
+   public isPlatform() {
       return isPlatform;
    }
    
    /**
     * @modifies the platform status of this Creature.
     */
-   public setIsPlatform(isPlatform: Boolean) {
+   public setIsPlatform(isPlatform) {
       this.isPlatform = isPlatform;
    }
    
    /**
     * @return true if this creature is an Item, false otherwise.
     */
-   public isItem(): Boolean {
+   public isItem() {
       return isItem;
    }
    
    /**
     * @modifies the item status of this Creature (items do not collide with other items/ creatures ex. mushroom).
     */
-   public setIsItem(isItem: Boolean) {
+   public setIsItem(isItem) {
       this.isItem = isItem;
    }
    
    /**
     * @return true if this creature is flipped, false otherwise.
     */
-   public isFlipped(): Boolean {
+   public isFlipped() {
       return isFlipped;
    }
    
    /**
     * @modifies the flipped status of this Creature.
     */
-   public setIsFlipped(isFlipped: Boolean) {
+   public setIsFlipped(isFlipped) {
       this.isFlipped = isFlipped;
    }
    
    /**
     * @return true if this creature is sleeping, false otherwise.
     */
-   public isSleeping(): Boolean {
+   public isSleeping() {
       return isSleeping;
    }
    
@@ -133,7 +133,7 @@ class Creature extends CollidableObject {
    /**
     * @return true if this creature is alive, false otherwise.
     */
-   public isAlive(): Boolean {
+   public isAlive() {
       return isAlive;
    }
    
@@ -147,28 +147,28 @@ class Creature extends CollidableObject {
    /**
     * @return true if this creature is a Platform, false otherwise.
     */
-   public isAlwaysRelevant(): Boolean {
+   public isAlwaysRelevant() {
       return isAlwaysRelevant;
    }
    
    /**
     * @modifies the platform status of this Creature.
     */
-   public setIsAlwaysRelevant(isAlwaysRelevant: Boolean) {
+   public setIsAlwaysRelevant(isAlwaysRelevant) {
       this.isAlwaysRelevant = isAlwaysRelevant;
    }
    
    /**
     * @return true if this creature is invisible, false otherwise.
     */
-   public isInvisible(): Boolean {
+   public isInvisible() {
       return isInvisible;
    }
    
    /**
     * @modifies the invisible status of this Creature.
     */
-   public setIsInvisible(isInvisible: Boolean) {
+   public setIsInvisible(isInvisible) {
       this.isInvisible = isInvisible;
    }
     
@@ -177,7 +177,7 @@ class Creature extends CollidableObject {
    public flip() { }
    
    // for tile collisions
-   public xCollide(p: Point) {
+   public xCollide(p) {
       if(dx > 0) {
          x = x - xCollideOffset;
       } else {
@@ -208,7 +208,7 @@ class Creature extends CollidableObject {
     * @return Collision.WEST if sprite is colliding with the tile from the west or
     * Collision.EAST if sprite is colliding with the tile from the east.
     */
-   public static tileCollisionX(tile: GameTile, s: Sprite): Collision {
+   public static tileCollisionX(tile, s) {
       if(s.getX() > tile.getPixelX()) {
          return Collision.WEST;
       } else {
@@ -228,7 +228,7 @@ class Creature extends CollidableObject {
     * @return Collision.NORTH if sprite is colliding with the tile from the north or
     * Collision.SOUTH if sprite is colliding with the tile from the south.
     */
-   public static tileCollisionY(tile: GameTile, s: Sprite): Collision {
+   public static tileCollisionY(tile, s) {
       if(s.getY() < tile.getPixelY()) {
          return Collision.NORTH;
       } else {
@@ -236,23 +236,23 @@ class Creature extends CollidableObject {
       }
    }
    
-   public updateCreature(map: TileMap, time: Integer) {
+   public updateCreature(map, time) {
       
       if(dy < gravityEffect) { // apply gravity...this must be done first
          dy = dy + GRAVITY * time;
       }
       
-      var dx: Float = this.dx;
-      var oldX: Float = this.x;
-      var newX: Float = oldX + dx * time;
+      var dx = this.dx;
+      var oldX = this.x;
+      var newX = oldX + dx * time;
       
-      var dy: Float = this.dy;
-      var oldY: Float = this.y;
-      var newY: Float = oldY + dy * time; 
+      var dy = this.dy;
+      var oldY = this.y;
+      var newY = oldY + dy * time; 
       
       if(!isFlipped) {
-         var xTile: Point = GameRenderer.getTileCollision(map, this, x, y, newX, y);
-         var yTile: Point = GameRenderer.getTileCollision(map, this, x, y, x, newY);
+         var xTile = GameRenderer.getTileCollision(map, this, x, y, newX, y);
+         var yTile = GameRenderer.getTileCollision(map, this, x, y, x, newY);
          
          this.update(time);
          
@@ -284,7 +284,7 @@ class Creature extends CollidableObject {
                if(dy > 0) {
                   // mark this creature as colliding with a tile
                   map.getTile(yTile.x, yTile.y).collidingCreatures().add(this); 
-                  var tileRight: GameTile = map.getTile(Math.floor(yTile.x) + 1, Math.floor(yTile.y));
+                  var tileRight = map.getTile(Math.floor(yTile.x) + 1, Math.floor(yTile.y));
                   if(tileRight != null) {
                      tileRight.collidingCreatures().add(this);
                   }
@@ -309,12 +309,12 @@ class Creature extends CollidableObject {
    
    // Determines what happens when two different creatures collide.
    // Uncommenting the onSreen condition makes this more efficient, but more buggy
-   public creatureCollision(creature: Creature) {
+   public creatureCollision(creature) {
       if (!this.isItem && !creature.isItem && !this.isPlatform
             && !creature.isPlatform && this != creature
             && this.isCollidable() && creature.isCollidable()) {
 
-         var collision: Boolean = isCollision(this, creature);
+         var collision = isCollision(this, creature);
          if (collision) {
             if (this instanceof FireBall) {
                soundManager.playKick();

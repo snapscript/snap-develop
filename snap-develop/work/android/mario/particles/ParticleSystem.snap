@@ -5,15 +5,15 @@ import android.graphics.Canvas;
 
 
 class ParticleSystem {
-   private var particles: Particle[];
-   private var bitmap: Bitmap;
-   public var numParticles: Integer = 6;
-   public var respawnParticle: Boolean = false;
-   public var isBursting: Boolean = true;
-    private var active: Boolean;
-    private var count: Integer=0;
+   private var particles;
+   private var bitmap;
+   public var numParticles = 6;
+   public var respawnParticle = false;
+   public var isBursting = true;
+    private var active;
+    private var count=0;
     
-   public new(startXPos: Integer, startYPos: Integer, numParticles: Integer) {
+   public new(startXPos, startYPos, numParticles) {
       bitmap=MarioResourceManager.brick_particle;
       this.active=true;
       particles = new Particle[numParticles];
@@ -23,26 +23,26 @@ class ParticleSystem {
       }
    }
 
-   public doDraw(canvas: Canvas, offsetX: Integer, offsetY: Integer) {
+   public doDraw(canvas, offsetX, offsetY) {
       if (count>500) return;
       for (var i = 0; i < particles.length; i++) {
-         var particle: Particle = particles[i];
+         var particle = particles[i];
          particle.doDraw(canvas,offsetX,offsetY);
       }
    }
 
-   public updatePhysics(altDelta: Integer) {
+   public updatePhysics(altDelta) {
       if (count>500) return;
       count++;
       for (var i = 0; i < particles.length; i++) {
-         var particle: Particle = particles[i];
+         var particle = particles[i];
          particle.updatePhysics(altDelta);
 
       }
    }
    
    
-   public isActive(): Boolean{
+   public isActive(){
       return active;
    }
 }

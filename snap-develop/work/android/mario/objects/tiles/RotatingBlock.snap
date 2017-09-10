@@ -6,18 +6,18 @@ import android.graphics.Bitmap;
 
 class RotatingBlock extends GameTile {
    
-   private var rotate: Animation;
-   private var idle: Animation;
+   private var rotate;
+   private var idle;
    
-   public new(pixelX: Integer, pixelY: Integer): super(pixelX, pixelY, null, null) {
+   public new(pixelX, pixelY): super(pixelX, pixelY, null, null) {
       
-      // Integer pixelX, pixelY: Integer, anim: Animation, img: Image, Boolean isUpdateable
+      // Integer pixelX, pixelY, anim, img, Boolean isUpdateable
       setIsSloped(false);
       
-      var rotate_1: Bitmap = MarioResourceManager.Rotating_Block_Hit_1;
-      var rotate_2: Bitmap = MarioResourceManager.Rotating_Block_Hit_2;
-      var rotate_3: Bitmap = MarioResourceManager.Rotating_Block_Hit_3;
-      var still: Bitmap = MarioResourceManager.Rotating_Block_Still;
+      var rotate_1 = MarioResourceManager.Rotating_Block_Hit_1;
+      var rotate_2 = MarioResourceManager.Rotating_Block_Hit_2;
+      var rotate_3 = MarioResourceManager.Rotating_Block_Hit_3;
+      var still = MarioResourceManager.Rotating_Block_Still;
 
       
       idle = new Animation(10000).addFrame(still);
@@ -26,7 +26,7 @@ class RotatingBlock extends GameTile {
            setIsCollidable(true);
       });
       
-      var rotateTime: Integer = 90;
+      var rotateTime = 90;
       for(var i = 1; i <= 3; i++) {
          for(var j = 1; j <= 3; j++) {
             rotate.addFrame(rotate_1, rotateTime);

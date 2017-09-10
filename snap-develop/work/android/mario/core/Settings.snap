@@ -7,22 +7,22 @@ import java.io.OutputStreamWriter;
 import org.snapscript.game.framework.FileIO;
 
 class Settings {
-   public static var soundEnabled: Boolean = true;
-   public static var musicEnabled: Boolean = true;
+   public static var soundEnabled = true;
+   public static var musicEnabled = true;
 
-   public static var highscores: Integer[] = [ 100, 80, 50, 30, 10 ];
-   public static var file: String = ".supermario";
+   public static var highscores = [ 100, 80, 50, 30, 10 ];
+   public static var file = ".supermario";
 
-   private static var score: Integer = 0;
-   private static var lives: Integer = 0;
+   private static var score = 0;
+   private static var lives = 0;
 
-   public static const COIN_BONUS: Integer = 100;
-   public static const GOOMBA_BONUS: Integer = 300;
-   public static const KOOPA_BONUS: Integer = 500;
-   public static const LIFE_BONUS: Integer = 1000;
+   public static const COIN_BONUS = 100;
+   public static const GOOMBA_BONUS = 300;
+   public static const KOOPA_BONUS = 500;
+   public static const LIFE_BONUS = 1000;
 
-   public static load(files: FileIO) {
-      var input: BufferedReader = null;
+   public static load(files) {
+      var input = null;
       try {
          input = new BufferedReader(new InputStreamReader(files.readFile(file)));
          soundEnabled = Boolean.parseBoolean(input.readLine());
@@ -31,23 +31,23 @@ class Settings {
          for (var i = 0; i < 5; i++) {
             highscores[i] = Integer.parseInt(input.readLine());
          }
-      } catch (e: IOException) {
+      } catch (e) {
          e.printStackTrace();
          // :( It's ok we have defaults
-      } catch (e: NumberFormatException) {
+      } catch (e) {
          e.printStackTrace();
          // :/ It's ok, defaults save our day
       } finally {
          try {
             if (input != null)
                input.close();
-         } catch (e: IOException) {
+         } catch (e) {
          }
       }
    }
 
-   public static save(files: FileIO) {
-      var out: BufferedWriter = null;
+   public static save(files) {
+      var out = null;
       try {
          out = new BufferedWriter(new OutputStreamWriter(files.writeFile(file)));
          out.write(Boolean.toString(soundEnabled));
@@ -60,25 +60,25 @@ class Settings {
             out.write("\n");
          }
 
-      } catch (e: IOException) {
+      } catch (e) {
       } finally {
          try {
             if (out != null)
                out.close();
-         } catch (e: IOException) {
+         } catch (e) {
          }
       }
    }
 
-   public static getLives(): Integer {
+   public static getLives() {
       return lives;
    }
 
-   public static getScore(): Integer {
+   public static getScore() {
       return score;
    }
 
-   public static addScore(newScore: Integer) {
+   public static addScore(newScore) {
       score += newScore;
    }
 
@@ -92,7 +92,7 @@ class Settings {
          lives--;
    }
 
-   public static addHighScore(newHighScore: Integer) {
+   public static addHighScore(newHighScore) {
 
       for (var i = 0; i < 5; i++) {
          if (highscores[i] < score) {

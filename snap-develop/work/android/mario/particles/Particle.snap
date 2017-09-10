@@ -4,20 +4,20 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 class Particle {
-   public var distFromOrigin: Integer = 0;
-   private var direction: Double = 0d;
-   private var speedX: Float = 0f;
-   private var speedY: Float = 0f;
-   public var color: Integer = 0f;
-   public var x: Float = 0f;
-   public var y: Float = 0f;
-   private var initX: Integer = 0;
-   private var initY: Integer = 0;
-   private var bitmap: Bitmap;
-    private var speed: Float=1.5f;
-    private var dt: Float=1f;
+   public var distFromOrigin = 0;
+   private var direction = 0d;
+   private var speedX = 0f;
+   private var speedY = 0f;
+   public var color = 0f;
+   public var x = 0f;
+   public var y = 0f;
+   private var initX = 0;
+   private var initY = 0;
+   private var bitmap;
+    private var speed=1.5f;
+    private var dt=1f;
    
-   public new(x: Integer, y: Integer, bmp: Bitmap) {
+   public new(x, y, bmp) {
       init(x, y);
       this.direction = Math.PI * new Random().nextFloat();//.nextInt(NO_OF_DIRECTION)/ NO_OF_DIRECTION;
       this.speedX =speed*Math.cos(direction);
@@ -26,20 +26,20 @@ class Particle {
       bitmap = bmp;
    }
 
-   public init(x: Integer, y: Integer) {
+   public init(x, y) {
       distFromOrigin = 0;
       this.initX = this.x = x;
       this.initY = this.y = y;
    }
 
-   public updatePhysics(distChange: Integer) {
+   public updatePhysics(distChange) {
       distFromOrigin += 2;
       x =  x + speedX *dt;
       y =  y + speedY * dt;
       speedY=speedY+0.03f;
    }
 
-   public doDraw(canvas: Canvas, offsetX: Integer, offsetY: Integer) {
+   public doDraw(canvas, offsetX, offsetY) {
       canvas.drawBitmap(bitmap, offsetX+Math.floor(x),offsetY+Math.floor(y), null);
    }
 

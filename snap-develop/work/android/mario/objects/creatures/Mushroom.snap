@@ -11,13 +11,13 @@ import android.graphics.Bitmap;
 
 class Mushroom extends Creature {
    
-   private var redMushroom: Animation;
-   private var updateNum: Integer;
+   private var redMushroom;
+   private var updateNum;
 
-   public new(pixelX: Integer, pixelY: Integer): super(pixelX, pixelY) {
+   public new(pixelX, pixelY): super(pixelX, pixelY) {
       setIsItem(true);
       setIsAlwaysRelevant(true);
-      var shroom: Bitmap = MarioResourceManager.Mushroom;
+      var shroom = MarioResourceManager.Mushroom;
       redMushroom = new Animation();
       redMushroom.addFrame(shroom, 1000);
       redMushroom.addFrame(shroom, 1000);
@@ -27,7 +27,7 @@ class Mushroom extends Creature {
       dx = 0.07f;
    }
    
-   public updateCreature(map: TileMap, time: Integer) {
+   public updateCreature(map, time) {
       if(updateNum < 10) {
          setX(getX() + getdX()*time);
          setY(getY() + getdY()*time);

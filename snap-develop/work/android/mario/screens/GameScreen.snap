@@ -31,26 +31,26 @@ class GameScreen extends Screen {
         Ready, Running, Paused, GameOver
     }
 
-    var state: GameState = GameState.Ready;
+    var state = GameState.Ready;
 
     // Variable Setup
-    var livesLeft: Integer = 1;
-   private var mario: Mario;
-   private var map: TileMap;
-   private var backgroundMap: TileMap;
-   private var foregroundMap: TileMap;
-   private var renderer: GameRenderer;
-   public var gameLoader: GameLoader;
-   public var period: Integer=20;
-   public var paint: Paint;
-   public var paint2: Paint;
-   public var frameBuffer: Bitmap;
-   public var pauseDrawn: Boolean=false;
-   public var readyDrawn: Boolean=false;
+    var livesLeft = 1;
+   private var mario;
+   private var map;
+   private var backgroundMap;
+   private var foregroundMap;
+   private var renderer;
+   public var gameLoader;
+   public var period=20;
+   public var paint;
+   public var paint2;
+   public var frameBuffer;
+   public var pauseDrawn=false;
+   public var readyDrawn=false;
    /**to simulate key right key left using accelerometer*/
-   private var eventID: Integer=0;
-   private var gameCanvas: Canvas;
-    public new(game: Game): super(game) {
+   private var eventID=0;
+   private var gameCanvas;
+    public new(game): super(game) {
         frameBuffer=game.getBuffer();
         gameCanvas=new Canvas(frameBuffer);
         // Initialize game objects here
@@ -83,14 +83,14 @@ class GameScreen extends Screen {
          backgroundMap = gameLoader.loadOtherMaps("maps/back3.txt");
          foregroundMap = gameLoader.loadOtherMaps("maps/fore3.txt");
          map.setPlayer(mario); // set the games main player to mario
-      } catch (e: IOException){
+      } catch (e){
          System.out.println("Invalid Map.");
          Log.e("Errrr", "invalid map");
       }
    }
      
     public override update(deltaTime: Float) {
-        var touchEvents: List = game.getInput().getTouchEvents();
+        var touchEvents = game.getInput().getTouchEvents();
 
         // We have four separate update methods in this example.
         // Depending on the state of the game, we call different update methods.
@@ -105,7 +105,7 @@ class GameScreen extends Screen {
             updateGameOver(touchEvents);
     }
 
-    private updateReady(touchEvents: List) {
+    private updateReady(touchEvents) {
         // This example starts with a "Ready" screen.
         // When the user touches the screen, the game begins. 
         // state now becomes GameState.Running.
@@ -114,13 +114,13 @@ class GameScreen extends Screen {
             state = GameState.Running;
     }
 
-    private updateRunning(touchEvents: List, deltaTime: Float) {
+    private updateRunning(touchEvents, deltaTime) {
        //if (state != GameState.Running)return;
        if (mario.getHealth()==0) state = GameState.GameOver;
        // 1. All touch input is handled here:
-       var len: Integer = touchEvents.size();
+       var len = touchEvents.size();
        for (var i = 0; i < len; i++) {
-          var event: TouchEvent = touchEvents.get(i);
+          var event = touchEvents.get(i);
           
           if (event.type == TouchEvent.TOUCH_DOWN) {
              if (event.y>200)mario.processEvent(2); 
@@ -129,9 +129,9 @@ class GameScreen extends Screen {
           }
        }
        //   2. Handle accelerometer
-       var screenX: Float = game.getInput().getAccelY();
+       var screenX = game.getInput().getAccelY();
        // use screenX, screenY, as  accelerometer values now!
-       var iD: Integer=eventID;
+       var iD=eventID;
        if (screenX>1){
           iD=1;
           //mario.processEvent(-1);
@@ -149,7 +149,7 @@ class GameScreen extends Screen {
              
        // Update all relevant Creatures.
        for(var i = 0; i < map.relevantCreatures().size(); i++) {
-          var c: Creature = map.relevantCreatures().get(i);
+          var c = map.relevantCreatures().get(i);
           if(c !instanceof Coin) {
              c.updateCreature(map, period);
              mario.playerCollision(map, c);
@@ -200,10 +200,10 @@ class GameScreen extends Screen {
                 
     }
 
-    private updatePaused(touchEvents: List) {
-      var len: Integer = touchEvents.size();
+    private updatePaused(touchEvents) {
+      var len = touchEvents.size();
       for (var i = 0; i < len; i++) {
-         var event: TouchEvent = touchEvents.get(i);
+         var event = touchEvents.get(i);
          if (event.type == TouchEvent.TOUCH_UP) {
             if (inBounds(event, 0, 0, 200, 240)) {
 
@@ -220,10 +220,10 @@ class GameScreen extends Screen {
       }
    }
 
-    private updateGameOver(touchEvents: List) {
-        var len: Integer = touchEvents.size();
+    private updateGameOver(touchEvents) {
+        var len = touchEvents.size();
         for (var i = 0; i < len; i++) {
-            var event: TouchEvent = touchEvents.get(i);
+            var event = touchEvents.get(i);
             if (event.type == TouchEvent.TOUCH_UP) {
                 if (event.x > 300 && event.x < 980 && event.y > 100
                         && event.y < 500) {
@@ -249,7 +249,7 @@ class GameScreen extends Screen {
     }
 
     private goToMenu() {
-       var mainMenuScreen: MainMenuScreen=new MainMenuScreen(game);
+       var mainMenuScreen=new MainMenuScreen(game);
         game.setScreen(mainMenuScreen);
      }
     
@@ -264,7 +264,7 @@ class GameScreen extends Screen {
     private drawReadyUI() {
        if (readyDrawn) return;
        readyDrawn=true;
-       var g: Graphics = game.getGraphics();
+       var g = game.getGraphics();
        //Canvas canvas=new Canvas(frameBuffer);
         renderer.draw(gameCanvas, map, backgroundMap, foregroundMap, frameBuffer.getWidth(), frameBuffer.getHeight());
 
@@ -276,7 +276,7 @@ class GameScreen extends Screen {
 
  
    private drawRunningUI() {
-       // var g: Graphics = game.getGraphics();
+       // var g = game.getGraphics();
       //Canvas gameCanvas=new Canvas(frameBuffer);
         renderer.draw(gameCanvas, map, backgroundMap, foregroundMap, frameBuffer.getWidth(), frameBuffer.getHeight());
     }
@@ -284,12 +284,12 @@ class GameScreen extends Screen {
     private drawPausedUI() {
         if (pauseDrawn) return;
         pauseDrawn=true;
-       var g: Graphics = game.getGraphics();
+       var g = game.getGraphics();
       // Darken the entire screen so you can display the Paused screen.
         g.drawARGB(120, 0, 0, 0);
         /*
-        var w: Integer=frameBuffer.getWidth();
-        var h: Integer=frameBuffer.getHeight();
+        var w=frameBuffer.getWidth();
+        var h=frameBuffer.getHeight();
       //g.drawRect(0, 0, w, h, Color.argb(200, 100, 100, 100));
       g.drawString("Resume",w/2-50, h/2-30, paint2);
       g.drawString("Menu", w/2-40, h/2+30, paint2);
@@ -297,7 +297,7 @@ class GameScreen extends Screen {
     }
 
     private drawGameOverUI() {
-        var g: Graphics = game.getGraphics();
+        var g = game.getGraphics();
        // g.drawRect(0, 0, 300, 200, Color.BLACK);
         g.drawString("GAME OVER.", 200, 130, paint2);
     }
@@ -306,19 +306,19 @@ class GameScreen extends Screen {
     public override pause() {
        if (state == GameState.Running) {
           state = GameState.Paused;
-          var builder: AlertDialog.Builder = new AlertDialog.Builder(game.getContext());
+         var builder = new AlertDialog.Builder(game.getContext());
          builder.setTitle("Quit Game");
-         builder.setPositiveButton("Quit", (dialog: DialogInterface, whichButton: Integer) -> {
+         builder.setPositiveButton("Quit", (dialog, whichButton) -> {
              goToMenu();
          });
-         builder.setNegativeButton("Cancel", (dialog: DialogInterface, whichButton: Integer) -> {
+         builder.setNegativeButton("Cancel", (dialog, whichButton) -> {
                state = GameState.Running;
          });
          builder.setMessage("Return to main menu?");
-         builder.setOnCancelListener((dialog: DialogInterface) -> {
+         builder.setOnCancelListener((dialog) -> {
              state = GameState.Running;
          });
-          var dialog: AlertDialog = builder.create();
+          var dialog = builder.create();
           dialog.setCanceledOnTouchOutside(false);
           dialog.show();
        }
@@ -348,8 +348,8 @@ class GameScreen extends Screen {
  
     }
     
-    private inBounds(event: TouchEvent, x: Integer, y: Integer, width: Integer,
-         height: Integer): Boolean {
+    private inBounds(event, x, y, width,
+         height) {
        
       if (event.x > x && event.x < x + width - 1 && event.y > y
             && event.y < y + height - 1)

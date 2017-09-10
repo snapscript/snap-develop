@@ -13,16 +13,16 @@ import android.graphics.Rect;
 
 class Piranha extends Creature {
    
-   private static var p1: Bitmap;
-   private static var p2: Bitmap;
-   public static var turn: Animation ;
-   private static var initialized: Boolean = false;
+   private static var p1;
+   private static var p2;
+   public static var turn ;
+   private static var initialized = false;
 
-   var dy: Float=0.3f;
-   var y1: Float=0f;
-   var initY: Float=0f;
-   static var wait: Integer=0;
-   public new(pixelX: Integer, pixelY: Integer, soundManager: MarioSoundManager): super(pixelX, pixelY,soundManager) {
+   var dy=0.3f;
+   var y1=0f;
+   var initY=0f;
+   static var wait=0;
+   public new(pixelX, pixelY, soundManager): super(pixelX, pixelY,soundManager) {
       if (!initialized) {
          p1 =  MarioResourceManager.Piranha_1;
          p2 =  MarioResourceManager.Piranha_2;
@@ -36,13 +36,13 @@ class Piranha extends Creature {
       setOffsetX(-3);
    }
    
-   public override draw(g: Canvas, x: Integer, y: Integer) {
+   public override draw(g, x, y) {
       g.drawBitmap(currentAnimation().getImage(),
          new Rect(0,0,getWidth(),getHeight()-Math.floor(y1)),
          new Rect(x+getOffsetX() , y+getOffsetY(),x +getWidth()+getOffsetX(),y+getOffsetY() +  getHeight()-Math.floor(y1)),null);
    }
    
-   public override updateCreature(map: TileMap, time: Integer) {
+   public override updateCreature(map, time) {
       if (wait>0){
          wait--;
          return;

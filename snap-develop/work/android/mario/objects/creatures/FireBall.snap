@@ -11,18 +11,18 @@ import android.graphics.Point;
 class FireBall extends Creature {
 
 
-   private var dead: Animation;
-   private var ball: Animation;
-   private static var fb_1: Bitmap; 
-   private static var fb_2: Bitmap; 
-   private static var fb_3: Bitmap; 
-   private static var fb_4: Bitmap; 
-   private static var fb_5: Bitmap;
-   private static var fb_6: Bitmap;
-   private static var initialized: Boolean = false;
-   public static var fireballsCount: Integer=0;
+   private var dead;
+   private var ball;
+   private static var fb_1; 
+   private static var fb_2; 
+   private static var fb_3; 
+   private static var fb_4; 
+   private static var fb_5;
+   private static var fb_6;
+   private static var initialized = false;
+   public static var fireballsCount=0;
 
-   public new(x: Integer, y: Integer, direction: Float, soundManager: MarioSoundManager): super(x, y, soundManager) {
+   public new(x, y, direction, soundManager): super(x, y, soundManager) {
       fireballsCount++;
       if (!initialized) {
          fb_1 =  MarioResourceManager.fb_1;//loadImage("baddies/fireball_1.png");
@@ -49,7 +49,7 @@ class FireBall extends Creature {
       //dy=0.3f;
    }
 
-   public override xCollide(p: Point) {
+   public override xCollide(p) {
       dx=0;
       dy=0;
       //super.xCollide(p);

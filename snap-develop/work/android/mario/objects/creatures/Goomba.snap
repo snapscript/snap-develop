@@ -9,11 +9,11 @@ import android.graphics.Bitmap;
 
 class Goomba extends Creature {
    
-   private var waddle: Animation, dead, flip;
-   private static var w1: Bitmap,w2,smashed,flipped;
-   private static var initialised: Boolean=false;
+   private var waddle, dead, flip;
+   private static var w1,w2,smashed,flipped;
+   private static var initialised=false;
    
-   public new(x: Integer, y: Integer, soundManager: MarioSoundManager): super(x, y, soundManager) {
+   public new(x, y, soundManager): super(x, y, soundManager) {
       if (!initialised){
           w1 = MarioResourceManager.Goomba_Normal_1;
           w2 = MarioResourceManager.Goomba_Normal_2;
@@ -29,7 +29,7 @@ class Goomba extends Creature {
    }
    
    public wakeUp() {
-      var r: Random = new Random();
+      var r = new Random();
       super.wakeUp();
       dx = (r.nextInt(3) == 0) ? -0.03f : 0.03f;
    }

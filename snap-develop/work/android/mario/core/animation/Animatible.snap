@@ -8,40 +8,40 @@ import android.graphics.Canvas;
 
 class Animatible {
    
-   private var currAnim: Animation;
-   private var offsetX: Integer = 0;
-   private var offsetY: Integer = 0;
+   private var currAnim;
+   private var offsetX = 0;
+   private var offsetY = 0;
 
-   public abstract draw(g: Canvas, pixelX: Integer, pixelY: Integer);
-   public abstract draw(g: Canvas, pixelX: Integer, pixelY: Integer, offsetX: Integer, offsetY: Integer);
-   public abstract getHeight(): Integer;
-   public abstract getWidth(): Integer;
+   public abstract draw(g, pixelX, pixelY);
+   public abstract draw(g, pixelX, pixelY, offsetX, offsetY);
+   public abstract getHeight();
+   public abstract getWidth();
 
-   public currentAnimation(): Animation {
+   public currentAnimation() {
       return currAnim;
    }
    
-   public setAnimation(currAnim: Animation) {
+   public setAnimation(currAnim) {
       this.currAnim = currAnim;
    }
    
-   public update(time: Integer) {
+   public update(time) {
       currAnim.update(time);
    }
    
-   public setOffsetX(offsetX: Integer) {
+   public setOffsetX(offsetX) {
       this.offsetX = offsetX;
    }
    
-   public setOffsetY(offsetY: Integer) {
+   public setOffsetY(offsetY) {
       this.offsetY = offsetY;
    }
    
-   public getOffsetX(): Integer {
+   public getOffsetX() {
       return offsetX;
    }
    
-   public getOffsetY(): Integer {
+   public getOffsetY() {
       return offsetY;
    }
 }

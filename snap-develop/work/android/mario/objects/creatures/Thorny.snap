@@ -13,18 +13,18 @@ import android.graphics.Point;
 
 class Thorny extends Creature {
    
-   private var left: Animation;
-   private var right: Animation;
-   private var flip: Animation;
-   private var r: Random;
+   private var left;
+   private var right;
+   private var flip;
+   private var r;
    
-   private static var left_1: Bitmap;
-   private static var left_2: Bitmap;
-   private static var right_1: Bitmap;
-   private static var right_2: Bitmap;
-   private static var flipped: Bitmap;
-   private static var initialized: Boolean=false;
-   public new(x: Integer, y: Integer, soundManager: MarioSoundManager): super(x, y, soundManager) {
+   private static var left_1;
+   private static var left_2;
+   private static var right_1;
+   private static var right_2;
+   private static var flipped;
+   private static var initialized=false;
+   public new(x, y, soundManager): super(x, y, soundManager) {
       r = new Random();
       if (!initialized){
           left_1 = MarioResourceManager.Thorny[0];
@@ -46,7 +46,7 @@ class Thorny extends Creature {
       setAnimation(left);
    }
    
-   public xCollide(p: Point) {
+   public xCollide(p) {
       super.xCollide(p);
       if(currentAnimation() == left) {
          setAnimation(right);
@@ -76,7 +76,7 @@ class Thorny extends Creature {
    
    public wakeUp() {
       super.wakeUp();
-      var rNum: Integer = r.nextInt(3);
+      var rNum = r.nextInt(3);
          if(rNum == 0 || rNum == 1) {
             dx = -0.03f;
             setAnimation(left);

@@ -11,34 +11,34 @@ import org.snapscript.game.framework.sfx.AndroidAudio;
  *
  */
 class MarioSoundManager extends AndroidAudio{
-   private static var bump: Sound;
-   private static var kick: Sound; 
-   private static var coin: Sound;
-   private static var jump: Sound;
-   private static var pause: Sound;
-   private static var itemSprout: Sound;
-   private static var bonusPoints: Sound;
-   private static var healthUp: Sound;
-   private static var healthDown: Sound;
-   private static var brick_shatter: Sound;
-   private static var fireball: Sound;
+   private static var bump;
+   private static var kick; 
+   private static var coin;
+   private static var jump;
+   private static var pause;
+   private static var itemSprout;
+   private static var bonusPoints;
+   private static var healthUp;
+   private static var healthDown;
+   private static var brick_shatter;
+   private static var fireball;
     
-   private static var hurt1: Sound; 
-   private static var hurt2: Sound;  
-   private static var yahoo1: Sound; 
-   private static var yahoo2: Sound; 
+   private static var hurt1; 
+   private static var hurt2;  
+   private static var yahoo1; 
+   private static var yahoo2; 
 
-   private static var music: Music;
+   private static var music;
    /**volume of sound in Float (0 to 1)*/
-   private  var soundVolume: Float=0.9f;
+   private  var soundVolume=0.9f;
     /**volume of music in Float (0 to 1)*/
-   private  var musicVolume: Float=0.7f;
+   private  var musicVolume=0.7f;
     
-   private static var firstTimeCreate: Boolean = true;
+   private static var firstTimeCreate = true;
    
-   public static var musicEnabled: Boolean=true;
-   public static var soundEnabled: Boolean=true;
-   public new(game: Game):super(game) {
+   public static var musicEnabled=true;
+   public static var soundEnabled=true;
+   public new(game):super(game) {
     }
    
    /**
@@ -71,14 +71,14 @@ class MarioSoundManager extends AndroidAudio{
     * returns true if resources are ready (loaded in memory)
     * @return
     */
-   public isReady(): Boolean{
+   public isReady(){
       return !firstTimeCreate;
    }
    
    private loadMusic(){
       //music=createMusic(filename);
-      var r: Random = new Random();
-      var rNum: Integer = r.nextInt(4);
+      var r = new Random();
+      var rNum = r.nextInt(4);
       if(rNum == 0) {
          music=createMusic("sounds/smwovr2.mid");
       } else if(rNum == 1) {
@@ -137,8 +137,8 @@ class MarioSoundManager extends AndroidAudio{
    }
    
    public playHurt() {
-      var r: Random = new Random();
-      var rNum: Integer = r.nextInt(2);
+      var r = new Random();
+      var rNum = r.nextInt(2);
       if(rNum == 0) {
          hurt1.play(soundVolume);
       } else {
@@ -147,8 +147,8 @@ class MarioSoundManager extends AndroidAudio{
    }
    
    public playCelebrate() {
-      var r: Random = new Random();
-      var rNum: Integer = r.nextInt(2);
+      var r = new Random();
+      var rNum = r.nextInt(2);
       if(rNum == 0) {
          yahoo1.play(soundVolume);
       } else {
@@ -168,19 +168,19 @@ class MarioSoundManager extends AndroidAudio{
       if (music!=null)music.stop();
    }
    
-   public getSoundVolume(): Float {
+   public getSoundVolume() {
       return soundVolume;
    }
 
-   public setSoundVolume(soundVolume: Float) {
+   public setSoundVolume(soundVolume) {
       this.soundVolume = soundVolume;
    }
 
-   public getMusicVolume(): Float {
+   public getMusicVolume() {
       return musicVolume;
    }
 
-   public setMusicVolume(musicVolume: Float) {
+   public setMusicVolume(musicVolume) {
       this.musicVolume = musicVolume;
    }
 }

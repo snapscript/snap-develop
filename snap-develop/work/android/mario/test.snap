@@ -1,8 +1,0 @@
-
-import org.snapscript.game.framework.Screen;
-import mario.screens.SplashLoadingScreen;
-
-var s = new SplashLoadingScreen(null);
-println(s.class.types);
-println(s.class.types[0].types);
-println(s.class.types[0].types[0].types);

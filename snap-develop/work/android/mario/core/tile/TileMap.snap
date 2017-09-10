@@ -17,22 +17,22 @@ import android.graphics.Bitmap;
 class TileMap {
    
    // fields
-   private var tiles: GameTile[][]; 
-   private var platforms: List; // List of Platforms on the current screen.
-   private var creatures: List; // Starts containing every Creature and decreases as they die.
-   private var relevantCreatures: List; // List of relevant Creatures to the current frame.
+   private var tiles; 
+   private var platforms; // List of Platforms on the current screen.
+   private var creatures; // Starts containing every Creature and decreases as they die.
+   private var relevantCreatures; // List of relevant Creatures to the current frame.
                                    // This is a subset of creatures.
-   private var creaturesToAdd: List; // List of Creatures to be added inbetween frames.
-   private var animatedTiles: List;
-   private var slopedTiles: List;
-   private var player: Mario; 
-   private var visible: Boolean =true;
-   public var particleSystem: ParticleSystem;
+   private var creaturesToAdd; // List of Creatures to be added inbetween frames.
+   private var animatedTiles;
+   private var slopedTiles;
+   private var player; 
+   private var visible =true;
+   public var particleSystem;
    /**
     * Constructs a new TileMap with the specified width and height (in number of tiles)
     * of the map.
     */
-   public new(width: Integer, height: Integer) {
+   public new(width, height) {
       tiles = new GameTile[width][height];
       creatures = new LinkedList();
       relevantCreatures = new ArrayList();
@@ -42,21 +42,21 @@ class TileMap {
       slopedTiles = new ArrayList();
    }
    
-   public getTiles(): GameTile[][] {
+   public getTiles() {
       return tiles;
    }
    
    /**
     * @return the width of this TileMap in GameTiles.
     */
-   public getWidth(): Integer {
+   public getWidth() {
       return tiles.length;
    }
    
    /**
     * @return the height of this TileMap in GameTiles.
     */
-   public getHeight(): Integer {
+   public getHeight() {
       return tiles[0].length;
    }
    
@@ -64,7 +64,7 @@ class TileMap {
     * @return the GameTiles at tiles[x][y]. If x or y is out of bounds
     * or if tiles[x][y] == null, null is returned.
     */
-   public getTile(x: Integer, y: Integer): GameTile {
+   public getTile(x, y) {
       if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) {
          return null;
       } else {
@@ -80,7 +80,7 @@ class TileMap {
     * @return the image of the GameTiles at tiles[x][y]. If x or y is out of bounds
     * or if tiles[x][y] == null, null is returned.
     */
-   public getImage(x: Integer, y: Integer): Bitmap {
+   public getImage(x, y) {
       if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) {
          return null;
       } else {
@@ -96,7 +96,7 @@ class TileMap {
     * Sets tiles[x][y] equal to parameter tile.
     * This is used to set animated GameTiles.
     */
-   public setTile(x: Integer, y: Integer, tile: GameTile) {
+   public setTile(x, y, tile) {
       tiles[x][y] = tile;
    }
    
@@ -104,21 +104,21 @@ class TileMap {
     * Sets tiles[x][y] equal to a new Tile with no animation and the constant Image img.
     * This is used to set non-animated GameTiles.
     */
-   public setTile(x: Integer, y: Integer, img: Bitmap) {
+   public setTile(x, y, img) {
       tiles[x][y] = new GameTile(x, y, null, img);
    }
    
    /**
     * @return the player sprite.
     */
-   public getPlayer(): Mario {
+   public getPlayer() {
       return player;
    }
    
    /**
     * Sets the player sprite for this map.
     */
-   public setPlayer(player: Mario) {
+   public setPlayer(player) {
       this.player = player;
    }
    
@@ -126,35 +126,35 @@ class TileMap {
    /**
     * @return a List containing every Platform in this map.
     */
-   public platforms(): List {
+   public platforms() {
       return platforms;
    }
    
    /**
     * @return a List containing every Creature in this map.
     */
-   public creatures(): List {
+   public creatures() {
       return creatures;
    }
    
    /**
     * @return a List containing Creatures to add to this map after the next game update.
     */
-   public creaturesToAdd(): List {
+   public creaturesToAdd() {
       return creaturesToAdd;
    }
    
    /**
     * @return a List containing animated Tile in this map.
     */
-   public animatedTiles(): List {
+   public animatedTiles() {
       return animatedTiles;
    }
    
    /**
     * @return a List containing every SlopedTile in this map.
     */
-   public slopedTiles(): List {
+   public slopedTiles() {
       return slopedTiles;
    }
    
@@ -164,15 +164,15 @@ class TileMap {
     * A 'relevant Creature' is a Creature that the current frame cares about. 
     * This is generally creatures on screen or creatures that need to be updated globally. 
     */
-   public relevantCreatures(): List {
+   public relevantCreatures() {
       return relevantCreatures;
    }
 
-   public isVisible(): Boolean {
+   public isVisible() {
       return visible;
    }
 
-   public setVisible(visible: Boolean) {
+   public setVisible(visible) {
       this.visible = visible;
    }
 }

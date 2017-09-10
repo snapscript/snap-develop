@@ -7,25 +7,25 @@ import android.graphics.Bitmap;
 
 class Platform extends Creature {
    
-   public var move: Animation;
-   public var turn: Integer = 0;
-   public var isVertical: Boolean = false;
-   public var isHorizontal: Boolean = false;
-   public var switchedVertical: Boolean = false;
-   public var switchedHorizontal: Boolean = false;
-   public var canJumpThrough: Boolean = false;
-   public var oldX: Float = 0f;
-   public var oldY: Float = 0f;
-   public var oldDx: Float = 0f;
-   public var oldDy: Float = 0f;
+   public var move;
+   public var turn = 0;
+   public var isVertical = false;
+   public var isHorizontal = false;
+   public var switchedVertical = false;
+   public var switchedHorizontal = false;
+   public var canJumpThrough = false;
+   public var oldX = 0f;
+   public var oldY = 0f;
+   public var oldDx = 0f;
+   public var oldDy = 0f;
    
-   public new(pixelX: Integer, pixelY: Integer): super(pixelX, pixelY) {
+   public new(pixelX, pixelY): super(pixelX, pixelY) {
       setIsAlwaysRelevant(true);
       setIsPlatform(true);
       turn = 1;
       dx = 0;
       dy = 0;
-      var red_platform: Bitmap = MarioResourceManager.Red_Platform_2;
+      var red_platform = MarioResourceManager.Red_Platform_2;
       move = new Animation(2000).addFrame(red_platform);
       setAnimation(move);
    }
@@ -33,59 +33,59 @@ class Platform extends Creature {
    /**
     * @return the oldX
     */
-   public getOldX(): Float {
+   public getOldX() {
       return oldX;
    }
 
    /**
     * @param oldX the oldX to set
     */
-   public setOldX(oldX: Float) {
+   public setOldX(oldX) {
       this.oldX = oldX;
    }
 
    /**
     * @return the oldY
     */
-   public getOldY(): Float {
+   public getOldY() {
       return oldY;
    }
 
    /**
     * @param oldY the oldY to set
     */
-   public setOldY(oldY: Float) {
+   public setOldY(oldY) {
       this.oldY = oldY;
    }
 
-   public canJumpThrough(): Boolean {
+   public canJumpThrough() {
       return canJumpThrough;
    }
-   public isHorizontal(): Boolean {
+   public isHorizontal() {
       return isHorizontal;
    }
    
-   public isVertical(): Boolean {
+   public isVertical() {
       return isVertical;
    }
    
-   public getLastdX(): Float {
+   public getLastdX() {
       return oldDx;
    }
    
-   public getLastdY(): Float {
+   public getLastdY() {
       return oldDy;
    }
    
-   public switchedVertical(): Boolean {
+   public switchedVertical() {
       return switchedVertical;
    }
    
-   public switchedHorizontal(): Boolean {
+   public switchedHorizontal() {
       return switchedHorizontal;
    }
    
-   public updateCreature(map: TileMap, time: Integer) {
+   public updateCreature(map, time) {
 
       
       if(dx != 0) {

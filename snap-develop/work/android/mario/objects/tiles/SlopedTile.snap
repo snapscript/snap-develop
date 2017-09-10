@@ -5,11 +5,11 @@ import android.graphics.Point;
 
 class SlopedTile extends GameTile {
    
-   private var startingPoint: Point;
-   private var endingPoint: Point;
-   private var hasPositiveSlope: Boolean = false;
+   private var startingPoint;
+   private var endingPoint;
+   private var hasPositiveSlope = false;
       
-   public new(pixelX: Integer, pixelY: Integer, img: Bitmap, hasPositiveSlope: Boolean): super(pixelX, pixelY, null, img) {
+   public new(pixelX, pixelY, img, hasPositiveSlope): super(pixelX, pixelY, null, img) {
       setIsCollidable(false);
       setIsCollidable(true);
       setIsSloped(true);
@@ -25,19 +25,19 @@ class SlopedTile extends GameTile {
       }
    }
    
-   public getStartingPoint(): Point {
+   public getStartingPoint() {
       return startingPoint;
    }
    
-   public getEndingPoint(): Point {
+   public getEndingPoint() {
       return endingPoint;
    }
    
-   public hasPositiveSlope(): Boolean {
+   public hasPositiveSlope() {
       return hasPositiveSlope;
    }
    
-   private correlateY(pixelX: Float): Integer {
+   private correlateY(pixelX) {
       if(pixelX >= endingPoint.x) {
          return endingPoint.y;
       } else if(pixelX <= startingPoint.x) {
@@ -47,7 +47,7 @@ class SlopedTile extends GameTile {
       }
    }
    
-   private correlateX(pixelY: Float): Integer {
+   private correlateX(pixelY) {
       if(pixelY >= startingPoint.y) {
          return startingPoint.x;
       } else if(pixelY <= endingPoint.y) {
@@ -57,9 +57,9 @@ class SlopedTile extends GameTile {
       }
    }
    
-   public isWithin(pixelX: Float, pixelY: Float, deltaX: Float, deltaY: Float): Point {
-      var xOnLine: Integer = correlateX(pixelY);
-      var yOnLine: Integer = correlateY(pixelX);
+   public isWithin(pixelX, pixelY, deltaX, deltaY) {
+      var xOnLine = correlateX(pixelY);
+      var yOnLine = correlateY(pixelX);
 //      System.out.println();
 //      System.out.println("X on Line: " + xOnLine);
 //      System.out.println("Starting Point X: " + startingPoint.x);

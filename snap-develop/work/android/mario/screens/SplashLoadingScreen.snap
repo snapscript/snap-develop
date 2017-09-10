@@ -7,12 +7,12 @@ import mario.core.Assets;
 
 class SplashLoadingScreen extends Screen {
     
-   public new(game: Game): super(game) {
+   public new(game): super(game) {
     }
 
     
     public override update(deltaTime: Float) {
-       var g: Graphics = game.getGraphics();
+       var g = game.getGraphics();
        Assets.splash= g.newImage("backgrounds/splash.png",ImageFormat.RGB565);
        try {
          var s = new LoadingScreen(game);

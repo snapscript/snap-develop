@@ -10,16 +10,16 @@ import android.graphics.Point;
 
 class RedShell extends Creature {
    
-   private var still: Animation;
-   private var rotate: Animation;
-   private var flip: Animation;
+   private var still;
+   private var rotate;
+   private var flip;
    
-   private var map: TileMap;
-   private var isMoving: Boolean;
+   private var map;
+   private var isMoving;
    
-   private static var stay: Bitmap,rotate_1,rotate_2,rotate_3, flipped;
-   private static var initialized: Boolean=false;
-   public new(x: Integer, y: Integer, map: TileMap, soundManager: MarioSoundManager, isStill: Boolean): super(x, y, soundManager) {
+   private static var stay,rotate_1,rotate_2,rotate_3, flipped;
+   private static var initialized=false;
+   public new(x, y, map, soundManager, isStill): super(x, y, soundManager) {
       this.map = map;
       setIsAlwaysRelevant(true);
        
@@ -51,13 +51,13 @@ class RedShell extends Creature {
       dx = 0;
    }
    
-   public isMoving(): Boolean {
+   public isMoving() {
       return isMoving;
    }
    
-   public xCollide(p: Point) {
+   public xCollide(p) {
       super.xCollide(p);
-      var tile: GameTile = map.getTile(p.x, p.y);
+      var tile = map.getTile(p.x, p.y);
       if(this.isOnScreen()) {
          soundManager.playBump();
          if(tile != null) {
@@ -75,7 +75,7 @@ class RedShell extends Creature {
    }
    
    // if you run or jump on the shell faster, the shell moves faster.
-   public jumpedOn(fromRight: Boolean, attackerSpeed: Float) {
+   public jumpedOn(fromRight, attackerSpeed) {
       if(isMoving) {
          isMoving = false;
          setAnimation(still);

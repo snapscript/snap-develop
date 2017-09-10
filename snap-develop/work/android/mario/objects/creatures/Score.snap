@@ -10,14 +10,14 @@ import android.graphics.Bitmap;
 
 class Score extends Creature {
    
-   public var oneHundred: Animation;
-   private static var one_hundred: Bitmap;
-   private static var initialized: Boolean=false;
-   public new(x: Integer, y: Integer): super(x, y) {
+   public var oneHundred;
+   private static var one_hundred;
+   private static var initialized=false;
+   public new(x, y): super(x, y) {
       setIsItem(true);
       
       dy = -0.45f;
-      if (!initialized){
+      if (!Score.initialized){
          Score.one_hundred = MarioResourceManager.Score_100_New6;
          Score.initialized=true;
       }
@@ -29,7 +29,7 @@ class Score extends Creature {
       setAnimation(oneHundred);
    }
    
-   public updateCreature(map: TileMap, time: Integer) {
+   public updateCreature(map, time) {
       this.update(time);
       y = y + dy * time;
       if(dy < 0) {

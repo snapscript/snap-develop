@@ -23,106 +23,106 @@ class MarioResourceManager
     //---------------------------------------------
     // VARIABLES
     //---------------------------------------------
-    public static var activity: Activity;
-    public static var inputStream: InputStream;
-    public static var options: Options;
+    public static var activity;
+    public static var inputStream;
+    public static var options;
     
-   private static var firstTimeCreate: Boolean = true;
+   private static var firstTimeCreate = true;
 
    //left mario
-   public static var Mario_Big_Left_Still: Bitmap; 
-   public static var Mario_Big_Left_1: Bitmap; 
-   public static var Mario_Big_Left_2: Bitmap; 
-   public static var Mario_Big_Left_Run_1: Bitmap; 
-   public static var Mario_Big_Left_Run_2: Bitmap; 
-   public static var Mario_Big_Crouch_Left: Bitmap; 
-   public static var Mario_Big_Jump_Left: Bitmap; 
-   public static var Mario_Big_Change_Direction_Left: Bitmap; 
+   public static var Mario_Big_Left_Still; 
+   public static var Mario_Big_Left_1; 
+   public static var Mario_Big_Left_2; 
+   public static var Mario_Big_Left_Run_1; 
+   public static var Mario_Big_Left_Run_2; 
+   public static var Mario_Big_Crouch_Left; 
+   public static var Mario_Big_Jump_Left; 
+   public static var Mario_Big_Change_Direction_Left; 
    //Right mario
-   public static var Mario_Big_Right_Still: Bitmap; 
-   public static var Mario_Big_Right_1: Bitmap;
-   public static var Mario_Big_Right_2: Bitmap;
-   public static var Mario_Big_Right_Run_1: Bitmap;
-   public static var Mario_Big_Right_Run_2: Bitmap;
-   public static var Mario_Big_Crouch_Right: Bitmap;
-   public static var Mario_Big_Jump_Right: Bitmap;
-   public static var Mario_Big_Change_Direction_Right: Bitmap;
+   public static var Mario_Big_Right_Still; 
+   public static var Mario_Big_Right_1;
+   public static var Mario_Big_Right_2;
+   public static var Mario_Big_Right_Run_1;
+   public static var Mario_Big_Right_Run_2;
+   public static var Mario_Big_Crouch_Right;
+   public static var Mario_Big_Jump_Right;
+   public static var Mario_Big_Change_Direction_Right;
     //coin
-   public static var Coin_1: Bitmap;
-   public static var Coin_2: Bitmap;
-   public static var Coin_3: Bitmap;
-   public static var Coin_4: Bitmap;
-   public static var Coin_5: Bitmap;
-   public static var Coin_6: Bitmap;
-   public static var Coin_7: Bitmap;
-   public static var Coin_8: Bitmap;
+   public static var Coin_1;
+   public static var Coin_2;
+   public static var Coin_3;
+   public static var Coin_4;
+   public static var Coin_5;
+   public static var Coin_6;
+   public static var Coin_7;
+   public static var Coin_8;
    //goomba
-   public static var Goomba_Normal_1: Bitmap;
-   public static var Goomba_Normal_2: Bitmap;
-   public static var Goomba_Dead: Bitmap;
-   public static var Goomba_Flip: Bitmap;
+   public static var Goomba_Normal_1;
+   public static var Goomba_Normal_2;
+   public static var Goomba_Dead;
+   public static var Goomba_Flip;
    //mushroom
-   public static var Mushroom: Bitmap;
+   public static var Mushroom;
    //platform
-   public static var Red_Platform_2: Bitmap;
+   public static var Red_Platform_2;
    //redKoopa
-   public static var  Koopa_Red_Left_1: Bitmap;
-   public static var Koopa_Red_Left_2: Bitmap;
-   public static var Koopa_Red_Right_1: Bitmap;
-   public static var Koopa_Red_Right_2: Bitmap;
+   public static var  Koopa_Red_Left_1;
+   public static var Koopa_Red_Left_2;
+   public static var Koopa_Red_Right_1;
+   public static var Koopa_Red_Right_2;
    //redShell
-   public static var Red_Shell_1: Bitmap;
-   public static var Red_Shell_2: Bitmap;
-   public static var Red_Shell_3: Bitmap;
-   public static var Red_Shell_4: Bitmap;
-   public static var Red_Shell_Flip: Bitmap;
+   public static var Red_Shell_1;
+   public static var Red_Shell_2;
+   public static var Red_Shell_3;
+   public static var Red_Shell_4;
+   public static var Red_Shell_Flip;
    //Thorny
-   public static var Thorny: Bitmap[];
+   public static var Thorny;
    //Score
-   public static var Score_100_New6: Bitmap;
+   public static var Score_100_New6;
    //tree
-   public static var Tree_1: Bitmap;
-   public static var Tree_2: Bitmap;
+   public static var Tree_1;
+   public static var Tree_2;
    //QuestionBlock
-   public static var Question_Block_0: Bitmap;
-   public static var Question_Block_1: Bitmap;
-   public static var Question_Block_2: Bitmap;
-   public static var Question_Block_3: Bitmap;
-   public static var Question_Block_Dead: Bitmap;
+   public static var Question_Block_0;
+   public static var Question_Block_1;
+   public static var Question_Block_2;
+   public static var Question_Block_3;
+   public static var Question_Block_Dead;
    //RotatingBlock
-   public static var Rotating_Block_Hit_1: Bitmap;
-   public static var Rotating_Block_Hit_2: Bitmap;
-   public static var Rotating_Block_Hit_3: Bitmap;
-   public static var Rotating_Block_Still: Bitmap;
+   public static var Rotating_Block_Hit_1;
+   public static var Rotating_Block_Hit_2;
+   public static var Rotating_Block_Hit_3;
+   public static var Rotating_Block_Still;
    //PlainTileMap
-   public static var Plain_Tiles: Bitmap;
+   public static var Plain_Tiles;
    //Background
-   public static var Background: Bitmap;
+   public static var Background;
    //splash
-   public static var Splash: Bitmap;
+   public static var Splash;
    //menu
-   public static var menu: Bitmap;
+   public static var menu;
    //grass
-   public static var Sloped_Tile: Bitmap;
-   public static var Grass_Edge: Bitmap;
-   public static var Grass_Center: Bitmap;
+   public static var Sloped_Tile;
+   public static var Grass_Edge;
+   public static var Grass_Center;
    //bricks shatter
-   public static var brick_particle: Bitmap;
+   public static var brick_particle;
    //fireball
-   public static var fb_1: Bitmap;
-   public static var fb_2: Bitmap;
-   public static var fb_3: Bitmap;
-   public static var fb_4: Bitmap;
-   public static var fb_5: Bitmap;
-   public static var fb_6: Bitmap;
+   public static var fb_1;
+   public static var fb_2;
+   public static var fb_3;
+   public static var fb_4;
+   public static var fb_5;
+   public static var fb_6;
    //piranha
-   public static var Piranha_1: Bitmap;
-   public static var Piranha_2: Bitmap;
+   public static var Piranha_1;
+   public static var Piranha_2;
    //Hud
-   public static var digits: Bitmap[];
+   public static var digits;
    
    
-   public  new(game: Game)
+   public  new(game)
     {
        activity=game.getContext();
        options=new BitmapFactory.Options();
@@ -236,8 +236,8 @@ class MarioResourceManager
    
    //loads random background
    private loadBackground(){
-      var r: Random = new Random();
-      var rNum: Integer = r.nextInt(4);
+      var r = new Random();
+      var rNum = r.nextInt(4);
       if(rNum == 0) {
          Background=loadImage("backgrounds/Icy_Background.png");
       } else if(rNum == 1) {
@@ -250,7 +250,7 @@ class MarioResourceManager
    }
    
    
-    public static loadImage(fileName: String): Bitmap
+    public static loadImage(fileName)
     {
        try {
           Log.i("resource",fileName);
@@ -258,7 +258,7 @@ class MarioResourceManager
          
          return BitmapFactory.decodeStream(inputStream, null, new BitmapFactory.Options());
       
-      } catch (e: IOException) {
+      } catch (e) {
          // TODO Auto-generated catch block
          //e.printStackTrace();
          Log.e("resource",e.getMessage()+fileName);
@@ -267,12 +267,12 @@ class MarioResourceManager
     }
     
    /** Horizontally flips img. */
-   public static horizontalFlip(img: Bitmap): Bitmap {   
+   public static horizontalFlip(img) {   
         /*
       int w = img.getWidth();   
-        var h: Integer = img.getHeight();   
-        var dimg: Bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);     
-        var g: Canvas = new Canvas(dimg); 
+        var h = img.getHeight();   
+        var dimg = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);     
+        var g = new Canvas(dimg); 
         g.drawBitmap(img, new Rect(w, 0, 0, h),new Rect(0, 0, w, h), null);   
         */
         return img;   

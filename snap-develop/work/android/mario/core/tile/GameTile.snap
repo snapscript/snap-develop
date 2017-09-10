@@ -11,15 +11,15 @@ import android.graphics.Bitmap;
 class GameTile extends Tile {
    
    // fields
-   private var isCollidable: Boolean = true;
-   private var isSloped: Boolean = false;
-   private var collidingCreatures: List;
+   private var isCollidable = true;
+   private var isSloped = false;
+   private var collidingCreatures;
    
    /**
     * Constructs a new GameTile at the pixel (x,y) position with the Animation anim
     * and Image img.
     */
-   public new(pixelX: Integer, pixelY: Integer, anim: Animation, img: Bitmap): super(pixelX, pixelY, anim, img) {
+   public new(pixelX, pixelY, anim, img): super(pixelX, pixelY, anim, img) {
       collidingCreatures = new LinkedList();
    }
    
@@ -27,7 +27,7 @@ class GameTile extends Tile {
     * Constructs a new GameTile at the pixel (x,y) position with no Animation
     * and the constant Image img.
     */
-   public new(pixelX: Integer, pixelY: Integer, img: Bitmap): this(pixelX, pixelY, null, img) {
+   public new(pixelX, pixelY, img): this(pixelX, pixelY, null, img) {
    }
    
    /**
@@ -38,29 +38,29 @@ class GameTile extends Tile {
    /**
     * @return true if this GameTile is collidable, else false.
     */
-   public isCollidable(): Boolean {
+   public isCollidable() {
       return isCollidable;
    }
    
    /**
     * @effects sets isCollidable to true or false.
     */
-   public setIsCollidable(isCollidable: Boolean) {
+   public setIsCollidable(isCollidable) {
       this.isCollidable = isCollidable;
    }
    
-   public isSloped(): Boolean {
+   public isSloped() {
       return isSloped;
    }
    
-   public setIsSloped(isSloped: Boolean) {
+   public setIsSloped(isSloped) {
       this.isSloped = isSloped;
    }
 
    /**
     * @return a list of Creatures who are currently colliding with this GameTile.
     */
-   public collidingCreatures(): List {
+   public collidingCreatures() {
       return collidingCreatures;
    }
 }

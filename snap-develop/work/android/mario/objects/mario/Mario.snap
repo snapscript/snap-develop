@@ -40,99 +40,99 @@ import android.graphics.Point;
 class Mario extends CollidableObject{
    
    /* Static Constant Fields.
-    * Gravity:   Effects the amount of pull objects feel toward the ground. pixels/ms
-    * Friction:  Effects the amount of sliding an object displays before coming to a stop.
-    * S_X:       Starting X position of Mario.
-    * S_Y:       Starting Y position of Mario.
-    * S_DY:      Starting Dy of Mario.
-    * S_JH:      Effects the height of Mario's first jump.
-    * Anim_Time: The time between each of Mario's Animations. 
+    * Gravity the amount of pull objects feel toward the ground. pixels/ms
+    * Friction the amount of sliding an object displays before coming to a stop.
+    * S_X X position of Mario.
+    * S_Y Y position of Mario.
+    * S_DY Dy of Mario.
+    * S_JH the height of Mario's first jump.
+    * Anim_Time time between each of Mario's Animations. 
     * 
-    * Terminal_Walking_Dx:  Max speed when Mario is walking.
-    * Terminal_R3unning_Dx:  Max speed when Mario is running.
-    * Terminal_Fall_Dy:     Max speed Mario can fall at.
-    * Walking_Dx_Inc:       The increase in speed per update when walking until terminal runnning is reached.
-    * Running_Dx_Inc:       The increase in speed per update when running until terminal walking is reached.
-    * Start_Run_Anim_Thres: The speed where mario switches to the running animation.
+    * Terminal_Walking_Dx speed when Mario is walking.
+    * Terminal_R3unning_Dx speed when Mario is running.
+    * Terminal_Fall_Dy speed Mario can fall at.
+    * Walking_Dx_Inc increase in speed per update when walking until terminal runnning is reached.
+    * Running_Dx_Inc increase in speed per update when running until terminal walking is reached.
+    * Start_Run_Anim_Thres speed where mario switches to the running animation.
     */
 
-   public static const GRAVITY: Float = 0.0008f;
-   public static const FRICTION: Float = 0.0004f;                   
-   private static const STARTING_X: Integer = 25;
-   private static const STARTING_Y: Integer = 140;
-   private static const STARTING_DY: Float = 0.03f;
-   private static const INITIAL_JUMP_HEIGHT: Float = -0.34f; 
-   private static const JUMP_MULTIPLIER: Float = 0.46f;
-   private static const TERMINAL_WALKING_DX: Float = 0.10f;
-   private static const WALKING_DX_INC: Float = 0.01f;
-   private static const TERMINAL_RUNNING_DX: Float = 0.21f;
-   private static const START_RUN_ANIM_THRESHOLD: Float = 0.2f;
-   private static const RUNNING_DX_INC: Float = 0.001f;
-   private static const TERMINAL_FALL_DY: Float = 0.22f;
-   private static const STARTING_LIFE: Integer = 3;
-   private static const ANIM_TIME: Integer = 125;
+   public static const GRAVITY = 0.0008f;
+   public static const FRICTION = 0.0004f;                   
+   private static const STARTING_X = 25;
+   private static const STARTING_Y = 140;
+   private static const STARTING_DY = 0.03f;
+   private static const INITIAL_JUMP_HEIGHT = -0.34f; 
+   private static const JUMP_MULTIPLIER = 0.46f;
+   private static const TERMINAL_WALKING_DX = 0.10f;
+   private static const WALKING_DX_INC = 0.01f;
+   private static const TERMINAL_RUNNING_DX = 0.21f;
+   private static const START_RUN_ANIM_THRESHOLD = 0.2f;
+   private static const RUNNING_DX_INC = 0.001f;
+   private static const TERMINAL_FALL_DY = 0.22f;
+   private static const STARTING_LIFE = 3;
+   private static const ANIM_TIME = 125;
    
    /*boolean variable to identify if fireball is to be fired*/
-   private var loadFireBall: Boolean=false;
+   private var loadFireBall=false;
 
    /* INITIAL_JUMP_HEIGHT + dx*JUMP_MULTIPLIER */
-   private var jumpHeight: Float = 0f; 
+   private var jumpHeight = 0f; 
    
    /* Boolean variables used to identify which keys are pressed. */
-   private var isDownHeld: Boolean =false; 
-   private var isRightHeld: Boolean =false;  
-   private var isLeftHeld: Boolean =false; 
-   private var isShiftHeld: Boolean =false; 
-   private var isSpaceHeld: Boolean =false; 
+   private var isDownHeld =false; 
+   private var isRightHeld =false;  
+   private var isLeftHeld =false; 
+   private var isShiftHeld =false; 
+   private var isSpaceHeld =false; 
    /* Boolean variables used to identify where Mario is with respect to Platforms. */
-   private var isRightOfPlatform: Boolean =false; 
-   private var isLeftOfPlatform: Boolean =false; 
-   private var isBelowPlatform: Boolean =false; 
-   private var isAbovePlatform: Boolean =false; 
+   private var isRightOfPlatform =false; 
+   private var isLeftOfPlatform =false; 
+   private var isBelowPlatform =false; 
+   private var isAbovePlatform =false; 
    /* Boolean variables used to identify where Mario is with respect to Slopes. */
-   private var isUpSlope: Boolean =false; 
-   private var isDownSlope: Boolean =false; 
-   private var onSlopedTile: Boolean =false; 
+   private var isUpSlope =false; 
+   private var isDownSlope =false; 
+   private var onSlopedTile =false; 
    /* Boolean variables used to identify the state of Mario. */
-   private var isJumping: Boolean =false; 
-   private var frictionLock: Boolean =false; 
-   private var isInvisible: Boolean =false; 
+   private var isJumping =false; 
+   private var frictionLock =false; 
+   private var isInvisible =false; 
    
    /* Animation variables. */
-   private var walkLeft: Animation; 
-   private var runLeft: Animation;  
-   private var stillLeft: Animation; 
-   private var jumpLeft: Animation; 
-   private var crouchLeft: Animation; 
-   private var changeLeft: Animation; 
-   private var currLeftAnim: Animation; 
-   private var fireLeftAnim: Animation; 
-   private var fireRightAnim: Animation; 
-   private var walkRight: Animation; 
-   private var runRight: Animation; 
-   private var stillRight: Animation; 
-   private var jumpRight: Animation; 
-   private var crouchRight: Animation; 
-   private var changeRight: Animation; 
-   private var currRightAnim: Animation; 
+   private var walkLeft; 
+   private var runLeft;  
+   private var stillLeft; 
+   private var jumpLeft; 
+   private var crouchLeft; 
+   private var changeLeft; 
+   private var currLeftAnim; 
+   private var fireLeftAnim; 
+   private var fireRightAnim; 
+   private var walkRight; 
+   private var runRight; 
+   private var stillRight; 
+   private var jumpRight; 
+   private var crouchRight; 
+   private var changeRight; 
+   private var currRightAnim; 
    
-   private var health: Integer = 0;
-   private var grace: Integer = 0;
-   private var platform: Platform;
+   private var health = 0;
+   private var grace = 0;
+   private var platform;
    /*boolean which keeps track of direction of mario*/
-    private var left: Boolean=false;
+    private var left=false;
     
-   public new(soundManager: MarioSoundManager): super(STARTING_X, STARTING_Y, soundManager) {
+   public new(soundManager): super(STARTING_X, STARTING_Y, soundManager) {
       setIsJumping(true);
       dy = STARTING_DY;
       jumpHeight = INITIAL_JUMP_HEIGHT;
       health = STARTING_LIFE;
       
-      var l: Bitmap[] = [ MarioResourceManager.Mario_Big_Left_Still, MarioResourceManager.Mario_Big_Left_1,
+      var l = [ MarioResourceManager.Mario_Big_Left_Still, MarioResourceManager.Mario_Big_Left_1,
             MarioResourceManager.Mario_Big_Left_2, MarioResourceManager.Mario_Big_Left_Run_1,
             MarioResourceManager.Mario_Big_Left_Run_2, MarioResourceManager.Mario_Big_Crouch_Left,
             MarioResourceManager.Mario_Big_Jump_Left, MarioResourceManager.Mario_Big_Change_Direction_Left ];
-      var r: Bitmap[] = [ MarioResourceManager.Mario_Big_Right_Still, MarioResourceManager.Mario_Big_Right_1,
+      var r = [ MarioResourceManager.Mario_Big_Right_Still, MarioResourceManager.Mario_Big_Right_1,
             MarioResourceManager.Mario_Big_Right_2, MarioResourceManager.Mario_Big_Right_Run_1,
             MarioResourceManager.Mario_Big_Right_Run_2, MarioResourceManager.Mario_Big_Crouch_Right,
             MarioResourceManager.Mario_Big_Jump_Right, MarioResourceManager.Mario_Big_Change_Direction_Right ];
@@ -167,25 +167,25 @@ class Mario extends CollidableObject{
 
    }
    
-   public getHealth(): Integer {
+   public getHealth() {
       return health;
    }
    
-   public isInvisible(): Boolean {
+   public isInvisible() {
       return isInvisible;
    }
    
-   public isOnSlopedTile(): Boolean { return onSlopedTile; }
+   public isOnSlopedTile() { return onSlopedTile; }
 
-   public setIsJumping(isJumping: Boolean) { this.isJumping = isJumping; }
+   public setIsJumping(isJumping) { this.isJumping = isJumping; }
 
-   public isJumping(): Boolean { return isJumping; }
+   public isJumping() { return isJumping; }
    
-   private slowSpeed(slowFactor: Integer) { setdX(getdX()/slowFactor);   }
+   private slowSpeed(slowFactor) { setdX(getdX()/slowFactor);   }
    
    private accelerateFall() { setdY(-getdY()/4); }
    
-   public isAbovePlatform(): Boolean { return isAbovePlatform; }
+   public isAbovePlatform() { return isAbovePlatform; }
    
    /**
     * Debugging method used to print the status of mario with regards to platforms.
@@ -202,11 +202,11 @@ class Mario extends CollidableObject{
     * Fixes Y movement on tiles and platforms where animation height changes by setting the mario's y
     * value to the difference between animation heights. 
     */
-   public setAnimation(newAnim: Animation) {
+   public setAnimation(newAnim) {
       if(currentAnimation() != null) {
-         var currAnim: Animation = currentAnimation();
-         var oldHeight: Integer = currAnim.getHeight();
-         var newHeight: Integer = newAnim.getHeight();
+         var currAnim = currentAnimation();
+         var oldHeight = currAnim.getHeight();
+         var newHeight = newAnim.getHeight();
          if(newHeight > oldHeight) {
             setY(getY() - (newHeight - oldHeight));   
          } else if(oldHeight > newHeight) {
@@ -227,16 +227,16 @@ class Mario extends CollidableObject{
     * @return the Platform the sprite with the given parameters is colliding with in the X
     * direction.
     */
-   private getPlatformCollisionX(map: TileMap, oldX: Float, oldY: Float, newX: Float, newY: Float): Platform {
+   private getPlatformCollisionX(map, oldX, oldY, newX, newY) {
       
       for(var platform in map.platforms()) {
-          var width: Float = getWidth();
-          var height: Float = getHeight();
-          var pX: Float = platform.getX();
-          var pY: Float = platform.getY();
-          var oldpX: Float = platform.getOldX();
-          var pWidth: Float = platform.getWidth();
-          var pHeight: Float = platform.getHeight();
+          var width = getWidth();
+          var height = getHeight();
+          var pX = platform.getX();
+          var pY = platform.getY();
+          var oldpX = platform.getOldX();
+          var pWidth = platform.getWidth();
+          var pHeight = platform.getHeight();
           
           if(oldX + width <= oldpX && // This is needed to make transparant platforms work
              !platform.canJumpThrough() &&
@@ -274,15 +274,15 @@ class Mario extends CollidableObject{
     * @return the Platform the sprite with the given parameters is colliding with in the X
     * direction.
     */
-   private getPlatformCollisionY(map: TileMap, oldX: Float, oldY: Float, newX: Float, newY: Float): Platform {
+   private getPlatformCollisionY(map, oldX, oldY, newX, newY) {
       for(var platform in map.platforms()) {
-          var width: Float = getWidth();
-          var height: Float = getHeight();
-          var pX: Float = platform.getX();
-          var pY: Float = platform.getY();
-          var oldpY: Float = platform.getOldY();
-          var pWidth: Float = platform.getWidth();
-          var pHeight: Float = platform.getHeight(); 
+          var width = getWidth();
+          var height = getHeight();
+          var pX = platform.getX();
+          var pY = platform.getY();
+          var oldpY = platform.getOldY();
+          var pWidth = platform.getWidth();
+          var pHeight = platform.getHeight(); 
           
           // some debug code:
           // System.out.println((oldY + height) + " >= " + (pY));
@@ -316,7 +316,7 @@ class Mario extends CollidableObject{
        return null;
    }
    
-   public update(map: TileMap, time: Float) {
+   public update(map, time) {
       
       if (loadFireBall && FireBall.fireballsCount<=4){
          loadFireBall=false;
@@ -379,7 +379,7 @@ class Mario extends CollidableObject{
          }
       }
    
-      var lastFour: Boolean = grace%8 == 7 || grace%8 == 6 || grace%8 == 5 || grace%8 == 4;
+      var lastFour = grace%8 == 7 || grace%8 == 6 || grace%8 == 5 || grace%8 == 4;
       isInvisible = lastFour ? true : false;
       if(grace != 0) { grace--; }
       
@@ -390,22 +390,22 @@ class Mario extends CollidableObject{
       if(getOffsetX() != 0) { setOffsetX(getOffsetX() - 1);} 
 
       // Calculate the new X position.
-      var oldX: Float = getX();
-      var newXCalc: Float = oldX + getdX()*time;
+      var oldX = getX();
+      var newXCalc = oldX + getdX()*time;
       if(platform != null) { newXCalc += platform.getdX() * time; } 
       // Calculate the new Y position.
-      var oldY: Float = getY();
-      var newYCalc: Float = oldY + getdY()*time;
+      var oldY = getY();
+      var newYCalc = oldY + getdY()*time;
       //if(platform != null) { newYCalc = platform.getY() - getHeight(); }
       
       // Calculate all the tile collisions.
-      var xTile: ArrayList = GameRenderer.getTileCollisionAll(map, this, getX(), getY(), newXCalc, getY());
-      var yTile: ArrayList = GameRenderer.getTileCollisionAll(map, this, getX(), getY(), getX(), newYCalc); 
-      var numOfXTiles: Integer = xTile.size();
-      var numOfYTiles: Integer = yTile.size();
+      var xTile = GameRenderer.getTileCollisionAll(map, this, getX(), getY(), newXCalc, getY());
+      var yTile = GameRenderer.getTileCollisionAll(map, this, getX(), getY(), getX(), newYCalc); 
+      var numOfXTiles = xTile.size();
+      var numOfYTiles = yTile.size();
 
-      var platformX: Platform = getPlatformCollisionX(map, oldX, oldY, newXCalc, newYCalc);
-      var platformY: Platform = getPlatformCollisionY(map, oldX, oldY, newXCalc, newYCalc);
+      var platformX = getPlatformCollisionX(map, oldX, oldY, newXCalc, newYCalc);
+      var platformY = getPlatformCollisionY(map, oldX, oldY, newXCalc, newYCalc);
       
       //this.platformStatus();
       
@@ -428,8 +428,8 @@ class Mario extends CollidableObject{
          } else if(numOfXTiles >= 1) { // Tile collision in the X direction. For now, only worry
                                 // about the first tile being collided with.
             
-            var xtp: Point = xTile.get(0); // xTilePoint
-            var c: Collision = Creature.tileCollisionX(map.getTile(xtp.x, xtp.y), this);
+            var xtp = xTile.get(0); // xTilePoint
+            var c = Creature.tileCollisionX(map.getTile(xtp.x, xtp.y), this);
             toggleMovement(1);
             frictionLock = false;
             if(c == Collision.EAST) { // Left of a tile.
@@ -455,7 +455,7 @@ class Mario extends CollidableObject{
       super.update(Math.floor(time)); // Update mario's animation.
       
       // Manage collision in the Y direction. 
-      var upperCollision: Boolean = false; // will check if mario is above a tile
+      var upperCollision = false; // will check if mario is above a tile
       if(oldY > GameRenderer.tilesToPixels(map.getHeight()) - getHeight()) { // Off the bottom of the map.
          System.out.println("Mario has died.");
          Settings.subtractLife();
@@ -465,8 +465,8 @@ class Mario extends CollidableObject{
             setIsJumping(true);
             jump();
          } else if(numOfYTiles >= 1) { // Y collision detected with a tile 
-            var ytp: Point = yTile.get(0); // yTilePoint
-            var c: Collision = Creature.tileCollisionY(map.getTile(ytp.x, ytp.y), this);
+            var ytp = yTile.get(0); // yTilePoint
+            var c = Creature.tileCollisionY(map.getTile(ytp.x, ytp.y), this);
             fixJumping();
             if(c == Collision.NORTH) { // Downward collision with tile.
                upperCollision = true;
@@ -474,7 +474,7 @@ class Mario extends CollidableObject{
                setY(GameRenderer.tilesToPixels(ytp.y) - getHeight()); 
             } else if (c == Collision.SOUTH) { // Upward collision with tile.
                for(var p in yTile) {
-                  var tile: GameTile = map.getTile(p.x, p.y);
+                  var tile = map.getTile(p.x, p.y);
                   if(tile != null) { 
                      if (tile instanceof Brick ||tile instanceof QuestionBlock || tile instanceof RotatingBlock) marioToTileToBaddieCollide(tile);
                      tile.doAction(); 
@@ -501,8 +501,8 @@ class Mario extends CollidableObject{
    }
 
    // called from within marioUpdate() when mario hits a block while moving up.
-   public marioToTileToBaddieCollide(tile: GameTile) {
-      var toRemove: List = new LinkedList();
+   public marioToTileToBaddieCollide(tile) {
+      var toRemove = new LinkedList();
       for(var c in tile.collidingCreatures()) {
          if(c instanceof Goomba || c instanceof RedKoopa || c instanceof RedShell || c instanceof Thorny) {
             c.flip();
@@ -514,11 +514,11 @@ class Mario extends CollidableObject{
    }   
    
    // Determines what happens when mario collides with a creature.
-   public playerCollision(map: TileMap, creature: Creature) {
+   public playerCollision(map, creature) {
       
       // only check collision of creatures with this that are not sleeping, are on the screen, and are collidable
       if(!creature.isPlatform() && creature.isCollidable()) { 
-         var collision: Boolean = isCollision(this, creature);
+         var collision = isCollision(this, creature);
          if(collision && creature !instanceof Score) {
          
             if(creature instanceof Coin) {
@@ -566,7 +566,7 @@ class Mario extends CollidableObject{
                   soundManager.playKick();   
                   
                } else if(!isJumping() && !creature.isMoving()) {
-                  var right: Boolean = (this.getdX() > 0);
+                  var right = (this.getdX() > 0);
                   creature.jumpedOn(right, this.getdX());
                   soundManager.playKick();
                   // offset to ainstant death, needed for sure
@@ -613,7 +613,7 @@ class Mario extends CollidableObject{
       }
    }
    
-   public toggleMovement(type: Integer) {
+   public toggleMovement(type) {
 
       if(type == 1) {
          currLeftAnim = walkLeft;
@@ -671,7 +671,7 @@ class Mario extends CollidableObject{
     * eventID=0  jump
     * @param eventID
     */
-    public processEvent(eventID: Integer) {
+    public processEvent(eventID) {
    
         if (eventID == -1) {
           isLeftHeld = true;
@@ -737,8 +737,8 @@ class Mario extends CollidableObject{
     }
     
     /*
-    public keyReleased(e: KeyEvent) {
-        var key: Integer = e.getKeyCode();
+    public keyReleased(e) {
+        var key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
            isLeftHeld = false;
@@ -777,7 +777,7 @@ class Mario extends CollidableObject{
     }
     
     override
-    public draw(g: Canvas, x: Integer, y: Integer, offsetX: Integer, offsetY: Integer) {
+    public draw(g, x, y, offsetX, offsetY) {
       g.drawBitmap(currentAnimation().getImage(), x + offsetX, y + offsetY,paint);
    }
     */

@@ -16,16 +16,16 @@ import android.content.DialogInterface;
  */
 class MarioGame extends AndroidGame {
 
-   public const resourceManager: MarioResourceManager;
-   public const soundManager: MarioSoundManager;
-   public static const QUIT_GAME_DIALOG: Integer = 0;
+   public const resourceManager;
+   public const soundManager;
+   public static const QUIT_GAME_DIALOG = 0;
    
-   public new(activity: Activity, w: Float, h: Float, isLandscape: Boolean): super(activity, w, h, isLandscape) {
+   public new(activity, w, h, isLandscape): super(activity, w, h, isLandscape) {
       this.soundManager = new MarioSoundManager(this);
       this.resourceManager = new MarioResourceManager(this);
    }
 
-   public override getStartScreen(): Screen {
+   public override getStartScreen() {
       return new SplashLoadingScreen(this);
    }
 
@@ -46,12 +46,12 @@ class MarioGame extends AndroidGame {
          soundManager.pauseMusic();
    }
 
-   public override onCreateDialog(id: Integer): Dialog {
-      var dialog: Dialog = null;
+   public override onCreateDialog(id: Integer) {
+      var dialog = null;
       if (id == QUIT_GAME_DIALOG) {
 
          dialog = new AlertDialog.Builder(getContext()).setTitle("Quit Game").setPositiveButton("Return to main menu?", 
-            (dialog: DialogInterface, whichButton: Integer) -> {
+            (dialog, whichButton) -> {
                getContext().finish();
             }
          ).setNegativeButton("Quit", null).setMessage("Cancel").create();

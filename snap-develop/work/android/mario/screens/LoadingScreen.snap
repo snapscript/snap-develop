@@ -9,11 +9,11 @@ import mario.core.MarioSoundManager;
 import mario.core.Settings;
 
 class LoadingScreen extends Screen {
-    public new(game: Game): super(game) {
+    public new(game): super(game) {
     }
 
     public override update(deltaTime: Float) {
-       var g: Graphics = game.getGraphics();
+       var g = game.getGraphics();
         //Settings.load(game.getFileIO());
         
         game.soundManager.loadResouces();
@@ -63,13 +63,13 @@ class LoadingScreen extends Screen {
         Assets.yahoo1 = game.getAudio().createSound("sounds/mario_waha.wav");
         Assets.yahoo2 = game.getAudio().createSound("sounds/mario_woohoo.wav");
         */
-       // var mainMenuScreen: MainMenuScreen=new MainMenuScreen(game);
+       // var mainMenuScreen=new MainMenuScreen(game);
         //mainMenuScreen.loadGameScreen();
         game.setScreen(new MainMenuScreen(game));//mainMenuScreen);
     }
 
     public override paint(deltaTime: Float) {
-        var g: Graphics = game.getGraphics();
+        var g = game.getGraphics();
         //g.drawARGB(200, , g, b)
         g.drawImage(Assets.splash,0, 0);
     }
