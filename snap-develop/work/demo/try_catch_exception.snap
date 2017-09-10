@@ -14,8 +14,8 @@ try {
    
    try {
       throw new IllegalStateException(e);
-   }catch(e: Exception) {
-      e.printStackTrace();
+   }catch(ex: Exception) {
+      ex.printStackTrace();
    }
 }
 

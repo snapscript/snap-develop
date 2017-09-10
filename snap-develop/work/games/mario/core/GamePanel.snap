@@ -160,7 +160,7 @@ class GamePanel extends JPanel with Runnable {
             if(wait > 0) {
                Thread.sleep(wait);
             }
-            println(duration);
+            System.out.println(duration);
          } catch(e){}
       }
       System.exit(0); // so enclosing JFrame/JApplet exits

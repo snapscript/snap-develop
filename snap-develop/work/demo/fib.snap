@@ -18,6 +18,6 @@ function fib(n) {
 }
 var start = new Date().getTime();
 var result = fib(30); // =1346269 (0.013 seconds)
-System.out.println("fib(40)="+result);
+System.out.println("fib(30)="+result);
 var stop =new Date().getTime();
 print((stop -start)); 
