@@ -30,15 +30,15 @@ public class ProcessContext {
    private final Model model;
    private final String process;
 
-   public ProcessContext(ProcessMode mode, URI root, String process, int port) {
-      this(mode, root, process, port, 10);
+   public ProcessContext(ProcessMode mode, URI root, String process) {
+      this(mode, root, process, 10);
    }
    
-   public ProcessContext(ProcessMode mode, URI root, String process, int port, int threads) {
-      this(mode, root, process, port, threads, 0);
+   public ProcessContext(ProcessMode mode, URI root, String process, int threads) {
+      this(mode, root, process, threads, 0);
    }
    
-   public ProcessContext(ProcessMode mode, URI root, String process, int port, int threads, int stack) {
+   public ProcessContext(ProcessMode mode, URI root, String process, int threads, int stack) {
       this.executor = new ThreadPool(threads < 5 ? 5 : threads, stack);
       this.latch = new CountDownLatch(1);
       this.store = new ProcessStore(root);
