@@ -94,7 +94,6 @@ class GameScreen extends Screen {
 
         // We have four separate update methods in this example.
         // Depending on the state of the game, we call different update methods.
-    
         if (state == GameState.Ready)
             updateReady(touchEvents);
         if (state == GameState.Running)

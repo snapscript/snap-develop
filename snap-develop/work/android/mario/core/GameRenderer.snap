@@ -188,58 +188,57 @@ class GameRenderer {
         
         for(var map in maps) {
             // draw the visible tiles
-           if(map != null && map.isVisible()) {
-              for (var y=firstTileY; y<= lastTileY; y++) {
-                    for (var x=firstTileX; x <= lastTileX; x++) {
-                       var tile = map.getTile(x, y);
-                       if(tile != null) {
-                          tile.draw(g, tilesToPixels(x), tilesToPixels(y), 
-                                tile.getOffsetX() + offsetX, tile.getOffsetY() + offsetY);
+          if(map != null && map.isVisible()) {
+             for (var y in firstTileY .. lastTileY) {
+                   for (var x in firstTileX .. lastTileX) {
+                      var tile = map.getTile(x, y);
+                      if(tile != null) {
+                         tile.draw(g, tilesToPixels(x), tilesToPixels(y), 
+                               tile.getOffsetX() + offsetX, tile.getOffsetY() + offsetY);
                         }
-                    }
+                   }
                 }
-           }
+          }
            
           if(map.isVisible() ) {
-                
-             for(var i = 0; i < map.creatures().size(); i++) { 
-                  
-                var c = map.creatures().get(i);
-                   var x = Math.round(c.getX()) + offsetX;
-                   var y = Math.round(c.getY()) + offsetY;
-                   var tileX = pixelsToTiles(x);
-                   var tileY = pixelsToTiles(y); 
+             var it = map.creatures().iterator();
+             
+             while(it.hasNext()) { 
+               var c = it.next();
+               var x = Math.round(c.getX()) + offsetX;
+               var y = Math.round(c.getY()) + offsetY;
+               var tileX = pixelsToTiles(x);
+               var tileY = pixelsToTiles(y); // nope
                    
-                   if(!c.isAlive()) {
-                      map.creatures().remove(i);
-                      i--;
-                   } else {
-                      if(Creature.WAKE_UP_VALUE_UP_LEFT <= tileX && Creature.WAKE_UP_VALUE_DOWN_RIGHT >= tileX && 
-                            Creature.WAKE_UP_VALUE_UP_LEFT <= tileY && Creature.WAKE_UP_VALUE_DOWN_RIGHT >= tileY ) {
-                         
-                         // Only want to deal with platforms that are awake.
-                         if(c instanceof Platform) { map.platforms().add(c); }
-                           // Wake up the creature the first time the sprite is in view.
-                         if(c.isSleeping()) { c.wakeUp(); }
-                         
-                         c.setIsOnScreen(true);
-                         if(!c.isInvisible()) {
-                            c.draw(g, x, y); // draw the creature
-                         }
-                         map.relevantCreatures().add(c);
-                         
-                      } else {
-                         if(c.isAlwaysRelevant()) { map.relevantCreatures().add(c); }
-                         c.setIsOnScreen(false);
+                if(!c.isAlive()) {
+                  it.remove();
+                } else {
+                   if(Creature.WAKE_UP_VALUE_UP_LEFT <= tileX && Creature.WAKE_UP_VALUE_DOWN_RIGHT >= tileX && 
+                         Creature.WAKE_UP_VALUE_UP_LEFT <= tileY && Creature.WAKE_UP_VALUE_DOWN_RIGHT >= tileY ) {
+                      // Only want to deal with platforms that are awake.
+                      if(c instanceof Platform) { map.platforms().add(c); }
+                        // Wake up the creature the first time the sprite is in view.
+                      if(c.isSleeping()) { c.wakeUp(); }
+                      
+                      c.setIsOnScreen(true);
+                      if(!c.isInvisible()) {
+                         c.draw(g, x, y); // draw the creature
                       }
+                      map.relevantCreatures().add(c);
+                   } else {
+                      if(c.isAlwaysRelevant()) { 
+                        map.relevantCreatures().add(c); 
+                     }
+                      c.setIsOnScreen(false);
                    }
-                              
-                   // Draw the player.
-                   
-                   if(map==mainMap && !player.isInvisible()) {
-                         player.draw(g, Math.round(player.getX()) + offsetX, Math.round(player.getY()) + offsetY,
-                         player.getOffsetX(), player.getOffsetY());
-                      ktb++;
+                }
+                           
+                // Draw the player.
+                
+                if(map==mainMap && !player.isInvisible()) {
+                   player.draw(g, Math.round(player.getX()) + offsetX, Math.round(player.getY()) + offsetY,
+                   player.getOffsetX(), player.getOffsetY());
+                   ktb++;
                   if (map.particleSystem != null
                         && ktb % 60 == 0) {
                      map.particleSystem.updatePhysics(1);
@@ -247,9 +246,8 @@ class GameRenderer {
                            offsetY);
                      ktb = 0;
                   }
-                   
-                   }
                }
+            }
           }
         }
         
