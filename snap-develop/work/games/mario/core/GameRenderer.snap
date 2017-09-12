@@ -197,18 +197,17 @@ class GameRenderer {
            }
            
           if(map == mainMap) {
-                
-             for(var i = 0; i < map.creatures().size(); i++) { 
-                  
-                var c = map.creatures().get(i);
+             var it = map.creatures().iterator();
+             
+             while(it.hasNext()) { 
+                   var c = it.next();
                    var x = Math.round(c.getX()) + offsetX;
                    var y = Math.round(c.getY()) + offsetY;
                    var tileX = pixelsToTiles(x);
                    var tileY = pixelsToTiles(y); 
                    
                    if(!c.isAlive()) {
-                      map.creatures().remove(i);
-                      i--;
+                      it.remove();
                    } else {
                       if(Creature.WAKE_UP_VALUE_UP_LEFT <= tileX && Creature.WAKE_UP_VALUE_DOWN_RIGHT >= tileX && 
                             Creature.WAKE_UP_VALUE_UP_LEFT <= tileY && Creature.WAKE_UP_VALUE_DOWN_RIGHT >= tileY ) {
