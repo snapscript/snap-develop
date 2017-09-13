@@ -1,4 +1,4 @@
-define("ace/keyboard/vim",["require","exports","module","ace/range","ace/lib/event_emitter","ace/lib/dom","ace/lib/oop","ace/lib/keys","ace/lib/event","ace/search","ace/lib/useragent","ace/search_highlight","ace/commands/multi_select_commands","ace/mode/text","ace/multi_select"], function(require, exports, module) {
+ace.define("ace/keyboard/vim",["require","exports","module","ace/range","ace/lib/event_emitter","ace/lib/dom","ace/lib/oop","ace/lib/keys","ace/lib/event","ace/search","ace/lib/useragent","ace/search_highlight","ace/commands/multi_select_commands","ace/mode/text","ace/multi_select"], function(require, exports, module) {
   'use strict';
 
   function log() {
@@ -58,7 +58,7 @@ define("ace/keyboard/vim",["require","exports","module","ace/range","ace/lib/eve
   CodeMirror.commands = {
     redo: function(cm) { cm.ace.redo(); },
     undo: function(cm) { cm.ace.undo(); },
-    newlineAndIndent: function(cm) { cm.ace.insert("\n"); }
+    newlineAndIndent: function(cm) { cm.ace.insert("\n"); },
   };
   CodeMirror.keyMap = {};
   CodeMirror.addClass = CodeMirror.rmClass =
@@ -118,15 +118,17 @@ define("ace/keyboard/vim",["require","exports","module","ace/range","ace/lib/eve
     return this.ace.inVirtualSelectionMode && this.ace.selection.index;
   };
   this.onChange = function(delta) {
-    var change = { text: delta.action[0] == 'i' ? delta.lines : [] };
-    var curOp = this.curOp = this.curOp || {};
-    if (!curOp.changeHandlers)
-      curOp.changeHandlers = this._eventRegistry["change"] && this._eventRegistry["change"].slice();
-    if (this.virtualSelectionMode()) return;
-    if (!curOp.lastChange) {
-      curOp.lastChange = curOp.change = change;
-    } else {
-      curOp.lastChange.next = curOp.lastChange = change;
+    if (delta.action[0] == 'i') {
+      var change = { text: delta.lines };
+      var curOp = this.curOp = this.curOp || {};
+      if (!curOp.changeHandlers)
+        curOp.changeHandlers = this._eventRegistry["change"] && this._eventRegistry["change"].slice();
+      if (this.virtualSelectionMode()) return;
+      if (!curOp.lastChange) {
+        curOp.lastChange = curOp.change = change;
+      } else {
+        curOp.lastChange.next = curOp.lastChange = change;
+      }
     }
     this.$updateMarkers(delta);
   };
@@ -826,9 +828,9 @@ dom.importCssString(".normal-mode .ace_cursor{\
     { keys: '<C-[>', type: 'keyToKey', toKeys: '<Esc>', context: 'insert' },
     { keys: '<C-c>', type: 'keyToKey', toKeys: '<Esc>', context: 'insert' },
     { keys: 's', type: 'keyToKey', toKeys: 'cl', context: 'normal' },
-    { keys: 's', type: 'keyToKey', toKeys: 'c', context: 'visual'},
+    { keys: 's', type: 'keyToKey', toKeys: 'xi', context: 'visual'},
     { keys: 'S', type: 'keyToKey', toKeys: 'cc', context: 'normal' },
-    { keys: 'S', type: 'keyToKey', toKeys: 'VdO', context: 'visual' },
+    { keys: 'S', type: 'keyToKey', toKeys: 'dcc', context: 'visual' },
     { keys: '<Home>', type: 'keyToKey', toKeys: '0' },
     { keys: '<End>', type: 'keyToKey', toKeys: '$' },
     { keys: '<PageUp>', type: 'keyToKey', toKeys: '<C-b>' },
@@ -921,7 +923,6 @@ dom.importCssString(".normal-mode .ace_cursor{\
     { keys: 'v', type: 'action', action: 'toggleVisualMode' },
     { keys: 'V', type: 'action', action: 'toggleVisualMode', actionArgs: { linewise: true }},
     { keys: '<C-v>', type: 'action', action: 'toggleVisualMode', actionArgs: { blockwise: true }},
-    { keys: '<C-q>', type: 'action', action: 'toggleVisualMode', actionArgs: { blockwise: true }},
     { keys: 'gv', type: 'action', action: 'reselectLastSelection' },
     { keys: 'J', type: 'action', action: 'joinLines', isEdit: true },
     { keys: 'p', type: 'action', action: 'paste', isEdit: true, actionArgs: { after: true, isEdit: true }},
@@ -1036,7 +1037,10 @@ dom.importCssString(".normal-mode .ace_cursor{\
       if (key.charAt(0) == '\'') {
         return key.charAt(1);
       }
-      var pieces = key.split(/-(?!$)/);
+      var pieces = key.split('-');
+      if (/-$/.test(key)) {
+        pieces.splice(-2, 2, '-');
+      }
       var lastPiece = pieces[pieces.length - 1];
       if (pieces.length == 1 && pieces[0].length == 1) {
         return false;
@@ -1375,7 +1379,7 @@ dom.importCssString(".normal-mode .ace_cursor{\
         exCommandDispatcher.map(lhs, rhs, ctx);
       },
       unmap: function(lhs, ctx) {
-        exCommandDispatcher.unmap(lhs, ctx);
+        exCommandDispatcher.unmap(lhs, ctx || "normal");
       },
       setOption: setOption,
       getOption: getOption,
@@ -1452,19 +1456,15 @@ dom.importCssString(".normal-mode .ace_cursor{\
 
           if (lastInsertModeKeyTimer) { window.clearTimeout(lastInsertModeKeyTimer); }
           if (keysAreChars) {
-            var selections = cm.listSelections();
-            for (var i = 0; i < selections.length; i++) {
-              var here = selections[i].head;
-              cm.replaceRange('', offsetCursor(here, 0, -(keys.length - 1)), here, '+input');
-            }
-            vimGlobalState.macroModeState.lastInsertModeChanges.changes.pop();
+            var here = cm.getCursor();
+            cm.replaceRange('', offsetCursor(here, 0, -(keys.length - 1)), here, '+input');
           }
           clearInputState(cm);
           return match.command;
         }
 
         function handleKeyNonInsertMode() {
-          if (handleMacroRecording() || handleEsc()) { return true; }
+          if (handleMacroRecording() || handleEsc()) { return true; };
 
           var keys = vim.inputState.keyBuffer = vim.inputState.keyBuffer + key;
           if (/^[1-9]\d*$/.test(keys)) { return true; }
@@ -1729,9 +1729,7 @@ dom.importCssString(".normal-mode .ace_cursor{\
           }
         }
         if (bestMatch.keys.slice(-11) == '<character>') {
-          var character = lastChar(keys);
-          if (/<C-.>/.test(character)) return {type: 'none'};
-          inputState.selectedCharacter = character;
+          inputState.selectedCharacter = lastChar(keys);
         }
         return {type: 'full', command: bestMatch};
       },
@@ -2026,7 +2024,7 @@ dom.importCssString(".normal-mode .ace_cursor{\
             return;
           }
           if (motionArgs.toJumplist) {
-            if (!operator && cm.ace.curOp != null)
+            if (!operator)
               cm.ace.curOp.command.scrollIntoView = "center-animate"; // ace_patch
             var jumpList = vimGlobalState.jumpList;
             var cachedCursor = jumpList.cachedCursor;
@@ -2517,19 +2515,11 @@ dom.importCssString(".normal-mode .ace_cursor{\
               text = text.slice(0, - match[0].length);
             }
           }
-          var prevLineEnd = new Pos(anchor.line - 1, Number.MAX_VALUE);
-          var wasLastLine = cm.firstLine() == cm.lastLine();
-          if (head.line > cm.lastLine() && args.linewise && !wasLastLine) {
-            cm.replaceRange('', prevLineEnd, head);
-          } else {
-            cm.replaceRange('', anchor, head);
-          }
-          if (args.linewise) {
-            if (!wasLastLine) {
-              cm.setCursor(prevLineEnd);
-              CodeMirror.commands.newlineAndIndent(cm);
-            }
-            anchor.ch = Number.MAX_VALUE;
+          var wasLastLine = head.line - 1 == cm.lastLine();
+          cm.replaceRange('', anchor, head);
+          if (args.linewise && !wasLastLine) {
+            CodeMirror.commands.newlineAndIndent(cm);
+            anchor.ch = null;
           }
           finalHead = anchor;
         } else {
@@ -4491,6 +4481,7 @@ dom.importCssString(".normal-mode .ace_cursor{\
             }
           }
         }
+        throw Error('No such mapping.');
       }
     };
 
@@ -4624,7 +4615,7 @@ dom.importCssString(".normal-mode .ace_cursor{\
               if (decimal + hex + octal > 1) { return 'Invalid arguments'; }
               number = decimal && 'decimal' || hex && 'hex' || octal && 'octal';
             }
-            if (args.match(/\/.*\//)) { return 'patterns not supported'; }
+            if (args.eatSpace() && args.match(/\/.*\//)) { 'patterns not supported'; }
           }
         }
         var err = parseArgs();
@@ -4940,7 +4931,7 @@ dom.importCssString(".normal-mode .ace_cursor{\
       }
       if (!confirm) {
         replaceAll();
-        if (callback) { callback(); }
+        if (callback) { callback(); };
         return;
       }
       showPrompt(cm, {
@@ -4989,8 +4980,6 @@ dom.importCssString(".normal-mode .ace_cursor{\
       cm.setCursor(cm.getCursor().line, cm.getCursor().ch-1);
       cm.setOption('keyMap', 'vim');
       cm.setOption('disableInput', true);
-      
-      lastChange.overwrite = cm.state.overwrite;
       cm.toggleOverwrite(false); // exit replace mode if we were in it.
       insertModeChangeRegister.setText(lastChange.changes.join(''));
       CodeMirror.signal(cm, "vim-mode-change", {mode: "normal"});
@@ -5064,7 +5053,7 @@ dom.importCssString(".normal-mode .ace_cursor{\
             exitInsertMode(cm);
           }
         }
-      }
+      };
       macroModeState.isPlaying = false;
     }
 
@@ -5103,10 +5092,6 @@ dom.importCssString(".normal-mode .ace_cursor{\
           if (changeObj.origin == '+input' || changeObj.origin == 'paste'
               || changeObj.origin === undefined /* only in testing */) {
             var text = changeObj.text.join('\n');
-            if (lastChange.maybeReset) {
-              lastChange.changes = [];
-              lastChange.maybeReset = false;
-            }
             lastChange.changes.push(text);
           }
           changeObj = changeObj.next;
@@ -5122,7 +5107,7 @@ dom.importCssString(".normal-mode .ace_cursor{\
         if (lastChange.expectCursorActivityForChange) {
           lastChange.expectCursorActivityForChange = false;
         } else {
-          lastChange.maybeReset = true;
+          lastChange.changes = [];
         }
       } else if (!cm.curOp.isVimOp) {
         handleExternalSelection(cm, vim);
@@ -5174,10 +5159,6 @@ dom.importCssString(".normal-mode .ace_cursor{\
       var keyName = CodeMirror.keyName(e);
       if (!keyName) { return; }
       function onKeyFound() {
-        if (lastChange.maybeReset) {
-          lastChange.changes = [];
-          lastChange.maybeReset = false;
-        }
         lastChange.changes.push(new InsertModeKey(keyName));
         return true;
       }
@@ -5201,7 +5182,7 @@ dom.importCssString(".normal-mode .ace_cursor{\
         if (macroModeState.lastInsertModeChanges.changes.length > 0) {
           repeat = !vim.lastEditActionCommand ? 1 : repeat;
           var changeObject = macroModeState.lastInsertModeChanges;
-          repeatInsertModeChanges(cm, changeObject.changes, repeat, changeObject.overwrite);
+          repeatInsertModeChanges(cm, changeObject.changes, repeat);
         }
       }
       vim.inputState = vim.lastEditInputState;
@@ -5221,9 +5202,9 @@ dom.importCssString(".normal-mode .ace_cursor{\
         exitInsertMode(cm);
       }
       macroModeState.isPlaying = false;
-    }
+    };
 
-    function repeatInsertModeChanges(cm, changes, repeat, overwrite) {
+    function repeatInsertModeChanges(cm, changes, repeat) {
       function keyHandler(binding) {
         if (typeof binding == 'string') {
           CodeMirror.commands[binding](cm);
@@ -5252,11 +5233,7 @@ dom.importCssString(".normal-mode .ace_cursor{\
             CodeMirror.lookupKey(change.keyName, 'vim-insert', keyHandler);
           } else {
             var cur = cm.getCursor();
-            var end = cur;
-            if (overwrite && !/\n/.test(change)) {
-              end = offsetCursor(cur, 0, change.length);
-            }
-            cm.replaceRange(change, cur, end);
+            cm.replaceRange(change, cur, cur);
           }
         }
       }
@@ -5554,7 +5531,7 @@ dom.importCssString(".normal-mode .ace_cursor{\
   defaultKeymap.push(
     { keys: 'zc', type: 'action', action: 'fold', actionArgs: { open: false } },
     { keys: 'zC', type: 'action', action: 'fold', actionArgs: { open: false, all: true } },
-    { keys: 'zo', type: 'action', action: 'fold', actionArgs: { open: true } },
+    { keys: 'zo', type: 'action', action: 'fold', actionArgs: { open: true, } },
     { keys: 'zO', type: 'action', action: 'fold', actionArgs: { open: true, all: true } },
     { keys: 'za', type: 'action', action: 'fold', actionArgs: { toggle: true } },
     { keys: 'zA', type: 'action', action: 'fold', actionArgs: { toggle: true, all: true } },
@@ -5588,7 +5565,7 @@ dom.importCssString(".normal-mode .ace_cursor{\
   actions.fold = function(cm, actionArgs, vim) {
     cm.ace.execCommand(['toggleFoldWidget', 'toggleFoldWidget', 'foldOther', 'unfoldall'
       ][(actionArgs.all ? 2 : 0) + (actionArgs.open ? 1 : 0)]);
-  };
+  },
 
   exports.handler.defaultKeymap = defaultKeymap;
   exports.handler.actions = actions;

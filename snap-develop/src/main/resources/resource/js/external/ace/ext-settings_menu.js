@@ -1,4 +1,4 @@
-define("ace/ext/menu_tools/element_generator",["require","exports","module"], function(require, exports, module) {
+ace.define("ace/ext/menu_tools/element_generator",["require","exports","module"], function(require, exports, module) {
 'use strict';
 module.exports.createOption = function createOption (obj) {
     var attribute;
@@ -54,7 +54,7 @@ module.exports.createSelection = function createSelection (id, values, clss) {
 
 });
 
-define("ace/ext/modelist",["require","exports","module"], function(require, exports, module) {
+ace.define("ace/ext/modelist",["require","exports","module"], function(require, exports, module) {
 "use strict";
 
 var modes = [];
@@ -75,13 +75,12 @@ var Mode = function(name, caption, extensions) {
     this.caption = caption;
     this.mode = "ace/mode/" + name;
     this.extensions = extensions;
-    var re;
     if (/\^/.test(extensions)) {
-        re = extensions.replace(/\|(\^)?/g, function(a, b){
+        var re = extensions.replace(/\|(\^)?/g, function(a, b){
             return "$|" + (b ? "^" : "^.*\\.");
         }) + "$";
     } else {
-        re = "^.*\\.(" + extensions + ")$";
+        var re = "^.*\\.(" + extensions + ")$";
     }
 
     this.extRe = new RegExp(re, "gi");
@@ -100,7 +99,6 @@ var supportedModes = {
     Assembly_x86:["asm|a"],
     AutoHotKey:  ["ahk"],
     BatchFile:   ["bat|cmd"],
-    Bro:         ["bro"],
     C_Cpp:       ["cpp|c|cc|cxx|h|hh|hpp|ino"],
     C9Search:    ["c9search_results"],
     Cirru:       ["cirru|cr"],
@@ -116,7 +114,6 @@ var supportedModes = {
     Diff:        ["diff|patch"],
     Dockerfile:  ["^Dockerfile"],
     Dot:         ["dot"],
-    Drools:      ["drl"],
     Dummy:       ["dummy"],
     DummySyntax: ["dummy"],
     Eiffel:      ["e|ge"],
@@ -124,39 +121,34 @@ var supportedModes = {
     Elixir:      ["ex|exs"],
     Elm:         ["elm"],
     Erlang:      ["erl|hrl"],
-    Forth:       ["frt|fs|ldr|fth|4th"],
-    Fortran:     ["f|f90"],
+    Forth:       ["frt|fs|ldr"],
     FTL:         ["ftl"],
     Gcode:       ["gcode"],
     Gherkin:     ["feature"],
     Gitignore:   ["^.gitignore"],
     Glsl:        ["glsl|frag|vert"],
-    Gobstones:   ["gbs"],
     golang:      ["go"],
-    GraphQLSchema: ["gql"],
     Groovy:      ["groovy"],
     HAML:        ["haml"],
     Handlebars:  ["hbs|handlebars|tpl|mustache"],
     Haskell:     ["hs"],
-    Haskell_Cabal:     ["cabal"],
     haXe:        ["hx"],
-    Hjson:       ["hjson"],
     HTML:        ["html|htm|xhtml"],
-    HTML_Elixir: ["eex|html.eex"],
     HTML_Ruby:   ["erb|rhtml|html.erb"],
+    HTML_Elixir: ["eex|html.eex"],
     INI:         ["ini|conf|cfg|prefs"],
     Io:          ["io"],
     Jack:        ["jack"],
-    Jade:        ["jade|pug"],
+    Jade:        ["jade"],
     Java:        ["java"],
-    JavaScript:  ["js|jsm|jsx"],
+    JavaScript:  ["js|jsm"],
     JSON:        ["json"],
     JSONiq:      ["jq"],
     JSP:         ["jsp"],
     JSX:         ["jsx"],
     Julia:       ["jl"],
-    Kotlin:      ["kt|kts"],
     LaTeX:       ["tex|latex|ltx|bib"],
+    Lean:        ["lean|hlean"],
     LESS:        ["less"],
     Liquid:      ["liquid"],
     Lisp:        ["lisp"],
@@ -175,14 +167,12 @@ var supportedModes = {
     MUSHCode:    ["mc|mush"],
     MySQL:       ["mysql"],
     Nix:         ["nix"],
-    NSIS:        ["nsi|nsh"],
     ObjectiveC:  ["m|mm"],
     OCaml:       ["ml|mli"],
     Pascal:      ["pas|p"],
     Perl:        ["pl|pm"],
     pgSQL:       ["pgsql"],
-    PHP:         ["php|phtml|shtml|php3|php4|php5|phps|phpt|aw|ctp|module"],
-    Pig:         ["pig"],
+    PHP:         ["php|phtml|shtml|php3|php4|php5|phps|phpt|aw|ctp"],
     Powershell:  ["ps1"],
     Praat:       ["praat|praatscript|psc|proc"],
     Prolog:      ["plg|prolog"],
@@ -190,10 +180,8 @@ var supportedModes = {
     Protobuf:    ["proto"],
     Python:      ["py"],
     R:           ["r"],
-    Razor:       ["cshtml|asp"],
     RDoc:        ["Rd"],
     RHTML:       ["Rhtml"],
-    RST:         ["rst"],
     Ruby:        ["rb|ru|gemspec|rake|^Guardfile|^Rakefile|^Gemfile"],
     Rust:        ["rs"],
     SASS:        ["sass"],
@@ -217,7 +205,6 @@ var supportedModes = {
     Text:        ["txt"],
     Textile:     ["textile"],
     Toml:        ["toml"],
-    TSX:         ["tsx"],
     Twig:        ["twig|swig"],
     Typescript:  ["ts|typescript|str"],
     Vala:        ["vala"],
@@ -225,7 +212,6 @@ var supportedModes = {
     Velocity:    ["vm"],
     Verilog:     ["v|vh|sv|svh"],
     VHDL:        ["vhd|vhdl"],
-    Wollok:      ["wlk|wpgm|wtest"],
     XML:         ["xml|rdf|rss|wsdl|xslt|atom|mathml|mml|xul|xbl|xaml"],
     XQuery:      ["xq"],
     YAML:        ["yaml|yml"],
@@ -260,7 +246,7 @@ module.exports = {
 
 });
 
-define("ace/ext/themelist",["require","exports","module","ace/lib/fixoldbrowsers"], function(require, exports, module) {
+ace.define("ace/ext/themelist",["require","exports","module","ace/lib/fixoldbrowsers"], function(require, exports, module) {
 "use strict";
 require("ace/lib/fixoldbrowsers");
 
@@ -284,8 +270,6 @@ var themeData = [
     ["Chaos"                ,"chaos"                   ,  "dark"],
     ["Clouds Midnight"      ,"clouds_midnight"         ,  "dark"],
     ["Cobalt"               ,"cobalt"                  ,  "dark"],
-    ["Gruvbox"              ,"gruvbox"                 ,  "dark"],
-    ["Green on Black"       ,"gob"                     ,  "dark"],
     ["idle Fingers"         ,"idle_fingers"            ,  "dark"],
     ["krTheme"              ,"kr_theme"                ,  "dark"],
     ["Merbivore"            ,"merbivore"               ,  "dark"],
@@ -319,7 +303,7 @@ exports.themes = themeData.map(function(data) {
 
 });
 
-define("ace/ext/menu_tools/add_editor_menu_options",["require","exports","module","ace/ext/modelist","ace/ext/themelist"], function(require, exports, module) {
+ace.define("ace/ext/menu_tools/add_editor_menu_options",["require","exports","module","ace/ext/modelist","ace/ext/themelist"], function(require, exports, module) {
 'use strict';
 module.exports.addEditorMenuOptions = function addEditorMenuOptions (editor) {
     var modelist = require('../modelist');
@@ -373,7 +357,7 @@ module.exports.addEditorMenuOptions = function addEditorMenuOptions (editor) {
 
 });
 
-define("ace/ext/menu_tools/get_set_functions",["require","exports","module"], function(require, exports, module) {
+ace.define("ace/ext/menu_tools/get_set_functions",["require","exports","module"], function(require, exports, module) {
 'use strict';
 module.exports.getSetFunctions = function getSetFunctions (editor) {
     var out = [];
@@ -415,7 +399,7 @@ module.exports.getSetFunctions = function getSetFunctions (editor) {
 
 });
 
-define("ace/ext/menu_tools/generate_settings_menu",["require","exports","module","ace/ext/menu_tools/element_generator","ace/ext/menu_tools/add_editor_menu_options","ace/ext/menu_tools/get_set_functions","ace/ace"], function(require, exports, module) {
+ace.define("ace/ext/menu_tools/generate_settings_menu",["require","exports","module","ace/ext/menu_tools/element_generator","ace/ext/menu_tools/add_editor_menu_options","ace/ext/menu_tools/get_set_functions"], function(require, exports, module) {
 'use strict';
 var egen = require('./element_generator');
 var addEditorMenuOptions = require('./add_editor_menu_options').addEditorMenuOptions;
@@ -437,7 +421,7 @@ module.exports.generateSettingsMenu = function generateSettingsMenu (editor) {
         });
         
         var el = topmenu.appendChild(document.createElement('div'));
-        var version = require("../../ace").version;
+        var version = "1.2.1";
         el.style.padding = "1em";
         el.textContent = "Ace version " + version;
         
@@ -540,7 +524,7 @@ module.exports.generateSettingsMenu = function generateSettingsMenu (editor) {
 
 });
 
-define("ace/ext/menu_tools/overlay_page",["require","exports","module","ace/lib/dom"], function(require, exports, module) {
+ace.define("ace/ext/menu_tools/overlay_page",["require","exports","module","ace/lib/dom"], function(require, exports, module) {
 'use strict';
 var dom = require("../../lib/dom");
 var cssText = "#ace_settingsmenu, #kbshortcutmenu {\
@@ -641,7 +625,7 @@ module.exports.overlayPage = function overlayPage(editor, contentElement, top, r
 
 });
 
-define("ace/ext/settings_menu",["require","exports","module","ace/ext/menu_tools/generate_settings_menu","ace/ext/menu_tools/overlay_page","ace/editor"], function(require, exports, module) {
+ace.define("ace/ext/settings_menu",["require","exports","module","ace/ext/menu_tools/generate_settings_menu","ace/ext/menu_tools/overlay_page","ace/editor"], function(require, exports, module) {
 "use strict";
 var generateSettingsMenu = require('./menu_tools/generate_settings_menu').generateSettingsMenu;
 var overlayPage = require('./menu_tools/overlay_page').overlayPage;
@@ -658,6 +642,6 @@ module.exports.init = function(editor) {
 };
 });
                 (function() {
-                    window.require(["ace/ext/settings_menu"], function() {});
+                    ace.require(["ace/ext/settings_menu"], function() {});
                 })();
             

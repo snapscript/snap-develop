@@ -20,6 +20,7 @@ export module Project {
    var doubleClickTimes: any = {};
 
    export function createMainLayout() {
+      console.log("Project::createMainLayout()");
       var perspective = determineProjectLayout();
       
       if (perspective == "debug") {
@@ -32,6 +33,7 @@ export module Project {
    }
    
    export function startMainLayout() {
+      console.log("Project::startMainLayout()");
       var perspective = determineProjectLayout();
       
       if (perspective == "debug") {
@@ -44,6 +46,7 @@ export module Project {
    }
    
    function attachClickEvents() {
+      console.log("Project::attachClickEvents()");
       $('#toolbarResize').on('click', function(e) {
          toggleFullScreen();
          e.preventDefault();
@@ -131,6 +134,7 @@ export module Project {
    }
    
    function determineProjectLayout() {
+      console.log("Project::determineProjectLayout()");
       var debugToggle = ";debug";
       var locationPath = window.document.location.pathname;
       var locationHash = window.document.location.hash;
@@ -143,6 +147,7 @@ export module Project {
    }
    
    function startResizePoller() { // because w2ui onResize not working
+      console.log("Project::startResizePoller()");
       var editorWidth = 0;
       var editorHeight = 0;
       
@@ -163,6 +168,7 @@ export module Project {
    }
    
    export function changeProjectFont(){
+      console.log("Project::changeProjectFont()");
       var fontFamily: HTMLSelectElement = <HTMLSelectElement>document.getElementById("fontFamily");
       var fontSize: HTMLSelectElement = <HTMLSelectElement>document.getElementById("fontSize");
       
@@ -181,6 +187,7 @@ export module Project {
    }
    
    export function changeEditorTheme(){
+      console.log("Project::changeEditorTheme()");
       var editorTheme: HTMLSelectElement = <HTMLSelectElement>document.getElementById("editorTheme");
       
       if(editorTheme != null) {
@@ -198,6 +205,7 @@ export module Project {
    }
     
    export function toggleFullScreen() {
+      console.log("Project::toggleFullScreen()");
       var perspective = determineProjectLayout();
    
       if (perspective == "debug") {
@@ -226,6 +234,7 @@ export module Project {
    }
    
    function isProjectThemeChange(name) {
+      console.log("Project::isProjectThemeChange("+name+")");
       if(currentDisplayInfo) {
          return currentDisplayInfo.themeName != name.toLowerCase(); // if they are not the same
       }
@@ -233,6 +242,7 @@ export module Project {
    }
    
    function currentProjectDisplay(){
+      console.log("Project::currentProjectDisplay()");
       var fontFamily: HTMLSelectElement = <HTMLSelectElement>document.getElementById("fontFamily");
       var fontSize: HTMLSelectElement = <HTMLSelectElement>document.getElementById("fontSize");
       var editorTheme: HTMLSelectElement = <HTMLSelectElement>document.getElementById("editorTheme");
@@ -246,6 +256,7 @@ export module Project {
    }
    
    function applyProjectTheme() {
+      console.log("Project::applyProjectTheme()");
       $.get("/display/"+document.title, function(displayInfo) {
          currentDisplayInfo = displayInfo; // save display info
          
@@ -281,49 +292,78 @@ export module Project {
    }
    
    function showBrowseTreeContent(containsBrowse) { // hack to render tree
+      console.log("Project::showBrowseTreeContent("+containsBrowse+")");
       if(containsBrowse) {
          // move the explorer
          var newParent = document.getElementById('browseParent');
          var oldParent = document.getElementById('browseParentHidden');
       
          if(oldParent != null && newParent != null){
-            while (oldParent.childNodes.length > 0) {
-                newParent.appendChild(oldParent.childNodes[0]);
-            }
+            var node = $("#explorer").detach();
+            $('#explorer').bind('destroyed', function() {
+               console("explorer destroyed");
+             })
+            $("#"+newParent.id).append(node);
          }
       }
    }
    
    function hideBrowseTreeContent(containsBrowse) { // hack to render tree
+      console.log("Project::hideBrowseTreeContent("+containsBrowse+")");
       if(containsBrowse) {
          // move the explorer
          var newParent = document.getElementById('browseParentHidden');
          var oldParent = document.getElementById('browseParent');
       
          if(oldParent != null && newParent != null){
-            while (oldParent.childNodes.length > 0) {
-                newParent.appendChild(oldParent.childNodes[0]);
-            }
+            var node = $("#explorer").detach();
+            $('#explorer').bind('destroyed', function() {
+               console("explorer destroyed");
+             })
+            $("#"+newParent.id).append(node);
          }
       }
    }
    
    function showEditorContent(containsEditor) { // hack to render editor
+      console.log("Project::showEditorContent("+containsEditor+")");
       if(containsEditor) {
          // move the explorer
          var newParent = document.getElementById('editParent');
          var oldParent = document.getElementById('editParentHidden');
-      
-         if(oldParent != null && newParent != null){
-            while (oldParent.childNodes.length > 0) {
-                newParent.appendChild(oldParent.childNodes[0]);
-            }
+         
+         if(oldParent != null && newParent != null) {
+            var node = $("#editor").detach();
+            $('#editor').bind('destroyed', function() {
+               console("editor destroyed");
+             })
+            $("#"+newParent.id).append(node);
+            updateEditorTabName();
          }
-         updateEditorTabName();
       }
    }
+   
+   
+   function hideEditorContent(containsEditor) { // hack to render editor
+      console.log("Project::hideEditorContent("+containsEditor+")");
+      if(containsEditor) {
+         // move the editor
+         var newParent = document.getElementById('editParentHidden');
+         var oldParent = document.getElementById('editParent');
+
+         if(oldParent != null && newParent != null) {
+            var node = $("#editor").detach();
+            $('#editor').bind('destroyed', function() {
+               console("editor destroyed");
+             })
+            $("#"+newParent.id).append(node);
+         }
+      }
+   }
+   
 
    export function clickOnTab(name, doubleClickFunction) {
+      console.log("Project::clickOnTab("+name+", "+doubleClickFunction+")");
       var currentTime = new Date().getTime();
       var previousTime = doubleClickTimes[name];
 
@@ -336,6 +376,7 @@ export module Project {
    }
    
    function updateEditorTabName() {
+      console.log("Project::updateEditorTabName()");
       var editorData = FileEditor.loadEditor();
       var editorFileName = document.getElementById("editFileName");
       
@@ -349,6 +390,7 @@ export module Project {
    }
    
    function findActiveEditorLayout() {
+      console.log("Project::findActiveEditorLayout()");
       var tabs = w2ui['exploreEditorTabLayout'];
    
       if(tabs == null) {
@@ -358,6 +400,7 @@ export module Project {
    }
    
    function findActiveEditorTabLayout() {
+      console.log("Project::findActiveEditorTabLayout()");
       var tabs = findActiveEditorLayout();
       
       if(tabs != null) {
@@ -367,6 +410,7 @@ export module Project {
    }
    
    export function deleteEditorTab(resource) {
+      console.log("Project::deleteEditorTab("+resource+")");
       var layout = findActiveEditorLayout();
       var tabs = findActiveEditorTabLayout();
       
@@ -384,6 +428,7 @@ export module Project {
    }
    
    export function renameEditorTab(from, to) {
+      console.log("Project::renameEditorTab("+from+", "+to+")");
       var layout = findActiveEditorLayout();
       var tabs = findActiveEditorTabLayout();
       var editorData = FileEditor.loadEditor();
@@ -420,6 +465,7 @@ export module Project {
    }
    
    export function createEditorTab() {
+      console.log("Project::createEditorTab()");
       var layout = findActiveEditorLayout();
       var tabs = findActiveEditorTabLayout();
       var editorData = FileEditor.loadEditor();
@@ -480,6 +526,7 @@ export module Project {
    }
    
    function activateAnyEditorTab(resourcePathDeleted) {
+      console.log("Project::activateAnyEditorTab("+resourcePathDeleted+")");
       var layout = findActiveEditorLayout();
       var tabs = findActiveEditorTabLayout();
       
@@ -506,23 +553,9 @@ export module Project {
          }
       }
    }
-   
-   function hideEditorContent(containsEditor) { // hack to render editor
-      if(containsEditor) {
-         // move the editor
-         var newParent = document.getElementById('editParentHidden');
-         var oldParent = document.getElementById('editParent');
-      
-         if(oldParent != null && newParent != null){
-            while (oldParent.childNodes.length > 0) {
-                newParent.appendChild(oldParent.childNodes[0]);
-            }
-         }
-      }
-   }
-   
+
    function createExploreLayout() {
-   
+      console.log("Project::createExploreLayout()");
       // $('#topLayer').spin({ lines: 10, length: 30, width: 20, radius: 40 });
    
       // -- LAYOUT
@@ -593,7 +626,7 @@ export module Project {
                tabs : [ {
                   id : 'editTab',
                   caption : '<div class="editTab" id="editFileName">...</div>',
-                  content : "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
+                  content : "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'><div id='editor'></div></div>",
                   closable: true 
                } ],
                onClick : function(event) {
@@ -707,6 +740,7 @@ export module Project {
    }
    
    function startExploreLayout() {
+      console.log("Project::startExploreLayout()");
       applyProjectTheme();
       activateTab("consoleTab", "exploreBottomTabLayout", false, false, "style='right: 0px;'"); 
       activateTab("browseTab", "exploreLeftTabLayout", true, false, "style='right: 0px;'"); 
@@ -716,7 +750,7 @@ export module Project {
    
    
    function createDebugLayout() {
-   
+      console.log("Project::createDebugLayout()");
       // $('#topLayer').spin({ lines: 10, length: 30, width: 20, radius: 40 });
    
       // -- LAYOUT
@@ -930,6 +964,7 @@ export module Project {
    }
    
    function startDebugLayout() {
+      console.log("Project::startDebugLayout()");
       applyProjectTheme();
       activateTab("debugTab", "debugLeftTabLayout", true, false, "");
       activateTab("variablesTab", "debugRightTabLayout", false, false, "");   
@@ -939,6 +974,7 @@ export module Project {
    }
    
    function createBottomStatusContent() {
+      console.log("Project::createBottomStatusContent()");
       return "<div id='status'>"+
          "  <table width='100%' height='100%'>"+
          "  <tr>"+
@@ -950,6 +986,7 @@ export module Project {
    }
    
    function createTopMenuBar(){
+      console.log("Project::createTopMenuBar()");
       var pstyle = 'background-color: ${PROJECT_MENU_COLOR}; overflow: hidden;';
       $('#topLayout').w2layout(
             {
@@ -1058,6 +1095,7 @@ export module Project {
    }
    
    function createProblemsTab(){
+      console.log("Project::createProblemsTab()");
       $().w2grid({
          name : 'problems',
          columns : [ {
@@ -1097,6 +1135,7 @@ export module Project {
    }
    
    function createHistoryTab(){
+      console.log("Project::createHistoryTab()");
       $().w2grid({
          name : 'history',
          columns : [ {
@@ -1217,6 +1256,7 @@ export module Project {
    }
    
    function createBreakpointsTab(){
+      console.log("Project::createBreakpointsTab()");
       $().w2grid({
          name : 'breakpoints',
          columns : [ 
@@ -1310,6 +1350,7 @@ export module Project {
    }
    
    function createDebugTab(){
+      console.log("Project::createDebugTab()");
       $().w2grid({
          name : 'debug',
          columns : [ 
@@ -1368,7 +1409,7 @@ export module Project {
    
    function activateTab(tabName, layoutName, containsBrowse, containsEditor, browseStyle) {
       hideBrowseTreeContent(containsBrowse); // hide tree
-      hideEditorContent(containsEditor); // hide tree
+      hideEditorContent(containsEditor); // hack to hide editor
       
       if (tabName == 'consoleTab') {
          w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='console'></div>");
@@ -1423,6 +1464,7 @@ export module Project {
    }
    
    function openDefaultResource() {
+      console.log("Project::openDefaultResource()");
       var location = window.location.hash;
       var hashIndex = location.indexOf('#');
       

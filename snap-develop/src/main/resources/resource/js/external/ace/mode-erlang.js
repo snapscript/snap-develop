@@ -1,4 +1,4 @@
-define("ace/mode/erlang_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/erlang_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -472,7 +472,7 @@ var ErlangHighlightRules = function() {
               'punctuation.definition.parameters.end.erlang',
               'meta.directive.ifdef.erlang',
               'punctuation.section.directive.end.erlang' ],
-           regex: '^(\\s*)(-)(\\s*)(ifdef)(\\s*)(\\()(\\s*)([a-zA-Z\\d@_]+)(\\s*)(\\))(\\s*)(\\.)' },
+           regex: '^(\\s*)(-)(\\s*)(ifdef)(\\s*)(\\()(\\s*)([a-zA-z\\d@_]+)(\\s*)(\\))(\\s*)(\\.)' },
          { token: 
             [ 'meta.directive.ifndef.erlang',
               'punctuation.section.directive.begin.erlang',
@@ -486,7 +486,7 @@ var ErlangHighlightRules = function() {
               'punctuation.definition.parameters.end.erlang',
               'meta.directive.ifndef.erlang',
               'punctuation.section.directive.end.erlang' ],
-           regex: '^(\\s*)(-)(\\s*)(ifndef)(\\s*)(\\()(\\s*)([a-zA-Z\\d@_]+)(\\s*)(\\))(\\s*)(\\.)' },
+           regex: '^(\\s*)(-)(\\s*)(ifndef)(\\s*)(\\()(\\s*)([a-zA-z\\d@_]+)(\\s*)(\\))(\\s*)(\\.)' },
          { token: 
             [ 'meta.directive.undef.erlang',
               'punctuation.section.directive.begin.erlang',
@@ -500,7 +500,7 @@ var ErlangHighlightRules = function() {
               'punctuation.definition.parameters.end.erlang',
               'meta.directive.undef.erlang',
               'punctuation.section.directive.end.erlang' ],
-           regex: '^(\\s*)(-)(\\s*)(undef)(\\s*)(\\()(\\s*)([a-zA-Z\\d@_]+)(\\s*)(\\))(\\s*)(\\.)' } ],
+           regex: '^(\\s*)(-)(\\s*)(undef)(\\s*)(\\()(\\s*)([a-zA-z\\d@_]+)(\\s*)(\\))(\\s*)(\\.)' } ],
       '#macro-usage': 
        [ { token: 
             [ 'keyword.operator.macro.erlang',
@@ -837,7 +837,7 @@ oop.inherits(ErlangHighlightRules, TextHighlightRules);
 exports.ErlangHighlightRules = ErlangHighlightRules;
 });
 
-define("ace/mode/folding/cstyle",["require","exports","module","ace/lib/oop","ace/range","ace/mode/folding/fold_mode"], function(require, exports, module) {
+ace.define("ace/mode/folding/cstyle",["require","exports","module","ace/lib/oop","ace/range","ace/mode/folding/fold_mode"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../../lib/oop");
@@ -977,7 +977,7 @@ oop.inherits(FoldMode, BaseFoldMode);
 
 });
 
-define("ace/mode/erlang",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/erlang_highlight_rules","ace/mode/folding/cstyle"], function(require, exports, module) {
+ace.define("ace/mode/erlang",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/erlang_highlight_rules","ace/mode/folding/cstyle"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -988,7 +988,6 @@ var FoldMode = require("./folding/cstyle").FoldMode;
 var Mode = function() {
     this.HighlightRules = ErlangHighlightRules;
     this.foldingRules = new FoldMode();
-    this.$behaviour = this.$defaultBehaviour;
 };
 oop.inherits(Mode, TextMode);
 

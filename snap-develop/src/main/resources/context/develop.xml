@@ -291,7 +291,7 @@
         <entry key="/img/theme/.*.png" value-ref="ImageScaleResource" />
         <entry key="/format.*" value-ref="SourceFormatResource" />
         <entry key="/default.*" value-ref="ProjectDefaultResource" />
-        <entry key="/file.*" value-ref="FileMatchResource" />
+        <entry key="/file.*" value-ref="FileMatchResource" />    
         <entry key="/type.*" value-ref="TypeNodeResource" />
         <entry key="/complete.*" value-ref="CompletionResource" />
         <entry key="/history.*" value-ref="ProjectHistoryResource" />

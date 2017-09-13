@@ -11,11 +11,13 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         var editorFocusToken = null; // token to focus on editor load
         var editorHistory = {};
         function createEditor() {
+            console.log("FileEditor::createEditor()");
             showEditor();
             socket_1.EventBus.createTermination(clearEditorHighlights); // create callback
         }
         FileEditor.createEditor = createEditor;
         function clearEditorHighlights() {
+            console.log("FileEditor::clearEditorHighlights()");
             var editor = ace_1.ace.edit("editor");
             var session = editor.getSession();
             for (var editorLine in editorMarkers) {
@@ -30,6 +32,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         FileEditor.clearEditorHighlights = clearEditorHighlights;
         function showEditorLine(line) {
+            console.log("FileEditor::showEditorLine(" + line + ")");
             var editor = ace_1.ace.edit("editor");
             editor.resize(true);
             if (line > 1) {
@@ -41,6 +44,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         FileEditor.showEditorLine = showEditorLine;
         function clearEditorHighlight(line) {
+            console.log("FileEditor::clearEditorHighlight(" + line + ")");
             var editor = ace_1.ace.edit("editor");
             var session = editor.getSession();
             var marker = editorMarkers[line];
@@ -49,6 +53,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             }
         }
         function createEditorHighlight(line, css) {
+            console.log("FileEditor::createEditorHighlight(" + line + ", " + css + ")");
             var editor = ace_1.ace.edit("editor");
             var Range = ace_1.ace.require('ace/range').Range;
             var session = editor.getSession();
@@ -61,11 +66,13 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         FileEditor.createEditorHighlight = createEditorHighlight;
         function findAndReplaceTextInEditor() {
+            console.log("FileEditor::findAndReplaceTextInEditor()");
             var editorData = loadEditor();
             commands_1.Command.searchAndReplaceFiles(editorData.resource.projectPath);
         }
         FileEditor.findAndReplaceTextInEditor = findAndReplaceTextInEditor;
         function findTextInEditor() {
+            console.log("FileEditor::findTextInEditor()");
             var editorData = loadEditor();
             commands_1.Command.searchFiles(editorData.resource.projectPath);
             // Alerts.createPromptAlert("Find Text", "Find", "Cancel", function(textToFind)
@@ -99,6 +106,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         FileEditor.findTextInEditor = findTextInEditor;
         function addEditorKeyBinding(keyBinding, actionFunction) {
+            console.log("FileEditor::addEditorKeyBinding(" + keyBinding + ", " + actionFunction + ")");
             var editor = ace_1.ace.edit("editor");
             editor.commands.addCommand({
                 name: keyBinding.editor,
@@ -158,6 +166,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         // }
         // }
         function clearEditorBreakpoint(row) {
+            console.log("FileEditor::clearEditorBreakpoint(" + row + ")");
             var editor = ace_1.ace.edit("editor");
             var session = editor.getSession();
             var breakpoints = session.getBreakpoints();
@@ -168,6 +177,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             showEditorBreakpoints();
         }
         function clearEditorBreakpoints() {
+            console.log("FileEditor::clearEditorBreakpoints()");
             var editor = ace_1.ace.edit("editor");
             var session = editor.getSession();
             var breakpoints = session.getBreakpoints();
@@ -177,6 +187,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             }
         }
         function showEditorBreakpoints() {
+            console.log("FileEditor::showEditorBreakpoints()");
             var breakpointRecords = [];
             var breakpointIndex = 1;
             for (var filePath in editorBreakpoints) {
@@ -206,6 +217,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         FileEditor.showEditorBreakpoints = showEditorBreakpoints;
         function setEditorBreakpoint(row, value) {
+            console.log("FileEditor::setEditorBreakpoint(" + row + ", " + value + ")");
             if (editorResource != null) {
                 var editor = ace_1.ace.edit("editor");
                 var session = editor.getSession();
@@ -226,6 +238,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             showEditorBreakpoints();
         }
         function toggleEditorBreakpoint(row) {
+            console.log("FileEditor::toggleEditorBreakpoint(" + row + ")");
             if (editorResource != null) {
                 var editor = ace_1.ace.edit("editor");
                 var session = editor.getSession();
@@ -262,6 +275,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             showEditorBreakpoints();
         }
         function resizeEditor() {
+            console.log("FileEditor::resizeEditor()");
             var editor = ace_1.ace.edit("editor");
             var width = document.getElementById('editor').offsetWidth;
             var height = document.getElementById('editor').offsetHeight;
@@ -272,6 +286,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         FileEditor.resizeEditor = resizeEditor;
         function resetEditor() {
+            console.log("FileEditor::resetEditor()");
             var editor = ace_1.ace.edit("editor");
             var session = editor.getSession();
             editorMarkers = {};
@@ -282,6 +297,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         FileEditor.resetEditor = resetEditor;
         function clearEditor() {
+            console.log("FileEditor::clearEditor()");
             var editor = ace_1.ace.edit("editor");
             var session = editor.getSession();
             for (var editorMarker in session.$backMarkers) {
@@ -295,6 +311,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             $("#currentFile").html("");
         }
         function loadEditor() {
+            console.log("FileEditor::loadEditor()");
             var editor = ace_1.ace.edit("editor");
             var editorHistory = loadEditorHistory();
             var text = editor.getValue();
@@ -307,6 +324,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         FileEditor.loadEditor = loadEditor;
         function loadEditorHistory() {
+            console.log("FileEditor::loadEditorHistory()");
             var editor = ace_1.ace.edit("editor");
             var session = editor.getSession();
             var manager = session.getUndoManager();
@@ -319,6 +337,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             };
         }
         function encodeEditorText(text, resource) {
+            console.log("FileEditor::encodeEditorText(" + text.length + ", " + resource + ")");
             if (text) {
                 var token = resource.toLowerCase();
                 if (common_1.Common.stringEndsWith(token, ".json")) {
@@ -335,6 +354,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             return "";
         }
         function resolveEditorMode(resource) {
+            console.log("FileEditor::resolveEditorMode(" + resource + ")");
             var token = resource.toLowerCase();
             if (common_1.Common.stringEndsWith(token, ".snap")) {
                 return "ace/mode/snapscript";
@@ -376,6 +396,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         FileEditor.resolveEditorMode = resolveEditorMode;
         function indexEditorTokens(text, resource) {
+            console.log("FileEditor::indexEditorTokens(" + text.length + ", " + resource + ")");
             var token = resource.toLowerCase();
             var functionRegex = /(function|static|public|private|abstract|override|)\s+([a-z][a-zA-Z0-9]*)\s*\(/g;
             var variableRegex = /(var|const)\s+([a-z][a-zA-Z0-9]*)/g;
@@ -406,6 +427,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             }
         }
         function indexEditorLine(line, number, expression, tokenList, templates, external) {
+            console.log("FileEditor::indexEditorLine(" + line + ", " + number + ", " + expression + ", " + tokenList + ", " + templates + ", " + external + ")");
             expression.lastIndex = 0; // you have to reset regex to its start
             // position
             var tokens = expression.exec(line);
@@ -431,6 +453,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             }
         }
         function saveEditorHistory() {
+            console.log("FileEditor::saveEditorHistory()");
             var editorData = loadEditor();
             if (editorData.resource && editorData.source) {
                 var md5Hash = md5_1.md5(editorData.source);
@@ -441,6 +464,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             }
         }
         function createEditorUndoManager(session, text, resource) {
+            console.log("FileEditor::createEditorUndoManager(" + (typeof session) + ", " + text.length + ", " + resource + ")");
             var manager = new ace_1.ace.UndoManager();
             if (text && resource) {
                 var editorResource = tree_1.FileTree.createResourcePath(resource);
@@ -471,6 +495,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             session.setUndoManager(manager); // reset undo history
         }
         function updateEditor(text, resource) {
+            console.log("FileEditor::updateEditor(" + text.length + ", " + resource + ")");
             var editor = ace_1.ace.edit("editor");
             var session = editor.getSession();
             var currentMode = session.getMode();
@@ -513,17 +538,20 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         FileEditor.updateEditor = updateEditor;
         function showEditorFileInTree() {
+            console.log("FileEditor::showEditorFileInTree()");
             var editorData = loadEditor();
             var resourcePath = editorData.resource;
             tree_1.FileTree.showTreeNode('explorerTree', resourcePath);
         }
         FileEditor.showEditorFileInTree = showEditorFileInTree;
         function getSelectedText() {
+            console.log("FileEditor::getSelectedText()");
             var editor = ace_1.ace.edit("editor");
             return editor.getSelectedText();
         }
         FileEditor.getSelectedText = getSelectedText;
         function isEditorChanged() {
+            console.log("FileEditor::isEditorChanged()");
             if (editorResource != null) {
                 var editor = ace_1.ace.edit("editor");
                 var text = editor.getValue();
@@ -533,11 +561,13 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         FileEditor.isEditorChanged = isEditorChanged;
         function scrollEditorToTop() {
+            console.log("FileEditor::scrollEditorToTop()");
             var editor = ace_1.ace.edit("editor");
             var session = editor.getSession();
             session.setScrollTop(0);
         }
         function createEditorAutoComplete() {
+            console.log("FileEditor::createEditorAutoComplete()");
             return {
                 getCompletions: function createAutoComplete(editor, session, pos, prefix, callback) {
                     if (prefix.length === 0) {
@@ -581,6 +611,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             };
         }
         function formatEditorSource() {
+            console.log("FileEditor::formatEditorSource()");
             var editor = ace_1.ace.edit("editor");
             var text = editor.getValue();
             $.ajax({
@@ -662,15 +693,14 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         // });
         // }
         function setEditorTheme(theme) {
-            executeWhenEditorReady(function (editor) {
-                if (theme != null) {
-                    var editor = ace_1.ace.edit("editor");
-                    if (editor != null) {
-                        editor.setTheme(theme);
-                    }
-                    editorTheme = theme;
+            console.log("FileEditor::setEditorTheme(" + theme + ")");
+            if (theme != null) {
+                var editor = ace_1.ace.edit("editor");
+                if (editor != null) {
+                    editor.setTheme(theme);
                 }
-            });
+                editorTheme = theme;
+            }
         }
         FileEditor.setEditorTheme = setEditorTheme;
         //   export function undoEditorChange() {
@@ -683,63 +713,64 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         //      editor.getSession().getUndoManager().redo(true);
         //   }
         function showEditor() {
-            executeWhenEditorReady(function (editor) {
-                var autoComplete = createEditorAutoComplete();
-                if (editorTheme != null) {
-                    editor.setTheme(editorTheme);
-                }
-                editor.completers = [autoComplete];
-                // setEditorTheme("eclipse"); // set the default to eclipse
-                editor.getSession().setMode("ace/mode/snapscript");
-                editor.getSession().setTabSize(3);
-                editor.setReadOnly(false);
-                editor.setAutoScrollEditorIntoView(true);
-                editor.getSession().setUseSoftTabs(true);
-                editor.commands.removeCommand("replace"); // Ctrl-H
-                editor.commands.removeCommand("find"); // Ctrl-F
-                editor.commands.removeCommand("expandToMatching"); // Ctrl-Shift-M
-                editor.commands.removeCommand("expandtoline"); // Ctrl-Shift-L
-                // ################# DISABLE KEY BINDINGS ######################
-                // editor.keyBinding.setDefaultHandler(null); // disable all keybindings
-                // and allow Mousetrap to do it
-                // #############################################################
-                editor.setShowPrintMargin(false);
-                editor.setOptions({
-                    enableBasicAutocompletion: true
-                });
-                editor.on("guttermousedown", function (e) {
-                    var target = e.domEvent.target;
-                    if (target.className.indexOf("ace_gutter-cell") == -1) {
-                        return;
-                    }
-                    if (!editor.isFocused()) {
-                        return;
-                    }
-                    if (e.clientX > 25 + target.getBoundingClientRect().left) {
-                        return;
-                    }
-                    var row = e.getDocumentPosition().row;
-                    // should be a getBreakpoints but does not seem to be there!!
-                    toggleEditorBreakpoint(row);
-                    e.stop();
-                });
-                //
-                // THIS IS THE LINKS
-                //
-                //createEditorLinks(editor, validEditorLink, openEditorLink); // link.js
-                keys_1.KeyBinder.bindKeys(); // register key bindings
-                // registerEditorBindings();
-                project_1.Project.changeProjectFont(); // project.js update font
-                scrollEditorToTop();
-                spinner_1.LoadSpinner.finish();
-                // JavaFX has a very fast scroll speed
-                if (typeof java !== 'undefined') {
-                    editor.setScrollSpeed(0.05); // slow down if its Java FX
-                }
+            console.log("FileEditor::showEditor()");
+            var editor = ace_1.ace.edit("editor");
+            var autoComplete = createEditorAutoComplete();
+            if (editorTheme != null) {
+                editor.setTheme(editorTheme);
+            }
+            editor.completers = [autoComplete];
+            // setEditorTheme("eclipse"); // set the default to eclipse
+            editor.getSession().setMode("ace/mode/snapscript");
+            editor.getSession().setTabSize(3);
+            editor.setReadOnly(false);
+            editor.setAutoScrollEditorIntoView(true);
+            editor.getSession().setUseSoftTabs(true);
+            editor.commands.removeCommand("replace"); // Ctrl-H
+            editor.commands.removeCommand("find"); // Ctrl-F
+            editor.commands.removeCommand("expandToMatching"); // Ctrl-Shift-M
+            editor.commands.removeCommand("expandtoline"); // Ctrl-Shift-L
+            // ################# DISABLE KEY BINDINGS ######################
+            // editor.keyBinding.setDefaultHandler(null); // disable all keybindings
+            // and allow Mousetrap to do it
+            // #############################################################
+            editor.setShowPrintMargin(false);
+            editor.setOptions({
+                enableBasicAutocompletion: true
             });
+            editor.on("guttermousedown", function (e) {
+                var target = e.domEvent.target;
+                if (target.className.indexOf("ace_gutter-cell") == -1) {
+                    return;
+                }
+                if (!editor.isFocused()) {
+                    return;
+                }
+                if (e.clientX > 25 + target.getBoundingClientRect().left) {
+                    return;
+                }
+                var row = e.getDocumentPosition().row;
+                // should be a getBreakpoints but does not seem to be there!!
+                toggleEditorBreakpoint(row);
+                e.stop();
+            });
+            //
+            // THIS IS THE LINKS
+            //
+            //createEditorLinks(editor, validEditorLink, openEditorLink); // link.js
+            keys_1.KeyBinder.bindKeys(); // register key bindings
+            // registerEditorBindings();
+            project_1.Project.changeProjectFont(); // project.js update font
+            scrollEditorToTop();
+            spinner_1.LoadSpinner.finish();
+            // JavaFX has a very fast scroll speed
+            if (typeof java !== 'undefined') {
+                editor.setScrollSpeed(0.05); // slow down if its Java FX
+            }
         }
+        FileEditor.showEditor = showEditor;
         function validEditorLink(string, col) {
-            // (http://jsbin.com/jehopaja/4/edit?html,output)
+            console.log("FileEditor::validEditorLink(" + string + ", " + col + ")"); // (http://jsbin.com/jehopaja/4/edit?html,output)
             if (keys_1.KeyBinder.isControlPressed()) {
                 var tokenPatterns = [
                     "\\.[A-Z][a-zA-Z0-9]*;",
@@ -782,6 +813,8 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             return null;
         }
         function openEditorLink(event) {
+            console.log("FileEditor::openEditorLink(" + event + ")");
+            var editor = ace_1.ace.edit("editor");
             if (keys_1.KeyBinder.isControlPressed()) {
                 var indexToken = editorCurrentTokens[event.value];
                 if (indexToken != null) {
@@ -796,36 +829,17 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             }
         }
         function updateEditorFont(fontFamily, fontSize) {
-            executeWhenEditorReady(function (editor) {
-                var autoComplete = createEditorAutoComplete();
-                editor.completers = [autoComplete];
-                editor.setOptions({
-                    enableBasicAutocompletion: true,
-                    fontFamily: "'" + fontFamily + "',monospace",
-                    fontSize: fontSize
-                });
+            console.log("FileEditor::updateEditorFont(" + fontFamily + ", " + fontSize + ")");
+            var editor = ace_1.ace.edit("editor");
+            var autoComplete = createEditorAutoComplete();
+            editor.completers = [autoComplete];
+            editor.setOptions({
+                enableBasicAutocompletion: true,
+                fontFamily: "'" + fontFamily + "',monospace",
+                fontSize: fontSize
             });
         }
         FileEditor.updateEditorFont = updateEditorFont;
-        function executeWhenEditorReady(readyFunction) {
-            var readyCallback = function () {
-                var editorElement = document.getElementById("editor");
-                if (editorElement != null) {
-                    var langTools = ace_1.ace.require("ace/ext/language_tools");
-                    var editor = ace_1.ace.edit("editor");
-                    if (editor != null) {
-                        readyFunction(editor);
-                        return true;
-                    }
-                }
-                return false;
-            };
-            if (!readyCallback()) {
-                setTimeout(function () {
-                    executeWhenEditorReady(readyFunction);
-                }, 100);
-            }
-        }
     })(FileEditor = exports.FileEditor || (exports.FileEditor = {}));
 });
 //ModuleSystem.registerModule("editor", "Editor module: editor.js", null, FileEditor.createEditor, [ "common", "spinner", "tree" ]); 

@@ -1,4 +1,4 @@
-define("ace/ext/chromevox",["require","exports","module","ace/editor","ace/config"], function(require, exports, module) {
+ace.define("ace/ext/chromevox",["require","exports","module","ace/editor","ace/config"], function(require, exports, module) {
 var cvoxAce = {};
 cvoxAce.SpeechProperty;
 cvoxAce.Cursor;
@@ -288,13 +288,13 @@ var onSelectionChange = function(evt) {
   }
 };
 var onChange = function(delta) {
-  switch (delta.action) {
+  switch (data.action) {
   case 'remove':
-    cvox.Api.speak(delta.text, 0, DELETED_PROP);
+    cvox.Api.speak(data.text, 0, DELETED_PROP);
     changed = true;
     break;
   case 'insert':
-    cvox.Api.speak(delta.text, 0);
+    cvox.Api.speak(data.text, 0);
     changed = true;
     break;
   }
@@ -479,7 +479,7 @@ var SHORTCUTS = [
     desc: 'Focus text'
   }
 ];
-var onFocus = function(_, editor) {
+var onFocus = function() {
   cvoxAce.editor = editor;
   editor.getSession().selection.on('changeCursor', onCursorChange);
   editor.getSession().selection.on('changeSelection', onSelectionChange);
@@ -492,7 +492,7 @@ var onFocus = function(_, editor) {
   lastCursor = editor.selection.getCursor();
 };
 var init = function(editor) {
-  onFocus(null, editor);
+  onFocus();
   SHORTCUTS.forEach(function(shortcut) {
     keyCodeToShortcutMap[shortcut.keyCode] = shortcut;
     cmdToShortcutMap[shortcut.cmd] = shortcut;
@@ -535,6 +535,6 @@ require('../config').defineOptions(Editor.prototype, 'editor', {
 
 });
                 (function() {
-                    window.require(["ace/ext/chromevox"], function() {});
+                    ace.require(["ace/ext/chromevox"], function() {});
                 })();
             

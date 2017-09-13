@@ -1,4 +1,4 @@
-define("ace/mode/verilog_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/verilog_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -40,7 +40,7 @@ var keywords = "always|and|assign|automatic|begin|buf|bufif0|bufif1|case|casex|c
             token : "comment.start",
             regex : "/\\*",
             next : [
-                { token : "comment.end", regex : "\\*/", next: "start" },
+                { token : "comment.end", regex : "\\*/" },
                 { defaultToken : "comment" }
             ]
         }, {
@@ -77,7 +77,7 @@ oop.inherits(VerilogHighlightRules, TextHighlightRules);
 exports.VerilogHighlightRules = VerilogHighlightRules;
 });
 
-define("ace/mode/verilog",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/verilog_highlight_rules","ace/range"], function(require, exports, module) {
+ace.define("ace/mode/verilog",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/verilog_highlight_rules","ace/range"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -87,7 +87,6 @@ var Range = require("../range").Range;
 
 var Mode = function() {
     this.HighlightRules = VerilogHighlightRules;
-    this.$behaviour = this.$defaultBehaviour;
 };
 oop.inherits(Mode, TextMode);
 

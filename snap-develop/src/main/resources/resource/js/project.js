@@ -5,6 +5,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
         var currentDisplayInfo = {};
         var doubleClickTimes = {};
         function createMainLayout() {
+            console.log("Project::createMainLayout()");
             var perspective = determineProjectLayout();
             if (perspective == "debug") {
                 createDebugLayout(); // show debug layout
@@ -16,6 +17,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
         }
         Project.createMainLayout = createMainLayout;
         function startMainLayout() {
+            console.log("Project::startMainLayout()");
             var perspective = determineProjectLayout();
             if (perspective == "debug") {
                 startDebugLayout(); // show debug layout
@@ -28,6 +30,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
         }
         Project.startMainLayout = startMainLayout;
         function attachClickEvents() {
+            console.log("Project::attachClickEvents()");
             $('#toolbarResize').on('click', function (e) {
                 toggleFullScreen();
                 e.preventDefault();
@@ -114,6 +117,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             });
         }
         function determineProjectLayout() {
+            console.log("Project::determineProjectLayout()");
             var debugToggle = ";debug";
             var locationPath = window.document.location.pathname;
             var locationHash = window.document.location.hash;
@@ -124,6 +128,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             return "explore";
         }
         function startResizePoller() {
+            console.log("Project::startResizePoller()");
             var editorWidth = 0;
             var editorHeight = 0;
             setInterval(function () {
@@ -140,6 +145,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             }, 100);
         }
         function changeProjectFont() {
+            console.log("Project::changeProjectFont()");
             var fontFamily = document.getElementById("fontFamily");
             var fontSize = document.getElementById("fontSize");
             if (fontSize != null && fontFamily != null) {
@@ -155,6 +161,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
         }
         Project.changeProjectFont = changeProjectFont;
         function changeEditorTheme() {
+            console.log("Project::changeEditorTheme()");
             var editorTheme = document.getElementById("editorTheme");
             if (editorTheme != null) {
                 var themeOption = editorTheme.options[editorTheme.selectedIndex];
@@ -169,6 +176,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
         }
         Project.changeEditorTheme = changeEditorTheme;
         function toggleFullScreen() {
+            console.log("Project::toggleFullScreen()");
             var perspective = determineProjectLayout();
             if (perspective == "debug") {
                 var topPanel = w2ui_1.w2ui['debugEditorLayout'].get("top");
@@ -197,12 +205,14 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
         }
         Project.toggleFullScreen = toggleFullScreen;
         function isProjectThemeChange(name) {
+            console.log("Project::isProjectThemeChange(" + name + ")");
             if (currentDisplayInfo) {
                 return currentDisplayInfo.themeName != name.toLowerCase(); // if they are not the same
             }
             return false;
         }
         function currentProjectDisplay() {
+            console.log("Project::currentProjectDisplay()");
             var fontFamily = document.getElementById("fontFamily");
             var fontSize = document.getElementById("fontSize");
             var editorTheme = document.getElementById("editorTheme");
@@ -214,6 +224,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             };
         }
         function applyProjectTheme() {
+            console.log("Project::applyProjectTheme()");
             $.get("/display/" + document.title, function (displayInfo) {
                 currentDisplayInfo = displayInfo; // save display info
                 if (displayInfo.fontName != null && displayInfo.fontSize != null) {
@@ -245,43 +256,68 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             });
         }
         function showBrowseTreeContent(containsBrowse) {
+            console.log("Project::showBrowseTreeContent(" + containsBrowse + ")");
             if (containsBrowse) {
                 // move the explorer
                 var newParent = document.getElementById('browseParent');
                 var oldParent = document.getElementById('browseParentHidden');
                 if (oldParent != null && newParent != null) {
-                    while (oldParent.childNodes.length > 0) {
-                        newParent.appendChild(oldParent.childNodes[0]);
-                    }
+                    var node = $("#explorer").detach();
+                    $('#explorer').bind('destroyed', function () {
+                        console("explorer destroyed");
+                    });
+                    $("#" + newParent.id).append(node);
                 }
             }
         }
         function hideBrowseTreeContent(containsBrowse) {
+            console.log("Project::hideBrowseTreeContent(" + containsBrowse + ")");
             if (containsBrowse) {
                 // move the explorer
                 var newParent = document.getElementById('browseParentHidden');
                 var oldParent = document.getElementById('browseParent');
                 if (oldParent != null && newParent != null) {
-                    while (oldParent.childNodes.length > 0) {
-                        newParent.appendChild(oldParent.childNodes[0]);
-                    }
+                    var node = $("#explorer").detach();
+                    $('#explorer').bind('destroyed', function () {
+                        console("explorer destroyed");
+                    });
+                    $("#" + newParent.id).append(node);
                 }
             }
         }
         function showEditorContent(containsEditor) {
+            console.log("Project::showEditorContent(" + containsEditor + ")");
             if (containsEditor) {
                 // move the explorer
                 var newParent = document.getElementById('editParent');
                 var oldParent = document.getElementById('editParentHidden');
                 if (oldParent != null && newParent != null) {
-                    while (oldParent.childNodes.length > 0) {
-                        newParent.appendChild(oldParent.childNodes[0]);
-                    }
+                    var node = $("#editor").detach();
+                    $('#editor').bind('destroyed', function () {
+                        console("editor destroyed");
+                    });
+                    $("#" + newParent.id).append(node);
+                    updateEditorTabName();
                 }
-                updateEditorTabName();
+            }
+        }
+        function hideEditorContent(containsEditor) {
+            console.log("Project::hideEditorContent(" + containsEditor + ")");
+            if (containsEditor) {
+                // move the editor
+                var newParent = document.getElementById('editParentHidden');
+                var oldParent = document.getElementById('editParent');
+                if (oldParent != null && newParent != null) {
+                    var node = $("#editor").detach();
+                    $('#editor').bind('destroyed', function () {
+                        console("editor destroyed");
+                    });
+                    $("#" + newParent.id).append(node);
+                }
             }
         }
         function clickOnTab(name, doubleClickFunction) {
+            console.log("Project::clickOnTab(" + name + ", " + doubleClickFunction + ")");
             var currentTime = new Date().getTime();
             var previousTime = doubleClickTimes[name];
             if (previousTime) {
@@ -293,6 +329,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
         }
         Project.clickOnTab = clickOnTab;
         function updateEditorTabName() {
+            console.log("Project::updateEditorTabName()");
             var editorData = editor_1.FileEditor.loadEditor();
             var editorFileName = document.getElementById("editFileName");
             if (editorFileName != null) {
@@ -303,6 +340,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             }
         }
         function findActiveEditorLayout() {
+            console.log("Project::findActiveEditorLayout()");
             var tabs = w2ui_1.w2ui['exploreEditorTabLayout'];
             if (tabs == null) {
                 return w2ui_1.w2ui['debugEditorTabLayout'];
@@ -310,6 +348,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             return tabs;
         }
         function findActiveEditorTabLayout() {
+            console.log("Project::findActiveEditorTabLayout()");
             var tabs = findActiveEditorLayout();
             if (tabs != null) {
                 return tabs.panels[0].tabs;
@@ -317,6 +356,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             return null;
         }
         function deleteEditorTab(resource) {
+            console.log("Project::deleteEditorTab(" + resource + ")");
             var layout = findActiveEditorLayout();
             var tabs = findActiveEditorTabLayout();
             if (tabs != null && resource != null) {
@@ -331,6 +371,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
         }
         Project.deleteEditorTab = deleteEditorTab;
         function renameEditorTab(from, to) {
+            console.log("Project::renameEditorTab(" + from + ", " + to + ")");
             var layout = findActiveEditorLayout();
             var tabs = findActiveEditorTabLayout();
             var editorData = editor_1.FileEditor.loadEditor();
@@ -362,6 +403,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
         }
         Project.renameEditorTab = renameEditorTab;
         function createEditorTab() {
+            console.log("Project::createEditorTab()");
             var layout = findActiveEditorLayout();
             var tabs = findActiveEditorTabLayout();
             var editorData = editor_1.FileEditor.loadEditor();
@@ -415,6 +457,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
         }
         Project.createEditorTab = createEditorTab;
         function activateAnyEditorTab(resourcePathDeleted) {
+            console.log("Project::activateAnyEditorTab(" + resourcePathDeleted + ")");
             var layout = findActiveEditorLayout();
             var tabs = findActiveEditorTabLayout();
             if (tabs != null) {
@@ -437,19 +480,8 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                 }
             }
         }
-        function hideEditorContent(containsEditor) {
-            if (containsEditor) {
-                // move the editor
-                var newParent = document.getElementById('editParentHidden');
-                var oldParent = document.getElementById('editParent');
-                if (oldParent != null && newParent != null) {
-                    while (oldParent.childNodes.length > 0) {
-                        newParent.appendChild(oldParent.childNodes[0]);
-                    }
-                }
-            }
-        }
         function createExploreLayout() {
+            console.log("Project::createExploreLayout()");
             // $('#topLayer').spin({ lines: 10, length: 30, width: 20, radius: 40 });
             // -- LAYOUT
             var pstyle = 'background-color: ${PROJECT_BACKGROUND_COLOR}; overflow: hidden;';
@@ -516,7 +548,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                             tabs: [{
                                     id: 'editTab',
                                     caption: '<div class="editTab" id="editFileName">...</div>',
-                                    content: "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
+                                    content: "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'><div id='editor'></div></div>",
                                     closable: true
                                 }],
                             onClick: function (event) {
@@ -625,6 +657,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             w2ui_1.w2ui['exploreLeftTabLayout'].refresh();
         }
         function startExploreLayout() {
+            console.log("Project::startExploreLayout()");
             applyProjectTheme();
             activateTab("consoleTab", "exploreBottomTabLayout", false, false, "style='right: 0px;'");
             activateTab("browseTab", "exploreLeftTabLayout", true, false, "style='right: 0px;'");
@@ -632,6 +665,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             openDefaultResource();
         }
         function createDebugLayout() {
+            console.log("Project::createDebugLayout()");
             // $('#topLayer').spin({ lines: 10, length: 30, width: 20, radius: 40 });
             // -- LAYOUT
             var pstyle = 'background-color: ${PROJECT_BACKGROUND_COLOR}; overflow: hidden;';
@@ -834,6 +868,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             w2ui_1.w2ui['debugBottomTabLayout'].refresh();
         }
         function startDebugLayout() {
+            console.log("Project::startDebugLayout()");
             applyProjectTheme();
             activateTab("debugTab", "debugLeftTabLayout", true, false, "");
             activateTab("variablesTab", "debugRightTabLayout", false, false, "");
@@ -842,6 +877,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             openDefaultResource();
         }
         function createBottomStatusContent() {
+            console.log("Project::createBottomStatusContent()");
             return "<div id='status'>" +
                 "  <table width='100%' height='100%'>" +
                 "  <tr>" +
@@ -852,6 +888,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                 "</div>";
         }
         function createTopMenuBar() {
+            console.log("Project::createTopMenuBar()");
             var pstyle = 'background-color: ${PROJECT_MENU_COLOR}; overflow: hidden;';
             $('#topLayout').w2layout({
                 name: 'topLayout',
@@ -958,6 +995,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             });
         }
         function createProblemsTab() {
+            console.log("Project::createProblemsTab()");
             $().w2grid({
                 name: 'problems',
                 columns: [{
@@ -996,6 +1034,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             });
         }
         function createHistoryTab() {
+            console.log("Project::createHistoryTab()");
             $().w2grid({
                 name: 'history',
                 columns: [{
@@ -1113,6 +1152,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             });
         }
         function createBreakpointsTab() {
+            console.log("Project::createBreakpointsTab()");
             $().w2grid({
                 name: 'breakpoints',
                 columns: [
@@ -1204,6 +1244,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             });
         }
         function createDebugTab() {
+            console.log("Project::createDebugTab()");
             $().w2grid({
                 name: 'debug',
                 columns: [
@@ -1261,7 +1302,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
         }
         function activateTab(tabName, layoutName, containsBrowse, containsEditor, browseStyle) {
             hideBrowseTreeContent(containsBrowse); // hide tree
-            hideEditorContent(containsEditor); // hide tree
+            hideEditorContent(containsEditor); // hack to hide editor
             if (tabName == 'consoleTab') {
                 w2ui_1.w2ui[layoutName].content('main', "<div style='overflow: scroll; font-family: monospace;' id='console'></div>");
                 w2ui_1.w2ui[layoutName].refresh();
@@ -1323,6 +1364,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             }
         }
         function openDefaultResource() {
+            console.log("Project::openDefaultResource()");
             var location = window.location.hash;
             var hashIndex = location.indexOf('#');
             if (hashIndex == -1) {

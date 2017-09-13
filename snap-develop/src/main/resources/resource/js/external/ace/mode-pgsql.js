@@ -1,4 +1,4 @@
-define("ace/mode/doc_comment_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/doc_comment_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -48,7 +48,7 @@ exports.DocCommentHighlightRules = DocCommentHighlightRules;
 
 });
 
-define("ace/mode/perl_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/perl_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -181,7 +181,7 @@ oop.inherits(PerlHighlightRules, TextHighlightRules);
 exports.PerlHighlightRules = PerlHighlightRules;
 });
 
-define("ace/mode/python_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/python_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -337,7 +337,7 @@ oop.inherits(PythonHighlightRules, TextHighlightRules);
 exports.PythonHighlightRules = PythonHighlightRules;
 });
 
-define("ace/mode/json_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/json_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -363,15 +363,11 @@ var JsonHighlightRules = function() {
                 token : "constant.language.boolean",
                 regex : "(?:true|false)\\b"
             }, {
-                token : "text", // single quoted strings are not allowed
+                token : "invalid.illegal", // single quoted strings are not allowed
                 regex : "['](?:(?:\\\\.)|(?:[^'\\\\]))*?[']"
             }, {
-                token : "comment", // comments are not allowed, but who cares?
+                token : "invalid.illegal", // comments are not allowed
                 regex : "\\/\\/.*$"
-            }, {
-                token : "comment.start", // comments are not allowed, but who cares?
-                regex : "\\/\\*",
-                next  : "comment"
             }, {
                 token : "paren.lparen",
                 regex : "[[({]"
@@ -389,19 +385,15 @@ var JsonHighlightRules = function() {
                 regex : /\\(?:x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|["\\\/bfnrt])/
             }, {
                 token : "string",
-                regex : '"|$',
+                regex : '[^"\\\\]+'
+            }, {
+                token : "string",
+                regex : '"',
                 next  : "start"
             }, {
-                defaultToken : "string"
-            }
-        ],
-        "comment" : [
-            {
-                token : "comment.end", // comments are not allowed, but who cares?
-                regex : "\\*\\/",
+                token : "string",
+                regex : "",
                 next  : "start"
-            }, {
-                defaultToken: "comment"
             }
         ]
     };
@@ -413,13 +405,13 @@ oop.inherits(JsonHighlightRules, TextHighlightRules);
 exports.JsonHighlightRules = JsonHighlightRules;
 });
 
-define("ace/mode/javascript_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/doc_comment_highlight_rules","ace/mode/text_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/javascript_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/doc_comment_highlight_rules","ace/mode/text_highlight_rules"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
 var DocCommentHighlightRules = require("./doc_comment_highlight_rules").DocCommentHighlightRules;
 var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
-var identifierRe = "[a-zA-Z\\$_\u00a1-\uffff][a-zA-Z\\d\\$_\u00a1-\uffff]*";
+var identifierRe = "[a-zA-Z\\$_\u00a1-\uffff][a-zA-Z\\d\\$_\u00a1-\uffff]*\\b";
 
 var JavaScriptHighlightRules = function(options) {
     var keywordMapper = this.createKeywordMapper({
@@ -435,9 +427,9 @@ var JavaScriptHighlightRules = function(options) {
             "JSON|Math|"                                                               + // Other
             "this|arguments|prototype|window|document"                                 , // Pseudo
         "keyword":
-            "const|yield|import|get|set|async|await|" +
+            "const|yield|import|get|set|" +
             "break|case|catch|continue|default|delete|do|else|finally|for|function|" +
-            "if|in|of|instanceof|new|return|switch|throw|try|typeof|let|var|while|with|debugger|" +
+            "if|in|instanceof|new|return|switch|throw|try|typeof|let|var|while|with|debugger|" +
             "__parent__|__count__|escape|unescape|with|__proto__|" +
             "class|enum|extends|super|export|implements|private|public|interface|package|protected|static",
         "storage.type":
@@ -452,17 +444,25 @@ var JavaScriptHighlightRules = function(options) {
 
     var escapedRe = "\\\\(?:x[0-9a-fA-F]{2}|" + // hex
         "u[0-9a-fA-F]{4}|" + // unicode
-        "u{[0-9a-fA-F]{1,6}}|" + // es6 unicode
         "[0-2][0-7]{0,2}|" + // oct
-        "3[0-7][0-7]?|" + // oct
+        "3[0-6][0-7]?|" + // oct
+        "37[0-7]?|" + // oct
         "[4-7][0-7]?|" + //oct
         ".)";
 
     this.$rules = {
         "no_regex" : [
-            DocCommentHighlightRules.getStartRule("doc-start"),
-            comments("no_regex"),
             {
+                token : "comment",
+                regex : "\\/\\/",
+                next : "line_comment"
+            },
+            DocCommentHighlightRules.getStartRule("doc-start"),
+            {
+                token : "comment", // multi line comment
+                regex : /\/\*/,
+                next : "comment"
+            }, {
                 token : "string",
                 regex : "'(?=.)",
                 next  : "qstring"
@@ -471,11 +471,11 @@ var JavaScriptHighlightRules = function(options) {
                 regex : '"(?=.)',
                 next  : "qqstring"
             }, {
-                token : "constant.numeric", // hexadecimal, octal and binary
-                regex : /0(?:[xX][0-9a-fA-F]+|[oO][0-7]+|[bB][01]+)\b/
+                token : "constant.numeric", // hex
+                regex : /0[xX][0-9a-fA-F]+\b/
             }, {
-                token : "constant.numeric", // decimal integers and floats
-                regex : /(?:\d\d*(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+\b)?/
+                token : "constant.numeric", // float
+                regex : /[+-]?\d+(?:(?:\.\d*)?(?:[eE][+-]?\d+)?)?\b/
             }, {
                 token : [
                     "storage.type", "punctuation.operator", "support.function",
@@ -526,9 +526,6 @@ var JavaScriptHighlightRules = function(options) {
                 next: "function_arguments"
             }, {
                 token : "keyword",
-                regex : "from(?=\\s*('|\"))"
-            }, {
-                token : "keyword",
                 regex : "(?:" + kwBeforeRe + ")\\b",
                 next : "start"
             }, {
@@ -545,11 +542,8 @@ var JavaScriptHighlightRules = function(options) {
                 regex : /[.](?![.])/,
                 next  : "property"
             }, {
-                token : "storage.type",
-                regex : /=>/
-            }, {
                 token : "keyword.operator",
-                regex : /--|\+\+|\.{3}|===|==|=|!=|!==|<+=?|>+=?|!|&&|\|\||\?:|[!$%&*+\-~\/^]=?/,
+                regex : /--|\+\+|\.{3}|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\|\||\?\:|[!$%&*+\-~\/^]=?/,
                 next  : "start"
             }, {
                 token : "punctuation.operator",
@@ -601,8 +595,15 @@ var JavaScriptHighlightRules = function(options) {
         ],
         "start": [
             DocCommentHighlightRules.getStartRule("doc-start"),
-            comments("start"),
             {
+                token : "comment", // multi line comment
+                regex : "\\/\\*",
+                next : "comment_regex_allowed"
+            }, {
+                token : "comment",
+                regex : "\\/\\/",
+                next : "line_comment_regex_allowed"
+            }, {
                 token: "string.regexp",
                 regex: "\\/",
                 next: "regex"
@@ -680,6 +681,26 @@ var JavaScriptHighlightRules = function(options) {
                 next: "no_regex"
             }
         ],
+        "comment_regex_allowed" : [
+            DocCommentHighlightRules.getTagRule(),
+            {token : "comment", regex : "\\*\\/", next : "start"},
+            {defaultToken : "comment", caseInsensitive: true}
+        ],
+        "comment" : [
+            DocCommentHighlightRules.getTagRule(),
+            {token : "comment", regex : "\\*\\/", next : "no_regex"},
+            {defaultToken : "comment", caseInsensitive: true}
+        ],
+        "line_comment_regex_allowed" : [
+            DocCommentHighlightRules.getTagRule(),
+            {token : "comment", regex : "$|^", next : "start"},
+            {defaultToken : "comment", caseInsensitive: true}
+        ],
+        "line_comment" : [
+            DocCommentHighlightRules.getTagRule(),
+            {token : "comment", regex : "$|^", next : "no_regex"},
+            {defaultToken : "comment", caseInsensitive: true}
+        ],
         "qqstring" : [
             {
                 token : "constant.language.escape",
@@ -687,7 +708,7 @@ var JavaScriptHighlightRules = function(options) {
             }, {
                 token : "string",
                 regex : "\\\\$",
-                consumeLineEnd  : true
+                next  : "qqstring"
             }, {
                 token : "string",
                 regex : '"|$',
@@ -703,7 +724,7 @@ var JavaScriptHighlightRules = function(options) {
             }, {
                 token : "string",
                 regex : "\\\\$",
-                consumeLineEnd  : true
+                next  : "qstring"
             }, {
                 token : "string",
                 regex : "'|$",
@@ -713,16 +734,17 @@ var JavaScriptHighlightRules = function(options) {
             }
         ]
     };
-
-
+    
+    
     if (!options || !options.noES6) {
         this.$rules.no_regex.unshift({
             regex: "[{}]", onMatch: function(val, state, stack) {
                 this.next = val == "{" ? this.nextState : "";
                 if (val == "{" && stack.length) {
                     stack.unshift("start", state);
+                    return "paren";
                 }
-                else if (val == "}" && stack.length) {
+                if (val == "}" && stack.length) {
                     stack.shift();
                     this.next = stack.shift();
                     if (this.next.indexOf("string") != -1 || this.next.indexOf("jsx") != -1)
@@ -749,14 +771,14 @@ var JavaScriptHighlightRules = function(options) {
                 defaultToken: "string.quasi"
             }]
         });
-
-        if (!options || options.jsx != false)
+        
+        if (!options || !options.noJSX)
             JSX.call(this);
     }
-
+    
     this.embedRules(DocCommentHighlightRules, "doc-",
         [ DocCommentHighlightRules.getEndRule("no_regex") ]);
-
+    
     this.normalizeRules();
 };
 
@@ -807,8 +829,8 @@ function JSX() {
         {defaultToken: "string"}
     ];
     this.$rules.jsxAttributes = [{
-        token : "meta.tag.punctuation.tag-close.xml",
-        regex : "/?>",
+        token : "meta.tag.punctuation.tag-close.xml", 
+        regex : "/?>", 
         onMatch : function(value, currentState, stack) {
             if (currentState == stack[0])
                 stack.shift();
@@ -823,9 +845,8 @@ function JSX() {
             return [{type: this.token, value: value}];
         },
         nextState: "jsx"
-    },
+    }, 
     jsxJsRule,
-    comments("jsxAttributes"),
     {
         token : "entity.other.attribute-name.xml",
         regex : tagRegex
@@ -841,6 +862,7 @@ function JSX() {
         stateName : "jsx_attr_q",
         push : [
             {token : "string.attribute-value.xml", regex: "'", next: "pop"},
+            jsxJsRule,
             {include : "reference"},
             {defaultToken : "string.attribute-value.xml"}
         ]
@@ -849,44 +871,22 @@ function JSX() {
         regex : '"',
         stateName : "jsx_attr_qq",
         push : [
+            jsxJsRule,
             {token : "string.attribute-value.xml", regex: '"', next: "pop"},
             {include : "reference"},
             {defaultToken : "string.attribute-value.xml"}
         ]
-    },
-    jsxTag
-    ];
+    }];
     this.$rules.reference = [{
         token : "constant.language.escape.reference.xml",
         regex : "(?:&#[0-9]+;)|(?:&#x[0-9a-fA-F]+;)|(?:&[a-zA-Z0-9_:\\.-]+;)"
     }];
 }
 
-function comments(next) {
-    return [
-        {
-            token : "comment", // multi line comment
-            regex : /\/\*/,
-            next: [
-                DocCommentHighlightRules.getTagRule(),
-                {token : "comment", regex : "\\*\\/", next : next || "pop"},
-                {defaultToken : "comment", caseInsensitive: true}
-            ]
-        }, {
-            token : "comment",
-            regex : "\\/\\/",
-            next: [
-                DocCommentHighlightRules.getTagRule(),
-                {token : "comment", regex : "$|^", next : next || "pop"},
-                {defaultToken : "comment", caseInsensitive: true}
-            ]
-        }
-    ];
-}
 exports.JavaScriptHighlightRules = JavaScriptHighlightRules;
 });
 
-define("ace/mode/pgsql_highlight_rules",["require","exports","module","ace/lib/oop","ace/lib/lang","ace/mode/doc_comment_highlight_rules","ace/mode/text_highlight_rules","ace/mode/perl_highlight_rules","ace/mode/python_highlight_rules","ace/mode/json_highlight_rules","ace/mode/javascript_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/pgsql_highlight_rules",["require","exports","module","ace/lib/oop","ace/lib/lang","ace/mode/doc_comment_highlight_rules","ace/mode/text_highlight_rules","ace/mode/perl_highlight_rules","ace/mode/python_highlight_rules","ace/mode/json_highlight_rules","ace/mode/javascript_highlight_rules"], function(require, exports, module) {
 
 var oop = require("../lib/oop");
 var lang = require("../lib/lang");
@@ -1411,28 +1411,31 @@ var PgsqlHighlightRules = function() {
 
         "comment" : [{
                 token : "comment", // closing comment
-                regex : "\\*\\/",
+                regex : ".*?\\*\\/",
                 next : "start"
             }, {
-                defaultToken : "comment"
+                token : "comment", // comment spanning whole line
+                regex : ".+"
             }
         ],
 
         "commentStatement" : [{
                 token : "comment", // closing comment
-                regex : "\\*\\/",
+                regex : ".*?\\*\\/",
                 next : "statement"
             }, {
-                defaultToken : "comment"
+                token : "comment", // comment spanning whole line
+                regex : ".+"
             }
         ],
 
         "commentDollarSql" : [{
                 token : "comment", // closing comment
-                regex : "\\*\\/",
+                regex : ".*?\\*\\/",
                 next : "dollarSql"
             }, {
-                defaultToken : "comment"
+                token : "comment", // comment spanning whole line
+                regex : ".+"
             }
         ],
 
@@ -1469,15 +1472,15 @@ oop.inherits(PgsqlHighlightRules, TextHighlightRules);
 exports.PgsqlHighlightRules = PgsqlHighlightRules;
 });
 
-define("ace/mode/pgsql",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/pgsql_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/pgsql",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/pgsql_highlight_rules","ace/range"], function(require, exports, module) {
 
 var oop = require("../lib/oop");
 var TextMode = require("../mode/text").Mode;
 var PgsqlHighlightRules = require("./pgsql_highlight_rules").PgsqlHighlightRules;
+var Range = require("../range").Range;
 
 var Mode = function() {
     this.HighlightRules = PgsqlHighlightRules;
-    this.$behaviour = this.$defaultBehaviour;
 };
 oop.inherits(Mode, TextMode);
 
@@ -1491,7 +1494,7 @@ oop.inherits(Mode, TextMode);
         } else {
             return this.$getIndent(line); // Keep whatever indent the previous line has
         }
-    };
+    }
 
     this.$id = "ace/mode/pgsql";
 }).call(Mode.prototype);

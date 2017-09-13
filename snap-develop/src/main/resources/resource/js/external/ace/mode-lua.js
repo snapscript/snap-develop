@@ -1,4 +1,4 @@
-define("ace/mode/lua_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/lua_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -40,14 +40,17 @@ var LuaHighlightRules = function() {
 
     var stdLibaries = ("string|package|os|io|math|debug|table|coroutine");
 
+    var futureReserved = "";
+
     var deprecatedIn5152 = ("setn|foreach|foreachi|gcinfo|log10|maxn");
 
     var keywordMapper = this.createKeywordMapper({
         "keyword": keywords,
         "support.function": functions,
-        "keyword.deprecated": deprecatedIn5152,
+        "invalid.deprecated": deprecatedIn5152,
         "constant.library": stdLibaries,
         "constant.language": builtinConstants,
+        "invalid.illegal": futureReserved,
         "variable.language": "self"
     }, "identifier");
 
@@ -96,7 +99,7 @@ var LuaHighlightRules = function() {
             stateName: "bracketedString",
             onMatch : function(value, currentState, stack){
                 stack.unshift(this.next, value.length, currentState);
-                return "string.start";
+                return "comment";
             },
             regex : /\[=*\[/,
             next  : [
@@ -109,13 +112,13 @@ var LuaHighlightRules = function() {
                         } else {
                             this.next = "";
                         }
-                        return "string.end";
+                        return "comment";
                     },
                     
                     regex : /\]=*\]/,
                     next  : "start"
                 }, {
-                    defaultToken : "string"
+                    defaultToken : "comment"
                 }
             ]
         },
@@ -157,7 +160,7 @@ oop.inherits(LuaHighlightRules, TextHighlightRules);
 exports.LuaHighlightRules = LuaHighlightRules;
 });
 
-define("ace/mode/folding/lua",["require","exports","module","ace/lib/oop","ace/mode/folding/fold_mode","ace/range","ace/token_iterator"], function(require, exports, module) {
+ace.define("ace/mode/folding/lua",["require","exports","module","ace/lib/oop","ace/mode/folding/fold_mode","ace/range","ace/token_iterator"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../../lib/oop");
@@ -291,7 +294,7 @@ oop.inherits(FoldMode, BaseFoldMode);
 
 });
 
-define("ace/mode/lua",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/lua_highlight_rules","ace/mode/folding/lua","ace/range","ace/worker/worker_client"], function(require, exports, module) {
+ace.define("ace/mode/lua",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/lua_highlight_rules","ace/mode/folding/lua","ace/range","ace/worker/worker_client"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -305,7 +308,6 @@ var Mode = function() {
     this.HighlightRules = LuaHighlightRules;
     
     this.foldingRules = new LuaFoldMode();
-    this.$behaviour = this.$defaultBehaviour;
 };
 oop.inherits(Mode, TextMode);
 
@@ -396,7 +398,7 @@ oop.inherits(Mode, TextMode);
         var tabLength = session.getTabString().length;
         var expectedIndent = prevIndent + tabLength * getNetIndentLevel(prevTokens);
         var curIndent = this.$getIndent(session.getLine(row)).length;
-        if (curIndent <= expectedIndent) {
+        if (curIndent < expectedIndent) {
             return;
         }
         session.outdentRows(new Range(row, 0, row + 2, 0));
