@@ -28,13 +28,11 @@ export module FileEditor {
    var editorHistory = {};
    
    export function createEditor() {
-      console.log("FileEditor::createEditor()");
       showEditor();
       EventBus.createTermination(clearEditorHighlights); // create callback
    }
    
    export function clearEditorHighlights() {
-      console.log("FileEditor::clearEditorHighlights()");
       var editor = ace.edit("editor");
       var session = editor.getSession();
        
@@ -51,7 +49,6 @@ export module FileEditor {
    }
    
    export function showEditorLine(line) {
-      console.log("FileEditor::showEditorLine("+line+")");
       var editor = ace.edit("editor");
       
       editor.resize(true);
@@ -64,7 +61,6 @@ export module FileEditor {
    }
    
    function clearEditorHighlight(line) {
-      console.log("FileEditor::clearEditorHighlight("+line+")");
       var editor = ace.edit("editor");
       var session = editor.getSession();
       var marker = editorMarkers[line];
@@ -75,7 +71,6 @@ export module FileEditor {
    }
    
    export function createEditorHighlight(line, css) {
-      console.log("FileEditor::createEditorHighlight("+line+", "+css+")");
       var editor = ace.edit("editor");
       var Range = ace.require('ace/range').Range;
       var session = editor.getSession();
@@ -90,13 +85,11 @@ export module FileEditor {
    }
    
    export function findAndReplaceTextInEditor(){
-      console.log("FileEditor::findAndReplaceTextInEditor()");
       var editorData = loadEditor();
       Command.searchAndReplaceFiles(editorData.resource.projectPath);
    }
    
    export function findTextInEditor() {
-      console.log("FileEditor::findTextInEditor()");
       var editorData = loadEditor();
       Command.searchFiles(editorData.resource.projectPath);
 // Alerts.createPromptAlert("Find Text", "Find", "Cancel", function(textToFind)
@@ -130,7 +123,6 @@ export module FileEditor {
    }
    
    export function addEditorKeyBinding(keyBinding, actionFunction) {
-      console.log("FileEditor::addEditorKeyBinding("+keyBinding+", "+actionFunction+")");
       var editor = ace.edit("editor");
 
       editor.commands.addCommand({
@@ -192,7 +184,6 @@ export module FileEditor {
 // }
    
    function clearEditorBreakpoint(row) {
-      console.log("FileEditor::clearEditorBreakpoint("+row+")");
       var editor = ace.edit("editor");
       var session = editor.getSession();
       var breakpoints = session.getBreakpoints();
@@ -205,7 +196,6 @@ export module FileEditor {
    }
    
    function clearEditorBreakpoints() {
-      console.log("FileEditor::clearEditorBreakpoints()");
       var editor = ace.edit("editor");
       var session = editor.getSession();
       var breakpoints = session.getBreakpoints();
@@ -217,7 +207,6 @@ export module FileEditor {
    }
    
    export function showEditorBreakpoints() {
-      console.log("FileEditor::showEditorBreakpoints()");
       var breakpointRecords = [];
       var breakpointIndex = 1;
    
@@ -250,7 +239,6 @@ export module FileEditor {
    }
    
    function setEditorBreakpoint(row, value) {
-      console.log("FileEditor::setEditorBreakpoint("+row+", "+value+")");
       if (editorResource != null) {
          var editor = ace.edit("editor");
          var session = editor.getSession();
@@ -272,7 +260,6 @@ export module FileEditor {
    }
    
    function toggleEditorBreakpoint(row) {
-      console.log("FileEditor::toggleEditorBreakpoint("+row+")");
       if (editorResource != null) {
          var editor = ace.edit("editor");
          var session = editor.getSession();
@@ -309,7 +296,6 @@ export module FileEditor {
    }
    
    export function resizeEditor() {
-      console.log("FileEditor::resizeEditor()");
       var editor = ace.edit("editor");
       var width = document.getElementById('editor').offsetWidth;
       var height = document.getElementById('editor').offsetHeight;
@@ -321,7 +307,6 @@ export module FileEditor {
    }
    
    export function resetEditor() {
-      console.log("FileEditor::resetEditor()");
       var editor = ace.edit("editor");
       var session = editor.getSession();
    
@@ -333,7 +318,6 @@ export module FileEditor {
    }
    
    function clearEditor() {
-      console.log("FileEditor::clearEditor()");
       var editor = ace.edit("editor");
       var session = editor.getSession();
    
@@ -350,7 +334,6 @@ export module FileEditor {
    }
    
    export function loadEditor() {
-      console.log("FileEditor::loadEditor()");
       var editor = ace.edit("editor");
       var editorHistory = loadEditorHistory();
       var text = editor.getValue();
@@ -364,7 +347,6 @@ export module FileEditor {
    }
    
    function loadEditorHistory() {
-      console.log("FileEditor::loadEditorHistory()");
       var editor = ace.edit("editor");
       var session = editor.getSession();
       var manager = session.getUndoManager();
@@ -379,7 +361,6 @@ export module FileEditor {
    }
    
    function encodeEditorText(text, resource) {
-      console.log("FileEditor::encodeEditorText("+text.length+", "+resource+")");
       if(text) {
          var token = resource.toLowerCase();
          
@@ -397,7 +378,6 @@ export module FileEditor {
    }
    
    export function resolveEditorMode(resource) {
-      console.log("FileEditor::resolveEditorMode("+resource+")");
       var token = resource.toLowerCase();
       
       if(Common.stringEndsWith(token, ".snap")) {
@@ -440,7 +420,6 @@ export module FileEditor {
    }
    
    function indexEditorTokens(text, resource) { // create dynamic hyperlinks
-      console.log("FileEditor::indexEditorTokens("+text.length+", "+resource+")");
       var token = resource.toLowerCase();
       var functionRegex = /(function|static|public|private|abstract|override|)\s+([a-z][a-zA-Z0-9]*)\s*\(/g;
       var variableRegex = /(var|const)\s+([a-z][a-zA-Z0-9]*)/g;
@@ -477,7 +456,6 @@ export module FileEditor {
    }
    
    function indexEditorLine(line, number, expression, tokenList, templates, external) {
-      console.log("FileEditor::indexEditorLine("+line+", "+number+", "+expression+", "+tokenList+", "+templates+", "+external+")");
       expression.lastIndex = 0; // you have to reset regex to its start
                                  // position
       var tokens = expression.exec(line);
@@ -506,7 +484,6 @@ export module FileEditor {
    }
    
    function saveEditorHistory() {
-      console.log("FileEditor::saveEditorHistory()");
       var editorData = loadEditor();
       
       if(editorData.resource && editorData.source) {
@@ -520,7 +497,6 @@ export module FileEditor {
    }
    
    function createEditorUndoManager(session, text, resource) {
-      console.log("FileEditor::createEditorUndoManager("+(typeof session)+", "+text.length+", "+resource+")");
       var manager = new ace.UndoManager();
       
       if(text && resource) {
@@ -555,7 +531,6 @@ export module FileEditor {
    }
    
    export function updateEditor(text, resource) {
-      console.log("FileEditor::updateEditor("+text.length+", "+resource+")");
       var editor = ace.edit("editor");
       var session = editor.getSession();
       var currentMode = session.getMode();
@@ -604,7 +579,6 @@ export module FileEditor {
    }
    
    export function showEditorFileInTree() {
-      console.log("FileEditor::showEditorFileInTree()");
       var editorData = loadEditor();
       var resourcePath = editorData.resource;
       
@@ -612,13 +586,11 @@ export module FileEditor {
    }
    
    export function getSelectedText() {
-      console.log("FileEditor::getSelectedText()");
       var editor = ace.edit("editor");
       return editor.getSelectedText();
    }
    
    export function isEditorChanged() {
-      console.log("FileEditor::isEditorChanged()");
       if(editorResource != null) {
          var editor = ace.edit("editor");
          var text = editor.getValue();
@@ -629,14 +601,12 @@ export module FileEditor {
    }
    
    function scrollEditorToTop() {
-      console.log("FileEditor::scrollEditorToTop()");
       var editor = ace.edit("editor");
       var session = editor.getSession();
       session.setScrollTop(0);
    }
    
    function createEditorAutoComplete() {
-      console.log("FileEditor::createEditorAutoComplete()");
       return {
          getCompletions: function createAutoComplete(editor, session, pos, prefix, callback) {
              if (prefix.length === 0) { 
@@ -682,7 +652,6 @@ export module FileEditor {
    }
    
    export function formatEditorSource() {
-      console.log("FileEditor::formatEditorSource()");
       var editor = ace.edit("editor");
       var text = editor.getValue();
       $.ajax({
@@ -765,15 +734,16 @@ export module FileEditor {
 // }
    
    export function setEditorTheme(theme) {
-      console.log("FileEditor::setEditorTheme("+theme+")");
-      if(theme != null){
-         var editor = ace.edit("editor");
-         
-         if(editor != null) {
-            editor.setTheme(theme);
+      executeWhenEditorReady(function(editor) {
+         if(theme != null){
+            var editor = ace.edit("editor");
+            
+            if(editor != null) {
+               editor.setTheme(theme);
+            }
+            editorTheme = theme;
          }
-         editorTheme = theme;
-      }
+      });
    }
    
 //   export function undoEditorChange() {
@@ -786,73 +756,73 @@ export module FileEditor {
 //      editor.getSession().getUndoManager().redo(true);
 //   }
    
-   export function showEditor() {
-      console.log("FileEditor::showEditor()");
-      var editor = ace.edit("editor");
-      var autoComplete = createEditorAutoComplete();
-      
-      if(editorTheme != null) {
-         editor.setTheme(editorTheme);
-      }
-      editor.completers = [autoComplete];
-      // setEditorTheme("eclipse"); // set the default to eclipse
-      
-      editor.getSession().setMode("ace/mode/snapscript");
-      editor.getSession().setTabSize(3);
-      editor.setReadOnly(false);
-      editor.setAutoScrollEditorIntoView(true);
-      editor.getSession().setUseSoftTabs(true);
-      
-      editor.commands.removeCommand("replace"); // Ctrl-H
-      editor.commands.removeCommand("find");    // Ctrl-F
-      editor.commands.removeCommand("expandToMatching"); // Ctrl-Shift-M
-      editor.commands.removeCommand("expandtoline"); // Ctrl-Shift-L
-      
-      // ################# DISABLE KEY BINDINGS ######################
-      // editor.keyBinding.setDefaultHandler(null); // disable all keybindings
-      // and allow Mousetrap to do it
-      // #############################################################
-      
-      editor.setShowPrintMargin(false);
-      editor.setOptions({
-         enableBasicAutocompletion: true
+   function showEditor() {
+      executeWhenEditorReady(function(editor) {
+         var autoComplete = createEditorAutoComplete();
+         
+         if(editorTheme != null) {
+            editor.setTheme(editorTheme);
+         }
+         editor.completers = [autoComplete];
+         // setEditorTheme("eclipse"); // set the default to eclipse
+         
+         editor.getSession().setMode("ace/mode/snapscript");
+         editor.getSession().setTabSize(3);
+         editor.setReadOnly(false);
+         editor.setAutoScrollEditorIntoView(true);
+         editor.getSession().setUseSoftTabs(true);
+         
+         editor.commands.removeCommand("replace"); // Ctrl-H
+         editor.commands.removeCommand("find");    // Ctrl-F
+         editor.commands.removeCommand("expandToMatching"); // Ctrl-Shift-M
+         editor.commands.removeCommand("expandtoline"); // Ctrl-Shift-L
+         
+         // ################# DISABLE KEY BINDINGS ######################
+         // editor.keyBinding.setDefaultHandler(null); // disable all keybindings
+         // and allow Mousetrap to do it
+         // #############################################################
+         
+         editor.setShowPrintMargin(false);
+         editor.setOptions({
+            enableBasicAutocompletion: true
+         });
+         editor.on("guttermousedown", function(e) {
+            var target = e.domEvent.target;
+            if (target.className.indexOf("ace_gutter-cell") == -1) {
+               return;
+            }
+            if (!editor.isFocused()) {
+               return;
+            }
+            if (e.clientX > 25 + target.getBoundingClientRect().left) {
+               return;
+            }
+            var row = e.getDocumentPosition().row;
+            // should be a getBreakpoints but does not seem to be there!!
+            toggleEditorBreakpoint(row);
+            e.stop()
+         });
+         
+         //
+         // THIS IS THE LINKS
+         //
+         
+         //createEditorLinks(editor, validEditorLink, openEditorLink); // link.js
+         KeyBinder.bindKeys(); // register key bindings
+         // registerEditorBindings();
+         Project.changeProjectFont(); // project.js update font
+         scrollEditorToTop();
+         LoadSpinner.finish();
+         
+         // JavaFX has a very fast scroll speed
+         if(typeof java !== 'undefined') {
+            editor.setScrollSpeed(0.05); // slow down if its Java FX
+         }
       });
-      editor.on("guttermousedown", function(e) {
-         var target = e.domEvent.target;
-         if (target.className.indexOf("ace_gutter-cell") == -1) {
-            return;
-         }
-         if (!editor.isFocused()) {
-            return;
-         }
-         if (e.clientX > 25 + target.getBoundingClientRect().left) {
-            return;
-         }
-         var row = e.getDocumentPosition().row;
-         // should be a getBreakpoints but does not seem to be there!!
-         toggleEditorBreakpoint(row);
-         e.stop()
-      });
-      
-      //
-      // THIS IS THE LINKS
-      //
-      
-      //createEditorLinks(editor, validEditorLink, openEditorLink); // link.js
-      KeyBinder.bindKeys(); // register key bindings
-      // registerEditorBindings();
-      Project.changeProjectFont(); // project.js update font
-      scrollEditorToTop();
-      LoadSpinner.finish();
-      
-      // JavaFX has a very fast scroll speed
-      if(typeof java !== 'undefined') {
-         editor.setScrollSpeed(0.05); // slow down if its Java FX
-      }
    }
    
    function validEditorLink(string, col) { // see link.js
-      console.log("FileEditor::validEditorLink("+string+", "+col+")"); // (http://jsbin.com/jehopaja/4/edit?html,output)
+                                             // (http://jsbin.com/jehopaja/4/edit?html,output)
       if(KeyBinder.isControlPressed()) {
          var tokenPatterns = [
             "\\.[A-Z][a-zA-Z0-9]*;", // import type
@@ -898,8 +868,6 @@ export module FileEditor {
    }
    
    function openEditorLink(event) {
-      console.log("FileEditor::openEditorLink("+event+")"); 
-      var editor = ace.edit("editor");
       if(KeyBinder.isControlPressed()) {
          var indexToken = editorCurrentTokens[event.value];
          
@@ -916,16 +884,38 @@ export module FileEditor {
    }
    
    export function updateEditorFont(fontFamily, fontSize) {
-      console.log("FileEditor::updateEditorFont("+fontFamily+", " + fontSize +")"); 
-      var editor = ace.edit("editor");
-      var autoComplete = createEditorAutoComplete();
-      
-      editor.completers = [autoComplete];
-      editor.setOptions({
-         enableBasicAutocompletion: true,
-         fontFamily: "'"+fontFamily+"',monospace",
-         fontSize: fontSize
+      executeWhenEditorReady(function(editor) {
+         var autoComplete = createEditorAutoComplete();
+         
+         editor.completers = [autoComplete];
+         editor.setOptions({
+            enableBasicAutocompletion: true,
+            fontFamily: "'"+fontFamily+"',monospace",
+            fontSize: fontSize
+         });
       });
+   }
+   
+   function executeWhenEditorReady(readyFunction) {
+      var readyCallback = function() {
+         var editorElement = document.getElementById("editor");
+         
+         if(editorElement != null) {
+            var langTools = ace.require("ace/ext/language_tools");
+            var editor = ace.edit("editor");
+            
+            if(editor != null) {
+               readyFunction(editor);
+               return true;
+            }
+         }
+         return false;
+      };
+      if(!readyCallback()) {
+         setTimeout(function() {
+            executeWhenEditorReady(readyFunction);
+         }, 100);
+      }
    }
 }
 
