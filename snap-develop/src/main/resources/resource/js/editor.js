@@ -1,106 +1,89 @@
 define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket", "problem", "spinner", "tree", "history", "project", "status", "keys", "commands"], function (require, exports, $, md5_1, ace_1, w2ui_1, common_1, socket_1, problem_1, spinner_1, tree_1, history_1, project_1, status_1, keys_1, commands_1) {
     "use strict";
+    var FileEditorView = (function () {
+        function FileEditorView(editorPanel, editorTheme) {
+            this.editorBreakpoints = {}; // spans multiple resources
+            this.editorMarkers = {};
+            this.editorResource = null;
+            this.editorText = null;
+            this.editorTheme = null;
+            this.editorCurrentTokens = {}; // current editor hyperlinks
+            this.editorFocusToken = null; // token to focus on editor load
+            this.editorHistory = {};
+            this.editorPanel = null;
+            this.editorPanel = editorPanel;
+            this.editorTheme = editorTheme;
+        }
+        FileEditorView.prototype.init = function () {
+            keys_1.KeyBinder.bindKeys(); // register key bindings
+            project_1.Project.changeProjectFont(); // project.js update font
+            FileEditor.scrollEditorToTop();
+            spinner_1.LoadSpinner.finish();
+        };
+        return FileEditorView;
+    }());
+    exports.FileEditorView = FileEditorView;
     var FileEditor;
     (function (FileEditor) {
-        var editorBreakpoints = {}; // spans multiple resources
-        var editorMarkers = {};
-        var editorResource = null;
-        var editorText = null;
-        var editorTheme = null;
-        var editorCurrentTokens = {}; // current editor hyperlinks
-        var editorFocusToken = null; // token to focus on editor load
-        var editorHistory = {};
+        var editorView = null;
         function createEditor() {
-            showEditor();
+            editorView = showEditor();
+            editorView.init();
             socket_1.EventBus.createTermination(clearEditorHighlights); // create callback
         }
         FileEditor.createEditor = createEditor;
         function clearEditorHighlights() {
-            var editor = ace_1.ace.edit("editor");
-            var session = editor.getSession();
-            for (var editorLine in editorMarkers) {
-                if (editorMarkers.hasOwnProperty(editorLine)) {
-                    var marker = editorMarkers[editorLine];
+            var session = editorView.editorPanel.getSession();
+            for (var editorLine in editorView.editorMarkers) {
+                if (editorView.editorMarkers.hasOwnProperty(editorLine)) {
+                    var marker = editorView.editorMarkers[editorLine];
                     if (marker != null) {
                         session.removeMarker(marker);
                     }
                 }
             }
-            editorMarkers = {};
+            editorView.editorMarkers = {};
         }
         FileEditor.clearEditorHighlights = clearEditorHighlights;
         function showEditorLine(line) {
-            var editor = ace_1.ace.edit("editor");
-            editor.resize(true);
+            var editor = editorView.editorPanel;
+            editorView.editorPanel.resize(true);
             if (line > 1) {
-                editor.scrollToLine(line - 1, true, true, function () { });
+                editorView.editorPanel.scrollToLine(line - 1, true, true, function () { });
             }
             else {
-                editor.scrollToLine(0, true, true, function () { });
+                editorView.editorPanel.scrollToLine(0, true, true, function () { });
             }
         }
         FileEditor.showEditorLine = showEditorLine;
         function clearEditorHighlight(line) {
-            var editor = ace_1.ace.edit("editor");
-            var session = editor.getSession();
-            var marker = editorMarkers[line];
+            var session = editorView.editorPanel.getSession();
+            var marker = editorView.editorMarkers[line];
             if (marker != null) {
                 session.removeMarker(marker);
             }
         }
         function createEditorHighlight(line, css) {
-            var editor = ace_1.ace.edit("editor");
             var Range = ace_1.ace.require('ace/range').Range;
-            var session = editor.getSession();
+            var session = editorView.editorPanel.getSession();
             // clearEditorHighlight(line);
             clearEditorHighlights(); // clear all highlights in editor
-            // session.addMarker(new Range(from, 0, to, 1), "errorMarker",
-            // "fullLine");
             var marker = session.addMarker(new Range(line - 1, 0, line - 1, 1), css, "fullLine");
-            editorMarkers[line] = marker;
+            editorView.editorMarkers[line] = marker;
         }
         FileEditor.createEditorHighlight = createEditorHighlight;
         function findAndReplaceTextInEditor() {
             var editorData = loadEditor();
-            commands_1.Command.searchAndReplaceFiles(editorData.resource.projectPath);
+            commands_1.Command.searchAndReplaceFiles(editorView.editorData.resource.projectPath);
         }
         FileEditor.findAndReplaceTextInEditor = findAndReplaceTextInEditor;
         function findTextInEditor() {
             var editorData = loadEditor();
-            commands_1.Command.searchFiles(editorData.resource.projectPath);
-            // Alerts.createPromptAlert("Find Text", "Find", "Cancel", function(textToFind)
-            // {
-            // var editor = ace.edit("editor");
-            // var session = editor.getSession();
-            // // var matchesFound = {};
-            // var range = editor.find(textToFind,{
-            // backwards: false,
-            // wrap: true,
-            // caseSensitive: false,
-            // wholeWord: false,
-            // regExp: false
-            // });
-            //         
-            // // while(range) {
-            // // var rangeKey = JSON.stringify(range);
-            // //
-            // // if(!matchesFound.hasOwnProperty(rangeKey)) {
-            // // matchesFound[rangeKey] = true;
-            // session.addMarker(range, "findHighlight", "background"); //
-            // "background"|"text"|"fullLine"
-            // // range = editor.findNext();
-            // // } else {
-            // // break;
-            // // }
-            // // }
-            // //editor.findNext();
-            // //editor.findPrevious();
-            // });
+            commands_1.Command.searchFiles(editorView.editorData.resource.projectPath);
         }
         FileEditor.findTextInEditor = findTextInEditor;
         function addEditorKeyBinding(keyBinding, actionFunction) {
-            var editor = ace_1.ace.edit("editor");
-            editor.commands.addCommand({
+            editorView.editorPanel.commands.addCommand({
                 name: keyBinding.editor,
                 bindKey: {
                     win: keyBinding.editor,
@@ -114,52 +97,8 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             });
         }
         FileEditor.addEditorKeyBinding = addEditorKeyBinding;
-        //   
-        // export function indentCurrentLine() {
-        // var editor = ace.edit("editor");
-        // editor.indent();
-        // }
-        //   
-        // export function commentSelection() {
-        // var editor = ace.edit("editor");
-        // editor.toggleCommentLines();
-        // }
-        //   
-        // export function moveCursorUp() {
-        // moveCursorTo(-1, 0);
-        // }
-        //   
-        // export function moveCursorDown() {
-        // moveCursorTo(1, 0);
-        // }
-        //   
-        // export function moveCursorLeft() {
-        // moveCursorTo(0, -1);
-        // }
-        //   
-        // export function moveCursorRight() {
-        // moveCursorTo(0, 1);
-        // }
-        //   
-        // function moveCursorTo(rowChange, columnChange) {
-        // var editor = ace.edit("editor");
-        // var cursorPosition = editor.getCursorPosition();
-        // var currentRow = cursorPosition.row;
-        // var currentColumn = cursorPosition.column;
-        // var maxRow = editor.session.getLength() - 1
-        // var maxColumn = editor.session.getLine(currentColumn).length // or simply
-        // Infinity
-        // var nextRow = currentRow + rowChange;
-        // var nextColumn = currentColumn + columnChange;
-        //      
-        // if(nextRow <= maxRow && /*nextColumn <= maxColumn &&*/ nextRow >= 0 &&
-        // nextColumn >= 0) {
-        // editor.selection.moveTo(nextRow, nextColumn);
-        // }
-        // }
         function clearEditorBreakpoint(row) {
-            var editor = ace_1.ace.edit("editor");
-            var session = editor.getSession();
+            var session = editorView.editorPanel.getSession();
             var breakpoints = session.getBreakpoints();
             var remove = false;
             for (var breakpoint in breakpoints) {
@@ -168,8 +107,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             showEditorBreakpoints();
         }
         function clearEditorBreakpoints() {
-            var editor = ace_1.ace.edit("editor");
-            var session = editor.getSession();
+            var session = editorView.editorPanel.getSession();
             var breakpoints = session.getBreakpoints();
             var remove = false;
             for (var breakpoint in breakpoints) {
@@ -179,9 +117,9 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         function showEditorBreakpoints() {
             var breakpointRecords = [];
             var breakpointIndex = 1;
-            for (var filePath in editorBreakpoints) {
-                if (editorBreakpoints.hasOwnProperty(filePath)) {
-                    var breakpoints = editorBreakpoints[filePath];
+            for (var filePath in editorView.editorBreakpoints) {
+                if (editorView.editorBreakpoints.hasOwnProperty(filePath)) {
+                    var breakpoints = editorView.editorBreakpoints[filePath];
                     for (var lineNumber in breakpoints) {
                         if (breakpoints.hasOwnProperty(lineNumber)) {
                             if (breakpoints[lineNumber] == true) {
@@ -206,10 +144,9 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         FileEditor.showEditorBreakpoints = showEditorBreakpoints;
         function setEditorBreakpoint(row, value) {
-            if (editorResource != null) {
-                var editor = ace_1.ace.edit("editor");
-                var session = editor.getSession();
-                var resourceBreakpoints = editorBreakpoints[editorResource.filePath];
+            if (editorView.editorResource != null) {
+                var session = editorView.editorPanel.getSession();
+                var resourceBreakpoints = editorView.editorBreakpoints[editorView.editorResource.filePath];
                 var line = parseInt(row);
                 if (value) {
                     session.setBreakpoint(line);
@@ -219,17 +156,16 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                 }
                 if (resourceBreakpoints == null) {
                     resourceBreakpoints = {};
-                    editorBreakpoints[editorResource.filePath] = resourceBreakpoints;
+                    editorView.editorBreakpoints[editorView.editorResource.filePath] = resourceBreakpoints;
                 }
                 resourceBreakpoints[line + 1] = value;
             }
             showEditorBreakpoints();
         }
         function toggleEditorBreakpoint(row) {
-            if (editorResource != null) {
-                var editor = ace_1.ace.edit("editor");
-                var session = editor.getSession();
-                var resourceBreakpoints = editorBreakpoints[editorResource.filePath];
+            if (editorView.editorResource != null) {
+                var session = editorView.editorPanel.getSession();
+                var resourceBreakpoints = editorView.editorBreakpoints[editorView.editorResource.filePath];
                 var breakpoints = session.getBreakpoints();
                 var remove = false;
                 for (var breakpoint in breakpoints) {
@@ -248,7 +184,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                 if (resourceBreakpoints == null) {
                     resourceBreakpoints = {};
                     resourceBreakpoints[line + 1] = true;
-                    editorBreakpoints[editorResource.filePath] = resourceBreakpoints;
+                    editorView.editorBreakpoints[editorView.editorResource.filePath] = resourceBreakpoints;
                 }
                 else {
                     if (resourceBreakpoints[line + 1] == true) {
@@ -262,30 +198,27 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             showEditorBreakpoints();
         }
         function resizeEditor() {
-            var editor = ace_1.ace.edit("editor");
             var width = document.getElementById('editor').offsetWidth;
             var height = document.getElementById('editor').offsetHeight;
             console.log("Resize editor " + width + "x" + height);
-            editor.setAutoScrollEditorIntoView(true);
-            editor.resize(true);
+            editorView.editorPanel.setAutoScrollEditorIntoView(true);
+            editorView.editorPanel.resize(true);
             // editor.focus();
         }
         FileEditor.resizeEditor = resizeEditor;
         function resetEditor() {
-            var editor = ace_1.ace.edit("editor");
-            var session = editor.getSession();
-            editorMarkers = {};
-            editorResource = null;
-            editor.setReadOnly(false);
-            session.setValue(editorText, 1);
+            var session = editorView.editorPanel.getSession();
+            editorView.editorMarkers = {};
+            editorView.editorResource = null;
+            editorView.editor.setReadOnly(false);
+            session.setValue(editorView.editorText, 1);
             $("#currentFile").html("");
         }
         FileEditor.resetEditor = resetEditor;
         function clearEditor() {
-            var editor = ace_1.ace.edit("editor");
-            var session = editor.getSession();
+            var session = editorView.editorPanel.getSession();
             for (var editorMarker in session.$backMarkers) {
-                session.removeMarker(editorMarker);
+                session.removeMarker(editorView.editorMarker);
             }
             var breakpoints = session.getBreakpoints();
             var remove = false;
@@ -295,20 +228,18 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             $("#currentFile").html("");
         }
         function loadEditor() {
-            var editor = ace_1.ace.edit("editor");
             var editorHistory = loadEditorHistory();
-            var text = editor.getValue();
+            var text = editorView.editorPanel.getValue();
             return {
-                breakpoints: editorBreakpoints,
-                resource: editorResource,
-                history: editorHistory,
+                breakpoints: editorView.editorBreakpoints,
+                resource: editorView.editorResource,
+                history: editorView.editorHistory,
                 source: text
             };
         }
         FileEditor.loadEditor = loadEditor;
         function loadEditorHistory() {
-            var editor = ace_1.ace.edit("editor");
-            var session = editor.getSession();
+            var session = editorView.editorPanel.getSession();
             var manager = session.getUndoManager();
             var undoStack = $.extend(true, {}, manager.$undoStack);
             var redoStack = $.extend(true, {}, manager.$redoStack);
@@ -392,22 +323,20 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                     indexEditorLine(line, i + 1, classRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s", ".%s;", " as %s", "%s["], false);
                 }
             }
-            editorCurrentTokens = tokenList; // keep these tokens for indexing
-            if (editorFocusToken != null) {
-                var focusToken = editorCurrentTokens[editorFocusToken];
+            editorView.editorCurrentTokens = tokenList; // keep these tokens for indexing
+            if (editorView.editorFocusToken != null) {
+                var focusToken = editorView.editorCurrentTokens[editorView.editorFocusToken];
                 if (focusToken != null) {
                     setTimeout(function () {
-                        // loading
                         showEditorLine(focusToken.line); // focus on the line there
                         // was a token
                     }, 100);
-                    editorFocusToken = null; // clear for next open
+                    editorView.editorFocusToken = null; // clear for next open
                 }
             }
         }
         function indexEditorLine(line, number, expression, tokenList, templates, external) {
-            expression.lastIndex = 0; // you have to reset regex to its start
-            // position
+            expression.lastIndex = 0; // you have to reset regex to its start position
             var tokens = expression.exec(line);
             if (tokens != null && tokens.length > 0) {
                 var resourceToken = tokens[1]; // only for 'import' which is external
@@ -434,7 +363,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             var editorData = loadEditor();
             if (editorData.resource && editorData.source) {
                 var md5Hash = md5_1.md5(editorData.source);
-                editorHistory[editorData.resource.resourcePath] = {
+                editorView.editorHistory[editorData.resource.resourcePath] = {
                     hash: md5Hash,
                     history: editorData.history
                 };
@@ -442,9 +371,9 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         function createEditorUndoManager(session, text, resource) {
             var manager = new ace_1.ace.UndoManager();
-            if (text && resource) {
+            if (text && resource && editorView.editorResource) {
                 var editorResource = tree_1.FileTree.createResourcePath(resource);
-                var history = editorHistory[editorResource.resourcePath];
+                var history = editorView.editorHistory[editorView.editorResource.resourcePath];
                 if (history) {
                     var md5Hash = md5_1.md5(text);
                     if (history.hash == md5Hash) {
@@ -464,15 +393,14 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                         manager.dirtyCounter = history.history.dirtyCounter;
                     }
                     else {
-                        editorHistory[editorResource.resourcePath] = null;
+                        editorView.editorHistory[editorView.editorResource.resourcePath] = null;
                     }
                 }
             }
             session.setUndoManager(manager); // reset undo history
         }
         function updateEditor(text, resource) {
-            var editor = ace_1.ace.edit("editor");
-            var session = editor.getSession();
+            var session = editorView.editorPanel.getSession();
             var currentMode = session.getMode();
             var actualMode = resolveEditorMode(resource);
             text = encodeEditorText(text, resource); // change JSON conversion
@@ -483,18 +411,18 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                     v: Date.now()
                 });
             }
-            editor.setReadOnly(false);
-            editor.setValue(text, 1);
+            editorView.editorPanel.setReadOnly(false);
+            editorView.editorPanel.setValue(text, 1);
             createEditorUndoManager(session, text, resource); // restore any existing history
             clearEditor();
             scrollEditorToTop();
-            editorResource = tree_1.FileTree.createResourcePath(resource);
-            editorMarkers = {};
-            editorText = text;
-            window.location.hash = editorResource.projectPath; // update # anchor
+            editorView.editorResource = tree_1.FileTree.createResourcePath(resource);
+            editorView.editorMarkers = {};
+            editorView.editorText = text;
+            window.location.hash = editorView.editorResource.projectPath; // update # anchor
             problem_1.ProblemManager.highlightProblems(); // higlight problems on this resource
-            if (resource != null) {
-                var breakpoints = editorBreakpoints[editorResource.filePath];
+            if (resource != null && editorView.editorResource) {
+                var breakpoints = editorView.editorBreakpoints[editorView.editorResource.filePath];
                 if (breakpoints != null) {
                     for (var lineNumber in breakpoints) {
                         if (breakpoints.hasOwnProperty(lineNumber)) {
@@ -508,7 +436,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             indexEditorTokens(text, resource); // create some tokens we can link to dynamically
             project_1.Project.createEditorTab(); // update the tab name
             history_1.History.showFileHistory(); // update the history
-            status_1.StatusPanel.showActiveFile(editorResource.projectPath);
+            status_1.StatusPanel.showActiveFile(editorView.editorResource.projectPath);
             FileEditor.showEditorFileInTree();
         }
         FileEditor.updateEditor = updateEditor;
@@ -519,24 +447,22 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         FileEditor.showEditorFileInTree = showEditorFileInTree;
         function getSelectedText() {
-            var editor = ace_1.ace.edit("editor");
-            return editor.getSelectedText();
+            return editorView.editorPanel.getSelectedText();
         }
         FileEditor.getSelectedText = getSelectedText;
         function isEditorChanged() {
-            if (editorResource != null) {
-                var editor = ace_1.ace.edit("editor");
-                var text = editor.getValue();
-                return text != editorText;
+            if (editorView.editorResource != null) {
+                var text = editorView.editorPanel.getValue();
+                return text != editorView.editorText;
             }
             return false;
         }
         FileEditor.isEditorChanged = isEditorChanged;
         function scrollEditorToTop() {
-            var editor = ace_1.ace.edit("editor");
-            var session = editor.getSession();
+            var session = editorView.editorPanel.getSession();
             session.setScrollTop(0);
         }
+        FileEditor.scrollEditorToTop = scrollEditorToTop;
         function createEditorAutoComplete() {
             return {
                 getCompletions: function createAutoComplete(editor, session, pos, prefix, callback) {
@@ -581,14 +507,13 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             };
         }
         function formatEditorSource() {
-            var editor = ace_1.ace.edit("editor");
-            var text = editor.getValue();
+            var text = editorView.editorPanel.getValue();
             $.ajax({
                 contentType: 'text/plain',
                 data: text,
                 success: function (result) {
-                    editor.setReadOnly(false);
-                    editor.setValue(result, 1);
+                    editorView.editorPanel.setReadOnly(false);
+                    editorView.editorPanel.setValue(result, 1);
                 },
                 error: function () {
                     console.log("Format failed");
@@ -599,147 +524,63 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             });
         }
         FileEditor.formatEditorSource = formatEditorSource;
-        // function registerEditorBindings() {
-        // var editor = ace.edit("editor");
-        // editor.commands.addCommand({
-        // name : 'run',
-        // bindKey : {
-        // win : 'Ctrl-R',
-        // mac : 'Command-R'
-        // },
-        // exec : function(editor) {
-        // Command.runScript();
-        // },
-        // readOnly : true
-        // // false if this command should not apply in readOnly mode
-        // });
-        // editor.commands.addCommand({
-        // name : 'save',
-        // bindKey : {
-        // win : 'Ctrl-S',
-        // mac : 'Command-S'
-        // },
-        // exec : function(editor) {
-        // Command.saveFile();
-        // },
-        // readOnly : true
-        // // false if this command should not apply in readOnly mode
-        // });
-        // editor.commands.addCommand({
-        // name : 'new',
-        // bindKey : {
-        // win : 'Ctrl-N',
-        // mac : 'Command-N'
-        // },
-        // exec : function(editor) {
-        // Command.newFile(null);
-        // },
-        // readOnly : true
-        // // false if this command should not apply in readOnly mode
-        // });
-        // editor.commands.addCommand({
-        // name : 'format',
-        // bindKey : {
-        // win : 'Ctrl-Shift-F',
-        // mac : 'Command-Shift-F'
-        // },
-        // exec : function(editor) {
-        // formatEditorSource();
-        // },
-        // readOnly : true
-        // // false if this command should not apply in readOnly mode
-        // });
-        // editor.commands.addCommand({
-        // name: 'find',
-        // bindKey: {
-        // win: 'Ctrl-Shift-S',
-        // mac: 'Command-Shift-S'
-        // },
-        // exec: function (editor) {
-        // Command.searchTypes();
-        // },
-        // readOnly: true
-        // });
-        // }
         function setEditorTheme(theme) {
-            executeWhenEditorReady(function (editor) {
-                if (theme != null) {
-                    var editor = ace_1.ace.edit("editor");
-                    if (editor != null) {
-                        editor.setTheme(theme);
-                    }
-                    editorTheme = theme;
+            if (theme != null) {
+                if (editorView.editorPanel != null) {
+                    editorView.editorPanel.setTheme(theme);
                 }
-            });
+                editorView.editorTheme = theme;
+            }
         }
         FileEditor.setEditorTheme = setEditorTheme;
-        //   export function undoEditorChange() {
-        //      var editor = ace.edit("editor");
-        //      editor.getSession().getUndoManager().undo(true);
-        //   }
-        //   
-        //   export function redoEditorChange() {
-        //      var editor = ace.edit("editor");
-        //      editor.getSession().getUndoManager().redo(true);
-        //   }
         function showEditor() {
-            executeWhenEditorReady(function (editor) {
-                var autoComplete = createEditorAutoComplete();
-                if (editorTheme != null) {
-                    editor.setTheme(editorTheme);
-                }
-                editor.completers = [autoComplete];
-                // setEditorTheme("eclipse"); // set the default to eclipse
-                editor.getSession().setMode("ace/mode/snapscript");
-                editor.getSession().setTabSize(3);
-                editor.setReadOnly(false);
-                editor.setAutoScrollEditorIntoView(true);
-                editor.getSession().setUseSoftTabs(true);
-                editor.commands.removeCommand("replace"); // Ctrl-H
-                editor.commands.removeCommand("find"); // Ctrl-F
-                editor.commands.removeCommand("expandToMatching"); // Ctrl-Shift-M
-                editor.commands.removeCommand("expandtoline"); // Ctrl-Shift-L
-                // ################# DISABLE KEY BINDINGS ######################
-                // editor.keyBinding.setDefaultHandler(null); // disable all keybindings
-                // and allow Mousetrap to do it
-                // #############################################################
-                editor.setShowPrintMargin(false);
-                editor.setOptions({
-                    enableBasicAutocompletion: true
-                });
-                editor.on("guttermousedown", function (e) {
-                    var target = e.domEvent.target;
-                    if (target.className.indexOf("ace_gutter-cell") == -1) {
-                        return;
-                    }
-                    if (!editor.isFocused()) {
-                        return;
-                    }
-                    if (e.clientX > 25 + target.getBoundingClientRect().left) {
-                        return;
-                    }
-                    var row = e.getDocumentPosition().row;
-                    // should be a getBreakpoints but does not seem to be there!!
-                    toggleEditorBreakpoint(row);
-                    e.stop();
-                });
-                //
-                // THIS IS THE LINKS
-                //
-                //createEditorLinks(editor, validEditorLink, openEditorLink); // link.js
-                keys_1.KeyBinder.bindKeys(); // register key bindings
-                // registerEditorBindings();
-                project_1.Project.changeProjectFont(); // project.js update font
-                scrollEditorToTop();
-                spinner_1.LoadSpinner.finish();
-                // JavaFX has a very fast scroll speed
-                if (typeof java !== 'undefined') {
-                    editor.setScrollSpeed(0.05); // slow down if its Java FX
-                }
+            var editor = ace_1.ace.edit("editor");
+            var autoComplete = createEditorAutoComplete();
+            editor.completers = [autoComplete];
+            // setEditorTheme("eclipse"); // set the default to eclipse
+            editor.getSession().setMode("ace/mode/snapscript");
+            editor.getSession().setTabSize(3);
+            editor.setReadOnly(false);
+            editor.setAutoScrollEditorIntoView(true);
+            editor.getSession().setUseSoftTabs(true);
+            editor.commands.removeCommand("replace"); // Ctrl-H
+            editor.commands.removeCommand("find"); // Ctrl-F
+            editor.commands.removeCommand("expandToMatching"); // Ctrl-Shift-M
+            editor.commands.removeCommand("expandtoline"); // Ctrl-Shift-L
+            // ################# DISABLE KEY BINDINGS ######################
+            // editor.keyBinding.setDefaultHandler(null); // disable all keybindings
+            // and allow Mousetrap to do it
+            // #############################################################
+            editor.setShowPrintMargin(false);
+            editor.setOptions({
+                enableBasicAutocompletion: true
             });
+            editor.on("guttermousedown", function (e) {
+                var target = e.domEvent.target;
+                if (target.className.indexOf("ace_gutter-cell") == -1) {
+                    return;
+                }
+                if (!editor.isFocused()) {
+                    return;
+                }
+                if (e.clientX > 25 + target.getBoundingClientRect().left) {
+                    return;
+                }
+                var row = e.getDocumentPosition().row;
+                // should be a getBreakpoints but does not seem to be there!!
+                toggleEditorBreakpoint(row);
+                e.stop();
+            });
+            //
+            // THIS IS THE LINKS
+            //
+            // JavaFX has a very fast scroll speed
+            if (typeof java !== 'undefined') {
+                editor.setScrollSpeed(0.05); // slow down if its Java FX
+            }
+            return new FileEditorView(editor, editorTheme);
         }
         function validEditorLink(string, col) {
-            // (http://jsbin.com/jehopaja/4/edit?html,output)
             if (keys_1.KeyBinder.isControlPressed()) {
                 var tokenPatterns = [
                     "\\.[A-Z][a-zA-Z0-9]*;",
@@ -783,10 +624,10 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         function openEditorLink(event) {
             if (keys_1.KeyBinder.isControlPressed()) {
-                var indexToken = editorCurrentTokens[event.value];
+                var indexToken = editorView.editorCurrentTokens[event.value];
                 if (indexToken != null) {
                     if (indexToken.resource != null) {
-                        editorFocusToken = event.value;
+                        editorView.editorFocusToken = event.value;
                         window.location.hash = indexToken.resource;
                     }
                     else {
@@ -796,36 +637,15 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             }
         }
         function updateEditorFont(fontFamily, fontSize) {
-            executeWhenEditorReady(function (editor) {
-                var autoComplete = createEditorAutoComplete();
-                editor.completers = [autoComplete];
-                editor.setOptions({
-                    enableBasicAutocompletion: true,
-                    fontFamily: "'" + fontFamily + "',monospace",
-                    fontSize: fontSize
-                });
+            var autoComplete = createEditorAutoComplete();
+            editorView.editorPanel.completers = [autoComplete];
+            editorView.editorPanel.setOptions({
+                enableBasicAutocompletion: true,
+                fontFamily: "'" + fontFamily + "',monospace",
+                fontSize: fontSize
             });
         }
         FileEditor.updateEditorFont = updateEditorFont;
-        function executeWhenEditorReady(readyFunction) {
-            var readyCallback = function () {
-                var editorElement = document.getElementById("editor");
-                if (editorElement != null) {
-                    var langTools = ace_1.ace.require("ace/ext/language_tools");
-                    var editor = ace_1.ace.edit("editor");
-                    if (editor != null) {
-                        readyFunction(editor);
-                        return true;
-                    }
-                }
-                return false;
-            };
-            if (!readyCallback()) {
-                setTimeout(function () {
-                    executeWhenEditorReady(readyFunction);
-                }, 100);
-            }
-        }
     })(FileEditor = exports.FileEditor || (exports.FileEditor = {}));
 });
 //ModuleSystem.registerModule("editor", "Editor module: editor.js", null, FileEditor.createEditor, [ "common", "spinner", "tree" ]); 
