@@ -20,7 +20,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
         }
         function openTreeFile(resourcePath, afterLoad) {
             var filePath = resourcePath.toLowerCase();
-            if (common_1.Common.stringEndsWith(filePath, ".json") || common_1.Common.stringEndsWith(filePath, ".js")) {
+            if (common_1.Common.stringEndsWith(filePath, ".json") || common_1.Common.stringEndsWith(filePath, ".js") || common_1.Common.stringEndsWith(filePath, ".xml")) {
                 //var type = header.getResponseHeader("content-type");
                 $.ajax({
                     url: resourcePath,
@@ -57,7 +57,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
             var filePath = resourcePath.toLowerCase();
             var backupResourcePath = resourcePath.replace(/^\/resource/i, "/history");
             //var backupUrl = backupResourcePath + "?time=" + timeStamp;
-            if (common_1.Common.stringEndsWith(filePath, ".json") || common_1.Common.stringEndsWith(filePath, ".js")) {
+            if (common_1.Common.stringEndsWith(filePath, ".json") || common_1.Common.stringEndsWith(filePath, ".js") || common_1.Common.stringEndsWith(filePath, ".xml")) {
                 var downloadURL = backupResourcePath + "?time=" + timeStamp;
                 $.ajax({
                     url: downloadURL,

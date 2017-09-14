@@ -3,6 +3,26 @@ import * as fancytree from "fancytree"
 import {Common} from "common"
 import {Command} from "commands"
 
+export class FilePath {
+   resourcePath: string; // /resource/<project>/blah/script.snap
+   projectPath: string; // /blah/script.snap
+   projectDirectory: string; // /blah
+   filePath: string; // /blah/script.snap
+   fileName: string; // script.snap
+   fileDirectory: string; // /blah
+   originalPath: string;
+   
+   constructor(resourcePath: string, projectPath: string, projectDirectory: string, filePath: string, fileName: string, fileDirectory: string, originalPath: string) {
+      this.resourcePath = resourcePath;
+      this.projectPath = projectPath;
+      this.projectDirectory = projectDirectory;
+      this.filePath = filePath;
+      this.fileName = fileName;
+      this.fileDirectory = fileDirectory;
+      this.originalPath = originalPath;
+   }
+}
+
 export module FileTree {
    
    export function createTree(treePath, element, id, expandPath, foldersOnly, treeMenuHandler, clickCallback) { // #explorer
@@ -274,7 +294,7 @@ export module FileTree {
       return null;
    }
    
-   export function createResourcePath(path) { 
+   export function createResourcePath(path: string) { 
       var resourcePathPrefix = "/resource/" + document.title + "/";
       var resourcePathRoot = "/resource/" + document.title;
       
@@ -340,18 +360,15 @@ export module FileTree {
             currentFileDirectory = "/";
          }
       }
-      var currentPathDetails = {
-         resourcePath: cleanResourcePath(currentResourcePath), // /resource/<project>/blah/script.snap
-         projectPath: cleanResourcePath(currentProjectPath), // /blah/script.snap
-         projectDirectory: cleanResourcePath(currentProjectDirectory == "" ? "/" : currentProjectDirectory), // /blah
-         filePath: cleanResourcePath(currentFilePath), // /blah/script.snap
-         fileName: cleanResourcePath(currentFileName), // script.snap
-         fileDirectory: cleanResourcePath(currentFileDirectory), // /blah
-         originalPath: path
+      return new FilePath(
+         cleanResourcePath(currentResourcePath), // /resource/<project>/blah/script.snap
+         cleanResourcePath(currentProjectPath), // /blah/script.snap
+         cleanResourcePath(currentProjectDirectory == "" ? "/" : currentProjectDirectory), // /blah
+         cleanResourcePath(currentFilePath), // /blah/script.snap
+         cleanResourcePath(currentFileName), // script.snap
+         cleanResourcePath(currentFileDirectory), // /blah
+         path
       };
-      var currentPathText = JSON.stringify(currentPathDetails);
-      //console.log("FileTree.createResourcePath(" + path + "): " + currentPathText);
-      return currentPathDetails;
    }
 }
 

@@ -1,5 +1,18 @@
 define(["require", "exports", "jquery", "common", "commands"], function (require, exports, $, common_1, commands_1) {
     "use strict";
+    var FilePath = (function () {
+        function FilePath(resourcePath, projectPath, projectDirectory, filePath, fileName, fileDirectory, originalPath) {
+            this.resourcePath = resourcePath;
+            this.projectPath = projectPath;
+            this.projectDirectory = projectDirectory;
+            this.filePath = filePath;
+            this.fileName = fileName;
+            this.fileDirectory = fileDirectory;
+            this.originalPath = originalPath;
+        }
+        return FilePath;
+    }());
+    exports.FilePath = FilePath;
     var FileTree;
     (function (FileTree) {
         function createTree(treePath, element, id, expandPath, foldersOnly, treeMenuHandler, clickCallback) {
@@ -305,20 +318,16 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
                     currentFileDirectory = "/";
                 }
             }
-            var currentPathDetails = {
-                resourcePath: cleanResourcePath(currentResourcePath),
-                projectPath: cleanResourcePath(currentProjectPath),
-                projectDirectory: cleanResourcePath(currentProjectDirectory == "" ? "/" : currentProjectDirectory),
-                filePath: cleanResourcePath(currentFilePath),
-                fileName: cleanResourcePath(currentFileName),
-                fileDirectory: cleanResourcePath(currentFileDirectory),
-                originalPath: path
-            };
-            var currentPathText = JSON.stringify(currentPathDetails);
-            //console.log("FileTree.createResourcePath(" + path + "): " + currentPathText);
-            return currentPathDetails;
+            return new FilePath(cleanResourcePath(currentResourcePath), // /resource/<project>/blah/script.snap
+            cleanResourcePath(currentProjectPath), // /blah/script.snap
+            cleanResourcePath(currentProjectDirectory == "" ? "/" : currentProjectDirectory), // /blah
+            cleanResourcePath(currentFilePath), // /blah/script.snap
+            cleanResourcePath(currentFileName), // script.snap
+            cleanResourcePath(currentFileDirectory), // /blah
+            path);
         }
         FileTree.createResourcePath = createResourcePath;
+        ;
     })(FileTree = exports.FileTree || (exports.FileTree = {}));
 });
 //ModuleSystem.registerModule("tree", "Tree module: tree.js", null, null, [ "common" ]); 

@@ -16,13 +16,17 @@ import {StatusPanel} from "status"
 import {KeyBinder} from "keys"
 import {Command} from "commands"
 
-
+/**
+ * Contains the state for the Ace editor and is a singleton instance
+ * that exists as soon as the editor is created.
+ */
 export class FileEditorView {
+   
    editorBreakpoints = {}; // spans multiple resources
    editorMarkers = {};
-   editorResource = null;
-   editorText = null;
-   editorTheme = null;
+   editorResource: string = null;
+   editorText: string = null;
+   editorTheme: string = null;
    editorCurrentTokens = {}; // current editor hyperlinks
    editorFocusToken = null; // token to focus on editor load
    editorHistory = {};
@@ -41,9 +45,13 @@ export class FileEditorView {
    }
 }
 
+/**
+ * Groups all the editor functions and creates the FileEditorView that
+ * contains the state of the editor session. 
+ */
 export module FileEditor {
 
-   var editorView = null;
+   var editorView: FileEditorView = null;
    
    export function createEditor() {
       editorView = showEditor();
