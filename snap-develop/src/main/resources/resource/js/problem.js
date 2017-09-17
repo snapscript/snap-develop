@@ -77,6 +77,9 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor"], fun
                         editor_1.FileEditor.clearEditorHighlights(); // clear if the resource is focused
                     }
                 }
+                else {
+                    editor_1.FileEditor.clearEditorHighlights(); // clear if the resource is focused
+                }
             }
         }
         ProblemManager.highlightProblems = highlightProblems;

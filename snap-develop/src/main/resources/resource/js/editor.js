@@ -216,7 +216,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         FileEditor.resizeEditor = resizeEditor;
         function resetEditor() {
             var session = editorView.editorPanel.getSession();
-            editorView.editorMarkers = {};
+            clearEditorHighlights();
             editorView.editorResource = null;
             editorView.editor.setReadOnly(false);
             session.setValue(editorView.editorText, 1);
@@ -379,9 +379,9 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         function createEditorUndoManager(session, text, resource) {
             var manager = new ace_1.ace.UndoManager();
-            if (text && resource && editorView.editorResource) {
+            if (text && resource) {
                 var editorResource = tree_1.FileTree.createResourcePath(resource);
-                var history = editorView.editorHistory[editorView.editorResource.resourcePath];
+                var history = editorView.editorHistory[editorResource.resourcePath];
                 if (history) {
                     var md5Hash = md5_1.md5(text);
                     if (history.hash == md5Hash) {
@@ -401,7 +401,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                         manager.dirtyCounter = history.history.dirtyCounter;
                     }
                     else {
-                        editorView.editorHistory[editorView.editorResource.resourcePath] = null;
+                        editorView.editorHistory[editorResource.resourcePath] = null;
                     }
                 }
             }
@@ -425,7 +425,6 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             clearEditor();
             scrollEditorToTop();
             editorView.editorResource = tree_1.FileTree.createResourcePath(resource);
-            editorView.editorMarkers = {};
             editorView.editorText = text;
             window.location.hash = editorView.editorResource.projectPath; // update # anchor
             problem_1.ProblemManager.highlightProblems(); // higlight problems on this resource

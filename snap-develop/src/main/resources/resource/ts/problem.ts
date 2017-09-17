@@ -92,6 +92,8 @@ export module ProblemManager {
             } else {
                FileEditor.clearEditorHighlights(); // clear if the resource is focused
             }
+         } else {
+            FileEditor.clearEditorHighlights(); // clear if the resource is focused
          }
       }
    }

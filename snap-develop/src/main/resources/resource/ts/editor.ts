@@ -252,7 +252,7 @@ export module FileEditor {
    export function resetEditor() {
       var session = editorView.editorPanel.getSession();
    
-      editorView.editorMarkers = {};
+      clearEditorHighlights();
       editorView.editorResource = null;
       editorView.editor.setReadOnly(false);
       session.setValue(editorView.editorText, 1);
@@ -436,9 +436,9 @@ export module FileEditor {
    function createEditorUndoManager(session, text, resource) {
       var manager = new ace.UndoManager();
       
-      if(text && resource && editorView.editorResource) {
+      if(text && resource) {
          var editorResource = FileTree.createResourcePath(resource);
-         var history = editorView.editorHistory[editorView.editorResource.resourcePath];
+         var history = editorView.editorHistory[editorResource.resourcePath];
          
          if(history) {
             var md5Hash = md5(text);
@@ -460,7 +460,7 @@ export module FileEditor {
                manager.$doc = session;
                manager.dirtyCounter = history.history.dirtyCounter;
             } else {
-               editorView.editorHistory[editorView.editorResource.resourcePath] = null;
+               editorView.editorHistory[editorResource.resourcePath] = null;
             }
          }  
       }
@@ -489,7 +489,6 @@ export module FileEditor {
       clearEditor();
       scrollEditorToTop();
       editorView.editorResource = FileTree.createResourcePath(resource);
-      editorView.editorMarkers = {};
       editorView.editorText = text;
       window.location.hash = editorView.editorResource.projectPath; // update # anchor
       ProblemManager.highlightProblems(); // higlight problems on this resource
