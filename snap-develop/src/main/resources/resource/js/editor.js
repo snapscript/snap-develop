@@ -241,7 +241,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             return {
                 breakpoints: editorView.editorBreakpoints,
                 resource: editorView.editorResource,
-                history: editorView.editorHistory,
+                history: editorHistory,
                 source: text
             };
         }

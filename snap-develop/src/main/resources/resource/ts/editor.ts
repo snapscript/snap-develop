@@ -281,7 +281,7 @@ export module FileEditor {
       return {
          breakpoints : editorView.editorBreakpoints,
          resource : editorView.editorResource,
-         history : editorView.editorHistory,
+         history : editorHistory,
          source : text
       };
    }
