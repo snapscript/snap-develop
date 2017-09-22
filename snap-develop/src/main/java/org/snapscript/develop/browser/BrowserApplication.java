@@ -40,10 +40,14 @@ public class BrowserApplication extends Application {
          menu.getItems().add(quit);
          menuBar.getMenus().add(menu);
          stage.setTitle(context.getDirectory().getCanonicalPath());
-         byte[] data = ClassPathResourceLoader.findResource(context.getIconPath());
-         InputStream stream = new ByteArrayInputStream(data);
-         Image image = new Image(stream);
-         stage.getIcons().add(image);
+         
+         if(isPlatformWindows()) {
+            byte[] data = ClassPathResourceLoader.findResource(context.getIconPath());
+            InputStream stream = new ByteArrayInputStream(data);
+            Image image = new Image(stream);
+         
+            stage.getIcons().add(image);
+         }
       }catch(Exception e) {
          context.getLogger().info("Could not load image", e);
       }
@@ -52,6 +56,11 @@ public class BrowserApplication extends Application {
       stage.setScene(scene);
       stage.show();
       browser.show(context.getTarget());
+   }
+   
+   private static boolean isPlatformWindows() {
+      String platform = System.getProperty("os.name");
+      return platform != null && platform.contains("indows");
    }
    
    public static void launch(BrowserContext value) {
