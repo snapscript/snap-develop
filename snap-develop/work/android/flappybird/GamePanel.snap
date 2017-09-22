@@ -1,8 +1,8 @@
 
-import android.game.Frame;
-import android.game.FrameThread;
-import android.game.Panel;
-import android.game.R;
+import org.snapscript.android.game.Frame;
+import org.snapscript.android.game.FrameThread;
+import org.snapscript.android.game.Panel;
+import org.snapscript.android.game.R;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -89,7 +89,7 @@ class GamePanel with Panel {
    }
    
 
-   override onStart(frame, rate) {
+   override onStart(frame: Frame, rate: Integer) {
       var w = frame.getWidth();
       var h = frame.getHeight();
 
@@ -116,11 +116,11 @@ class GamePanel with Panel {
       isRunning = true;
    }
 
-   override onPause(frame) {
+   override onPause(frame: Frame) {
 
    }
 
-   override onClick(frame,x,y) {
+   override onClick(frame: Frame, x: Integer, y: Integer) {
       if (gameStatus == GameStatus.WAITING) {
          gameStatus = GameStatus.RUNNING;
       } else if (gameStatus == GameStatus.RUNNING) {
@@ -131,19 +131,19 @@ class GamePanel with Panel {
       }
    }
 
-   override onRightToLeftSwipe(frame) {
+   override onRightToLeftSwipe(frame: Frame) {
 
    }
 
-   override onLeftToRightSwipe(frame) {
+   override onLeftToRightSwipe(frame: Frame) {
 
    }
 
-   override onTopToBottomSwipe(frame) {
+   override onTopToBottomSwipe(frame: Frame) {
 
    }
 
-   override onBottomToTopSwipe(frame) {
+   override onBottomToTopSwipe(frame: Frame) {
 
    }
 
@@ -161,7 +161,7 @@ class GamePanel with Panel {
       scores.get(0);
    }
 
-   override onDestroyed(frame) {
+   override onDestroyed(frame: Frame) {
       dayBgBitmap.recycle();
       landBitmap.recycle();
       bird.recycle();
@@ -192,7 +192,7 @@ class GamePanel with Panel {
       upPipeHeight2 = random.nextFloat() * (maxPipeHeight - minPipeHeight) + minPipeHeight;
    }
 
-   override onChanged(frame,format,width,height) {
+   override onChanged(frame: Frame, format: Integer, width: Integer, height: Integer) {
 
    }
 
