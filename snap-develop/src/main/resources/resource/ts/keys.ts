@@ -11,47 +11,52 @@ export module KeyBinder {
    const MAX_PRESS_REPEAT = 250; // 250 milliseconds
    const pressTimes = {};
    var controlPressed = false;
+   var keyBindings = {};
+   
+   export function getKeyBindings() {
+      return keyBindings;
+   }
 
    export function bindKeys() {
       disableBrowserKeys();
       
-      createKeyBinding("ctrl n", true, function() {
+      createKeyBinding("ctrl n", "New File", true, function() {
          Command.newFile(null);
       });
-      createKeyBinding("ctrl s", true, function() {
+      createKeyBinding("ctrl s", "Save File", true, function() {
          Command.saveFile(null);
       });
-      createKeyBinding("ctrl shift s", true, function() {
+      createKeyBinding("ctrl shift s", "Search Types", true, function() {
          Command.searchTypes();
       });
-      createKeyBinding("ctrl tab", true, function() {
+      createKeyBinding("ctrl tab", "Format Source", true, function() {
          FileEditor.formatEditorSource();
       });
-      createKeyBinding("ctrl shift e", true, function() {
+      createKeyBinding("ctrl shift e", "Evaluate Expression", true, function() {
          Command.evaluateExpression();
       });
-      createKeyBinding("ctrl shift m", true, function() {
+      createKeyBinding("ctrl shift m", "Toggle Full Screen", true, function() {
          Project.toggleFullScreen();
       });
-      createKeyBinding("ctrl shift l", true, function() {
+      createKeyBinding("ctrl shift l", "Switch Layout", true, function() {
          Command.switchLayout()
       });
-      createKeyBinding("ctrl shift p", true, function() {
+      createKeyBinding("ctrl shift p", "Switch Project", true, function() {
          Command.switchProject();
       });
-      createKeyBinding("ctrl shift g", true, function() {
+      createKeyBinding("ctrl shift g", "Find Files", true, function() {
          Command.findFileNames();
       });
-      createKeyBinding("ctrl shift h", true, function() {
+      createKeyBinding("ctrl shift h", "Global Search & Replace", true, function() {
          Command.searchAndReplaceFiles();
       });
-      createKeyBinding("ctrl shift f", true, function() {
+      createKeyBinding("ctrl shift f", "Global Search", true, function() {
          Command.searchFiles();
       });
-      createKeyBinding("ctrl h", true, function() {
+      createKeyBinding("ctrl h", "Search & Replace", true, function() {
          FileEditor.findAndReplaceTextInEditor();
       });
-      createKeyBinding("ctrl f", true, function() {
+      createKeyBinding("ctrl f", "Search", true, function() {
          FileEditor.findTextInEditor();
       });
 
@@ -95,25 +100,25 @@ export module KeyBinder {
 //      createKeyBinding("ctrl y", true, function() {
 //         FileEditor.redoEditorChange();
 //      });
-      createKeyBinding("ctrl r", true, function() {
+      createKeyBinding("ctrl r", "Run Script", true, function() {
          Command.runScript();
       });
-      createKeyBinding("ctrl b", true, function() {
+      createKeyBinding("ctrl b", "Debug Script", true, function() {
          Command.debugScript();
       });
-      createKeyBinding("f8", true, function() {
+      createKeyBinding("f8", "Resume Script", true, function() {
          console.log("F8");
          Command.resumeScript();
       });
-      createKeyBinding("f5", true, function() {
+      createKeyBinding("f5", "Step In", true, function() {
          console.log("F5");
          Command.stepInScript();
       });
-      createKeyBinding("f7", true, function() {
+      createKeyBinding("f7", "Step Out", true, function() {
          console.log("F7");
          Command.stepOutScript();
       });
-      createKeyBinding("f6", true, function() {
+      createKeyBinding("f6", "Step Over", true, function() {
          console.log("F6");
          Command.stepOverScript();
       });
@@ -172,7 +177,7 @@ export module KeyBinder {
       };
    }
    
-   function createKeyBinding(name, preventDefault, pressAction) {
+   function createKeyBinding(name, description, preventDefault, pressAction) {
       var keyBinding = parseKeyBinding(name);      
 //      var editor = ace.edit("editor");
 //       
@@ -189,6 +194,7 @@ export module KeyBinder {
 //              }
 //           }
 //      });
+      keyBindings[keyBinding.editor] = Common.escapeHtml(description);
       FileEditor.addEditorKeyBinding(keyBinding, pressAction);
       Mousetrap.bindGlobal(keyBinding.global, function(e) {
          if(pressAction) {

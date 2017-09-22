@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", "tree", "threads", "history", "variables", "explorer", "commands", "debug"], function (require, exports, $, w2ui_1, console_1, problem_1, editor_1, tree_1, threads_1, history_1, variables_1, explorer_1, commands_1, debug_1) {
+define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", "tree", "threads", "history", "variables", "explorer", "commands", "debug", "keys"], function (require, exports, $, w2ui_1, console_1, problem_1, editor_1, tree_1, threads_1, history_1, variables_1, explorer_1, commands_1, debug_1, keys_1) {
     "use strict";
     var Project;
     (function (Project) {
@@ -270,16 +270,52 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
         }
         function showEditorContent(containsEditor) {
             if (containsEditor) {
-                // move the explorer
-                var newParent = document.getElementById('editParent');
-                var oldParent = document.getElementById('editParentHidden');
-                if (oldParent != null && newParent != null) {
-                    while (oldParent.childNodes.length > 0) {
-                        newParent.appendChild(oldParent.childNodes[0]);
+                var location = window.location.hash;
+                var hashIndex = location.indexOf('#');
+                if (hashIndex == -1) {
+                    showEditorHelpContent(containsEditor);
+                }
+                else {
+                    showEditorFileContent(containsEditor);
+                }
+            }
+        }
+        function showEditorFileContent(containsEditor) {
+            var newParent = document.getElementById('editParent');
+            var oldParent = document.getElementById('editParentHidden');
+            if (oldParent != null && newParent != null) {
+                $("#help").remove();
+                while (oldParent.childNodes.length > 0) {
+                    newParent.appendChild(oldParent.childNodes[0]);
+                }
+            }
+            updateEditorTabName();
+        }
+        function showEditorHelpContent(containsEditor) {
+            var newParent = document.getElementById('editParent');
+            var editorFileName = document.getElementById("editFileName");
+            if (newParent != null && editorFileName != null) {
+                var keyBindings = keys_1.KeyBinder.getKeyBindings();
+                var content = "";
+                content += "<div id='help'>";
+                content += "<div id='keyBindings'>";
+                content += "<table border='0'>";
+                for (var keyBinding in keyBindings) {
+                    if (keyBindings.hasOwnProperty(keyBinding)) {
+                        var description = keyBindings[keyBinding];
+                        content += "<tr>";
+                        content += "<td><div class='helpBullet'></div></td>";
+                        content += "<td align='left'>&nbsp;&nbsp;" + keyBinding + "</td>";
+                        content += "<td align='left'>&nbsp;&nbsp;&nbsp;&nbsp;" + description + "</td>";
+                        content += "</td>";
                     }
                 }
-                updateEditorTabName();
+                content += "</table>";
+                content += "</div>";
+                content += "</div>";
+                $("#editParent").html(content);
             }
+            updateEditorTabName();
         }
         function clickOnTab(name, doubleClickFunction) {
             var currentTime = new Date().getTime();
@@ -515,9 +551,9 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                             active: 'editTab',
                             tabs: [{
                                     id: 'editTab',
-                                    caption: '<div class="editTab" id="editFileName">...</div>',
+                                    caption: '<div class="helpTab" id="editFileName">Welcome</div>',
                                     content: "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
-                                    closable: true
+                                    closable: false
                                 }],
                             onClick: function (event) {
                                 explorer_1.FileExplorer.openTreeFile(event.target, function () {
@@ -629,7 +665,6 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             activateTab("consoleTab", "exploreBottomTabLayout", false, false, "style='right: 0px;'");
             activateTab("browseTab", "exploreLeftTabLayout", true, false, "style='right: 0px;'");
             activateTab("editTab", "exploreEditorTabLayout", false, true, "style='right: 0px;'");
-            openDefaultResource();
         }
         function createDebugLayout() {
             // $('#topLayer').spin({ lines: 10, length: 30, width: 20, radius: 40 });
@@ -692,9 +727,9 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                             active: 'editTab',
                             tabs: [{
                                     id: 'editTab',
-                                    caption: '<div class="editTab" id="editFileName">...</div>',
+                                    caption: '<div class="helpTab" id="editFileName">Welcome</div>',
                                     content: "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
-                                    closable: true
+                                    closable: false
                                 }],
                             onClick: function (event) {
                                 explorer_1.FileExplorer.openTreeFile(event.target, function () {
@@ -839,7 +874,6 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             activateTab("variablesTab", "debugRightTabLayout", false, false, "");
             activateTab("consoleTab", "debugBottomTabLayout", false, false, "");
             activateTab("editTab", "debugEditorTabLayout", false, true, "");
-            openDefaultResource();
         }
         function createBottomStatusContent() {
             return "<div id='status'>" +
@@ -1320,19 +1354,6 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                 w2ui_1.w2ui[layoutName].refresh();
                 $('#edit').w2render('edit');
                 showEditorContent(containsEditor);
-            }
-        }
-        function openDefaultResource() {
-            var location = window.location.hash;
-            var hashIndex = location.indexOf('#');
-            if (hashIndex == -1) {
-                $.ajax({
-                    url: '/default/' + document.title,
-                    success: function (defaultResource) {
-                        explorer_1.FileExplorer.openTreeFile(defaultResource, function () { });
-                    },
-                    async: true
-                });
             }
         }
     })(Project = exports.Project || (exports.Project = {}));

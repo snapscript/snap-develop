@@ -13,6 +13,7 @@ import {VariableManager} from "variables"
 import {FileExplorer} from "explorer"
 import {Command} from "commands" 
 import {DebugManager} from "debug"
+import {KeyBinder} from "keys"
 
 export module Project {
    
@@ -310,17 +311,62 @@ export module Project {
    
    function showEditorContent(containsEditor) { // hack to render editor
       if(containsEditor) {
-         // move the explorer
-         var newParent = document.getElementById('editParent');
-         var oldParent = document.getElementById('editParentHidden');
+         var location = window.location.hash;
+         var hashIndex = location.indexOf('#');
+         
+         if(hashIndex == -1) { // no path specified
+            showEditorHelpContent(containsEditor);
+         } else {
+            showEditorFileContent(containsEditor);
+         }
       
-         if(oldParent != null && newParent != null){
-            while (oldParent.childNodes.length > 0) {
-                newParent.appendChild(oldParent.childNodes[0]);
+      }
+   }
+   
+   function showEditorFileContent(containsEditor) {
+      var newParent = document.getElementById('editParent');
+      var oldParent = document.getElementById('editParentHidden');
+   
+      if(oldParent != null && newParent != null){
+         $("#help").remove();
+         
+         while (oldParent.childNodes.length > 0) {
+             newParent.appendChild(oldParent.childNodes[0]);
+         }
+      }
+      updateEditorTabName();
+   }
+   
+   function showEditorHelpContent(containsEditor) { // hack to render editor
+      var newParent = document.getElementById('editParent');
+      var editorFileName = document.getElementById("editFileName");
+      
+      if(newParent != null && editorFileName != null) {
+         var keyBindings = KeyBinder.getKeyBindings();
+         var content = "";
+         
+         content += "<div id='help'>"
+         content += "<div id='keyBindings'>";
+         content += "<table border='0'>";
+         
+         for(var keyBinding in keyBindings) {
+            if(keyBindings.hasOwnProperty(keyBinding)) {
+               var description = keyBindings[keyBinding];
+               
+               content += "<tr>";
+               content += "<td><div class='helpBullet'></div></td>";
+               content += "<td align='left'>&nbsp;&nbsp;" + keyBinding + "</td>";
+               content += "<td align='left'>&nbsp;&nbsp;&nbsp;&nbsp;" + description + "</td>";
+               content += "</td>";
             }
          }
-         updateEditorTabName();
+         content += "</table>";
+         content += "</div>";
+         content += "</div>";
+         
+         $("#editParent").html(content);
       }
+      updateEditorTabName();
    }
 
    export function clickOnTab(name, doubleClickFunction) {
@@ -592,9 +638,9 @@ export module Project {
                active : 'editTab',
                tabs : [ {
                   id : 'editTab',
-                  caption : '<div class="editTab" id="editFileName">...</div>',
+                  caption : '<div class="helpTab" id="editFileName">Welcome</div>',
                   content : "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
-                  closable: true 
+                  closable: false 
                } ],
                onClick : function(event) {
                   FileExplorer.openTreeFile(event.target, function(){
@@ -711,7 +757,6 @@ export module Project {
       activateTab("consoleTab", "exploreBottomTabLayout", false, false, "style='right: 0px;'"); 
       activateTab("browseTab", "exploreLeftTabLayout", true, false, "style='right: 0px;'"); 
       activateTab("editTab", "exploreEditorTabLayout", false, true, "style='right: 0px;'"); 
-      openDefaultResource();
    }
    
    
@@ -781,9 +826,9 @@ export module Project {
                active : 'editTab',
                tabs : [ {
                   id : 'editTab',
-                  caption : '<div class="editTab" id="editFileName">...</div>',
+                  caption : '<div class="helpTab" id="editFileName">Welcome</div>',
                   content : "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
-                  closable: true 
+                  closable: false 
                } ],
                onClick : function(event) {
                   FileExplorer.openTreeFile(event.target, function(){
@@ -935,7 +980,6 @@ export module Project {
       activateTab("variablesTab", "debugRightTabLayout", false, false, "");   
       activateTab("consoleTab", "debugBottomTabLayout", false, false, "");  
       activateTab("editTab", "debugEditorTabLayout", false, true, "");  
-      openDefaultResource();
    }
    
    function createBottomStatusContent() {
@@ -1419,21 +1463,6 @@ export module Project {
          w2ui[layoutName].refresh();
          $('#edit').w2render('edit');
          showEditorContent(containsEditor);
-      }
-   }
-   
-   function openDefaultResource() {
-      var location = window.location.hash;
-      var hashIndex = location.indexOf('#');
-      
-      if(hashIndex == -1) { // no path specified
-         $.ajax({
-            url: '/default/' + document.title,
-            success: function (defaultResource) {
-               FileExplorer.openTreeFile(defaultResource, function(){});
-            },
-            async: true
-         });
       }
    }
 }

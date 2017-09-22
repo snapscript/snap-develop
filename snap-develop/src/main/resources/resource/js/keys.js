@@ -5,45 +5,50 @@ define(["require", "exports", "jquery", "mousetrap", "common", "editor", "comman
         var MAX_PRESS_REPEAT = 250; // 250 milliseconds
         var pressTimes = {};
         var controlPressed = false;
+        var keyBindings = {};
+        function getKeyBindings() {
+            return keyBindings;
+        }
+        KeyBinder.getKeyBindings = getKeyBindings;
         function bindKeys() {
             disableBrowserKeys();
-            createKeyBinding("ctrl n", true, function () {
+            createKeyBinding("ctrl n", "New File", true, function () {
                 commands_1.Command.newFile(null);
             });
-            createKeyBinding("ctrl s", true, function () {
+            createKeyBinding("ctrl s", "Save File", true, function () {
                 commands_1.Command.saveFile(null);
             });
-            createKeyBinding("ctrl shift s", true, function () {
+            createKeyBinding("ctrl shift s", "Search Types", true, function () {
                 commands_1.Command.searchTypes();
             });
-            createKeyBinding("ctrl tab", true, function () {
+            createKeyBinding("ctrl tab", "Format Source", true, function () {
                 editor_1.FileEditor.formatEditorSource();
             });
-            createKeyBinding("ctrl shift e", true, function () {
+            createKeyBinding("ctrl shift e", "Evaluate Expression", true, function () {
                 commands_1.Command.evaluateExpression();
             });
-            createKeyBinding("ctrl shift m", true, function () {
+            createKeyBinding("ctrl shift m", "Toggle Full Screen", true, function () {
                 project_1.Project.toggleFullScreen();
             });
-            createKeyBinding("ctrl shift l", true, function () {
+            createKeyBinding("ctrl shift l", "Switch Layout", true, function () {
                 commands_1.Command.switchLayout();
             });
-            createKeyBinding("ctrl shift p", true, function () {
+            createKeyBinding("ctrl shift p", "Switch Project", true, function () {
                 commands_1.Command.switchProject();
             });
-            createKeyBinding("ctrl shift g", true, function () {
+            createKeyBinding("ctrl shift g", "Find Files", true, function () {
                 commands_1.Command.findFileNames();
             });
-            createKeyBinding("ctrl shift h", true, function () {
+            createKeyBinding("ctrl shift h", "Global Search & Replace", true, function () {
                 commands_1.Command.searchAndReplaceFiles();
             });
-            createKeyBinding("ctrl shift f", true, function () {
+            createKeyBinding("ctrl shift f", "Global Search", true, function () {
                 commands_1.Command.searchFiles();
             });
-            createKeyBinding("ctrl h", true, function () {
+            createKeyBinding("ctrl h", "Search & Replace", true, function () {
                 editor_1.FileEditor.findAndReplaceTextInEditor();
             });
-            createKeyBinding("ctrl f", true, function () {
+            createKeyBinding("ctrl f", "Search", true, function () {
                 editor_1.FileEditor.findTextInEditor();
             });
             //      createKeyBinding("ctrl c", true, function() {
@@ -85,25 +90,25 @@ define(["require", "exports", "jquery", "mousetrap", "common", "editor", "comman
             //      createKeyBinding("ctrl y", true, function() {
             //         FileEditor.redoEditorChange();
             //      });
-            createKeyBinding("ctrl r", true, function () {
+            createKeyBinding("ctrl r", "Run Script", true, function () {
                 commands_1.Command.runScript();
             });
-            createKeyBinding("ctrl b", true, function () {
+            createKeyBinding("ctrl b", "Debug Script", true, function () {
                 commands_1.Command.debugScript();
             });
-            createKeyBinding("f8", true, function () {
+            createKeyBinding("f8", "Resume Script", true, function () {
                 console.log("F8");
                 commands_1.Command.resumeScript();
             });
-            createKeyBinding("f5", true, function () {
+            createKeyBinding("f5", "Step In", true, function () {
                 console.log("F5");
                 commands_1.Command.stepInScript();
             });
-            createKeyBinding("f7", true, function () {
+            createKeyBinding("f7", "Step Out", true, function () {
                 console.log("F7");
                 commands_1.Command.stepOutScript();
             });
-            createKeyBinding("f6", true, function () {
+            createKeyBinding("f6", "Step Over", true, function () {
                 console.log("F6");
                 commands_1.Command.stepOverScript();
             });
@@ -154,7 +159,7 @@ define(["require", "exports", "jquery", "mousetrap", "common", "editor", "comman
                 global: globalKeyBinding
             };
         }
-        function createKeyBinding(name, preventDefault, pressAction) {
+        function createKeyBinding(name, description, preventDefault, pressAction) {
             var keyBinding = parseKeyBinding(name);
             //      var editor = ace.edit("editor");
             //       
@@ -171,6 +176,7 @@ define(["require", "exports", "jquery", "mousetrap", "common", "editor", "comman
             //              }
             //           }
             //      });
+            keyBindings[keyBinding.editor] = common_1.Common.escapeHtml(description);
             editor_1.FileEditor.addEditorKeyBinding(keyBinding, pressAction);
             Mousetrap.bindGlobal(keyBinding.global, function (e) {
                 if (pressAction) {
