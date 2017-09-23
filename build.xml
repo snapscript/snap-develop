@@ -11,7 +11,7 @@
       <arg value="-DskipTests" />
    </exec>
    <delete file="../snap-release/snapd.jar" />
-   <copy file="snap-develop/target/snap-develop-${build.version}-jar-with-dependencies.jar" tofile="../snap-release/snapd.jar" overwrite="true" />
+   <copy file="snap-studio/target/snap-studio-${build.version}-jar-with-dependencies.jar" tofile="../snap-release/snapd.jar" overwrite="true" />
    <copy file="snap-agent/target/snap-agent-${build.version}-jar-with-dependencies.jar" tofile="../snap-release/snapa.jar" overwrite="true" />
    <exec executable="${ant.home}\bin\ant.bat">
       <arg value="-f" />
@@ -24,7 +24,7 @@
       <arg value="-jar" />
       <arg value="..\snap-release\snapd.jar" />
       <arg value="--mode=develop"/>
-      <arg value="--directory=snap-develop\work" />
+      <arg value="--directory=snap-studio\work" />
       <arg value="--port=4457"/>
       <arg value="--log-level=DEBUG"/>  
       <arg value="--agent-pool=6"/>

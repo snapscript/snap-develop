@@ -29,7 +29,7 @@
 
    <modules>
            <module>snap-agent</module>
-           <module>snap-develop</module>           
+           <module>snap-studio</module>           
            <module>snap-service</module>          
 	</modules>
 
