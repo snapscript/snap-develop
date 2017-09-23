@@ -82,12 +82,12 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         FileEditor.createEditorHighlight = createEditorHighlight;
         function findAndReplaceTextInEditor() {
             var editorData = loadEditor();
-            commands_1.Command.searchAndReplaceFiles(editorView.editorData.resource.projectPath);
+            commands_1.Command.searchAndReplaceFiles(editorData.resource.projectPath);
         }
         FileEditor.findAndReplaceTextInEditor = findAndReplaceTextInEditor;
         function findTextInEditor() {
             var editorData = loadEditor();
-            commands_1.Command.searchFiles(editorView.editorData.resource.projectPath);
+            commands_1.Command.searchFiles(editorData.resource.projectPath);
         }
         FileEditor.findTextInEditor = findTextInEditor;
         function addEditorKeyBinding(keyBinding, actionFunction) {
@@ -445,6 +445,8 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             history_1.History.showFileHistory(); // update the history
             status_1.StatusPanel.showActiveFile(editorView.editorResource.projectPath);
             FileEditor.showEditorFileInTree();
+            editorView.editorPanel.focus();
+            editorView.editorPanel.gotoLine(1); // required for focus
         }
         FileEditor.updateEditor = updateEditor;
         function showEditorFileInTree() {

@@ -391,6 +391,11 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
         DialogBuilder.createTextSearchAndReplaceDialog = createTextSearchAndReplaceDialog;
         function createEvaluateDialog(inputText, dialogTitle) {
             var dialogBody = createGridDialogLayout(inputText ? common_1.Common.escapeHtml(inputText) : '');
+            var executeEvaluation = function () {
+                var text = $("#dialogPath").html();
+                var expression = common_1.Common.clearHtml(text);
+                commands_1.Command.browseScriptEvaluation([], expression, true); // clear the variables 
+            };
             w2ui_1.w2popup.open({
                 title: dialogTitle,
                 body: dialogBody.content,
@@ -440,6 +445,9 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                                 };
                             }
                         });
+                        var element = document.getElementById('dialogPath');
+                        element.contentEditable = true;
+                        element.focus();
                         setTimeout(function () {
                             variables_1.VariableManager.showVariables();
                         }, 200);
@@ -468,9 +476,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 }
             });
             $("#dialogSave").click(function () {
-                var text = $("#dialogPath").html();
-                var expression = common_1.Common.clearHtml(text);
-                commands_1.Command.browseScriptEvaluation([], expression, true); // clear the variables
+                executeEvaluation();
             });
         }
         function createDialogListTable(list) {

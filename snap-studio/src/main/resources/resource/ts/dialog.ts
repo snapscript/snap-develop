@@ -415,6 +415,12 @@ export module DialogBuilder {
    
    function createEvaluateDialog(inputText, dialogTitle) { 
       var dialogBody = createGridDialogLayout(inputText ? Common.escapeHtml(inputText) : '');
+      var executeEvaluation = function() {
+         var text = $("#dialogPath").html();
+         var expression = Common.clearHtml(text);
+         
+         Command.browseScriptEvaluation([], expression, true); // clear the variables 
+      };
       w2popup.open({
          title : dialogTitle,
          body : dialogBody.content,
@@ -465,6 +471,11 @@ export module DialogBuilder {
                      }
                   }               
                }); 
+               var element = document.getElementById('dialogPath');
+               
+               element.contentEditable = true;
+               element.focus();
+               
                setTimeout(function() {
                   VariableManager.showVariables();
                }, 200);
@@ -493,10 +504,7 @@ export module DialogBuilder {
          }
       });
       $("#dialogSave").click(function() {
-         var text = $("#dialogPath").html();
-         var expression = Common.clearHtml(text);
-         
-         Command.browseScriptEvaluation([], expression, true); // clear the variables
+         executeEvaluation();
       });
    }
    

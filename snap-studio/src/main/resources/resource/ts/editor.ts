@@ -108,12 +108,12 @@ export module FileEditor {
    
    export function findAndReplaceTextInEditor(){
       var editorData = loadEditor();
-      Command.searchAndReplaceFiles(editorView.editorData.resource.projectPath);
+      Command.searchAndReplaceFiles(editorData.resource.projectPath);
    }
    
    export function findTextInEditor() {
       var editorData = loadEditor();
-      Command.searchFiles(editorView.editorData.resource.projectPath);
+      Command.searchFiles(editorData.resource.projectPath);
    }
    
    export function addEditorKeyBinding(keyBinding, actionFunction) {
@@ -511,6 +511,8 @@ export module FileEditor {
       History.showFileHistory(); // update the history
       StatusPanel.showActiveFile(editorView.editorResource.projectPath);  
       FileEditor.showEditorFileInTree();
+      editorView.editorPanel.focus();
+      editorView.editorPanel.gotoLine(1); // required for focus
    }
    
    export function showEditorFileInTree() {
