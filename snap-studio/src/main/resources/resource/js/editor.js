@@ -13,8 +13,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             this.editorTheme = null;
             this.editorCurrentTokens = {}; // current editor hyperlinks
             this.editorFocusToken = null; // token to focus on editor load
-            this.editorHistory = {};
-            this.editorScroll = {}; // scroll positions
+            this.editorHistory = {}; // store all editor context
             this.editorPanel = null;
             this.editorPanel = editorPanel;
             this.editorTheme = editorTheme;
@@ -238,17 +237,36 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         function loadEditor() {
             var editorHistory = loadEditorHistory();
-            var text = editorView.editorPanel.getValue();
-            var scrollTop = editorView.editorPanel.getSession().getScrollTop();
+            var editorPosition = loadEditorPosition();
+            var editorText = loadEditorText();
             return {
                 breakpoints: editorView.editorBreakpoints,
                 resource: editorView.editorResource,
                 history: editorHistory,
-                scroll: scrollTop,
-                source: text
+                position: editorPosition,
+                source: editorText
             };
         }
         FileEditor.loadEditor = loadEditor;
+        function loadEditorText() {
+            return editorView.editorPanel.getValue();
+        }
+        function loadEditorPosition() {
+            var scrollTop = editorView.editorPanel.getSession().getScrollTop();
+            var editorCursor = editorView.editorPanel.selection.getCursor();
+            if (editorCursor && editorCursor.row && editorCursor.column) {
+                return {
+                    row: editorCursor.row,
+                    column: editorCursor.column,
+                    scroll: scrollTop
+                };
+            }
+            return {
+                scroll: scrollTop,
+                row: null,
+                column: null
+            };
+        }
         function loadEditorHistory() {
             var session = editorView.editorPanel.getSession();
             var manager = session.getUndoManager();
@@ -374,10 +392,10 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             var editorData = loadEditor();
             if (editorData.resource && editorData.source) {
                 var md5Hash = md5_1.md5(editorData.source);
-                editorView.editorScroll[editorData.resource.resourcePath] = editorData.scroll;
                 editorView.editorHistory[editorData.resource.resourcePath] = {
                     hash: md5Hash,
-                    history: editorData.history
+                    history: editorData.history,
+                    position: editorData.position
                 };
             }
         }
@@ -472,16 +490,27 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         function scrollEditorToTop() {
             var session = editorView.editorPanel.getSession();
             if (editorView.editorResource && editorView.editorResource.resourcePath) {
-                var previousScroll = editorView.editorScroll[editorView.editorResource.resourcePath];
-                if (previousScroll && previousScroll >= 0) {
-                    session.setScrollTop(previousScroll); // required for focus
+                var editorHistory = editorView.editorHistory[editorView.editorResource.resourcePath];
+                if (editorHistory && editorHistory.position) {
+                    var editorScroll = editorHistory.position.scroll;
+                    var editorRow = editorHistory.position.row;
+                    var editorColumn = editorHistory.position.column;
+                    if (editorRow && editorColumn && editorRow >= 0 && editorColumn >= 0) {
+                        editorView.editorPanel.selection.moveTo(editorRow, editorColumn);
+                    }
+                    else {
+                        editorView.editorPanel.gotoLine(1);
+                    }
+                    session.setScrollTop(editorScroll);
                 }
                 else {
-                    session.setScrollTop(0); // required for focus
+                    editorView.editorPanel.gotoLine(1);
+                    session.setScrollTop(0);
                 }
             }
             else {
-                session.setScrollTop(0); // required for focus
+                editorView.editorPanel.gotoLine(1); // required for focus
+                session.setScrollTop(0);
             }
             editorView.editorPanel.focus();
         }

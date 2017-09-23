@@ -29,8 +29,7 @@ export class FileEditorView {
    editorTheme: string = null;
    editorCurrentTokens = {}; // current editor hyperlinks
    editorFocusToken = null; // token to focus on editor load
-   editorHistory = {};
-   editorScroll = {}; // scroll positions
+   editorHistory = {}; // store all editor context
    editorPanel = null;
    
    constructor(editorPanel: any, editorTheme: string) {
@@ -277,15 +276,37 @@ export module FileEditor {
    
    export function loadEditor() {
       var editorHistory = loadEditorHistory();
-      var text = editorView.editorPanel.getValue();
-      var scrollTop = editorView.editorPanel.getSession().getScrollTop();
+      var editorPosition = loadEditorPosition();
+      var editorText = loadEditorText();
       
       return {
          breakpoints : editorView.editorBreakpoints,
          resource : editorView.editorResource,
          history : editorHistory,
+         position: editorPosition,
+         source : editorText
+      };
+   }
+   
+   function loadEditorText(){
+      return editorView.editorPanel.getValue();
+   }
+   
+   function loadEditorPosition() {
+      var scrollTop = editorView.editorPanel.getSession().getScrollTop();
+      var editorCursor = editorView.editorPanel.selection.getCursor();
+
+      if(editorCursor && editorCursor.row && editorCursor.column) {
+         return {
+               row: editorCursor.row,
+               column: editorCursor.column,
+               scroll: scrollTop
+         };
+      }
+      return { 
          scroll: scrollTop,
-         source : text
+         row: null,
+         column: null
       };
    }
    
@@ -429,10 +450,10 @@ export module FileEditor {
       if(editorData.resource && editorData.source) {
          var md5Hash = md5(editorData.source);
          
-         editorView.editorScroll[editorData.resource.resourcePath] = editorData.scroll;
          editorView.editorHistory[editorData.resource.resourcePath] = {
             hash: md5Hash,
-            history: editorData.history
+            history: editorData.history,
+            position: editorData.position
          };
       }
    }
@@ -541,15 +562,26 @@ export module FileEditor {
       var session = editorView.editorPanel.getSession();
       
       if(editorView.editorResource && editorView.editorResource.resourcePath) {
-         var previousScroll = editorView.editorScroll[editorView.editorResource.resourcePath];
-   
-         if(previousScroll && previousScroll >= 0) {
-            session.setScrollTop(previousScroll); // required for focus
+         var editorHistory = editorView.editorHistory[editorView.editorResource.resourcePath];
+         
+         if(editorHistory && editorHistory.position) {
+            var editorScroll = editorHistory.position.scroll;
+            var editorRow = editorHistory.position.row;
+            var editorColumn = editorHistory.position.column;
+            
+            if(editorRow && editorColumn && editorRow >= 0 && editorColumn >= 0) {
+               editorView.editorPanel.selection.moveTo(editorRow, editorColumn);
+            } else {
+               editorView.editorPanel.gotoLine(1);
+            }
+            session.setScrollTop(editorScroll); 
          } else {
-            session.setScrollTop(0); // required for focus
+            editorView.editorPanel.gotoLine(1); 
+            session.setScrollTop(0);
          }
       }else {
-         session.setScrollTop(0); // required for focus
+         editorView.editorPanel.gotoLine(1);// required for focus
+         session.setScrollTop(0); 
       }
       editorView.editorPanel.focus();
    }

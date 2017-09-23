@@ -62,7 +62,7 @@ class GameRenderer {
     // Sets the background to draw.
     public setBackground(background: BufferedImage) {
         this.background = background;
-    }
+    } 
     
    // Returns the tile that a Sprite has collided with. Returns null if no 
    // collision was detected. The last parameter, right, is used to check if multiple blocks
