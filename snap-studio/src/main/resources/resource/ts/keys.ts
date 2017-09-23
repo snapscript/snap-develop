@@ -132,9 +132,7 @@ export module KeyBinder {
       $(window).keydown(function(event) {
          if(event.ctrlKey) { 
             // do not prevent default for copy/cut/paste
-            if(isCopyChar(event) || isCutChar(event) || isPasteChar(event)) {
-               //console.log("ignore: "+event.keyCode);
-            } else {
+            if(!isCopyChar(event) && !isCutChar(event) && !isPasteChar(event)) {
                event.preventDefault(); 
             }
          }

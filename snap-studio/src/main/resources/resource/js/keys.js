@@ -122,9 +122,7 @@ define(["require", "exports", "jquery", "mousetrap", "common", "editor", "comman
             $(window).keydown(function (event) {
                 if (event.ctrlKey) {
                     // do not prevent default for copy/cut/paste
-                    if (isCopyChar(event) || isCutChar(event) || isPasteChar(event)) {
-                    }
-                    else {
+                    if (!isCopyChar(event) && !isCutChar(event) && !isPasteChar(event)) {
                         event.preventDefault();
                     }
                 }
