@@ -182,7 +182,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>org.snapscript.develop.ApplicationLauncher</mainClass>
+              <mainClass>org.snapscript.studio.ApplicationLauncher</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>
