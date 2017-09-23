@@ -30,6 +30,7 @@ export class FileEditorView {
    editorCurrentTokens = {}; // current editor hyperlinks
    editorFocusToken = null; // token to focus on editor load
    editorHistory = {};
+   editorScroll = {}; // scroll positions
    editorPanel = null;
    
    constructor(editorPanel: any, editorTheme: string) {
@@ -277,11 +278,13 @@ export module FileEditor {
    export function loadEditor() {
       var editorHistory = loadEditorHistory();
       var text = editorView.editorPanel.getValue();
-   
+      var scrollTop = editorView.editorPanel.getSession().getScrollTop();
+      
       return {
          breakpoints : editorView.editorBreakpoints,
          resource : editorView.editorResource,
          history : editorHistory,
+         scroll: scrollTop,
          source : text
       };
    }
@@ -426,6 +429,7 @@ export module FileEditor {
       if(editorData.resource && editorData.source) {
          var md5Hash = md5(editorData.source);
          
+         editorView.editorScroll[editorData.resource.resourcePath] = editorData.scroll;
          editorView.editorHistory[editorData.resource.resourcePath] = {
             hash: md5Hash,
             history: editorData.history
@@ -487,7 +491,6 @@ export module FileEditor {
       createEditorUndoManager(session, text, resource); // restore any existing history
       
       clearEditor();
-      scrollEditorToTop();
       editorView.editorResource = FileTree.createResourcePath(resource);
       editorView.editorText = text;
       window.location.hash = editorView.editorResource.projectPath; // update # anchor
@@ -511,8 +514,7 @@ export module FileEditor {
       History.showFileHistory(); // update the history
       StatusPanel.showActiveFile(editorView.editorResource.projectPath);  
       FileEditor.showEditorFileInTree();
-      editorView.editorPanel.focus();
-      editorView.editorPanel.gotoLine(1); // required for focus
+      scrollEditorToTop();
    }
    
    export function showEditorFileInTree() {
@@ -537,7 +539,19 @@ export module FileEditor {
    
    export function scrollEditorToTop() {
       var session = editorView.editorPanel.getSession();
-      session.setScrollTop(0);
+      
+      if(editorView.editorResource && editorView.editorResource.resourcePath) {
+         var previousScroll = editorView.editorScroll[editorView.editorResource.resourcePath];
+   
+         if(previousScroll && previousScroll >= 0) {
+            session.setScrollTop(previousScroll); // required for focus
+         } else {
+            session.setScrollTop(0); // required for focus
+         }
+      }else {
+         session.setScrollTop(0); // required for focus
+      }
+      editorView.editorPanel.focus();
    }
    
    function createEditorAutoComplete() {

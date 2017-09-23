@@ -14,6 +14,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             this.editorCurrentTokens = {}; // current editor hyperlinks
             this.editorFocusToken = null; // token to focus on editor load
             this.editorHistory = {};
+            this.editorScroll = {}; // scroll positions
             this.editorPanel = null;
             this.editorPanel = editorPanel;
             this.editorTheme = editorTheme;
@@ -238,10 +239,12 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         function loadEditor() {
             var editorHistory = loadEditorHistory();
             var text = editorView.editorPanel.getValue();
+            var scrollTop = editorView.editorPanel.getSession().getScrollTop();
             return {
                 breakpoints: editorView.editorBreakpoints,
                 resource: editorView.editorResource,
                 history: editorHistory,
+                scroll: scrollTop,
                 source: text
             };
         }
@@ -371,6 +374,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             var editorData = loadEditor();
             if (editorData.resource && editorData.source) {
                 var md5Hash = md5_1.md5(editorData.source);
+                editorView.editorScroll[editorData.resource.resourcePath] = editorData.scroll;
                 editorView.editorHistory[editorData.resource.resourcePath] = {
                     hash: md5Hash,
                     history: editorData.history
@@ -423,7 +427,6 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             editorView.editorPanel.setValue(text, 1);
             createEditorUndoManager(session, text, resource); // restore any existing history
             clearEditor();
-            scrollEditorToTop();
             editorView.editorResource = tree_1.FileTree.createResourcePath(resource);
             editorView.editorText = text;
             window.location.hash = editorView.editorResource.projectPath; // update # anchor
@@ -445,8 +448,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             history_1.History.showFileHistory(); // update the history
             status_1.StatusPanel.showActiveFile(editorView.editorResource.projectPath);
             FileEditor.showEditorFileInTree();
-            editorView.editorPanel.focus();
-            editorView.editorPanel.gotoLine(1); // required for focus
+            scrollEditorToTop();
         }
         FileEditor.updateEditor = updateEditor;
         function showEditorFileInTree() {
@@ -469,7 +471,19 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         FileEditor.isEditorChanged = isEditorChanged;
         function scrollEditorToTop() {
             var session = editorView.editorPanel.getSession();
-            session.setScrollTop(0);
+            if (editorView.editorResource && editorView.editorResource.resourcePath) {
+                var previousScroll = editorView.editorScroll[editorView.editorResource.resourcePath];
+                if (previousScroll && previousScroll >= 0) {
+                    session.setScrollTop(previousScroll); // required for focus
+                }
+                else {
+                    session.setScrollTop(0); // required for focus
+                }
+            }
+            else {
+                session.setScrollTop(0); // required for focus
+            }
+            editorView.editorPanel.focus();
         }
         FileEditor.scrollEditorToTop = scrollEditorToTop;
         function createEditorAutoComplete() {
