@@ -40,7 +40,7 @@ export class FileEditorView {
    init() {
       KeyBinder.bindKeys(); // register key bindings
       Project.changeProjectFont(); // project.js update font
-      FileEditor.scrollEditorToTop();
+      FileEditor.scrollEditorToPosition();
       LoadSpinner.finish();
    }
 }
@@ -535,7 +535,7 @@ export module FileEditor {
       History.showFileHistory(); // update the history
       StatusPanel.showActiveFile(editorView.editorResource.projectPath);  
       FileEditor.showEditorFileInTree();
-      scrollEditorToTop();
+      scrollEditorToPosition();
    }
    
    export function showEditorFileInTree() {
@@ -558,7 +558,7 @@ export module FileEditor {
       return false;
    }
    
-   export function scrollEditorToTop() {
+   export function scrollEditorToPosition() {
       var session = editorView.editorPanel.getSession();
       
       if(editorView.editorResource && editorView.editorResource.resourcePath) {

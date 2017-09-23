@@ -21,7 +21,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         FileEditorView.prototype.init = function () {
             keys_1.KeyBinder.bindKeys(); // register key bindings
             project_1.Project.changeProjectFont(); // project.js update font
-            FileEditor.scrollEditorToTop();
+            FileEditor.scrollEditorToPosition();
             spinner_1.LoadSpinner.finish();
         };
         return FileEditorView;
@@ -466,7 +466,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             history_1.History.showFileHistory(); // update the history
             status_1.StatusPanel.showActiveFile(editorView.editorResource.projectPath);
             FileEditor.showEditorFileInTree();
-            scrollEditorToTop();
+            scrollEditorToPosition();
         }
         FileEditor.updateEditor = updateEditor;
         function showEditorFileInTree() {
@@ -487,7 +487,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             return false;
         }
         FileEditor.isEditorChanged = isEditorChanged;
-        function scrollEditorToTop() {
+        function scrollEditorToPosition() {
             var session = editorView.editorPanel.getSession();
             if (editorView.editorResource && editorView.editorResource.resourcePath) {
                 var editorHistory = editorView.editorHistory[editorView.editorResource.resourcePath];
@@ -514,7 +514,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             }
             editorView.editorPanel.focus();
         }
-        FileEditor.scrollEditorToTop = scrollEditorToTop;
+        FileEditor.scrollEditorToPosition = scrollEditorToPosition;
         function createEditorAutoComplete() {
             return {
                 getCompletions: function createAutoComplete(editor, session, pos, prefix, callback) {
