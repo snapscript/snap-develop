@@ -308,8 +308,26 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             if (common_1.Common.stringEndsWith(token, ".sql")) {
                 return "ace/mode/sql";
             }
+            if (common_1.Common.stringEndsWith(token, ".pl")) {
+                return "ace/mode/perl";
+            }
+            if (common_1.Common.stringEndsWith(token, ".kt")) {
+                return "ace/mode/kotlin";
+            }
             if (common_1.Common.stringEndsWith(token, ".js")) {
                 return "ace/mode/javascript";
+            }
+            if (common_1.Common.stringEndsWith(token, ".ts")) {
+                return "ace/mode/typescript";
+            }
+            if (common_1.Common.stringEndsWith(token, ".java")) {
+                return "ace/mode/java";
+            }
+            if (common_1.Common.stringEndsWith(token, ".groovy")) {
+                return "ace/mode/groovy";
+            }
+            if (common_1.Common.stringEndsWith(token, ".py")) {
+                return "ace/mode/python";
             }
             if (common_1.Common.stringEndsWith(token, ".html")) {
                 return "ace/mode/html";

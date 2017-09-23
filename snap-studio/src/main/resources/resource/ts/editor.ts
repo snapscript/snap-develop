@@ -355,9 +355,27 @@ export module FileEditor {
       if(Common.stringEndsWith(token, ".sql")) {
          return "ace/mode/sql";
       }
+      if(Common.stringEndsWith(token, ".pl")) {
+         return "ace/mode/perl";
+      }
+      if(Common.stringEndsWith(token, ".kt")) {
+         return "ace/mode/kotlin";
+      }
       if(Common.stringEndsWith(token, ".js")) {
          return "ace/mode/javascript";
       }
+      if(Common.stringEndsWith(token, ".ts")) {
+         return "ace/mode/typescript";
+      }
+      if(Common.stringEndsWith(token, ".java")) {
+         return "ace/mode/java";
+      }  
+      if(Common.stringEndsWith(token, ".groovy")) {
+         return "ace/mode/groovy";
+      }  
+      if(Common.stringEndsWith(token, ".py")) {
+         return "ace/mode/python";
+      } 
       if(Common.stringEndsWith(token, ".html")) {
          return "ace/mode/html";
       }
