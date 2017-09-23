@@ -218,7 +218,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             var session = editorView.editorPanel.getSession();
             clearEditorHighlights();
             editorView.editorResource = null;
-            editorView.editor.setReadOnly(false);
+            editorView.editorPanel.setReadOnly(false);
             session.setValue(editorView.editorText, 1);
             $("#currentFile").html("");
         }

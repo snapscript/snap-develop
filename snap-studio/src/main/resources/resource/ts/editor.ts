@@ -254,7 +254,7 @@ export module FileEditor {
    
       clearEditorHighlights();
       editorView.editorResource = null;
-      editorView.editor.setReadOnly(false);
+      editorView.editorPanel.setReadOnly(false);
       session.setValue(editorView.editorText, 1);
       $("#currentFile").html("");
    }
