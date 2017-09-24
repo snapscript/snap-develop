@@ -256,7 +256,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         function loadEditorPosition() {
             var scrollTop = editorView.editorPanel.getSession().getScrollTop();
             var editorCursor = editorView.editorPanel.selection.getCursor();
-            if (editorCursor && editorCursor.row && editorCursor.column) {
+            if (editorCursor) {
                 return {
                     row: editorCursor.row,
                     column: editorCursor.column,
@@ -515,7 +515,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                     var editorScroll = editorHistory.position.scroll;
                     var editorRow = editorHistory.position.row;
                     var editorColumn = editorHistory.position.column;
-                    if (editorRow && editorColumn && editorRow >= 0 && editorColumn >= 0) {
+                    if (editorRow >= 0 && editorColumn >= 0) {
                         editorView.editorPanel.selection.moveTo(editorRow, editorColumn);
                     }
                     else {

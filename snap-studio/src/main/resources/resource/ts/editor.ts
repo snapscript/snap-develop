@@ -298,7 +298,7 @@ export module FileEditor {
       var scrollTop = editorView.editorPanel.getSession().getScrollTop();
       var editorCursor = editorView.editorPanel.selection.getCursor();
 
-      if(editorCursor && editorCursor.row && editorCursor.column) {
+      if(editorCursor) {
          return {
                row: editorCursor.row,
                column: editorCursor.column,
@@ -589,7 +589,7 @@ export module FileEditor {
             var editorRow = editorHistory.position.row;
             var editorColumn = editorHistory.position.column;
             
-            if(editorRow && editorColumn && editorRow >= 0 && editorColumn >= 0) {
+            if(editorRow >= 0 && editorColumn >= 0) {
                editorView.editorPanel.selection.moveTo(editorRow, editorColumn);
             } else {
                editorView.editorPanel.gotoLine(1);
