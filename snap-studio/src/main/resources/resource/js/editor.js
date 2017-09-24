@@ -58,10 +58,12 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             editorView.editorPanel.resize(true);
             if (line > 1) {
                 editorView.editorPanel.scrollToLine(line - 1, true, true, function () { });
+                editorView.editorPanel.gotoLine(line); // move the cursor
             }
             else {
                 editorView.editorPanel.scrollToLine(0, true, true, function () { });
             }
+            editorView.editorPanel.focus();
         }
         FileEditor.showEditorLine = showEditorLine;
         function clearEditorHighlight(line) {

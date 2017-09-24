@@ -81,9 +81,11 @@ export module FileEditor {
       
       if(line > 1) {
          editorView.editorPanel.scrollToLine(line - 1, true, true, function () {})
+         editorView.editorPanel.gotoLine(line); // move the cursor
       } else {
          editorView.editorPanel.scrollToLine(0, true, true, function () {})
       }
+      editorView.editorPanel.focus();
    }
    
    function clearEditorHighlight(line) {
