@@ -352,6 +352,16 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             }
             return null;
         }
+        function closeEditorTab() {
+            var data = editor_1.FileEditor.loadEditor();
+            if (data.resource) {
+                var tabs = findActiveEditorTabLayout();
+                if (tabs.tabs.length > 1) {
+                    deleteEditorTab(data.resource.resourcePath);
+                }
+            }
+        }
+        Project.closeEditorTab = closeEditorTab;
         function deleteEditorTab(resource) {
             var layout = findActiveEditorLayout();
             var tabs = findActiveEditorTabLayout();

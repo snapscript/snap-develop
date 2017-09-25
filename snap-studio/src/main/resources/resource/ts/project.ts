@@ -412,6 +412,18 @@ export module Project {
       return null;
    }
    
+   export function closeEditorTab() {
+      var data = FileEditor.loadEditor();
+      
+      if(data.resource) {      
+         var tabs = findActiveEditorTabLayout();
+         
+         if(tabs.tabs.length > 1) {
+            deleteEditorTab(data.resource.resourcePath);
+         }
+      }
+   }
+   
    export function deleteEditorTab(resource) {
       var layout = findActiveEditorLayout();
       var tabs = findActiveEditorTabLayout();

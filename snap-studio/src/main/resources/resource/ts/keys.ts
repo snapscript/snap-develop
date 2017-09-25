@@ -26,6 +26,9 @@ export module KeyBinder {
       createKeyBinding("ctrl s", "Save File", true, function() {
          Command.saveFile(null);
       });
+      createKeyBinding("ctrl c", "Close File", true, function() {
+         Project.closeEditorTab();
+      });      
       createKeyBinding("ctrl shift s", "Search Types", true, function() {
          Command.searchTypes();
       });
