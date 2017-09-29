@@ -1,14 +1,26 @@
-var start = new Date().getTime();
-var count=0;
+
+
 function fib(n) {
-   count++;
    if (n<2) {
       return 1;
    }
    return fib(n-1) + fib(n-2);
 }
-var result = fib(30);
-var stop =new Date().getTime();
-var perf = count/(stop-start);
-System.out.println("fib(30)="+result+" count="+count+" invoke/ms="+(perf));
-print((stop -start));
+time(->fib(30));
+
+
+function empty(x){
+}
+function similar(){
+   for(var x in 0..2692537){
+      empty(x);
+   }
+}
+time(->similar());
+
+function time(func: ()) {
+   var start = new Date().getTime();
+   func();
+   var stop =new Date().getTime();
+   System.out.println("time="+ (stop-start));
+}

@@ -48,8 +48,7 @@ color: rgb(6, 150, 14);\
 color: rgb(109, 121, 222);\
 }\
 .ace-chrome .ace_variable.ace_parameter {\
-font-style:italic;\
-color:#FD971F;\
+color: #000000;\
 }\
 .ace-chrome .ace_keyword.ace_operator {\
 color: rgb(104, 118, 135);\

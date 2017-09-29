@@ -22,10 +22,12 @@ background-color: rgb(60, 76, 114);\
 color: black;\
 }\
 .ace-eclipse .ace_storage,\
-.ace-eclipse .ace_keyword,\
-.ace-eclipse .ace_variable {\
+.ace-eclipse .ace_keyword {\
 color: rgb(127, 0, 85);\
 font-weight: bold;\
+}\
+.ace-eclipse .ace_variable {\
+color: #000000;\
 }\
 .ace-eclipse .ace_constant.ace_buildin {\
 color: rgb(88, 72, 246);\

@@ -18,7 +18,7 @@ define(["require", "exports", "jquery", "mousetrap", "common", "editor", "comman
             createKeyBinding("ctrl s", "Save File", true, function () {
                 commands_1.Command.saveFile(null);
             });
-            createKeyBinding("ctrl c", "Close File", true, function () {
+            createKeyBinding("ctrl q", "Close File", true, function () {
                 project_1.Project.closeEditorTab();
             });
             createKeyBinding("ctrl shift s", "Search Types", true, function () {

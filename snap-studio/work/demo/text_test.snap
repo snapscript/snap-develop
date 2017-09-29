@@ -1,7 +1,10 @@
-
-for(var i in 0..10000){
-   for(var j in 0 .. 10000){
-      assert i+j >= 0;
-   }
+class Foo {
+   call(){
+      func();
+      }
 }
-println("done");
+function func(v...){
+   println("x=${v.length}");
+   printf("xx%n");
+}
+new Foo().call();

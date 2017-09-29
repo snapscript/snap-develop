@@ -32,3 +32,4 @@ x(c);
 function x(a){
    println(a.x);
 }
+
