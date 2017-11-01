@@ -38,7 +38,7 @@ define(["require", "exports", "jquery", "tree"], function (require, exports, $, 
                         pathBreadcrumb += "treeFileFolder";
                     }
                     pathBreadcrumb += "'></div>";
-                    pathBreadcrumb += "</td>\n<td>";
+                    pathBreadcrumb += "</td>\n<td style='white-space: nowrap;'>";
                     pathBreadcrumb += segment;
                     pathBreadcrumb += "</td>\n";
                 }

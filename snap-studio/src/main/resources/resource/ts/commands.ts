@@ -70,10 +70,10 @@ export module Command {
                   var typeMatch = sortedMatches[i];
                   var typeReference = typeMatches[typeMatch];
                   var typeEntry = {
-                        name: typeReference.name,
-                        resource: typeReference.resource,
-                        type: typeReference.type,
-                        project: document.title
+                     name: typeReference.name,
+                     resource: typeReference.resource,
+                     type: typeReference.type,
+                     project: document.title
                   };
                   response.push(typeEntry);
                }
@@ -177,9 +177,9 @@ export module Command {
                for(var i = 0; i < filesMatched.length; i++) {
                   var fileMatch = filesMatched[i];
                   var typeEntry = {
-                        resource: fileMatch.resource,
-                        line: fileMatch.line,
-                        project: document.title
+                     resource: fileMatch.resource,
+                     line: fileMatch.line,
+                     project: document.title
                   };
                   response.push(fileMatch);   
                }
@@ -212,6 +212,7 @@ export module Command {
                
                var resourceCell = {
                   text: fileFound.text,
+                  name: fileFound.name,
                   link: resourceLink,
                   style: 'resourceNode'
                };
@@ -232,8 +233,10 @@ export module Command {
                for(var i = 0; i < filesMatched.length; i++) {
                   var fileMatch = filesMatched[i];
                   var typeEntry = {
-                        resource: fileMatch.resource,
-                        project: document.title
+                     resource: fileMatch.resource,
+                     path: fileMatch.path,
+                     name: fileMatch.name,
+                     project: document.title
                   };
                   response.push(fileMatch);
                }

@@ -1,28 +1,91 @@
 package org.snapscript.studio.common;
 
+import static org.snapscript.core.Reserved.SCRIPT_EXTENSION;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.snapscript.core.Context;
 import org.snapscript.core.Module;
+import org.snapscript.core.ResourceManager;
 import org.snapscript.core.Type;
 import org.snapscript.core.define.SuperExtractor;
 import org.snapscript.core.function.Function;
 import org.snapscript.core.property.Property;
 
 public class TypeNode {
+   
+   public static TypeNode createNode(Context context, Type type, String key) {
+      ResourceManager manager = context.getManager();
+      Set<String> possiblePaths = createPossiblePaths(type);
+      String path = type.getModule().getPath().getPath();
+      
+      for(String possiblePath : possiblePaths) {
+         String text = manager.getString(possiblePath);
+         
+         if(text != null){
+            return new TypeNode(type, possiblePath, key);
+         }
+      }
+      return new TypeNode(type, path, key);
+   }
+   
+   public static TypeNode createNode(Context context, Module module, String key) {
+      ResourceManager manager = context.getManager();
+      Set<String> possiblePaths = createPossiblePaths(module);
+      String path = module.getPath().getPath();
+      
+      for(String possiblePath : possiblePaths) {
+         String text = manager.getString(possiblePath);
+         
+         if(text != null){
+            return new TypeNode(module, possiblePath, key);
+         }
+      }
+      return new TypeNode(module, path, key);
+   }
+   
+   private static Set<String> createPossiblePaths(Type type) {
+      Set<String> possiblePaths = new LinkedHashSet<String>();
+      String possiblePath = "/" + type.toString().replace(".", "/");
+      
+      possiblePaths.add(possiblePath + SCRIPT_EXTENSION);
+      
+      if(possiblePath.contains("$")) {
+         possiblePaths.add(possiblePath.substring(0, possiblePath.indexOf('$')) + SCRIPT_EXTENSION);
+      }
+      possiblePaths.add(type.getModule().getPath().getPath());
+      
+      return possiblePaths;
+   }
+   
+   private static Set<String> createPossiblePaths(Module module) {
+      Set<String> possiblePaths = new LinkedHashSet<String>();
+      String possiblePath = "/" + module.toString().replace(".", "/");
+      
+      possiblePaths.add(possiblePath + SCRIPT_EXTENSION);
+      possiblePaths.add(module.getPath().getPath());
+      
+      return possiblePaths;
+   }
 
    private final Object value;
    private final String name;
+   private final String path;
    
-   public TypeNode(Type value, String name) {
+   public TypeNode(Type value, String path, String name) {
       this.value = value;
       this.name = name;
+      this.path = path;
    }
    
-   public TypeNode(Module value, String name) {
+   public TypeNode(Module value, String path, String name) {
       this.value = value;
       this.name = name;
+      this.path = path;
    }
    
    public String getName() {
@@ -98,6 +161,9 @@ public class TypeNode {
    }
    
    public String getResource() {
+      if(path != null) {
+         return path;
+      }
       if(Module.class.isInstance(value)) {
          return ((Module)value).getPath().getPath();
       }

@@ -1,5 +1,6 @@
 package org.snapscript.studio.common;
 
+import static org.snapscript.core.Reserved.SCRIPT_EXTENSION;
 import static org.snapscript.tree.Instruction.SCRIPT;
 
 import java.io.File;
@@ -27,6 +28,8 @@ import org.snapscript.core.Module;
 import org.snapscript.core.ModuleRegistry;
 import org.snapscript.core.Path;
 import org.snapscript.core.PathConverter;
+import org.snapscript.core.Reserved;
+import org.snapscript.core.ResourceManager;
 import org.snapscript.core.Scope;
 import org.snapscript.core.ScopeMerger;
 import org.snapscript.core.Type;
@@ -72,6 +75,8 @@ public class ResourceTypeLoader {
       Path path = converter.createPath(resource);
       String lines[] = source.split("\\r?\\n");
       
+      registry.addModule(current); // avoid a deadlock
+      
       try {
          String lineSource = source;
          
@@ -105,7 +110,7 @@ public class ResourceTypeLoader {
            String name = type.getName();
 
            if(name != null) {
-              TypeNode value = new TypeNode(type, name);
+              TypeNode value = TypeNode.createNode(context, type, name);
               types.put(name, value);
            }
         }
@@ -117,7 +122,7 @@ public class ResourceTypeLoader {
            if(matcher.matches()) {
               name = matcher.group(1);
            }
-           TypeNode value = new TypeNode(imported, name);
+           TypeNode value = TypeNode.createNode(context, imported, name);
            types.put(module, value);
            types.put(name, value);
         }
@@ -131,13 +136,13 @@ public class ResourceTypeLoader {
             Type type = container.getType(key);
             
             if(type != null) {
-               TypeNode value = new TypeNode(type, key);
+               TypeNode value = TypeNode.createNode(context, type, key);
                types.put(key, value);
             } else {
                Module module = container.getModule(key);
                
                if(module != null) {
-                  TypeNode value = new TypeNode(module, key);
+                  TypeNode value = TypeNode.createNode(context, module, key);
                   types.put(key, value);
                }
             }

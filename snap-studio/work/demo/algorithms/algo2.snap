@@ -1,4 +1,8 @@
 
+for(var x in 0..3){
+   time(->fib(30));
+   time(->similar());
+}
 
 function fib(n) {
    if (n<2) {
@@ -6,8 +10,6 @@ function fib(n) {
    }
    return fib(n-1) + fib(n-2);
 }
-time(->fib(30));
-
 
 function empty(x){
 }
@@ -16,11 +18,11 @@ function similar(){
       empty(x);
    }
 }
-time(->similar());
+
 
 function time(func: ()) {
    var start = new Date().getTime();
    func();
    var stop =new Date().getTime();
-   System.out.println("time="+ (stop-start));
+   System.out.println("${func.name} time="+ (stop-start));
 }

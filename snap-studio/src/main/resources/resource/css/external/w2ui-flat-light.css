@@ -654,7 +654,7 @@ button.btn-red.clicked {
 .w2ui-form {
   position: relative;
   color: #000000;
-  background-color: #f5f6f7;
+  background-color: #f5f5f5;
   border: 1px solid #c0c0c0;
 
   padding: 0px;
@@ -702,10 +702,10 @@ button.btn-red.clicked {
 
 
   padding-top: 5px !important;
-  background-color: #fafafa;
+  background-color: #f5f5f5;
 }
 .w2ui-form .w2ui-tabs .w2ui-tab.active {
-  background-color: #f5f6f7;
+  background-color: #f5f5f5;
 }
 .w2ui-form .w2ui-page {
   position: absolute;
@@ -726,7 +726,7 @@ button.btn-red.clicked {
   text-align: center;
   border-top: 1px solid #d5d8d8;
   border-bottom: 0px solid #d5d8d8;
-  background-color: #fafafa;
+  background-color: #f5f5f5;
   padding: 15px 0px !important;
 
 
@@ -998,7 +998,7 @@ button.btn-red.clicked {
   left: 0px;
   right: 0px;
   bottom: 0px;
-  background-color: #FaFaFa;
+  background-color: #f5f5f5;
 }
 .w2ui-calendar .w2ui-calendar-jump > :first-child {
   position: absolute;
@@ -1368,11 +1368,11 @@ button.btn-red.clicked {
   z-index: 2;
   display: none;
   overflow: hidden;
-  background-color: #fafafa;
+  background-color: #f5f5f5;
   padding: 4px 0px;
 }
 .w2ui-layout > div .w2ui-panel .w2ui-panel-tabs > .w2ui-tab.active {
-  background-color: #f5f6f7;
+  background-color: #f5f5f5;
 }
 .w2ui-layout > div .w2ui-panel .w2ui-panel-toolbar {
   position: absolute;
@@ -1382,7 +1382,7 @@ button.btn-red.clicked {
   z-index: 2;
   display: none;
   overflow: hidden;
-  background-color: #fafafa;
+  background-color: #f5f5f5;
   border-bottom: 1px solid silver;
   padding: 4px;
 }
@@ -1394,7 +1394,7 @@ button.btn-red.clicked {
   bottom: 0px;
   z-index: 1;
   color: inherit;
-  background-color: #f5f6f7;
+  background-color: #f5f5f5;
 }
 .w2ui-layout > div .w2ui-resizer {
   display: none;
@@ -1494,7 +1494,7 @@ button.btn-red.clicked {
   position: absolute;
   overflow: hidden;
   padding: 0px;
-  background-color: #F5F6F7;
+  background-color: #f5f5f5;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -2361,7 +2361,7 @@ button.btn-red.clicked {
 .w2ui-tabs {
   cursor: default;
   overflow: hidden !important;
-  background-color: #fafafa;
+  background-color: #f5f5f5;
   padding: 3px 0px;
   padding-bottom: 0px !important;
 }
@@ -2382,7 +2382,7 @@ button.btn-red.clicked {
 }
 .w2ui-tabs .w2ui-tab.active {
   color: #000000;
-  background-color: #F5F6F7;
+  background-color: #f5f5f5;
   border: 1px solid #c0c0c0;
   border-bottom: 1px solid transparent;
 }

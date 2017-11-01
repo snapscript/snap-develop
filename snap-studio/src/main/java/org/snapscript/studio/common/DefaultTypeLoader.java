@@ -288,7 +288,7 @@ public class DefaultTypeLoader {
                String name = type.getName();
                
                if(name != null) {
-                  TypeNode value = new TypeNode(type, name);
+                  TypeNode value = TypeNode.createNode(context, type, name);
                   cache.put(name, value);
                }
             }

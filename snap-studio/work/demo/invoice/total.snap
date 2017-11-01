@@ -1,4 +1,5 @@
-const INVOICE_PATH = "C:/Work/docs/zuooh/lab49/invoices/archive";
+//const INVOICE_PATH = "C:/Work/docs/zuooh/lab49/invoices/archive";
+const INVOICE_PATH = "C:/Work/docs/zuooh/lab49/invoices";
 var total = 0;
 
 calculateTotal();
@@ -11,16 +12,18 @@ function calculateTotal() {
    var gross = totalDays * 600;
    var vat = gross * 0.20;
    //println(vat);
-   println(gross + vat);
    
-   var actualPay = 43200.0;
-   var expectedPay = 46800.0;
+   println("Gross + VAT: " + (gross + vat));
    
-   println(expectedPay - actualPay);
+   // var actualPay = 43200.0;
+   // var expectedPay = 46800.0;
+   
+   // println(expectedPay - actualPay);
 }
 
 function processLine(line) {
-   var value = line.split(",")[6];
-   
-  total += Integer.parseInt(value);
+   if(line != null && line != "") {
+      var value = line.split(",")[6];
+      total += Integer.parseInt(value);
+   }
 }

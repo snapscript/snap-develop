@@ -23,13 +23,22 @@ public class RequestParser {
       return value;
    }
    
+   public String getString(String name, String other) {
+      String value = request.getParameter(name);
+      
+      if(value == null) {
+         return other;
+      }
+      return value;
+   }
+   
    public boolean getBoolean(String name) {
       String value = getString(name);
       return Boolean.parseBoolean(value);
    }
    
-   public boolean getBoolean(String name, boolean enable) {
-      String value = getString(name, enable);
+   public boolean getBoolean(String name, boolean required) {
+      String value = getString(name, required);
       
       if(value != null) {
          return Boolean.parseBoolean(value);
@@ -42,8 +51,8 @@ public class RequestParser {
       return Integer.parseInt(value);
    }
    
-   public int getInteger(String name, boolean enable) {
-      String value = getString(name, enable);
+   public int getInteger(String name, boolean required) {
+      String value = getString(name, required);
       
       if(value == null) {
          return Integer.parseInt(value);
@@ -56,8 +65,8 @@ public class RequestParser {
       return Double.parseDouble(value);
    }
    
-   public double getDouble(String name, boolean enable) {
-      String value = getString(name, enable);
+   public double getDouble(String name, boolean required) {
+      String value = getString(name, required);
       
       if(value != null) {
          return Double.parseDouble(value);

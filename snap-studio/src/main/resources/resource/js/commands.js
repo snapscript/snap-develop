@@ -180,6 +180,7 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                         resourceLink += "#" + fileFound.resource;
                         var resourceCell = {
                             text: fileFound.text,
+                            name: fileFound.name,
                             link: resourceLink,
                             style: 'resourceNode'
                         };
@@ -200,6 +201,8 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                             var fileMatch = filesMatched[i];
                             var typeEntry = {
                                 resource: fileMatch.resource,
+                                path: fileMatch.path,
+                                name: fileMatch.name,
                                 project: document.title
                             };
                             response.push(fileMatch);

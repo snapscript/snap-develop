@@ -11,7 +11,7 @@ export module KeyBinder {
    const MAX_PRESS_REPEAT = 250; // 250 milliseconds
    const pressTimes = {};
    var controlPressed = false;
-   var keyBindings = {};
+   var keyBindings = {};  
    
    export function getKeyBindings() {
       return keyBindings;

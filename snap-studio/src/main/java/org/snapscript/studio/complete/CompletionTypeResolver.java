@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.core.Context;
 import org.snapscript.core.PrimitivePromoter;
 import org.snapscript.core.Type;
 import org.snapscript.core.function.Function;
@@ -88,10 +89,11 @@ public class CompletionTypeResolver {
    }
    
    private TypeNode resolveType(Completion state, Type constraint) {
+      Context context = constraint.getModule().getContext();
       Map<String, TypeNode> types = state.getTypes();
       String name = constraint.getName();
       TypeNode match = types.get(name);
-   
+
       if(match == null) {
          Class real = constraint.getType();
          
@@ -103,7 +105,7 @@ public class CompletionTypeResolver {
             match = types.get(identifier);
          }
          if(match == null) {
-            match = new TypeNode(constraint, name);
+            match = TypeNode.createNode(context, constraint, name);
             types.put(name, match);
          }
       }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.simpleframework.http.parse.PathParser;
 import org.snapscript.studio.common.FilePatternMatcher;
 import org.snapscript.studio.find.ExpressionResolver;
 import org.snapscript.studio.find.MatchEvaluator;
@@ -34,7 +35,15 @@ public class FileMatchScanner {
          if(textMatch != null) {
             MatchEvaluator evaluator = MatchEvaluator.of(MatchType.LITERAL, textMatch, false);
             String replaceText = evaluator.match(resourcePath);
-            FileMatch projectFile = new FileMatch(project, resourcePath, file, replaceText);
+            PathParser parser = new PathParser(resourcePath);
+            FileMatch projectFile = new FileMatch(
+                  project, 
+                  resourcePath, 
+                  parser.getDirectory(),
+                  parser.getName(),
+                  file, 
+                  replaceText);
+            
             filesFound.add(projectFile);
          }
       }
