@@ -122,10 +122,10 @@ class Mario extends CollidableObject{
       health = STARTING_LIFE;
       soundManager2 = new MarioSoundManager10512Hz(new AudioFormat(10512, 8, 1, true, true));
       
-      var l = [ ImageManipulator.loadImage("/mario/resources/mario/Mario_Big_Left_Still.png"), ImageManipulator.loadImage("/mario/resources/mario/Mario_Big_Left_1.png"),
-            ImageManipulator.loadImage("/mario/resources/mario/Mario_Big_Left_2.png"), ImageManipulator.loadImage("/mario/resources/mario/Mario_Big_Left_Run_1.png"),
-            ImageManipulator.loadImage("/mario/resources/mario/Mario_Big_Left_Run_2.png"), ImageManipulator.loadImage("/mario/resources/mario/Mario_Big_Crouch_Left.png"),
-            ImageManipulator.loadImage("/mario/resources/mario/Mario_Big_Jump_Left.png"), ImageManipulator.loadImage("/mario/resources/mario/Mario_Big_Change_Direction_Left.png") ];
+      var l = [ ImageManipulator.loadImage("/mario/mario/Mario_Big_Left_Still.png"), ImageManipulator.loadImage("/mario/mario/Mario_Big_Left_1.png"),
+            ImageManipulator.loadImage("/mario/mario/Mario_Big_Left_2.png"), ImageManipulator.loadImage("/mario/mario/Mario_Big_Left_Run_1.png"),
+            ImageManipulator.loadImage("/mario/mario/Mario_Big_Left_Run_2.png"), ImageManipulator.loadImage("/mario/mario/Mario_Big_Crouch_Left.png"),
+            ImageManipulator.loadImage("/mario/mario/Mario_Big_Jump_Left.png"), ImageManipulator.loadImage("/mario/mario/Mario_Big_Change_Direction_Left.png") ];
       
       var r = [ null, null, null, null, null, null, null, null ];
       for(var i = 0; i < l.length; i++) {

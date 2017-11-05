@@ -169,6 +169,12 @@
     <constructor-arg ref="ContentTypeResolver" />
   </bean>
 
+  <bean id="ProjectDownloadResource" class="org.snapscript.studio.resource.project.ProjectFileResource">
+    <constructor-arg ref="Workspace" />
+    <constructor-arg ref="ContentTypeResolver" />
+    <constructor-arg value="true" />
+  </bean>
+
   <bean id="ProjectTreeResource" class="org.snapscript.studio.resource.project.ProjectTreeResource">
     <constructor-arg ref="Workspace" />
     <constructor-arg ref="TreeContextManager" />
@@ -277,6 +283,7 @@
         <entry key="/project/.*" value-ref="ProjectResource" />
         <entry key="/display/.*" value-ref="DisplayThemeResource" />
         <entry key="/resource/.*" value-ref="ProjectFileResource" />
+        <entry key="/download/.*" value-ref="ProjectDownloadResource" />
         <entry key="/tree.*" value-ref="ProjectTreeResource" />
         <entry key="/" value-ref="ProjectSelectResource" />
         <entry key="/.*.js" value-ref="TypeScriptResource" />

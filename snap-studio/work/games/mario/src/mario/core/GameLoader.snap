@@ -35,15 +35,15 @@ class GameLoader {
    public new() {
        
       plain = new ArrayList();
-      plainTiles = new SpriteMap("/mario/resources/tiles/Plain_Tiles.png", 6, 17).getSprites();
+      plainTiles = new SpriteMap("/mario/tiles/Plain_Tiles.png", 6, 17).getSprites();
       
       for (var bImage in plainTiles) {
          plain.add(bImage);
       }
       
-      sloped_image = loadImage("/mario/resources/items/Sloped_Tile.png");
-      grass_edge = loadImage("/mario/resources/items/Grass_Edge.png");
-      grass_center = loadImage("/mario/resources/items/Grass_Center.png");
+      sloped_image = loadImage("/mario/items/Sloped_Tile.png");
+      grass_edge = loadImage("/mario/items/Grass_Edge.png");
+      grass_center = loadImage("/mario/items/Grass_Center.png");
    }
    
    public loadImage(filename) {

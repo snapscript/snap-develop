@@ -15,10 +15,10 @@ class RotatingBlock extends GameTile {
       
       setIsSloped(false);
       
-      var rotate_1 = ImageManipulator.loadImage("/mario/resources/items/Rotating_Block_Hit_1.png");
-      var rotate_2 = ImageManipulator.loadImage("/mario/resources/items/Rotating_Block_Hit_2.png");
-      var rotate_3 = ImageManipulator.loadImage("/mario/resources/items/Rotating_Block_Hit_3.png");
-      var still = ImageManipulator.loadImage("/mario/resources/items/Rotating_Block_Still.png");
+      var rotate_1 = ImageManipulator.loadImage("/mario/items/Rotating_Block_Hit_1.png");
+      var rotate_2 = ImageManipulator.loadImage("/mario/items/Rotating_Block_Hit_2.png");
+      var rotate_3 = ImageManipulator.loadImage("/mario/items/Rotating_Block_Hit_3.png");
+      var still = ImageManipulator.loadImage("/mario/items/Rotating_Block_Still.png");
       
       idle = new Animation(10000).addFrame(still);
       rotate = new Animation(-> {

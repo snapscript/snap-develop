@@ -328,7 +328,6 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
             path);
         }
         FileTree.createResourcePath = createResourcePath;
-        ;
     })(FileTree = exports.FileTree || (exports.FileTree = {}));
 });
 //ModuleSystem.registerModule("tree", "Tree module: tree.js", null, null, [ "common" ]); 

@@ -369,7 +369,7 @@ export module FileTree {
          cleanResourcePath(currentFileName), // script.snap
          cleanResourcePath(currentFileDirectory), // /blah
          path
-      };
+      );
    }
 }
 

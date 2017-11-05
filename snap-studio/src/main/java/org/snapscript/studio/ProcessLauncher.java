@@ -32,7 +32,7 @@ public class ProcessLauncher {
       File file = new File(directory, JAR_FILE);
       String agent = file.getCanonicalPath();
       String java = String.format("%s%sbin%sjava", home, File.separatorChar, File.separatorChar);
-      String resources = String.format("http://%s:%s/resource/", host, port);
+      String resources = String.format("http://%s:%s/download/", host, port);
       String classes = String.format("http://%s:%s/class/", host, port);
       Map<String, String> variables = configuration.getVariables();
       List<String> arguments = configuration.getArguments();

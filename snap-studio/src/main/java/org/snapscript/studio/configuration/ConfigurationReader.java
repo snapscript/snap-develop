@@ -28,19 +28,22 @@ import org.snapscript.studio.maven.RepositoryClient;
 import org.snapscript.studio.maven.RepositoryFactory;
 import org.snapscript.studio.resource.project.Project;
 import org.snapscript.studio.resource.project.ProjectFileSystem;
+import org.snapscript.studio.resource.project.ProjectLayout;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.repository.RemoteRepository;
 
 public class ConfigurationReader {
    
-   private final AtomicReference<WorkspaceConfiguration> reference;
+   private final AtomicReference<WorkspaceConfiguration> workspaceReference;
+   private final AtomicReference<ProjectConfiguration> projectReference;
    private final ConfigurationFilter filter;
    private final RepositoryFactory factory;
    private final Persister persister;
    private final Workspace workspace;
    
    public ConfigurationReader(Workspace workspace) {
-      this.reference = new AtomicReference<WorkspaceConfiguration>();
+      this.workspaceReference = new AtomicReference<WorkspaceConfiguration>();
+      this.projectReference = new AtomicReference<ProjectConfiguration>();
       this.factory = new RepositoryFactory(workspace);
       this.filter = new ConfigurationFilter();
       this.persister = new Persister(filter);
@@ -48,7 +51,7 @@ public class ConfigurationReader {
    }
 
    public WorkspaceConfiguration loadWorkspaceConfiguration() {
-      WorkspaceConfiguration configuration = reference.get();
+      WorkspaceConfiguration configuration = workspaceReference.get();
       
       if(configuration == null) {
          try {
@@ -60,7 +63,7 @@ public class ConfigurationReader {
                List<String> arguments = details.getArguments();
                
                configuration = new WorkspaceContext(factory, details, variables, arguments);
-               reference.set(configuration);
+               workspaceReference.set(configuration);
                return configuration;
             }
          }catch(Exception e) {
@@ -73,19 +76,46 @@ public class ConfigurationReader {
    
    public ProjectConfiguration loadProjectConfiguration(String name) {
       try {
-         Project project = workspace.createProject(name);
-         ProjectFileSystem fileSystem = project.getFileSystem();
-         File file = fileSystem.getFile(PROJECT_FILE);
+         ProjectConfiguration configuration = projectReference.get();
          
-         if(file.exists()) {
-            return persister.read(ProjectDefinition.class, file);
-         } else {
-            workspace.getLogger().info("Project '" + name + "' does not contain a .project file");
+         if(isProjectConfigurationStale(name)) {
+            Project project = workspace.createProject(name);
+            ProjectFileSystem fileSystem = project.getFileSystem();
+            File file = fileSystem.getFile(PROJECT_FILE);
+            ProjectDefinition definition = persister.read(ProjectDefinition.class, file);
+            
+            projectReference.set(definition);
+            return definition;
+         } 
+         if(configuration != null) {
+            return configuration;
          }
+         workspace.getLogger().info("Project '" + name + "' does not contain a .project file");
       }catch(Exception e) {
          throw new IllegalStateException("Could not read configuration", e);
       }
       return new ProjectDefinition();
+   }
+   
+   private boolean isProjectConfigurationStale(String name) {
+      ProjectConfiguration configuration = projectReference.get();
+      
+      if(configuration == null) {
+         return true;
+      }
+      Project project = workspace.createProject(name);
+      ProjectFileSystem fileSystem = project.getFileSystem();
+      File file = fileSystem.getFile(PROJECT_FILE);
+      
+      if(file.exists()) {
+         long lastModified = file.lastModified();
+         long configurationModification = configuration.getLastModifiedTime();
+         
+         if(lastModified > configurationModification) {
+            return file.exists() && file.length() > 0;
+         }
+      }
+      return false;
    }
    
    @Root
@@ -98,9 +128,16 @@ public class ConfigurationReader {
       @ElementList(entry="variable", required=false)
       private Dictionary<VariableDefinition> environment;
       
+      @ElementList(entry="path", required=false)
+      private List<String> layout;
+      
+      private long lastModified;
+      
       public ProjectDefinition() {
+         this.lastModified = System.currentTimeMillis();
          this.dependencies = new ArrayList<DependencyDefinition>();
          this.environment = new Dictionary<VariableDefinition>();
+         this.layout = new ArrayList<String>();
       }
 
       public Map<String, String> getEnvironmentVariables() {
@@ -114,8 +151,19 @@ public class ConfigurationReader {
          return map;
       }
       
+      @Override
       public List<Dependency> getDependencies() {
          return Collections.<Dependency>unmodifiableList(dependencies);
+      }
+
+      @Override
+      public ProjectLayout getProjectLayout() {
+         return new ProjectLayout(layout.toArray(new String[]{}));
+      }
+      
+      @Override
+      public long getLastModifiedTime() {
+         return lastModified;
       }
    }
    

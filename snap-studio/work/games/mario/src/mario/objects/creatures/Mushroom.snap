@@ -14,7 +14,7 @@ class Mushroom extends Creature {
    public new(pixelX, pixelY): super(pixelX, pixelY) {
       setIsItem(true);
       setIsAlwaysRelevant(true);
-      var shroom = ImageManipulator.loadImage("/mario/resources/items/Mushroom.png");
+      var shroom = ImageManipulator.loadImage("/mario/items/Mushroom.png");
       redMushroom = new Animation();
       redMushroom.addFrame(shroom, 1000);
       redMushroom.addFrame(shroom, 1000);

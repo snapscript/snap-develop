@@ -11,9 +11,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.snapscript.agent.log.ProcessLogger;
-import org.snapscript.common.store.FileStore;
-import org.snapscript.common.store.Store;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.compile.Compiler;
 import org.snapscript.compile.Executable;
@@ -36,6 +33,7 @@ import org.snapscript.core.link.PackageLinker;
 import org.snapscript.studio.Workspace;
 import org.snapscript.studio.configuration.ClassPathExecutor;
 import org.snapscript.studio.resource.project.Project;
+import org.snapscript.studio.resource.project.ProjectLayout;
 
 public class ResourceTypeLoader {
    
@@ -63,12 +61,18 @@ public class ResourceTypeLoader {
    
    public Map<String, TypeNode> compileSource(String projectName, String resource, String source, int line, boolean aliases) {
       Project project = workspace.createProject(projectName);
-      File root = project.getSourcePath();
+      ProjectLayout layout = project.getLayout();
+      File rootPath = project.getSourcePath();
+      
+      resource = layout.getDownloadPath(rootPath, resource);
+      return compileSource(project, resource, source, line, aliases);
+   }
+   
+   private Map<String, TypeNode> compileSource(Project project, String resource, String source, int line, boolean aliases) { 
       ClassPathExecutor executor = new ClassPathExecutor(pool, project);
       Map<String, TypeNode> types = new HashMap<String, TypeNode>();
       Model model = new EmptyModel();
-      Store store = new FileStore(root);
-      Context context = new StoreContext(store, executor);
+      Context context = new StoreContext(project, executor);
       Compiler compiler = new StringCompiler(context);
       ScopeMerger merger = new ScopeMerger(context);
       ModuleRegistry registry = context.getRegistry();

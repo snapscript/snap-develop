@@ -3,7 +3,6 @@ package org.snapscript.studio.resource.project;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.simpleframework.http.Path;
 import org.snapscript.studio.Workspace;
 
 public class ProjectFileCache {
@@ -16,13 +15,12 @@ public class ProjectFileCache {
       this.workspace = workspace;
    }
    
-   public ProjectFile getFile(Path path) throws Exception {
-      String pathKey = path.getPath();
+   public ProjectFile getFile(String projectName, String projectPath) throws Exception {
+      String pathKey = projectName + ":" + projectPath;
       ProjectFile file = cache.get(pathKey);
       
       if(file == null || file.isStale()) {
-         String projectPath = path.getPath(2); // /<project-name>/<project-path> or /default/blah.snap
-         Project project = workspace.createProject(path);
+         Project project = workspace.createProject(projectName);
          ProjectFileSystem fileSystem = project.getFileSystem();
          
          file = fileSystem.readFile(projectPath);

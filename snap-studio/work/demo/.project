@@ -1,24 +1,26 @@
 <project>
-  <dependencies>
-    <dependency>
-      <groupId>org.simpleframework</groupId>
-      <artifactId>simple-http</artifactId>
-      <version>6.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>2.5</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.4</version>
-    </dependency>
-    <dependency>
-      <groupId>cglib</groupId>
-      <artifactId>cglib</artifactId>
-      <version>3.2.5</version>
-    </dependency>       
-  </dependencies> 
+   
+   <dependencies>
+      <dependency>
+         <groupId>org.simpleframework</groupId>
+         <artifactId>simple-http</artifactId>
+         <version>6.0.1</version>
+      </dependency>
+      <dependency>
+         <groupId>com.google.code.gson</groupId>
+         <artifactId>gson</artifactId>
+         <version>2.5</version>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.commons</groupId>
+         <artifactId>commons-lang3</artifactId>
+         <version>3.4</version>
+      </dependency>
+      <dependency>
+         <groupId>cglib</groupId>
+         <artifactId>cglib</artifactId>
+         <version>3.2.5</version>
+      </dependency>       
+   </dependencies> 
 </project>
+

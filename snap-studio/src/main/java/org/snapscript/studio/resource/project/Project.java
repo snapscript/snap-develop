@@ -4,18 +4,23 @@ import static org.snapscript.studio.configuration.ProjectConfiguration.CLASSPATH
 import static org.snapscript.studio.configuration.ProjectConfiguration.PROJECT_FILE;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
 
 import org.snapscript.agent.ClassPathUpdater;
+import org.snapscript.common.store.NotFoundException;
+import org.snapscript.common.store.Store;
 import org.snapscript.studio.Workspace;
 import org.snapscript.studio.configuration.ConfigurationClassLoader;
 import org.snapscript.studio.configuration.ConfigurationReader;
 import org.snapscript.studio.configuration.Dependency;
 import org.snapscript.studio.configuration.ProjectConfiguration;
 
-public class Project {
+public class Project implements Store {
    
    private final ConfigurationClassLoader classLoader;
    private final ConfigurationReader reader;
@@ -48,6 +53,24 @@ public class Project {
    public ClassLoader getClassLoader() {
       return classLoader.getClassLoader();
    }
+   
+   @Override
+   public InputStream getInputStream(String path) {
+      try {
+         ProjectLayout layout = getLayout();
+         File rootPath = getSourcePath();
+         String projectPath = layout.getRealPath(rootPath, path);
+         File realFile = fileSystem.getFile(projectPath);
+         return new FileInputStream(realFile);
+      } catch(Exception e) {
+         throw new NotFoundException("Could not get source path for '" + path + "'", e);
+      }
+   }
+
+   @Override
+   public OutputStream getOutputStream(String path) {
+      return System.out;
+   }
 
    public File getSourcePath() {
       try {
@@ -62,6 +85,15 @@ public class Project {
          return workspace.createFile(projectName);
       } catch (Exception e) {
          throw new IllegalStateException("Could not get project path for '" + projectName + "'", e);
+      }
+   }
+   
+   public ProjectLayout getLayout() {
+      try {
+         ProjectConfiguration configuration = reader.loadProjectConfiguration(projectName);
+         return configuration.getProjectLayout();
+      } catch (Exception e) {
+         throw new IllegalStateException("Could not get source path for '" + projectName + "'", e);
       }
    }
    

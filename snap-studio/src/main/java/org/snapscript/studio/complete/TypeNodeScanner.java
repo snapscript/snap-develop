@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.simpleframework.http.Path;
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.core.Reserved;
 import org.snapscript.core.function.Function;
@@ -23,6 +22,7 @@ import org.snapscript.studio.common.FileReader;
 import org.snapscript.studio.common.TypeNode;
 import org.snapscript.studio.common.TypeNodeFinder;
 import org.snapscript.studio.resource.project.Project;
+import org.snapscript.studio.resource.project.ProjectLayout;
 
 public class TypeNodeScanner {
 
@@ -38,6 +38,7 @@ public class TypeNodeScanner {
    
    public Map<String, TypeNodeReference> findTypes(Path path, String expression) throws Exception {
       Project project = workspace.createProject(path);
+      ProjectLayout layout = project.getLayout();
       String name = project.getProjectName();
       File directory = project.getProjectPath();
       String root = directory.getCanonicalPath();
@@ -51,13 +52,14 @@ public class TypeNodeScanner {
       
       try {
          Set<Map<String, TypeNode>> resourceTypes = processor.process(name, root + "/**.snap"); // build all resources
-      
+         
          for(Map<String, TypeNode> types : resourceTypes) {
             Set<String> typeNames = types.keySet();
             
             for(String typeName : typeNames) {
                TypeNode typeNode = types.get(typeName);
                String typePath = typeNode.getResource();
+               String realPath = layout.getRealPath(directory, typePath);
                List<Function> typeFunctions = typeNode.getFunctions(false);
                List<Property> typeProperties = typeNode.getProperties(false);
                
@@ -88,9 +90,9 @@ public class TypeNodeScanner {
                      propertyNames.add(propertyName);
                   }
                   if(typeNode.isModule()) {
-                     reference = new TypeNodeReference(functionNames, propertyNames, typeName, typePath, TypeNodeReference.MODULE);
+                     reference = new TypeNodeReference(functionNames, propertyNames, typeName, realPath, TypeNodeReference.MODULE);
                   } else {
-                     reference = new TypeNodeReference(functionNames, propertyNames, typeName, typePath, TypeNodeReference.CLASS);
+                     reference = new TypeNodeReference(functionNames, propertyNames, typeName, realPath, TypeNodeReference.CLASS);
                   }
                   typeNodes.put(typeName +":" + typePath, reference);
                }

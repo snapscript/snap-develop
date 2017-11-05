@@ -3,6 +3,8 @@ package org.snapscript.studio.configuration;
 import java.util.List;
 import java.util.Map;
 
+import org.snapscript.studio.resource.project.ProjectLayout;
+
 public interface ProjectConfiguration {
    
    String PROJECT_FILE = ".project";
@@ -10,4 +12,6 @@ public interface ProjectConfiguration {
    
    List<Dependency> getDependencies();
    Map<String, String> getEnvironmentVariables();
+   ProjectLayout getProjectLayout();
+   long getLastModifiedTime();
 }
