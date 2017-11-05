@@ -21,11 +21,12 @@ public class ProcessConnection {
    private final ProcessLogger logger;
    private final String process;
 
-   public boolean execute(String project, String path, Map<String, Map<Integer, Boolean>> breakpoints, boolean debug) {
+   public boolean execute(String project, String path, String dependencies, Map<String, Map<Integer, Boolean>> breakpoints, boolean debug) {
       try {
          ExecuteEvent event = new ExecuteEvent.Builder(process)
             .withProject(project)
             .withResource(path)
+            .withDependencies(dependencies)
             .withBreakpoints(breakpoints)
             .withDebug(debug)
             .build();

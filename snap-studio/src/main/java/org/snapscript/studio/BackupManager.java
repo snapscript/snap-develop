@@ -21,9 +21,7 @@ import java.util.TreeMap;
 
 import lombok.AllArgsConstructor;
 
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.studio.resource.project.Project;
-import org.snapscript.studio.resource.project.ProjectBuilder;
 
 @AllArgsConstructor
 public class BackupManager {
@@ -34,8 +32,6 @@ public class BackupManager {
    private static final long BACKUP_EXPIRY = 14 * 24 * 60 * 60 * 1000; // 14 days
    private static final int BACKUP_COUNT = 4; // keep at least 4 files
    
-   private final ProjectBuilder builder;
-   private final ProcessLogger logger;
    private final Workspace workspace;
    
    public synchronized void backupFile(File file, String project) {
@@ -71,14 +67,14 @@ public class BackupManager {
          FileTime time = FileTime.fromMillis(creationTime);
          attributes.setTimes(time, time, time);
       } catch(Exception e) {
-         logger.info("Could not find backup from " + file, e);
+         workspace.getLogger().info("Could not find backup from " + file, e);
       }
    }
    
    private synchronized File createBackupFile(File file, String project) {
       long time = file.lastModified();
-      File backupRoot = workspace.create(BACKUP_FOLDER);
-      Project proj = builder.getProject(project);
+      File backupRoot = workspace.createFile(BACKUP_FOLDER);
+      Project proj = workspace.getProject(project);
       
       if(proj == null) {
          throw new IllegalArgumentException("Project " + project + " does not exist");
@@ -133,7 +129,7 @@ public class BackupManager {
             return backupIterator.next().getFile();
          }
       } catch(Exception e) {
-         logger.info("Could not find backup from " + file, e);
+         workspace.getLogger().info("Could not find backup from " + file, e);
       }
       return null;
    }
@@ -148,7 +144,7 @@ public class BackupManager {
          File[] list = backupDirectory.listFiles();
          
          if(list != null) {
-            Project proj = builder.getProject(project);
+            Project proj = workspace.getProject(project);
             
             if(proj == null) {
                throw new IllegalArgumentException("Project " + project + " does not exist");
@@ -184,7 +180,7 @@ public class BackupManager {
             return backupHistory;
          }
       } catch(Exception e) {
-         logger.info("Could not find backup from " + file, e);
+         workspace.getLogger().info("Could not find backup from " + file, e);
       }
       return backupHistory;
    }
@@ -202,7 +198,7 @@ public class BackupManager {
          input.close();
          output.close();
       } catch(Exception e) {
-         logger.info("Could not backup " + from + " to " + to);
+         workspace.getLogger().info("Could not backup " + from + " to " + to);
       }
    }
    
@@ -226,7 +222,7 @@ public class BackupManager {
             }
          }
       } catch(Exception e) {
-         logger.info("Could not delete " + file);
+         workspace.getLogger().info("Could not delete " + file);
       }
    }
    
@@ -243,7 +239,7 @@ public class BackupManager {
          input.close();
          return digest.digest();
       } catch(Exception e) {
-         logger.info("Could not get MD5 digest of " + file);
+         workspace.getLogger().info("Could not get MD5 digest of " + file);
       }
       return new byte[]{};
    }
@@ -256,7 +252,7 @@ public class BackupManager {
          encoder.write(content);
          encoder.close();
       } catch(Exception e) {
-         logger.info("Could not save " + file);
+         workspace.getLogger().info("Could not save " + file);
       }
    }
    
@@ -267,7 +263,7 @@ public class BackupManager {
          out.write(content);
          out.close();
       } catch(Exception e) {
-         logger.info("Could not save " + file);
+         workspace.getLogger().info("Could not save " + file);
       }
    }
    

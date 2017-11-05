@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.snapscript.studio.maven.RepositoryFactory;
 
-public class RepositoryConfiguration implements Configuration {
+public class RepositoryConfiguration implements WorkspaceConfiguration {
    
    private final Map<String, String> variables;
    private final List<String> arguments;
@@ -21,13 +21,16 @@ public class RepositoryConfiguration implements Configuration {
    }
 
    @Override
-   public Map<String, String> getVariables() {
-      return variables;
+   public List<File> getDependencies(List<Dependency> dependencies) {
+      if(loader == null) {
+         throw new IllegalStateException("Could not resolve dependencies");
+      }
+      return loader.getDependencies(factory, dependencies);
    }
-
+   
    @Override
-   public List<File> getDependencies() {
-      return loader.getDependencies(factory);
+   public Map<String, String> getEnvironmentVariables() {
+      return variables;
    }
 
    @Override

@@ -6,9 +6,9 @@ import lombok.AllArgsConstructor;
 
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.RequestParser;
 import org.snapscript.studio.resource.project.Project;
-import org.snapscript.studio.resource.project.ProjectBuilder;
 
 @AllArgsConstructor
 public class TextMatchQueryParser {
@@ -22,12 +22,12 @@ public class TextMatchQueryParser {
    private static final String ENABLE_REPLACE = "enableReplace";
    private static final String DEFAULT_PATTERN = "*.*";
    
-   private final ProjectBuilder builder;
+   private final Workspace workspace;
    
    public TextMatchQuery parse(Request request) {
       RequestParser parser = new RequestParser(request);
       Path path = request.getPath();
-      Project project = builder.getProject(path);
+      Project project = workspace.getProject(path);
       
       if(project == null) {
          throw new IllegalStateException("Could not find project for " + path);

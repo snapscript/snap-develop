@@ -2,7 +2,6 @@ package org.snapscript.agent;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.snapscript.agent.debug.BreakpointMatcher;
 import org.snapscript.agent.debug.ResumeType;
@@ -39,6 +38,7 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
       TraceInterceptor interceptor = context.getInterceptor();
       ProcessStore store = context.getStore();
       String actual = context.getProcess();
+      String dependencies = data.getDependencies();
       String target = data.getProcess();
       String project = data.getProject();
       String resource = data.getResource();
@@ -51,8 +51,8 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
          interceptor.clear(); // disable interceptors
       }
       matcher.update(breakpoints);
-      store.update(project); // XXX rubbish
-      executor.execute(channel, actual, project, resource, debug);
+      store.update(project); 
+      executor.execute(channel, actual, project, resource, dependencies, debug);
    }
    
    @Override

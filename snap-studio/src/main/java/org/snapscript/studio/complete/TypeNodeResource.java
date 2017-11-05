@@ -6,12 +6,11 @@ import java.util.Map;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.thread.ThreadPool;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.PatternEscaper;
-import org.snapscript.studio.configuration.ConfigurationClassLoader;
 import org.snapscript.studio.resource.Resource;
-import org.snapscript.studio.resource.project.ProjectBuilder;
+import org.snapscript.studio.resource.project.Project;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,14 +21,14 @@ public class TypeNodeResource implements Resource {
    private static final String STAR_PATTERN = "_STAR_PATTERN_";
    private static final String EXPRESSION = "expression";
 
-   private final ConfigurationClassLoader loader;
    private final TypeNodeScanner scanner;
+   private final Workspace workspace;
    private final Gson gson;
    
-   public TypeNodeResource(ProjectBuilder builder, ConfigurationClassLoader loader, ProcessLogger logger, ThreadPool pool) {
-      this.scanner = new TypeNodeScanner(builder, loader, logger, pool);
+   public TypeNodeResource(Workspace workspace, ThreadPool pool) {
+      this.scanner = new TypeNodeScanner(workspace, pool);
       this.gson = new GsonBuilder().setPrettyPrinting().create();
-      this.loader = loader;
+      this.workspace = workspace;
    }
 
    @Override
@@ -37,8 +36,9 @@ public class TypeNodeResource implements Resource {
       String expression = parse(request);
       PrintStream out = response.getPrintStream();
       Path path = request.getPath();
+      Project project = workspace.createProject(path);
       Thread thread = Thread.currentThread();
-      ClassLoader classLoader = loader.getClassLoader();
+      ClassLoader classLoader = project.getClassLoader();
       thread.setContextClassLoader(classLoader);
       Map<String, TypeNodeReference> tokens = scanner.findTypes(path, expression);
       String text = gson.toJson(tokens);

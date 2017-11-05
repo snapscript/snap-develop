@@ -9,7 +9,6 @@ public class ProcessConfiguration {
 
    private Map<String, String> variables;
    private List<String> arguments;
-   private String classPath;
    private String host;
    private int port;
    
@@ -32,14 +31,6 @@ public class ProcessConfiguration {
    
    public void setVariables(Map<String, String> variables) {
       this.variables = variables;
-   }
-
-   public String getClassPath() {
-      return classPath;
-   }
-
-   public void setClassPath(String classPath) {
-      this.classPath = classPath;
    }
    
    public String getHost() {

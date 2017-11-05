@@ -16,31 +16,28 @@ import org.snapscript.core.function.Function;
 import org.snapscript.core.function.Parameter;
 import org.snapscript.core.function.Signature;
 import org.snapscript.core.property.Property;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.FileAction;
 import org.snapscript.studio.common.FileProcessor;
 import org.snapscript.studio.common.FileReader;
 import org.snapscript.studio.common.TypeNode;
 import org.snapscript.studio.common.TypeNodeFinder;
-import org.snapscript.studio.configuration.ConfigurationClassLoader;
 import org.snapscript.studio.resource.project.Project;
-import org.snapscript.studio.resource.project.ProjectBuilder;
 
 public class TypeNodeScanner {
 
    private final FileProcessor<Map<String, TypeNode>> processor;
    private final FileAction<Map<String, TypeNode>> action;
-   private final ProjectBuilder builder;
-   private final ProcessLogger logger;
+   private final Workspace workspace;
    
-   public TypeNodeScanner(ProjectBuilder builder, ConfigurationClassLoader loader, ProcessLogger logger, ThreadPool pool) {
-      this.action = new CompileAction(builder, loader, logger);
+   public TypeNodeScanner(Workspace workspace, ThreadPool pool) {
+      this.action = new CompileAction(workspace);
       this.processor = new FileProcessor<Map<String, TypeNode>>(action, pool);
-      this.builder = builder;
-      this.logger = logger;
+      this.workspace = workspace;
    }
    
    public Map<String, TypeNodeReference> findTypes(Path path, String expression) throws Exception {
-      Project project = builder.createProject(path);
+      Project project = workspace.createProject(path);
       String name = project.getProjectName();
       File directory = project.getProjectPath();
       String root = directory.getCanonicalPath();
@@ -104,27 +101,25 @@ public class TypeNodeScanner {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         if(logger.isTrace()) {
-            logger.trace("Took " + duration + " ms to compile project " + name);
+         if(workspace.getLogger().isTrace()) {
+            workspace.getLogger().trace("Took " + duration + " ms to compile project " + name);
          }
       }
    }
    
    private static class CompileAction implements FileAction<Map<String, TypeNode>> {
    
-      private final ProjectBuilder builder;
       private final TypeNodeFinder finder;
-      private final ProcessLogger logger;
+      private final Workspace workspace;
       
-      public CompileAction(ProjectBuilder builder, ConfigurationClassLoader loader, ProcessLogger logger) {
-         this.finder = new TypeNodeFinder(loader, logger);
-         this.builder = builder;
-         this.logger = logger;
+      public CompileAction(Workspace workspace) {
+         this.finder = new TypeNodeFinder(workspace);
+         this.workspace = workspace;
       }
       
       @Override
       public Map<String, TypeNode> execute(String reference, File file) throws Exception {
-         Project project = builder.getProject(reference);
+         Project project = workspace.getProject(reference);
          String name = project.getProjectName();
          File root = project.getProjectPath();
          String rootPath = root.getCanonicalPath();
@@ -137,10 +132,10 @@ public class TypeNodeScanner {
          }
          String source = FileReader.readText(file);
          
-         if(logger.isTrace()) {
-            logger.trace("Compiling " + resourcePath + " in project " + reference);
+         if(workspace.getLogger().isTrace()) {
+            workspace.getLogger().trace("Compiling " + resourcePath + " in project " + reference);
          }
-         return finder.parse(root, name, resourcePath, source);
+         return finder.parse(name, resourcePath, source);
       }
    }
 }

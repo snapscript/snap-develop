@@ -9,22 +9,22 @@ import java.io.OutputStream;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
-import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.resource.Resource;
 
 public class DisplayFileResource implements Resource {
 
    private final DisplayContentProcessor displayProcessor;
-   private final ProcessLogger logger;
+   private final Workspace workspace;
    private final Status status;
 
-   public DisplayFileResource(DisplayContentProcessor displayProcessor, ProcessLogger logger) {
-      this(displayProcessor, logger, OK);
+   public DisplayFileResource(DisplayContentProcessor displayProcessor, Workspace workspace) {
+      this(displayProcessor, workspace, OK);
    }
 
-   public DisplayFileResource(DisplayContentProcessor displayProcessor, ProcessLogger logger, Status status) {
+   public DisplayFileResource(DisplayContentProcessor displayProcessor, Workspace workspace, Status status) {
       this.displayProcessor = displayProcessor;
-      this.logger = logger;
+      this.workspace = workspace;
       this.status = status;
    }
 
@@ -39,8 +39,8 @@ public class DisplayFileResource implements Resource {
       double ratio = content.getCompression();
       long time = content.getDuration();
 
-      if(logger.isTrace()) {
-         logger.debug(path + " ratio=" + ratio + "% time=" + time + "ms");
+      if(workspace.getLogger().isTrace()) {
+         workspace.getLogger().debug(path + " ratio=" + ratio + "% time=" + time + "ms");
       }
       response.setCode(status.code);
       response.setDescription(status.description);

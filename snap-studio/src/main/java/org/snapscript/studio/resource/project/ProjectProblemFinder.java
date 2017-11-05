@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.Set;
 
 import org.simpleframework.http.Path;
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.thread.ThreadPool;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.FileAction;
 import org.snapscript.studio.common.FileProcessor;
 import org.snapscript.studio.common.FileReader;
@@ -16,18 +16,16 @@ public class ProjectProblemFinder {
 
    private final FileProcessor<Problem> processor;
    private final FileAction<Problem> action;
-   private final ProjectBuilder builder;
-   private final ProcessLogger logger;
+   private final Workspace workspace;
    
-   public ProjectProblemFinder(ProjectBuilder builder, ProcessLogger logger, ThreadPool pool) {
-      this.action = new CompileAction(builder, logger);
+   public ProjectProblemFinder(Workspace workspace, ThreadPool pool) {
+      this.action = new CompileAction(workspace);
       this.processor = new FileProcessor<Problem>(action, pool);
-      this.builder = builder;
-      this.logger = logger;
+      this.workspace = workspace;
    }
    
    public Set<Problem> compileProject(Path path) throws Exception {
-      Project project = builder.createProject(path);
+      Project project = workspace.createProject(path);
       String name = project.getProjectName();
       File directory = project.getProjectPath();
       String root = directory.getCanonicalPath();
@@ -44,27 +42,25 @@ public class ProjectProblemFinder {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         if(logger.isTrace()) {
-            logger.trace("Took " + duration + " ms to compile project " + name);
+         if(workspace.getLogger().isTrace()) {
+            workspace.getLogger().trace("Took " + duration + " ms to compile project " + name);
          }
       }
    }
    
    private static class CompileAction implements FileAction<Problem> {
    
-      private final ProjectBuilder builder;
       private final ProblemFinder finder;
-      private final ProcessLogger logger;
+      private final Workspace workspace;
       
-      public CompileAction(ProjectBuilder builder, ProcessLogger logger) {
+      public CompileAction(Workspace workspace) {
          this.finder = new ProblemFinder();
-         this.builder = builder;
-         this.logger = logger;
+         this.workspace = workspace;
       }
       
       @Override
       public Problem execute(String reference, File file) throws Exception {
-         Project project = builder.getProject(reference);
+         Project project = workspace.getProject(reference);
          String name = project.getProjectName();
          File root = project.getProjectPath();
          String rootPath = root.getCanonicalPath();
@@ -77,8 +73,8 @@ public class ProjectProblemFinder {
          }
          String source = FileReader.readText(file);
          
-         if(logger.isTrace()) {
-            logger.trace("Compiling " + resourcePath + " in project " + reference);
+         if(workspace.getLogger().isTrace()) {
+            workspace.getLogger().trace("Compiling " + resourcePath + " in project " + reference);
          }
          return finder.parse(name, resourcePath, source);
       }

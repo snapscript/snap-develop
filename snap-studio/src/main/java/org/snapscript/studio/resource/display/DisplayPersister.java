@@ -4,22 +4,19 @@ import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.simpleframework.xml.core.Persister;
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.studio.Workspace;
 
 public class DisplayPersister {
    
    private final AtomicReference<DisplayFile> reference;
-   private final ProcessLogger logger;
    private final Workspace workspace;
    private final Persister persister;
    private final String theme;
    
-   public DisplayPersister(ProcessLogger logger, Workspace workspace, String theme) {
+   public DisplayPersister(Workspace workspace, String theme) {
       this.reference = new AtomicReference<DisplayFile>();
       this.persister = new Persister();
       this.workspace = workspace;
-      this.logger = logger;
       this.theme = theme;
    }
    
@@ -35,7 +32,7 @@ public class DisplayPersister {
       DisplayFile displayFile = reference.get();
       
       if(displayFile == null) {
-         File file = workspace.create(theme);
+         File file = workspace.createFile(theme);
          displayFile = new DisplayFile(file);
          reference.set(displayFile);
       }
@@ -60,7 +57,7 @@ public class DisplayPersister {
                loadTime = displayFile.lastModified();
             }
          }catch(Exception e) {
-            logger.info("Could not save display", e);
+            workspace.getLogger().info("Could not save display", e);
          }
          reference.set(definition);
       }
@@ -79,7 +76,7 @@ public class DisplayPersister {
                }
             }
          }catch(Exception e) {
-            logger.info("Could not read theme", e);
+            workspace.getLogger().info("Could not read theme", e);
          }
          if(definition == null) {
             return DisplayDefinition.getDefault();

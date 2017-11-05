@@ -397,7 +397,7 @@ export module FileEditor {
          return "ace/mode/xml";
       }
       if(Common.stringEndsWith(token, ".classpath")) {
-         return "ace/mode/xml";
+         return "ace/mode/text";
       }
       return "ace/mode/text";
    }

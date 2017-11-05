@@ -5,9 +5,9 @@ import java.io.PrintStream;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.resource.Resource;
 import org.snapscript.studio.resource.project.Project;
-import org.snapscript.studio.resource.project.ProjectBuilder;
 
 // /format/<project>
 public class SourceFormatResource implements Resource {
@@ -15,11 +15,11 @@ public class SourceFormatResource implements Resource {
    private static final int DEFAULT_INDENT = 3;
 
    private final SourceFormatter formatter;
-   private final ProjectBuilder builder;
+   private final Workspace workspace;
    
-   public SourceFormatResource(ProjectBuilder builder) {
+   public SourceFormatResource(Workspace workspace) {
       this.formatter = new SourceFormatter();
-      this.builder = builder;
+      this.workspace = workspace;
    }
 
    @Override
@@ -29,7 +29,7 @@ public class SourceFormatResource implements Resource {
       Path path = request.getPath();
       String token = request.getParameter("indent");
       Integer indent = token == null ? DEFAULT_INDENT : Integer.parseInt(token);
-      Project project = builder.createProject(path);
+      Project project = workspace.createProject(path);
       String result = formatter.format(project, content, indent);
       response.setContentType("text/plain");
       out.println(result);

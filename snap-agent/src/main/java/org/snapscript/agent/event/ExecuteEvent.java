@@ -6,13 +6,15 @@ public class ExecuteEvent implements ProcessEvent {
 
    private final Map<String, Map<Integer, Boolean>> breakpoints;
    private final ExecuteData data;
+   private final String dependencies;
    private final String project;
    private final String resource;
    private final String process;
    private final boolean debug;
    
    private ExecuteEvent(Builder builder) {
-      this.data = new ExecuteData(builder.process, builder.project, builder.resource, builder.debug);
+      this.data = new ExecuteData(builder.process, builder.project, builder.resource, builder.dependencies, builder.debug);
+      this.dependencies = builder.dependencies;
       this.breakpoints = builder.breakpoints;
       this.project = builder.project;
       this.resource = builder.resource;
@@ -33,6 +35,10 @@ public class ExecuteEvent implements ProcessEvent {
       return breakpoints;
    }
    
+   public String getDependences() {
+      return dependencies;
+   }
+   
    public String getResource() {
       return resource;
    }
@@ -48,6 +54,7 @@ public class ExecuteEvent implements ProcessEvent {
    public static class Builder {
       
       private Map<String, Map<Integer, Boolean>> breakpoints;
+      private String dependencies;
       private String project;
       private String resource;
       private String process;
@@ -59,6 +66,11 @@ public class ExecuteEvent implements ProcessEvent {
 
       public Builder withBreakpoints(Map<String, Map<Integer, Boolean>> breakpoints) {
          this.breakpoints = breakpoints;
+         return this;
+      }
+      
+      public Builder withDependencies(String dependencies) {
+         this.dependencies = dependencies;
          return this;
       }
 

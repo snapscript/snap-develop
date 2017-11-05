@@ -18,20 +18,21 @@ import org.snapscript.studio.command.StepCommand;
 import org.snapscript.studio.command.StepCommand.StepType;
 import org.snapscript.studio.configuration.ProcessConfiguration;
 import org.snapscript.studio.configuration.ProcessConfigurationLoader;
+import org.snapscript.studio.resource.project.Project;
 
 public class ProcessManager implements ProcessAgentController {
    
    private final Map<String, ProcessConnection> connections; // active processes
    private final ProcessConfiguration configuration;
    private final ProcessConfigurationLoader loader;
-   private final ProcessLogger logger;
    private final ProcessPool pool;
+   private final Workspace workspace;
 
-   public ProcessManager(ProcessConfigurationLoader loader, ProcessLogger logger, Workspace workspace, int capacity) throws Exception {
+   public ProcessManager(ProcessConfigurationLoader loader, Workspace workspace, int capacity) throws Exception {
       this.connections = new ConcurrentHashMap<String, ProcessConnection>();
       this.configuration = new ProcessConfiguration();
-      this.pool = new ProcessPool(configuration, logger, workspace, capacity);
-      this.logger = logger;
+      this.pool = new ProcessPool(configuration, workspace, capacity);
+      this.workspace = workspace;
       this.loader = loader;
    }
    
@@ -47,10 +48,6 @@ public class ProcessManager implements ProcessAgentController {
    public void remove(ProcessEventListener listener) {
       pool.remove(listener);
    }
-
-   public boolean execute(ExecuteCommand command) {
-      return execute(command, null);
-   }
    
    public boolean execute(ExecuteCommand command, ProcessEventFilter filter) { 
       String focus = filter.getFocus();
@@ -58,7 +55,9 @@ public class ProcessManager implements ProcessAgentController {
       
       if(connection != null) {
          Map<String, Map<Integer, Boolean>> breakpoints = command.getBreakpoints();
-         String project = command.getProject();
+         String projectName = command.getProject();
+         Project project = workspace.getProject(projectName);
+         String dependencies = project.getClassPath();
          String resource = command.getResource();
          String process = connection.toString();
          boolean debug = command.isDebug();
@@ -68,7 +67,7 @@ public class ProcessManager implements ProcessAgentController {
          }
          connections.put(process, connection);
          
-         return connection.execute(project, resource, breakpoints, debug);
+         return connection.execute(projectName, resource, dependencies, breakpoints, debug);
       }
       return true;
    }
@@ -166,7 +165,7 @@ public class ProcessManager implements ProcessAgentController {
       ProcessConnection connection = connections.remove(process);
 
       if(connection != null) {
-         logger.debug(process + ": Detach requested");
+         workspace.getLogger().debug(process + ": Detach requested");
       }
       return true;
    }

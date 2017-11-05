@@ -2,6 +2,7 @@ package org.snapscript.studio.resource.project;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Map;
@@ -9,25 +10,28 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.simpleframework.http.Path;
 import org.snapscript.studio.Workspace;
+import org.snapscript.studio.configuration.ConfigurationReader;
 
-public class ProjectBuilder {
+public class ProjectManager {
    
    private static final String DEFAULT_PROJECT = "default";
 
    private final Map<String, Project> projects;
+   private final ConfigurationReader reader;
    private final Workspace workspace;
    private final ProjectMode mode;
    private final Project single;
    
-   public ProjectBuilder(Workspace workspace, String mode){
+   public ProjectManager(ConfigurationReader reader, Workspace workspace, String mode){
       this.projects = new ConcurrentHashMap<String, Project>();
-      this.single = new Project(workspace, ".", DEFAULT_PROJECT);
+      this.single = new Project(reader, workspace, ".", DEFAULT_PROJECT);
       this.mode = new ProjectMode(mode);
       this.workspace = workspace;
+      this.reader = reader;
    }
    
    public File getRoot() {
-      return workspace.create();
+      return workspace.createWorkspace();
    }
    
    public Project getProject(String name){ 
@@ -48,10 +52,18 @@ public class ProjectBuilder {
       if(mode.isMultipleMode()) { // multiple project support
          String projectPrefix = path.getPath(1, 1); // /<project-name>
          String projectName = projectPrefix.substring(1); // <project-name>
+
+         return createProject(projectName);
+      }
+      return single;
+   }
+   
+   public Project createProject(String projectName){
+      if(mode.isMultipleMode()) { 
          Project project = projects.get(projectName);
          
          if(project == null) {
-            project = new Project(workspace, projectName, projectName);
+            project = new Project(reader, workspace, projectName, projectName);
             projects.put(projectName, project);
          }
          File file = project.getProjectPath();
@@ -72,15 +84,27 @@ public class ProjectBuilder {
          if(!directory.exists() && !directory.mkdirs()) {
             throw new IllegalStateException("Could not build project directory " + directory);
          }
-         File ignore = new File(directory, ".gitignore");
-         OutputStream stream = new FileOutputStream(ignore);
-         PrintStream print = new PrintStream(stream);
-         print.println("/temp/");
-         print.println("/.temp/");   
-         print.println("/.backup/");     
-         print.close();
+         createDefaultFile(directory, ".gitignore", "/.project\n/.classpath\n");
+         createDefaultFile(directory, ".project", "<project></project>");
       }catch(Exception e) {
-         e.printStackTrace();
+         workspace.getLogger().info("Could not create default project at '" + file + "'", e);
+      }
+   }
+   
+   private void createDefaultFile(File file, String name, String content) {
+      try {
+         File directory = file.getCanonicalFile();
+         
+         if(!directory.exists() && !directory.mkdirs()) {
+            throw new IllegalStateException("Could not build project directory " + directory);
+         }
+         File ignore = new File(directory, name);
+         FileWriter stream = new FileWriter(ignore);
+         
+         stream.write(content);
+         stream.close();
+      }catch(Exception e) {
+         workspace.getLogger().info("Could not create default file at '" + file + "'", e);
       }
    }
 }

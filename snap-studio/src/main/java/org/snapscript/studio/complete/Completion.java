@@ -15,10 +15,10 @@ public class Completion {
    private final String complete;
    private final String source;
    private final String prefix;
-   private final File root;
+   private final String name;
    private final int line;
    
-   public Completion(File root, String source, String resource, String prefix, String complete, int line) {
+   public Completion(String name, String source, String resource, String prefix, String complete, int line) {
       this.types = new HashMap<String, TypeNode>();
       this.tokens = new TreeMap<String, String>();
       this.resource = resource;
@@ -26,7 +26,7 @@ public class Completion {
       this.source = source;
       this.prefix = prefix;
       this.line = line;
-      this.root = root;
+      this.name = name;
    }
    
    public Map<String, TypeNode> getTypes() {
@@ -37,8 +37,8 @@ public class Completion {
       return tokens;
    }
    
-   public File getRoot() {
-      return root;
+   public String getProjectName() {
+      return name;
    }
 
    public String getResource() {

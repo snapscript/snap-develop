@@ -24,6 +24,7 @@ public class ExecuteEventMarshaller implements ProcessEventMarshaller<ExecuteEve
       String process = input.readUTF();
       String project = input.readUTF();
       String resource = input.readUTF();
+      String dependencies = input.readUTF();
       boolean debug = input.readBoolean();
       int breakpointSize = input.readInt();
       
@@ -43,6 +44,7 @@ public class ExecuteEventMarshaller implements ProcessEventMarshaller<ExecuteEve
       return new ExecuteEvent.Builder(process)
          .withProject(project)
          .withResource(resource)
+         .withDependencies(dependencies)
          .withBreakpoints(breakpoints)
          .withDebug(debug)
          .build();
@@ -56,6 +58,7 @@ public class ExecuteEventMarshaller implements ProcessEventMarshaller<ExecuteEve
       Set<String> scripts = breakpoints.keySet();
       String process = event.getProcess();
       String resource = event.getResource();
+      String dependences = event.getDependences();
       String project = event.getProject();
       boolean debug = event.isDebug();
       int breakpointSize = breakpoints.size();
@@ -63,6 +66,7 @@ public class ExecuteEventMarshaller implements ProcessEventMarshaller<ExecuteEve
       output.writeUTF(process);
       output.writeUTF(project);
       output.writeUTF(resource);
+      output.writeUTF(dependences);
       output.writeBoolean(debug);
       output.writeInt(breakpointSize);
       

@@ -20,6 +20,5 @@ public class RemoteClassLoader extends URLClassLoader {
          return super.loadClass(name, resolve);
       }
       return loader.loadClass(name);
-
    }
 }

@@ -5,7 +5,7 @@ import java.io.InputStream;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.resource.Content;
 import org.snapscript.studio.resource.FileResolver;
 import org.snapscript.studio.resource.Resource;
@@ -15,12 +15,12 @@ public class DisplayResourceMatcher implements ResourceMatcher {
 
    private final DisplayContentProcessor displayProcessor;
    private final FileResolver fileResolver;
-   private final ProcessLogger logger;
+   private final Workspace workspace;
    
-   public DisplayResourceMatcher(DisplayContentProcessor displayProcessor, FileResolver fileResolver, ProcessLogger logger) {
+   public DisplayResourceMatcher(DisplayContentProcessor displayProcessor, FileResolver fileResolver, Workspace workspace) {
       this.displayProcessor = displayProcessor;
       this.fileResolver = fileResolver;
-      this.logger = logger;
+      this.workspace = workspace;
    }
 
    @Override
@@ -31,7 +31,7 @@ public class DisplayResourceMatcher implements ResourceMatcher {
       InputStream stream = content.getInputStream();
       
       if(stream != null) {
-         return new DisplayFileResource(displayProcessor, logger);
+         return new DisplayFileResource(displayProcessor, workspace);
       }
       return null;
    }

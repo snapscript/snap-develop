@@ -1,27 +1,25 @@
 package org.snapscript.studio.common;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.snapscript.agent.log.ProcessLogger;
-import org.snapscript.studio.configuration.ConfigurationClassLoader;
+import org.snapscript.studio.Workspace;
 
 public class TypeNodeFinder {
 
    private final ResourceTypeLoader compiler;
    
-   public TypeNodeFinder(ConfigurationClassLoader loader, ProcessLogger logger) {
-      this.compiler = new ResourceTypeLoader(loader, logger);
+   public TypeNodeFinder(Workspace workspace) {
+      this.compiler = new ResourceTypeLoader(workspace);
    }
    
-   public Map<String, TypeNode> parse(File root, String project, String resource, String source) {
+   public Map<String, TypeNode> parse(String project, String resource, String source) {
       Map<String, TypeNode> types = new HashMap<String, TypeNode>();
       
       try {
-         Map<String, TypeNode> nodes = compiler.compileSource(root, resource, source);
+         Map<String, TypeNode> nodes = compiler.compileSource(project, resource, source);
          Set<String> names = nodes.keySet();
          
          for(String name : names) {

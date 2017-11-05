@@ -8,6 +8,7 @@ import org.simpleframework.http.Cookie;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.resource.Resource;
 import org.snapscript.studio.resource.display.DisplayModelResolver;
 import org.snapscript.studio.resource.tree.TreeBuilder;
@@ -18,15 +19,15 @@ public class ProjectTreeResource implements Resource {
    
    private final TreeContextManager contextManager;
    private final AtomicInteger sessionCounter;
-   private final ProjectBuilder projectBuilder;
    private final TreeBuilder treeBuilder;
+   private final Workspace workspace;
    private final String session;
    
-   public ProjectTreeResource(ProjectBuilder projectBuilder, TreeContextManager contextManager, DisplayModelResolver modelResolver, String session) {
+   public ProjectTreeResource(Workspace workspace, TreeContextManager contextManager, DisplayModelResolver modelResolver, String session) {
       this.treeBuilder = new TreeBuilder(modelResolver);
       this.sessionCounter = new AtomicInteger();
       this.contextManager = contextManager;
-      this.projectBuilder = projectBuilder;
+      this.workspace = workspace;
       this.session = session;
    }
 
@@ -38,12 +39,12 @@ public class ProjectTreeResource implements Resource {
       String depth = request.getParameter("depth");
       Path path = request.getPath(); // /tree/<project-name>
       String[] segments = path.getSegments();
-      File treePath = projectBuilder.getRoot();
+      File treePath = workspace.getRoot();
       boolean foldersOnly = false;
       int folderDepth = Integer.MAX_VALUE;
       
       if(segments.length > 1) {
-         Project project = projectBuilder.createProject(path);
+         Project project = workspace.createProject(path);
          treePath = project.getProjectPath();
       }
       if(depth != null) {

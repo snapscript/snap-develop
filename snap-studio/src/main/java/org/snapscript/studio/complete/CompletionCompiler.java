@@ -5,14 +5,13 @@ import static org.snapscript.core.Reserved.GRAMMAR_FILE;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.parse.Grammar;
 import org.snapscript.parse.GrammarCompiler;
 import org.snapscript.parse.GrammarDefinition;
 import org.snapscript.parse.GrammarIndexer;
 import org.snapscript.parse.GrammarReader;
 import org.snapscript.parse.GrammarResolver;
-import org.snapscript.studio.configuration.ConfigurationClassLoader;
+import org.snapscript.studio.Workspace;
 
 public class CompletionCompiler {
    
@@ -23,11 +22,11 @@ public class CompletionCompiler {
    private final GrammarIndexer indexer;
    private final CompletionMatcher matcher;
 
-   public CompletionCompiler(ConfigurationClassLoader loader, ProcessLogger logger) {
+   public CompletionCompiler(Workspace workspace) {
       this.grammars = new LinkedHashMap<String, Grammar>();      
       this.resolver = new GrammarResolver(grammars);
       this.indexer = new GrammarIndexer();
-      this.matcher = new CompletionMatcher(resolver, indexer, loader, logger);      
+      this.matcher = new CompletionMatcher(resolver, indexer, workspace);      
       this.compiler = new GrammarCompiler(resolver, indexer);    
       this.definitions = new GrammarReader(GRAMMAR_FILE);
    } 

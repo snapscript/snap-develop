@@ -2,8 +2,8 @@ package org.snapscript.studio.resource.loader;
 
 import static org.snapscript.core.Reserved.GRAMMAR_FILE;
 import static org.snapscript.core.Reserved.IMPORT_FILE;
-import static org.snapscript.studio.configuration.Configuration.JAR_FILE;
-import static org.snapscript.studio.configuration.Configuration.TEMP_PATH;
+import static org.snapscript.studio.configuration.WorkspaceConfiguration.JAR_FILE;
+import static org.snapscript.studio.configuration.WorkspaceConfiguration.TEMP_PATH;
 
 import java.io.File;
 
@@ -20,7 +20,7 @@ public class RemoteProcessBuilder {
    }
    
    public void create() throws Exception {
-      File directory = workspace.create(TEMP_PATH);
+      File directory = workspace.createFile(TEMP_PATH);
       
       if(!directory.exists()) {
          directory.mkdirs();

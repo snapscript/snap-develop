@@ -1,6 +1,5 @@
 package org.snapscript.studio.common;
 
-import static org.snapscript.core.Reserved.SCRIPT_EXTENSION;
 import static org.snapscript.tree.Instruction.SCRIPT;
 
 import java.io.File;
@@ -9,13 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.store.FileStore;
 import org.snapscript.common.store.Store;
+import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.compile.Compiler;
 import org.snapscript.compile.Executable;
 import org.snapscript.compile.StoreContext;
@@ -28,16 +27,15 @@ import org.snapscript.core.Module;
 import org.snapscript.core.ModuleRegistry;
 import org.snapscript.core.Path;
 import org.snapscript.core.PathConverter;
-import org.snapscript.core.Reserved;
-import org.snapscript.core.ResourceManager;
 import org.snapscript.core.Scope;
 import org.snapscript.core.ScopeMerger;
 import org.snapscript.core.Type;
 import org.snapscript.core.link.Package;
 import org.snapscript.core.link.PackageDefinition;
 import org.snapscript.core.link.PackageLinker;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.configuration.ClassPathExecutor;
-import org.snapscript.studio.configuration.ConfigurationClassLoader;
+import org.snapscript.studio.resource.project.Project;
 
 public class ResourceTypeLoader {
    
@@ -46,24 +44,27 @@ public class ResourceTypeLoader {
    private static final String IMPORT_PATTERN = "^import (.*);.*";
    
    private final PathConverter converter;
-   private final ProcessLogger logger;
-   private final Executor executor;
+   private final ThreadPool pool;
+   private final Workspace workspace;
    
-   public ResourceTypeLoader(ConfigurationClassLoader loader, ProcessLogger logger) {
-      this.executor = new ClassPathExecutor(loader, 6);
+   public ResourceTypeLoader(Workspace workspace) {
+      this.pool = new ThreadPool(6);
       this.converter = new FilePathConverter();
-      this.logger = logger;
+      this.workspace = workspace;
    }
    
-   public Map<String, TypeNode> compileSource(File root, String resource, String source) {
-      return compileSource(root, resource, source, -1);
+   public Map<String, TypeNode> compileSource(String projectName, String resource, String source) {
+      return compileSource(projectName, resource, source, -1);
    }
    
-   public Map<String, TypeNode> compileSource(File root, String resource, String source, int line) {
-      return compileSource(root, resource, source, line, false);
+   public Map<String, TypeNode> compileSource(String projectName, String resource, String source, int line) {
+      return compileSource(projectName, resource, source, line, false);
    }
    
-   public Map<String, TypeNode> compileSource(File root, String resource, String source, int line, boolean aliases) {
+   public Map<String, TypeNode> compileSource(String projectName, String resource, String source, int line, boolean aliases) {
+      Project project = workspace.createProject(projectName);
+      File root = project.getSourcePath();
+      ClassPathExecutor executor = new ClassPathExecutor(pool, project);
       Map<String, TypeNode> types = new HashMap<String, TypeNode>();
       Model model = new EmptyModel();
       Store store = new FileStore(root);
@@ -90,14 +91,14 @@ public class ResourceTypeLoader {
          
          definition.compile(scope, null); // this might be wrong, maybe null
       } catch(Exception e) {
-         logger.info("Error compiling " + resource, e);
+         workspace.getLogger().info("Error compiling " + resource, e);
          
          try {
             String importSource = createImports(lines);
             Executable executable = compiler.compile(importSource);
             executable.execute();
          }catch(Exception fatal) {
-            logger.info("Error compiling imports for " + resource, fatal);
+            workspace.getLogger().info("Error compiling imports for " + resource, fatal);
          }
       }
       List<Module> modules = registry.getModules();

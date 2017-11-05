@@ -6,16 +6,16 @@ import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
-import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.resource.Resource;
 
 public class ClassLoaderResource implements Resource {
    
    private final ClassPathResourceLoader loader;
-   private final ProcessLogger logger;
+   private final Workspace workspace;
 
-   public ClassLoaderResource(ClassPathResourceLoader loader, ProcessLogger logger) {
-      this.logger = logger;
+   public ClassLoaderResource(ClassPathResourceLoader loader, Workspace workspace) {
+      this.workspace = workspace;
       this.loader = loader;
    }
 
@@ -27,8 +27,8 @@ public class ClassLoaderResource implements Resource {
       PrintStream output = response.getPrintStream();
       byte[] data = loader.loadResource(normal); 
 
-      if(logger.isTrace()) {
-         logger.trace(method + ": " + normal);
+      if(workspace.getLogger().isTrace()) {
+         workspace.getLogger().trace(method + ": " + normal);
       }
       if(data == null) {
          response.setStatus(Status.NOT_FOUND);

@@ -1,63 +1,78 @@
 package org.snapscript.studio.configuration;
 
+import static org.snapscript.studio.configuration.ProjectConfiguration.CLASSPATH_FILE;
+
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.snapscript.agent.ClassPathUpdater;
+import org.snapscript.studio.resource.project.Project;
+import org.snapscript.studio.resource.project.ProjectFileSystem;
 
 public class ConfigurationClassLoader {
    
    private final AtomicReference<ClassLoader> reference;
-   private final ConfigurationReader reader;
+   private final AtomicLong lastUpdate;
+   private final Project project;
    
-   public ConfigurationClassLoader(ConfigurationReader reader) {
+   public ConfigurationClassLoader(Project project) {
       this.reference = new AtomicReference<ClassLoader>();
-      this.reader = reader;
-   }
-   
-   public Class loadClass(String name) {
-      ClassLoader loader = getClassLoader();
-      
-      try {
-         return loader.loadClass(name);
-      } catch(Exception e) {
-         throw new IllegalArgumentException("Could not find class " + name, e);
-      }
+      this.lastUpdate = new AtomicLong();
+      this.project = project;
    }
    
    public ClassLoader getClassLoader() {
-      ClassLoader loader = reference.get();
-      
-      if(loader == null) {
-         loader = getConfigurationClassLoader();
-         reference.set(loader);
-      }
-      return loader;
-   }
-
-   private ClassLoader getConfigurationClassLoader() {
-      Configuration data = reader.load();
+      String name = project.getProjectName();
+      long time = System.currentTimeMillis();
       
       try {
-         if(data != null) {
-            List<File> dependencies = data.getDependencies();
-            List<URL> locations = new ArrayList<URL>();
-            URL[] array = new URL[]{};
+         if(isClassLoaderStale()) {
+            String classPath = project.getClassPath();
+            ClassLoader classLoader = createClassLoader(classPath);
             
-            for(File dependency : dependencies) {
-               URL location = dependency.toURI().toURL();
-               locations.add(location);
-            }
-            return new URLClassLoader(
-                  locations.toArray(array),
-                  ConfigurationClassLoader.class.getClassLoader());
+            lastUpdate.set(time);
+            reference.set(classLoader);
          }
       } catch(Exception e) {
-         throw new IllegalStateException("Could not load configuration", e);
+         throw new IllegalStateException("Could not create class loader for project '" +name +"'", e);
       }
-      return ConfigurationClassLoader.class.getClassLoader();
+      return reference.get();
    }
-
+   
+   private boolean isClassLoaderStale() {
+      ClassLoader classLoader = reference.get();
+   
+      if(classLoader != null) {
+         ProjectFileSystem fileSystem = project.getFileSystem();
+         File classPathFile = fileSystem.getFile(CLASSPATH_FILE);
+         long lastModified = classPathFile.lastModified();
+         long updateTime = lastUpdate.get();
+         
+         return classPathFile.exists() && updateTime < lastModified;
+      }
+      return true;
+   }
+   
+   private static ClassLoader createClassLoader(String dependencies) {
+      try {
+         List<File> files = ClassPathUpdater.parseClassPath(dependencies);
+         List<URL> locations = new ArrayList<URL>();
+         URL[] array = new URL[]{};
+         
+         for(File file : files) {
+            URL location = file.toURI().toURL();
+            locations.add(location);
+         }
+         return new URLClassLoader(
+               locations.toArray(array),
+               ConfigurationClassLoader.class.getClassLoader());
+      } catch(Exception e) {
+         throw new IllegalStateException("Could not create project class loader", e);
+      }
+   }
 }

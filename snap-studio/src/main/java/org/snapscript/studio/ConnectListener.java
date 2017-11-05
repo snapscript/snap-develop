@@ -11,19 +11,18 @@ import org.simpleframework.http.Path;
 import org.snapscript.studio.command.CommandListener;
 import org.snapscript.studio.command.ExecuteCommand;
 import org.snapscript.studio.resource.project.Project;
-import org.snapscript.studio.resource.project.ProjectBuilder;
 
 @AllArgsConstructor
 public class ConnectListener {
 
-   private final ProjectBuilder builder;
+   private final Workspace workspace;
    
    public void connect(CommandListener listener, Path path) {
       String script = CommandLineArgument.SCRIPT.getValue();
       
       if(script != null) {
          try {
-            Project project = builder.createProject(path);
+            Project project = workspace.createProject(path);
             File projectPath = project.getProjectPath();
             String projectName = project.getProjectName();
             File file = new File(projectPath, "/" + script);

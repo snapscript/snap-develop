@@ -8,7 +8,7 @@ import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
-import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.FilePatternScanner;
 import org.snapscript.studio.resource.Resource;
 
@@ -26,18 +26,16 @@ public class ProjectDefaultResource implements Resource {
       "*", 
       "**/*"};
    
-   private final ProjectBuilder builder;
-   private final ProcessLogger logger;
+   private final Workspace workspace;
    
-   public ProjectDefaultResource(ProjectBuilder builder, ProcessLogger logger){
-      this.builder = builder;
-      this.logger = logger;
+   public ProjectDefaultResource(Workspace workspace){
+      this.workspace = workspace;
    }
 
    @Override
    public void handle(Request request, Response response) throws Throwable {
       Path path = request.getPath(); 
-      Project project = builder.createProject(path);
+      Project project = workspace.createProject(path);
       
       if(project == null) {
          throw new IllegalStateException("Could not find project: " + request);
@@ -50,7 +48,7 @@ public class ProjectDefaultResource implements Resource {
       response.setStatus(Status.OK);
       response.setContentType("text/plain");
       
-      logger.info("Default file: " + defaultFile);
+      workspace.getLogger().info("Default file: " + defaultFile);
       stream.print(defaultFile);
       stream.close();
    }

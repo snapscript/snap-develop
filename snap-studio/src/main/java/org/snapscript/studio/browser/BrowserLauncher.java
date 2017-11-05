@@ -4,12 +4,12 @@ import java.io.File;
 
 import lombok.AllArgsConstructor;
 
-import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.studio.Workspace;
 
 @AllArgsConstructor
 public class BrowserLauncher {
 
-   private final ProcessLogger logger;
+   private final Workspace workspace;
    private final File directory;
    private final boolean disabled;
    private final boolean debug;
@@ -20,7 +20,7 @@ public class BrowserLauncher {
             .withDebug(debug)
             .withHost(host)
             .withPort(port)
-            .withLogger(logger)
+            .withLogger(workspace.getLogger())
             .withDirectory(directory)
             .build();
          

@@ -10,31 +10,31 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
 import org.simpleframework.http.core.Container;
-import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.studio.Workspace;
 
 public class ResourceContainer implements Container {
 
    private final ResourceMatcher matcher;
-   private final ProcessLogger logger;
+   private final Workspace workspace;
    private final Resource failure;
    private final Status status;
 
-   public ResourceContainer(ResourceMatcher matcher, ProcessLogger logger) {
-      this(matcher, logger, OK);
+   public ResourceContainer(ResourceMatcher matcher, Workspace workspace) {
+      this(matcher, workspace, OK);
    }
 
-   public ResourceContainer(ResourceMatcher matcher, ProcessLogger logger, Status status) {
-      this(matcher, logger, null, status);
+   public ResourceContainer(ResourceMatcher matcher, Workspace workspace, Status status) {
+      this(matcher, workspace, null, status);
    }
 
-   public ResourceContainer(ResourceMatcher matcher, ProcessLogger logger, Resource failure) {
-      this(matcher, logger, failure, OK);
+   public ResourceContainer(ResourceMatcher matcher, Workspace workspace, Resource failure) {
+      this(matcher, workspace, failure, OK);
    }
 
-   public ResourceContainer(ResourceMatcher matcher, ProcessLogger logger, Resource failure, Status status) {
+   public ResourceContainer(ResourceMatcher matcher, Workspace workspace, Resource failure, Status status) {
       this.failure = failure;
       this.matcher = matcher;
-      this.logger = logger;
+      this.workspace = workspace;
       this.status = status;
    }
 
@@ -52,7 +52,7 @@ public class ResourceContainer implements Container {
          resource.handle(request, response);
       } catch (Throwable cause) {
          cause.printStackTrace();
-         logger.info("Error handling resource", cause);
+         workspace.getLogger().info("Error handling resource", cause);
 
          try {
             if (failure != null) {
@@ -60,7 +60,7 @@ public class ResourceContainer implements Container {
                failure.handle(request, response);
             }
          } catch (Throwable fatal) {
-            logger.info("Could not send an error response", fatal);
+            workspace.getLogger().info("Could not send an error response", fatal);
          }
       } finally {
          try {
@@ -68,7 +68,7 @@ public class ResourceContainer implements Container {
                response.close();
             }
          } catch (IOException ignore) {
-            logger.info("Could not close response", ignore);
+            workspace.getLogger().info("Could not close response", ignore);
          }
       }
    }

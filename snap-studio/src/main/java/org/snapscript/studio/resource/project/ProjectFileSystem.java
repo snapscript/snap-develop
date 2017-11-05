@@ -23,6 +23,12 @@ public class ProjectFileSystem {
       return new File(sourcePath, realPath);
    }
    
+   public File getFile(String path) {
+      File sourcePath = project.getSourcePath();
+      String realPath = path.replace('/', File.separatorChar);
+      return new File(sourcePath, realPath);
+   }
+   
    public void writeAsByteArray(String path, String resource) throws Exception {
       byte[] octets = resource.getBytes("UTF-8");
       writeAsByteArray(path, octets);

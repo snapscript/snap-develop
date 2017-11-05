@@ -25,7 +25,7 @@ public class ContentTypeResolver {
       String token = path.toLowerCase();
 
       for (String expression : expressions) {         
-         if (token.matches(expression)) {
+         if (token.equalsIgnoreCase(expression) || token.matches(expression)) {
             String type = types.get(expression);
             
             if(type != null) {             

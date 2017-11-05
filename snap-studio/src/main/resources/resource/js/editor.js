@@ -350,7 +350,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                 return "ace/mode/xml";
             }
             if (common_1.Common.stringEndsWith(token, ".classpath")) {
-                return "ace/mode/xml";
+                return "ace/mode/text";
             }
             return "ace/mode/text";
         }

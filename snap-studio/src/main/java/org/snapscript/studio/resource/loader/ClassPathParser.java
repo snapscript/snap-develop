@@ -1,6 +1,6 @@
 package org.snapscript.studio.resource.loader;
 
-import static org.snapscript.studio.configuration.Configuration.CLASS_EXTENSION;
+import static org.snapscript.studio.configuration.WorkspaceConfiguration.CLASS_EXTENSION;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

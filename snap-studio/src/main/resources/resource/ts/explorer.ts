@@ -33,7 +33,7 @@ export module FileExplorer {
    export function openTreeFile(resourcePath, afterLoad) {
       var filePath = resourcePath.toLowerCase();
       
-      if(Common.stringEndsWith(filePath, ".json") || Common.stringEndsWith(filePath, ".js") || Common.stringEndsWith(filePath, ".xml")) { // is it json or javascript
+      if(isTextFile(filePath)) { // is it json or javascript
          //var type = header.getResponseHeader("content-type");
          
          $.ajax({
@@ -71,7 +71,7 @@ export module FileExplorer {
       var backupResourcePath = resourcePath.replace(/^\/resource/i, "/history");
       //var backupUrl = backupResourcePath + "?time=" + timeStamp;
       
-      if(Common.stringEndsWith(filePath, ".json") || Common.stringEndsWith(filePath, ".js") || Common.stringEndsWith(filePath, ".xml")) { // is it json or javascript
+      if(isTextFile(filePath)) { // is it json or javascript
          var downloadURL = backupResourcePath + "?time=" + timeStamp;
          $.ajax({
             url: downloadURL,
@@ -138,6 +138,14 @@ export module FileExplorer {
    function handleDownloadFile(downloadURL) {
       window.location.href = downloadURL;
     }
+   
+   function isTextFile(filePath) {
+      return Common.stringEndsWith(filePath, ".json") || 
+              Common.stringEndsWith(filePath, ".js") || 
+              Common.stringEndsWith(filePath, ".xml") ||
+              Common.stringEndsWith(filePath, ".project") ||
+              Common.stringEndsWith(filePath, ".classpath")
+   }
    
    function isImageFileType(contentType) {
       if(contentType) {

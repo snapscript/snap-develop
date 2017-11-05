@@ -4,15 +4,85 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import lombok.AllArgsConstructor;
+import org.simpleframework.http.Path;
+import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.studio.configuration.ConfigurationReader;
+import org.snapscript.studio.configuration.Dependency;
+import org.snapscript.studio.configuration.ProjectConfiguration;
+import org.snapscript.studio.configuration.WorkspaceConfiguration;
+import org.snapscript.studio.resource.project.Project;
+import org.snapscript.studio.resource.project.ProjectManager;
 
-@AllArgsConstructor
 public class Workspace {
 
+   private final ConfigurationReader reader;
+   private final ProjectManager manager;
+   private final ProcessLogger logger;
    private final File root;
 
-   public File create(String name) {
+   public Workspace(ProcessLogger logger, File root, String mode) {
+      this.reader = new ConfigurationReader(this);
+      this.manager = new ProjectManager(reader, this, mode);
+      this.logger = logger;
+      this.root = root;
+   }
+   
+   public File getRoot() {
+      return createWorkspace();
+   }
+   
+   public ProcessLogger getLogger() {
+      return logger;
+   }
+   
+   public Project getProject(String name){ 
+      return manager.getProject(name);
+   }
+   
+   public Project getProject(Path path){ // /project/<project-name>/ || /project/default
+      return manager.getProject(path);
+   }
+   
+   public Project createProject(String name){ 
+      return manager.createProject(name);
+   }
+   
+   public Project createProject(Path path){ // /project/<project-name>/ || /project/default
+      return manager.createProject(path);
+   }
+   
+   public Map<String, String> getEnvironmentVariables() {
+      try {
+         WorkspaceConfiguration configuration = reader.loadWorkspaceConfiguration();
+         return configuration.getEnvironmentVariables();
+      } catch(Exception e) {
+         throw new IllegalStateException("Could not resolve dependencies", e);
+      }  
+   }
+   
+   public List<String> getArguments() {
+      try {
+         WorkspaceConfiguration configuration = reader.loadWorkspaceConfiguration();
+         return configuration.getArguments();
+      } catch(Exception e) {
+         throw new IllegalStateException("Could not resolve dependencies", e);
+      }  
+   }
+   
+   public List<File> resolveDependencies(List<Dependency> dependencies) {
+      try {
+         WorkspaceConfiguration configuration = reader.loadWorkspaceConfiguration();
+         return configuration.getDependencies(dependencies);
+      } catch(Exception e) {
+         throw new IllegalStateException("Could not resolve dependencies", e);
+      }
+   }
+   
+   public File createFile(String name) {
       File file = new File(root, name);
       
       try {
@@ -27,13 +97,13 @@ public class Workspace {
       }
    }
    
-   public File create() {
+   public File createWorkspace() {
       try {
          File directory = root.getCanonicalFile();
          
          if(!directory.exists()){
             if(!directory.mkdirs()) {
-            throw new IllegalStateException("Could not build work directory " + directory);
+               throw new IllegalStateException("Could not build work directory " + directory);
             }
             File ignore = new File(directory, ".gitignore");
             OutputStream stream = new FileOutputStream(ignore);
@@ -41,9 +111,40 @@ public class Workspace {
             print.println("/.temp/");
             print.close();
          }
+         getProjects();// resolve the dependencies
          return directory;
       }catch(Exception e) {
          throw new IllegalStateException("Could not create directory " + root, e);
       }
+   }
+   
+   public List<Project> getProjects() {
+      List<Project> projects = new ArrayList<Project>();
+      
+      try {
+         File workspace = root.getCanonicalFile();
+         
+         if(workspace.exists()) {
+            File[] directories = workspace.listFiles();
+            
+            if(projects != null) {
+               for(File directory : directories) {
+                  String name = directory.getName();
+                 
+                  if(directory.isDirectory() && !name.startsWith(".")) {
+                     File file = new File(directory, ProjectConfiguration.PROJECT_FILE);
+                     
+                     if(file.exists()) {
+                        Project project = createProject(name);
+                        project.getClassPath(); // resolve dependencies
+                     }
+                  }
+               }
+            }
+         }
+      }catch(Exception e) {
+         throw new IllegalStateException("Could not get projects in directory " + root, e);
+      }
+      return projects;
    }
 }

@@ -5,10 +5,9 @@ import java.util.List;
 
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.thread.ThreadPool;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.resource.Resource;
-import org.snapscript.studio.resource.project.ProjectBuilder;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,10 +20,10 @@ public class TextMatchResource implements Resource {
    private final TextMatchScanner scanner;
    private final Gson gson;
    
-   public TextMatchResource(ProjectBuilder builder, ProcessLogger logger, ThreadPool pool) {
-      this.scanner = new TextMatchScanner(logger, pool);
+   public TextMatchResource(Workspace workspace, ThreadPool pool) {
+      this.scanner = new TextMatchScanner(workspace.getLogger(), pool);
       this.gson = new GsonBuilder().setPrettyPrinting().create();
-      this.parser = new TextMatchQueryParser(builder);
+      this.parser = new TextMatchQueryParser(workspace);
    }
 
    @Override

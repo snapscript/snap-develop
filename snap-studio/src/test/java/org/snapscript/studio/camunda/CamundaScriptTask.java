@@ -41,7 +41,7 @@ public class CamundaScriptTask {
       ProcessAgentService service = agent.start(model);
 
       createBreakpoints(service);
-      service.execute(PROJECT, RESOURCE, true);
+      service.execute(PROJECT, RESOURCE, System.getProperty("java.class.path"), true);
       service.join(6000000); // wait for script to finish
    }
 

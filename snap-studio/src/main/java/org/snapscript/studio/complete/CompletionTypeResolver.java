@@ -1,12 +1,10 @@
 package org.snapscript.studio.complete;
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.core.Context;
 import org.snapscript.core.PrimitivePromoter;
 import org.snapscript.core.Type;
@@ -14,10 +12,10 @@ import org.snapscript.core.function.Function;
 import org.snapscript.core.function.Parameter;
 import org.snapscript.core.function.Signature;
 import org.snapscript.core.property.Property;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.DefaultTypeLoader;
 import org.snapscript.studio.common.ResourceTypeLoader;
 import org.snapscript.studio.common.TypeNode;
-import org.snapscript.studio.configuration.ConfigurationClassLoader;
 
 public class CompletionTypeResolver {
 
@@ -25,20 +23,20 @@ public class CompletionTypeResolver {
    private final ResourceTypeLoader compiler;
    private final DefaultTypeLoader loader;
    
-   public CompletionTypeResolver(ConfigurationClassLoader loader, ProcessLogger logger) {
-      this.compiler = new ResourceTypeLoader(loader, logger);
-      this.loader = new DefaultTypeLoader(logger);
+   public CompletionTypeResolver(Workspace workspace) {
+      this.compiler = new ResourceTypeLoader(workspace);
+      this.loader = new DefaultTypeLoader(workspace.getLogger());
       this.promoter = new PrimitivePromoter();
    }
    
    public Map<String, TypeNode> resolveTypes(Completion state) {
       int line = state.getLine();
-      File root = state.getRoot();
+      String project = state.getProjectName();
       String source = state.getSource();
       String resource = state.getResource();
       Map<String, TypeNode> stateTypes = state.getTypes();
       Map<String, TypeNode> defaultTypes = loader.loadTypes();
-      Map<String, TypeNode> resourceTypes = compiler.compileSource(root, resource, source, line, true);
+      Map<String, TypeNode> resourceTypes = compiler.compileSource(project, resource, source, line, true);
 
       stateTypes.putAll(defaultTypes);
       stateTypes.putAll(resourceTypes);

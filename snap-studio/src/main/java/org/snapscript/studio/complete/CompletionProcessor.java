@@ -1,18 +1,16 @@
 package org.snapscript.studio.complete;
 
-import java.io.File;
 import java.util.Map;
 
-import org.snapscript.agent.log.ProcessLogger;
-import org.snapscript.studio.configuration.ConfigurationClassLoader;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.resource.project.Project;
 
 public class CompletionProcessor {
    
    private final CompletionCompiler builder;
    
-   public CompletionProcessor(ConfigurationClassLoader loader, ProcessLogger logger) {
-      this.builder = new CompletionCompiler(loader, logger);
+   public CompletionProcessor(Workspace workspace) {
+      this.builder = new CompletionCompiler(workspace);
    }
 
    public Map<String, String> createTokens(CompletionRequest request, Project project) {
@@ -27,9 +25,9 @@ public class CompletionProcessor {
       String source = request.getSource();
       String resource = request.getResource();
       String complete = request.getComplete();
-      File root = project.getProjectPath();
+      String name = project.getProjectName();
       int line = request.getLine();
       
-      return new Completion(root, source, resource, prefix, complete, line);
+      return new Completion(name, source, resource, prefix, complete, line);
    }
 }

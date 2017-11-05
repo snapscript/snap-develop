@@ -7,8 +7,8 @@ import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.core.Reserved;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.resource.ContentTypeResolver;
 import org.snapscript.studio.resource.Resource;
 
@@ -16,12 +16,12 @@ public class ProjectFileResource implements Resource {
    
    private final ContentTypeResolver resolver;
    private final ProjectFileCache cache;
-   private final ProcessLogger logger;
+   private final Workspace workspace;
    
-   public ProjectFileResource(ProjectBuilder builder, ContentTypeResolver resolver, ProcessLogger logger){
-      this.cache = new ProjectFileCache(builder);
+   public ProjectFileResource(Workspace workspace, ContentTypeResolver resolver){
+      this.cache = new ProjectFileCache(workspace);
+      this.workspace = workspace;
       this.resolver = resolver;
-      this.logger = logger;
    }
 
    @Override
@@ -36,8 +36,8 @@ public class ProjectFileResource implements Resource {
       response.setStatus(Status.OK);
       response.setContentType(type);
 
-      if(logger.isTrace()) {
-         logger.trace(method + ": " + path);
+      if(workspace.getLogger().isTrace()) {
+         workspace.getLogger().trace(method + ": " + path);
       }
       try {
          byte[] resource = projectFile.getByteArray();

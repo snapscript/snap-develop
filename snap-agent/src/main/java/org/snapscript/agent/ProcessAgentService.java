@@ -54,14 +54,14 @@ public class ProcessAgentService {
       matcher.update(breakpoints);
    }
    
-   public void execute(String project, String resource, boolean debug) {
+   public void execute(String project, String resource, String dependencies, boolean debug) {
       BreakpointMatcher matcher = context.getMatcher();
       ProcessStore store = context.getStore();
       String actual = context.getProcess();
 
       matcher.update(breakpoints);
       store.update(project); 
-      executor.execute(channel, actual, project, resource, debug);
+      executor.execute(channel, actual, project, resource, dependencies, debug);
    }
 
    public boolean join(long time) {

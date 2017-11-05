@@ -23,10 +23,14 @@ public class ProcessResourceExecutor {
       this.model = model;
       this.mode = mode;
    }
+   
+   public ExecuteData get() {
+      return reference.get();
+   }
 
-   public void execute(ProcessEventChannel channel, String process, String project, String resource, boolean debug) {
+   public void execute(ProcessEventChannel channel, String process, String project, String resource, String dependencies, boolean debug) {
       try {
-         ExecuteData data = new ExecuteData(process, project, resource, debug);
+         ExecuteData data = new ExecuteData(process, project, resource, dependencies, debug);
          ConsoleConnector connector = new ConsoleConnector(channel, process);
          ProcessTask task = new ProcessTask(channel, context, mode, model, project, resource, debug);
          
@@ -34,6 +38,7 @@ public class ProcessResourceExecutor {
             Thread thread = factory.newThread(task);
             
             if(reference.compareAndSet(null, data)) {
+               ClassPathUpdater.updateClassPath(dependencies);
                connector.connect();
                thread.start();
             }
@@ -41,9 +46,5 @@ public class ProcessResourceExecutor {
       } catch(Exception e) {
          throw new IllegalStateException("Could not execute '" + resource + "' from project '" + project + "'", e);
       }
-   }
-   
-   public ExecuteData get() {
-      return reference.get();
    }
 }

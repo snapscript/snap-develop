@@ -2,16 +2,22 @@ package org.snapscript.agent.event;
 
 public class ExecuteData {
 
+   private final String dependencies;
    private final String process;
    private final String resource;
    private final String project;
    private final boolean debug;
    
-   public ExecuteData(String process, String project, String resource, boolean debug) {
+   public ExecuteData(String process, String project, String resource, String dependencies, boolean debug) {
+      this.dependencies = dependencies;
       this.project = project;
       this.resource = resource;
       this.process = process;
       this.debug = debug;
+   }
+   
+   public String getDependencies() {
+      return dependencies;
    }
 
    public String getProcess() {

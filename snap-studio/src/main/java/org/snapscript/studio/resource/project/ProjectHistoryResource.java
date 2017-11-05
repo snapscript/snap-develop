@@ -15,6 +15,7 @@ import org.simpleframework.http.Status;
 import org.snapscript.core.Reserved;
 import org.snapscript.studio.BackupFile;
 import org.snapscript.studio.BackupManager;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.resource.Resource;
 
 import com.google.gson.Gson;
@@ -22,13 +23,13 @@ import com.google.gson.GsonBuilder;
 
 public class ProjectHistoryResource implements Resource {
 
-   private final ProjectBuilder builder;
    private final BackupManager manager;
+   private final Workspace workspace;
    private final Gson gson;
    
-   public ProjectHistoryResource(ProjectBuilder builder, BackupManager manager){
+   public ProjectHistoryResource(Workspace workspace, BackupManager manager){
       this.gson = new GsonBuilder().setPrettyPrinting().create();
-      this.builder = builder;
+      this.workspace = workspace;
       this.manager = manager;
    }
 
@@ -48,7 +49,7 @@ public class ProjectHistoryResource implements Resource {
    private void handleBackupHistory(Request request, Response response) throws Throwable {
       Path path = request.getPath(); 
       String projectPath = path.getPath(2);
-      Project project = builder.createProject(path);
+      Project project = workspace.createProject(path);
       ProjectFileSystem system = project.getFileSystem();
       File file = system.getFile(path);
       String name = project.getProjectName();
@@ -90,7 +91,7 @@ public class ProjectHistoryResource implements Resource {
    private InputStream findBackupFile(Request request, Response response) throws Throwable {
       String timeStamp = request.getParameter("time"); // do we load file
       Path path = request.getPath(); 
-      Project project = builder.createProject(path);
+      Project project = workspace.createProject(path);
       ProjectFileSystem system = project.getFileSystem();
       File file = system.getFile(path);
       String name = project.getProjectName();

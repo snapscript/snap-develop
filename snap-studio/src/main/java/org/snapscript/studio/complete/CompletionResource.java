@@ -6,27 +6,23 @@ import java.util.Map;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.snapscript.agent.log.ProcessLogger;
-import org.snapscript.studio.configuration.ConfigurationClassLoader;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.resource.Resource;
 import org.snapscript.studio.resource.project.Project;
-import org.snapscript.studio.resource.project.ProjectBuilder;
 
 import com.google.gson.Gson;
 
 // /complete/<project>
 public class CompletionResource implements Resource {
 
-   private final ConfigurationClassLoader loader;
    private final CompletionProcessor completer;
-   private final ProjectBuilder builder;
+   private final Workspace workspace;
    private final Gson gson;
    
-   public CompletionResource(ProjectBuilder builder, ConfigurationClassLoader loader, ProcessLogger logger) {
-      this.completer = new CompletionProcessor(loader, logger);
+   public CompletionResource(Workspace workspace) {
+      this.completer = new CompletionProcessor(workspace);
       this.gson = new Gson();
-      this.builder = builder;
-      this.loader = loader;
+      this.workspace = workspace;
    }
 
    @Override
@@ -35,10 +31,10 @@ public class CompletionResource implements Resource {
       PrintStream out = response.getPrintStream();
       String content = request.getContent();
       Path path = request.getPath();
+      Project project = workspace.createProject(path);
+      ClassLoader classLoader = project.getClassLoader();
       Thread thread = Thread.currentThread();
-      ClassLoader classLoader = loader.getClassLoader();
       thread.setContextClassLoader(classLoader);
-      Project project = builder.createProject(path);
       CompletionRequest context = gson.fromJson(content, CompletionRequest.class);
       Map<String, String> tokens = completer.createTokens(context, project);
       result.setTokens(tokens);

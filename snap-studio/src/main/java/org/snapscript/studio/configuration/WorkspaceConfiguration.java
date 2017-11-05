@@ -4,15 +4,14 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-public interface Configuration {
+public interface WorkspaceConfiguration {
 
    String CLASS_EXTENSION = ".class";
-   String PROJECT_FILE = ".project";
-   String CLASSPATH_FILE = ".classpath";
+   String WORKSPACE_FILE = ".workspace";
    String TEMP_PATH = ".temp";
    String JAR_FILE = "agent.jar";
    
-   Map<String, String> getVariables();
-   List<File> getDependencies();
+   List<File> getDependencies(List<Dependency> dependencies);
+   Map<String, String> getEnvironmentVariables();
    List<String> getArguments();
 }

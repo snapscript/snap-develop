@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.core.FilePathConverter;
 import org.snapscript.core.ModifierType;
 import org.snapscript.core.PathConverter;
@@ -24,8 +23,8 @@ import org.snapscript.core.function.Signature;
 import org.snapscript.core.property.Property;
 import org.snapscript.parse.GrammarIndexer;
 import org.snapscript.parse.GrammarResolver;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.TypeNode;
-import org.snapscript.studio.configuration.ConfigurationClassLoader;
 
 public class CompletionMatcher {
    
@@ -33,14 +32,14 @@ public class CompletionMatcher {
    private final UserExpressionParser parser;
    private final CompletionTypeResolver resolver;
    private final PathConverter converter;
-   private final ProcessLogger logger;
+   private final Workspace workspace;
    
-   public CompletionMatcher(GrammarResolver resolver, GrammarIndexer indexer, ConfigurationClassLoader loader, ProcessLogger logger) {
+   public CompletionMatcher(GrammarResolver resolver, GrammarIndexer indexer, Workspace workspace) {
       this.extractor = new SourceContextExtractor(resolver, indexer);
-      this.parser = new UserExpressionParser(logger);
-      this.resolver = new CompletionTypeResolver(loader, logger);
+      this.parser = new UserExpressionParser(workspace.getLogger());
+      this.resolver = new CompletionTypeResolver(workspace);
       this.converter = new FilePathConverter();
-      this.logger = logger;
+      this.workspace = workspace;
    }
    
    public Map<String, String> findTokens(Completion state) {
@@ -79,7 +78,7 @@ public class CompletionMatcher {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         logger.info("Time taken to find tokens " + duration);
+         workspace.getLogger().info("Time taken to find tokens " + duration);
       }
    }
    

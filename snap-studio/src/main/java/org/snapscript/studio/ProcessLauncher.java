@@ -1,41 +1,34 @@
 package org.snapscript.studio;
 
-import static org.snapscript.studio.configuration.Configuration.CLASSPATH_FILE;
-import static org.snapscript.studio.configuration.Configuration.JAR_FILE;
-import static org.snapscript.studio.configuration.Configuration.PROJECT_FILE;
-import static org.snapscript.studio.configuration.Configuration.TEMP_PATH;
+import static org.snapscript.studio.configuration.WorkspaceConfiguration.JAR_FILE;
+import static org.snapscript.studio.configuration.WorkspaceConfiguration.TEMP_PATH;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.snapscript.agent.ProcessMode;
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.studio.configuration.ProcessConfiguration;
 
 public class ProcessLauncher {
    
    private final ProcessNameGenerator generator;
-   private final ProcessLogger logger;
    private final Workspace workspace;
    
-   public ProcessLauncher(ProcessLogger logger, Workspace workspace) {
+   public ProcessLauncher(Workspace workspace) {
       this.generator = new ProcessNameGenerator();
       this.workspace = workspace;
-      this.logger = logger;
    }
 
    public ProcessDefinition launch(ProcessConfiguration configuration) throws Exception {
       int port = configuration.getPort();
       String host = configuration.getHost();
-      String level = logger.getLevel();
+      String level = workspace.getLogger().getLevel();
       String name = generator.generate();
       String mode = ProcessMode.SCRIPT.name();
       String home = System.getProperty("java.home");
-      File directory = workspace.create(TEMP_PATH);
+      File directory = workspace.createFile(TEMP_PATH);
       File file = new File(directory, JAR_FILE);
       String agent = file.getCanonicalPath();
       String java = String.format("%s%sbin%sjava", home, File.separatorChar, File.separatorChar);
@@ -44,7 +37,6 @@ public class ProcessLauncher {
       Map<String, String> variables = configuration.getVariables();
       List<String> arguments = configuration.getArguments();
       String target = ProcessRunner.class.getCanonicalName();
-      String dependencies = write(configuration);
       List<String> command = new ArrayList<String>();
       
       command.add(java);
@@ -53,7 +45,6 @@ public class ProcessLauncher {
       command.add(agent);
       command.add(classes);
       command.add(target);
-      command.add(dependencies);
       command.add("org.snapscript.");
       command.add(resources);
       command.add(name);
@@ -67,48 +58,11 @@ public class ProcessLauncher {
          environment.putAll(variables);
       }
       
-      logger.info(name + ": " +command);
+      workspace.getLogger().info(name + ": " +command);
       builder.directory(directory);
       builder.redirectErrorStream(true);
       
       Process process = builder.start();
       return new ProcessDefinition(process, name);
-   }
-   
-   private String write(ProcessConfiguration configuration) throws Exception {
-      File projectFile = workspace.create(PROJECT_FILE);
-      File classPathFile = workspace.create(CLASSPATH_FILE);
-      String classPath = configuration.getClassPath();
-      
-      if(classPath == null) {
-         classPath = System.getProperty("java.class.path");
-      }
-      String[] dependencies = classPath.split(File.pathSeparator);
-      
-      if(!classPathFile.exists()) {
-         FileWriter writer = new FileWriter(classPathFile);
-         PrintWriter printer = new PrintWriter(writer);
-         
-         for(String dependency : dependencies) {
-            printer.println(dependency);
-         }
-         printer.close();
-         logger.info("Created " + classPathFile);
-      } else if(projectFile.exists()) {
-         long projectFileChange = projectFile.lastModified();
-         long classPathFileChange = classPathFile.lastModified();
-         
-         if(projectFileChange > classPathFileChange) {
-            FileWriter writer = new FileWriter(classPathFile);
-            PrintWriter printer = new PrintWriter(writer);
-            
-            for(String dependency : dependencies) {
-               printer.println(dependency);
-            }
-            printer.close();
-            logger.info("Updated " + classPathFile + " from " + projectFile);
-         }
-      }
-      return classPathFile.getCanonicalPath();
    }
 }

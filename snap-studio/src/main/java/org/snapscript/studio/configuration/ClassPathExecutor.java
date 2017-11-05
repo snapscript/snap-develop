@@ -3,19 +3,16 @@ package org.snapscript.studio.configuration;
 import java.util.concurrent.Executor;
 
 import org.snapscript.common.thread.ThreadPool;
+import org.snapscript.studio.resource.project.Project;
 
 public class ClassPathExecutor implements Executor {
 
-   private final ConfigurationClassLoader loader;
+   private final Project project;
    private final ThreadPool pool;
    
-   public ClassPathExecutor(ConfigurationClassLoader loader) {
-      this(loader, 6);
-   }
-   
-   public ClassPathExecutor(ConfigurationClassLoader loader, int threads) {
-      this.pool = new ThreadPool(threads);
-      this.loader = loader;
+   public ClassPathExecutor(ThreadPool pool, Project project) {
+      this.project = project;
+      this.pool = pool;
    }
    
    @Override
@@ -35,7 +32,7 @@ public class ClassPathExecutor implements Executor {
       @Override
       public void run() {
          Thread thread = Thread.currentThread();
-         ClassLoader context = loader.getClassLoader();
+         ClassLoader context = project.getClassLoader();
          thread.setContextClassLoader(context);
          task.run();
       }
