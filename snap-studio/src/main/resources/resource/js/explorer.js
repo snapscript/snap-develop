@@ -178,6 +178,9 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
             else if (commandName == "exploreDirectory") {
                 commands_1.Command.exploreDirectory(resourcePath);
             }
+            else if (commandName == "openTerminal") {
+                commands_1.Command.openTerminal(resourcePath);
+            }
             else if (commandName == "renameFile") {
                 if (isDirectory) {
                     commands_1.Command.renameDirectory(resourcePath);

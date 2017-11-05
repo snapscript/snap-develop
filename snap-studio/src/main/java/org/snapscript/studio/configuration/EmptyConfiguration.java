@@ -25,5 +25,4 @@ public class EmptyConfiguration implements WorkspaceConfiguration {
    public List<String> getArguments() {
       return Collections.emptyList();
    }
-
 }

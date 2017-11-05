@@ -56,17 +56,17 @@ public class ConfigurationReader {
             
             if(file.exists()) {
                WorkspaceDefinition details = persister.read(WorkspaceDefinition.class, file);
-               Map<String, String> variables = details.getVariables();
+               Map<String, String> variables = details.getEnvironmentVariables();
                List<String> arguments = details.getArguments();
                
-               configuration = new RepositoryConfiguration(factory, details, variables, arguments);
+               configuration = new WorkspaceContext(factory, details, variables, arguments);
                reference.set(configuration);
                return configuration;
             }
          }catch(Exception e) {
             throw new IllegalStateException("Could not read configuration", e);
          }
-         return new RepositoryConfiguration(factory, null, EMPTY_MAP, EMPTY_LIST);
+         return new WorkspaceContext(factory, null, EMPTY_MAP, EMPTY_LIST);
       }
       return configuration;
    }  
@@ -164,7 +164,7 @@ public class ConfigurationReader {
          return files;
       }
 
-      public Map<String, String> getVariables() {
+      public Map<String, String> getEnvironmentVariables() {
          Map<String, String> map = new LinkedHashMap<String, String>();
          
          if(environment != null) {
@@ -273,6 +273,21 @@ public class ConfigurationReader {
       @Override
       public String getName() {
          return name;
+      }
+   }
+   
+   @Root
+   private static class CommandTemplate implements Entry {
+      
+      @Attribute
+      private OperatingSystem type;
+      
+      @Text
+      private String value;
+      
+      @Override
+      public String getName() {
+         return type.name();
       }
    }
 }

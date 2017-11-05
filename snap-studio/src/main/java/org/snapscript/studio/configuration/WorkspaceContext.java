@@ -6,14 +6,14 @@ import java.util.Map;
 
 import org.snapscript.studio.maven.RepositoryFactory;
 
-public class RepositoryConfiguration implements WorkspaceConfiguration {
-   
+public class WorkspaceContext implements WorkspaceConfiguration {
+
    private final Map<String, String> variables;
    private final List<String> arguments;
    private final RepositoryFactory factory;
    private final DependencyLoader loader;
    
-   public RepositoryConfiguration(RepositoryFactory factory, DependencyLoader loader, Map<String, String> variables, List<String> arguments){
+   public WorkspaceContext(RepositoryFactory factory, DependencyLoader loader, Map<String, String> variables, List<String> arguments){
       this.variables = variables;
       this.arguments = arguments;
       this.loader = loader;

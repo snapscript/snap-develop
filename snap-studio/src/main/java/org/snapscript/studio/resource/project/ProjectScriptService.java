@@ -75,6 +75,7 @@ public class ProjectScriptService implements Service {
                   workspace.getLogger(), 
                   backupManager, 
                   treeManager, 
+                  workspace,
                   path, 
                   projectPath, 
                   projectName, 

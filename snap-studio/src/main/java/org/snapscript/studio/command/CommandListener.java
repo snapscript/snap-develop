@@ -1,18 +1,22 @@
 package org.snapscript.studio.command;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import org.simpleframework.common.encode.Base64Encoder;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.socket.FrameChannel;
 import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.common.command.CommandBuilder;
+import org.snapscript.common.command.Console;
 import org.snapscript.studio.BackupManager;
 import org.snapscript.studio.ProcessManager;
+import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.Problem;
 import org.snapscript.studio.common.ProblemFinder;
+import org.snapscript.studio.configuration.OperatingSystem;
 import org.snapscript.studio.resource.display.DisplayDefinition;
 import org.snapscript.studio.resource.display.DisplayPersister;
 import org.snapscript.studio.resource.project.ProjectProblemFinder;
@@ -31,6 +35,7 @@ public class CommandListener {
    private final ProcessLogger processLogger;
    private final ProblemFinder finder;
    private final BackupManager backupManager;
+   private final Workspace workspace;
    private final String cookie;
    private final String project;
    private final File root;
@@ -44,6 +49,7 @@ public class CommandListener {
          ProcessLogger processLogger, 
          BackupManager backupManager, 
          TreeContextManager treeManager, 
+         Workspace workspace,
          Path path, 
          File root, 
          String project, 
@@ -59,6 +65,7 @@ public class CommandListener {
       this.backupManager = backupManager;
       this.processLogger = processLogger;
       this.processManager = processManager;
+      this.workspace = workspace;
       this.project = project;
       this.cookie = cookie;
       this.root = root;
@@ -71,22 +78,30 @@ public class CommandListener {
       try {
          if(resource != null) {
             File file = new File(root, "/" + resource);
+            CommandBuilder builder = new CommandBuilder();
             
-            if(file.isDirectory()) {
+            if(!file.isDirectory()) {
                file = file.getParentFile();
             }
             String path = file.getCanonicalPath();
             boolean exists = file.exists();
             boolean directory = file.isDirectory();
+            OperatingSystem os = OperatingSystem.resolveSystem();
             
             if(exists && directory) {
-               List<String> arguments = new ArrayList<String>();
-               
-               arguments.add("explorer");
-               arguments.add(path);
-
-               ProcessBuilder builder = new ProcessBuilder(arguments);
-               builder.start();
+               if(!command.isTerminal()) {
+                  String expression = os.createExploreCommand(path);
+                  Callable<Console> task = builder.create(expression);
+                  
+                  processLogger.info("Executing: " + expression);
+                  task.call();
+               } else {
+                  String expression = os.createTerminalCommand(path);
+                  Callable<Console> task = builder.create(expression);
+                  
+                  processLogger.info("Executing: " + expression);
+                  task.call();
+               }
             }
          }
       } catch(Exception e) {

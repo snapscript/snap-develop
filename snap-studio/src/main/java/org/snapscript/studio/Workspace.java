@@ -10,10 +10,10 @@ import java.util.Map;
 
 import org.simpleframework.http.Path;
 import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.studio.configuration.OperatingSystem;
 import org.snapscript.studio.configuration.ConfigurationReader;
 import org.snapscript.studio.configuration.Dependency;
 import org.snapscript.studio.configuration.ProjectConfiguration;
-import org.snapscript.studio.configuration.WorkspaceConfiguration;
 import org.snapscript.studio.resource.project.Project;
 import org.snapscript.studio.resource.project.ProjectManager;
 
@@ -57,26 +57,23 @@ public class Workspace {
    
    public Map<String, String> getEnvironmentVariables() {
       try {
-         WorkspaceConfiguration configuration = reader.loadWorkspaceConfiguration();
-         return configuration.getEnvironmentVariables();
+         return reader.loadWorkspaceConfiguration().getEnvironmentVariables();
       } catch(Exception e) {
-         throw new IllegalStateException("Could not resolve dependencies", e);
+         throw new IllegalStateException("Could not resolve environment variables", e);
       }  
    }
    
    public List<String> getArguments() {
       try {
-         WorkspaceConfiguration configuration = reader.loadWorkspaceConfiguration();
-         return configuration.getArguments();
+         return reader.loadWorkspaceConfiguration().getArguments();
       } catch(Exception e) {
-         throw new IllegalStateException("Could not resolve dependencies", e);
+         throw new IllegalStateException("Could not resolve arguments", e);
       }  
    }
    
    public List<File> resolveDependencies(List<Dependency> dependencies) {
       try {
-         WorkspaceConfiguration configuration = reader.loadWorkspaceConfiguration();
-         return configuration.getDependencies(dependencies);
+         return reader.loadWorkspaceConfiguration().getDependencies(dependencies);
       } catch(Exception e) {
          throw new IllegalStateException("Could not resolve dependencies", e);
       }

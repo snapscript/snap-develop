@@ -193,6 +193,8 @@ export module FileExplorer {
          Command.newDirectory(resourcePath);
       }else if(commandName == "exploreDirectory") {
          Command.exploreDirectory(resourcePath);
+      }else if(commandName == "openTerminal") {
+         Command.openTerminal(resourcePath);
       }else if(commandName == "renameFile") {
          if(isDirectory) {
             Command.renameDirectory(resourcePath);

@@ -216,11 +216,23 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                 onComplete([]);
             }
         }
+        function openTerminal(resourcePath) {
+            if (tree_1.FileTree.isResourceFolder(resourcePath.filePath)) {
+                var message = {
+                    project: document.title,
+                    resource: resourcePath.filePath,
+                    terminal: true
+                };
+                socket_1.EventBus.sendEvent("EXPLORE", message);
+            }
+        }
+        Command.openTerminal = openTerminal;
         function exploreDirectory(resourcePath) {
             if (tree_1.FileTree.isResourceFolder(resourcePath.filePath)) {
                 var message = {
                     project: document.title,
-                    resource: resourcePath.filePath
+                    resource: resourcePath.filePath,
+                    terminal: false
                 };
                 socket_1.EventBus.sendEvent("EXPLORE", message);
             }

@@ -122,6 +122,13 @@
 	background-repeat: no-repeat !important;
 }
 
+.menu-terminal {
+	background-image: url('${IMAGE_FOLDER}/terminal.png') !important;
+	background-size: 16px 16px !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+}
+
 .menu-run {
 	background-image: url('${IMAGE_FOLDER}/run.png') !important;
 	background-size: 16px 16px !important;

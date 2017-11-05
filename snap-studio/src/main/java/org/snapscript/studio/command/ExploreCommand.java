@@ -13,4 +13,5 @@ public class ExploreCommand implements Command {
 
    private String resource;
    private String project;
+   private boolean terminal;
 }

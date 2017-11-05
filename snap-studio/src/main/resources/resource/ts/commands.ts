@@ -249,11 +249,23 @@ export module Command {
       }
    }
    
+   export function openTerminal(resourcePath) {
+      if(FileTree.isResourceFolder(resourcePath.filePath)) {
+         var message = {
+            project : document.title,
+            resource : resourcePath.filePath,
+            terminal: true
+         };
+         EventBus.sendEvent("EXPLORE", message);
+      }
+   }
+   
    export function exploreDirectory(resourcePath) {
       if(FileTree.isResourceFolder(resourcePath.filePath)) {
          var message = {
             project : document.title,
             resource : resourcePath.filePath,
+            terminal: false
          };
          EventBus.sendEvent("EXPLORE", message);
       }
