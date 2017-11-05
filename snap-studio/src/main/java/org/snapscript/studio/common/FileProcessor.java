@@ -28,7 +28,6 @@ public class FileProcessor<T> {
       this.pool = pool;
    }
    
-   
    public Set<T> process(String reference, String pattern) throws Exception {
       Map<File, FileExecutor> referenceBatch = executors.get(reference);
       Set<File> referenceFiles = active.get(reference);

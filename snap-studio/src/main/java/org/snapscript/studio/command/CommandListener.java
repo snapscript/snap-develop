@@ -1,9 +1,9 @@
 package org.snapscript.studio.command;
 
 import java.io.File;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.simpleframework.common.encode.Base64Encoder;
 import org.simpleframework.http.Path;
@@ -13,7 +13,7 @@ import org.snapscript.common.command.CommandBuilder;
 import org.snapscript.common.command.Console;
 import org.snapscript.studio.BackupManager;
 import org.snapscript.studio.ProcessManager;
-import org.snapscript.studio.Workspace;
+import org.snapscript.studio.common.DirectoryWatcher;
 import org.snapscript.studio.common.Problem;
 import org.snapscript.studio.common.ProblemFinder;
 import org.snapscript.studio.configuration.OperatingSystem;
@@ -35,7 +35,7 @@ public class CommandListener {
    private final ProcessLogger processLogger;
    private final ProblemFinder finder;
    private final BackupManager backupManager;
-   private final Workspace workspace;
+   private final AtomicLong lastModified;
    private final String cookie;
    private final String project;
    private final File root;
@@ -49,7 +49,6 @@ public class CommandListener {
          ProcessLogger processLogger, 
          BackupManager backupManager, 
          TreeContextManager treeManager, 
-         Workspace workspace,
          Path path, 
          File root, 
          String project, 
@@ -58,6 +57,7 @@ public class CommandListener {
       this.commandFilter = new CommandFilter();
       this.commandClient = new CommandClient(frameChannel, project);
       this.forwarder = new CommandEventForwarder(commandClient, commandFilter, processLogger, project);
+      this.lastModified = new AtomicLong(DirectoryWatcher.lastModified(root));
       this.finder = new ProblemFinder();
       this.displayPersister = displayPersister;
       this.treeManager = treeManager;
@@ -65,7 +65,6 @@ public class CommandListener {
       this.backupManager = backupManager;
       this.processLogger = processLogger;
       this.processManager = processManager;
-      this.workspace = workspace;
       this.project = project;
       this.cookie = cookie;
       this.root = root;
@@ -132,7 +131,7 @@ public class CommandListener {
          backupManager.saveFile(file, data);
             
          if(!exists) {
-            commandClient.sendReloadTree();
+            onReload();
          }
       } catch(Exception e) {
          processLogger.info("Error saving " + to, e);
@@ -167,7 +166,7 @@ public class CommandListener {
                   commandClient.sendSyntaxError(resource, description, time, line);
                }
                if(!exists) {
-                  commandClient.sendReloadTree();
+                  onReload();
                }
             } 
          } else {
@@ -175,7 +174,7 @@ public class CommandListener {
             
             if(!file.exists()) {
                file.mkdirs();
-               commandClient.sendReloadTree();
+               onReload();
             }
          }
       } catch(Exception e) {
@@ -206,7 +205,7 @@ public class CommandListener {
                   commandClient.sendAlert(to, "Resource " + to + " already exists");
                } else {
                   if(fromFile.renameTo(toFile)){
-                     commandClient.sendReloadTree();
+                     onReload();
                   } else {
                      commandClient.sendAlert(from, "Could not rename " + from + " to " + to);
                   }
@@ -305,7 +304,7 @@ public class CommandListener {
                   
                }
                file.delete();
-               commandClient.sendReloadTree();
+               onReload();
             }
          }
       } catch(Exception e) {
@@ -428,11 +427,17 @@ public class CommandListener {
       try {
          if(focus != null) {
             long time = System.currentTimeMillis();
-            
+
             if(!processManager.ping(focus, time)) {
                commandClient.sendProcessTerminate(focus);
                commandFilter.clearFocus();
             }
+         }
+         long projectModification = DirectoryWatcher.lastModified(root);
+         long previousModification = lastModified.get();
+         
+         if(previousModification < projectModification) {
+            onReload();
          }
          processManager.register(forwarder); // make sure we are registered
       } catch(Exception e) {
@@ -479,6 +484,15 @@ public class CommandListener {
          }
       } catch(Exception e) {
          processLogger.info("Error pinging process " + focus, e);
+      }
+   }
+   
+   public void onReload() {
+      try {
+         lastModified.set(DirectoryWatcher.lastModified(root));
+         commandClient.sendReloadTree();
+      } catch(Exception e) {
+         processLogger.info("Error reloading tree", e);
       }
    }
    
