@@ -68,16 +68,16 @@ class GamePanel with Panel {
    }
 
    loadBitmaps() {
-      borderCell = ImageStore.loadImage("/snake/resources/${IMAGE_SIZE}/border_cell.png");
-      snakeCell = ImageStore.loadImage("/snake/resources/${IMAGE_SIZE}/snake_cell.png");
-      snakeShieldedCell = ImageStore.loadImage("/snake/resources/${IMAGE_SIZE}/snake_shielded_cell.png");
+      borderCell = ImageStore.loadImage("/snake/${IMAGE_SIZE}/border_cell.png");
+      snakeCell = ImageStore.loadImage("/snake/${IMAGE_SIZE}/snake_cell.png");
+      snakeShieldedCell = ImageStore.loadImage("/snake/${IMAGE_SIZE}/snake_shielded_cell.png");
 
-      greenAppleCell = ImageStore.loadImage("/snake/resources/${IMAGE_SIZE}/green_apple_cell.png");
-      redAppleCell = ImageStore.loadImage("/snake/resources/${IMAGE_SIZE}/red_apple_cell.png");
-      yellowAppleCell = ImageStore.loadImage("/snake/resources/${IMAGE_SIZE}/yellow_apple_cell.png");
+      greenAppleCell = ImageStore.loadImage("/snake/${IMAGE_SIZE}/green_apple_cell.png");
+      redAppleCell = ImageStore.loadImage("/snake/${IMAGE_SIZE}/red_apple_cell.png");
+      yellowAppleCell = ImageStore.loadImage("/snake/${IMAGE_SIZE}/yellow_apple_cell.png");
 
-      clockCell = ImageStore.loadImage("/snake/resources/${IMAGE_SIZE}/clock_cell.png");
-      shieldCell = ImageStore.loadImage("/snake/resources/${IMAGE_SIZE}/shield_cell.png");
+      clockCell = ImageStore.loadImage("/snake/${IMAGE_SIZE}/clock_cell.png");
+      shieldCell = ImageStore.loadImage("/snake/${IMAGE_SIZE}/shield_cell.png");
    }
 
    /**
