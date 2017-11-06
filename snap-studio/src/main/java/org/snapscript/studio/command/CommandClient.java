@@ -1,14 +1,15 @@
 package org.snapscript.studio.command;
 
 import org.simpleframework.http.socket.FrameChannel;
+import org.snapscript.studio.resource.project.Project;
 
 public class CommandClient {
    
    private final CommandWriter writer;
    private final FrameChannel channel;
-   private final String project;
+   private final Project project;
    
-   public CommandClient(FrameChannel channel, String project) {
+   public CommandClient(FrameChannel channel, Project project) {
       this.writer = new CommandWriter();
       this.channel = channel;
       this.project = project;
@@ -20,8 +21,9 @@ public class CommandClient {
    }
    
    public void sendSyntaxError(String resource, String description, long time, int line) throws Exception {
+      String name = project.getProjectName();
       ProblemCommand command = ProblemCommand.builder()
-            .project(project)
+            .project(name)
             .description(description)
             .resource(resource)
             .time(time)

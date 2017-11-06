@@ -17,6 +17,7 @@ import org.snapscript.agent.event.WriteErrorEvent;
 import org.snapscript.agent.event.WriteOutputEvent;
 import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.studio.FaultLogger;
+import org.snapscript.studio.resource.project.Project;
 
 public class CommandEventForwarder extends ProcessEventAdapter {
    
@@ -25,7 +26,7 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    private final CommandClient client;
    private final FaultLogger logger;
    
-   public CommandEventForwarder(CommandClient client, CommandFilter filter, ProcessLogger logger, String project) {
+   public CommandEventForwarder(CommandClient client, CommandFilter filter, ProcessLogger logger, Project project) {
       this.converter = new CommandEventConverter(filter, project);
       this.logger = new FaultLogger(logger);
       this.filter = filter;

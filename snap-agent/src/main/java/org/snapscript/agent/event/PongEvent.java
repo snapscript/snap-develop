@@ -1,6 +1,5 @@
 package org.snapscript.agent.event;
 
-
 public class PongEvent implements ProcessEvent {
 
    private final String project;

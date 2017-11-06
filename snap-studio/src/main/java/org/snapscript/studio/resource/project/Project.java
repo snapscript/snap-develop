@@ -88,6 +88,14 @@ public class Project implements Store {
       }
    }
    
+   public String getRealPath(String resource) {
+      return getLayout().getRealPath(getSourcePath(), resource);
+   }
+   
+   public String getScriptPath(String resource) {
+      return getLayout().getDownloadPath(getSourcePath(), resource);
+   }
+   
    public ProjectLayout getLayout() {
       try {
          ProjectConfiguration configuration = reader.loadProjectConfiguration(projectName);

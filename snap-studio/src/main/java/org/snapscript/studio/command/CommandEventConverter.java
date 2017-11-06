@@ -1,5 +1,7 @@
 package org.snapscript.studio.command;
 
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 
 import org.snapscript.agent.event.BeginEvent;
@@ -11,15 +13,20 @@ import org.snapscript.agent.event.ScopeEvent;
 import org.snapscript.agent.event.SyntaxErrorEvent;
 import org.snapscript.agent.event.WriteErrorEvent;
 import org.snapscript.agent.event.WriteOutputEvent;
+import org.snapscript.agent.profiler.ProfileResult;
 import org.snapscript.studio.common.TextEscaper;
+import org.snapscript.studio.resource.project.Project;
 
 @AllArgsConstructor
 public class CommandEventConverter {
    
    private final CommandFilter filter;
-   private final String project;
+   private final Project project;
 
    public ScopeCommand convert(ScopeEvent event) throws Exception {
+      String resource = event.getResource();
+      String path = project.getRealPath(resource);
+      
       return ScopeCommand.builder()
             .process(event.getProcess())
             .variables(event.getVariables().getLocal())
@@ -29,10 +36,10 @@ public class CommandEventConverter {
             .stack(event.getStack())
             .instruction(event.getInstruction())
             .status(event.getStatus())
-            .resource(event.getResource())
             .line(event.getLine())
             .depth(event.getDepth())
             .key(event.getKey())
+            .resource(path)
             .build();
    }
    
@@ -40,6 +47,7 @@ public class CommandEventConverter {
       byte[] array = event.getData();
       int length = event.getLength();
       int offset = event.getOffset();
+      
       return PrintErrorCommand.builder()
             .process(event.getProcess())
             .text(TextEscaper.escape(array, offset, length))
@@ -50,6 +58,7 @@ public class CommandEventConverter {
       byte[] array = event.getData();
       int length = event.getLength();
       int offset = event.getOffset();
+      
       return PrintOutputCommand.builder()
             .process(event.getProcess())
             .text(TextEscaper.escape(array, offset, length))
@@ -57,34 +66,50 @@ public class CommandEventConverter {
    }
    
    public ProblemCommand convert(SyntaxErrorEvent event) throws Exception {
+      String resource = event.getResource();
+      String path = project.getRealPath(resource);
+      String name = project.getProjectName();
+      
       return ProblemCommand.builder()
-            .project(project)
+            .project(name)
             .description(event.getDescription())
-            .resource(event.getResource())
             .time(System.currentTimeMillis())
             .line(event.getLine())
+            .resource(path)
             .build();
    }
    
    public BeginCommand convert(BeginEvent event) throws Exception {
+      String resource = event.getResource();
+      String path = project.getRealPath(resource);
+      
       return BeginCommand.builder()
             .process(event.getProcess())
-            .resource(event.getResource())
             .duration(event.getDuration())
             .debug(event.isDebug())
+            .resource(path)
             .build();
    }
    
    public ProfileCommand convert(ProfileEvent event) throws Exception {
+      Set<ProfileResult> results = event.getResults();
+      
+      for(ProfileResult result : results) {
+         String resource = result.getResource();
+         String path = project.getRealPath(resource);
+         
+         result.setResource(path);
+      }
       return ProfileCommand.builder()
             .process(event.getProcess())
-            .results(event.getResults())
+            .results(results)
             .build();
    }
    
    public StatusCommand convert(RegisterEvent event) throws Exception {        
       String focus = filter.getFocus();
       String process = event.getProcess();
+      
       return StatusCommand.builder()
             .process(process)
             .system(event.getSystem())
@@ -100,11 +125,13 @@ public class CommandEventConverter {
    public StatusCommand convert(PongEvent event) throws Exception { 
       String focus = filter.getFocus();
       String process = event.getProcess();
+      String resource = event.getResource();
+      String path = project.getRealPath(resource);
+      
       return StatusCommand.builder()
             .process(process)
             .system(event.getSystem())
             .project(event.getProject())
-            .resource(event.getResource())
             .time(System.currentTimeMillis())
             .debug(event.isDebug())
             .totalMemory(event.getTotalMemory())
@@ -112,6 +139,7 @@ public class CommandEventConverter {
             .threads(event.getThreads())
             .running(event.isRunning())
             .focus(process.equals(focus))
+            .resource(path)
             .build();
    }
    

@@ -8,7 +8,6 @@ import org.simpleframework.transport.Channel;
 import org.snapscript.agent.event.ProcessEventFilter;
 import org.snapscript.agent.event.ProcessEventListener;
 import org.snapscript.agent.event.StepEvent;
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.studio.command.AttachCommand;
 import org.snapscript.studio.command.BreakpointsCommand;
 import org.snapscript.studio.command.BrowseCommand;
@@ -76,8 +75,9 @@ public class ProcessManager implements ProcessAgentController {
       ProcessConnection connection = connections.get(process);
       
       if(connection != null) {
+         String project = command.getProject();
          Map<String, Map<Integer, Boolean>> breakpoints = command.getBreakpoints();
-         return connection.suspend(breakpoints);
+         return connection.suspend(project, breakpoints);
       }
       return true;
    }
@@ -86,8 +86,9 @@ public class ProcessManager implements ProcessAgentController {
       ProcessConnection connection = connections.get(process);
       
       if(connection != null) {
+         String project = command.getProject();
          Map<String, Map<Integer, Boolean>> breakpoints = command.getBreakpoints();
-         return connection.suspend(breakpoints);
+         return connection.suspend(project, breakpoints);
       }
       return true;
    }

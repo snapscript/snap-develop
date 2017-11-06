@@ -11,17 +11,19 @@ public class ProjectLayout {
    }
    
    public String getRealPath(File projectPath, String resource) { //  "/demo/mario/MarioGame.snap" -> "/demo/mario/src/mario/MarioGame.snap"
-      File resourcePath = new File(projectPath, resource);
-      
-      if(!resourcePath.exists()) {
-         for(String path : paths) {
-            File file = new File(projectPath, path + "/" + resource);
-            if(file.exists()) {
-               String relativePath = getRelativeFile(projectPath, file);
-               if(!relativePath.startsWith("/")) {
-                  return "/" +relativePath;
+      if(resource != null) {
+         File resourcePath = new File(projectPath, resource);
+         
+         if(!resourcePath.exists()) {
+            for(String path : paths) {
+               File file = new File(projectPath, path + "/" + resource);
+               if(file.exists()) {
+                  String relativePath = getRelativeFile(projectPath, file);
+                  if(!relativePath.startsWith("/")) {
+                     return "/" +relativePath;
+                  }
+                  return relativePath;
                }
-               return relativePath;
             }
          }
       }
@@ -29,15 +31,17 @@ public class ProjectLayout {
    }
    
    public String getDownloadPath(File projectPath, String resource) { // "/demo/mario/src/mario/MarioGame.snap" -> "/demo/mario/MarioGame.snap"
-      for(String path : paths) {
-         path = path.replace("\\", "/");
-         
-         if(!path.startsWith("/")) {
-            path = "/" + path;
-         }
-         if(resource.startsWith(path)) {
-            int length = path.length();
-            return resource.substring(length);
+      if(resource != null) {
+         for(String path : paths) {
+            path = path.replace("\\", "/");
+            
+            if(!path.startsWith("/")) {
+               path = "/" + path;
+            }
+            if(resource.startsWith(path)) {
+               int length = path.length();
+               return resource.substring(length);
+            }
          }
       }
       return resource;

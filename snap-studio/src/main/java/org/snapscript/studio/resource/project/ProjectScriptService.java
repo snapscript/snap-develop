@@ -74,10 +74,9 @@ public class ProjectScriptService implements Service {
                   channel, 
                   workspace.getLogger(), 
                   backupManager, 
-                  treeManager, 
+                  treeManager,
+                  project,
                   path, 
-                  projectPath, 
-                  projectName, 
                   value);
             CommandController commandController = new CommandController(commandListener);
 

@@ -24,7 +24,6 @@ import org.snapscript.agent.event.ScopeEvent;
 import org.snapscript.agent.event.SyntaxErrorEvent;
 import org.snapscript.agent.event.WriteErrorEvent;
 import org.snapscript.agent.event.WriteOutputEvent;
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.thread.ThreadBuilder;
 import org.snapscript.studio.configuration.ProcessConfiguration;
 import org.snapscript.studio.tunnel.ProcessEventService;
@@ -163,7 +162,7 @@ public class ProcessPool {
       @Override
       public void onRegister(ProcessEventChannel channel, RegisterEvent event) throws Exception {
          String process = event.getProcess();
-         ProcessConnection connection = new ProcessConnection(channel, workspace.getLogger(), process);
+         ProcessConnection connection = new ProcessConnection(channel, workspace, process);
          connections.register(connection);
 
          for(ProcessEventListener listener : listeners) {

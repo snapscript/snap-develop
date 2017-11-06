@@ -19,6 +19,7 @@ import org.snapscript.studio.common.ProblemFinder;
 import org.snapscript.studio.configuration.OperatingSystem;
 import org.snapscript.studio.resource.display.DisplayDefinition;
 import org.snapscript.studio.resource.display.DisplayPersister;
+import org.snapscript.studio.resource.project.Project;
 import org.snapscript.studio.resource.project.ProjectProblemFinder;
 import org.snapscript.studio.resource.tree.TreeContext;
 import org.snapscript.studio.resource.tree.TreeContextManager;
@@ -36,10 +37,11 @@ public class CommandListener {
    private final ProblemFinder finder;
    private final BackupManager backupManager;
    private final AtomicLong lastModified;
+   private final Project project;
+   private final String projectName;
    private final String cookie;
-   private final String project;
-   private final File root;
    private final Path path;
+   private final File root;
    
    public CommandListener(
          ProcessManager processManager, 
@@ -49,16 +51,17 @@ public class CommandListener {
          ProcessLogger processLogger, 
          BackupManager backupManager, 
          TreeContextManager treeManager, 
+         Project project,
          Path path, 
-         File root, 
-         String project, 
          String cookie) 
    {
       this.commandFilter = new CommandFilter();
       this.commandClient = new CommandClient(frameChannel, project);
       this.forwarder = new CommandEventForwarder(commandClient, commandFilter, processLogger, project);
-      this.lastModified = new AtomicLong(DirectoryWatcher.lastModified(root));
+      this.lastModified = new AtomicLong(DirectoryWatcher.lastModified(project.getSourcePath()));
       this.finder = new ProblemFinder();
+      this.projectName = project.getProjectName();
+      this.root = project.getSourcePath();
       this.displayPersister = displayPersister;
       this.treeManager = treeManager;
       this.problemFinder = problemFinder;
@@ -67,7 +70,6 @@ public class CommandListener {
       this.processManager = processManager;
       this.project = project;
       this.cookie = cookie;
-      this.root = root;
       this.path = path;
    }
 
@@ -144,12 +146,12 @@ public class CommandListener {
       
       try {
          if(!command.isDirectory()) {
-            Problem problem = finder.parse(project, resource, source);
+            Problem problem = finder.parse(projectName, resource, source);
             File file = new File(root, "/" + resource);
             boolean exists = file.exists();
             
             if(exists) {
-               backupManager.backupFile(file, project);
+               backupManager.backupFile(file, projectName);
             }
             if(command.isCreate() && exists) {
                commandClient.sendAlert(resource, "Resource " + resource + " already exists");
@@ -222,14 +224,14 @@ public class CommandListener {
       String source = command.getSource();
       
       try {
-         Problem problem = finder.parse(project, resource, source);
+         Problem problem = finder.parse(projectName, resource, source);
          
          if(problem == null) {
             File file = new File(root, "/" + resource);
             boolean exists = file.exists();
             
             if(exists) {
-               backupManager.backupFile(file, project);
+               backupManager.backupFile(file, projectName);
             }
             backupManager.saveFile(file, source);
             commandClient.sendSyntaxError(resource, "", 0, -1); // clear problem
@@ -298,7 +300,7 @@ public class CommandListener {
             boolean exists = file.exists();
             
             if(exists) {
-               backupManager.backupFile(file, project);
+               backupManager.backupFile(file, projectName);
                
                if(file.isDirectory()) {
                   
