@@ -13,7 +13,6 @@ import org.snapscript.common.command.CommandBuilder;
 import org.snapscript.common.command.Console;
 import org.snapscript.studio.BackupManager;
 import org.snapscript.studio.ProcessManager;
-import org.snapscript.studio.common.DirectoryWatcher;
 import org.snapscript.studio.common.Problem;
 import org.snapscript.studio.common.ProblemFinder;
 import org.snapscript.studio.configuration.OperatingSystem;
@@ -58,7 +57,7 @@ public class CommandListener {
       this.commandFilter = new CommandFilter();
       this.commandClient = new CommandClient(frameChannel, project);
       this.forwarder = new CommandEventForwarder(commandClient, commandFilter, processLogger, project);
-      this.lastModified = new AtomicLong(DirectoryWatcher.lastModified(project.getSourcePath()));
+      this.lastModified = new AtomicLong(project.getModificationTime());
       this.finder = new ProblemFinder();
       this.projectName = project.getProjectName();
       this.root = project.getSourcePath();
@@ -435,7 +434,7 @@ public class CommandListener {
                commandFilter.clearFocus();
             }
          }
-         long projectModification = DirectoryWatcher.lastModified(root);
+         long projectModification = project.getModificationTime();
          long previousModification = lastModified.get();
          
          if(previousModification < projectModification) {
@@ -491,7 +490,7 @@ public class CommandListener {
    
    public void onReload() {
       try {
-         lastModified.set(DirectoryWatcher.lastModified(root));
+         lastModified.set(project.getModificationTime());
          commandClient.sendReloadTree();
       } catch(Exception e) {
          processLogger.info("Error reloading tree", e);

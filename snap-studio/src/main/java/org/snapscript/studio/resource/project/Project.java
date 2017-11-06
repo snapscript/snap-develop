@@ -11,10 +11,12 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.io.DirectoryWalker;
 import org.snapscript.agent.ClassPathUpdater;
 import org.snapscript.common.store.NotFoundException;
 import org.snapscript.common.store.Store;
 import org.snapscript.studio.Workspace;
+import org.snapscript.studio.common.DirectoryWatcher;
 import org.snapscript.studio.configuration.ConfigurationClassLoader;
 import org.snapscript.studio.configuration.ConfigurationReader;
 import org.snapscript.studio.configuration.Dependency;
@@ -52,6 +54,10 @@ public class Project implements Store {
    
    public ClassLoader getClassLoader() {
       return classLoader.getClassLoader();
+   }
+   
+   public long getModificationTime(){
+      return DirectoryWatcher.lastModified(getSourcePath());
    }
    
    @Override
