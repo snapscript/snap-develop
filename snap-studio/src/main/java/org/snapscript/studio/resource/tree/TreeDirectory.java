@@ -3,8 +3,6 @@ package org.snapscript.studio.resource.tree;
 import static org.snapscript.studio.resource.tree.TreeConstants.INDENT;
 import static org.snapscript.studio.resource.tree.TreeConstants.PREFIX;
 import static org.snapscript.studio.resource.tree.TreeConstants.ROOT;
-import static org.snapscript.studio.resource.tree.TreeEntryBuilder.buildFile;
-import static org.snapscript.studio.resource.tree.TreeEntryBuilder.buildFolder;
 
 import java.io.File;
 import java.util.List;
@@ -15,6 +13,7 @@ import org.snapscript.studio.resource.template.TemplateModel;
 
 public class TreeDirectory {
    
+   private final TreeEntryBuilder entryBuilder;
    private final TemplateModel theme;
    private final TreeContext context;
    private final boolean foldersOnly;
@@ -29,6 +28,7 @@ public class TreeDirectory {
    }
    
    public TreeDirectory(TreeContext context, TemplateModel theme, boolean foldersOnly, int folderDepth) {
+      this.entryBuilder = new TreeEntryBuilder(context);
       this.foldersOnly = foldersOnly;
       this.folderDepth = folderDepth;
       this.context = context;
@@ -61,7 +61,7 @@ public class TreeDirectory {
       if(folderDepth > 0) {
          if(node.isDirectory()) {
             if(!name.startsWith(".")) { // ignore directories starting with "."
-               buildFolder(builder, node, imageFolder);
+               entryBuilder.buildFolder(builder, node, imageFolder);
                
                List<File> list = node.getFiles();
                
@@ -74,16 +74,19 @@ public class TreeDirectory {
                   for(File entry : list) {
                      String title = entry.getName();
                      String nextPath = node.getPath() + "/" + title;
-                     TreeNode next = new TreeNode.Builder(entry)
-                           .withPath(nextPath)
-                           .withIndent(node.getIndent() + INDENT)
-                           .withPrefix(prefix)
-                           .withId(title)
-                           .withDepth(folderDepth -1)
-                           .withExpand(context.expand(nextPath))
-                           .build();
                      
-                     buildTree(builder, next);
+                     if(context.isVisiblePath(nextPath)) {
+                        TreeNode next = new TreeNode.Builder(entry)
+                              .withPath(nextPath)
+                              .withIndent(node.getIndent() + INDENT)
+                              .withPrefix(prefix)
+                              .withId(title)
+                              .withDepth(folderDepth -1)
+                              .withExpand(context.expand(nextPath))
+                              .build();
+                        
+                        buildTree(builder, next);
+                     }
                   }
                   builder.append(node.getIndent());
                   builder.append("</ul>\n");
@@ -91,7 +94,7 @@ public class TreeDirectory {
             }
          } else {
             if(!foldersOnly) {
-               buildFile(builder, node, imageFolder);
+               entryBuilder.buildFile(builder, node, imageFolder);
             }
          }
       }

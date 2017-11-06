@@ -88,6 +88,10 @@ public class Project implements Store {
       }
    }
    
+   public boolean isLayoutPath(String resource) {
+      return getLayout().isLayoutPath(resource);
+   }
+   
    public String getRealPath(String resource) {
       return getLayout().getRealPath(getSourcePath(), resource);
    }

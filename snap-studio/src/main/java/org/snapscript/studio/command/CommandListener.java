@@ -356,7 +356,7 @@ public class CommandListener {
       String project = command.getProject();
       
       try {
-         TreeContext context = treeManager.getContext(root, project, cookie);
+         TreeContext context = treeManager.getContext(root, project, cookie, true);
          
          if(context != null) {
             processLogger.info("Expand folder: " + folder);
@@ -373,7 +373,7 @@ public class CommandListener {
       String project = command.getProject();
       
       try {
-         TreeContext context = treeManager.getContext(root, project, cookie);
+         TreeContext context = treeManager.getContext(root, project, cookie, true);
          
          if(context != null) {
             processLogger.info("Collapse folder: " + folder);

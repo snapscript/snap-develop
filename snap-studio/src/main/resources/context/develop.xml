@@ -149,7 +149,9 @@
     <constructor-arg ref="Workspace" />
   </bean>
 
-  <bean id="TreeContextManager" class="org.snapscript.studio.resource.tree.TreeContextManager" />
+  <bean id="TreeContextManager" class="org.snapscript.studio.resource.tree.TreeContextManager">
+    <constructor-arg ref="Workspace" />
+  </bean>
 
   <bean id="ProjectResource" class="org.snapscript.studio.resource.project.ProjectResource">
     <constructor-arg ref="DisplayModelResolver" />

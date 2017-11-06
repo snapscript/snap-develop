@@ -1,4 +1,4 @@
-<project>
+<workspace>
   <environment>
     <variable name="PROJECT_ROOT">C:\Work\development\snapscript\snap-develop\snap-studio\work</variable>
     <!--variable name="PROJECT_ROOT">/Users/niallg/Work/development/snapscript/snap-develop/snap-studio/work</variable-->
@@ -12,4 +12,4 @@
   <repository path="/tmp/test-repo">
     <location name="central">http://repo1.maven.org/maven2</location>
   </repository>
-</project>
+</workspace>

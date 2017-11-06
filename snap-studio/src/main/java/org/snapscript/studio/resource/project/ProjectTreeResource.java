@@ -41,11 +41,13 @@ public class ProjectTreeResource implements Resource {
       String[] segments = path.getSegments();
       File treePath = workspace.getRoot();
       boolean foldersOnly = false;
+      boolean isProject = false;
       int folderDepth = Integer.MAX_VALUE;
       
       if(segments.length > 1) {
          Project project = workspace.createProject(path);
          treePath = project.getProjectPath();
+         isProject = true;
       }
       if(depth != null) {
          folderDepth = Integer.parseInt(depth);
@@ -63,7 +65,7 @@ public class ProjectTreeResource implements Resource {
          response.setCookie(session, value);
       }
       String projectName = treePath.getName();
-      TreeContext context = contextManager.getContext(treePath, projectName, value);
+      TreeContext context = contextManager.getContext(treePath, projectName, value, isProject);
 
       context.folderExpand(expand);
       String result = treeBuilder.createTree(context, name, foldersOnly, folderDepth);

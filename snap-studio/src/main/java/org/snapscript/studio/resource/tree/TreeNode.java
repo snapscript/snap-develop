@@ -10,6 +10,7 @@ public class TreeNode {
 
    private final Comparator<File> comparator;
    private final File file; 
+   private final String project;
    private final String path; 
    private final String indent;
    private final String prefix;
@@ -20,6 +21,7 @@ public class TreeNode {
    
    private TreeNode(Builder builder) {
       this.comparator = new TreeFileComparator();
+      this.project = builder.project;
       this.file = builder.file;
       this.path = builder.path;
       this.indent = builder.indent;
@@ -46,6 +48,10 @@ public class TreeNode {
    
    public String getName() {
       return file.getName();
+   }
+   
+   public String getProject() {
+      return project;
    }
    
    public String getPath() {
@@ -83,6 +89,7 @@ public class TreeNode {
    public static class Builder {
       
       private File file; 
+      private String project;
       private String path; 
       private String indent;
       private String prefix;
@@ -102,6 +109,11 @@ public class TreeNode {
 
       public Builder withPath(String path) {
          this.path = path;
+         return this;
+      }
+      
+      public Builder withProject(String project) {
+         this.project = project;
          return this;
       }
 

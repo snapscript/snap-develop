@@ -5,16 +5,28 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.snapscript.studio.Workspace;
+import org.snapscript.studio.configuration.ProjectConfiguration;
+import org.snapscript.studio.resource.project.Project;
+
 public class TreeContext implements TreeFolderExpander {
    
+   private final Workspace workspace;
    private final Set<String> expand;
-   private final String project;
+   private final String projectName;
    private final File root;
+   private final boolean isProject;
    
-   public TreeContext(File root, String project) {
+   public TreeContext(Workspace workspace, File root, String projectName, boolean isProject) {
       this.expand = new CopyOnWriteArraySet<String>();
-      this.project = project;
+      this.workspace = workspace;
+      this.isProject = isProject;
+      this.projectName = projectName;
       this.root = root;
+   }
+   
+   public boolean isProject() {
+      return isProject;
    }
    
    public File getRoot() {
@@ -22,7 +34,41 @@ public class TreeContext implements TreeFolderExpander {
    }
    
    public String getProject() {
-      return project;
+      return projectName;
+   }
+   
+   public boolean isVisiblePath(String path) {
+      if(!isProject) {
+         File projectPath = new File(root, getRelativePath(path));
+         if(projectPath.exists() && projectPath.isDirectory()) {
+            File projectConfig = new File(projectPath, ProjectConfiguration.PROJECT_FILE);
+            return projectConfig.exists() && projectConfig.isFile();
+         }
+         return false;
+      }
+      return true;
+   }
+   
+   public boolean isLayoutPath(String prefix, String path) {
+      if(isProject) {
+         Project project = workspace.getProject(projectName);
+         
+         if(project != null) {
+            path = getRelativePath(path);
+            return project.isLayoutPath(path);
+         }
+      }
+      return false;
+   }
+   
+   private String getRelativePath(String path) {
+      String resourcePrefix = "/resource/" + projectName;
+      
+      if(path.startsWith(resourcePrefix)) {
+         int length = resourcePrefix.length();
+         return path.substring(length);
+      }
+      return path;
    }
    
    public Set<String> getExpandFolders() {
@@ -30,13 +76,13 @@ public class TreeContext implements TreeFolderExpander {
    }
    
    public TreeContext folderExpand(String path) {
-      String result = TreePathFormatter.formatPath(project, path);
+      String result = TreePathFormatter.formatPath(projectName, path);
       expand.add(result);
       return this;
    }
    
    public TreeContext folderCollapse(String path) {
-      String result = TreePathFormatter.formatPath(project, path);
+      String result = TreePathFormatter.formatPath(projectName, path);
       expand.remove(result);
       return this;
    }

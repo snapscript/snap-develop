@@ -1,6 +1,6 @@
 <project>
-   <layout>
+   <source>
       <path>mario/src</path>
       <path>mario/assets</path>      
-   </layout>
+   </source>
 </project>

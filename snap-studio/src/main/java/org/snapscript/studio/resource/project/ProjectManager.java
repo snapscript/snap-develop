@@ -1,10 +1,8 @@
 package org.snapscript.studio.resource.project;
 
+import static org.snapscript.studio.Workspace.createDefaultFile;
+
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -88,23 +86,6 @@ public class ProjectManager {
          createDefaultFile(directory, ".project", "<project></project>");
       }catch(Exception e) {
          workspace.getLogger().info("Could not create default project at '" + file + "'", e);
-      }
-   }
-   
-   private void createDefaultFile(File file, String name, String content) {
-      try {
-         File directory = file.getCanonicalFile();
-         
-         if(!directory.exists() && !directory.mkdirs()) {
-            throw new IllegalStateException("Could not build project directory " + directory);
-         }
-         File ignore = new File(directory, name);
-         FileWriter stream = new FileWriter(ignore);
-         
-         stream.write(content);
-         stream.close();
-      }catch(Exception e) {
-         workspace.getLogger().info("Could not create default file at '" + file + "'", e);
       }
    }
 }

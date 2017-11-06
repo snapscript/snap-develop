@@ -1,7 +1,11 @@
 package org.snapscript.studio;
 
+import static org.snapscript.studio.Workspace.createDefaultFile;
+import static org.snapscript.studio.configuration.WorkspaceConfiguration.WORKSPACE_FILE;
+
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -14,6 +18,7 @@ import org.snapscript.studio.configuration.OperatingSystem;
 import org.snapscript.studio.configuration.ConfigurationReader;
 import org.snapscript.studio.configuration.Dependency;
 import org.snapscript.studio.configuration.ProjectConfiguration;
+import org.snapscript.studio.configuration.WorkspaceConfiguration;
 import org.snapscript.studio.resource.project.Project;
 import org.snapscript.studio.resource.project.ProjectManager;
 
@@ -97,16 +102,11 @@ public class Workspace {
    public File createWorkspace() {
       try {
          File directory = root.getCanonicalFile();
+         File workspaceFile = new File(directory, WORKSPACE_FILE);
          
-         if(!directory.exists()){
-            if(!directory.mkdirs()) {
-               throw new IllegalStateException("Could not build work directory " + directory);
-            }
-            File ignore = new File(directory, ".gitignore");
-            OutputStream stream = new FileOutputStream(ignore);
-            PrintStream print = new PrintStream(stream);
-            print.println("/.temp/");
-            print.close();
+         if(!directory.exists() || !workspaceFile.exists()){
+            directory.mkdirs();
+            createDefaultWorkspace(directory);
          }
          getProjects();// resolve the dependencies
          return directory;
@@ -143,5 +143,32 @@ public class Workspace {
          throw new IllegalStateException("Could not get projects in directory " + root, e);
       }
       return projects;
+   }
+   
+   private void createDefaultWorkspace(File file) {
+      try {
+         File directory = file.getCanonicalFile();
+         
+         if(!directory.exists() && !directory.mkdirs()) {
+            throw new IllegalStateException("Could not build project directory " + directory);
+         }
+         createDefaultFile(directory, ".gitignore", "/.display\n/.workspace\n/.temp/\n/.backup/\n");
+         createDefaultFile(directory, ".workspace", "<workspace></workspace>\n");
+      }catch(Exception e) {
+         getLogger().info("Could not create default workspace at '" + file + "'", e);
+      }
+   }
+   
+   public static void createDefaultFile(File file, String name, String content) throws Exception {
+      File directory = file.getCanonicalFile();
+      
+      if(!directory.exists() && !directory.mkdirs()) {
+         throw new IllegalStateException("Could not build project directory " + directory);
+      }
+      File ignore = new File(directory, name);
+      FileWriter stream = new FileWriter(ignore);
+      
+      stream.write(content);
+      stream.close();
    }
 }

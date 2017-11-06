@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.simpleframework.xml.Attribute;
@@ -35,15 +37,15 @@ import org.sonatype.aether.repository.RemoteRepository;
 public class ConfigurationReader {
    
    private final AtomicReference<WorkspaceConfiguration> workspaceReference;
-   private final AtomicReference<ProjectConfiguration> projectReference;
+   private final Map<String, ProjectConfiguration> projectReference;
    private final ConfigurationFilter filter;
    private final RepositoryFactory factory;
    private final Persister persister;
    private final Workspace workspace;
    
    public ConfigurationReader(Workspace workspace) {
+      this.projectReference = new ConcurrentHashMap<String, ProjectConfiguration>();
       this.workspaceReference = new AtomicReference<WorkspaceConfiguration>();
-      this.projectReference = new AtomicReference<ProjectConfiguration>();
       this.factory = new RepositoryFactory(workspace);
       this.filter = new ConfigurationFilter();
       this.persister = new Persister(filter);
@@ -59,9 +61,15 @@ public class ConfigurationReader {
             
             if(file.exists()) {
                WorkspaceDefinition details = persister.read(WorkspaceDefinition.class, file);
+               Map<String, String> locations = details.getRepositoryLocations();
                Map<String, String> variables = details.getEnvironmentVariables();
                List<String> arguments = details.getArguments();
+               Set<String> repositories = locations.keySet();
                
+               for(String repository : repositories) {
+                  String location = locations.get(repository);
+                  workspace.getLogger().info("Repository: '" + repository + "' -> '" + location + "'");
+               }
                configuration = new WorkspaceContext(factory, details, variables, arguments);
                workspaceReference.set(configuration);
                return configuration;
@@ -76,7 +84,7 @@ public class ConfigurationReader {
    
    public ProjectConfiguration loadProjectConfiguration(String name) {
       try {
-         ProjectConfiguration configuration = projectReference.get();
+         ProjectConfiguration configuration = projectReference.get(name);
          
          if(isProjectConfigurationStale(name)) {
             Project project = workspace.createProject(name);
@@ -84,7 +92,7 @@ public class ConfigurationReader {
             File file = fileSystem.getFile(PROJECT_FILE);
             ProjectDefinition definition = persister.read(ProjectDefinition.class, file);
             
-            projectReference.set(definition);
+            projectReference.put(name, definition);
             return definition;
          } 
          if(configuration != null) {
@@ -98,7 +106,7 @@ public class ConfigurationReader {
    }
    
    private boolean isProjectConfigurationStale(String name) {
-      ProjectConfiguration configuration = projectReference.get();
+      ProjectConfiguration configuration = projectReference.get(name);
       
       if(configuration == null) {
          return true;
@@ -129,7 +137,7 @@ public class ConfigurationReader {
       private Dictionary<VariableDefinition> environment;
       
       @ElementList(entry="path", required=false)
-      private List<String> layout;
+      private List<String> source;
       
       private long lastModified;
       
@@ -137,7 +145,7 @@ public class ConfigurationReader {
          this.lastModified = System.currentTimeMillis();
          this.dependencies = new ArrayList<DependencyDefinition>();
          this.environment = new Dictionary<VariableDefinition>();
-         this.layout = new ArrayList<String>();
+         this.source = new ArrayList<String>();
       }
 
       public Map<String, String> getEnvironmentVariables() {
@@ -158,7 +166,7 @@ public class ConfigurationReader {
 
       @Override
       public ProjectLayout getProjectLayout() {
-         return new ProjectLayout(layout.toArray(new String[]{}));
+         return new ProjectLayout(source.toArray(new String[]{}));
       }
       
       @Override
@@ -189,20 +197,22 @@ public class ConfigurationReader {
          List<File> files = new ArrayList<File>();
       
          try {
-            RepositoryClient client = repository.getClient(factory);
-
-            if(dependencies != null) {
-               for (Dependency dependency : dependencies) {
-                  String groupId = dependency.getGroupId();
-                  String artifactId = dependency.getArtifactId();
-                  String version = dependency.getVersion();
-                  List<File> matches = client.resolve(groupId, artifactId, version);
-
-                  for (File match : matches) {
-                     if (!match.exists()) {
-                        throw new IllegalStateException("Could not resolve file " + match);
+            if(repository != null) {
+               RepositoryClient client = repository.getClient(factory);
+   
+               if(dependencies != null) {
+                  for (Dependency dependency : dependencies) {
+                     String groupId = dependency.getGroupId();
+                     String artifactId = dependency.getArtifactId();
+                     String version = dependency.getVersion();
+                     List<File> matches = client.resolve(groupId, artifactId, version);
+   
+                     for (File match : matches) {
+                        if (!match.exists()) {
+                           throw new IllegalStateException("Could not resolve file " + match);
+                        }
+                        files.add(match);
                      }
-                     files.add(match);
                   }
                }
             }
@@ -211,16 +221,27 @@ public class ConfigurationReader {
          }
          return files;
       }
+      
+      public Map<String, String> getRepositoryLocations() {
+         Map<String, String> locations = new LinkedHashMap<String, String>();
+         
+         if(repository != null && repository.repositories != null) {
+            for(LocationDefinition definition : repository.repositories) {
+               locations.put(definition.name, definition.location);
+            }
+         }
+         return locations;
+      }
 
       public Map<String, String> getEnvironmentVariables() {
-         Map<String, String> map = new LinkedHashMap<String, String>();
+         Map<String, String> variables = new LinkedHashMap<String, String>();
          
          if(environment != null) {
             for(VariableDefinition data : environment) {
-               map.put(data.name, data.value);
+               variables.put(data.name, data.value);
             }
          }
-         return map;
+         return variables;
       }
       
       public List<String> getArguments() {

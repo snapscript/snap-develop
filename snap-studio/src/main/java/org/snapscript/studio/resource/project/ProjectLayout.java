@@ -10,6 +10,20 @@ public class ProjectLayout {
       this.paths = paths;
    }
    
+   public boolean isLayoutPath(String resource) {
+      for(String path : paths) {
+         path = path.replace("\\", "/");
+         
+         if(!path.startsWith("/")) {
+            path = "/" + path;
+         }
+         if(path.startsWith(resource)) {
+            return true;
+         }
+      }
+      return false;
+   }
+   
    public String getRealPath(File projectPath, String resource) { //  "/demo/mario/MarioGame.snap" -> "/demo/mario/src/mario/MarioGame.snap"
       if(resource != null) {
          File resourcePath = new File(projectPath, resource);
