@@ -1,12 +1,14 @@
 package org.snapscript.studio.complete;
 
 import java.io.File;
-import java.util.HashMap;
+import java.net.JarURLConnection;
+import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.simpleframework.http.Path;
 import org.snapscript.common.thread.ThreadPool;
@@ -53,17 +55,22 @@ public class TypeNodeScanner {
             String typeName = info.getName();
          
             if(typeName.matches(expression) || simpleName.matches(expression)) {
-               Class realType = info.load();
-               
-               simpleName = realType.getSimpleName();
-               typeName = realType.getName();
-               
-               if(typeName.matches(expression) || simpleName.matches(expression)) {
-                  TypeNode typeNode = TypeNode.createNode(context, realType, simpleName);
-                  String typePath = typeNode.getResource();
-                  TypeNodeReference reference = createTypeReference(typeNode, typePath, typePath);
+               try {
+                  Class realType = info.load();
                   
-                  typeNodes.put(typeName +":" + typePath, reference);
+                  simpleName = realType.getSimpleName();
+                  typeName = realType.getName();
+                  
+                  if(typeName.matches(expression) || simpleName.matches(expression)) {
+                     TypeNode typeNode = TypeNode.createNode(context, realType, simpleName);
+                     String typePath = createClassLocation(info, realType);
+                     String filePath = createFullPath(realType);
+                     TypeNodeReference reference = createTypeReference(typeNode, typePath, typePath);
+                     
+                     typeNodes.put(simpleName +":" + filePath, reference);
+                  }
+               }catch(Exception e) {
+                  workspace.getLogger().info("Could not load " + typeName, e);
                }
             }
          }
@@ -72,7 +79,7 @@ public class TypeNodeScanner {
    }
    
    public Map<String, TypeNodeReference> findTypes(Path path, String expression) throws Exception {
-      Map<String, TypeNodeReference> typeNodes = new HashMap<String, TypeNodeReference>();
+      Map<String, TypeNodeReference> typeNodes = new TreeMap<String, TypeNodeReference>();
       Project project = workspace.createProject(path);
       ProjectLayout layout = project.getLayout();
       String name = project.getProjectName();
@@ -146,6 +153,37 @@ public class TypeNodeScanner {
       return new TypeNodeReference(functionNames, propertyNames, typeName, realPath, TypeNodeReference.CLASS);
    }
    
+   private String createClassLocation(ClassInfo info, Class type) {
+      URL url = info.url();
+      
+      if(url.toString().toLowerCase().startsWith("jar:file")) {
+         try {
+            JarURLConnection connection = (JarURLConnection) url.openConnection();
+            URL jarUrl = connection.getJarFileURL();
+            File file = new File(jarUrl.toURI());
+            
+            return file.getCanonicalFile().getName();
+         } catch(Exception e) {
+            workspace.getLogger().trace("Could not build a JAR path", e);
+         }
+      }
+      return createFullPath(type);
+
+   }
+   private static String createFullPath(Class type) {
+      String path = type.getName();
+      
+      if(!path.startsWith("/")) {
+         path = "/" + path;
+      }
+      if(path.endsWith(".class")) {
+         path = path.substring(0, path.lastIndexOf(".class"));
+      }
+      if(path.contains("$")) {
+         return path.substring(0, path.indexOf('$'));
+      }
+      return path.replace(".", "/") + ".java";
+   }
    private static class CompileAction implements FileAction<Map<String, TypeNode>> {
    
       private final TypeNodeFinder finder;
