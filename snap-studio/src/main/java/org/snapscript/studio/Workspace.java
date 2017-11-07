@@ -1,24 +1,20 @@
 package org.snapscript.studio;
 
-import static org.snapscript.studio.Workspace.createDefaultFile;
 import static org.snapscript.studio.configuration.WorkspaceConfiguration.WORKSPACE_FILE;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
 
 import org.simpleframework.http.Path;
 import org.snapscript.agent.log.ProcessLogger;
-import org.snapscript.studio.configuration.OperatingSystem;
+import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.studio.configuration.ConfigurationReader;
 import org.snapscript.studio.configuration.Dependency;
 import org.snapscript.studio.configuration.ProjectConfiguration;
-import org.snapscript.studio.configuration.WorkspaceConfiguration;
 import org.snapscript.studio.resource.project.Project;
 import org.snapscript.studio.resource.project.ProjectManager;
 
@@ -27,10 +23,12 @@ public class Workspace {
    private final ConfigurationReader reader;
    private final ProjectManager manager;
    private final ProcessLogger logger;
+   private final ThreadPool pool;
    private final File root;
 
    public Workspace(ProcessLogger logger, File root, String mode) {
       this.reader = new ConfigurationReader(this);
+      this.pool = new ThreadPool(6);
       this.manager = new ProjectManager(reader, this, mode);
       this.logger = logger;
       this.root = root;
@@ -38,6 +36,10 @@ public class Workspace {
    
    public File getRoot() {
       return createWorkspace();
+   }
+   
+   public Executor getExecutor(){
+      return pool;
    }
    
    public ProcessLogger getLogger() {
@@ -77,11 +79,7 @@ public class Workspace {
    }
    
    public List<File> resolveDependencies(List<Dependency> dependencies) {
-      try {
-         return reader.loadWorkspaceConfiguration().getDependencies(dependencies);
-      } catch(Exception e) {
-         throw new IllegalStateException("Could not resolve dependencies", e);
-      }
+      return reader.loadWorkspaceConfiguration().getDependencies(dependencies);
    }
    
    public File createFile(String name) {

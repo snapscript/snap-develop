@@ -34,6 +34,10 @@ import org.snapscript.studio.resource.project.ProjectLayout;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.repository.RemoteRepository;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.ClassPath;
+import com.google.common.reflect.ClassPath.ClassInfo;
+
 public class ConfigurationReader {
    
    private final AtomicReference<WorkspaceConfiguration> workspaceReference;
@@ -100,7 +104,7 @@ public class ConfigurationReader {
          }
          workspace.getLogger().info("Project '" + name + "' does not contain a .project file");
       }catch(Exception e) {
-         throw new IllegalStateException("Could not read configuration", e);
+         throw new IllegalStateException("Could not read .project file", e);
       }
       return new ProjectDefinition();
    }
@@ -139,6 +143,7 @@ public class ConfigurationReader {
       @ElementList(entry="path", required=false)
       private List<String> source;
       
+      private Set<ClassInfo> projectClasses;
       private long lastModified;
       
       public ProjectDefinition() {
@@ -157,6 +162,18 @@ public class ConfigurationReader {
             }
          }
          return map;
+      }
+      
+      @Override
+      public Set<ClassInfo> getAllClasses() {
+         if(projectClasses == null) {
+            try {
+               projectClasses = ClassPath.from(Thread.currentThread().getContextClassLoader()).getAllClasses();
+            }catch(Exception e) {
+               projectClasses = Collections.emptySet();
+            }
+         }
+         return projectClasses;
       }
       
       @Override
@@ -217,7 +234,7 @@ public class ConfigurationReader {
                }
             }
          } catch(Exception e) {
-            throw new IllegalStateException("Could not resolve dependencies", e);
+            throw new IllegalStateException(e.getMessage(), e);
          }
          return files;
       }

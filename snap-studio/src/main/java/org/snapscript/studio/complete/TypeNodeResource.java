@@ -40,7 +40,7 @@ public class TypeNodeResource implements Resource {
       Thread thread = Thread.currentThread();
       ClassLoader classLoader = project.getClassLoader();
       thread.setContextClassLoader(classLoader);
-      Map<String, TypeNodeReference> tokens = scanner.findTypes(path, expression);
+      Map<String, TypeNodeReference> tokens = scanner.findTypesIncludingClasses(path, expression);
       String text = gson.toJson(tokens);
       response.setContentType("application/json");
       out.println(text);

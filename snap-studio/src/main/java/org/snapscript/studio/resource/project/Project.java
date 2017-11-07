@@ -8,21 +8,29 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Executor;
 
-import org.apache.commons.io.DirectoryWalker;
 import org.snapscript.agent.ClassPathUpdater;
 import org.snapscript.common.store.NotFoundException;
 import org.snapscript.common.store.Store;
+import org.snapscript.compile.StoreContext;
+import org.snapscript.core.Context;
 import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.DirectoryWatcher;
+import org.snapscript.studio.configuration.ClassPathExecutor;
 import org.snapscript.studio.configuration.ConfigurationClassLoader;
 import org.snapscript.studio.configuration.ConfigurationReader;
 import org.snapscript.studio.configuration.Dependency;
 import org.snapscript.studio.configuration.ProjectConfiguration;
 
-public class Project implements Store {
+import com.google.common.reflect.ClassPath.ClassInfo;
+
+public class Project {
    
    private final ConfigurationClassLoader classLoader;
    private final ConfigurationReader reader;
@@ -30,14 +38,20 @@ public class Project implements Store {
    private final Workspace workspace;
    private final String projectName;
    private final String projectDirectory;
+   private final Store store;
 
    public Project(ConfigurationReader reader, Workspace workspace, String projectDirectory, String projectName) {
       this.classLoader = new ConfigurationClassLoader(this);
       this.fileSystem = new ProjectFileSystem(this);
+      this.store = new ProjectStore();
       this.projectDirectory = projectDirectory;
       this.projectName = projectName;
       this.workspace = workspace;
       this.reader = reader;
+   }
+   
+   public Workspace getWorkspace(){
+      return workspace;
    }
    
    public String getProjectDirectory() {
@@ -59,24 +73,6 @@ public class Project implements Store {
    public long getModificationTime(){
       return DirectoryWatcher.lastModified(getSourcePath());
    }
-   
-   @Override
-   public InputStream getInputStream(String path) {
-      try {
-         ProjectLayout layout = getLayout();
-         File rootPath = getSourcePath();
-         String projectPath = layout.getRealPath(rootPath, path);
-         File realFile = fileSystem.getFile(projectPath);
-         return new FileInputStream(realFile);
-      } catch(Exception e) {
-         throw new NotFoundException("Could not get source path for '" + path + "'", e);
-      }
-   }
-
-   @Override
-   public OutputStream getOutputStream(String path) {
-      return System.out;
-   }
 
    public File getSourcePath() {
       try {
@@ -91,6 +87,16 @@ public class Project implements Store {
          return workspace.createFile(projectName);
       } catch (Exception e) {
          throw new IllegalStateException("Could not get project path for '" + projectName + "'", e);
+      }
+   }
+   
+   public Context getProjectContext() {
+      Executor threadPool = workspace.getExecutor();
+      try {
+         ClassPathExecutor executor = new ClassPathExecutor(this, threadPool);
+         return new StoreContext(store, executor);
+      }catch(Exception e) {
+         throw new IllegalStateException("Could not create context for '" + projectName + "'", e);
       }
    }
    
@@ -111,8 +117,19 @@ public class Project implements Store {
          ProjectConfiguration configuration = reader.loadProjectConfiguration(projectName);
          return configuration.getProjectLayout();
       } catch (Exception e) {
-         throw new IllegalStateException("Could not get source path for '" + projectName + "'", e);
+         workspace.getLogger().info("Could not read .project file for '" + projectName + "'", e);
       }
+      return new ProjectLayout();
+   }
+   
+   public Set<ClassInfo> getAllClasses() {
+      try {
+         ProjectConfiguration configuration = reader.loadProjectConfiguration(projectName);
+         return configuration.getAllClasses();
+      } catch (Exception e) {
+         workspace.getLogger().info("Could not read .project file for '" + projectName + "'", e);
+      }
+      return Collections.emptySet();
    }
    
    public List<File> getDependencies() {
@@ -127,7 +144,7 @@ public class Project implements Store {
          }
          return files;
       } catch(Exception e) {
-         throw new IllegalStateException("Could not determine dependencies for '" + projectName+ "'", e);
+         throw new IllegalStateException(e.getMessage(), e);
       }
    }
    
@@ -166,9 +183,8 @@ public class Project implements Store {
    }
    
    private String createClassPath() throws Exception {
-      List<File> dependencies = resolveDependencies();
-      
       try {
+         List<File> dependencies = resolveDependencies();
          StringBuilder builder = new StringBuilder();
    
          builder.append(".");
@@ -187,7 +203,14 @@ public class Project implements Store {
          }
          return builder.toString();
       } catch(Exception e) {
-         throw new IllegalStateException("Could not build class path", e);
+         StringWriter writer = new StringWriter();
+         PrintWriter printer = new PrintWriter(writer);
+         
+         e.printStackTrace(printer);
+         printer.close();
+         workspace.getLogger().info("Could not create class path for project '" + projectName+ "': " + writer);
+         
+         return writer.toString();
       }
    }
    
@@ -201,7 +224,29 @@ public class Project implements Store {
          }
          return Collections.emptyList();
       } catch(Exception e) {
-         throw new IllegalStateException("Could not load dependencies for '" + projectName + "'", e);
+         throw new IllegalStateException(e.getMessage(), e);
+      }
+   }
+   
+   
+   private class ProjectStore implements Store {
+   
+      @Override
+      public InputStream getInputStream(String path) {
+         try {
+            ProjectLayout layout = getLayout();
+            File rootPath = getSourcePath();
+            String projectPath = layout.getRealPath(rootPath, path);
+            File realFile = fileSystem.getFile(projectPath);
+            return new FileInputStream(realFile);
+         } catch(Exception e) {
+            throw new NotFoundException("Could not get source path for '" + path + "'", e);
+         }
+      }
+   
+      @Override
+      public OutputStream getOutputStream(String path) {
+         return System.out;
       }
    }
 }

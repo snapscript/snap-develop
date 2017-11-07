@@ -2,23 +2,22 @@ package org.snapscript.studio.configuration;
 
 import java.util.concurrent.Executor;
 
-import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.studio.resource.project.Project;
 
 public class ClassPathExecutor implements Executor {
 
+   private final Executor executor;
    private final Project project;
-   private final ThreadPool pool;
    
-   public ClassPathExecutor(ThreadPool pool, Project project) {
+   public ClassPathExecutor(Project project, Executor executor) {
+      this.executor = executor;
       this.project = project;
-      this.pool = pool;
    }
    
    @Override
    public void execute(Runnable command) {
       CompletionTask task = new CompletionTask(command);
-      pool.execute(task);
+      executor.execute(task);
    }
 
    private class CompletionTask implements Runnable {

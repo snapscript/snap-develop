@@ -60,8 +60,7 @@ export module ProblemManager {
          	}
          }
       }
-      w2ui['problems'].records = problemRecords;
-      w2ui['problems'].refresh();
+      Common.updateTableRecords(problemRecords, 'problems');
    }
    
    function clearProblems() {

@@ -20,6 +20,20 @@ public class CommandClient {
       channel.send(message);
    }
    
+   public void sendDependencyError(String resource, String description, long time, int line) throws Exception {
+      String name = project.getProjectName();
+      ProblemCommand command = ProblemCommand.builder()
+            .project(name)
+            .description(description)
+            .resource(resource)
+            .time(time)
+            .line(line)
+            .build();
+      String message = writer.write(command);
+      
+      channel.send(message);
+   }
+   
    public void sendSyntaxError(String resource, String description, long time, int line) throws Exception {
       String name = project.getProjectName();
       ProblemCommand command = ProblemCommand.builder()

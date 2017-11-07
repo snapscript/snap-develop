@@ -2,8 +2,11 @@ package org.snapscript.studio.configuration;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.snapscript.studio.resource.project.ProjectLayout;
+
+import com.google.common.reflect.ClassPath.ClassInfo;
 
 public interface ProjectConfiguration {
    
@@ -12,6 +15,7 @@ public interface ProjectConfiguration {
    
    List<Dependency> getDependencies();
    Map<String, String> getEnvironmentVariables();
+   Set<ClassInfo> getAllClasses();
    ProjectLayout getProjectLayout();
    long getLastModifiedTime();
 }

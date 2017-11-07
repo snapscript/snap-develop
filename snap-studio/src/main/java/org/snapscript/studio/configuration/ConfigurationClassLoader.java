@@ -58,9 +58,16 @@ public class ConfigurationClassLoader {
       return true;
    }
    
-   private static ClassLoader createClassLoader(String dependencies) {
+   private ClassLoader createClassLoader(String dependencies) {
       try {
          List<File> files = ClassPathUpdater.parseClassPath(dependencies);
+         File workspaceRoot = project.getWorkspace().getRoot();
+         File tempPath = new File(workspaceRoot, WorkspaceConfiguration.TEMP_PATH);
+         File agentFile = new File(tempPath, WorkspaceConfiguration.JAR_FILE);
+         
+         if(agentFile.exists()) {
+            files.add(agentFile);
+         }
          List<URL> locations = new ArrayList<URL>();
          URL[] array = new URL[]{};
          
@@ -70,7 +77,7 @@ public class ConfigurationClassLoader {
          }
          return new URLClassLoader(
                locations.toArray(array),
-               ConfigurationClassLoader.class.getClassLoader());
+               ClassLoader.getSystemClassLoader().getParent());
       } catch(Exception e) {
          throw new IllegalStateException("Could not create project class loader", e);
       }

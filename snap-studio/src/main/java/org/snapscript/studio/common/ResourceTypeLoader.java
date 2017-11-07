@@ -11,10 +11,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.compile.Compiler;
 import org.snapscript.compile.Executable;
-import org.snapscript.compile.StoreContext;
 import org.snapscript.compile.StringCompiler;
 import org.snapscript.core.Context;
 import org.snapscript.core.EmptyModel;
@@ -31,7 +29,6 @@ import org.snapscript.core.link.Package;
 import org.snapscript.core.link.PackageDefinition;
 import org.snapscript.core.link.PackageLinker;
 import org.snapscript.studio.Workspace;
-import org.snapscript.studio.configuration.ClassPathExecutor;
 import org.snapscript.studio.resource.project.Project;
 import org.snapscript.studio.resource.project.ProjectLayout;
 
@@ -42,11 +39,9 @@ public class ResourceTypeLoader {
    private static final String IMPORT_PATTERN = "^import (.*);.*";
    
    private final PathConverter converter;
-   private final ThreadPool pool;
    private final Workspace workspace;
    
    public ResourceTypeLoader(Workspace workspace) {
-      this.pool = new ThreadPool(6);
       this.converter = new FilePathConverter();
       this.workspace = workspace;
    }
@@ -69,10 +64,9 @@ public class ResourceTypeLoader {
    }
    
    private Map<String, TypeNode> compileSource(Project project, String resource, String source, int line, boolean aliases) { 
-      ClassPathExecutor executor = new ClassPathExecutor(pool, project);
+      Context context = project.getProjectContext();
       Map<String, TypeNode> types = new HashMap<String, TypeNode>();
       Model model = new EmptyModel();
-      Context context = new StoreContext(project, executor);
       Compiler compiler = new StringCompiler(context);
       ScopeMerger merger = new ScopeMerger(context);
       ModuleRegistry registry = context.getRegistry();

@@ -16,6 +16,7 @@ import org.snapscript.studio.ProcessManager;
 import org.snapscript.studio.common.Problem;
 import org.snapscript.studio.common.ProblemFinder;
 import org.snapscript.studio.configuration.OperatingSystem;
+import org.snapscript.studio.configuration.ProjectConfiguration;
 import org.snapscript.studio.resource.display.DisplayDefinition;
 import org.snapscript.studio.resource.display.DisplayPersister;
 import org.snapscript.studio.resource.project.Project;
@@ -439,6 +440,14 @@ public class CommandListener {
          
          if(previousModification < projectModification) {
             onReload();
+         }
+         try {
+            project.getDependencies();
+         } catch(Exception e) {
+            String message = e.getMessage();
+            long time = System.currentTimeMillis();
+            
+            commandClient.sendDependencyError(ProjectConfiguration.PROJECT_FILE, message, time, 1);
          }
          processManager.register(forwarder); // make sure we are registered
       } catch(Exception e) {

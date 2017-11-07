@@ -18,6 +18,14 @@ import org.snapscript.core.property.Property;
 
 public class TypeNode {
    
+   public static TypeNode createNode(Context context, Class require, String key) {
+      Type type = context.getLoader().loadType(require);
+      String fullName = require.getCanonicalName();
+      String typePath = createFullPath(fullName) + ".java";
+      
+      return new TypeNode(type, typePath, key);
+   }
+   
    public static TypeNode createNode(Context context, Type type, String key) {
       ResourceManager manager = context.getManager();
       Set<String> possiblePaths = createPossiblePaths(type);
@@ -48,6 +56,19 @@ public class TypeNode {
       return new TypeNode(module, path, key);
    }
    
+   private static String createFullPath(String path) {
+      if(!path.startsWith("/")) {
+         path = "/" + path;
+      }
+      if(path.endsWith(".class")) {
+         path = path.substring(0, path.lastIndexOf(".class"));
+      }
+      if(path.contains("$")) {
+         return path.substring(0, path.indexOf('$'));
+      }
+      return path.replace(".", "/");
+   }
+   
    private static Set<String> createPossiblePaths(Type type) {
       Set<String> possiblePaths = new LinkedHashSet<String>();
       String possiblePath = "/" + type.toString().replace(".", "/");
@@ -55,7 +76,7 @@ public class TypeNode {
       possiblePaths.add(possiblePath + SCRIPT_EXTENSION);
       
       if(possiblePath.contains("$")) {
-         possiblePaths.add(possiblePath.substring(0, possiblePath.indexOf('$')) + SCRIPT_EXTENSION);
+         possiblePaths.add(createFullPath(possiblePath) + SCRIPT_EXTENSION);
       }
       possiblePaths.add(type.getModule().getPath().getPath());
       
