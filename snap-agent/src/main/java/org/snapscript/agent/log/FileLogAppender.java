@@ -27,6 +27,11 @@ public class FileLogAppender {
    public void append(Object text, Throwable cause) {
       try {
          if(!file.exists() || writer == null || writer.checkError()) {
+            File parent = file.getParentFile();
+            
+            if(!parent.exists()) {
+               parent.mkdirs();
+            }
             appender = new FileWriter(file, append);
             writer = new PrintWriter(appender);
          }

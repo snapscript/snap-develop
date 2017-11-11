@@ -36,13 +36,7 @@ public class ClassPathResourceLoader {
    }
    
    public static byte[] findResource(String path) throws Exception {
-      String location = path;
-      
-      if(location.startsWith("/")) {
-         location = path.substring(1);
-      }
-      ClassLoader loader = ClassLoader.getSystemClassLoader();
-      InputStream input = loader.getResourceAsStream(location);
+      InputStream input = findResourceAsStream(path);
       
       if(input != null) {
          ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -60,5 +54,15 @@ public class ClassPathResourceLoader {
          return output.toByteArray();
       }
       return null;
+   }
+   
+   public static InputStream findResourceAsStream(String path) throws Exception {
+      String location = path;
+      
+      if(location.startsWith("/")) {
+         location = path.substring(1);
+      }
+      ClassLoader loader = ClassLoader.getSystemClassLoader();
+      return loader.getResourceAsStream(location);
    }
 }

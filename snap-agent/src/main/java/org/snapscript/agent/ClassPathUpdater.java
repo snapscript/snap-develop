@@ -39,11 +39,10 @@ public class ClassPathUpdater {
       return files;
    }
    
-   public static void updateClassPath(String dependencies) throws Exception {  
+   public static ClassLoader updateClassPath(String dependencies) throws Exception {  
       URLClassLoader loader = (URLClassLoader)ClassLoader.getSystemClassLoader();
       Method method = URLClassLoader.class.getDeclaredMethod(ADD_URL_METHOD, URL.class);
       List<File> files = parseClassPath(dependencies);
-      
       int size = files.size();
       
       if(size > 0) {
@@ -56,5 +55,6 @@ public class ClassPathUpdater {
             method.invoke(loader, path);
          } 
       }
+      return loader;
    }
 }

@@ -53,6 +53,11 @@
     </dependency>
     <dependency>
       <groupId>org.snapscript</groupId>
+      <artifactId>snap-cef</artifactId>
+      <version>1.2</version>
+    </dependency>    
+    <dependency>
+      <groupId>org.snapscript</groupId>
       <artifactId>snap-platform</artifactId>
       <version>1.2</version>
     </dependency>

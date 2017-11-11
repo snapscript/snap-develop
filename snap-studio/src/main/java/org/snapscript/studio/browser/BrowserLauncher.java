@@ -14,12 +14,13 @@ public class BrowserLauncher {
    private final boolean disabled;
    private final boolean debug;
    
-   public void launch(final String host, final int port) {
+   public void launch(final String engine, final String host, final int port) {
       if(!disabled) {
          final BrowserContext context = new BrowserContext.Builder()
             .withDebug(debug)
             .withHost(host)
             .withPort(port)
+            .withEngine(engine)
             .withLogger(workspace.getLogger())
             .withDirectory(directory)
             .build();
@@ -27,7 +28,7 @@ public class BrowserLauncher {
          final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-               BrowserApplication.launch(context);
+               BrowserFactory.createBrowser(context).launch();
             }
          });
          thread.start();

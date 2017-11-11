@@ -21,12 +21,13 @@ public class ProcessServer {
          String host = address.getHostName();
          String project = String.format("http://%s:%s/", host, port);
          String script = CommandLineArgument.SCRIPT.getValue();
+         String browser = CommandLineArgument.BROWSER_ENGINE.getValue();
             
          if(script != null) {
             engine.launch(); // start a new process
          }
          System.err.println(project);
-         launcher.launch(host, port);
+         launcher.launch(browser, host, port);
          engine.start(host, port);
       } catch(Exception e) {
          e.printStackTrace();

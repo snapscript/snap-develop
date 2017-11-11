@@ -30,7 +30,9 @@
    <modules>
            <module>snap-agent</module>
            <module>snap-studio</module>           
-           <module>snap-service</module>          
+           <module>snap-service</module>  
+           <module>snap-cef</module>   
+           <module>snap-index</module>     
 	</modules>
 
 </project>

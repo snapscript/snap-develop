@@ -69,7 +69,7 @@ public class TypeNodeScanner {
                      
                      typeNodes.put(simpleName +":" + filePath, reference);
                   }
-               }catch(Exception e) {
+               }catch(Throwable e) {
                   workspace.getLogger().info("Could not load " + typeName, e);
                }
             }

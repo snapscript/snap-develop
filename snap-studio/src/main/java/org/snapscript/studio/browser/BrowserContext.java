@@ -10,6 +10,7 @@ public class BrowserContext {
    
    private final ProcessLogger logger;
    private final File directory;
+   private final String engine;
    private final String host;
    private final int port;
    private final boolean debug;
@@ -17,6 +18,7 @@ public class BrowserContext {
    public BrowserContext(Builder builder) {
       this.directory = builder.directory;
       this.logger = builder.logger;
+      this.engine = builder.engine;
       this.host = builder.host;
       this.debug = builder.debug;
       this.port = builder.port;
@@ -28,6 +30,10 @@ public class BrowserContext {
 
    public ProcessLogger getLogger() {
       return logger;
+   }
+   
+   public String getEngine() {
+      return engine;
    }
 
    public String getTarget() {
@@ -55,6 +61,7 @@ public class BrowserContext {
       
       private ProcessLogger logger;
       private File directory;
+      private String engine;
       private String host;
       private int port;
       private boolean debug;
@@ -65,6 +72,11 @@ public class BrowserContext {
 
       public Builder withLogger(ProcessLogger logger) {
          this.logger = logger;
+         return this;
+      }
+      
+      public Builder withEngine(String engine) {
+         this.engine = engine;
          return this;
       }
 
