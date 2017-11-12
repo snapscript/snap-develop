@@ -1,5 +1,7 @@
 package org.snapscript.index.tree;
 
+import static org.snapscript.index.IndexType.PROPERTY;
+
 import org.snapscript.core.Compilation;
 import org.snapscript.core.Evaluation;
 import org.snapscript.core.Module;
@@ -7,7 +9,6 @@ import org.snapscript.core.Path;
 import org.snapscript.core.Scope;
 import org.snapscript.core.Value;
 import org.snapscript.index.IndexResult;
-import org.snapscript.index.IndexType;
 import org.snapscript.tree.constraint.Constraint;
 import org.snapscript.tree.define.ModuleProperty;
 import org.snapscript.tree.literal.TextLiteral;
@@ -41,7 +42,12 @@ public class ModulePropertyIndex implements Compilation {
       Scope scope = module.getScope();
       Value value = identifier.evaluate(scope, null);
       String name = value.getString();
+      String prefix = module.getName();
+      String type = null;
       
-      return new IndexResult(IndexType.PROPERTY, property, constraint, name, path, line);
+      if(constraint != null) {
+         type = constraint.evaluate(scope, null).getValue();
+      }
+      return new IndexResult(PROPERTY, property, type, prefix, name, path, line);
    }
 }

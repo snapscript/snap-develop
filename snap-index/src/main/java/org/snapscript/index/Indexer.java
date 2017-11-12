@@ -90,7 +90,7 @@ public class Indexer {
 
       TokenIndexer tokenIndexer = new TokenIndexer(grammarIndexer, resource, original, compress, lines, types);
       tokenIndexer.index(tokens);
-      return new IndexSearcher(top, tokens);
+      return new IndexNodeSearcher(top, tokens);
    }
    
    private static class IndexBuilder implements IndexListener {

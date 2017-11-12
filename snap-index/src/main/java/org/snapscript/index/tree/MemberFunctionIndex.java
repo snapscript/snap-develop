@@ -1,5 +1,7 @@
 package org.snapscript.index.tree;
 
+import static org.snapscript.index.IndexType.MEMBER_FUNCTION;
+
 import org.snapscript.core.Compilation;
 import org.snapscript.core.Evaluation;
 import org.snapscript.core.Module;
@@ -17,6 +19,7 @@ import org.snapscript.tree.function.ParameterList;
 
 public class MemberFunctionIndex implements Compilation {
    
+   private final ParameterList parameters;
    private final MemberFunction function;
    private final Evaluation identifier;
    private final Constraint constraint;
@@ -37,6 +40,7 @@ public class MemberFunctionIndex implements Compilation {
       this.function = new MemberFunction(annotations, modifiers, identifier, parameters, constraint, body);
       this.constraint = constraint;
       this.identifier = identifier;
+      this.parameters = parameters;
    }
 
    @Override
@@ -44,7 +48,15 @@ public class MemberFunctionIndex implements Compilation {
       Scope scope = module.getScope();
       Value value = identifier.evaluate(scope, null);
       String name = value.getString();
+      String prefix = module.getName();
+      String type = null;
       
-      return new IndexResult(IndexType.MEMBER_FUNCTION, function, constraint, name, path, line);
+      if(parameters != null) {
+         name = name + parameters.create(scope);
+      }
+      if(constraint != null) {
+         type = constraint.evaluate(scope, null).getValue();
+      }
+      return new IndexResult(MEMBER_FUNCTION, function, type, prefix, name, path, line);
    }
 }

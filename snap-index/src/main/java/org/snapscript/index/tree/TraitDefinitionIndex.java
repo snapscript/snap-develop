@@ -26,7 +26,8 @@ public class TraitDefinitionIndex implements Compilation {
    public Object compile(Module module, Path path, int line) throws Exception {
       Scope scope = module.getScope();
       String name = identifier.getName(scope);
+      String prefix = module.getName();
       
-      return new IndexResult(IndexType.TRAIT, definition, null, name, path, line);
+      return new IndexResult(IndexType.TRAIT, definition, null, prefix, name, path, line);
    }
 }

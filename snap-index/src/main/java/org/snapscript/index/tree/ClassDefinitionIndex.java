@@ -1,11 +1,12 @@
 package org.snapscript.index.tree;
 
+import static org.snapscript.index.IndexType.CLASS;
+
 import org.snapscript.core.Compilation;
 import org.snapscript.core.Module;
 import org.snapscript.core.Path;
 import org.snapscript.core.Scope;
 import org.snapscript.index.IndexResult;
-import org.snapscript.index.IndexType;
 import org.snapscript.tree.annotation.AnnotationList;
 import org.snapscript.tree.define.ClassDefinition;
 import org.snapscript.tree.define.TypeHierarchy;
@@ -26,7 +27,8 @@ public class ClassDefinitionIndex implements Compilation {
    public Object compile(Module module, Path path, int line) throws Exception {
       Scope scope = module.getScope();
       String name = identifier.getName(scope);
+      String prefix = module.getName();
       
-      return new IndexResult(IndexType.CLASS, definition, null, name, path, line);
+      return new IndexResult(CLASS, definition, null, prefix, name, path, line);
    }
 }

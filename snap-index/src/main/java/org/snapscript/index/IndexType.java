@@ -35,6 +35,22 @@ public enum IndexType {
       return this == SCRIPT;
    }
    
+   public boolean isImport() {
+      return this == IMPORT;
+   }
+   
+   public boolean isType() {
+      return this == CLASS ||
+              this == ENUM ||
+              this == TRAIT ||
+              this == MODULE ||
+              this == IMPORT;
+   }
+   
+   public boolean isConstructor(){
+      return this == CONSTRUCTOR;
+   }
+   
    public boolean isFunction(){
       return this == FUNCTION ||
               this == CONSTRUCTOR ||

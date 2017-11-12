@@ -14,9 +14,10 @@ public class IndexerTest extends TestCase {
    private static final String SOURCE =
    "import lang.String;\n"+
    "import util.concurrent.ConcurrentHashMap;\n"+
+   "import util.HashMap as Bag;\n"+
    "class SomeClass {\n"+
-   "   var memb = 11.0;\n"+
-   "   test(){\n"+
+   "   var memb: SizeEnum = SizeEnum.BIG;\n"+
+   "   test(index, size): Mod.ModClass {\n"+
    "     var str = 'xxx';\n"+
    "     println(str);\n"+
    "   }\n"+      
@@ -62,69 +63,118 @@ public class IndexerTest extends TestCase {
    "         y++;\n"+
    "      }\n"+
    "   }\n"+
+   "}\n"+
+   "class Blah {\n"+
+   "   const text: String;\n"+
+   "   new(text){\n"+
+   "      this.text = text;\n"+
+   "   }\n"+
+   "   public doSomething(x): String{\n"+
+   "   }\n"+
    "}\n";
+   
+   public void testTypeNodes() throws Exception {
+      Indexer indexer = new Indexer();
+      ClassPathStore store = new ClassPathStore();
+      Context context = new StoreContext(store);
+      IndexSearcher searcher = indexer.index(context, "/some/package.snap", SOURCE);
+      Map<String, IndexNode> nodes = searcher.getTypeNodes();
+      
+      assertNotNull(nodes.get("String"));
+      assertNotNull(nodes.get("ConcurrentHashMap"));
+      assertNotNull(nodes.get("Bag"));
+      assertNotNull(nodes.get("SomeClass"));
+      assertNotNull(nodes.get("SomeClass.InnerClass"));
+      assertNotNull(nodes.get("SizeEnum"));
+      assertNotNull(nodes.get("Mod"));
+      assertNotNull(nodes.get("Mod.ModClass"));
+      assertNotNull(nodes.get("Mod.ModTrait"));
+      
+      assertEquals(nodes.get("String").getIndex().getType(), IndexType.IMPORT);
+      assertEquals(nodes.get("ConcurrentHashMap").getIndex().getType(), IndexType.IMPORT);
+      assertEquals(nodes.get("Bag").getIndex().getType(), IndexType.IMPORT);
+      assertEquals(nodes.get("SomeClass").getIndex().getType(), IndexType.CLASS);
+      assertEquals(nodes.get("SomeClass.InnerClass").getIndex().getType(), IndexType.CLASS);
+      assertEquals(nodes.get("SizeEnum").getIndex().getType(), IndexType.ENUM);
+      assertEquals(nodes.get("Mod").getIndex().getType(), IndexType.MODULE);
+      assertEquals(nodes.get("Mod.ModClass").getIndex().getType(), IndexType.CLASS);
+      assertEquals(nodes.get("Mod.ModTrait").getIndex().getType(), IndexType.TRAIT);
+   }
    
    public void testNodesInScope() throws Exception {
       Indexer indexer = new Indexer();
       ClassPathStore store = new ClassPathStore();
       Context context = new StoreContext(store);
-      IndexSearcher searcher = indexer.index(context, "/some/path.snap", SOURCE);
+      IndexSearcher searcher = indexer.index(context, "/some/package.snap", SOURCE);
       Map<String, IndexNode> nodes = searcher.getNodesInScope(6);
       
-      assertNotNull(nodes.get("lang.String"));
-      assertNotNull(nodes.get("util.concurrent.ConcurrentHashMap"));
+      assertNotNull(nodes.get("String"));
+      assertNotNull(nodes.get("ConcurrentHashMap"));
       assertNotNull(nodes.get("SomeClass"));
-      assertNotNull(nodes.get("test"));
+      assertNotNull(nodes.get("test(index, size)"));
       assertNotNull(nodes.get("memb"));
       assertNotNull(nodes.get("str"));
       assertNotNull(nodes.get("InnerClass"));
       assertNotNull(nodes.get("SizeEnum"));
       assertNotNull(nodes.get("Mod"));
       
-      assertEquals(nodes.get("lang.String").getIndex().getType(), IndexType.IMPORT);
-      assertEquals(nodes.get("util.concurrent.ConcurrentHashMap").getIndex().getType(), IndexType.IMPORT);
+      assertEquals(nodes.get("String").getIndex().getType(), IndexType.IMPORT);
+      assertEquals(nodes.get("String").getFullName(), "lang.String");
+      assertEquals(nodes.get("ConcurrentHashMap").getIndex().getType(), IndexType.IMPORT);
+      assertEquals(nodes.get("ConcurrentHashMap").getFullName(), "util.concurrent.ConcurrentHashMap");
+      assertEquals(nodes.get("Bag").getIndex().getType(), IndexType.IMPORT);
+      assertEquals(nodes.get("Bag").getFullName(), "util.HashMap");
       assertEquals(nodes.get("SomeClass").getIndex().getType(), IndexType.CLASS);
-      assertEquals(nodes.get("test").getIndex().getType(), IndexType.MEMBER_FUNCTION);
+      assertEquals(nodes.get("SomeClass").getFullName(), "some.package.SomeClass");
+      assertEquals(nodes.get("test(index, size)").getIndex().getType(), IndexType.MEMBER_FUNCTION);
+      assertEquals(nodes.get("test(index, size)").getIndex().getConstraint(), "Mod.ModClass");
       assertEquals(nodes.get("memb").getIndex().getType(), IndexType.PROPERTY);
+      assertEquals(nodes.get("memb").getIndex().getConstraint(), "SizeEnum");
       assertEquals(nodes.get("str").getIndex().getType(), IndexType.VARIABLE);
       assertEquals(nodes.get("InnerClass").getIndex().getType(), IndexType.CLASS);
+      assertEquals(nodes.get("InnerClass").getFullName(), "some.package.SomeClass.InnerClass");
       assertEquals(nodes.get("SizeEnum").getIndex().getType(), IndexType.ENUM);
       assertEquals(nodes.get("Mod").getIndex().getType(), IndexType.MODULE);
    }
    
    public void testNodeSearch() throws Exception {
+      System.err.println(SOURCE);
       Indexer indexer = new Indexer();
       ClassPathStore store = new ClassPathStore();
       Context context = new StoreContext(store);
-      IndexSearcher searcher = indexer.index(context, "/some/path.snap", SOURCE);
-      IndexNode node = searcher.getNode();
+      IndexSearcher searcher = indexer.index(context, "/some/package.snap", SOURCE);
+      IndexNode node = searcher.getRootNode();
       
       traverse(node, "");
       
-      assertEquals(searcher.getDepth(3), 1);
-      assertEquals(searcher.getDepth(6), 2);
-      assertEquals(searcher.getDepth(12), 1);
-      assertEquals(searcher.getDepth(31), 0);
-      assertEquals(searcher.getDepth(24), 2);
-      assertEquals(searcher.getDepth(44), 3);
+      assertEquals(((IndexNodeSearcher)searcher).getDepthAtLine(4), 1);
+      assertEquals(((IndexNodeSearcher)searcher).getDepthAtLine(7), 2);
+      assertEquals(((IndexNodeSearcher)searcher).getDepthAtLine(13), 1);
+      assertEquals(((IndexNodeSearcher)searcher).getDepthAtLine(32), 0);
+      assertEquals(((IndexNodeSearcher)searcher).getDepthAtLine(25), 2);
+      assertEquals(((IndexNodeSearcher)searcher).getDepthAtLine(45), 3);
+      assertEquals(((IndexNodeSearcher)searcher).getDepthAtLine(56), 2);
       
-      assertEquals(searcher.getNode(3).getType(), IndexType.CLASS);
-      assertEquals(searcher.getNode(3).getIndex().getName(), "SomeClass");
+      assertEquals(searcher.getNodeAtLine(4).getType(), IndexType.CLASS);
+      assertEquals(searcher.getNodeAtLine(4).getIndex().getName(), "SomeClass");
       
-      assertEquals(searcher.getNode(6).getType(), IndexType.MEMBER_FUNCTION);
-      assertEquals(searcher.getNode(6).getIndex().getName(), "test");
+      assertEquals(searcher.getNodeAtLine(7).getType(), IndexType.MEMBER_FUNCTION);
+      assertEquals(searcher.getNodeAtLine(7).getIndex().getName(), "test(index, size)");
       
-      assertEquals(searcher.getNode(12).getType(), IndexType.ENUM);
-      assertEquals(searcher.getNode(12).getIndex().getName(), "SizeEnum");
+      assertEquals(searcher.getNodeAtLine(13).getType(), IndexType.ENUM);
+      assertEquals(searcher.getNodeAtLine(13).getIndex().getName(), "SizeEnum");
       
-      assertEquals(searcher.getNode(31).getType(), IndexType.SCRIPT);
-      assertEquals(searcher.getNode(31).getIndex().getName(), "/some/path.snap");
+      assertEquals(searcher.getNodeAtLine(32).getType(), IndexType.SCRIPT);
+      assertEquals(searcher.getNodeAtLine(32).getIndex().getName(), "/some/package.snap");
       
-      assertEquals(searcher.getNode(24).getType(), IndexType.CLASS);
-      assertEquals(searcher.getNode(24).getIndex().getName(), "ModClass");
+      assertEquals(searcher.getNodeAtLine(25).getType(), IndexType.CLASS);
+      assertEquals(searcher.getNodeAtLine(25).getIndex().getName(), "ModClass");
       
-      assertEquals(searcher.getNode(44).getType(), IndexType.COMPOUND);
-      assertEquals(searcher.getNode(44).getIndex().getName(), "");
+      assertEquals(searcher.getNodeAtLine(45).getType(), IndexType.COMPOUND);
+      assertEquals(searcher.getNodeAtLine(45).getIndex().getName(), "");
+      
+      assertEquals(searcher.getNodeAtLine(56).getType(), IndexType.CONSTRUCTOR);
+      assertEquals(searcher.getNodeAtLine(56).getName(), "Blah(text)");
    }
    
    private static void traverse(IndexNode node, String indent) throws Exception {

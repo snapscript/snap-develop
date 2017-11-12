@@ -1,20 +1,21 @@
 package org.snapscript.index;
 
 import org.snapscript.core.Path;
-import org.snapscript.tree.constraint.Constraint;
 
 public class IndexResult implements Index {
 
-   private Constraint constraint;
    private IndexType type;
    private Object operation;
+   private String constraint;
+   private String module;
    private String name;
    private Path path;
    private int line;
    
-   public IndexResult(IndexType type, Object operation, Constraint constraint, String name, Path path, int line) {
+   public IndexResult(IndexType type, Object operation, String constraint, String module, String name, Path path, int line) {
       this.constraint = constraint;
       this.operation = operation;
+      this.module = module;
       this.type = type;
       this.name = name;
       this.path = path;
@@ -27,7 +28,7 @@ public class IndexResult implements Index {
    }
    
    @Override
-   public Constraint getConstraint() {
+   public String getConstraint() {
       return constraint;
    }
 
@@ -43,6 +44,11 @@ public class IndexResult implements Index {
    @Override
    public String getName() {
       return name;
+   }
+   
+   @Override
+   public String getModule() {
+      return module;
    }
 
    @Override

@@ -1,12 +1,13 @@
 package org.snapscript.index.tree;
 
+import static org.snapscript.index.IndexType.IMPORT;
+
 import org.snapscript.core.Compilation;
 import org.snapscript.core.Module;
 import org.snapscript.core.NoStatement;
 import org.snapscript.core.Path;
 import org.snapscript.core.Statement;
 import org.snapscript.index.IndexResult;
-import org.snapscript.index.IndexType;
 import org.snapscript.tree.Qualifier;
 
 public class ImportStaticIndex implements Compilation {
@@ -21,7 +22,9 @@ public class ImportStaticIndex implements Compilation {
 
    @Override
    public Object compile(Module module, Path path, int line) throws Exception {
-      String name = qualifier.getQualifier();
-      return new IndexResult(IndexType.IMPORT, statement, null, name, path, line);
+      String name = qualifier.getTarget();
+      String fullName = qualifier.getQualifier();
+      
+      return new IndexResult(IMPORT, statement, null, fullName, name, path, line);
    }
 }

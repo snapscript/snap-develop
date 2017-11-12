@@ -27,7 +27,8 @@ public class ModuleDefinitionIndex implements Compilation {
       Scope scope = module.getScope();
       Value value = identifier.evaluate(scope, null);
       String name = value.getString();
+      String prefix = module.getName();
       
-      return new IndexResult(IndexType.MODULE, definition, null, name, path, line);
+      return new IndexResult(IndexType.MODULE, definition, null, prefix, name, path, line);
    }
 }

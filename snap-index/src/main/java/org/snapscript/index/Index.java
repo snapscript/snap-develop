@@ -1,13 +1,13 @@
 package org.snapscript.index;
 
 import org.snapscript.core.Path;
-import org.snapscript.tree.constraint.Constraint;
 
 public interface Index {
    IndexType getType();
    Object getOperation();
-   Constraint getConstraint();
+   String getConstraint();
    String getName();
+   String getModule();
    Path getPath();
    int getLine();
    

@@ -1,5 +1,7 @@
 package org.snapscript.index.tree;
 
+import static org.snapscript.index.IndexType.VARIABLE;
+
 import org.snapscript.core.Compilation;
 import org.snapscript.core.Evaluation;
 import org.snapscript.core.Module;
@@ -41,7 +43,12 @@ public class DeclarationIndex implements Compilation {
       Scope scope = module.getScope();
       Value value = identifier.evaluate(scope, null);
       String name = value.getString();
+      String prefix = module.getName();
+      String type = null;
       
-      return new IndexResult(IndexType.VARIABLE, declaration, constraint, name, path, line);
+      if(constraint != null) {
+         type = constraint.evaluate(scope, null).getValue();
+      }
+      return new IndexResult(VARIABLE, declaration, type, prefix, name, path, line);
    }
 }

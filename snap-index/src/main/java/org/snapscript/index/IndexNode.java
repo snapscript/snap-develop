@@ -5,6 +5,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.snapscript.core.Reserved;
+
 public class IndexNode {
 
    private final AtomicReference<IndexNode> parent;
@@ -21,6 +23,54 @@ public class IndexNode {
    
    public Index getIndex() {
       return index;
+   }
+   
+   public String getName() {
+      IndexType type = index.getType();
+      String name = index.getName();
+      
+      if(type.isConstructor()) {
+         IndexNode parentNode = parent.get();
+         String parentName = parentNode.getTypeName();
+         
+         return name.replace(Reserved.TYPE_CONSTRUCTOR + "(", parentName + "(");
+      }
+      return name;
+   }
+   
+   public String getTypeName() {
+      IndexType type = index.getType();
+      String name = index.getName();
+
+      if(type.isType()) {
+         IndexNode parentNode = parent.get();
+         IndexType parentType = parentNode.getType();
+         
+         if(parentType.isType() && !type.isRoot() && !type.isLeaf()) {
+            return parentNode.getTypeName() + "." + name;
+         }
+         return name;
+      }
+      return name;
+   }
+   
+   public String getFullName() {
+      IndexType type = index.getType();
+      String name = index.getName();
+      
+      if(type.isImport()) {
+         return index.getModule();
+      }
+      if(type.isType()) {
+         IndexNode parentNode = parent.get();
+         IndexType parentType = parentNode.getType();
+         
+         if(parentType.isType() && !type.isRoot() && !type.isLeaf()) {
+            return parentNode.getFullName() + "." + name;
+         }
+         return index.getModule() + "." + name;
+      }
+      return name;
    }
    
    public IndexNode getParent() {
