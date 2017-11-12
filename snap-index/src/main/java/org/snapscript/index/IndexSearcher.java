@@ -1,6 +1,9 @@
 package org.snapscript.index;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -29,6 +32,28 @@ public class IndexSearcher {
          return getNode(node, line, depth);
       }
       return node;
+   }
+   
+   public Map<String, IndexNode> getNodesInScope(int line) {
+      IndexNode node = getNode(line);
+      
+      if(node != null) {
+         Map<String, IndexNode> scope = new HashMap<String, IndexNode>();
+         
+         while(node != null) {
+            Set<IndexNode> nodes = node.getNodes();
+            
+            for(IndexNode entry : nodes) {
+               Index index = entry.getIndex();
+               String name = index.getName();
+               
+               scope.put(name, entry);
+            }
+            node = node.getParent();
+         }
+         return scope;
+      }
+      return Collections.emptyMap();
    }
    
    public int getDepth(int line) {

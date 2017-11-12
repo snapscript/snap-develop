@@ -17,6 +17,7 @@ public class ScriptFunctionIndex implements Compilation {
    
    private final ScriptFunction function;
    private final Evaluation identifier;
+   private final Constraint constraint;
    
    public ScriptFunctionIndex(Evaluation identifier, ParameterList parameters, Statement body){  
       this(identifier, parameters, null, body);
@@ -24,6 +25,7 @@ public class ScriptFunctionIndex implements Compilation {
    
    public ScriptFunctionIndex(Evaluation identifier, ParameterList parameters, Constraint constraint, Statement body){  
       this.function = new ScriptFunction(identifier, parameters, constraint, body);
+      this.constraint = constraint;
       this.identifier = identifier;
    }
 
@@ -33,6 +35,6 @@ public class ScriptFunctionIndex implements Compilation {
       Value value = identifier.evaluate(scope, null);
       String name = value.getString();
       
-      return new IndexResult(IndexType.FUNCTION, function, name, path, line);
+      return new IndexResult(IndexType.FUNCTION, function, constraint, name, path, line);
    }  
 }

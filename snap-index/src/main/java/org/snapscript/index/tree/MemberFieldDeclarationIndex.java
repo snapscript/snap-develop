@@ -16,6 +16,7 @@ public class MemberFieldDeclarationIndex implements Compilation {
    
    private final MemberFieldDeclaration declaration;
    private final TextLiteral identifier;
+   private final Constraint constraint;
    
    public MemberFieldDeclarationIndex(TextLiteral identifier) {
       this(identifier, null, null);
@@ -31,6 +32,7 @@ public class MemberFieldDeclarationIndex implements Compilation {
    
    public MemberFieldDeclarationIndex(TextLiteral identifier, Constraint constraint, Evaluation value) {
       this.declaration = new MemberFieldDeclaration(identifier, constraint, value);
+      this.constraint = constraint;
       this.identifier = identifier;
    }
    
@@ -40,6 +42,6 @@ public class MemberFieldDeclarationIndex implements Compilation {
       Value value = identifier.evaluate(scope, null);
       String name = value.getString();
       
-      return new IndexResult(IndexType.PROPERTY, declaration, name, path, line);
+      return new IndexResult(IndexType.PROPERTY, declaration, constraint, name, path, line);
    }
 }

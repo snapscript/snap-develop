@@ -19,6 +19,6 @@ public class ScriptIndex implements Compilation {
    @Override
    public Object compile(Module module, Path path, int line) throws Exception {
       String name = path.getPath();
-      return new IndexResult(IndexType.SCRIPT, script, name, path, line);
+      return new IndexResult(IndexType.SCRIPT, script, null, name, path, line);
    }
 }

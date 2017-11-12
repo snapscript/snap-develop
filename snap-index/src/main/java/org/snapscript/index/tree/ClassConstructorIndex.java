@@ -27,7 +27,7 @@ public class ClassConstructorIndex implements Compilation {
    
    @Override
    public Object compile(Module module, Path path, int line) throws Exception {
-      return new IndexResult(IndexType.CONSTRUCTOR, constructor, Reserved.TYPE_CONSTRUCTOR, path, line);
+      return new IndexResult(IndexType.CONSTRUCTOR, constructor, null, Reserved.TYPE_CONSTRUCTOR, path, line);
    }
 }
 

@@ -28,6 +28,6 @@ public class EnumDefinitionIndex implements Compilation {
       Scope scope = module.getScope();
       String name = identifier.getName(scope);
       
-      return new IndexResult(IndexType.ENUM, definition, name, path, line);
+      return new IndexResult(IndexType.ENUM, definition, null, name, path, line);
    }
 }

@@ -19,6 +19,7 @@ public class ModuleFunctionIndex implements Compilation {
    
    private final ModuleFunction function;
    private final Evaluation identifier;
+   private final Constraint constraint;
 
    public ModuleFunctionIndex(AnnotationList annotations, ModifierList modifiers, Evaluation identifier, ParameterList parameters, Statement body){  
       this(annotations, modifiers, identifier, parameters, null, body);
@@ -27,6 +28,7 @@ public class ModuleFunctionIndex implements Compilation {
    public ModuleFunctionIndex(AnnotationList annotations, ModifierList modifiers, Evaluation identifier, ParameterList parameters, Constraint constraint, Statement body){
       this.function = new ModuleFunction(annotations, modifiers, identifier, parameters, constraint, body);
       this.identifier = identifier;
+      this.constraint = constraint;
    }
    
    @Override
@@ -35,6 +37,6 @@ public class ModuleFunctionIndex implements Compilation {
       Value value = identifier.evaluate(scope, null);
       String name = value.getString();
       
-      return new IndexResult(IndexType.MEMBER_FUNCTION, function, name, path, line);
+      return new IndexResult(IndexType.MEMBER_FUNCTION, function, constraint, name, path, line);
    }
 }

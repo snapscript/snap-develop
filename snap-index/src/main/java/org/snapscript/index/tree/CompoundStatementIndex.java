@@ -19,7 +19,7 @@ public class CompoundStatementIndex implements Compilation {
    @Override
    public Object compile(Module module, Path path, int line) throws Exception {
       Object result = statement.compile(module, path, line);
-      return new IndexResult(IndexType.COMPOUND, result, "", path, line);
+      return new IndexResult(IndexType.COMPOUND, result, null, "", path, line);
    }
 
 }

@@ -28,6 +28,6 @@ public class ModuleDefinitionIndex implements Compilation {
       Value value = identifier.evaluate(scope, null);
       String name = value.getString();
       
-      return new IndexResult(IndexType.MODULE, definition, name, path, line);
+      return new IndexResult(IndexType.MODULE, definition, null, name, path, line);
    }
 }

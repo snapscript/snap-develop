@@ -27,6 +27,6 @@ public class TraitDefinitionIndex implements Compilation {
       Scope scope = module.getScope();
       String name = identifier.getName(scope);
       
-      return new IndexResult(IndexType.TRAIT, definition, name, path, line);
+      return new IndexResult(IndexType.TRAIT, definition, null, name, path, line);
    }
 }

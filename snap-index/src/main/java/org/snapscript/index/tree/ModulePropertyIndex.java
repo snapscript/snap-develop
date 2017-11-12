@@ -16,6 +16,7 @@ public class ModulePropertyIndex implements Compilation {
 
    private final ModuleProperty property;
    private final TextLiteral identifier;
+   private final Constraint constraint;
    
    public ModulePropertyIndex(TextLiteral identifier) {
       this(identifier, null, null);
@@ -31,6 +32,7 @@ public class ModulePropertyIndex implements Compilation {
    
    public ModulePropertyIndex(TextLiteral identifier, Constraint constraint, Evaluation value) {
       this.property = new ModuleProperty(identifier, constraint, value);
+      this.constraint = constraint;
       this.identifier = identifier;
    }  
    
@@ -40,6 +42,6 @@ public class ModulePropertyIndex implements Compilation {
       Value value = identifier.evaluate(scope, null);
       String name = value.getString();
       
-      return new IndexResult(IndexType.PROPERTY, property, name, path, line);
+      return new IndexResult(IndexType.PROPERTY, property, constraint, name, path, line);
    }
 }

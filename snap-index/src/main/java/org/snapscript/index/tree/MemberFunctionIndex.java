@@ -19,6 +19,7 @@ public class MemberFunctionIndex implements Compilation {
    
    private final MemberFunction function;
    private final Evaluation identifier;
+   private final Constraint constraint;
    
    public MemberFunctionIndex(AnnotationList annotations, ModifierList modifiers, Evaluation identifier, ParameterList parameters){
       this(annotations, modifiers, identifier, parameters, null, null);
@@ -34,6 +35,7 @@ public class MemberFunctionIndex implements Compilation {
    
    public MemberFunctionIndex(AnnotationList annotations, ModifierList modifiers, Evaluation identifier, ParameterList parameters, Constraint constraint, Statement body){ 
       this.function = new MemberFunction(annotations, modifiers, identifier, parameters, constraint, body);
+      this.constraint = constraint;
       this.identifier = identifier;
    }
 
@@ -43,6 +45,6 @@ public class MemberFunctionIndex implements Compilation {
       Value value = identifier.evaluate(scope, null);
       String name = value.getString();
       
-      return new IndexResult(IndexType.MEMBER_FUNCTION, function, name, path, line);
+      return new IndexResult(IndexType.MEMBER_FUNCTION, function, constraint, name, path, line);
    }
 }

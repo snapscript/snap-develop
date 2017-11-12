@@ -16,6 +16,7 @@ public class DeclarationIndex implements Compilation {
    
    private final TextLiteral identifier;
    private final Declaration declaration;
+   private final Constraint constraint;
    
    public DeclarationIndex(TextLiteral identifier) {
       this(identifier, null, null);
@@ -31,6 +32,7 @@ public class DeclarationIndex implements Compilation {
    
    public DeclarationIndex(TextLiteral identifier, Constraint constraint, Evaluation value) {
       this.declaration = new Declaration(identifier, constraint, value);
+      this.constraint = constraint;
       this.identifier = identifier;
    } 
 
@@ -40,6 +42,6 @@ public class DeclarationIndex implements Compilation {
       Value value = identifier.evaluate(scope, null);
       String name = value.getString();
       
-      return new IndexResult(IndexType.VARIABLE, declaration, name, path, line);
+      return new IndexResult(IndexType.VARIABLE, declaration, constraint, name, path, line);
    }
 }

@@ -1,12 +1,13 @@
 package org.snapscript.index;
 
+import java.util.Map;
 import java.util.Set;
+
+import junit.framework.TestCase;
 
 import org.snapscript.common.store.ClassPathStore;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
-
-import junit.framework.TestCase;
 
 public class IndexerTest extends TestCase {
 
@@ -63,7 +64,35 @@ public class IndexerTest extends TestCase {
    "   }\n"+
    "}\n";
    
-   public void testIndexer() throws Exception {
+   public void testNodesInScope() throws Exception {
+      Indexer indexer = new Indexer();
+      ClassPathStore store = new ClassPathStore();
+      Context context = new StoreContext(store);
+      IndexSearcher searcher = indexer.index(context, "/some/path.snap", SOURCE);
+      Map<String, IndexNode> nodes = searcher.getNodesInScope(6);
+      
+      assertNotNull(nodes.get("lang.String"));
+      assertNotNull(nodes.get("util.concurrent.ConcurrentHashMap"));
+      assertNotNull(nodes.get("SomeClass"));
+      assertNotNull(nodes.get("test"));
+      assertNotNull(nodes.get("memb"));
+      assertNotNull(nodes.get("str"));
+      assertNotNull(nodes.get("InnerClass"));
+      assertNotNull(nodes.get("SizeEnum"));
+      assertNotNull(nodes.get("Mod"));
+      
+      assertEquals(nodes.get("lang.String").getIndex().getType(), IndexType.IMPORT);
+      assertEquals(nodes.get("util.concurrent.ConcurrentHashMap").getIndex().getType(), IndexType.IMPORT);
+      assertEquals(nodes.get("SomeClass").getIndex().getType(), IndexType.CLASS);
+      assertEquals(nodes.get("test").getIndex().getType(), IndexType.MEMBER_FUNCTION);
+      assertEquals(nodes.get("memb").getIndex().getType(), IndexType.PROPERTY);
+      assertEquals(nodes.get("str").getIndex().getType(), IndexType.VARIABLE);
+      assertEquals(nodes.get("InnerClass").getIndex().getType(), IndexType.CLASS);
+      assertEquals(nodes.get("SizeEnum").getIndex().getType(), IndexType.ENUM);
+      assertEquals(nodes.get("Mod").getIndex().getType(), IndexType.MODULE);
+   }
+   
+   public void testNodeSearch() throws Exception {
       Indexer indexer = new Indexer();
       ClassPathStore store = new ClassPathStore();
       Context context = new StoreContext(store);

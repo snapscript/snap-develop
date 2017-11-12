@@ -27,6 +27,6 @@ public class ImportIndex implements Compilation {
    @Override
    public Object compile(Module module, Path path, int line) throws Exception {
       String name = qualifier.getQualifier();
-      return new IndexResult(IndexType.IMPORT, statement, name, path, line);
+      return new IndexResult(IndexType.IMPORT, statement, null, name, path, line);
    }
 }
