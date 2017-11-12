@@ -1,0 +1,208 @@
+package org.snapscript.studio.index;
+
+import java.util.Map;
+import java.util.Set;
+
+import junit.framework.TestCase;
+
+import org.snapscript.common.store.ClassPathStore;
+import org.snapscript.compile.StoreContext;
+import org.snapscript.core.Context;
+import org.snapscript.studio.index.IndexNode;
+import org.snapscript.studio.index.IndexSearcher;
+import org.snapscript.studio.index.IndexFile;
+import org.snapscript.studio.index.IndexType;
+import org.snapscript.studio.index.Indexer;
+
+public class IndexerTest extends TestCase {
+
+   private static final String SOURCE =
+   "import lang.String;\n"+
+   "import util.concurrent.ConcurrentHashMap;\n"+
+   "import util.HashMap as Bag;\n"+
+   "class SomeClass {\n"+
+   "   var memb: SizeEnum = SizeEnum.BIG;\n"+
+   "   test(index, size): Mod.ModClass {\n"+
+   "     var str = 'xxx';\n"+
+   "     println(str);\n"+
+   "   }\n"+      
+   "   class InnerClass{}\n"+
+   "}\n"+
+   "enum SizeEnum{\n"+
+   "   BIG,\n"+
+   "   SMALL,\n"+
+   "   TINY;\n"+
+   "   func(){\n"+
+   "      var a = 1;\n"+
+   "      var b = 2;\n"+
+   "      var c = 3;\n"+
+   "      return a+b+c;\n"+
+   "   }\n"+
+   "}\n"+
+   "module Mod {\n"+
+   "   class ModClass{\n"+
+   "      const PROP = 'abc';\n"+
+   "   }\n"+
+   "   trait ModTrait{\n"+
+   "      someTraitFunc(a,b,c);\n"+
+   "   }\n"+
+   "   modFunc(){}\n"+
+   "}\n"+
+   "const PI = 3.14;\n"+
+   "var x =10;\n"+
+   "function foo(a, b) {\n"+
+   "   if(x > 0){\n"+
+   "      var y = x;\n"+
+   "      y++;\n"+
+   "   }\n"+
+   "   if(x  >0){\n"+
+   "      var y = 0;\n"+
+   "      y++;\n"+
+   "   }\n"+
+   "   if(x !=77){\n"+
+   "      if(x > 0){\n"+
+   "         var y =1;\n"+
+   "         y--;\n"+
+   "      } else {\n"+
+   "         var y=33;\n"+
+   "         y++;\n"+
+   "      }\n"+
+   "   }\n"+
+   "}\n"+
+   "class Blah {\n"+
+   "   const text: String;\n"+
+   "   new(text){\n"+
+   "      this.text = text;\n"+
+   "   }\n"+
+   "   public doSomething(x): String{\n"+
+   "   }\n"+
+   "}\n";
+   
+   public void testTypeNodes() throws Exception {
+      Indexer indexer = new Indexer();
+      ClassPathStore store = new ClassPathStore();
+      Context context = new StoreContext(store);
+      IndexFile searcher = indexer.index(context, "/some/package.snap", SOURCE);
+      Map<String, IndexNode> nodes = searcher.getTypeNodes();
+      
+      assertNotNull(nodes.get("String"));
+      assertNotNull(nodes.get("ConcurrentHashMap"));
+      assertNotNull(nodes.get("Bag"));
+      assertNotNull(nodes.get("SomeClass"));
+      assertNotNull(nodes.get("SomeClass.InnerClass"));
+      assertNotNull(nodes.get("SizeEnum"));
+      assertNotNull(nodes.get("Mod"));
+      assertNotNull(nodes.get("Mod.ModClass"));
+      assertNotNull(nodes.get("Mod.ModTrait"));
+      
+      assertEquals(nodes.get("String").getIndex().getType(), IndexType.IMPORT);
+      assertEquals(nodes.get("ConcurrentHashMap").getIndex().getType(), IndexType.IMPORT);
+      assertEquals(nodes.get("Bag").getIndex().getType(), IndexType.IMPORT);
+      assertEquals(nodes.get("SomeClass").getIndex().getType(), IndexType.CLASS);
+      assertEquals(nodes.get("SomeClass.InnerClass").getIndex().getType(), IndexType.CLASS);
+      assertEquals(nodes.get("SizeEnum").getIndex().getType(), IndexType.ENUM);
+      assertEquals(nodes.get("Mod").getIndex().getType(), IndexType.MODULE);
+      assertEquals(nodes.get("Mod.ModClass").getIndex().getType(), IndexType.CLASS);
+      assertEquals(nodes.get("Mod.ModTrait").getIndex().getType(), IndexType.TRAIT);
+   }
+   
+   public void testNodesInScope() throws Exception {
+      Indexer indexer = new Indexer();
+      ClassPathStore store = new ClassPathStore();
+      Context context = new StoreContext(store);
+      IndexFile searcher = indexer.index(context, "/some/package.snap", SOURCE);
+      Map<String, IndexNode> nodes = searcher.getNodesInScope(6);
+      
+      assertNotNull(nodes.get("String"));
+      assertNotNull(nodes.get("ConcurrentHashMap"));
+      assertNotNull(nodes.get("SomeClass"));
+      assertNotNull(nodes.get("test(index, size)"));
+      assertNotNull(nodes.get("memb"));
+      assertNotNull(nodes.get("str"));
+      assertNotNull(nodes.get("InnerClass"));
+      assertNotNull(nodes.get("SizeEnum"));
+      assertNotNull(nodes.get("Mod"));
+      
+      assertEquals(nodes.get("String").getIndex().getType(), IndexType.IMPORT);
+      assertEquals(nodes.get("String").getFullName(), "lang.String");
+      assertEquals(nodes.get("ConcurrentHashMap").getIndex().getType(), IndexType.IMPORT);
+      assertEquals(nodes.get("ConcurrentHashMap").getFullName(), "util.concurrent.ConcurrentHashMap");
+      assertEquals(nodes.get("Bag").getIndex().getType(), IndexType.IMPORT);
+      assertEquals(nodes.get("Bag").getFullName(), "util.HashMap");
+      assertEquals(nodes.get("SomeClass").getIndex().getType(), IndexType.CLASS);
+      assertEquals(nodes.get("SomeClass").getFullName(), "some.package.SomeClass");
+      assertEquals(nodes.get("test(index, size)").getIndex().getType(), IndexType.MEMBER_FUNCTION);
+      assertEquals(nodes.get("test(index, size)").getIndex().getConstraint(), "Mod.ModClass");
+      assertEquals(nodes.get("memb").getIndex().getType(), IndexType.PROPERTY);
+      assertEquals(nodes.get("memb").getIndex().getConstraint(), "SizeEnum");
+      assertEquals(nodes.get("str").getIndex().getType(), IndexType.VARIABLE);
+      assertEquals(nodes.get("InnerClass").getIndex().getType(), IndexType.CLASS);
+      assertEquals(nodes.get("InnerClass").getFullName(), "some.package.SomeClass.InnerClass");
+      assertEquals(nodes.get("SizeEnum").getIndex().getType(), IndexType.ENUM);
+      assertEquals(nodes.get("Mod").getIndex().getType(), IndexType.MODULE);
+   }
+   
+   public void testNodeSearch() throws Exception {
+      Indexer indexer = new Indexer();
+      ClassPathStore store = new ClassPathStore();
+      Context context = new StoreContext(store);
+      IndexFile searcher = indexer.index(context, "/some/package.snap", SOURCE);
+      IndexNode node = searcher.getRootNode();
+      
+      traverse(node, "");
+      
+      assertEquals(((IndexSearcher)searcher).getDepthAtLine(4), 1);
+      assertEquals(((IndexSearcher)searcher).getDepthAtLine(7), 2);
+      assertEquals(((IndexSearcher)searcher).getDepthAtLine(13), 1);
+      assertEquals(((IndexSearcher)searcher).getDepthAtLine(32), 0);
+      assertEquals(((IndexSearcher)searcher).getDepthAtLine(25), 2);
+      assertEquals(((IndexSearcher)searcher).getDepthAtLine(45), 3);
+      assertEquals(((IndexSearcher)searcher).getDepthAtLine(56), 2);
+      
+      assertEquals(searcher.getNodeAtLine(4).getType(), IndexType.CLASS);
+      assertEquals(searcher.getNodeAtLine(4).getIndex().getName(), "SomeClass");
+      assertEquals(searcher.getNodeAtLine(7).getType(), IndexType.MEMBER_FUNCTION);
+      assertEquals(searcher.getNodeAtLine(7).getIndex().getName(), "test(index, size)");
+      assertEquals(searcher.getNodeAtLine(13).getType(), IndexType.ENUM);
+      assertEquals(searcher.getNodeAtLine(13).getIndex().getName(), "SizeEnum");
+      assertEquals(searcher.getNodeAtLine(32).getType(), IndexType.SCRIPT);
+      assertEquals(searcher.getNodeAtLine(32).getIndex().getName(), "/some/package.snap");
+      assertEquals(searcher.getNodeAtLine(25).getType(), IndexType.CLASS);
+      assertEquals(searcher.getNodeAtLine(25).getIndex().getName(), "ModClass");
+      assertEquals(searcher.getNodeAtLine(45).getType(), IndexType.COMPOUND);
+      assertEquals(searcher.getNodeAtLine(45).getIndex().getName(), "");
+      assertEquals(searcher.getNodeAtLine(56).getType(), IndexType.CONSTRUCTOR);
+      assertEquals(searcher.getNodeAtLine(56).getName(), "Blah(text)");
+   }
+   
+   private static void traverse(IndexNode node, String indent) throws Exception {
+      if(node != null) {
+         Set<IndexNode> nodes = node.getNodes();
+         IndexType type = node.getType();
+         String name = node.getIndex().getName();
+         
+         if(!type.isRoot()) {
+            System.err.print(indent);
+            
+            if(!type.isCompound()) {
+               System.err.print(type.getName() + " " + name + " ");
+            }
+            if(type.isLeaf()) {
+               System.err.println();
+            } else {
+               System.err.println("{");
+            }
+         }
+         for(IndexNode entry : nodes) {
+            if(type.isRoot()) {
+               traverse(entry, "");
+            } else {
+               traverse(entry, indent + "   ");
+            }
+         }
+         if(!type.isRoot() && !type.isLeaf()) {
+            System.err.println(indent + "}");
+         }
+      }
+   }
+}

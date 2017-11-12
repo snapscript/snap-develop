@@ -53,11 +53,6 @@
     </dependency>
     <dependency>
       <groupId>org.snapscript</groupId>
-      <artifactId>snap-cef</artifactId>
-      <version>1.2</version>
-    </dependency>    
-    <dependency>
-      <groupId>org.snapscript</groupId>
       <artifactId>snap-platform</artifactId>
       <version>1.2</version>
     </dependency>
@@ -69,6 +64,21 @@
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-service</artifactId>
+      <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.snapscript</groupId>
+      <artifactId>snap-studio-ui</artifactId>
+      <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.snapscript</groupId>
+      <artifactId>snap-studio-common</artifactId>
+      <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.snapscript</groupId>
+      <artifactId>snap-studio-index</artifactId>
       <version>1.2</version>
     </dependency>
     <dependency>
@@ -142,10 +152,10 @@
       <version>1.9.5</version>
     </dependency>
     <dependency>
-        <groupId>cglib</groupId>
-        <artifactId>cglib</artifactId>
-        <version>3.2.5</version>
-    </dependency>    
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <version>3.2.5</version>
+    </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>

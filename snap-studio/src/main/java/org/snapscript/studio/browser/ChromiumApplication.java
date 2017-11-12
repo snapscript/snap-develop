@@ -5,7 +5,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.snapscript.cef.swt.Chromium;
+import org.snapscript.studio.ui.swt.Chromium;
 
 public class ChromiumApplication {
 
