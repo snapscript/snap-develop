@@ -1,8 +1,12 @@
 package org.snapscript.studio.index;
 
+import java.io.File;
 import java.util.Map;
 
 public interface IndexFile {
+   File getFile();
+   String getScriptPath();
+   String getRealPath();
    IndexNode getRootNode();
    IndexNode getNodeAtLine(int line);
    Map<String, IndexNode> getNodesInScope(int line);

@@ -20,7 +20,12 @@
       <groupId>org.snapscript</groupId>
       <artifactId>snap-studio-common</artifactId>
       <version>1.2</version>
-    </dependency>    
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>20.0</version>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

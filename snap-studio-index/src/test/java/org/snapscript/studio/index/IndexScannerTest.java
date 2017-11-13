@@ -25,10 +25,10 @@ public class IndexScannerTest extends TestCase {
       Thread.setDefaultUncaughtExceptionHandler(handler);
       ClassPathStore store = new ClassPathStore();
       Context context = new StoreContext(store);
-      File root = new File("c:/Work/development/snapscript/snap-develop/snap-studio/work/demo");
-      IndexScanner scanner = new IndexScanner(context, root, "demo");
+      File root = new File("c:/Work/development/snapscript/snap-develop/snap-studio/work/games");
+      IndexScanner scanner = new IndexScanner(context, root, "demo", "mario/src", "mario/assets");
       long start = System.currentTimeMillis();
-      Map<String, IndexNode> nodes = scanner.findTypesMatching(".*");
+      Map<String, IndexNode> nodes = scanner.getTypeNodesMatching(".*");
       long finish = System.currentTimeMillis();
       System.err.println("time="+(finish-start));
       Set<Entry<String, IndexNode>> entries = nodes.entrySet();

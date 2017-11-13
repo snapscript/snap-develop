@@ -1,0 +1,10 @@
+package org.snapscript.studio.index;
+
+import java.util.Map;
+
+public interface IndexDatabase {
+   IndexNode getTypeNode(String type) throws Exception;
+   Map<String, IndexNode> getTypeNodesMatching(String regex) throws Exception;
+   Map<String, IndexNode> getTypeNodes() throws Exception;
+   Map<String, IndexFile> getFiles() throws Exception;
+}

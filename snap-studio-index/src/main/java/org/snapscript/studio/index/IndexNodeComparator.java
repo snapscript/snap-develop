@@ -16,8 +16,8 @@ public class IndexNodeComparator implements Comparator<IndexNode> {
    
    @Override
    public int compare(IndexNode left, IndexNode right) {
-      int leftLine = left.getIndex().getLine();
-      int rightLine = right.getIndex().getLine();
+      int leftLine = left.getLine();
+      int rightLine = right.getLine();
       
       if(reverse) {
          return Integer.compare(rightLine, leftLine);
