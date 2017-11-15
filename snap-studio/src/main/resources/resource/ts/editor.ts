@@ -609,16 +609,17 @@ export module FileEditor {
    function createEditorAutoComplete() {
       return {
          getCompletions: function createAutoComplete(editor, session, pos, prefix, callback) {
-             if (prefix.length === 0) { 
-                callback(null, []); 
-                return; 
-             }
+//             if (prefix.length === 0) { 
+//                callback(null, []); 
+//                return; 
+//             }
              var text = editor.getValue();
              var line = editor.session.getLine(pos.row);
-             var complete = line.substring(0, pos.column - prefix.length);
+             var resource = editorView.editorResource.projectPath;
+             var complete = line.substring(0, pos.column);
              var message = JSON.stringify({
-                resource: editorResource.projectPath,
-                line: pos.row,
+                resource: resource,
+                line: pos.row + 1,
                 complete: complete,
                 source: text,
                 prefix: prefix

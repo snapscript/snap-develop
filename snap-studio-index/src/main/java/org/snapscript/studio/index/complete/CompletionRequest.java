@@ -1,4 +1,4 @@
-package org.snapscript.studio.complete;
+package org.snapscript.studio.index.complete;
 
 public class CompletionRequest {
 

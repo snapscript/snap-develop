@@ -8,6 +8,12 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.resource.Resource;
+import org.snapscript.studio.index.complete.CompletionCompiler;
+import org.snapscript.studio.index.complete.CompletionRequest;
+import org.snapscript.studio.index.complete.CompletionResponse;
+import org.snapscript.studio.index.complete.FindForFunction;
+import org.snapscript.studio.index.complete.FindForVariable;
+import org.snapscript.studio.index.complete.FindInScopeMatching;
 import org.snapscript.studio.resource.project.Project;
 
 import com.google.gson.Gson;
@@ -15,12 +21,10 @@ import com.google.gson.Gson;
 // /complete/<project>
 public class CompletionResource implements Resource {
 
-   private final CompletionProcessor completer;
    private final Workspace workspace;
    private final Gson gson;
    
    public CompletionResource(Workspace workspace) {
-      this.completer = new CompletionProcessor(workspace);
       this.gson = new Gson();
       this.workspace = workspace;
    }
@@ -36,7 +40,12 @@ public class CompletionResource implements Resource {
       Thread thread = Thread.currentThread();
       thread.setContextClassLoader(classLoader);
       CompletionRequest context = gson.fromJson(content, CompletionRequest.class);
-      Map<String, String> tokens = completer.createTokens(context, project);
+      CompletionCompiler compiler = new CompletionCompiler(project.getIndexDatabase(),
+            FindForFunction.class,
+            FindForVariable.class,
+            FindInScopeMatching.class);
+      
+      Map<String, String> tokens = compiler.compile(context);
       result.setTokens(tokens);
       String text = gson.toJson(result);
       response.setContentType("application/json");

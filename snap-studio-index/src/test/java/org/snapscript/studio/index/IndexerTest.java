@@ -236,6 +236,11 @@ public class IndexerTest extends TestCase {
       public Map<String, IndexNode> getTypeNodes() throws Exception {
          return null;
       }
+
+      @Override
+      public IndexFile getFile(String resource, String source) throws Exception {
+         return null;
+      }
       
    }
 }

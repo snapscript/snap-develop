@@ -18,11 +18,15 @@ public class IndexScanner implements IndexDatabase {
 
    private final FileProcessor<IndexFile> processor;
    private final FileAction<IndexFile> action;
+   private final IndexPathTranslator translator;
+   private final Indexer indexer;
    private final String project;
    private final File root;
    
    public IndexScanner(Context context, Executor executor, File root, String project, String... prefixes) {
-      this.action = new CompileAction(this, context, executor, root, prefixes);
+      this.translator = new IndexPathTranslator(prefixes);
+      this.indexer = new Indexer(translator, this, context, executor, root);
+      this.action = new CompileAction(indexer, root);
       this.processor = new FileProcessor<IndexFile>(action, executor);
       this.project = project;
       this.root = root;
@@ -109,16 +113,19 @@ public class IndexScanner implements IndexDatabase {
       }
       return Collections.emptyMap();
    }
+
+   @Override
+   public IndexFile getFile(String resource, String source) throws Exception {
+      return indexer.index(resource, source);
+   }
    
    private static class CompileAction implements FileAction<IndexFile> {
    
-      private final IndexPathTranslator translator;
       private final Indexer indexer;
       private final File root;
       
-      public CompileAction(IndexDatabase database, Context context, Executor executor, File root, String... prefixes) {
-         this.translator = new IndexPathTranslator(prefixes);
-         this.indexer = new Indexer(translator, database, context, executor, root);
+      public CompileAction(Indexer indexer, File root) {
+         this.indexer = indexer;
          this.root = root;
       }
       

@@ -107,6 +107,18 @@ public class IndexFileNode implements IndexNode {
             } catch(Exception e) {
                return null;
             }
+         } else {
+            IndexType type = node.getType();
+            
+            if(type.isImport()) {
+               String fullName = node.getFullName();
+               
+               try {
+                  return database.getTypeNode(fullName);
+               } catch(Exception e) {
+                  return null;
+               }
+            }
          }
          return node;
       }
