@@ -52,7 +52,7 @@
     <constructor-arg ref="Workspace" />
   </bean>
 
-  <bean id="ContentTypeResolver" class="org.snapscript.studio.resource.ContentTypeResolver">
+  <bean id="ContentTypeResolver" class="org.snapscript.studio.common.resource.ContentTypeResolver">
     <constructor-arg>
       <map>
         <entry key=".*.vm" value="text/html" />
@@ -83,15 +83,15 @@
     </constructor-arg>
   </bean>
 
-  <bean id="FileManager" class="org.snapscript.studio.resource.FileManager">
+  <bean id="FileManager" class="org.snapscript.studio.common.resource.FileManager">
     <constructor-arg value="/resource" />
   </bean>
 
-  <bean id="FileResolver" class="org.snapscript.studio.resource.FileResolver">
+  <bean id="FileResolver" class="org.snapscript.studio.common.resource.FileResolver">
     <constructor-arg ref="FileManager" />
   </bean>
 
-  <bean id="TemplateEngine" class="org.snapscript.studio.resource.template.StringTemplateEngine">
+  <bean id="TemplateEngine" class="org.snapscript.studio.common.resource.template.StringTemplateEngine">
     <constructor-arg ref="FileResolver" />
     <constructor-arg value="/" />
   </bean>
@@ -131,18 +131,22 @@
     <constructor-arg ref="Workspace" />
   </bean>
 
-  <bean id="TextMatchResource" class="org.snapscript.studio.find.text.TextMatchResource">
+  <bean id="TextMatchResource" class="org.snapscript.studio.common.find.text.TextMatchResource">
     <constructor-arg ref="Workspace" />
     <constructor-arg ref="ThreadPool" />
   </bean>
 
-  <bean id="FileMatchResource" class="org.snapscript.studio.find.file.FileMatchResource">
+  <bean id="FileMatchResource" class="org.snapscript.studio.common.find.file.FileMatchResource">
     <constructor-arg ref="Workspace" />
   </bean>
 
   <bean id="TypeNodeResource" class="org.snapscript.studio.complete.TypeNodeResource">
     <constructor-arg ref="Workspace" />
     <constructor-arg ref="ThreadPool" />
+  </bean>
+  
+  <bean id="IndexNodeResource" class="org.snapscript.studio.complete.IndexNodeResource">
+    <constructor-arg ref="Workspace" />
   </bean>
 
   <bean id="SourceFormatResource" class="org.snapscript.studio.complete.SourceFormatResource">
@@ -259,7 +263,7 @@
     <constructor-arg ref="Workspace" />
   </bean>
 
-  <bean id="NotFoundResource" class="org.snapscript.studio.resource.StringResource">
+  <bean id="NotFoundResource" class="org.snapscript.studio.common.resource.StringResource">
     <constructor-arg value="Resource could not be found!!" />
     <constructor-arg value="text/plain; charset=UTF-8" />
     <constructor-arg value="UTF-8" />
@@ -270,14 +274,15 @@
     <constructor-arg ref="ProcessManager" />
   </bean>
 
-  <bean id="ResourceMatcher" class="org.snapscript.studio.resource.RegularExpressionMatcher">
+  <bean id="ResourceMatcher" class="org.snapscript.studio.common.resource.RegularExpressionMatcher">
     <constructor-arg>
       <map>
         <entry key="/img/theme/.*.png" value-ref="ImageScaleResource" />
         <entry key="/format.*" value-ref="SourceFormatResource" />
         <entry key="/default.*" value-ref="ProjectDefaultResource" />
         <entry key="/file.*" value-ref="FileMatchResource" />
-        <entry key="/type.*" value-ref="TypeNodeResource" />
+        <!--  entry key="/type.*" value-ref="TypeNodeResource" /-->
+        <entry key="/type.*" value-ref="IndexNodeResource" />
         <entry key="/complete.*" value-ref="CompletionResource" />
         <entry key="/history.*" value-ref="ProjectHistoryResource" />
         <entry key="/find.*" value-ref="TextMatchResource" />
@@ -294,7 +299,7 @@
     </constructor-arg>
   </bean>
 
-  <bean id="CombinationMatcher" class="org.snapscript.studio.resource.CombinationMatcher">
+  <bean id="CombinationMatcher" class="org.snapscript.studio.common.resource.CombinationMatcher">
     <constructor-arg>
       <list>
         <ref bean="ResourceMatcher" />
@@ -304,7 +309,7 @@
     <constructor-arg ref="NotFoundResource" />
   </bean>
 
-  <bean id="ResourceContainer" class="org.snapscript.studio.resource.ResourceContainer">
+  <bean id="ResourceContainer" class="org.snapscript.studio.common.resource.ResourceContainer">
     <constructor-arg ref="CombinationMatcher" />
     <constructor-arg ref="Workspace" />
   </bean>
@@ -319,13 +324,13 @@
     <constructor-arg value="2" />
   </bean>
 
-  <bean id="WebContainer" class="org.snapscript.studio.resource.WebContainer">
+  <bean id="WebContainer" class="org.snapscript.studio.common.resource.WebContainer">
     <constructor-arg ref="WebSocketContainer" />
     <constructor-arg value="Apache/2.2.14 (Win32)" />
     <constructor-arg value="SESSID" />
   </bean>
 
-  <bean id="WebServer" class="org.snapscript.studio.resource.WebServer">
+  <bean id="WebServer" class="org.snapscript.studio.common.resource.WebServer">
     <constructor-arg ref="WebContainer" />
     <constructor-arg value="${port}" />
   </bean>

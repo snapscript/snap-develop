@@ -8,8 +8,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 
+import org.snapscript.studio.common.resource.template.TemplateModel;
 import org.snapscript.studio.resource.display.DisplayKey;
-import org.snapscript.studio.resource.template.TemplateModel;
 
 public class TreeDirectory {
    

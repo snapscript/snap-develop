@@ -2,7 +2,7 @@ package org.snapscript.studio.complete;
 
 import java.util.Map;
 
-import org.snapscript.studio.common.TypeNode;
+import org.snapscript.studio.search.TypeNode;
 
 public class SourceContext {
 

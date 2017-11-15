@@ -24,7 +24,7 @@ import org.snapscript.core.property.Property;
 import org.snapscript.parse.GrammarIndexer;
 import org.snapscript.parse.GrammarResolver;
 import org.snapscript.studio.Workspace;
-import org.snapscript.studio.common.TypeNode;
+import org.snapscript.studio.search.TypeNode;
 
 public class CompletionMatcher {
    

@@ -21,10 +21,10 @@ public class TypeScriptCompiler {
    private final File node;
    private final File root;
    
-   public TypeScriptCompiler(String compiler, String node) {
-      this.root = new File(".");
-      this.node = new File(node);
-      this.compiler = new File(root, compiler);
+   public TypeScriptCompiler(String compiler, String node) throws Exception {
+      this.root = new File(".").getCanonicalFile();
+      this.node = new File(node).getCanonicalFile();
+      this.compiler = new File(root, compiler).getCanonicalFile();
    }
    
    public synchronized void compile(File sourceDir, File outputDir, List<String> libraryFiles) throws Exception {

@@ -5,7 +5,7 @@ import java.io.PrintStream;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
-import org.snapscript.studio.resource.Resource;
+import org.snapscript.studio.common.resource.Resource;
 
 import com.google.gson.Gson;
 

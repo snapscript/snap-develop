@@ -20,10 +20,10 @@ import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.Cache;
 import org.snapscript.common.LeastRecentlyUsedCache;
 import org.snapscript.studio.Workspace;
-import org.snapscript.studio.resource.Content;
-import org.snapscript.studio.resource.ContentTypeResolver;
-import org.snapscript.studio.resource.FileResolver;
-import org.snapscript.studio.resource.Resource;
+import org.snapscript.studio.common.resource.Content;
+import org.snapscript.studio.common.resource.ContentTypeResolver;
+import org.snapscript.studio.common.resource.FileResolver;
+import org.snapscript.studio.common.resource.Resource;
 
 public class ImageScaleResource implements Resource {
 

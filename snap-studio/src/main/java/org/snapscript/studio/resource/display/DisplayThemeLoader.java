@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.simpleframework.xml.core.Persister;
+import org.snapscript.studio.common.resource.template.TemplateModel;
 import org.snapscript.studio.resource.loader.ClassPathResourceLoader;
-import org.snapscript.studio.resource.template.TemplateModel;
 
 public class DisplayThemeLoader {
 

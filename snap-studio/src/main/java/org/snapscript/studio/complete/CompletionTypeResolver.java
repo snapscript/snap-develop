@@ -13,9 +13,9 @@ import org.snapscript.core.function.Parameter;
 import org.snapscript.core.function.Signature;
 import org.snapscript.core.property.Property;
 import org.snapscript.studio.Workspace;
-import org.snapscript.studio.common.DefaultTypeLoader;
-import org.snapscript.studio.common.ResourceTypeLoader;
-import org.snapscript.studio.common.TypeNode;
+import org.snapscript.studio.search.DefaultTypeLoader;
+import org.snapscript.studio.search.ResourceTypeLoader;
+import org.snapscript.studio.search.TypeNode;
 
 public class CompletionTypeResolver {
 

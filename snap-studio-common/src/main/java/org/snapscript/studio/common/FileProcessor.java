@@ -8,24 +8,23 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
-
-import org.snapscript.common.thread.ThreadPool;
 
 public class FileProcessor<T> {
 
    private final Map<String, Map<File, FileExecutor>> executors;
    private final Map<String, Set<File>> active;
    private final FileAction<T> action;
-   private final ThreadPool pool;
+   private final Executor executor;
    
-   public FileProcessor(FileAction<T> action, ThreadPool pool) {
+   public FileProcessor(FileAction<T> action, Executor executor) {
       this.executors = new ConcurrentHashMap<String, Map<File, FileExecutor>>();
       this.active = new ConcurrentHashMap<String, Set<File>>();
       this.action = action;
-      this.pool = pool;
+      this.executor = executor;
    }
    
    public Set<T> process(String reference, String pattern) throws Exception {
@@ -57,7 +56,7 @@ public class FileProcessor<T> {
       
          for(File referenceFile : referenceFiles) {
             FileTask task = new FileTask(latch, reference, referenceFile, results);
-            pool.execute(task);
+            executor.execute(task);
          }
          latch.await(5000, TimeUnit.MILLISECONDS); // don't wait forever
          return results;

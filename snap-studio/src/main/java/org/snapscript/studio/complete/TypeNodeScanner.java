@@ -22,10 +22,10 @@ import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.FileAction;
 import org.snapscript.studio.common.FileProcessor;
 import org.snapscript.studio.common.FileReader;
-import org.snapscript.studio.common.TypeNode;
-import org.snapscript.studio.common.TypeNodeFinder;
 import org.snapscript.studio.resource.project.Project;
 import org.snapscript.studio.resource.project.ProjectLayout;
+import org.snapscript.studio.search.TypeNode;
+import org.snapscript.studio.search.TypeNodeFinder;
 
 import com.google.common.reflect.ClassPath.ClassInfo;
 

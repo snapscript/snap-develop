@@ -4,7 +4,7 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
     (function (Command) {
         function searchTypes() {
             dialog_1.DialogBuilder.createListDialog(function (text, ignoreMe, onComplete) {
-                findTypesMatching(text, function (typesFound) {
+                findTypesMatching(text, function (typesFound, originalExpression) {
                     var typeRows = [];
                     for (var i = 0; i < typesFound.length; i++) {
                         var debugToggle = ";debug";
@@ -28,15 +28,16 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                         };
                         typeRows.push([typeCell, resourceCell]);
                     }
-                    onComplete(typeRows);
+                    onComplete(typeRows, originalExpression);
                 });
             }, null, "Search Types");
         }
         Command.searchTypes = searchTypes;
         function findTypesMatching(text, onComplete) {
-            if (text) {
+            var originalExpression = text; // keep track of the requested expression
+            if (text && text.length > 1) {
                 $.ajax({
-                    url: '/type/' + document.title + '?expression=' + text,
+                    url: '/type/' + document.title + '?expression=' + originalExpression,
                     success: function (typeMatches) {
                         var sortedMatches = [];
                         for (var typeMatch in typeMatches) {
@@ -57,13 +58,13 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                             };
                             response.push(typeEntry);
                         }
-                        onComplete(response);
+                        onComplete(response, originalExpression);
                     },
                     async: true
                 });
             }
             else {
-                onComplete([]);
+                onComplete([], originalExpression);
             }
         }
         function replaceTokenInFiles(matchText, searchCriteria, filePatterns) {
@@ -98,7 +99,7 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                 searchFunction = dialog_1.DialogBuilder.createTextSearchAndReplaceDialog;
             }
             searchFunction(function (text, fileTypes, searchCriteria, onComplete) {
-                findFilesWithText(text, fileTypes, searchCriteria, function (filesFound) {
+                findFilesWithText(text, fileTypes, searchCriteria, function (filesFound, originalText) {
                     var fileRows = [];
                     for (var i = 0; i < filesFound.length; i++) {
                         var fileFound = filesFound[i];
@@ -126,15 +127,16 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                         };
                         fileRows.push([resourceCell, textCell]);
                     }
-                    return onComplete(fileRows);
+                    return onComplete(fileRows, originalText);
                 });
             }, filePatterns, enableReplace ? "Replace Text" : "Find Text");
         }
         function findFilesWithText(text, fileTypes, searchCriteria, onComplete) {
+            var originalText = text;
             if (text && text.length > 1) {
                 var searchUrl = '';
                 searchUrl += '/find/' + document.title;
-                searchUrl += '?expression=' + encodeURIComponent(text);
+                searchUrl += '?expression=' + encodeURIComponent(originalText);
                 searchUrl += '&pattern=' + encodeURIComponent(fileTypes);
                 searchUrl += "&caseSensitive=" + encodeURIComponent(searchCriteria.caseSensitive);
                 searchUrl += "&regularExpression=" + encodeURIComponent(searchCriteria.regularExpression);
@@ -154,18 +156,18 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                             };
                             response.push(fileMatch);
                         }
-                        onComplete(response);
+                        onComplete(response, originalText);
                     },
                     async: true
                 });
             }
             else {
-                onComplete([]);
+                onComplete([], originalText);
             }
         }
         function findFileNames() {
             dialog_1.DialogBuilder.createListDialog(function (text, ignoreMe, onComplete) {
-                findFilesByName(text, function (filesFound) {
+                findFilesByName(text, function (filesFound, originalText) {
                     var fileRows = [];
                     for (var i = 0; i < filesFound.length; i++) {
                         var fileFound = filesFound[i];
@@ -186,15 +188,16 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                         };
                         fileRows.push([resourceCell]);
                     }
-                    return onComplete(fileRows);
+                    return onComplete(fileRows, originalText);
                 });
             }, null, "Find Files");
         }
         Command.findFileNames = findFileNames;
         function findFilesByName(text, onComplete) {
+            var originalText = text;
             if (text && text.length > 1) {
                 $.ajax({
-                    url: '/file/' + document.title + '?expression=' + text,
+                    url: '/file/' + document.title + '?expression=' + originalText,
                     success: function (filesMatched) {
                         var response = [];
                         for (var i = 0; i < filesMatched.length; i++) {
@@ -207,13 +210,13 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                             };
                             response.push(fileMatch);
                         }
-                        onComplete(response);
+                        onComplete(response, originalText);
                     },
                     async: true
                 });
             }
             else {
-                onComplete([]);
+                onComplete([], originalText);
             }
         }
         function openTerminal(resourcePath) {

@@ -4,10 +4,10 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.snapscript.studio.resource.template.PropertyBinder;
-import org.snapscript.studio.resource.template.PropertyTemplateFilter;
-import org.snapscript.studio.resource.template.StringTemplate;
-import org.snapscript.studio.resource.template.TemplateModel;
+import org.snapscript.studio.common.resource.template.PropertyBinder;
+import org.snapscript.studio.common.resource.template.PropertyTemplateFilter;
+import org.snapscript.studio.common.resource.template.StringTemplate;
+import org.snapscript.studio.common.resource.template.TemplateModel;
 
 import junit.framework.TestCase;
 

@@ -1,6 +1,7 @@
 package org.snapscript.studio.resource.project;
 
 import java.io.File;
+import java.util.Arrays;
 
 public class ProjectLayout {
 
@@ -8,6 +9,10 @@ public class ProjectLayout {
    
    public ProjectLayout(String... paths) {
       this.paths = paths;
+   }
+   
+   public String[] getPrefixes(){
+      return Arrays.copyOf(paths, paths.length);
    }
    
    public boolean isLayoutPath(String resource) {

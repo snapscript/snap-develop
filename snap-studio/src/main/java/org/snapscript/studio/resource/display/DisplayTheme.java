@@ -9,7 +9,7 @@ import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Text;
 import org.simpleframework.xml.util.Dictionary;
 import org.simpleframework.xml.util.Entry;
-import org.snapscript.studio.resource.template.TemplateModel;
+import org.snapscript.studio.common.resource.template.TemplateModel;
 
 @Root
 public class DisplayTheme {

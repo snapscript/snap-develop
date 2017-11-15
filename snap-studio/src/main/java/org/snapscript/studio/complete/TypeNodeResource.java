@@ -9,7 +9,7 @@ import org.simpleframework.http.Response;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.PatternEscaper;
-import org.snapscript.studio.resource.Resource;
+import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.resource.project.Project;
 
 import com.google.gson.Gson;

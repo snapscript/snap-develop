@@ -5,7 +5,7 @@ import java.net.InetSocketAddress;
 import lombok.AllArgsConstructor;
 
 import org.snapscript.studio.browser.BrowserLauncher;
-import org.snapscript.studio.resource.WebServer;
+import org.snapscript.studio.common.resource.WebServer;
 
 @AllArgsConstructor
 public class ProcessServer {

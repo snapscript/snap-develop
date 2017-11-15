@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.snapscript.studio.resource.Resource;
-import org.snapscript.studio.resource.ResourceMatcher;
+import org.snapscript.studio.common.resource.Resource;
+import org.snapscript.studio.common.resource.ResourceMatcher;
 
 public class TypeScriptResource implements Resource {
 
@@ -27,9 +27,11 @@ public class TypeScriptResource implements Resource {
 
    @Override
    public void handle(Request request, Response response) throws Throwable {
-      if(typescriptDir.exists()) {
+      if(typescriptDir.getAbsoluteFile().exists()) {
          for(File outputDir : outputDirs) {
-            compiler.compile(typescriptDir, outputDir, sourceFiles);
+            compiler.compile(typescriptDir.getCanonicalFile(), 
+                             outputDir.getCanonicalFile(), 
+                             sourceFiles);
          }
       }
       Resource resource = matcher.match(request, response);

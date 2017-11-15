@@ -9,6 +9,7 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.snapscript.common.store.ClassPathStore;
+import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
 
@@ -26,7 +27,8 @@ public class IndexScannerTest extends TestCase {
       ClassPathStore store = new ClassPathStore();
       Context context = new StoreContext(store);
       File root = new File("c:/Work/development/snapscript/snap-develop/snap-studio/work/games");
-      IndexScanner scanner = new IndexScanner(context, root, "demo", "mario/src", "mario/assets");
+      ThreadPool pool = new ThreadPool(1);
+      IndexScanner scanner = new IndexScanner(context, pool, root, "demo", "mario/src", "mario/assets");
       long start = System.currentTimeMillis();
       Map<String, IndexNode> nodes = scanner.getTypeNodesMatching(".*");
       long finish = System.currentTimeMillis();

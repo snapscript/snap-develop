@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.Executor;
 
-import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.core.Context;
 import org.snapscript.studio.common.FileAction;
 import org.snapscript.studio.common.FileProcessor;
@@ -18,14 +18,12 @@ public class IndexScanner implements IndexDatabase {
 
    private final FileProcessor<IndexFile> processor;
    private final FileAction<IndexFile> action;
-   private final ThreadPool pool;
    private final String project;
    private final File root;
    
-   public IndexScanner(Context context, File root, String project, String... prefixes) {
-      this.pool = new ThreadPool(6);
-      this.action = new CompileAction(this, context, root, prefixes);
-      this.processor = new FileProcessor<IndexFile>(action, pool);
+   public IndexScanner(Context context, Executor executor, File root, String project, String... prefixes) {
+      this.action = new CompileAction(this, context, executor, root, prefixes);
+      this.processor = new FileProcessor<IndexFile>(action, executor);
       this.project = project;
       this.root = root;
    }
@@ -34,7 +32,7 @@ public class IndexScanner implements IndexDatabase {
    public Map<String, IndexFile> getFiles() throws Exception {
       String path = root.getCanonicalPath();
       Set<IndexFile> results = processor.process(project, path + "/**.snap"); // build all resources
-    
+
       if(!results.isEmpty()) {
          Map<String, IndexFile> matches = new HashMap<String, IndexFile>();
          
@@ -97,7 +95,7 @@ public class IndexScanner implements IndexDatabase {
          
          for(Entry<String, IndexNode> entry : entries) {
             IndexNode node = entry.getValue();
-            String name = node.getFullName();
+            String name = node.getName();
             
             if(name != null) {
                IndexType type = node.getType();
@@ -118,9 +116,9 @@ public class IndexScanner implements IndexDatabase {
       private final Indexer indexer;
       private final File root;
       
-      public CompileAction(IndexDatabase database, Context context, File root, String... prefixes) {
+      public CompileAction(IndexDatabase database, Context context, Executor executor, File root, String... prefixes) {
          this.translator = new IndexPathTranslator(prefixes);
-         this.indexer = new Indexer(translator, database, context, root);
+         this.indexer = new Indexer(translator, database, context, executor, root);
          this.root = root;
       }
       

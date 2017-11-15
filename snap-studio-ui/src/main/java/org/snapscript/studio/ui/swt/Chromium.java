@@ -96,10 +96,19 @@ public class Chromium extends Composite {
 	      public void handleEvent(Event event) {
 	           DEBUG_CALLBACK("CLOSE EVENT shutdown");
 	         shutdown();
-	         DEBUG_CALLBACK("Terminating application");
+	         DEBUG_CALLBACK("Closing window");
 	         System.exit(0);
 	      }
 	    });
+		
+//		Runtime.getRuntime().addShutdownHook(new Thread() {
+//		   @Override
+//		   public void run(){
+//            DEBUG_CALLBACK("SHUTDOWN HOOK");
+//            shutdown();
+//            DEBUG_CALLBACK("Terminating application");
+//		   }
+//		});
 		
 //		parent.getDisplay ().setData (NO_INPUT_METHOD, null);
 		// Field field;

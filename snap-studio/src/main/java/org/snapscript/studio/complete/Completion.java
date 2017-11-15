@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.snapscript.studio.common.TypeNode;
+import org.snapscript.studio.search.TypeNode;
 
 public class Completion {
 

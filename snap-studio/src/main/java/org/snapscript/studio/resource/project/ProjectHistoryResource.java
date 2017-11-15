@@ -16,7 +16,7 @@ import org.snapscript.core.Reserved;
 import org.snapscript.studio.BackupFile;
 import org.snapscript.studio.BackupManager;
 import org.snapscript.studio.Workspace;
-import org.snapscript.studio.resource.Resource;
+import org.snapscript.studio.common.resource.Resource;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

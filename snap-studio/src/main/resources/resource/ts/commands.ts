@@ -20,7 +20,7 @@ export module Command {
    
    export function searchTypes() {
       DialogBuilder.createListDialog(function(text, ignoreMe, onComplete){
-         findTypesMatching(text, function(typesFound) {
+         findTypesMatching(text, function(typesFound, originalExpression) {
             var typeRows = [];
            
             for(var i = 0; i < typesFound.length; i++) {
@@ -47,15 +47,17 @@ export module Command {
                };
                typeRows.push([typeCell, resourceCell]);
             }
-            onComplete(typeRows);
+            onComplete(typeRows, originalExpression);
          });
-     }, null, "Search Types");
+     }, null, "Search Types");  
    }
    
    function findTypesMatching(text, onComplete) {
-      if(text) {
+      let originalExpression = text; // keep track of the requested expression
+      
+      if(text && text.length > 1) {         
          $.ajax({
-            url: '/type/' + document.title + '?expression=' + text,
+            url: '/type/' + document.title + '?expression=' + originalExpression,
             success: function (typeMatches) {
                var sortedMatches = [];
                
@@ -77,12 +79,12 @@ export module Command {
                   };
                   response.push(typeEntry);
                }
-               onComplete(response);
+               onComplete(response, originalExpression);
             },
             async: true
          });
       } else {
-         onComplete([]);
+         onComplete([], originalExpression);
       }
    }
    
@@ -121,7 +123,7 @@ export module Command {
          searchFunction = DialogBuilder.createTextSearchAndReplaceDialog;
       }
       searchFunction(function(text, fileTypes, searchCriteria, onComplete){
-         findFilesWithText(text, fileTypes, searchCriteria, function(filesFound) { // don't replace in the search phase
+         findFilesWithText(text, fileTypes, searchCriteria, function(filesFound, originalText) { // don't replace in the search phase
             var fileRows = [];
            
             for(var i = 0; i < filesFound.length; i++) {
@@ -151,17 +153,19 @@ export module Command {
                };
                fileRows.push([resourceCell, /*lineCell, */textCell]);
             }
-            return onComplete(fileRows);
+            return onComplete(fileRows, originalText);
          });
      }, filePatterns, enableReplace ? "Replace Text" : "Find Text");
    }
    
    function findFilesWithText(text, fileTypes, searchCriteria, onComplete) {
+      let originalText = text;
+      
       if(text && text.length > 1) {
          var searchUrl = '';
          
          searchUrl += '/find/' + document.title;
-         searchUrl += '?expression=' + encodeURIComponent(text);
+         searchUrl += '?expression=' + encodeURIComponent(originalText);
          searchUrl += '&pattern=' + encodeURIComponent(fileTypes);
          searchUrl += "&caseSensitive=" + encodeURIComponent(searchCriteria.caseSensitive);
          searchUrl += "&regularExpression=" + encodeURIComponent(searchCriteria.regularExpression);
@@ -183,18 +187,18 @@ export module Command {
                   };
                   response.push(fileMatch);   
                }
-               onComplete(response);
+               onComplete(response, originalText);
             },
             async: true
          });
       }else {
-         onComplete([]);
+         onComplete([], originalText);
       }
    }
    
    export function findFileNames() {
       DialogBuilder.createListDialog(function(text, ignoreMe, onComplete){
-         findFilesByName(text, function(filesFound) {
+         findFilesByName(text, function(filesFound, originalText) {
             var fileRows = [];
            
             for(var i = 0; i < filesFound.length; i++) {
@@ -218,15 +222,17 @@ export module Command {
                };
                fileRows.push([resourceCell]);
             }
-            return onComplete(fileRows);
+            return onComplete(fileRows, originalText);
          });
      }, null, "Find Files");
    }
    
    function findFilesByName(text, onComplete) {
+      let originalText = text;
+      
       if(text && text.length > 1) {
          $.ajax({
-            url: '/file/' + document.title + '?expression=' + text,
+            url: '/file/' + document.title + '?expression=' + originalText,
             success: function (filesMatched) {
                var response = [];
                
@@ -240,12 +246,12 @@ export module Command {
                   };
                   response.push(fileMatch);
                }
-               onComplete(response);
+               onComplete(response, originalText);
             },
             async: true
          });
       } else {
-         onComplete([]);
+         onComplete([], originalText);
       }
    }
    

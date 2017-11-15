@@ -13,7 +13,7 @@ import org.simpleframework.transport.ByteWriter;
 import org.simpleframework.transport.Channel;
 import org.snapscript.agent.event.ProcessEventListener;
 import org.snapscript.studio.ProcessManager;
-import org.snapscript.studio.resource.Resource;
+import org.snapscript.studio.common.resource.Resource;
 
 public class ProcessTunnelResource implements Resource {
    

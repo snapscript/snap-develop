@@ -10,7 +10,7 @@ import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
 import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.FilePatternScanner;
-import org.snapscript.studio.resource.Resource;
+import org.snapscript.studio.common.resource.Resource;
 
 public class ProjectDefaultResource implements Resource {
    

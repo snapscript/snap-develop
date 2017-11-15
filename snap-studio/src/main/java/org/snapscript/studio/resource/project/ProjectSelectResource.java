@@ -6,10 +6,10 @@ import java.io.PrintStream;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.snapscript.studio.Workspace;
-import org.snapscript.studio.resource.Resource;
+import org.snapscript.studio.common.resource.Resource;
+import org.snapscript.studio.common.resource.template.TemplateEngine;
+import org.snapscript.studio.common.resource.template.TemplateModel;
 import org.snapscript.studio.resource.display.DisplayModelResolver;
-import org.snapscript.studio.resource.template.TemplateEngine;
-import org.snapscript.studio.resource.template.TemplateModel;
 
 public class ProjectSelectResource implements Resource {
    

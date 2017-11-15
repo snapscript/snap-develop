@@ -6,13 +6,9 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.snapscript.common.store.ClassPathStore;
+import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
-import org.snapscript.studio.index.IndexNode;
-import org.snapscript.studio.index.IndexSearcher;
-import org.snapscript.studio.index.IndexFile;
-import org.snapscript.studio.index.IndexType;
-import org.snapscript.studio.index.Indexer;
 
 public class IndexerTest extends TestCase {
 
@@ -83,7 +79,8 @@ public class IndexerTest extends TestCase {
       ClassPathStore store = new ClassPathStore();
       Context context = new StoreContext(store);
       IndexPathTranslator translator = new IndexPathTranslator();
-      Indexer indexer = new Indexer(translator, database, context, null);
+      ThreadPool pool = new ThreadPool(1);
+      Indexer indexer = new Indexer(translator, database, context, pool, null);
       IndexFile searcher = indexer.index("/some/package.snap", SOURCE);
       Map<String, IndexNode> nodes = searcher.getTypeNodes();
       
@@ -113,7 +110,8 @@ public class IndexerTest extends TestCase {
       ClassPathStore store = new ClassPathStore();
       Context context = new StoreContext(store);
       IndexPathTranslator translator = new IndexPathTranslator();
-      Indexer indexer = new Indexer(translator, database, context, null);
+      ThreadPool pool = new ThreadPool(1);
+      Indexer indexer = new Indexer(translator, database, context, pool, null);
       IndexFile searcher = indexer.index("/some/package.snap", SOURCE);
       Map<String, IndexNode> nodes = searcher.getNodesInScope(6);
       
@@ -151,7 +149,8 @@ public class IndexerTest extends TestCase {
       ClassPathStore store = new ClassPathStore();
       Context context = new StoreContext(store);
       IndexPathTranslator translator = new IndexPathTranslator();
-      Indexer indexer = new Indexer(translator, database, context, null);
+      ThreadPool pool = new ThreadPool(1);
+      Indexer indexer = new Indexer(translator, database, context, pool, null);
       IndexFile searcher = indexer.index("/some/package.snap", SOURCE);
       IndexNode node = searcher.getRootNode();
       

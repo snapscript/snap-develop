@@ -12,13 +12,14 @@ import java.util.concurrent.Executor;
 import org.simpleframework.http.Path;
 import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.thread.ThreadPool;
+import org.snapscript.studio.common.FileDirectorySource;
 import org.snapscript.studio.configuration.ConfigurationReader;
 import org.snapscript.studio.configuration.Dependency;
 import org.snapscript.studio.configuration.ProjectConfiguration;
 import org.snapscript.studio.resource.project.Project;
 import org.snapscript.studio.resource.project.ProjectManager;
 
-public class Workspace {
+public class Workspace implements FileDirectorySource {
 
    private final ConfigurationReader reader;
    private final ProjectManager manager;

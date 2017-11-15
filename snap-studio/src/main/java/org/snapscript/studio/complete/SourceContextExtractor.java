@@ -21,7 +21,7 @@ import org.snapscript.parse.SourceProcessor;
 import org.snapscript.parse.Token;
 import org.snapscript.parse.TokenIndexer;
 import org.snapscript.parse.TokenType;
-import org.snapscript.studio.common.TypeNode;
+import org.snapscript.studio.search.TypeNode;
 
 public class SourceContextExtractor {
 

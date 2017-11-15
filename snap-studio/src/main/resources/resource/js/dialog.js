@@ -196,17 +196,20 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                             if (expressionText) {
                                 expressionText = common_1.Common.clearHtml(expressionText);
                             }
-                            listFunction(expressionText, expressionPattern, function (list) {
-                                var content = createDialogListTable(list);
-                                if (content.content) {
-                                    $("#dialog").html(content.content);
-                                }
-                                else {
-                                    $("#dialog").html('');
-                                }
-                                // this is kind of crap, but we need to be sure the html is rendered before binding
-                                if (content.init) {
-                                    setTimeout(content.init, 100); // register the init function to run 
+                            listFunction(expressionText, expressionPattern, function (list, requestedExpression) {
+                                var currentExpression = $("#dialogPath").html();
+                                if (!requestedExpression || requestedExpression == currentExpression) {
+                                    var content = createDialogListTable(list);
+                                    if (content.content) {
+                                        $("#dialog").html(content.content);
+                                    }
+                                    else {
+                                        $("#dialog").html('');
+                                    }
+                                    // this is kind of crap, but we need to be sure the html is rendered before binding
+                                    if (content.init) {
+                                        setTimeout(content.init, 100); // register the init function to run 
+                                    }
                                 }
                             });
                         });
@@ -248,17 +251,20 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 if (expressionText) {
                     expressionText = common_1.Common.clearHtml(expressionText);
                 }
-                listFunction(expressionText, expressionPattern, searchCriteria, function (list) {
-                    var content = createDialogListTable(list);
-                    if (content.content) {
-                        $("#dialog").html(content.content);
-                    }
-                    else {
-                        $("#dialog").html('');
-                    }
-                    // this is kind of crap, but we need to be sure the html is rendered before binding
-                    if (content.init) {
-                        setTimeout(content.init, 100); // register the init function to run 
+                listFunction(expressionText, expressionPattern, searchCriteria, function (list, requestedText) {
+                    var currentText = $("#searchText").html();
+                    if (!requestedText || currentText == requestedText) {
+                        var content = createDialogListTable(list);
+                        if (content.content) {
+                            $("#dialog").html(content.content);
+                        }
+                        else {
+                            $("#dialog").html('');
+                        }
+                        // this is kind of crap, but we need to be sure the html is rendered before binding
+                        if (content.init) {
+                            setTimeout(content.init, 100); // register the init function to run 
+                        }
                     }
                 });
             };
@@ -321,17 +327,20 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 if (expressionText) {
                     expressionText = common_1.Common.clearHtml(expressionText);
                 }
-                listFunction(expressionText, expressionPattern, searchCriteria, function (list) {
-                    var content = createDialogListTable(list);
-                    if (content.content) {
-                        $("#dialog").html(content.content);
-                    }
-                    else {
-                        $("#dialog").html('');
-                    }
-                    // this is kind of crap, but we need to be sure the html is rendered before binding
-                    if (content.init) {
-                        setTimeout(content.init, 100); // register the init function to run 
+                listFunction(expressionText, expressionPattern, searchCriteria, function (list, requestedText) {
+                    var currentText = $("#searchText").html();
+                    if (!requestedText || currentText == requestedText) {
+                        var content = createDialogListTable(list);
+                        if (content.content) {
+                            $("#dialog").html(content.content);
+                        }
+                        else {
+                            $("#dialog").html('');
+                        }
+                        // this is kind of crap, but we need to be sure the html is rendered before binding
+                        if (content.init) {
+                            setTimeout(content.init, 100); // register the init function to run 
+                        }
                     }
                 });
             };
@@ -492,10 +501,12 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                     content += " class='dialogListTableRowSelected' ";
                 }
                 content += " id='" + dialogListEntryId + "'>";
-                mouseOverFunctions[i] = function (rowId) {
-                    var selectedIndex = selectedIndexOfDialogListTable();
-                    selectDialogListTableRow(selectedIndex, rowId);
+                /*
+                mouseOverFunctions[i] = function(rowId) {
+                   var selectedIndex = selectedIndexOfDialogListTable();
+                   selectDialogListTableRow(selectedIndex, rowId);
                 };
+                */
                 var _loop_1 = function() {
                     var cell = row[j];
                     var entryId = "listEntry_" + i + "_" + j;

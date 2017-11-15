@@ -3,7 +3,7 @@ package org.snapscript.studio.resource.display;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.snapscript.studio.resource.template.TemplateModel;
+import org.snapscript.studio.common.resource.template.TemplateModel;
 
 public class DisplayModelResolver {
    

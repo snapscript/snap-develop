@@ -3,10 +3,11 @@ package org.snapscript.studio;
 import java.util.Map;
 import java.util.Set;
 
-import org.snapscript.service.ScriptService;
-import org.snapscript.studio.resource.project.ProjectMode;
+import javax.swing.UIManager;
 
-import javax.swing.*;
+import org.snapscript.service.ScriptService;
+import org.snapscript.studio.common.ThreadMonitor;
+import org.snapscript.studio.resource.project.ProjectMode;
 
 //--mode=develop --directory=work --port=4457 --agent-pool=4 --agent-port=4456 --log-level=DEBUG
 public class ApplicationLauncher {
@@ -21,6 +22,8 @@ public class ApplicationLauncher {
       Map<String, String> commands = CommandLineParser.parse(list);
       Set<String> names = commands.keySet();
       String mode = DEFAULT_MODE;
+      
+      //ThreadMonitor.start(5000);
       
       for(String name : names) {
          String value= commands.get(name);

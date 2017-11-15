@@ -3,8 +3,8 @@ package org.snapscript.studio.resource.display;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.snapscript.studio.resource.template.TemplateEngine;
-import org.snapscript.studio.resource.template.TemplateModel;
+import org.snapscript.studio.common.resource.template.TemplateEngine;
+import org.snapscript.studio.common.resource.template.TemplateModel;
 
 public class DisplayInterpolator {
    

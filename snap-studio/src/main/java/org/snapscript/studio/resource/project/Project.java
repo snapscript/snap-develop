@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.snapscript.agent.ClassPathUpdater;
 import org.snapscript.common.store.NotFoundException;
@@ -22,16 +23,20 @@ import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
 import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.DirectoryWatcher;
+import org.snapscript.studio.common.FileDirectory;
 import org.snapscript.studio.configuration.ClassPathExecutor;
 import org.snapscript.studio.configuration.ConfigurationClassLoader;
 import org.snapscript.studio.configuration.ConfigurationReader;
 import org.snapscript.studio.configuration.Dependency;
 import org.snapscript.studio.configuration.ProjectConfiguration;
+import org.snapscript.studio.index.IndexDatabase;
+import org.snapscript.studio.index.IndexScanner;
 
 import com.google.common.reflect.ClassPath.ClassInfo;
 
-public class Project {
+public class Project implements FileDirectory {
    
+   private final AtomicReference<IndexDatabase> reference;
    private final ConfigurationClassLoader classLoader;
    private final ConfigurationReader reader;
    private final ProjectFileSystem fileSystem;
@@ -41,6 +46,7 @@ public class Project {
    private final Store store;
 
    public Project(ConfigurationReader reader, Workspace workspace, String projectDirectory, String projectName) {
+      this.reference = new AtomicReference<IndexDatabase>();
       this.classLoader = new ConfigurationClassLoader(this);
       this.fileSystem = new ProjectFileSystem(this);
       this.store = new ProjectStore();
@@ -98,6 +104,21 @@ public class Project {
       }catch(Exception e) {
          throw new IllegalStateException("Could not create context for '" + projectName + "'", e);
       }
+   }
+   
+   public IndexDatabase getIndexDatabase(){
+      IndexDatabase database = reference.get();
+      
+      if(database == null) {
+         database = new IndexScanner(
+            getProjectContext(), 
+            getWorkspace().getExecutor(), 
+            getSourcePath(), 
+            getProjectName(), 
+            getLayout().getPrefixes());
+         reference.set(database);
+      }
+      return database;
    }
    
    public boolean isLayoutPath(String resource) {

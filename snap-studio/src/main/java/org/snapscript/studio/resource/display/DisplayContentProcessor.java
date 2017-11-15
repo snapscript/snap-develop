@@ -10,8 +10,8 @@ import org.simpleframework.http.Protocol;
 import org.simpleframework.http.Request;
 import org.snapscript.common.Cache;
 import org.snapscript.common.LeastRecentlyUsedCache;
-import org.snapscript.studio.resource.ContentTypeResolver;
-import org.snapscript.studio.resource.FileResolver;
+import org.snapscript.studio.common.resource.ContentTypeResolver;
+import org.snapscript.studio.common.resource.FileResolver;
 
 public class DisplayContentProcessor {
    

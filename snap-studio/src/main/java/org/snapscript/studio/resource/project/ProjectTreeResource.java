@@ -9,7 +9,7 @@ import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.snapscript.studio.Workspace;
-import org.snapscript.studio.resource.Resource;
+import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.resource.display.DisplayModelResolver;
 import org.snapscript.studio.resource.tree.TreeBuilder;
 import org.snapscript.studio.resource.tree.TreeContext;

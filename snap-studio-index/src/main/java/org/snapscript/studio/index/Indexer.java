@@ -6,10 +6,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
 
 import org.snapscript.common.ArrayStack;
 import org.snapscript.common.Stack;
-import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.compile.assemble.OperationBuilder;
 import org.snapscript.compile.assemble.OperationTraverser;
 import org.snapscript.core.Context;
@@ -45,16 +45,15 @@ public class Indexer {
    private final IndexDatabase database;
    private final SyntaxParser parser;
    private final GrammarReader reader;
-   private final ThreadPool pool;
+   private final Executor executor;
    private final Context context;
    private final File root;
 
-   public Indexer(IndexPathTranslator translator, IndexDatabase database, Context context, File root) {
-      this(translator, database, context, root, GRAMMAR_FILE);
+   public Indexer(IndexPathTranslator translator, IndexDatabase database, Context context, Executor executor, File root) {
+      this(translator, database, context, executor, root, GRAMMAR_FILE);
    }
    
-   public Indexer(IndexPathTranslator translator, IndexDatabase database, Context context, File root, String file) {
-      this.pool = new ThreadPool(6);
+   public Indexer(IndexPathTranslator translator, IndexDatabase database, Context context, Executor executor, File root, String file) {
       this.grammarIndexer = new GrammarIndexer();
       this.grammars = new LinkedHashMap<String, Grammar>();      
       this.grammarResolver = new GrammarResolver(grammars);
@@ -65,6 +64,7 @@ public class Indexer {
       this.converter = new FilePathConverter();
       this.translator = translator;
       this.database = database;
+      this.executor = executor;
       this.context = context;
       this.root = root;
       
@@ -80,20 +80,16 @@ public class Indexer {
    public IndexFile index(String resource, String source) throws Exception {
       String script = translator.getScriptPath(root, resource);
       File file = new File(root, resource);
-      Stack<IndexFileNode> stack = new ArrayStack<IndexFileNode>();
-      NodeBuilder listener = new NodeBuilder(database, stack);
-      OperationBuilder builder = new IndexInstructionBuilder(listener, context, pool);
+      NodeBuilder listener = new NodeBuilder(database, resource);
+      OperationBuilder builder = new IndexInstructionBuilder(listener, context, executor);
       OperationResolver resolver = new IndexInstructionResolver(context);
       OperationTraverser traverser = new OperationTraverser(builder, resolver);
       TokenBraceCounter counter = new TokenBraceCounter(grammarIndexer, sourceProcessor, script, source);
       SyntaxNode node = parser.parse(script, source, Instruction.SCRIPT.name);
       Path path = converter.createPath(script);
       Object result = traverser.create(node, path);
-      IndexNode top = stack.pop();
-      
-      if(!stack.isEmpty()) {
-         throw new IllegalStateException("Syntax error in " + resource);
-      }
+      IndexNode top = listener.build();
+
       return new IndexSearcher(database, counter, top, file, resource, script);
    }
    
@@ -312,15 +308,26 @@ public class Indexer {
       
       private final Stack<IndexFileNode> stack;
       private final IndexDatabase database;
+      private final String resource;
       
-      public NodeBuilder(IndexDatabase database, Stack<IndexFileNode> stack) {
+      public NodeBuilder(IndexDatabase database, String resource) {
+         this.stack = new ArrayStack<IndexFileNode>();
          this.database = database;
-         this.stack = stack;
+         this.resource = resource;
+      }
+      
+      public IndexNode build() {
+         IndexNode top = stack.pop();
+         
+         if(!stack.isEmpty()) {
+            throw new IllegalStateException("Syntax error in " + resource);
+         }
+         return top;
       }
 
       @Override
       public void update(Index index) {
-         IndexFileNode node = new IndexFileNode(database, index);
+         IndexFileNode node = new IndexFileNode(database, index, resource);
          IndexType type = index.getType();
          int line = index.getLine();
          

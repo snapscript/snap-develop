@@ -6,10 +6,10 @@ import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.snapscript.studio.Workspace;
-import org.snapscript.studio.resource.Content;
-import org.snapscript.studio.resource.FileResolver;
-import org.snapscript.studio.resource.Resource;
-import org.snapscript.studio.resource.ResourceMatcher;
+import org.snapscript.studio.common.resource.Content;
+import org.snapscript.studio.common.resource.FileResolver;
+import org.snapscript.studio.common.resource.Resource;
+import org.snapscript.studio.common.resource.ResourceMatcher;
 
 public class DisplayResourceMatcher implements ResourceMatcher {
 

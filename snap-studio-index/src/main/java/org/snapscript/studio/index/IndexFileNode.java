@@ -14,19 +14,26 @@ public class IndexFileNode implements IndexNode {
    private final Comparator<IndexNode> comparator;
    private final IndexDatabase database;
    private final Set<IndexNode> nodes;
+   private final String resource;
    private final Index index;
    
-   public IndexFileNode(IndexDatabase database, Index index) {
+   public IndexFileNode(IndexDatabase database, Index index, String resource) {
       this.parent = new AtomicReference<IndexNode>();
       this.comparator = new IndexNodeComparator();
       this.nodes = new TreeSet<IndexNode>(comparator);
       this.database = database;
+      this.resource = resource;
       this.index = index;
    }
    
    @Override
    public int getLine() {
       return index.getLine();
+   }
+   
+   @Override
+   public String getResource() {
+      return resource;
    }
    
    @Override

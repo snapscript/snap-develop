@@ -10,8 +10,8 @@ import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
 import org.snapscript.core.Reserved;
 import org.snapscript.studio.Workspace;
-import org.snapscript.studio.resource.ContentTypeResolver;
-import org.snapscript.studio.resource.Resource;
+import org.snapscript.studio.common.resource.ContentTypeResolver;
+import org.snapscript.studio.common.resource.Resource;
 
 public class ProjectFileResource implements Resource {
    

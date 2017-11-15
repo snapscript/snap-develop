@@ -214,17 +214,21 @@ export module DialogBuilder {
                   if(expressionText) {
                      expressionText = Common.clearHtml(expressionText);
                   } 
-                  listFunction(expressionText, expressionPattern, function(list) {
-                     var content = createDialogListTable(list);
+                  listFunction(expressionText, expressionPattern, function(list, requestedExpression) {
+                     var currentExpression = $("#dialogPath").html();
                      
-                     if(content.content){
-                        $("#dialog").html(content.content);
-                     }else {
-                        $("#dialog").html('');
-                     }
-                     // this is kind of crap, but we need to be sure the html is rendered before binding
-                     if(content.init) {
-                        setTimeout(content.init, 100); // register the init function to run 
+                     if(!requestedExpression || requestedExpression == currentExpression) {
+                        var content = createDialogListTable(list);
+                        
+                        if(content.content){
+                           $("#dialog").html(content.content);
+                        }else {
+                           $("#dialog").html('');
+                        }
+                        // this is kind of crap, but we need to be sure the html is rendered before binding
+                        if(content.init) {
+                           setTimeout(content.init, 100); // register the init function to run 
+                        }
                      }
                   });
                });
@@ -268,17 +272,21 @@ export module DialogBuilder {
          if(expressionText) {
             expressionText = Common.clearHtml(expressionText);
          } 
-         listFunction(expressionText, expressionPattern, searchCriteria, function(list) {
-            var content = createDialogListTable(list);
+         listFunction(expressionText, expressionPattern, searchCriteria, function(list, requestedText) {
+            var currentText = $("#searchText").html();
             
-            if(content.content){
-               $("#dialog").html(content.content);
-            }else {
-               $("#dialog").html('');
-            }
-            // this is kind of crap, but we need to be sure the html is rendered before binding
-            if(content.init) {
-               setTimeout(content.init, 100); // register the init function to run 
+            if(!requestedText || currentText == requestedText) {
+               var content = createDialogListTable(list);
+               
+               if(content.content){
+                  $("#dialog").html(content.content);
+               }else {
+                  $("#dialog").html('');
+               }
+               // this is kind of crap, but we need to be sure the html is rendered before binding
+               if(content.init) {
+                  setTimeout(content.init, 100); // register the init function to run 
+               }
             }
          });
       };
@@ -343,17 +351,21 @@ export module DialogBuilder {
          if(expressionText) {
             expressionText = Common.clearHtml(expressionText);
          } 
-         listFunction(expressionText, expressionPattern, searchCriteria, function(list) {
-            var content = createDialogListTable(list);
+         listFunction(expressionText, expressionPattern, searchCriteria, function(list, requestedText) {
+            var currentText = $("#searchText").html();
             
-            if(content.content){
-               $("#dialog").html(content.content);
-            }else {
-               $("#dialog").html('');
-            }
-            // this is kind of crap, but we need to be sure the html is rendered before binding
-            if(content.init) {
-               setTimeout(content.init, 100); // register the init function to run 
+            if(!requestedText || currentText == requestedText) {
+               var content = createDialogListTable(list);
+               
+               if(content.content){
+                  $("#dialog").html(content.content);
+               }else {
+                  $("#dialog").html('');
+               }
+               // this is kind of crap, but we need to be sure the html is rendered before binding
+               if(content.init) {
+                  setTimeout(content.init, 100); // register the init function to run 
+               }
             }
          });
       };
@@ -525,10 +537,12 @@ export module DialogBuilder {
          }
          content += " id='" + dialogListEntryId + "'>";
 
+         /*
          mouseOverFunctions[i] = function(rowId) {
             var selectedIndex = selectedIndexOfDialogListTable();
             selectDialogListTableRow(selectedIndex, rowId);
          };
+         */
          for(var j = 0; j < row.length; j++) {
             const cell = row[j];
             const entryId = "listEntry_" + i + "_" + j;
