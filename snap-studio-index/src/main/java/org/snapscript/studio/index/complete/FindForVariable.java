@@ -35,6 +35,38 @@ public class FindForVariable implements CompletionFinder {
       Map<String, IndexNode> expandedScope = IndexSearcher.getNodesInScope(node);
       String handle = text.getHandle();
       String unfinished = text.getUnfinished();
+      IndexNode handleNode = findHandle(database, expandedScope, handle);
+      
+      if(handleNode != null) {
+         Set<IndexNode> matched = new HashSet<IndexNode>();
+         Map<String, IndexNode> handleNodeScope = IndexSearcher.getNodesInScope(handleNode);
+         Set<Entry<String, IndexNode>> entries = handleNodeScope.entrySet();
+         String fullName = handleNode.getFullName();
+         
+         for(Entry<String, IndexNode> entry : entries) {
+            String name = entry.getKey();
+            IndexNode childNode = entry.getValue();
+            IndexType type = childNode.getType();
+            
+            if(name.startsWith(unfinished) && !type.isImport()) {
+               if(type.isType()) {
+                  IndexNode parent = childNode.getParent();
+                  String parentName = parent.getFullName();
+                  
+                  if(fullName.equals(parentName)) {
+                     matched.add(childNode);
+                  }
+               } else if(!type.isConstructor()) {
+                  matched.add(childNode);
+               }
+            }
+         }
+         return matched;
+      }
+      return Collections.emptySet();
+   }
+
+   private IndexNode findHandle(IndexDatabase database, Map<String, IndexNode> expandedScope, String handle) throws Exception {
       IndexNode handleNode = expandedScope.get(handle);
       
       if(handleNode != null) {
@@ -51,22 +83,6 @@ public class FindForVariable implements CompletionFinder {
             }
          }
       }
-      if(handleNode != null) {
-         Set<IndexNode> matched = new HashSet<IndexNode>();
-         Map<String, IndexNode> handleNodeScope = IndexSearcher.getNodesInScope(handleNode);
-         Set<Entry<String, IndexNode>> entries = handleNodeScope.entrySet();
-         
-         for(Entry<String, IndexNode> entry : entries) {
-            String name = entry.getKey();
-            IndexNode value = entry.getValue();
-            IndexType type = value.getType();
-            
-            if(name.startsWith(unfinished) && !type.isImport() && !type.isConstructor()) {
-               matched.add(value);
-            }
-         }
-         return matched;
-      }
-      return Collections.emptySet();
+      return handleNode;
    }
 }
