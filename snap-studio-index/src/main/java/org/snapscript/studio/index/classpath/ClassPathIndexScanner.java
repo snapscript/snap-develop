@@ -5,34 +5,58 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.JarFile;
 
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.ClassPath.ClassInfo;
 
 public class ClassPathIndexScanner {
-
-   private final ClassLoader loader;
    
-   public ClassPathIndexScanner(ClassLoader loader) {
-      this.loader = loader;
+   private final Set<ClassInfo> types;
+   
+   public ClassPathIndexScanner(Set<ClassInfo> classPath) {
+      this.types = new HashSet<ClassInfo>();
+      
+      try {
+         types.addAll(classPath);
+         types.addAll(ClassPathBootstrapScanner.getBootstrapClasses());
+      }catch(Throwable e) {
+         e.printStackTrace();
+      }
+   }
+   
+   public Map<String, IndexNode> getTypeNodesMatching(String expression) {
+      Map<String, IndexNode> nodes = new HashMap<String, IndexNode>();
+      
+      for(ClassInfo info : types) {
+         String resourcePath = info.getResourceName();
+         
+         if(!resourcePath.startsWith("target/")) {
+            IndexNode node = new ClassIndexNode(info);
+            String name = node.getFullName();
+
+            if(!name.isEmpty() && name.matches(expression)) {
+               if(name.startsWith("java.")) {
+                  String shortName = name.substring(5);
+                  nodes.put(shortName, node);
+               }
+//               else if(name.startsWith("javax.")) {
+//                  String shortName = name.substring(6);
+//                  nodes.put(shortName, node);
+//               }
+               nodes.put(name, node);
+            }
+         }
+      }
+      return nodes;
    }
    
    public Map<String, IndexNode> getTypeNodes() throws Exception {
-      ImmutableSet<ClassInfo> types = ClassPath.from(loader).getAllClasses();
-      
-      if(!types.isEmpty()) {
-         return getTypeNodes(types);
-      }
-      return Collections.emptyMap();
-   }
-   
-   public static Map<String, IndexNode> getTypeNodesMatching(Set<ClassInfo> types, String expression) {
       Map<String, IndexNode> nodes = new HashMap<String, IndexNode>();
       
       for(ClassInfo info : types) {
@@ -40,27 +64,17 @@ public class ClassPathIndexScanner {
          
          if(!resourcePath.startsWith("target/")) {
             IndexNode node = new ClassIndexNode(info);
-            String name = node.getName();
-            
-            if(!name.isEmpty() && name.matches(expression)) {
-               nodes.put(name, node);
-            }
-         }
-      }
-      return nodes;
-   }
-   
-   public static Map<String, IndexNode> getTypeNodes(Set<ClassInfo> types) throws Exception {
-      Map<String, IndexNode> nodes = new HashMap<String, IndexNode>();
-      
-      for(ClassInfo info : types) {
-         String resourcePath = info.getResourceName();
-         
-         if(!resourcePath.startsWith("target/")) {
-            IndexNode node = new ClassIndexNode(info);
-            String name = node.getName();
+            String name = node.getFullName();
             
             if(!name.isEmpty()) {
+               if(name.startsWith("java.")) {
+                  String shortName = name.substring(5);
+                  nodes.put(shortName, node);
+               }
+//               else if(name.startsWith("javax.")) {
+//                  String shortName = name.substring(6);
+//                  nodes.put(shortName, node);
+//               }
                nodes.put(name, node);
             }
          }
@@ -68,7 +82,24 @@ public class ClassPathIndexScanner {
       return nodes;
    }
    
-   private static String getClassLocation(ClassIndexNode node) {
+   private static String getAbsolutePath(ClassIndexNode node) {
+      URL url = node.getURL();
+      
+      if(url.toString().toLowerCase().startsWith("jar:file")) {
+         try {
+            JarURLConnection connection = (JarURLConnection) url.openConnection();
+            JarFile jarFile = connection.getJarFile();
+            File file = new File(jarFile.getName());
+            
+            return file.getCanonicalPath();
+         } catch(Exception e) {
+            //workspace.getLogger().trace("Could not build a JAR path", e);
+         }
+      }
+      return getFullPath(node);
+   }
+   
+   private static String getResource(ClassIndexNode node) {
       URL url = node.getURL();
       
       if(url.toString().toLowerCase().startsWith("jar:file")) {
@@ -99,11 +130,46 @@ public class ClassPathIndexScanner {
       }
       return path.replace(".", "/") + ".java";
    }
+   
+   private static String getFullName(String path) {
+      if(path.startsWith("/") || path.startsWith("\\")) {
+         path = path.substring(1);
+      }
+      int length = path.length();
+      int extension = ".class".length();
+      
+      path = path.substring(0, length - extension);
+      path = path.replace('/', '.');
+      path = path.replace('\\', '.');
+      
+      return path;
+   }
+   
+   private static String getTypeName(String path) {
+      String fullName = getFullName(path);
+      int index = fullName.lastIndexOf('.');
+      
+      if(index != -1) {
+         return fullName.substring(index + 1);
+      }
+      return fullName;
+   }
+   
+   private static String getName(String path) {
+      String typeName = getTypeName(path);
+      int index = typeName.lastIndexOf('$');
+      
+      if(index != -1) {
+         return typeName.substring(index + 1);
+      }
+      return typeName;
+   }
 
    private static class ClassIndexNode implements IndexNode {
       
       private ClassInfo info;
       private Class type;
+      private String absolute;
       private String resource;
       private URL url;
       
@@ -119,25 +185,32 @@ public class ClassPathIndexScanner {
       @Override
       public String getResource(){
          if(resource == null) {
-            resource = getClassLocation(this);
+            resource = ClassPathIndexScanner.getResource(this);
          }
          return resource;
       }
+      
+      @Override
+      public String getAbsolutePath(){
+         if(absolute == null) {
+            absolute = ClassPathIndexScanner.getAbsolutePath(this);
+         }
+         return absolute;
+      } 
        
-
       @Override
       public String getName() {
-         return getNodeClass().getSimpleName();
+         return ClassPathIndexScanner.getName(info.getResourceName());
       }
 
       @Override
       public String getTypeName() {
-         return getNodeClass().getSimpleName();
+         return ClassPathIndexScanner.getTypeName(info.getResourceName());
       }
 
       @Override
       public String getFullName() {
-         return getNodeClass().getName();
+         return ClassPathIndexScanner.getFullName(info.getResourceName());
       }
 
       @Override
@@ -152,18 +225,22 @@ public class ClassPathIndexScanner {
 
       @Override
       public IndexType getType() {
-         if(getNodeClass().isInterface()) {
-            return IndexType.TRAIT;
-         }
-         if(getNodeClass().isEnum()) {
-            return IndexType.ENUM;
+         Class type = getNodeClass();
+         
+         if(type != null) {
+            if(type.isInterface()) {
+               return IndexType.TRAIT;
+            }
+            if(type.isEnum()) {
+               return IndexType.ENUM;
+            }
          }
          return IndexType.CLASS;
       }
 
       @Override
       public Set<IndexNode> getNodes() {
-         return null;
+         return Collections.emptySet();
       }
       
       public URL getURL() {
@@ -175,7 +252,11 @@ public class ClassPathIndexScanner {
       
       private Class getNodeClass() {
          if(type == null) {
-            type = info.load();
+            try {
+               type = info.load();
+            } catch(Throwable e) {
+               return null;
+            }
          }
          return type;
       }

@@ -33,6 +33,10 @@ public class CompletionCompilerTest extends TestCase {
    "   class InnerClass {\n"+
    "      var x: String;\n"+
    "      var length: Integer;\n"+
+   "      new(x, length){\n"+
+   "         this.x = x;\n"+
+   "         this.length = length;\n"+
+   "      }\n"+
    "      someInnerFunc(): TypeEnum{\n"+
    "         return TypeEnum.ONE;\n"+
    "      }\n"+
@@ -59,7 +63,8 @@ public class CompletionCompilerTest extends TestCase {
       CompletionCompiler compiler = new CompletionCompiler(database, 
             FindForFunction.class,
             FindForVariable.class,
-            FindInScopeMatching.class);
+            FindInScopeMatching.class,
+            FindConstructorsInScope.class);
       
       CompletionRequest request = buildRequest(SOURCE, "do");
       Map<String, String> completion = compiler.compile(request);
@@ -121,6 +126,12 @@ public class CompletionCompilerTest extends TestCase {
       assertEquals(completion.get("doSomething()"), "member-function");
       assertEquals(completion.get("InnerClass"), "class");
       assertEquals(completion.get("TypeEnum"), "enum");
+      
+      request = buildRequest(SOURCE, "new ");
+      completion = compiler.compile(request);
+      
+      assertNotNull(completion.get("InnerClass(x, length)"));
+      assertEquals(completion.get("InnerClass(x, length)"), "constructor");
    }
    
    

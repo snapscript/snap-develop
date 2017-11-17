@@ -39,6 +39,10 @@ public enum IndexType {
       return this == IMPORT;
    }
    
+   public boolean isClass(){
+      return this == CLASS;
+   }
+   
    public boolean isType() {
       return this == CLASS ||
               this == ENUM ||

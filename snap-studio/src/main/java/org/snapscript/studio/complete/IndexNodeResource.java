@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
@@ -17,7 +16,6 @@ import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
-import org.snapscript.studio.index.classpath.ClassPathIndexScanner;
 import org.snapscript.studio.resource.project.Project;
 
 import com.google.gson.Gson;
@@ -66,30 +64,47 @@ public class IndexNodeResource implements Resource {
    
    private Map<String, IndexNodeData> getNodes(Project project, String expression) throws Exception {
       IndexDatabase database = project.getIndexDatabase();
-      Map<String, IndexNode> allNodes = null;
-      Map<String, IndexNode> nodes = null;
-
-      nodes = database.getTypeNodesMatching(expression);
-      allNodes = ClassPathIndexScanner.getTypeNodesMatching(project.getAllClasses(), expression);
-      allNodes.putAll(nodes);
+      Map<String, IndexNode> nodes = database.getTypeNodesMatching(expression);
       
-      return getIndexNodes(allNodes, expression);
+      return getIndexNodes(project, nodes, expression);
    }
    
-   private Map<String, IndexNodeData> getIndexNodes(Map<String, IndexNode> nodes, String expression) {
+   private Map<String, IndexNodeData> getIndexNodes(Project project, Map<String, IndexNode> nodes, String expression) {
       Set<Entry<String, IndexNode>> entries = nodes.entrySet();
       
       if(!entries.isEmpty()) {
          Map<String, IndexNodeData> data = new LinkedHashMap<String, IndexNodeData>();
          
          for(Entry<String, IndexNode> entry : entries) {
-            IndexNode node = entry.getValue();
-            IndexType type = node.getType();
-            String typeName = type.getName();
-            String path = node.getResource();
-            String name = node.getName();
-            
-            data.put(name +":" + path, new IndexNodeData(name, typeName, path));
+            try {
+               IndexNode node = entry.getValue();
+               IndexType type = node.getType();
+               String name = node.getName();
+               String fullName = node.getFullName();
+
+               if(type == IndexType.IMPORT) {
+                  IndexNode imported = project.getIndexDatabase().getTypeNode(fullName);
+                  
+                  if(imported != null) {
+                     name = imported.getName();
+                     type = imported.getType();
+                  } else {
+                     type = IndexType.CLASS; // hack job
+                  }
+               }
+               String category = type.getName();
+               String path = node.getResource();
+               String absolute = node.getAbsolutePath();
+               
+               if(absolute != null) {
+                  absolute = "&nbsp;<i style='opacity: 0.5;'>" + absolute + "</i>";
+               } else {
+                  absolute = "";
+               }
+               data.put(name +":" + path, new IndexNodeData(name, category, path + absolute));
+            } catch(Throwable e) {
+               // ignore
+            }
          }
          return data;
       }

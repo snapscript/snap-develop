@@ -31,6 +31,8 @@ import org.snapscript.studio.configuration.Dependency;
 import org.snapscript.studio.configuration.ProjectConfiguration;
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexScanner;
+import org.snapscript.studio.index.classpath.ClassPathIndexDatabase;
+import org.snapscript.studio.index.classpath.ClassPathIndexScanner;
 
 import com.google.common.reflect.ClassPath.ClassInfo;
 
@@ -110,12 +112,15 @@ public class Project implements FileDirectory {
       IndexDatabase database = reference.get();
       
       if(database == null) {
-         database = new IndexScanner(
+         ClassPathIndexScanner classPathScanner = new ClassPathIndexScanner(getAllClasses());
+         IndexScanner indexScanner = new IndexScanner(
             getProjectContext(), 
             getWorkspace().getExecutor(), 
             getSourcePath(), 
             getProjectName(), 
             getLayout().getPrefixes());
+         
+         database = new ClassPathIndexDatabase(indexScanner, classPathScanner);
          reference.set(database);
       }
       return database;
@@ -146,7 +151,9 @@ public class Project implements FileDirectory {
    public Set<ClassInfo> getAllClasses() {
       try {
          ProjectConfiguration configuration = reader.loadProjectConfiguration(projectName);
-         return configuration.getAllClasses();
+         Set<ClassInfo> classes = configuration.getAllClasses();
+         
+         
       } catch (Exception e) {
          workspace.getLogger().info("Could not read .project file for '" + projectName + "'", e);
       }

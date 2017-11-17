@@ -11,6 +11,7 @@ import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.index.complete.CompletionCompiler;
 import org.snapscript.studio.index.complete.CompletionRequest;
 import org.snapscript.studio.index.complete.CompletionResponse;
+import org.snapscript.studio.index.complete.FindConstructorsInScope;
 import org.snapscript.studio.index.complete.FindForFunction;
 import org.snapscript.studio.index.complete.FindForVariable;
 import org.snapscript.studio.index.complete.FindInScopeMatching;
@@ -43,7 +44,8 @@ public class CompletionResource implements Resource {
       CompletionCompiler compiler = new CompletionCompiler(project.getIndexDatabase(),
             FindForFunction.class,
             FindForVariable.class,
-            FindInScopeMatching.class);
+            FindInScopeMatching.class,
+            FindConstructorsInScope.class);
       
       Map<String, String> tokens = compiler.compile(context);
       result.setTokens(tokens);

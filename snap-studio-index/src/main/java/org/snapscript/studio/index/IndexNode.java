@@ -5,6 +5,7 @@ import java.util.Set;
 public interface IndexNode {
    int getLine();
    String getResource();
+   String getAbsolutePath();
    String getName();
    String getTypeName();
    String getFullName();

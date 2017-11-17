@@ -1,4 +1,6 @@
 package org.snapscript.studio.index;
+import static org.snapscript.core.Reserved.IMPORT_FILE;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,6 +12,7 @@ import java.util.TreeMap;
 import java.util.concurrent.Executor;
 
 import org.snapscript.core.Context;
+import org.snapscript.core.link.ImportPathResolver;
 import org.snapscript.studio.common.FileAction;
 import org.snapscript.studio.common.FileProcessor;
 import org.snapscript.studio.common.FileReader;
@@ -19,6 +22,7 @@ public class IndexScanner implements IndexDatabase {
    private final FileProcessor<IndexFile> processor;
    private final FileAction<IndexFile> action;
    private final IndexPathTranslator translator;
+   private final ImportPathResolver resolver;
    private final Indexer indexer;
    private final String project;
    private final File root;
@@ -28,6 +32,7 @@ public class IndexScanner implements IndexDatabase {
       this.indexer = new Indexer(translator, this, context, executor, root);
       this.action = new CompileAction(indexer, root);
       this.processor = new FileProcessor<IndexFile>(action, executor);
+      this.resolver = new ImportPathResolver(IMPORT_FILE);
       this.project = project;
       this.root = root;
    }

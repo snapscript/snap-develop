@@ -37,6 +37,11 @@ public class IndexFileNode implements IndexNode {
    }
    
    @Override
+   public String getAbsolutePath() {
+      return null;
+   }
+   
+   @Override
    public String getName() {
       IndexType type = index.getType();
       String name = index.getName();

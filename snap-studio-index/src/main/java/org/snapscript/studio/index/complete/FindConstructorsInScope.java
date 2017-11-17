@@ -8,25 +8,23 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.snapscript.core.link.ImportType;
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexSearcher;
 import org.snapscript.studio.index.IndexType;
 
-public class FindForVariable implements CompletionFinder {
+public class FindConstructorsInScope implements CompletionFinder {
 
-   private static final Pattern PATTERN = Pattern.compile("\\s*([a-zA-Z0-9_]+)\\.([a-zA-Z0-9_]*)$");
+   private static final Pattern PATTERN = Pattern.compile(".*new\\s+([a-zA-Z0-9_]*)$");
    
    @Override
    public UserText parseExpression(String expression) {
       Matcher matcher = PATTERN.matcher(expression);
       
       if(matcher.matches()) {
-         String handle = matcher.group(1);
-         String unfinished = matcher.group(2);
+         String unfinished = matcher.group(1);
          
-         return new UserText(handle, unfinished);
+         return new UserText(null, unfinished);
       }
       return null;
    }
@@ -34,36 +32,36 @@ public class FindForVariable implements CompletionFinder {
    @Override
    public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, UserText text) throws Exception {
       Map<String, IndexNode> expandedScope = IndexSearcher.getNodesInScope(node);
-      String handle = text.getHandle();
+      Set<Entry<String, IndexNode>> entries = expandedScope.entrySet();
       String unfinished = text.getUnfinished();
-      IndexNode handleNode = expandedScope.get(handle);
       
-      if(handleNode != null) {
-         IndexNode constraintNode = handleNode.getConstraint();
-         
-         if(constraintNode != null) {
-            handleNode = constraintNode;
-         } else {
-            IndexType type = handleNode.getType();
-            
-            if(type.isImport()) {
-               String fullPath = handleNode.getFullName();
-               handleNode = database.getTypeNode(fullPath);
-            }
-         }
-      }
-      if(handleNode != null) {
+      if(!entries.isEmpty()) {
          Set<IndexNode> matched = new HashSet<IndexNode>();
-         Map<String, IndexNode> handleNodeScope = IndexSearcher.getNodesInScope(handleNode);
-         Set<Entry<String, IndexNode>> entries = handleNodeScope.entrySet();
          
          for(Entry<String, IndexNode> entry : entries) {
             String name = entry.getKey();
             IndexNode value = entry.getValue();
             IndexType type = value.getType();
             
-            if(name.startsWith(unfinished) && !type.isImport() && !type.isConstructor()) {
-               matched.add(value);
+            if(name.startsWith(unfinished)) {
+               if(type.isImport() || type.isClass()) {
+                  String fullName = value.getFullName();
+                  IndexNode imported = database.getTypeNode(fullName);
+                  
+                  if(imported != null) {
+                     Set<IndexNode> nodes = imported.getNodes();
+                     
+                     for(IndexNode child : nodes) {
+                        IndexType childType = child.getType();
+                        
+                        if(childType.isConstructor()) {
+                           matched.add(child);
+                        }
+                     }
+                  }
+               } else if(type.isConstructor()) {
+                  matched.add(value);
+               }
             }
          }
          return matched;

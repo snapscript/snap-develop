@@ -9,7 +9,6 @@ import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexFile;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
-import org.snapscript.studio.index.Indexer;
 
 public class CompletionCompiler {
 
@@ -40,9 +39,24 @@ public class CompletionCompiler {
             for(IndexNode match : matches) {
                String name = match.getName();
                IndexType type = match.getType();
-               String typeName = type.getName();
+               String fullName = match.getFullName();
                
-               tokens.put(name, typeName);
+               if(type == IndexType.MEMBER_FUNCTION) {
+                  type = IndexType.FUNCTION;
+               }
+               if(type == IndexType.IMPORT) {
+                  IndexNode imported = database.getTypeNode(fullName);
+                  
+                  if(imported != null) {
+                     name = imported.getName();
+                     type = imported.getType();
+                  } else {
+                     type = IndexType.CLASS; // hack job
+                  }
+               }
+               String category = type.getName();
+               
+               tokens.put(name, category);
             }
             return tokens;
          }

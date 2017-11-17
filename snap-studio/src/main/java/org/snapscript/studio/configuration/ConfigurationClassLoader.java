@@ -64,11 +64,11 @@ public class ConfigurationClassLoader {
          File workspaceRoot = project.getWorkspace().getRoot();
          File tempPath = new File(workspaceRoot, WorkspaceConfiguration.TEMP_PATH);
          File agentFile = new File(tempPath, WorkspaceConfiguration.JAR_FILE);
+         List<URL> locations = new ArrayList<URL>();
          
          if(agentFile.exists()) {
             files.add(agentFile);
          }
-         List<URL> locations = new ArrayList<URL>();
          URL[] array = new URL[]{};
          
          for(File file : files) {

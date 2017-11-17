@@ -28,6 +28,7 @@ import org.snapscript.parse.SyntaxNode;
 import org.snapscript.parse.SyntaxParser;
 import org.snapscript.parse.Token;
 import org.snapscript.parse.TokenIndexer;
+import org.snapscript.parse.TokenType;
 import org.snapscript.tree.Instruction;
 import org.snapscript.tree.OperationResolver;
 
@@ -164,28 +165,31 @@ public class Indexer {
          Object value = token.getValue();
          Line line = token.getLine();
          int size = stack.size();
+         short type = token.getType();
          
-         if(value.equals("{")){
-            BraceNode current = stack.peek();
-            BraceNode node = current.open(BraceType.COMPOUND, line, size);
-
-            stack.push(node);
-         }else if(value.equals("}")) {
-            BraceNode current = stack.pop();
-            BraceNode parent = current.getParent();
-            int depth = parent.close(BraceType.COMPOUND, line);
-            
-            if(depth != 0) {
-               throw new IllegalStateException("Bracket not closed");
+         if((type & TokenType.LITERAL.mask) == TokenType.LITERAL.mask) {
+            if(value.equals("{")){
+               BraceNode current = stack.peek();
+               BraceNode node = current.open(BraceType.COMPOUND, line, size);
+   
+               stack.push(node);
+            }else if(value.equals("}")) {
+               BraceNode current = stack.pop();
+               BraceNode parent = current.getParent();
+               int depth = parent.close(BraceType.COMPOUND, line);
+               
+               if(depth != 0) {
+                  throw new IllegalStateException("Bracket not closed");
+               }
+            }else if(value.equals("(")) {
+               open(BraceType.NORMAL, line);
+            }else if(value.equals(")")) {
+               close(BraceType.NORMAL, line);
+            }else if(value.equals("[")) {
+               open(BraceType.ARRAY, line);
+            }else if(value.equals("]")) {
+               close(BraceType.ARRAY, line);
             }
-         }else if(value.equals("(")) {
-            open(BraceType.NORMAL, line);
-         }else if(value.equals(")")) {
-            close(BraceType.NORMAL, line);
-         }else if(value.equals("[")) {
-            open(BraceType.ARRAY, line);
-         }else if(value.equals("]")) {
-            close(BraceType.ARRAY, line);
          }
       }
       
