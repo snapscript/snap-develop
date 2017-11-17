@@ -40,10 +40,10 @@ public class ClassPathIndexScanner {
                   String shortName = name.substring(5);
                   nodes.put(shortName, node);
                }
-//               else if(name.startsWith("javax.")) {
-//                  String shortName = name.substring(6);
-//                  nodes.put(shortName, node);
-//               }
+               else if(name.startsWith("javax.")) {
+                  String shortName = name.substring(6);
+                  nodes.put(shortName, node);
+               }
                nodes.put(fullName, node);
             }
          }
@@ -66,10 +66,10 @@ public class ClassPathIndexScanner {
                   String shortName = name.substring(5);
                   nodes.put(shortName, node);
                }
-//               else if(name.startsWith("javax.")) {
-//                  String shortName = name.substring(6);
-//                  nodes.put(shortName, node);
-//               }
+               else if(name.startsWith("javax.")) {
+                  String shortName = name.substring(6);
+                  nodes.put(shortName, node);
+               }
                nodes.put(name, node);
             }
          }

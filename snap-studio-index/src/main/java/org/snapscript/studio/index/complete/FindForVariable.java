@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.snapscript.core.link.ImportType;
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexSearcher;
