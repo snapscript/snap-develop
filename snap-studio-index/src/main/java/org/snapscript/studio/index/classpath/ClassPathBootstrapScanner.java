@@ -4,8 +4,10 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -13,39 +15,41 @@ import com.google.common.reflect.ClassPath.ClassInfo;
 import com.google.common.reflect.ClassPath.ResourceInfo;
 
 public class ClassPathBootstrapScanner {
-   
+
+   private static final Set<ClassInfo> BOOTSTRAP_CLASSES;
    private static final Method RESOURCE_METHOD;
-   
+
    static {
       try {
-      RESOURCE_METHOD = ResourceInfo.class.getDeclaredMethod("of", String.class, ClassLoader.class);
+         RESOURCE_METHOD = ResourceInfo.class.getDeclaredMethod("of", String.class, ClassLoader.class);
 
-      if (!RESOURCE_METHOD.isAccessible()) {
-         RESOURCE_METHOD.setAccessible(true);
-      }
-      } catch(Throwable e) {
+         if (!RESOURCE_METHOD.isAccessible()) {
+            RESOURCE_METHOD.setAccessible(true);
+         }
+         BOOTSTRAP_CLASSES = new CopyOnWriteArraySet<ClassInfo>();
+      } catch (Throwable e) {
          throw new ExceptionInInitializerError(e);
       }
    }
-
-   public static Set<ClassInfo> getBootstrapClasses() throws Exception {
-      Set<ClassInfo> resources = new HashSet<ClassInfo>();
-      
-      try {
-         String javaHome = System.getProperty("java.home");
-         File rtFile = new File(javaHome + "/jre/lib/rt.jar");
-         
-         if (!rtFile.exists()) {
-            rtFile = new File(javaHome + "/lib/rt.jar");
+   
+   public static Set<ClassInfo> getBootstrapClasses() {
+      if(BOOTSTRAP_CLASSES.isEmpty()) {
+         try {
+            String javaHome = System.getProperty("java.home");
+            File rtFile = new File(javaHome + "/jre/lib/rt.jar");
+   
+            if (!rtFile.exists()) {
+               rtFile = new File(javaHome + "/lib/rt.jar");
+            }
+            if (rtFile.exists()) {
+               String path = rtFile.getCanonicalPath();
+               findClassesInJar(BOOTSTRAP_CLASSES, path);
+            }
+         } catch (Throwable e) {
+            return Collections.emptySet();
          }
-         if(rtFile.exists()) {
-            String path = rtFile.getCanonicalPath();
-            findClassesInJar(resources, path);
-         }
-      } catch (Throwable e) {
-         return Collections.emptySet();
       }
-      return resources;
+      return BOOTSTRAP_CLASSES;
    }
 
    private static void findClassesInJar(Set<ClassInfo> classFiles, String path) throws Exception {
@@ -59,7 +63,7 @@ public class ClassPathBootstrapScanner {
             String entryName = entry.getName();
             ClassInfo info = getClassInfo(entryName);
 
-            if(info != null) {
+            if (info != null) {
                classFiles.add(info);
             }
          }
@@ -67,7 +71,7 @@ public class ClassPathBootstrapScanner {
          jarFile.close();
       }
    }
-   
+
    public static ClassInfo getClassInfo(String path) throws Exception {
       if (path.endsWith(".class") && path.startsWith("java")) {
          ClassLoader loader = Thread.currentThread().getContextClassLoader();

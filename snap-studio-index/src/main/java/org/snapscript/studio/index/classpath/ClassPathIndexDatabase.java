@@ -58,4 +58,17 @@ public class ClassPathIndexDatabase implements IndexDatabase {
       return database.getFile(resource, source);
    }
 
+   @Override
+   public IndexNode getDefaultImport(String module, String name) throws Exception {
+      IndexNode node = null;
+      
+      if(module != null) {
+         node = getTypeNode(module + "." + name);
+      }
+      if(node == null) {
+         node = ClassReflectionIndexer.getDefaultImport(name);
+      }
+      return node;
+   }
+
 }

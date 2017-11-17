@@ -30,21 +30,17 @@ public class ClassPathIndexScanner {
       for(ClassInfo info : types) {
          String resourcePath = info.getResourceName();
          
-         if(!resourcePath.startsWith("target/")) {
+         if(!isTargetResource(resourcePath)) {
             IndexNode node = new ClassIndexNode(info);
             String fullName = node.getFullName();
             String name = node.getName();
 
             if(!name.isEmpty() && name.matches(expression)) {
-               if(name.startsWith("java.")) {
-                  String shortName = name.substring(5);
-                  nodes.put(shortName, node);
+               String[] names = getNames(fullName);
+               
+               for(String entry : names) {
+                  nodes.put(entry, node);
                }
-               else if(name.startsWith("javax.")) {
-                  String shortName = name.substring(6);
-                  nodes.put(shortName, node);
-               }
-               nodes.put(fullName, node);
             }
          }
       }
@@ -57,23 +53,35 @@ public class ClassPathIndexScanner {
       for(ClassInfo info : types) {
          String resourcePath = info.getResourceName();
          
-         if(!resourcePath.startsWith("target/")) {
+         if(!isTargetResource(resourcePath)) {
             IndexNode node = new ClassIndexNode(info);
             String name = node.getFullName();
             
             if(!name.isEmpty()) {
-               if(name.startsWith("java.")) {
-                  String shortName = name.substring(5);
-                  nodes.put(shortName, node);
+               String[] names = getNames(name);
+               
+               for(String entry : names) {
+                  nodes.put(entry, node);
                }
-               else if(name.startsWith("javax.")) {
-                  String shortName = name.substring(6);
-                  nodes.put(shortName, node);
-               }
-               nodes.put(name, node);
             }
          }
       }
       return nodes;
+   }
+   
+   private static String[] getNames(String fullName) {
+      if(fullName.startsWith("java.")) {
+         String shortName = fullName.substring(5);
+         return new String[]{ shortName, fullName };
+      }
+      if(fullName.startsWith("javax.")) {
+         String shortName = fullName.substring(6);
+         return new String[]{ shortName, fullName };
+      }
+      return new String[]{ fullName};
+   }
+   
+   public static boolean isTargetResource(String resourcePath) {
+      return resourcePath.startsWith("target/");
    }
 }

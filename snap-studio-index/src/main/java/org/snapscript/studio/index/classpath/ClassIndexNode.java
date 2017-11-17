@@ -71,10 +71,13 @@ public class ClassIndexNode implements IndexNode {
    @Override
    public IndexNode getParent() {
       Class type = getNodeClass();
-      Class parent = type.getDeclaringClass();
       
-      if(parent != null) {
-         return ClassReflectionIndexer.getIndexNode(parent);
+      if(type != null) {
+         Class parent = type.getDeclaringClass();
+         
+         if(parent != null) {
+            return ClassReflectionIndexer.getIndexNode(parent);
+         }
       }
       return null;
    }

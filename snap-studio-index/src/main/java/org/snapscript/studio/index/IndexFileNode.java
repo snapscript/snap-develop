@@ -113,7 +113,7 @@ public class IndexFileNode implements IndexNode {
          
          if(node == null) {
             try {
-               return database.getTypeNode(module + "." + constraint);
+               return database.getDefaultImport(module, constraint);
             } catch(Exception e) {
                return null;
             }

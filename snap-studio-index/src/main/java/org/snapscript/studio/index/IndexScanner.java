@@ -16,6 +16,8 @@ import org.snapscript.core.link.ImportPathResolver;
 import org.snapscript.studio.common.FileAction;
 import org.snapscript.studio.common.FileProcessor;
 import org.snapscript.studio.common.FileReader;
+import org.snapscript.studio.index.classpath.ClassPathIndexScanner;
+import org.snapscript.studio.index.classpath.ClassReflectionIndexer;
 
 public class IndexScanner implements IndexDatabase {
 
@@ -118,6 +120,11 @@ public class IndexScanner implements IndexDatabase {
          return matches;
       }
       return Collections.emptyMap();
+   }
+
+   @Override
+   public IndexNode getDefaultImport(String module, String name) throws Exception {
+      return ClassReflectionIndexer.getDefaultImport(name);
    }
 
    @Override

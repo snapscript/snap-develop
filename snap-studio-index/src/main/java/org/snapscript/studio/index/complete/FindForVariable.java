@@ -51,10 +51,13 @@ public class FindForVariable implements CompletionFinder {
             if(name.startsWith(unfinished) && !type.isImport()) {
                if(type.isType()) {
                   IndexNode parent = childNode.getParent();
-                  String parentName = parent.getFullName();
                   
-                  if(fullName.equals(parentName)) {
-                     matched.add(childNode);
+                  if(parent != null) {
+                     String parentName = parent.getFullName();
+                     
+                     if(fullName.equals(parentName)) {
+                        matched.add(childNode);
+                     }
                   }
                } else if(!type.isConstructor()) {
                   matched.add(childNode);
@@ -82,6 +85,9 @@ public class FindForVariable implements CompletionFinder {
                handleNode = database.getTypeNode(fullPath);
             }
          }
+      }
+      if(handleNode == null) {
+         handleNode = database.getDefaultImport(null, handle);
       }
       return handleNode;
    }

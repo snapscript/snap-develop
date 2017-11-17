@@ -241,6 +241,11 @@ public class IndexerTest extends TestCase {
       public IndexFile getFile(String resource, String source) throws Exception {
          return null;
       }
+
+      @Override
+      public IndexNode getDefaultImport(String module, String name) throws Exception {
+         return null;
+      }
       
    }
 }
