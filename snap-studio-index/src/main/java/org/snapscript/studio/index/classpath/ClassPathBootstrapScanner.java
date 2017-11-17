@@ -13,6 +13,20 @@ import com.google.common.reflect.ClassPath.ClassInfo;
 import com.google.common.reflect.ClassPath.ResourceInfo;
 
 public class ClassPathBootstrapScanner {
+   
+   private static final Method RESOURCE_METHOD;
+   
+   static {
+      try {
+      RESOURCE_METHOD = ResourceInfo.class.getDeclaredMethod("of", String.class, ClassLoader.class);
+
+      if (!RESOURCE_METHOD.isAccessible()) {
+         RESOURCE_METHOD.setAccessible(true);
+      }
+      } catch(Throwable e) {
+         throw new ExceptionInInitializerError(e);
+      }
+   }
 
    public static Set<ClassInfo> getBootstrapClasses() throws Exception {
       Set<ClassInfo> resources = new HashSet<ClassInfo>();
@@ -39,24 +53,26 @@ public class ClassPathBootstrapScanner {
 
       try {
          Enumeration<JarEntry> entries = jarFile.entries();
-         Method method = ResourceInfo.class.getDeclaredMethod("of", String.class, ClassLoader.class);
 
-         if (!method.isAccessible()) {
-            method.setAccessible(true);
-         }
          while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
             String entryName = entry.getName();
+            ClassInfo info = getClassInfo(entryName);
 
-            if (entryName.endsWith(".class") && entryName.startsWith("java")) {
-               ClassLoader loader = Thread.currentThread().getContextClassLoader();
-               ClassInfo info = (ClassInfo) method.invoke(null, entryName, loader);
-
+            if(info != null) {
                classFiles.add(info);
             }
          }
       } finally {
          jarFile.close();
       }
+   }
+   
+   public static ClassInfo getClassInfo(String path) throws Exception {
+      if (path.endsWith(".class") && path.startsWith("java")) {
+         ClassLoader loader = Thread.currentThread().getContextClassLoader();
+         return (ClassInfo) RESOURCE_METHOD.invoke(null, path, loader);
+      }
+      return null;
    }
 }
