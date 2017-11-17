@@ -21,6 +21,11 @@ public class FieldIndexNode implements IndexNode {
    }
    
    @Override
+   public String getModule() {
+      return getParent().getModule();
+   }
+   
+   @Override
    public String getResource(){
       return null;
    }

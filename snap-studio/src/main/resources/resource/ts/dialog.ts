@@ -48,6 +48,11 @@ export module DialogBuilder {
          dialogExpandPath = resourceDetails.projectDirectory; // /src/blah
       }
       var dialogBody = createFileSelectionDialogLayout(dialogExpandPath, '');
+      var focusInput = function() {
+         var element = document.getElementById('dialogPath');
+         element.contentEditable = true;
+         element.focus();
+      };
       w2popup.open({
          title : dialogTitle,
          body : dialogBody.content, 
@@ -64,10 +69,7 @@ export module DialogBuilder {
          onOpen : function(event) {
             setTimeout(function() {
                dialogBody.init();
-               var element = document.getElementById('dialogPath');
-               
-               element.contentEditable = true;
-               element.focus();
+               focusInput();
             }, 200);
          },
          onClose : function(event) {
@@ -76,10 +78,16 @@ export module DialogBuilder {
          onMax : function(event) {
             console.log('max');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            };
          },
          onMin : function(event) {
             console.log('min');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            };
          },
          onKeydown : function(event) {
             console.log('keydown');
@@ -132,7 +140,11 @@ export module DialogBuilder {
          openCallback(dialogPathDetails, selectedDirectory);
       };
       var dialogBody = createFileFolderSelectionDialogLayout();
-      
+      var focusInput = function() {
+         var element = document.getElementById('dialogPath');
+         element.contentEditable = true;
+         element.focus();
+      };
       w2popup.open({
          title : dialogTitle,
          body : dialogBody.content,
@@ -149,10 +161,7 @@ export module DialogBuilder {
          onOpen : function(event) {
             setTimeout(function() {
                dialogBody.init();
-               var element = document.getElementById('dialogPath');
-               
-               element.contentEditable = true;
-               element.focus();
+               focusInput();
             }, 200);
          },
          onClose : function(event) { 
@@ -161,10 +170,16 @@ export module DialogBuilder {
          onMax : function(event) {
             console.log('max');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            }
          },
          onMin : function(event) {
             console.log('min');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            }
          },
          onKeydown : function(event) {
             console.log('keydown');
@@ -187,6 +202,11 @@ export module DialogBuilder {
         
    export function createListDialog(listFunction, patternList, dialogTitle) { // listFunction(token): [a, b, c]
       var dialogBody = createListDialogLayout();
+      var focusInput = function() {
+         var element = document.getElementById('dialogPath');
+         element.contentEditable = true;
+         element.focus();
+      };
       w2popup.open({
          title : dialogTitle,
          body : dialogBody.content,
@@ -232,19 +252,22 @@ export module DialogBuilder {
                      }
                   });
                });
-               var element = document.getElementById('dialogPath');
-               
-               element.contentEditable = true;
-               element.focus();
+               focusInput();
             }, 200);
          },
          onMax : function(event) {
             console.log('max');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            };
          },
          onMin : function(event) {
             console.log('min');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            };
          }
       });
       $("#dialogSave").click(function() {
@@ -256,6 +279,11 @@ export module DialogBuilder {
    }
    
    export function createTextSearchOnlyDialog(listFunction, fileFilterPatterns, dialogTitle) { // listFunction(token): [a, b, c]
+      var focusInput = function() {
+         var element = document.getElementById('searchText');
+         element.contentEditable = true;
+         element.focus();
+      };
       var executeSearch = function() {
          var expressionText = $("#searchText").html();
          var searchCriteria = {
@@ -311,19 +339,22 @@ export module DialogBuilder {
 //               $('#inputCaseSensitive').change(executeSearch);
 //               $('#inputRegularExpression').change(executeSearch);
 //               $('#inputWholeWord').change(executeSearch);
-               var element = document.getElementById('searchText');
-               
-               element.contentEditable = true;
-               element.focus();
+               focusInput();
             }, 200);
          },
          onMax : function(event) {
             console.log('max');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            };
          },
          onMin : function(event) {
             console.log('min');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            };
          }
       });
       $("#dialogSave").click(function() {
@@ -335,6 +366,11 @@ export module DialogBuilder {
    }  
    
    export function createTextSearchAndReplaceDialog(listFunction, fileFilterPatterns, dialogTitle) { // listFunction(token): [a, b, c]
+      var focusInput = function() {
+         var element = document.getElementById('searchText');
+         element.contentEditable = true;
+         element.focus();
+      };
       var executeSearch = function() {
          var expressionText = $("#searchText").html();
          var searchCriteria = {
@@ -390,19 +426,22 @@ export module DialogBuilder {
 //               $('#inputCaseSensitive').change(executeSearch);
 //               $('#inputRegularExpression').change(executeSearch);
 //               $('#inputWholeWord').change(executeSearch);
-               var element = document.getElementById('searchText');
-               
-               element.contentEditable = true;
-               element.focus();
+               focusInput();
             }, 200);
          },
          onMax : function(event) {
             console.log('max');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            };
          },
          onMin : function(event) {
             console.log('min');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            };
          }
       });
       $("#dialogSave").click(function() {
@@ -427,6 +466,11 @@ export module DialogBuilder {
    
    function createEvaluateDialog(inputText, dialogTitle) { 
       var dialogBody = createGridDialogLayout(inputText ? Common.escapeHtml(inputText) : '');
+      var focusInput = function() {
+         var element = document.getElementById('dialogPath');
+         element.contentEditable = true;
+         element.focus();
+      };
       var executeEvaluation = function() {
          var text = $("#dialogPath").html();
          var expression = Common.clearHtml(text);
@@ -483,10 +527,7 @@ export module DialogBuilder {
                      }
                   }               
                }); 
-               var element = document.getElementById('dialogPath');
-               
-               element.contentEditable = true;
-               element.focus();
+               focusInput();
                
                setTimeout(function() {
                   VariableManager.showVariables();
@@ -502,12 +543,14 @@ export module DialogBuilder {
          onMax : function(event) {
             event.onComplete = function() {
                w2ui['evaluation'].refresh(); // resize
+               focusInput();
             }
             $(window).trigger('resize');
          },
          onMin : function(event) {
             event.onComplete = function() {
                w2ui['evaluation'].refresh(); // resize
+               focusInput();
             }
             $(window).trigger('resize');
          },

@@ -186,4 +186,15 @@ public class ClassReflectionIndexer {
       }
       return name;
    }
+   
+   public static String getModule(ClassInfo info) {
+      String name = getFullName(info);
+      int index = name.lastIndexOf('.');
+      
+      if(index != -1) {
+         return name.substring(0, index);
+      }
+      return name;
+   }
+   
 }

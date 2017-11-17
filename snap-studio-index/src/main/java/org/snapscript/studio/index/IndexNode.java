@@ -9,6 +9,7 @@ public interface IndexNode {
    String getName();
    String getTypeName();
    String getFullName();
+   String getModule();
    IndexNode getConstraint();
    IndexNode getParent();
    IndexType getType();

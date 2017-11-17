@@ -95,13 +95,9 @@ public class IndexNodeResource implements Resource {
                String category = type.getName();
                String path = node.getResource();
                String absolute = node.getAbsolutePath();
+               String module = node.getModule();
                
-               if(absolute != null) {
-                  absolute = "&nbsp;<i style='opacity: 0.5;'>" + absolute + "</i>";
-               } else {
-                  absolute = "";
-               }
-               data.put(name +":" + path, new IndexNodeData(name, category, path + absolute));
+               data.put(name +":" + path, new IndexNodeData(name, module, category, path,  absolute));
             } catch(Throwable e) {
                // ignore
             }
@@ -113,14 +109,18 @@ public class IndexNodeResource implements Resource {
    
    private static class IndexNodeData {
 
+      private final String module;
       private final String name;
       private final String type;
       private final String resource;
+      private final String extra;
       
-      public IndexNodeData(String name, String type, String resource) {
+      public IndexNodeData(String name, String module, String type, String resource, String extra) {
          this.resource = resource;
+         this.module = module;
          this.name = name;
          this.type = type;
+         this.extra = extra;
       }
 
       public String getName() {
@@ -133,6 +133,14 @@ public class IndexNodeResource implements Resource {
 
       public String getResource() {
          return resource;
+      }
+
+      public String getModule() {
+         return module;
+      }
+
+      public String getExtra() {
+         return extra;
       }
    }
 

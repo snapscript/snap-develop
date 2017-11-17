@@ -32,7 +32,8 @@ public class ClassPathIndexScanner {
          
          if(!resourcePath.startsWith("target/")) {
             IndexNode node = new ClassIndexNode(info);
-            String name = node.getFullName();
+            String fullName = node.getFullName();
+            String name = node.getName();
 
             if(!name.isEmpty() && name.matches(expression)) {
                if(name.startsWith("java.")) {
@@ -43,7 +44,7 @@ public class ClassPathIndexScanner {
 //                  String shortName = name.substring(6);
 //                  nodes.put(shortName, node);
 //               }
-               nodes.put(name, node);
+               nodes.put(fullName, node);
             }
          }
       }

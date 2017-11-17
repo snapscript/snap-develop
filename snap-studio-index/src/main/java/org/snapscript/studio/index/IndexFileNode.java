@@ -42,6 +42,11 @@ public class IndexFileNode implements IndexNode {
    }
    
    @Override
+   public String getModule() {
+      return index.getModule();
+   }
+   
+   @Override
    public String getName() {
       IndexType type = index.getType();
       String name = index.getName();

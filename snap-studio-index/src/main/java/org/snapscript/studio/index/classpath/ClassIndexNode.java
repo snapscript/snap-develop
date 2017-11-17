@@ -14,6 +14,7 @@ public class ClassIndexNode implements IndexNode {
    private Class type;
    private String absolute;
    private String resource;
+   private String module;
    private URL url;
    
    public ClassIndexNode(ClassInfo info) {
@@ -24,7 +25,7 @@ public class ClassIndexNode implements IndexNode {
    public int getLine() {
       return -1;
    }
-   
+
    @Override
    public String getResource(){
       if(resource == null) {
@@ -39,7 +40,13 @@ public class ClassIndexNode implements IndexNode {
          absolute = ClassReflectionIndexer.getAbsolutePath(info);
       }
       return absolute;
-   } 
+   }
+   
+   @Override
+   public String getModule() {
+      return ClassReflectionIndexer.getModule(info);
+   }
+   
     
    @Override
    public String getName() {

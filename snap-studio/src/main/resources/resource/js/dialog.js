@@ -40,6 +40,11 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 dialogExpandPath = resourceDetails.projectDirectory; // /src/blah
             }
             var dialogBody = createFileSelectionDialogLayout(dialogExpandPath, '');
+            var focusInput = function () {
+                var element = document.getElementById('dialogPath');
+                element.contentEditable = true;
+                element.focus();
+            };
             w2ui_1.w2popup.open({
                 title: dialogTitle,
                 body: dialogBody.content,
@@ -56,9 +61,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 onOpen: function (event) {
                     setTimeout(function () {
                         dialogBody.init();
-                        var element = document.getElementById('dialogPath');
-                        element.contentEditable = true;
-                        element.focus();
+                        focusInput();
                     }, 200);
                 },
                 onClose: function (event) {
@@ -67,10 +70,16 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 onMax: function (event) {
                     console.log('max');
                     $(window).trigger('resize');
+                    event.onComplete = function () {
+                        focusInput();
+                    };
                 },
                 onMin: function (event) {
                     console.log('min');
                     $(window).trigger('resize');
+                    event.onComplete = function () {
+                        focusInput();
+                    };
                 },
                 onKeydown: function (event) {
                     console.log('keydown');
@@ -118,6 +127,11 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 openCallback(dialogPathDetails, selectedDirectory);
             };
             var dialogBody = createFileFolderSelectionDialogLayout();
+            var focusInput = function () {
+                var element = document.getElementById('dialogPath');
+                element.contentEditable = true;
+                element.focus();
+            };
             w2ui_1.w2popup.open({
                 title: dialogTitle,
                 body: dialogBody.content,
@@ -134,9 +148,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 onOpen: function (event) {
                     setTimeout(function () {
                         dialogBody.init();
-                        var element = document.getElementById('dialogPath');
-                        element.contentEditable = true;
-                        element.focus();
+                        focusInput();
                     }, 200);
                 },
                 onClose: function (event) {
@@ -145,10 +157,16 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 onMax: function (event) {
                     console.log('max');
                     $(window).trigger('resize');
+                    event.onComplete = function () {
+                        focusInput();
+                    };
                 },
                 onMin: function (event) {
                     console.log('min');
                     $(window).trigger('resize');
+                    event.onComplete = function () {
+                        focusInput();
+                    };
                 },
                 onKeydown: function (event) {
                     console.log('keydown');
@@ -170,6 +188,11 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
         DialogBuilder.createTreeOpenDialog = createTreeOpenDialog;
         function createListDialog(listFunction, patternList, dialogTitle) {
             var dialogBody = createListDialogLayout();
+            var focusInput = function () {
+                var element = document.getElementById('dialogPath');
+                element.contentEditable = true;
+                element.focus();
+            };
             w2ui_1.w2popup.open({
                 title: dialogTitle,
                 body: dialogBody.content,
@@ -213,18 +236,22 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                                 }
                             });
                         });
-                        var element = document.getElementById('dialogPath');
-                        element.contentEditable = true;
-                        element.focus();
+                        focusInput();
                     }, 200);
                 },
                 onMax: function (event) {
                     console.log('max');
                     $(window).trigger('resize');
+                    event.onComplete = function () {
+                        focusInput();
+                    };
                 },
                 onMin: function (event) {
                     console.log('min');
                     $(window).trigger('resize');
+                    event.onComplete = function () {
+                        focusInput();
+                    };
                 }
             });
             $("#dialogSave").click(function () {
@@ -236,6 +263,11 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
         }
         DialogBuilder.createListDialog = createListDialog;
         function createTextSearchOnlyDialog(listFunction, fileFilterPatterns, dialogTitle) {
+            var focusInput = function () {
+                var element = document.getElementById('searchText');
+                element.contentEditable = true;
+                element.focus();
+            };
             var executeSearch = function () {
                 var expressionText = $("#searchText").html();
                 var searchCriteria = {
@@ -289,18 +321,22 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                         //               $('#inputCaseSensitive').change(executeSearch);
                         //               $('#inputRegularExpression').change(executeSearch);
                         //               $('#inputWholeWord').change(executeSearch);
-                        var element = document.getElementById('searchText');
-                        element.contentEditable = true;
-                        element.focus();
+                        focusInput();
                     }, 200);
                 },
                 onMax: function (event) {
                     console.log('max');
                     $(window).trigger('resize');
+                    event.onComplete = function () {
+                        focusInput();
+                    };
                 },
                 onMin: function (event) {
                     console.log('min');
                     $(window).trigger('resize');
+                    event.onComplete = function () {
+                        focusInput();
+                    };
                 }
             });
             $("#dialogSave").click(function () {
@@ -312,6 +348,11 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
         }
         DialogBuilder.createTextSearchOnlyDialog = createTextSearchOnlyDialog;
         function createTextSearchAndReplaceDialog(listFunction, fileFilterPatterns, dialogTitle) {
+            var focusInput = function () {
+                var element = document.getElementById('searchText');
+                element.contentEditable = true;
+                element.focus();
+            };
             var executeSearch = function () {
                 var expressionText = $("#searchText").html();
                 var searchCriteria = {
@@ -365,18 +406,22 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                         //               $('#inputCaseSensitive').change(executeSearch);
                         //               $('#inputRegularExpression').change(executeSearch);
                         //               $('#inputWholeWord').change(executeSearch);
-                        var element = document.getElementById('searchText');
-                        element.contentEditable = true;
-                        element.focus();
+                        focusInput();
                     }, 200);
                 },
                 onMax: function (event) {
                     console.log('max');
                     $(window).trigger('resize');
+                    event.onComplete = function () {
+                        focusInput();
+                    };
                 },
                 onMin: function (event) {
                     console.log('min');
                     $(window).trigger('resize');
+                    event.onComplete = function () {
+                        focusInput();
+                    };
                 }
             });
             $("#dialogSave").click(function () {
@@ -400,6 +445,11 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
         DialogBuilder.createTextSearchAndReplaceDialog = createTextSearchAndReplaceDialog;
         function createEvaluateDialog(inputText, dialogTitle) {
             var dialogBody = createGridDialogLayout(inputText ? common_1.Common.escapeHtml(inputText) : '');
+            var focusInput = function () {
+                var element = document.getElementById('dialogPath');
+                element.contentEditable = true;
+                element.focus();
+            };
             var executeEvaluation = function () {
                 var text = $("#dialogPath").html();
                 var expression = common_1.Common.clearHtml(text);
@@ -454,9 +504,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                                 };
                             }
                         });
-                        var element = document.getElementById('dialogPath');
-                        element.contentEditable = true;
-                        element.focus();
+                        focusInput();
                         setTimeout(function () {
                             variables_1.VariableManager.showVariables();
                         }, 200);
@@ -471,12 +519,14 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 onMax: function (event) {
                     event.onComplete = function () {
                         w2ui_1.w2ui['evaluation'].refresh(); // resize
+                        focusInput();
                     };
                     $(window).trigger('resize');
                 },
                 onMin: function (event) {
                     event.onComplete = function () {
                         w2ui_1.w2ui['evaluation'].refresh(); // resize
+                        focusInput();
                     };
                     $(window).trigger('resize');
                 },

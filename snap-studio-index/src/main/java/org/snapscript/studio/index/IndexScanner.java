@@ -107,10 +107,11 @@ public class IndexScanner implements IndexDatabase {
             String name = node.getName();
             
             if(name != null) {
+               String fullName = node.getFullName();
                IndexType type = node.getType();
                
                if(name.matches(expression) && !type.isImport()) {
-                  matches.put(name, node);
+                  matches.put(fullName, node);
                }
             }
          }

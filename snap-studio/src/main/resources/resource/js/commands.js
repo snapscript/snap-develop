@@ -12,17 +12,22 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                         var locationHash = window.document.location.hash;
                         var debug = locationPath.indexOf(debugToggle, locationPath.length - debugToggle.length) !== -1;
                         var resourceLink = "/project/" + typesFound[i].project;
+                        var typePackage = "<i style='opacity: 0.5'>" + typesFound[i].module + "<i>";
+                        var absolutePath = "";
+                        if (typesFound[i].extra) {
+                            absolutePath = "<i style='opacity: 0.5'>" + typesFound[i].extra + "<i>";
+                        }
                         if (debug) {
                             resourceLink += debugToggle;
                         }
                         resourceLink += "#" + typesFound[i].resource;
                         var typeCell = {
-                            text: typesFound[i].name,
+                            text: typesFound[i].name + "&nbsp;&nbsp;" + typePackage,
                             link: resourceLink,
                             style: typesFound[i].type == 'module' ? 'moduleNode' : 'typeNode'
                         };
                         var resourceCell = {
-                            text: typesFound[i].resource,
+                            text: typesFound[i].resource + "&nbsp;&nbsp;" + absolutePath,
                             link: resourceLink,
                             style: 'resourceNode'
                         };
@@ -53,6 +58,8 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                             var typeEntry = {
                                 name: typeReference.name,
                                 resource: typeReference.resource,
+                                module: typeReference.module,
+                                extra: typeReference.extra,
                                 type: typeReference.type,
                                 project: document.title
                             };
