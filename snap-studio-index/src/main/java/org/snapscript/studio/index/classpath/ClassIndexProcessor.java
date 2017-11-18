@@ -9,47 +9,51 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.jar.JarFile;
 
 import org.snapscript.studio.index.IndexNode;
 
 import com.google.common.reflect.ClassPath.ClassInfo;
+import com.google.common.reflect.ClassPath.ResourceInfo;
 
-public class ClassReflectionIndexer {
+public class ClassIndexProcessor {
    
-   private static final Map<String, IndexNode> DEFAULT_CLASSES;
-   private static final String[] DEFAULT_IMPORTS = {
-      "java.lang.",
-      "java.util.",
-      "java.net.",
-      "java.io."
-   };
-   
+   private static final Method RESOURCE_METHOD;
+
    static  {
-      DEFAULT_CLASSES = new ConcurrentHashMap<String, IndexNode>();
+      try {
+         RESOURCE_METHOD = ResourceInfo.class.getDeclaredMethod("of", String.class, ClassLoader.class);
+   
+         if (!RESOURCE_METHOD.isAccessible()) {
+            RESOURCE_METHOD.setAccessible(true);
+         }
+      } catch (Throwable e) {
+         throw new ExceptionInInitializerError(e);
+      }
    }
    
-   
    public static IndexNode getDefaultImport(String name) {
-      if(DEFAULT_CLASSES.isEmpty()) {
-         Set<ClassInfo> list = ClassPathBootstrapScanner.getBootstrapClasses();
-         
-         for(ClassInfo info : list) {
-            String fullName = getFullName(info);
-            
-            for(String prefix : DEFAULT_IMPORTS) {
-               String shortName = getName(info);
-               
-               if(fullName.startsWith(prefix)) {
-                  if(fullName.equals(prefix + shortName)) {
-                     IndexNode node = getIndexNode(info);
-                     DEFAULT_CLASSES.put(shortName, node);
-                  }
-               }
-            }
-         }
+      return BootstrapClassPath.getDefaultImportClasses().get(name);
+   }
+
+   public static ClassInfo getClassInfo(String path) throws Exception {
+      if (path.endsWith(".class") && path.startsWith("java")) {
+         ClassLoader loader = Thread.currentThread().getContextClassLoader();
+         return (ClassInfo) RESOURCE_METHOD.invoke(null, path, loader);
       }
-      return DEFAULT_CLASSES.get(name);
+      return null;
+   }
+   
+   public static ClassInfo getClassInfo(Class type) {
+      String path = ClassIndexProcessor.getFullPath(type);
+      
+      try {
+         return getClassInfo(path);
+      }catch(Throwable cause) {
+         cause.printStackTrace();
+      }
+      return null;
    }
    
    public static Set<IndexNode> getChildren(ClassInfo info) {
@@ -162,17 +166,6 @@ public class ClassReflectionIndexer {
    
    public static String getFullPath(Class type) {
       return type.getCanonicalName().replace('.', '/') + ".class";
-   }
-   
-   public static ClassInfo getClassInfo(Class type) {
-      String path = ClassReflectionIndexer.getFullPath(type);
-      
-      try {
-         return ClassPathBootstrapScanner.getClassInfo(path);
-      }catch(Throwable cause) {
-         cause.printStackTrace();
-      }
-      return null;
    }
    
    public static IndexNode getIndexNode(Class type) {

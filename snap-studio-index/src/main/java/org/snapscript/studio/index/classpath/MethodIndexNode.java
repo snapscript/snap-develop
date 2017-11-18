@@ -77,13 +77,13 @@ public class MethodIndexNode implements IndexNode {
    @Override
    public IndexNode getConstraint() {
       Class returnType = method.getReturnType();
-      return ClassReflectionIndexer.getIndexNode(returnType);
+      return ClassIndexProcessor.getIndexNode(returnType);
    }
 
    @Override
    public IndexNode getParent() {
       Class parent = method.getDeclaringClass();
-      return ClassReflectionIndexer.getIndexNode(parent);
+      return ClassIndexProcessor.getIndexNode(parent);
    }
 
    @Override

@@ -58,7 +58,7 @@ class GamePanel extends JPanel with Runnable {
    private var SM_10512_Hz: MarioSoundManager10512Hz;
    
    public new(w: Integer, h: Integer, scale: Integer) {
-      
+   
       this.panelWidth = w;
       this.panelHeight = h;
       this.panelScale = scale;

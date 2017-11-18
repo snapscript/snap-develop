@@ -28,7 +28,7 @@ public class IndexScannerTest extends TestCase {
       Context context = new StoreContext(store);
       File root = new File("c:/Work/development/snapscript/snap-develop/snap-studio/work/games");
       ThreadPool pool = new ThreadPool(1);
-      IndexScanner scanner = new IndexScanner(context, pool, root, "demo", "mario/src", "mario/assets");
+      IndexScanner scanner = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, root, "demo", "mario/src", "mario/assets");
       long start = System.currentTimeMillis();
       Map<String, IndexNode> nodes = scanner.getTypeNodesMatching(".*");
       long finish = System.currentTimeMillis();

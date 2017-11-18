@@ -16,8 +16,9 @@ import org.snapscript.core.link.ImportPathResolver;
 import org.snapscript.studio.common.FileAction;
 import org.snapscript.studio.common.FileProcessor;
 import org.snapscript.studio.common.FileReader;
-import org.snapscript.studio.index.classpath.ClassPathIndexScanner;
-import org.snapscript.studio.index.classpath.ClassReflectionIndexer;
+import org.snapscript.studio.index.classpath.BootstrapClassPath;
+import org.snapscript.studio.index.classpath.ClassIndexProcessor;
+import org.snapscript.studio.index.classpath.ClassPathSearcher;
 
 public class IndexScanner implements IndexDatabase {
 
@@ -25,11 +26,13 @@ public class IndexScanner implements IndexDatabase {
    private final FileAction<IndexFile> action;
    private final IndexPathTranslator translator;
    private final ImportPathResolver resolver;
+   private final ClassPathSearcher searcher;
    private final Indexer indexer;
    private final String project;
    private final File root;
    
-   public IndexScanner(Context context, Executor executor, File root, String project, String... prefixes) {
+   public IndexScanner(ClassLoader loader, Context context, Executor executor, File root, String project, String... prefixes) {
+      this.searcher = new ClassPathSearcher(loader);
       this.translator = new IndexPathTranslator(prefixes);
       this.indexer = new Indexer(translator, this, context, executor, root);
       this.action = new CompileAction(indexer, root);
@@ -62,7 +65,7 @@ public class IndexScanner implements IndexDatabase {
       Collection<IndexFile> list = files.values();
       
       if(!files.isEmpty()) {
-         Map<String, IndexNode> matches = new TreeMap<String, IndexNode>();
+         Map<String, IndexNode> matches = new HashMap<String, IndexNode>();
          
          for(IndexFile file : list) {
             Map<String, IndexNode> nodes = file.getTypeNodes();
@@ -81,9 +84,10 @@ public class IndexScanner implements IndexDatabase {
                }
             }
          }
-         return matches;
+         matches.putAll(searcher.getTypeNodes()); // add project types and bootstrap types
+         return Collections.unmodifiableMap(matches);
       }
-      return Collections.emptyMap();
+      return searcher.getTypeNodes();
    }
 
    @Override
@@ -124,7 +128,12 @@ public class IndexScanner implements IndexDatabase {
 
    @Override
    public IndexNode getDefaultImport(String module, String name) throws Exception {
-      return ClassReflectionIndexer.getDefaultImport(name);
+      IndexNode node = getTypeNode(module + "." + name);
+      
+      if(node == null) {
+         return BootstrapClassPath.getDefaultImportClasses().get(name);
+      }
+      return node;
    }
 
    @Override

@@ -53,13 +53,13 @@ public class FieldIndexNode implements IndexNode {
    @Override
    public IndexNode getConstraint() {
       Class type = field.getType();
-      return ClassReflectionIndexer.getIndexNode(type);
+      return ClassIndexProcessor.getIndexNode(type);
    }
 
    @Override
    public IndexNode getParent() {
       Class parent = field.getDeclaringClass();
-      return ClassReflectionIndexer.getIndexNode(parent);
+      return ClassIndexProcessor.getIndexNode(parent);
    }
 
    @Override

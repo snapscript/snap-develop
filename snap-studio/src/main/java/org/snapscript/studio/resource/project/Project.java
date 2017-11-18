@@ -12,7 +12,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -31,10 +30,6 @@ import org.snapscript.studio.configuration.Dependency;
 import org.snapscript.studio.configuration.ProjectConfiguration;
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexScanner;
-import org.snapscript.studio.index.classpath.ClassPathIndexDatabase;
-import org.snapscript.studio.index.classpath.ClassPathIndexScanner;
-
-import com.google.common.reflect.ClassPath.ClassInfo;
 
 public class Project implements FileDirectory {
    
@@ -112,16 +107,15 @@ public class Project implements FileDirectory {
       IndexDatabase database = reference.get();
       
       if(database == null) {
-         ClassPathIndexScanner classPathScanner = new ClassPathIndexScanner(getAllClasses());
          IndexScanner indexScanner = new IndexScanner(
+            getClassLoader(),
             getProjectContext(), 
             getWorkspace().getExecutor(), 
             getSourcePath(), 
             getProjectName(), 
             getLayout().getPrefixes());
-         
-         database = new ClassPathIndexDatabase(indexScanner, classPathScanner);
-         reference.set(database);
+
+         reference.set(indexScanner);
       }
       return database;
    }
@@ -147,19 +141,7 @@ public class Project implements FileDirectory {
       }
       return new ProjectLayout();
    }
-   
-   public Set<ClassInfo> getAllClasses() {
-      try {
-         ProjectConfiguration configuration = reader.loadProjectConfiguration(projectName);
-         Set<ClassInfo> classes = configuration.getAllClasses();
-         
-         
-      } catch (Exception e) {
-         workspace.getLogger().info("Could not read .project file for '" + projectName + "'", e);
-      }
-      return Collections.emptySet();
-   }
-   
+
    public List<File> getDependencies() {
       try {
          String classPath = getClassPath();

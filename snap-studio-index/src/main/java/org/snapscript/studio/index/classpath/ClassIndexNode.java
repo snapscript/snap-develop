@@ -29,7 +29,7 @@ public class ClassIndexNode implements IndexNode {
    @Override
    public String getResource(){
       if(resource == null) {
-         resource = ClassReflectionIndexer.getResource(info);
+         resource = ClassIndexProcessor.getResource(info);
       }
       return resource;
    }
@@ -37,30 +37,30 @@ public class ClassIndexNode implements IndexNode {
    @Override
    public String getAbsolutePath(){
       if(absolute == null) {
-         absolute = ClassReflectionIndexer.getAbsolutePath(info);
+         absolute = ClassIndexProcessor.getAbsolutePath(info);
       }
       return absolute;
    }
    
    @Override
    public String getModule() {
-      return ClassReflectionIndexer.getModule(info);
+      return ClassIndexProcessor.getModule(info);
    }
    
     
    @Override
    public String getName() {
-      return ClassReflectionIndexer.getName(info);
+      return ClassIndexProcessor.getName(info);
    }
 
    @Override
    public String getTypeName() {
-      return ClassReflectionIndexer.getTypeName(info);
+      return ClassIndexProcessor.getTypeName(info);
    }
 
    @Override
    public String getFullName() {
-      return ClassReflectionIndexer.getFullName(info);
+      return ClassIndexProcessor.getFullName(info);
    }
 
    @Override
@@ -76,7 +76,7 @@ public class ClassIndexNode implements IndexNode {
          Class parent = type.getDeclaringClass();
          
          if(parent != null) {
-            return ClassReflectionIndexer.getIndexNode(parent);
+            return ClassIndexProcessor.getIndexNode(parent);
          }
       }
       return null;
@@ -99,7 +99,7 @@ public class ClassIndexNode implements IndexNode {
 
    @Override
    public Set<IndexNode> getNodes() {
-      return ClassReflectionIndexer.getChildren(info);
+      return ClassIndexProcessor.getChildren(info);
    }
    
    public URL getURL() {

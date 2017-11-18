@@ -560,6 +560,9 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 var _loop_1 = function() {
                     var cell = row[j];
                     var entryId = "listEntry_" + i + "_" + j;
+                    if (j > 0) {
+                        content += "<td>&nbsp;&nbsp;</td>"; // if there is overflow we should show a space
+                    }
                     content += "<td width='50%'><div id='" + entryId + "' class='";
                     content += cell.style;
                     content += "'>";

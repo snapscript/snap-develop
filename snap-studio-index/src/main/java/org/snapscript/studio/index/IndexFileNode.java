@@ -124,9 +124,12 @@ public class IndexFileNode implements IndexNode {
                String fullName = node.getFullName();
                
                try {
-                  return database.getTypeNode(fullName);
-               } catch(Exception e) {
-                  return null;
+                  node = database.getTypeNode(fullName);
+               } catch(Exception e) {               
+               }
+               try {
+                  node = database.getDefaultImport(module, fullName);
+               } catch(Exception e) {               
                }
             }
          }

@@ -43,6 +43,10 @@ public enum IndexType {
       return this == CLASS;
    }
    
+   public boolean isProperty(){
+      return this == PROPERTY;
+   }
+   
    public boolean isType() {
       return this == CLASS ||
               this == ENUM ||
@@ -53,6 +57,10 @@ public enum IndexType {
    
    public boolean isConstructor(){
       return this == CONSTRUCTOR;
+   }
+
+   public boolean isMemberFunction(){
+      return this == MEMBER_FUNCTION;
    }
    
    public boolean isFunction(){

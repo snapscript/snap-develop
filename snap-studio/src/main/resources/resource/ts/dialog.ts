@@ -590,6 +590,9 @@ export module DialogBuilder {
             const cell = row[j];
             const entryId = "listEntry_" + i + "_" + j;
             
+            if(j > 0) {
+               content += "<td>&nbsp;&nbsp;</td>"; // if there is overflow we should show a space
+            }
             content += "<td width='50%'><div id='" + entryId + "' class='";
             content += cell.style;
             content += "'>";
