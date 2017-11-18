@@ -128,6 +128,7 @@ public class IndexFileNode implements IndexNode {
                   String fullName = node.getFullName();
                   return getConstraint(module, fullName);
                }
+               return node;
             }
          }
          return getConstraint(null, null);

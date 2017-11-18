@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.snapscript.studio.index.classpath.BootstrapClassPath;
 import org.snapscript.studio.index.classpath.ClassIndexProcessor;
 
 public class IndexSearcher implements IndexFile {
@@ -104,6 +105,8 @@ public class IndexSearcher implements IndexFile {
    
    public static Map<String, IndexNode> getNodesInScope(IndexNode node) {
       Map<String, IndexNode> scope = new HashMap<String, IndexNode>();
+      
+      scope.putAll(BootstrapClassPath.getDefaultImportNames());
       
       while(node != null) {
          Set<IndexNode> nodes = node.getNodes();

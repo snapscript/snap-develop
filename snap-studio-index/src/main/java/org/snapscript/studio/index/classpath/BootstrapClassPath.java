@@ -1,9 +1,6 @@
 package org.snapscript.studio.index.classpath;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
@@ -20,6 +17,7 @@ import com.google.common.reflect.ClassPath.ClassInfo;
 public class BootstrapClassPath {
 
    private static final Set<IndexNode> BOOTSTRAP_CLASSES;
+   private static final Map<String, IndexNode> DEFAULT_IMPORT_NAMES;
    private static final Map<String, IndexNode> DEFAULT_IMPORT_CLASSES;
    private static final String IGNORE_PREFIX = "java.";
    private static final String[] DEFAULT_IMPORTS = {
@@ -35,6 +33,7 @@ public class BootstrapClassPath {
    
    static {
       try {
+         DEFAULT_IMPORT_NAMES = new ConcurrentHashMap<String, IndexNode>();
          DEFAULT_IMPORT_CLASSES = new ConcurrentHashMap<String, IndexNode>();
          BOOTSTRAP_CLASSES = new CopyOnWriteArraySet<IndexNode>();
       } catch (Throwable e) {
@@ -60,11 +59,32 @@ public class BootstrapClassPath {
             return Collections.emptySet();
          }
       }
-      return BOOTSTRAP_CLASSES;
+      return Collections.unmodifiableSet(BOOTSTRAP_CLASSES);
    }
    
    public static Map<String, IndexNode> getDefaultImportClasses() {
       if(DEFAULT_IMPORT_CLASSES.isEmpty()) {
+         Set<IndexNode> nodes = getBootstrapClasses();
+         Map<String, IndexNode> names = getDefaultImportNames();
+
+         for(IndexNode node : nodes) {
+            String fullName = node.getFullName();
+            
+            if(fullName.startsWith(IGNORE_PREFIX)) {
+               int length = IGNORE_PREFIX.length();
+               String alias = fullName.substring(length);
+               
+               DEFAULT_IMPORT_CLASSES.put(alias, node);
+               DEFAULT_IMPORT_CLASSES.put(fullName, node);
+            }
+         }
+         DEFAULT_IMPORT_CLASSES.putAll(names);
+      }
+      return Collections.unmodifiableMap(DEFAULT_IMPORT_CLASSES);
+   }
+   
+   public static Map<String, IndexNode> getDefaultImportNames() {
+      if(DEFAULT_IMPORT_NAMES.isEmpty()) {
          Set<IndexNode> nodes = getBootstrapClasses();
 
          for(IndexNode node : nodes) {
@@ -74,18 +94,13 @@ public class BootstrapClassPath {
             for(String prefix : DEFAULT_IMPORTS) {
                if(fullName.startsWith(IGNORE_PREFIX)) {
                   if(fullName.startsWith(prefix) && fullName.equals(prefix + shortName)) {
-                     DEFAULT_IMPORT_CLASSES.put(shortName, node);
+                     DEFAULT_IMPORT_NAMES.put(shortName, node);
                   }
-                  int length = IGNORE_PREFIX.length();
-                  String alias = fullName.substring(length);
-                  
-                  DEFAULT_IMPORT_CLASSES.put(alias, node);
-                  DEFAULT_IMPORT_CLASSES.put(fullName, node);
                }
             }
          }
       }
-      return DEFAULT_IMPORT_CLASSES;
+      return Collections.unmodifiableMap(DEFAULT_IMPORT_NAMES);
    }
 
    private static void findClassesInJar(Set<IndexNode> classFiles, String path) throws Exception {

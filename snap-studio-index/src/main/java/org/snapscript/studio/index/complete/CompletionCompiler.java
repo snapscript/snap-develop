@@ -22,8 +22,8 @@ public class CompletionCompiler {
    
    public CompletionResponse compile(CompletionRequest request) throws Exception {
       String source = convertSource(request);
+      String complete = extractUserText(request);
       String resource = request.getResource();
-      String complete = request.getComplete();
       int line = request.getLine();
       IndexFile file = database.getFile(resource, source);
       IndexNode node = file.getNodeAtLine(line);
@@ -82,5 +82,36 @@ public class CompletionCompiler {
          return builder.toString();
       }
       return source;
+   }
+   
+   public static String extractUserText(CompletionRequest request) {
+      String completion = request.getComplete();
+      int length = completion.length();
+      int begin = length -1;
+      
+      while(begin > 0) {
+         char next = completion.charAt(begin);
+         
+         if(isTerminal(next)) {
+            return completion.substring(begin + 1, length);
+         }
+         begin--;
+      }
+      return completion.trim();
+   }
+   
+   private static boolean isTerminal(char value) {
+      switch(value) {
+      case ',': case '{':
+      case '(': case '+':
+      case '-': case '*':
+      case '/': case '%':
+      case '|': case '&':
+      case '?': case ':':
+      case '=': case '<':
+      case '>':
+         return true;
+      }
+      return false;
    }
 }
