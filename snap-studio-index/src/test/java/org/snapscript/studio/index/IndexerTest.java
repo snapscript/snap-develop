@@ -231,6 +231,11 @@ public class IndexerTest extends TestCase {
       public Map<String, IndexNode> getTypeNodesMatching(String expression) throws Exception {
          return null;
       }
+      
+      @Override
+      public Map<String, IndexNode> getTypeNodesMatching(String expression, boolean ignoreCase) throws Exception {
+         return null;
+      }
 
       @Override
       public Map<String, IndexNode> getTypeNodes() throws Exception {

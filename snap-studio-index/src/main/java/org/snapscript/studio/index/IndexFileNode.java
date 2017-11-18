@@ -58,7 +58,7 @@ public class IndexFileNode implements IndexNode {
       
       if(type.isConstructor()) {
          IndexNode parentNode = parent.get();
-         String parentName = parentNode.getTypeName();
+         String parentName = parentNode.getName();
          
          return name.replace(Reserved.TYPE_CONSTRUCTOR + "(", parentName + "(");
       }

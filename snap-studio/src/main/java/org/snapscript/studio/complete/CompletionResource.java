@@ -1,7 +1,6 @@
 package org.snapscript.studio.complete;
 
 import java.io.PrintStream;
-import java.util.Map;
 
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
@@ -33,7 +32,6 @@ public class CompletionResource implements Resource {
 
    @Override
    public void handle(Request request, Response response) throws Throwable {
-      CompletionResponse result = new CompletionResponse();
       PrintStream out = response.getPrintStream();
       String content = request.getContent();
       Path path = request.getPath();
@@ -49,10 +47,12 @@ public class CompletionResource implements Resource {
             FindConstructorsInScope.class,
             FindPossibleImports.class);
       
-      Map<String, String> tokens = compiler.compile(context);
-      result.setTokens(tokens);
-      String text = gson.toJson(result);
+      CompletionResponse results = compiler.compile(context);
+      String details = results.getDetails();     
+      String text = gson.toJson(results);
+      
       response.setContentType("application/json");
+      workspace.getLogger().info(details);
       out.println(text);
       out.close();
    }

@@ -77,7 +77,7 @@ public class ClassIndexProcessor {
             nodes.add(node);
          }
       }catch(Throwable cause) {
-         cause.printStackTrace();
+         //cause.printStackTrace();
       }
       return nodes;
    }
@@ -94,7 +94,7 @@ public class ClassIndexProcessor {
             nodes.add(node);
          }
       }catch(Throwable cause) {
-         cause.printStackTrace();
+         //cause.printStackTrace();
       }
       return nodes;
    }
@@ -111,7 +111,7 @@ public class ClassIndexProcessor {
             nodes.add(node);
          }
       }catch(Throwable cause) {
-         cause.printStackTrace();
+         //cause.printStackTrace();
       }
       return nodes;
    }
@@ -128,7 +128,7 @@ public class ClassIndexProcessor {
             nodes.add(node);
          }
       }catch(Throwable cause) {
-         cause.printStackTrace();
+         //cause.printStackTrace();
       }
       return nodes;
    }

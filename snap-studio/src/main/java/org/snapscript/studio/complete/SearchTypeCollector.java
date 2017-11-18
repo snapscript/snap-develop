@@ -17,7 +17,7 @@ public class SearchTypeCollector {
       IndexDatabase database = project.getIndexDatabase();
       
       if(database != null) {
-         Map<String, IndexNode> nodes = database.getTypeNodesMatching(expression);
+         Map<String, IndexNode> nodes = database.getTypeNodesMatching(expression, true);
          Set<Entry<String, IndexNode>> entries = nodes.entrySet();
          
          if(!entries.isEmpty()) {

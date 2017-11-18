@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Executor;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.snapscript.core.Context;
 import org.snapscript.core.link.ImportPathResolver;
@@ -17,7 +19,6 @@ import org.snapscript.studio.common.FileAction;
 import org.snapscript.studio.common.FileProcessor;
 import org.snapscript.studio.common.FileReader;
 import org.snapscript.studio.index.classpath.BootstrapClassPath;
-import org.snapscript.studio.index.classpath.ClassIndexProcessor;
 import org.snapscript.studio.index.classpath.ClassPathSearcher;
 
 public class IndexScanner implements IndexDatabase {
@@ -102,8 +103,14 @@ public class IndexScanner implements IndexDatabase {
    
    @Override
    public Map<String, IndexNode> getTypeNodesMatching(String expression) throws Exception {
+      return getTypeNodesMatching(expression, false);
+   }
+   
+   @Override
+   public Map<String, IndexNode> getTypeNodesMatching(String expression, boolean ignoreCase) throws Exception {
       Map<String, IndexNode> nodes = getTypeNodes();
       Set<Entry<String, IndexNode>> entries = nodes.entrySet();
+      Pattern pattern = Pattern.compile(expression, ignoreCase ? Pattern.CASE_INSENSITIVE : 0);
       
       if(!nodes.isEmpty()) {
          Map<String, IndexNode> matches = new TreeMap<String, IndexNode>();
@@ -115,8 +122,9 @@ public class IndexScanner implements IndexDatabase {
             if(name != null) {
                String fullName = node.getFullName();
                IndexType type = node.getType();
+               Matcher matcher = pattern.matcher(name);
                
-               if(name.matches(expression) && !type.isImport()) {
+               if(matcher.matches() && !type.isImport()) {
                   matches.put(fullName, node);
                }
             }

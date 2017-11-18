@@ -331,9 +331,9 @@ public class Indexer {
 
       @Override
       public void update(Index index) {
-         IndexFileNode node = new IndexFileNode(database, index, resource);
-         IndexType type = index.getType();
-         int line = index.getLine();
+         final IndexFileNode node = new IndexFileNode(database, index, resource);
+         final IndexType type = index.getType();
+         final int line = index.getLine();
          
          while(!stack.isEmpty()) {
             IndexFileNode top = stack.peek();

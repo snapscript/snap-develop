@@ -1,6 +1,5 @@
 package org.snapscript.studio.index.complete;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -21,18 +20,15 @@ public class CompletionCompiler {
       this.finders = finders;
    }
    
-   public Map<String, String> compile(CompletionRequest request) throws Exception {
+   public CompletionResponse compile(CompletionRequest request) throws Exception {
       String source = convertSource(request);
       String resource = request.getResource();
       String complete = request.getComplete();
       int line = request.getLine();
       IndexFile file = database.getFile(resource, source);
       IndexNode node = file.getNodeAtLine(line);
-      
-      System.out.println("expression [" + complete + "]");
-      System.out.println("resource   [" + resource + "]");
-      System.out.println("line       [" +line  +"]");
-      System.out.println(IndexDumper.dump(file.getRootNode()));
+      IndexNode root = file.getRootNode();
+      String details = IndexDumper.dump(root);
       
       for(Class<? extends CompletionFinder> finderType : finders) {
          CompletionFinder finder = finderType.newInstance();
@@ -63,10 +59,10 @@ public class CompletionCompiler {
                String category = type.getName();
                tokens.put(name, category);
             }
-            return tokens;
+            return new CompletionResponse(tokens, details);
          }
       }
-      return Collections.emptyMap();
+      return new CompletionResponse();
    }
    
    public static String convertSource(CompletionRequest request) {

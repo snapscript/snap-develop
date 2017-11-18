@@ -67,7 +67,7 @@ public class CompletionCompilerTest extends TestCase {
             FindConstructorsInScope.class);
       
       CompletionRequest request = buildRequest(SOURCE, "do");
-      Map<String, String> completion = compiler.compile(request);
+      Map<String, String> completion = compiler.compile(request).getTokens();
       
       assertNotNull(completion.get("doSomething()"));
       assertNotNull(completion.get("doSomething(index)"));
@@ -75,7 +75,7 @@ public class CompletionCompilerTest extends TestCase {
       assertEquals(completion.get("doSomething(index)"), "member-function");
       
       request = buildRequest(SOURCE, "memb");
-      completion = compiler.compile(request);
+      completion = compiler.compile(request).getTokens();
       
       assertNotNull(completion.get("memb1"));
       assertNotNull(completion.get("memb2"));
@@ -83,14 +83,14 @@ public class CompletionCompilerTest extends TestCase {
       assertEquals(completion.get("memb2"), "property");
       
       request = buildRequest(SOURCE, "memb1");
-      completion = compiler.compile(request);
+      completion = compiler.compile(request).getTokens();
       
       assertNotNull(completion.get("memb1"));
       assertNull(completion.get("memb2"));
       assertEquals(completion.get("memb1"), "property");
       
       request = buildRequest(SOURCE, "InnerClass.");
-      completion = compiler.compile(request);
+      completion = compiler.compile(request).getTokens();
       
       assertNotNull(completion.get("x"));
       assertNotNull(completion.get("length"));
@@ -100,7 +100,7 @@ public class CompletionCompilerTest extends TestCase {
       assertEquals(completion.get("someInnerFunc()"), "member-function");
       
       request = buildRequest(SOURCE, "InnerClass.l");
-      completion = compiler.compile(request);
+      completion = compiler.compile(request).getTokens();
       
       assertNull(completion.get("x"));
       assertNotNull(completion.get("length"));
@@ -108,7 +108,7 @@ public class CompletionCompilerTest extends TestCase {
       assertEquals(completion.get("length"), "property");
       
       request = buildRequest(SOURCE, "");
-      completion = compiler.compile(request);
+      completion = compiler.compile(request).getTokens();
       
       assertNotNull(completion.get("SomePath"));
       assertNotNull(completion.get("memb1"));
@@ -128,7 +128,7 @@ public class CompletionCompilerTest extends TestCase {
       assertEquals(completion.get("TypeEnum"), "enum");
       
       request = buildRequest(SOURCE, "new ");
-      completion = compiler.compile(request);
+      completion = compiler.compile(request).getTokens();
       
       assertNotNull(completion.get("InnerClass(x, length)"));
       assertEquals(completion.get("InnerClass(x, length)"), "constructor");
@@ -185,6 +185,11 @@ public class CompletionCompilerTest extends TestCase {
 
       @Override
       public Map<String, IndexNode> getTypeNodesMatching(String expression) throws Exception {
+         return null;
+      }
+      
+      @Override
+      public Map<String, IndexNode> getTypeNodesMatching(String expression, boolean ignoreCase) throws Exception {
          return null;
       }
 
