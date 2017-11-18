@@ -15,10 +15,10 @@ class Goomba extends Creature {
    
    public new(x: Integer, y: Integer, soundManager: MarioSoundManager22050Hz): super(x, y, soundManager) {
       
-      var w1: BufferedImage = ImageManipulator.loadImage("/mario/resources/baddies/Goomba_Normal_1.png");
-      var w2: BufferedImage = ImageManipulator.loadImage("/mario/resources/baddies/Goomba_Normal_2.png");
-      var smashed: BufferedImage = ImageManipulator.loadImage("/mario/resources/baddies/Goomba_Dead.png");
-      var flipped: BufferedImage = ImageManipulator.loadImage("/mario/resources/baddies/Goomba_Flip.png");
+      var w1: BufferedImage = ImageManipulator.loadImage("/mario/baddies/Goomba_Normal_1.png");
+      var w2: BufferedImage = ImageManipulator.loadImage("/mario/baddies/Goomba_Normal_2.png");
+      var smashed: BufferedImage = ImageManipulator.loadImage("/mario/baddies/Goomba_Dead.png");
+      var flipped: BufferedImage = ImageManipulator.loadImage("/mario/baddies/Goomba_Flip.png");
 
       waddle = new Animation(150).addFrame(w1).addFrame(w2);
       dead = new Animation(-> kill()).setDAL(100).addFrame(smashed).setDAL(20).addFrame(smashed);

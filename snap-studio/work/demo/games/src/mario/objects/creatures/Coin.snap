@@ -10,10 +10,10 @@ import mario.util.ImageManipulator;
 class Coin extends Creature {
    
    private static var c: BufferedImage[] = [ 
-      ImageManipulator.loadImage("/mario/resources/items/Coin_5.png"), 
-      ImageManipulator.loadImage("/mario/resources/items/Coin_6.png"),
-      ImageManipulator.loadImage("/mario/resources/items/Coin_7.png"), 
-      ImageManipulator.loadImage("/mario/resources/items/Coin_8.png") 
+      ImageManipulator.loadImage("/mario/items/Coin_5.png"), 
+      ImageManipulator.loadImage("/mario/items/Coin_6.png"),
+      ImageManipulator.loadImage("/mario/items/Coin_7.png"), 
+      ImageManipulator.loadImage("/mario/items/Coin_8.png") 
    ];
    public static var turn: Animation = new Animation(150).addFrame(c[0]).addFrame(c[1]).addFrame(c[2]).addFrame(c[3]);
    // Alternate Animation;

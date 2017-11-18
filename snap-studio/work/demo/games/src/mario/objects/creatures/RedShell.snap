@@ -24,11 +24,11 @@ class RedShell extends Creature {
       this.map = map;
       setIsAlwaysRelevant(true);
        
-      var stay: BufferedImage = ImageManipulator.loadImage("/mario/resources/baddies/Red_Shell_1.png");
-      var rotate_1: BufferedImage = ImageManipulator.loadImage("/mario/resources/baddies/Red_Shell_2.png");
-      var rotate_2: BufferedImage = ImageManipulator.loadImage("/mario/resources/baddies/Red_Shell_3.png");
-      var rotate_3: BufferedImage = ImageManipulator.loadImage("/mario/resources/baddies/Red_Shell_4.png");
-      var flipped: BufferedImage = ImageManipulator.loadImage("/mario/resources/baddies/Red_Shell_Flip.png");
+      var stay: BufferedImage = ImageManipulator.loadImage("/mario/baddies/Red_Shell_1.png");
+      var rotate_1: BufferedImage = ImageManipulator.loadImage("/mario/baddies/Red_Shell_2.png");
+      var rotate_2: BufferedImage = ImageManipulator.loadImage("/mario/baddies/Red_Shell_3.png");
+      var rotate_3: BufferedImage = ImageManipulator.loadImage("/mario/baddies/Red_Shell_4.png");
+      var flipped: BufferedImage = ImageManipulator.loadImage("/mario/baddies/Red_Shell_Flip.png");
       
       still = new Animation();
       rotate = new Animation();

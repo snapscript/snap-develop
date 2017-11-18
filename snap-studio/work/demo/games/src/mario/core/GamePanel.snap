@@ -70,10 +70,10 @@ class GamePanel extends JPanel with Runnable {
       try {
          manager = new GameLoader();
          renderer = new GameRenderer();
-         renderer.setBackground(ImageManipulator.loadImage("/mario/resources/backgrounds/background2.png"));
-         //renderer.setBackground(ImageManipulator.loadImage("/mario/resources/backgrounds/Icy_Background.png"));
-         //renderer.setBackground(ImageManipulator.loadImage("/mario/resources/backgrounds/swamp_background.png"));
-         map = manager.loadMap("/mario/resources/maps/map4.txt", SM_22050_Hz); // use the ResourceManager to load the game map
+         renderer.setBackground(ImageManipulator.loadImage("/mario/backgrounds/background2.png"));
+         //renderer.setBackground(ImageManipulator.loadImage("/mario/backgrounds/Icy_Background.png"));
+         //renderer.setBackground(ImageManipulator.loadImage("/mario/backgrounds/swamp_background.png"));
+         map = manager.loadMap("/mario/maps/map4.txt", SM_22050_Hz); // use the ResourceManager to load the game map
          //backgroundMap = manager.loadOtherMaps("backgroundMap.txt");
          //foregroundMap = manager.loadOtherMaps("foregroundMap.txt");
          map.setPlayer(mario); // set the games main player to mario
@@ -86,16 +86,16 @@ class GamePanel extends JPanel with Runnable {
       var r: Random = new Random();
       var rNum: Integer = r.nextInt(4);
       if(rNum == 0) {
-         sequence = player.getSequence("/mario/resources/sounds/smwovr2.mid");
+         sequence = player.getSequence("/mario/sounds/smwovr2.mid");
            player.play(sequence, true);
       } else if(rNum == 1) {
-         sequence = player.getSequence("/mario/resources/sounds/smwovr2.mid");
+         sequence = player.getSequence("/mario/sounds/smwovr2.mid");
            player.play(sequence, true);
       } else if(rNum == 2) {
-         sequence = player.getSequence("/mario/resources/music/smb_hammerbros.mid");
+         sequence = player.getSequence("/mario/music/smb_hammerbros.mid");
            player.play(sequence, true);
       } else if(rNum == 3) {
-         sequence = player.getSequence("/mario/resources/music/smrpg_nimbus1.mid");
+         sequence = player.getSequence("/mario/music/smrpg_nimbus1.mid");
            player.play(sequence, true);
       }
       

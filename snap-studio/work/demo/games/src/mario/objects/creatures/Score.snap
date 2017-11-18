@@ -16,7 +16,7 @@ class Score extends Creature {
       
       dy = -0.45f;
 
-      var one_hundred: BufferedImage = ImageManipulator.loadImage("/mario/resources/items/Score_100_New6.png");
+      var one_hundred: BufferedImage = ImageManipulator.loadImage("/mario/items/Score_100_New6.png");
 
       oneHundred = new Animation(-> kill());
       

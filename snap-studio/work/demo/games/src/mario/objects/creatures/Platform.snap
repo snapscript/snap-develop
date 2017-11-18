@@ -27,7 +27,7 @@ class Platform extends Creature {
       turn = 1;
       dx = 0;
       dy = 0;
-      var red_platform: BufferedImage = ImageManipulator.loadImage("/mario/resources/items/Red_Platform_2.png");
+      var red_platform: BufferedImage = ImageManipulator.loadImage("/mario/items/Red_Platform_2.png");
       move = new Animation(2000).addFrame(red_platform);
       setAnimation(move);
    }
