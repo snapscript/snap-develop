@@ -64,9 +64,12 @@ public class IndexNodeResource implements Resource {
    
    private Map<String, IndexNodeData> getNodes(Project project, String expression) throws Exception {
       IndexDatabase database = project.getIndexDatabase();
-      Map<String, IndexNode> nodes = database.getTypeNodesMatching(expression);
       
-      return getIndexNodes(project, nodes, expression);
+      if(database != null) {
+         Map<String, IndexNode> nodes = database.getTypeNodesMatching(expression);
+         return getIndexNodes(project, nodes, expression);
+      }
+      return Collections.emptyMap();
    }
    
    private Map<String, IndexNodeData> getIndexNodes(Project project, Map<String, IndexNode> nodes, String expression) {

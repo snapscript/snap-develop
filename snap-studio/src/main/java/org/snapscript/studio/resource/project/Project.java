@@ -103,7 +103,7 @@ public class Project implements FileDirectory {
       }
    }
    
-   public IndexDatabase getIndexDatabase(){
+   public synchronized IndexDatabase getIndexDatabase(){
       IndexDatabase database = reference.get();
       
       if(database == null) {
