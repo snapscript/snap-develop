@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.snapscript.studio.index.IndexDatabase;
+import org.snapscript.studio.index.IndexDumper;
 import org.snapscript.studio.index.IndexFile;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
@@ -27,6 +28,11 @@ public class CompletionCompiler {
       int line = request.getLine();
       IndexFile file = database.getFile(resource, source);
       IndexNode node = file.getNodeAtLine(line);
+      
+      System.out.println("expression [" + complete + "]");
+      System.out.println("resource   [" + resource + "]");
+      System.out.println("line       [" +line  +"]");
+      System.out.println(IndexDumper.dump(file.getRootNode()));
       
       for(Class<? extends CompletionFinder> finderType : finders) {
          CompletionFinder finder = finderType.newInstance();

@@ -116,6 +116,7 @@ public class Project implements FileDirectory {
             getLayout().getPrefixes());
 
          reference.set(indexScanner);
+         return indexScanner;
       }
       return database;
    }

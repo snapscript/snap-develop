@@ -342,10 +342,13 @@ public class Indexer {
             
             if(offset < line) {
                break;
-            } else if(parents.contains(type)) {
+            }  
+            if(parents.contains(type)) {
                if(node.getType().isFunction() && top.getType().isCompound()) {
                   Set<IndexNode> nodes = top.getNodes();
-                  node.getNodes().addAll(nodes);            
+                  
+                  top.setParent(node);
+                  node.getNodes().addAll(nodes);
                } else {
                   top.setParent(node);
                   node.getNodes().add(top);
