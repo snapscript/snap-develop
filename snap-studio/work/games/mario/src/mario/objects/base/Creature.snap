@@ -9,9 +9,6 @@ import mario.core.tile.TileMap;
 import mario.objects.creatures.RedShell;
 
 
-
-
-
 class Creature extends CollidableObject {
    
    public static var xCollideOffset = 2; 

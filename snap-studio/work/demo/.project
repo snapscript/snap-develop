@@ -1,4 +1,13 @@
 <project>
+   <source>
+      <path>games/src</path>
+      <path>games/assets</path>
+      <path>games/archive</path>
+      <path>physics/src</path>
+      <path>physics/assets</path>
+      <path>misc/src</path>
+      <path>misc/assets</path>      
+   </source>
    <dependencies>
       <dependency>
          <groupId>org.simpleframework</groupId>

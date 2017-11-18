@@ -122,14 +122,14 @@ class Game  {
     */
    initEntities() {
       // create the player ship and place it roughly in the center of the screen
-      ship = new ShipEntity(this, "/spaceinvaders/resources/ship.gif",370,550);     
+      ship = new ShipEntity(this, "/spaceinvaders/ship.gif",370,550);     
       entities.add(ship);
       
       // create a block of aliens (5 rows, by 12 aliens, spaced evenly)
       alienCount = 0;
       for (var row=0;row<5;row++) {
          for (var x=0;x<12;x++) {      
-            var alien = new AlienEntity(this,"/spaceinvaders/resources/alien.gif",100+(x*50),50+row*30);
+            var alien = new AlienEntity(this,"/spaceinvaders/alien.gif",100+(x*50),50+row*30);
             entities.add(alien);
             alienCount++;
          }
@@ -208,7 +208,7 @@ class Game  {
       
       // if we waited long enough, create the shot entity, and record the time.
       lastFire = System.currentTimeMillis();
-      var shot = new ShotEntity(this,"/spaceinvaders/resources/shot.gif",ship.getX()+10,ship.getY()-30);
+      var shot = new ShotEntity(this,"/spaceinvaders/shot.gif",ship.getX()+10,ship.getY()-30);
       entities.add(shot);
    }
    
@@ -237,7 +237,7 @@ class Game  {
          // Get hold of a graphics context for the accelerated 
          // surface and blank it out
          var g = strategy.getDrawGraphics();
-         var stars = SpriteStore.getSprite("/spaceinvaders/resources/stars.png");
+         var stars = SpriteStore.getSprite("/spaceinvaders/stars.png");
          
          stars.draw(g,0,0);
          //g.setColor(Color.black);
