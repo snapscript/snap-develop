@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
+import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.index.complete.CompletionCompiler;
@@ -39,6 +40,7 @@ public class CompletionResource implements Resource {
       ClassLoader classLoader = project.getClassLoader();
       Thread thread = Thread.currentThread();
       thread.setContextClassLoader(classLoader);
+      ProcessLogger logger = workspace.getLogger();
       CompletionRequest context = gson.fromJson(content, CompletionRequest.class);
       CompletionCompiler compiler = new CompletionCompiler(project.getIndexDatabase(),
             FindForFunction.class,
@@ -52,8 +54,8 @@ public class CompletionResource implements Resource {
       String text = gson.toJson(results);
       
       response.setContentType("application/json");
-      workspace.getLogger().info(details);
       out.println(text);
       out.close();
+      logger.debug(details);
    }
 }

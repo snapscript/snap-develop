@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.snapscript.studio.index.classpath.ClassIndexProcessor;
+
 public class IndexSearcher implements IndexFile {
 
    private final IndexNodeComparator comparator;

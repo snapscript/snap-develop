@@ -93,10 +93,10 @@ public class IndexScanner implements IndexDatabase {
 
    @Override
    public IndexNode getTypeNode(String typeName) throws Exception {
-      Map<String, IndexNode> files = getTypeNodes();
+      Map<String, IndexNode> nodes = getTypeNodes();
       
-      if(!files.isEmpty()) {
-         return files.get(typeName);
+      if(!nodes.isEmpty()) {
+         return nodes.get(typeName);
       }
       return null;
    }

@@ -9,6 +9,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.snapscript.core.Reserved;
 
 public class IndexFileNode implements IndexNode {
+   
+   private static final String DEFAULT_CONSTRAINT = Object.class.getName();
 
    private final AtomicReference<IndexNode> parent;
    private final Comparator<IndexNode> comparator;
@@ -109,40 +111,49 @@ public class IndexFileNode implements IndexNode {
    
    @Override
    public IndexNode getConstraint() {
-      String constraint = index.getConstraint();
-      String module = index.getModule();
+      IndexType type = index.getType();
       
-      if(constraint != null) {
-         Map<String, IndexNode> nodes = IndexSearcher.getNodesInScope(this);
-         IndexNode node = nodes.get(constraint);
+      if(type.isConstrained()) {
+         String constraint = index.getConstraint();
+         String module = index.getModule();
          
-         if(node == null) {
-            try {
-               return database.getDefaultImport(module, constraint);
-            } catch(Exception e) {
-               return null;
-            }
-         } else {
-            IndexType type = node.getType();
+         if(constraint != null) {
+            Map<String, IndexNode> nodes = IndexSearcher.getNodesInScope(this);
+            IndexNode node = nodes.get(constraint);
             
-            if(type.isImport()) {
-               String fullName = node.getFullName();
-               
-               try {
-                  node = database.getTypeNode(fullName);
-               } catch(Exception e) {               
-               }
-               if(node == null) {
-                  try {
-                     node = database.getDefaultImport(module, fullName);
-                  } catch(Exception e) {               
-                  }
+            if(node == null) {
+               return getConstraint(module, constraint);
+            } else {
+               if(node.getType().isImport()) {
+                  String fullName = node.getFullName();
+                  return getConstraint(module, fullName);
                }
             }
          }
-         return node;
+         return getConstraint(null, null);
       }
       return null;
+   }
+   
+   private IndexNode getConstraint(String module, String fullName) {
+      IndexNode node = null;
+      
+      if(node == null && fullName != null) {
+         try {
+            node = database.getTypeNode(fullName);
+         } catch(Exception e) {}
+      }
+      if(node == null && fullName != null) {
+         try {
+            node = database.getDefaultImport(module, fullName);
+         } catch(Exception e) {}
+      }
+      if(node == null) {
+         try {
+            node = database.getTypeNode(DEFAULT_CONSTRAINT);
+         } catch(Exception e) {}
+      }
+      return node;
    }
    
    @Override

@@ -72,6 +72,14 @@ public enum IndexType {
    public boolean isCompound(){
       return this == COMPOUND;
    }
+   
+   public boolean isConstrained() {
+      return this == PARAMETER ||
+              this == PROPERTY ||
+              this == VARIABLE ||
+              this == FUNCTION ||
+              this == MEMBER_FUNCTION;
+   }
 
    public boolean isLeaf() {
       return this == PARAMETER ||
