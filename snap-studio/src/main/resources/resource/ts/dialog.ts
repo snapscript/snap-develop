@@ -725,6 +725,9 @@ export module DialogBuilder {
             $('#dialogPath').on('click', function(e) {
                return focusDialogInput('dialogPath');
             });
+            $('#dialogPath').on('paste', function(e) {
+               return pasteInPlainText('dialogPath', e);
+            });            
             $('#w2ui-popup').on('keydown', function(e) {
                navigateDialogListTable(e);
                return submitDialog(e);
@@ -744,6 +747,9 @@ export module DialogBuilder {
             $('#dialogPath').on('click', function(e) {
                return focusDialogInput('dialogPath');
             }); 
+            $('#dialogPath').on('paste', function(e) {
+               return pasteInPlainText('dialogPath', e);
+            });            
             $('#w2ui-popup').on('keydown', function(e) {
                navigateDialogListTable(e);
                return submitDialog(e);
@@ -763,6 +769,9 @@ export module DialogBuilder {
             $('#dialogPath').on('click', function(e) {
                return focusDialogInput('dialogPath');
             }); 
+            $('#dialogPath').on('paste', function(e) {
+               return pasteInPlainText('dialogPath', e);
+            });            
             $('#w2ui-popup').on('keydown', function(e) {
                navigateDialogListTable(e);
                return submitDialog(e);
@@ -789,6 +798,9 @@ export module DialogBuilder {
          init: function() {
             $('#dialogPath').on('click', function(e) {
                return focusDialogInput('dialogPath');
+            });
+            $('#dialogPath').on('paste', function(e) {
+               return pasteInPlainText('dialogPath', e);
             });
             $('#w2ui-popup').on('keydown', function(e) {
                navigateDialogListTable(e);
@@ -829,8 +841,14 @@ export module DialogBuilder {
             $('#fileFilterPatterns').on('click', function(e) {
                return focusDialogInput('fileFilterPatterns');
             });
+            $('#fileFilterPatterns').on('paste', function(e) {
+               return pasteInPlainText('fileFilterPatterns', e);
+            });
             $('#searchText').on('click', function(e) {
                return focusDialogInput('searchText');
+            });
+            $('#searchText').on('paste', function(e) {
+               return pasteInPlainText('searchText', e);
             });
             $('#inputCaseSensitiveRow').on('click', function(e) {
                toggleCheckboxSelection('inputCaseSensitive');
@@ -884,11 +902,20 @@ export module DialogBuilder {
             $('#fileFilterPatterns').on('click', function(e) {
                return focusDialogInput('fileFilterPatterns');
             });
+            $('#fileFilterPatterns').on('paste', function(e) {
+               return pasteInPlainText('fileFilterPatterns'. e);
+            });
             $('#searchText').on('click', function(e) {
                return focusDialogInput('searchText');
             });
+            $('#searchText').on('paste', function(e) {
+               return pasteInPlainText('searchText', e);
+            });
             $('#replaceText').on('click', function(e) {
                return focusDialogInput('replaceText');
+            });
+            $('#replaceText').on('paste', function(e) {
+               return pasteInPlainText('replaceText', e);
             });
             $('#inputCaseSensitiveRow').on('click', function(e) {
                toggleCheckboxSelection('inputCaseSensitive');
@@ -933,7 +960,21 @@ export module DialogBuilder {
       return true;
    }
 
-
+   function pasteInPlainText(name, event) {
+      if(event && event.originalEvent) {
+         var text = event.originalEvent.clipboardData.getData("text/plain");
+         var element = document.getElementById(name);
+         
+         if(text && element) {
+            text = text.replace(/[\n\r]/g, '');
+            text = Common.escapeHtml(text);
+            
+            element.innerHTML = text;
+            return false;
+         }
+      }
+      return true;
+   }
    
    function isCheckboxSelected(input) {
       var inputField = document.getElementById(input);
