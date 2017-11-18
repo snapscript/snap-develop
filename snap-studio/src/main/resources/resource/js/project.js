@@ -509,18 +509,18 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                         style: pstyle
                     }, {
                         type: 'left',
-                        size: '20%',
+                        size: '25%',
                         resizable: true,
                         style: pstyle
                     }, {
                         type: 'right',
-                        size: '20%',
+                        size: '0%',
                         resizable: true,
                         hidden: true,
                         style: pstyle
                     }, {
                         type: 'main',
-                        size: '80%',
+                        size: '75%',
                         resizable: true,
                         style: pstyle
                     }, {
