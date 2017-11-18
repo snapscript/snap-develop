@@ -10,11 +10,15 @@ import com.google.common.reflect.ClassPath.ClassInfo;
 
 public class ClassIndexNode implements IndexNode {
    
+   private Set<IndexNode> children;
+   private String fullName;
+   private String typeName;
    private ClassInfo info;
-   private Class type;
    private String absolute;
    private String resource;
    private String module;
+   private String name;
+   private Class type;
    private URL url;
    
    public ClassIndexNode(ClassInfo info) {
@@ -44,23 +48,35 @@ public class ClassIndexNode implements IndexNode {
    
    @Override
    public String getModule() {
-      return ClassIndexProcessor.getModule(info);
+      if(module == null) {
+         module = ClassIndexProcessor.getModule(info);
+      }
+      return module;
    }
    
     
    @Override
    public String getName() {
-      return ClassIndexProcessor.getName(info);
+      if(name == null) {
+         name = ClassIndexProcessor.getName(info);
+      }
+      return name;
    }
 
    @Override
    public String getTypeName() {
-      return ClassIndexProcessor.getTypeName(info);
+      if(typeName == null) {
+         typeName = ClassIndexProcessor.getTypeName(info);
+      }
+      return typeName;
    }
 
    @Override
    public String getFullName() {
-      return ClassIndexProcessor.getFullName(info);
+      if(fullName == null) {
+         fullName = ClassIndexProcessor.getFullName(info);
+      }
+      return fullName;
    }
 
    @Override
@@ -99,7 +115,10 @@ public class ClassIndexNode implements IndexNode {
 
    @Override
    public Set<IndexNode> getNodes() {
-      return ClassIndexProcessor.getChildren(info);
+      if(children == null) {
+         children = ClassIndexProcessor.getChildren(info);
+      }
+      return children;
    }
    
    public URL getURL() {
@@ -118,6 +137,11 @@ public class ClassIndexNode implements IndexNode {
          }
       }
       return type;
+   }
+   
+   @Override
+   public String toString(){
+      return getFullName();
    }
    
 }

@@ -9,7 +9,7 @@ import org.snapscript.studio.index.IndexType;
 
 public class FieldIndexNode implements IndexNode {
 
-   private Field field;
+   private final Field field;
    
    public FieldIndexNode(Field field) {
       this.field = field;

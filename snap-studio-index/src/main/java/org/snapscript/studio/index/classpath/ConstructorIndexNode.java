@@ -1,23 +1,23 @@
 package org.snapscript.studio.index.classpath;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.Set;
 
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
 
-public class MethodIndexNode implements IndexNode {
+public class ConstructorIndexNode implements IndexNode {
    
    private static final String[] PREFIX = {
    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", 
    "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
    
+   private Constructor constructor;
    private String description;
-   private Method method;
    
-   public MethodIndexNode(Method method) {
-      this.method = method;
+   public ConstructorIndexNode(Constructor constructor) {
+      this.constructor = constructor;
    }
    
    @Override
@@ -43,8 +43,8 @@ public class MethodIndexNode implements IndexNode {
    @Override
    public String getName() {
       if(description == null) {
-         Class[] types = method.getParameterTypes();
-         String name = method.getName();
+         Class[] types = constructor.getParameterTypes();
+         String name = constructor.getDeclaringClass().getSimpleName();
          StringBuilder builder = new StringBuilder();
          
          builder.append(name);
@@ -76,19 +76,19 @@ public class MethodIndexNode implements IndexNode {
 
    @Override
    public IndexNode getConstraint() {
-      Class returnType = method.getReturnType();
+      Class returnType = constructor.getDeclaringClass();
       return ClassIndexProcessor.getIndexNode(returnType);
    }
 
    @Override
    public IndexNode getParent() {
-      Class parent = method.getDeclaringClass();
+      Class parent = constructor.getDeclaringClass();
       return ClassIndexProcessor.getIndexNode(parent);
    }
 
    @Override
    public IndexType getType() {
-      return IndexType.MEMBER_FUNCTION;
+      return IndexType.CONSTRUCTOR;
    }
 
    @Override

@@ -1,15 +1,13 @@
 package org.snapscript.studio.index.classpath;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.jar.JarFile;
 
 import org.snapscript.studio.index.IndexNode;
@@ -59,6 +57,7 @@ public class ClassIndexProcessor {
    public static Set<IndexNode> getChildren(ClassInfo info) {
       Set<IndexNode> nodes = new HashSet<IndexNode>();
       
+      nodes.addAll(getConstructors(info));
       nodes.addAll(getMethods(info));
       nodes.addAll(getFields(info));
       nodes.addAll(getInnerClasses(info));
@@ -66,6 +65,23 @@ public class ClassIndexProcessor {
       return nodes;
    }
 
+   public static Set<IndexNode> getConstructors(ClassInfo info) {
+      Set<IndexNode> nodes = new HashSet<IndexNode>();
+      
+      try{
+         Class type = info.load();
+         Constructor[] constructors = type.getDeclaredConstructors();
+         
+         for(Constructor constructor : constructors) {
+            IndexNode node = getIndexNode(constructor);
+            nodes.add(node);
+         }
+      }catch(Throwable cause) {
+         cause.printStackTrace();
+      }
+      return nodes;
+   }
+   
    public static Set<IndexNode> getMethods(ClassInfo info) {
       Set<IndexNode> nodes = new HashSet<IndexNode>();
       
@@ -177,6 +193,10 @@ public class ClassIndexProcessor {
       return new ClassIndexNode(info);
    }
 
+   public static IndexNode getIndexNode(Constructor constructor) {
+      return new ConstructorIndexNode(constructor);
+   }
+   
    public static IndexNode getIndexNode(Method method) {
       return new MethodIndexNode(method);
    }
