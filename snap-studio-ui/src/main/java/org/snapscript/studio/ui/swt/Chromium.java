@@ -1,7 +1,6 @@
 package org.snapscript.studio.ui.swt;
 
 
-import java.awt.Window;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -34,6 +33,7 @@ import org.snapscript.studio.ui.cef.ChromiumBridge.App;
 import org.snapscript.studio.ui.cef.ChromiumBridge.Browser;
 import org.snapscript.studio.ui.cef.ChromiumBridge.BrowserProcessHandler;
 import org.snapscript.studio.ui.cef.ChromiumBridge.Client;
+import org.snapscript.studio.ui.cef.ChromiumLog;
 import org.snapscript.studio.ui.swt.internal.NativeExpander;
 
 public class Chromium extends Composite {
@@ -159,7 +159,7 @@ public class Chromium extends Composite {
 				});
 				Runnable runnable = () -> { 
 					if (display.isDisposed() || isDisposed() || display.getActiveShell() != getShell()) {
-						//System.err.println("Ignore do_message_loop_work due inactive shell");
+						//ChromiumLog.log("Ignore do_message_loop_work due inactive shell");
 						return;
 					}
 					if (browsers.get() > 0) {
@@ -195,7 +195,7 @@ public class Chromium extends Composite {
 					DEBUG_CALLBACK("GetBrowserProcessHandler");
 					return browserProcessHandler;
 				});
-				System.out.println("cefrust.path: " + cefrustPath);
+				ChromiumLog.log("cefrust.path: " + cefrustPath);
 				//DEBUG_CALLBACK("INIT FROM thread " + Thread.currentThread().getName());
 				lib.cefswt_init(app, cefrustPath);
 			}
@@ -260,7 +260,7 @@ public class Chromium extends Composite {
 				removeFocusListener(focusListener);
 				//DEBUG_CALLBACK("focusLost");
 				browserFocus(false);
-				// System.out.println(Display.getDefault().getFocusControl());
+				// ChromiumLog.log(Display.getDefault().getFocusControl());
 				addFocusListener(focusListener);
 			}
 
@@ -294,7 +294,7 @@ public class Chromium extends Composite {
 				addFocusListener(focusListener);
 				return 1;
 			}
-			//System.out.println("Allowing focus to SWT canvas");
+			//ChromiumLog.log("Allowing focus to SWT canvas");
 			return 0;
 		});
 		focusHandler.setOnTakeFocus((focusHandler, browser_1, next) -> {
@@ -347,7 +347,7 @@ public class Chromium extends Composite {
 			public void controlResized(ControlEvent e) {
 				if (!isDisposed() && browser != null) {
 					if (getDisplay().getActiveShell() != getShell()) {
-//						System.err.println("Ignore do_message_loop_work due inactive shell");
+//						ChromiumLog.log("Ignore do_message_loop_work due inactive shell");
 						return;
 					}
 					lib.cefswt_resized(browser, getSize().x, getSize().y);
@@ -389,7 +389,7 @@ public class Chromium extends Composite {
 		display.timerExec(loop, new Runnable() {
 			public void run() {
 				if (lib != null && browsers.get() > 0) {
-					 //System.out.println("loop");
+					 //ChromiumLog.log("loop");
 					lib.cefswt_do_message_loop_work();
 					display.timerExec(loop, this);
 				} else {
@@ -400,7 +400,7 @@ public class Chromium extends Composite {
 	}
 
 	private static jnr.ffi.Pointer DEBUG_CALLBACK(String log) {
-		System.out.println("J:" + log);
+		ChromiumLog.log("J:" + log);
 		return null;
 	}
 
@@ -428,7 +428,7 @@ public class Chromium extends Composite {
 
 	// @Override
 	// public boolean forceFocus() {
-	// System.out.println("focus");
+	// ChromiumLog.log("focus");
 	// boolean forceFocus = super.forceFocus();
 	// if (forceFocus) {
 	// browserFocus(true);
@@ -447,7 +447,7 @@ public class Chromium extends Composite {
 		if (!isDisposed() && browser != null) {
 			long parent = (Display.getDefault().getActiveShell() == null) ? 0 : getHandle(getParent());
 			if (getDisplay().getActiveShell() != getShell()) {
-//				System.err.println("Ignore do_message_loop_work due inactive shell");
+//				ChromiumLog.log("Ignore do_message_loop_work due inactive shell");
 				return;
 			}
 			lib.cefswt_set_focus(browser, set, parent);
@@ -488,9 +488,9 @@ public class Chromium extends Composite {
 			System.setProperty("cefswt.path", cefrustPath);
 		}
 
-		//System.out.println("LOADCEF: " + cefrustPath + "/" + "libcef.so");
+		//ChromiumLog.log("LOADCEF: " + cefrustPath + "/" + "libcef.so");
 		//System.setProperty("java.library.path", cefrustPath + File.pathSeparator + System.getProperty("java.library.path", ""));
-		//System.out.println("JAVA_LIBRARY_PATH: " + System.getProperty("java.library.path", ""));
+		//ChromiumLog.log("JAVA_LIBRARY_PATH: " + System.getProperty("java.library.path", ""));
 		
 		LibraryLoader<Lib> loader = LibraryLoader.create(Lib.class);
 		if (isUnix() && !isMac())

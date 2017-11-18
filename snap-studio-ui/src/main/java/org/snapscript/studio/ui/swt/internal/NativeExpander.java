@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+import org.snapscript.studio.ui.cef.ChromiumLog;
+
 public class NativeExpander {
 	
 	private static final String JAVA_HOME = System.getProperty("java.home");
@@ -22,7 +24,7 @@ public class NativeExpander {
 		new OperatingSystemDetector().detect(osProps, Collections.<String>emptyList());
 		String bundleFolder = osProps.get(OperatingSystemDetector.DETECTED_NAME) + "-" + osProps.get(OperatingSystemDetector.DETECTED_ARCH);
 
-		System.out.println("bundleFolder: " + bundleFolder);
+		ChromiumLog.log("bundleFolder: " + bundleFolder);
 		String propsFile = "/" + bundleFolder + "/files.properties";
 
 		try {
@@ -35,13 +37,13 @@ public class NativeExpander {
 
 			String cefVersion = props.getProperty("cefVersion");
 			Path cefPath = Paths.get(installPath, cefVersion);
-			System.out.println("swtcef path: " + cefPath);
+			ChromiumLog.log("swtcef path: " + cefPath);
 
 			if (shouldCopy(cefPath.resolve(bundleFolder), props)) {
 				cefPath = Files.createDirectories(cefPath);
 				for (String propName : props.stringPropertyNames()) {
 					String filePath = props.getProperty(propName);
-//					System.out.println(propName + ":" + filePath);
+//					ChromiumLog.log(propName + ":" + filePath);
 					if (!"cefVersion".equals(propName) && !"checksum".equals(propName)) {
 						InputStream is = NativeExpander.class.getResourceAsStream("/" + filePath);
 						if (is == null) {
@@ -50,7 +52,7 @@ public class NativeExpander {
 						copy(cefPath, filePath, is);
 					}
 				}
-				System.out.println("Expanded CEF natives to " + cefPath);
+				ChromiumLog.log("Expanded CEF natives to " + cefPath);
 		
 				if (isWindows7() && (JAVA_HOME != null) && (!JAVA_HOME.isEmpty())){
 					fixWin7Dll(cefPath.resolve(bundleFolder));
