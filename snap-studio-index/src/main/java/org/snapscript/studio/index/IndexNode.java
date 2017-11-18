@@ -4,6 +4,7 @@ import java.util.Set;
 
 public interface IndexNode {
    int getLine();
+   boolean isPublic();
    String getResource();
    String getAbsolutePath();
    String getName();

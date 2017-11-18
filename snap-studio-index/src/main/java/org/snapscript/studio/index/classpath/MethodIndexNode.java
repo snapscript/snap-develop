@@ -26,6 +26,11 @@ public class MethodIndexNode implements IndexNode {
    }
    
    @Override
+   public boolean isPublic(){
+      return method.isAccessible();
+   }
+   
+   @Override
    public String getModule(){
       return getParent().getModule();
    }

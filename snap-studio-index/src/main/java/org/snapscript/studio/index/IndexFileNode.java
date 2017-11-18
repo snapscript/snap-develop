@@ -32,6 +32,11 @@ public class IndexFileNode implements IndexNode {
    }
    
    @Override
+   public boolean isPublic() {
+      return true;
+   }
+   
+   @Override
    public String getResource() {
       return resource;
    }

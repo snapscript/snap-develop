@@ -26,6 +26,11 @@ public class ConstructorIndexNode implements IndexNode {
    }
    
    @Override
+   public boolean isPublic(){
+      return constructor.isAccessible();
+   }
+   
+   @Override
    public String getModule(){
       return getParent().getModule();
    }

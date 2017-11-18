@@ -61,7 +61,6 @@ public class CompletionCompiler {
                   }
                }
                String category = type.getName();
-               
                tokens.put(name, category);
             }
             return tokens;

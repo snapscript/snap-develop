@@ -1,5 +1,6 @@
 package org.snapscript.studio.index.classpath;
 
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.Set;
 
@@ -20,8 +21,10 @@ public class ClassIndexNode implements IndexNode {
    private String name;
    private Class type;
    private URL url;
+   private int modifiers;
    
    public ClassIndexNode(ClassInfo info) {
+      this.modifiers = -1;
       this.info = info;
    }
    
@@ -96,6 +99,19 @@ public class ClassIndexNode implements IndexNode {
          }
       }
       return null;
+   }
+   
+   @Override
+   public boolean isPublic() {
+      Class type = getNodeClass();
+      
+      if(type != null) {
+         if(modifiers == -1) {
+            modifiers = type.getModifiers();
+         }
+         return Modifier.isPublic(modifiers);
+      }
+      return false;
    }
 
    @Override

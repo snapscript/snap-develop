@@ -21,6 +21,11 @@ public class FieldIndexNode implements IndexNode {
    }
    
    @Override
+   public boolean isPublic(){
+      return field.isAccessible();
+   }
+   
+   @Override
    public String getModule() {
       return getParent().getModule();
    }

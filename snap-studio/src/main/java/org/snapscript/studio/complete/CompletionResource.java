@@ -15,6 +15,7 @@ import org.snapscript.studio.index.complete.FindConstructorsInScope;
 import org.snapscript.studio.index.complete.FindForFunction;
 import org.snapscript.studio.index.complete.FindForVariable;
 import org.snapscript.studio.index.complete.FindInScopeMatching;
+import org.snapscript.studio.index.complete.FindPossibleImports;
 import org.snapscript.studio.resource.project.Project;
 
 import com.google.gson.Gson;
@@ -45,7 +46,8 @@ public class CompletionResource implements Resource {
             FindForFunction.class,
             FindForVariable.class,
             FindInScopeMatching.class,
-            FindConstructorsInScope.class);
+            FindConstructorsInScope.class,
+            FindPossibleImports.class);
       
       Map<String, String> tokens = compiler.compile(context);
       result.setTokens(tokens);
