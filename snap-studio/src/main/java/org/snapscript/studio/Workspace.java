@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 
 import org.simpleframework.http.Path;
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.thread.ThreadPool;
+import org.snapscript.studio.agent.log.ProcessLogger;
 import org.snapscript.studio.common.FileDirectorySource;
 import org.snapscript.studio.configuration.ConfigurationReader;
 import org.snapscript.studio.configuration.Dependency;

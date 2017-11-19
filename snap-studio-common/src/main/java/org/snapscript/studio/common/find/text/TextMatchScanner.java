@@ -10,8 +10,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.thread.ThreadPool;
+import org.snapscript.studio.agent.log.ProcessLogger;
 
 public class TextMatchScanner {
    

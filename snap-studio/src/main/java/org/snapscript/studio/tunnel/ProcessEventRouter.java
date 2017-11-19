@@ -1,24 +1,24 @@
 package org.snapscript.studio.tunnel;
 
-import org.snapscript.agent.event.BeginEvent;
-import org.snapscript.agent.event.BreakpointsEvent;
-import org.snapscript.agent.event.BrowseEvent;
-import org.snapscript.agent.event.EvaluateEvent;
-import org.snapscript.agent.event.ExecuteEvent;
-import org.snapscript.agent.event.ExitEvent;
-import org.snapscript.agent.event.FaultEvent;
-import org.snapscript.agent.event.PingEvent;
-import org.snapscript.agent.event.PongEvent;
-import org.snapscript.agent.event.ProcessEvent;
-import org.snapscript.agent.event.ProcessEventChannel;
-import org.snapscript.agent.event.ProcessEventListener;
-import org.snapscript.agent.event.ProfileEvent;
-import org.snapscript.agent.event.RegisterEvent;
-import org.snapscript.agent.event.ScopeEvent;
-import org.snapscript.agent.event.StepEvent;
-import org.snapscript.agent.event.SyntaxErrorEvent;
-import org.snapscript.agent.event.WriteErrorEvent;
-import org.snapscript.agent.event.WriteOutputEvent;
+import org.snapscript.studio.agent.event.BeginEvent;
+import org.snapscript.studio.agent.event.BreakpointsEvent;
+import org.snapscript.studio.agent.event.BrowseEvent;
+import org.snapscript.studio.agent.event.EvaluateEvent;
+import org.snapscript.studio.agent.event.ExecuteEvent;
+import org.snapscript.studio.agent.event.ExitEvent;
+import org.snapscript.studio.agent.event.FaultEvent;
+import org.snapscript.studio.agent.event.PingEvent;
+import org.snapscript.studio.agent.event.PongEvent;
+import org.snapscript.studio.agent.event.ProcessEvent;
+import org.snapscript.studio.agent.event.ProcessEventChannel;
+import org.snapscript.studio.agent.event.ProcessEventListener;
+import org.snapscript.studio.agent.event.ProfileEvent;
+import org.snapscript.studio.agent.event.RegisterEvent;
+import org.snapscript.studio.agent.event.ScopeEvent;
+import org.snapscript.studio.agent.event.StepEvent;
+import org.snapscript.studio.agent.event.SyntaxErrorEvent;
+import org.snapscript.studio.agent.event.WriteErrorEvent;
+import org.snapscript.studio.agent.event.WriteOutputEvent;
 
 public class ProcessEventRouter {
 

@@ -1,11 +1,11 @@
 package org.snapscript.studio.tunnel;
 
-import org.snapscript.agent.ProcessMode;
-import org.snapscript.agent.event.BeginEvent;
-import org.snapscript.agent.event.ExitEvent;
-import org.snapscript.agent.event.ProcessEventAdapter;
-import org.snapscript.agent.event.ProcessEventChannel;
 import org.snapscript.studio.ProcessAgentController;
+import org.snapscript.studio.agent.ProcessMode;
+import org.snapscript.studio.agent.event.BeginEvent;
+import org.snapscript.studio.agent.event.ExitEvent;
+import org.snapscript.studio.agent.event.ProcessEventAdapter;
+import org.snapscript.studio.agent.event.ProcessEventChannel;
 
 public class ProcessAgentBeginListener extends ProcessEventAdapter {
    

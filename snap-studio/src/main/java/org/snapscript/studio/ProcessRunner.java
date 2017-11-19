@@ -2,8 +2,8 @@ package org.snapscript.studio;
 
 import java.net.URI;
 
-import org.snapscript.agent.ProcessAgent;
-import org.snapscript.agent.ProcessMode;
+import org.snapscript.studio.agent.ProcessAgent;
+import org.snapscript.studio.agent.ProcessMode;
 
 public class ProcessRunner {
 

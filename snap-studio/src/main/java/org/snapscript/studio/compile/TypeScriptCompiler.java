@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.snapscript.agent.log.ConsoleLog;
-import org.snapscript.agent.log.ProcessLog;
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.studio.ConsoleListener;
 import org.snapscript.studio.ConsoleManager;
+import org.snapscript.studio.agent.log.ConsoleLog;
+import org.snapscript.studio.agent.log.ProcessLog;
+import org.snapscript.studio.agent.log.ProcessLogger;
 
 import com.google.javascript.jscomp.CompilationLevel;
 

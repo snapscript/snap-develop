@@ -6,8 +6,8 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.snapscript.agent.event.MessageEnvelope;
-import org.snapscript.agent.event.MessageEnvelopeReader;
+import org.snapscript.studio.agent.event.MessageEnvelope;
+import org.snapscript.studio.agent.event.MessageEnvelopeReader;
 
 public class MessageEnvelopeDecoder {
 

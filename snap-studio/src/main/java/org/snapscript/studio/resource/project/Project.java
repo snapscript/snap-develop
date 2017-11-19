@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.snapscript.agent.ClassPathUpdater;
 import org.snapscript.common.store.NotFoundException;
 import org.snapscript.common.store.Store;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
 import org.snapscript.studio.Workspace;
+import org.snapscript.studio.agent.ClassPathUpdater;
 import org.snapscript.studio.common.DirectoryWatcher;
 import org.snapscript.studio.common.FileDirectory;
 import org.snapscript.studio.configuration.ClassPathExecutor;

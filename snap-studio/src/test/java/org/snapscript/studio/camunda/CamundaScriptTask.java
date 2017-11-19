@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.snapscript.agent.ProcessAgent;
-import org.snapscript.agent.ProcessAgentService;
-import org.snapscript.agent.ProcessMode;
 import org.snapscript.core.MapModel;
+import org.snapscript.studio.agent.ProcessAgent;
+import org.snapscript.studio.agent.ProcessAgentService;
+import org.snapscript.studio.agent.ProcessMode;
 
 public class CamundaScriptTask {
    

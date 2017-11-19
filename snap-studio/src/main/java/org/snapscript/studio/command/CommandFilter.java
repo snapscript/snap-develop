@@ -2,8 +2,8 @@ package org.snapscript.studio.command;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.snapscript.agent.event.ProcessEvent;
-import org.snapscript.agent.event.ProcessEventFilter;
+import org.snapscript.studio.agent.event.ProcessEvent;
+import org.snapscript.studio.agent.event.ProcessEventFilter;
 
 public class CommandFilter implements ProcessEventFilter {
 

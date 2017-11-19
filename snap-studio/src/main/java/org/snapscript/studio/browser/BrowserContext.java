@@ -2,7 +2,7 @@ package org.snapscript.studio.browser;
 
 import java.io.File;
 
-import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.studio.agent.log.ProcessLogger;
 
 public class BrowserContext {
 

@@ -5,9 +5,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.simpleframework.transport.Channel;
-import org.snapscript.agent.event.ProcessEventFilter;
-import org.snapscript.agent.event.ProcessEventListener;
-import org.snapscript.agent.event.StepEvent;
+import org.snapscript.studio.agent.event.ProcessEventFilter;
+import org.snapscript.studio.agent.event.ProcessEventListener;
+import org.snapscript.studio.agent.event.StepEvent;
 import org.snapscript.studio.command.AttachCommand;
 import org.snapscript.studio.command.BreakpointsCommand;
 import org.snapscript.studio.command.BrowseCommand;

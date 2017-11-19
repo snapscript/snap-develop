@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.snapscript.agent.ProcessMode;
+import org.snapscript.studio.agent.ProcessMode;
 import org.snapscript.studio.configuration.ProcessConfiguration;
 
 public class ProcessLauncher {

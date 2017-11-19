@@ -9,7 +9,7 @@ import org.simpleframework.transport.Channel;
 import org.simpleframework.transport.reactor.Operation;
 import org.simpleframework.transport.reactor.Reactor;
 import org.simpleframework.transport.trace.Trace;
-import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.studio.agent.log.ProcessLogger;
 
 public class MessageEnvelopeCollector implements Operation {
    

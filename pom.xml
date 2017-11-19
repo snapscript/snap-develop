@@ -28,9 +28,9 @@
 	</build>
 
    <modules>
-           <module>snap-agent</module>
-           <module>snap-service</module>  
-           <module>snap-studio</module>           
+           <module>snap-studio</module>       
+           <module>snap-studio-agent</module>
+           <module>snap-studio-service</module>        
            <module>snap-studio-ui</module>   
            <module>snap-studio-index</module>
            <module>snap-studio-common</module>     

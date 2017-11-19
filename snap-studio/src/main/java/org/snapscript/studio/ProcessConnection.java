@@ -6,13 +6,13 @@ import java.util.Set;
 
 import lombok.AllArgsConstructor;
 
-import org.snapscript.agent.event.BreakpointsEvent;
-import org.snapscript.agent.event.BrowseEvent;
-import org.snapscript.agent.event.EvaluateEvent;
-import org.snapscript.agent.event.ExecuteEvent;
-import org.snapscript.agent.event.PingEvent;
-import org.snapscript.agent.event.ProcessEventChannel;
-import org.snapscript.agent.event.StepEvent;
+import org.snapscript.studio.agent.event.BreakpointsEvent;
+import org.snapscript.studio.agent.event.BrowseEvent;
+import org.snapscript.studio.agent.event.EvaluateEvent;
+import org.snapscript.studio.agent.event.ExecuteEvent;
+import org.snapscript.studio.agent.event.PingEvent;
+import org.snapscript.studio.agent.event.ProcessEventChannel;
+import org.snapscript.studio.agent.event.StepEvent;
 import org.snapscript.studio.resource.project.Project;
 
 @AllArgsConstructor

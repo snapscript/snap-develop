@@ -7,7 +7,7 @@ import java.util.Set;
 
 import lombok.AllArgsConstructor;
 
-import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.studio.agent.log.ProcessLogger;
 
 @AllArgsConstructor
 public class FaultLogger {

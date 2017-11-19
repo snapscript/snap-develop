@@ -4,16 +4,16 @@ import java.util.Set;
 
 import lombok.AllArgsConstructor;
 
-import org.snapscript.agent.event.BeginEvent;
-import org.snapscript.agent.event.ExitEvent;
-import org.snapscript.agent.event.PongEvent;
-import org.snapscript.agent.event.ProfileEvent;
-import org.snapscript.agent.event.RegisterEvent;
-import org.snapscript.agent.event.ScopeEvent;
-import org.snapscript.agent.event.SyntaxErrorEvent;
-import org.snapscript.agent.event.WriteErrorEvent;
-import org.snapscript.agent.event.WriteOutputEvent;
-import org.snapscript.agent.profiler.ProfileResult;
+import org.snapscript.studio.agent.event.BeginEvent;
+import org.snapscript.studio.agent.event.ExitEvent;
+import org.snapscript.studio.agent.event.PongEvent;
+import org.snapscript.studio.agent.event.ProfileEvent;
+import org.snapscript.studio.agent.event.RegisterEvent;
+import org.snapscript.studio.agent.event.ScopeEvent;
+import org.snapscript.studio.agent.event.SyntaxErrorEvent;
+import org.snapscript.studio.agent.event.WriteErrorEvent;
+import org.snapscript.studio.agent.event.WriteOutputEvent;
+import org.snapscript.studio.agent.profiler.ProfileResult;
 import org.snapscript.studio.common.TextEscaper;
 import org.snapscript.studio.resource.project.Project;
 

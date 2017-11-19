@@ -1,6 +1,6 @@
 package org.snapscript.studio.maven;
 
-import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.studio.agent.log.ProcessLogger;
 import org.sonatype.aether.RepositoryEvent;
 import org.sonatype.aether.RepositoryListener;
 

@@ -3,7 +3,7 @@ package org.snapscript.studio;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.studio.agent.log.ProcessLogger;
 
 public class ProcessListener implements ConsoleListener {
    

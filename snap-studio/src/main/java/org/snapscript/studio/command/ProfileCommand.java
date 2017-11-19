@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import org.snapscript.agent.profiler.ProfileResult;
+import org.snapscript.studio.agent.profiler.ProfileResult;
 
 @Data
 @Builder

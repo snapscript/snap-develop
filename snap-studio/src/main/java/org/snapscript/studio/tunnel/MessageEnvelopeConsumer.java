@@ -4,9 +4,9 @@ import java.util.concurrent.Executor;
 
 import org.simpleframework.transport.ByteCursor;
 import org.simpleframework.transport.Channel;
-import org.snapscript.agent.event.MessageEnvelope;
-import org.snapscript.agent.event.ProcessEventChannel;
-import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.studio.agent.event.MessageEnvelope;
+import org.snapscript.studio.agent.event.ProcessEventChannel;
+import org.snapscript.studio.agent.log.ProcessLogger;
               
 public class MessageEnvelopeConsumer {
    

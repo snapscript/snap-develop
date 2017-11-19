@@ -8,14 +8,14 @@ import java.util.concurrent.Executor;
 import org.simpleframework.transport.Channel;
 import org.simpleframework.transport.reactor.ExecutorReactor;
 import org.simpleframework.transport.reactor.Reactor;
-import org.snapscript.agent.event.MessageEnvelope;
-import org.snapscript.agent.event.ProcessEvent;
-import org.snapscript.agent.event.ProcessEventChannel;
-import org.snapscript.agent.event.ProcessEventListener;
-import org.snapscript.agent.event.ProcessEventMarshaller;
-import org.snapscript.agent.event.ProcessEventType;
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.common.thread.ThreadPool;
+import org.snapscript.studio.agent.event.MessageEnvelope;
+import org.snapscript.studio.agent.event.ProcessEvent;
+import org.snapscript.studio.agent.event.ProcessEventChannel;
+import org.snapscript.studio.agent.event.ProcessEventListener;
+import org.snapscript.studio.agent.event.ProcessEventMarshaller;
+import org.snapscript.studio.agent.event.ProcessEventType;
+import org.snapscript.studio.agent.log.ProcessLogger;
 
 public class ProcessEventService implements MessageEnvelopeProcessor, ProcessEventChannel {
 

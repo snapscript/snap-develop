@@ -2,21 +2,21 @@ package org.snapscript.studio.command;
 
 import java.util.Map;
 
-import org.snapscript.agent.debug.ScopeVariableTree;
-import org.snapscript.agent.event.BeginEvent;
-import org.snapscript.agent.event.ExitEvent;
-import org.snapscript.agent.event.FaultEvent;
-import org.snapscript.agent.event.PongEvent;
-import org.snapscript.agent.event.ProcessEventAdapter;
-import org.snapscript.agent.event.ProcessEventChannel;
-import org.snapscript.agent.event.ProfileEvent;
-import org.snapscript.agent.event.RegisterEvent;
-import org.snapscript.agent.event.ScopeEvent;
-import org.snapscript.agent.event.SyntaxErrorEvent;
-import org.snapscript.agent.event.WriteErrorEvent;
-import org.snapscript.agent.event.WriteOutputEvent;
-import org.snapscript.agent.log.ProcessLogger;
 import org.snapscript.studio.FaultLogger;
+import org.snapscript.studio.agent.debug.ScopeVariableTree;
+import org.snapscript.studio.agent.event.BeginEvent;
+import org.snapscript.studio.agent.event.ExitEvent;
+import org.snapscript.studio.agent.event.FaultEvent;
+import org.snapscript.studio.agent.event.PongEvent;
+import org.snapscript.studio.agent.event.ProcessEventAdapter;
+import org.snapscript.studio.agent.event.ProcessEventChannel;
+import org.snapscript.studio.agent.event.ProfileEvent;
+import org.snapscript.studio.agent.event.RegisterEvent;
+import org.snapscript.studio.agent.event.ScopeEvent;
+import org.snapscript.studio.agent.event.SyntaxErrorEvent;
+import org.snapscript.studio.agent.event.WriteErrorEvent;
+import org.snapscript.studio.agent.event.WriteOutputEvent;
+import org.snapscript.studio.agent.log.ProcessLogger;
 import org.snapscript.studio.resource.project.Project;
 
 public class CommandEventForwarder extends ProcessEventAdapter {

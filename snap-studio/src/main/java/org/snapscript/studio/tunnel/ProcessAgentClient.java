@@ -6,10 +6,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.simpleframework.transport.Channel;
-import org.snapscript.agent.event.ProcessEvent;
-import org.snapscript.agent.event.ProcessEventChannel;
-import org.snapscript.agent.event.ProcessEventProducer;
-import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.studio.agent.event.ProcessEvent;
+import org.snapscript.studio.agent.event.ProcessEventChannel;
+import org.snapscript.studio.agent.event.ProcessEventProducer;
+import org.snapscript.studio.agent.log.ProcessLogger;
 
 public class ProcessAgentClient implements ProcessEventChannel {
 

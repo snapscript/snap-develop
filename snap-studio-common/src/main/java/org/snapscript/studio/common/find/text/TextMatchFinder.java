@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.snapscript.agent.log.ProcessLogger;
+import org.snapscript.studio.agent.log.ProcessLogger;
 import org.snapscript.studio.common.FileReader;
 import org.snapscript.studio.common.find.MatchEvaluator;
 import org.snapscript.studio.common.find.MatchType;
