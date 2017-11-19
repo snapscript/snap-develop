@@ -97,7 +97,7 @@ public class CompletionCompiler {
          }
          begin--;
       }
-      return completion.trim();
+      return completion;
    }
    
    private static boolean isTerminal(char value) {

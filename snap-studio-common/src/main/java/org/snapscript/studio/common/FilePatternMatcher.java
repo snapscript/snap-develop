@@ -66,15 +66,17 @@ public class FilePatternMatcher {
       if(directory.exists()) {
          File[] list = directory.listFiles();
 
-         for(File entry : list) {
-            if(entry.isDirectory()) {
-               List<File> matches = gather(entry);
-               
-               if(!matches.isEmpty()) {
-                  files.addAll(matches);
+         if(list != null) {
+            for(File entry : list) {
+               if(entry.isDirectory()) {
+                  List<File> matches = gather(entry);
+                  
+                  if(!matches.isEmpty()) {
+                     files.addAll(matches);
+                  }
+               } else {
+                  files.add(entry);
                }
-            } else {
-               files.add(entry);
             }
          }
       }

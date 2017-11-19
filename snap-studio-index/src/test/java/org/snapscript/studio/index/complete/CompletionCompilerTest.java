@@ -1,5 +1,6 @@
 package org.snapscript.studio.index.complete;
 
+import java.io.File;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -8,7 +9,9 @@ import org.snapscript.common.store.ClassPathStore;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
+import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexPathTranslator;
+import org.snapscript.studio.index.IndexScanner;
 import org.snapscript.studio.index.Indexer;
 import org.snapscript.studio.index.MockIndexDatabase;
 
@@ -51,26 +54,25 @@ public class CompletionCompilerTest extends TestCase {
 
    
    public void testCompletionCompiler() throws Exception {
-      MockIndexDatabase database = new MockIndexDatabase();
       ClassPathStore store = new ClassPathStore();
       Context context = new StoreContext(store);
-      IndexPathTranslator translator = new IndexPathTranslator();
-      ThreadPool pool = new ThreadPool(1);
-      Indexer indexer = new Indexer(translator, database, context, pool, null);
-      database.setIndexer(indexer);
+      ThreadPool pool = new ThreadPool(2);
+      File file = File.createTempFile("test", getClass().getSimpleName());
+      IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
       CompletionCompiler compiler = new CompletionCompiler(database, 
             FindForFunction.class,
             FindForVariable.class,
             FindInScopeMatching.class,
-            FindConstructorsInScope.class);
+            FindConstructorsInScope.class,
+            FindPossibleImports.class);
       
       CompletionRequest request = buildRequest(SOURCE, "do");
       Map<String, String> completion = compiler.compile(request).getTokens();
       
       assertNotNull(completion.get("doSomething()"));
       assertNotNull(completion.get("doSomething(index)"));
-      assertEquals(completion.get("doSomething()"), "member-function");
-      assertEquals(completion.get("doSomething(index)"), "member-function");
+      assertEquals(completion.get("doSomething()"), "function");
+      assertEquals(completion.get("doSomething(index)"), "function");
       
       request = buildRequest(SOURCE, "memb");
       completion = compiler.compile(request).getTokens();
@@ -95,7 +97,7 @@ public class CompletionCompilerTest extends TestCase {
       assertNotNull(completion.get("someInnerFunc()"));
       assertEquals(completion.get("x"), "property");
       assertEquals(completion.get("length"), "property");
-      assertEquals(completion.get("someInnerFunc()"), "member-function");
+      assertEquals(completion.get("someInnerFunc()"), "function");
       
       request = buildRequest(SOURCE, "InnerClass.l");
       completion = compiler.compile(request).getTokens();
@@ -119,9 +121,9 @@ public class CompletionCompilerTest extends TestCase {
       assertEquals(completion.get("SomePath"), "class");
       assertEquals(completion.get("memb1"), "property");
       assertEquals(completion.get("memb2"), "property");
-      assertEquals(completion.get("findSomething(index)"), "member-function");
-      assertEquals(completion.get("doSomething(index)"), "member-function");
-      assertEquals(completion.get("doSomething()"), "member-function");
+      assertEquals(completion.get("findSomething(index)"), "function");
+      assertEquals(completion.get("doSomething(index)"), "function");
+      assertEquals(completion.get("doSomething()"), "function");
       assertEquals(completion.get("InnerClass"), "class");
       assertEquals(completion.get("TypeEnum"), "enum");
       

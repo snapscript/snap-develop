@@ -33,7 +33,7 @@ public class FindConstructorsInScope implements CompletionFinder {
 
    @Override
    public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, UserText text) throws Exception {
-      Map<String, IndexNode> expandedScope = getTypesAvailable(database, node);
+      Map<String, IndexNode> expandedScope = IndexSearcher.getNodesInScope(node);
       Set<Entry<String, IndexNode>> entries = expandedScope.entrySet();
       Map<String, IndexNode> allNodes = database.getTypeNodes();
       String unfinished = text.getUnfinished();
@@ -70,15 +70,5 @@ public class FindConstructorsInScope implements CompletionFinder {
          return matched;
       }
       return Collections.emptySet();
-   }
-   
-   private Map<String, IndexNode> getTypesAvailable(IndexDatabase database, IndexNode node) {
-      Map<String, IndexNode> expandedScope = IndexSearcher.getNodesInScope(node);
-      Map<String, IndexNode> available = new HashMap<String, IndexNode>();
-      
-      available.putAll(expandedScope);
-      available.putAll(BootstrapClassPath.getDefaultImportClasses());
-      
-      return Collections.unmodifiableMap(available);
    }
 }

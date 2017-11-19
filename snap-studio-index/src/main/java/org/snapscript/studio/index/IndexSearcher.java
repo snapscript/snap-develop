@@ -144,7 +144,15 @@ public class IndexSearcher implements IndexFile {
             IndexType type = entry.getType();
             String name = entry.getName();
             
-            if(type.isType()) {
+            if(type.isConstructor()) {
+               if(prefix == null) {
+                  scope.put(name, entry);
+               } else if(!name.startsWith(prefix)) {
+                  scope.put(prefix + "." + name, entry); // i.e new SomeClass.InnerClass()
+               } else {
+                  scope.put(name, entry); // new SomeClass()
+               }
+            } else if(type.isType()) {
                Map<String, IndexNode> children = getChildNodes(entry, name);
                Collection<IndexNode> entries = children.values();
                

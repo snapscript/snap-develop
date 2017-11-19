@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 
 import org.snapscript.studio.index.IndexNode;
 
-public class ClassPathBootstrapScannerTest extends TestCase {
+public class BootstrapClassPathTest extends TestCase {
 
    public void testScanner() throws Exception {
       Set<IndexNode> nodes = BootstrapClassPath.getBootstrapClasses();

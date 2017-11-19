@@ -1,7 +1,6 @@
 package org.snapscript.studio.index;
 
 import java.util.Map;
-import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -82,7 +81,7 @@ public class IndexerTest extends TestCase {
       ThreadPool pool = new ThreadPool(1);
       Indexer indexer = new Indexer(translator, database, context, pool, null);
       IndexFile searcher = indexer.index("/some/package.snap", SOURCE);
-      Map<String, IndexNode> nodes = searcher.getTypeNodes();
+      Map<String, IndexNode> nodes = searcher.getNodesInScope(5);
    
       assertNotNull(nodes.get("SomeClass()"));
       assertEquals(nodes.get("SomeClass()").getType(), IndexType.CONSTRUCTOR);
@@ -178,9 +177,9 @@ public class IndexerTest extends TestCase {
       assertEquals(((IndexSearcher)searcher).getDepthAtLine(45), 3);
       assertEquals(((IndexSearcher)searcher).getDepthAtLine(56), 2);
       
-      assertEquals(searcher.getNodeAtLine(4).getType(), IndexType.CLASS);
-      assertEquals(searcher.getNodeAtLine(4).getName(), "SomeClass");
-      assertEquals(searcher.getNodeAtLine(4).getFullName(), "some.package.SomeClass");
+      assertEquals(searcher.getNodeAtLine(4).getType(), IndexType.CONSTRUCTOR);
+      assertEquals(searcher.getNodeAtLine(4).getName(), "SomeClass()");
+      assertEquals(searcher.getNodeAtLine(4).getFullName(), "SomeClass()");
       assertEquals(searcher.getNodeAtLine(7).getType(), IndexType.MEMBER_FUNCTION);
       assertEquals(searcher.getNodeAtLine(7).getName(), "test(index, size)");
       assertEquals(searcher.getNodeAtLine(7).getConstraint().getTypeName(), "Mod.ModClass");
@@ -189,9 +188,9 @@ public class IndexerTest extends TestCase {
       assertEquals(searcher.getNodeAtLine(13).getFullName(), "some.package.SizeEnum");
       assertEquals(searcher.getNodeAtLine(32).getType(), IndexType.SCRIPT);
       assertEquals(searcher.getNodeAtLine(32).getName(), "/some/package.snap");
-      assertEquals(searcher.getNodeAtLine(25).getType(), IndexType.CLASS);
-      assertEquals(searcher.getNodeAtLine(25).getName(), "ModClass");
-      assertEquals(searcher.getNodeAtLine(25).getFullName(), "some.package.Mod.ModClass");      
+      assertEquals(searcher.getNodeAtLine(25).getType(), IndexType.CONSTRUCTOR);
+      assertEquals(searcher.getNodeAtLine(25).getName(), "ModClass()");
+      assertEquals(searcher.getNodeAtLine(25).getFullName(), "ModClass()");      
       assertEquals(searcher.getNodeAtLine(45).getType(), IndexType.COMPOUND);
       assertEquals(searcher.getNodeAtLine(45).getName(), "");
       assertEquals(searcher.getNodeAtLine(56).getType(), IndexType.CONSTRUCTOR);
