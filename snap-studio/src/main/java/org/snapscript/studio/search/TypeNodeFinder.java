@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.snapscript.studio.Workspace;
+import org.snapscript.studio.core.Workspace;
 import org.snapscript.studio.resource.project.Project;
 import org.snapscript.studio.resource.project.ProjectLayout;
 

@@ -12,6 +12,8 @@ import junit.framework.TestCase;
 import org.simpleframework.transport.Channel;
 import org.simpleframework.transport.reactor.ExecutorReactor;
 import org.simpleframework.transport.reactor.Reactor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.studio.agent.event.MessageEnvelope;
 import org.snapscript.studio.agent.event.MessageEnvelopeWriter;
@@ -21,20 +23,22 @@ import org.snapscript.studio.agent.event.ProcessEventAdapter;
 import org.snapscript.studio.agent.event.ProcessEventMarshaller;
 import org.snapscript.studio.agent.event.ProcessEventTimer;
 import org.snapscript.studio.agent.event.ProcessEventType;
-import org.snapscript.studio.agent.log.ConsoleLog;
+import org.snapscript.studio.agent.log.ProcessLog;
 import org.snapscript.studio.agent.log.ProcessLogger;
 import org.snapscript.studio.tunnel.MessageEnvelopeCollector;
 import org.snapscript.studio.tunnel.ProcessEventService;
 
 public class MessageEnvelopeCollectorTest extends TestCase {
    
+   private static final Logger LOG = LoggerFactory.getLogger(MessageEnvelopeCollectorTest.class);
+   
    public void testCollector() throws Exception {
       ThreadPool pool = new ThreadPool(5);
-      ConsoleLog log = new ConsoleLog();
+      ProcessLog log = new LoggerLog(LOG);
       ProcessLogger logger = new ProcessLogger(log, "TRACE");
       ProcessEventAdapter adapter = new ProcessEventAdapter();
       ProcessEventTimer timer = new ProcessEventTimer(adapter, logger);
-      ProcessEventService router = new ProcessEventService(timer, logger, 7878);
+      ProcessEventService router = new ProcessEventService(timer, LOG, 7878);
       ByteArrayOutputStream stream = new ByteArrayOutputStream();
       StreamEventWriter writer = new StreamEventWriter(stream);
       PingEvent event = new PingEvent.Builder("agent-123456789")
@@ -48,7 +52,7 @@ public class MessageEnvelopeCollectorTest extends TestCase {
       InputStream input = new ByteArrayInputStream(data);
       Channel channel = new StreamChannel(input, System.out);
       Reactor reactor = new ExecutorReactor(pool);
-      MessageEnvelopeCollector collector = new MessageEnvelopeCollector(router, logger, reactor, pool, channel);
+      MessageEnvelopeCollector collector = new MessageEnvelopeCollector(router, LOG, reactor, pool, channel);
       
       collector.run();
    }
@@ -79,5 +83,25 @@ public class MessageEnvelopeCollectorTest extends TestCase {
    
          writer.write(message);
       }
+   }
+   
+   private static class LoggerLog implements ProcessLog {
+      
+      private final Logger log;
+      
+      public LoggerLog(Logger log) {
+         this.log = log;
+      }
+
+      @Override
+      public void log(Object text) {
+         log.info(""+ text);
+      }
+
+      @Override
+      public void log(Object text, Throwable cause) {
+         log.info("" + text, cause);
+      }
+      
    }
 }

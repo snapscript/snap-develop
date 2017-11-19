@@ -5,11 +5,15 @@ import java.io.PrintStream;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.resource.Resource;
+import org.snapscript.studio.common.resource.ResourcePath;
+import org.snapscript.studio.core.Workspace;
 import org.snapscript.studio.resource.project.Project;
+import org.springframework.stereotype.Component;
 
 // /format/<project>
+@Component
+@ResourcePath("/format.*")
 public class SourceFormatResource implements Resource {
    
    private static final int DEFAULT_INDENT = 3;

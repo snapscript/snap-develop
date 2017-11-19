@@ -5,14 +5,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.snapscript.studio.ConsoleListener;
-import org.snapscript.studio.ConsoleManager;
+import org.snapscript.core.Bug;
 import org.snapscript.studio.agent.log.ConsoleLog;
 import org.snapscript.studio.agent.log.ProcessLog;
 import org.snapscript.studio.agent.log.ProcessLogger;
+import org.snapscript.studio.core.ConsoleListener;
+import org.snapscript.studio.core.ConsoleManager;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.google.javascript.jscomp.CompilationLevel;
 
+@Component
 public class TypeScriptCompiler {
    
    private static final String COMPRESS_SOURCE_FILE = "all.js";
@@ -21,7 +25,11 @@ public class TypeScriptCompiler {
    private final File node;
    private final File root;
    
-   public TypeScriptCompiler(String compiler, String node) throws Exception {
+   @Bug("yet more rubbish")
+   public TypeScriptCompiler(
+         @Value("${typescript.compiler:src/main/typescript/tsc.js}") String compiler, 
+         @Value("${typescript.node:C:/Program Files/nodejs/node.exe}") String node) throws Exception 
+   {
       this.root = new File(".").getCanonicalFile();
       this.node = new File(node).getCanonicalFile();
       this.compiler = new File(root, compiler).getCanonicalFile();

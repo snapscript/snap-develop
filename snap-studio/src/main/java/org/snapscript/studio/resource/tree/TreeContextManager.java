@@ -5,18 +5,19 @@ import java.io.IOException;
 
 import org.snapscript.common.Cache;
 import org.snapscript.common.LeastRecentlyUsedCache;
-import org.snapscript.studio.Workspace;
+import org.snapscript.core.Bug;
+import org.snapscript.studio.core.Workspace;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TreeContextManager {
 
    private final Cache<String, TreeContext> contexts;
    private final Workspace workspace;
-   
-   public TreeContextManager(Workspace workspace) {
-      this(workspace, 1000);
-   }
-   
-   public TreeContextManager(Workspace workspace, int capacity) {
+
+   @Bug("crap")
+   public TreeContextManager(Workspace workspace, @Value("${tree.capacity:1000}") int capacity) {
       this.contexts = new LeastRecentlyUsedCache<String, TreeContext>();
       this.workspace = workspace;
    }

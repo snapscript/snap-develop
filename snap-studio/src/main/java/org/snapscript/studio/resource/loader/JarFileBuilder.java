@@ -14,6 +14,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
+import org.snapscript.studio.common.ClassPathResourceLoader;
+
 public class JarFileBuilder {
 
    private final ClassPathResourceLoader loader;
@@ -112,7 +114,7 @@ public class JarFileBuilder {
          byte[] data = loader.loadResource(resource);
          
          if(data == null) {
-            throw new IllegalStateException("Could not fine resource " + resource);
+            throw new IllegalStateException("Could not find resource " + resource);
          }
          resources.put(resource, data);
          return this;

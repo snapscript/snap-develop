@@ -18,13 +18,18 @@ import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
 import org.snapscript.common.Cache;
 import org.snapscript.common.LeastRecentlyUsedCache;
-import org.snapscript.studio.Workspace;
-import org.snapscript.studio.agent.log.ProcessLogger;
+import org.snapscript.core.Bug;
 import org.snapscript.studio.common.resource.Content;
 import org.snapscript.studio.common.resource.ContentTypeResolver;
 import org.snapscript.studio.common.resource.FileResolver;
 import org.snapscript.studio.common.resource.Resource;
+import org.snapscript.studio.common.resource.ResourcePath;
+import org.snapscript.studio.core.Workspace;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
+@ResourcePath("/img/theme/.*.png")
 public class ImageScaleResource implements Resource {
 
    private final Cache<String, ScaledImage> scaledImages;
@@ -33,7 +38,8 @@ public class ImageScaleResource implements Resource {
    private final Workspace workspace;
    private final int height;
 
-   public ImageScaleResource(ContentTypeResolver typeResolver, FileResolver fileResolver, Workspace workspace, int height) {
+   @Bug("crapola!")
+   public ImageScaleResource(ContentTypeResolver typeResolver, FileResolver fileResolver, Workspace workspace, @Value("${image.scale:40}") int height) {
       this.scaledImages = new LeastRecentlyUsedCache<String, ScaledImage>(200);
       this.typeResolver = typeResolver;
       this.fileResolver = fileResolver;
@@ -52,8 +58,8 @@ public class ImageScaleResource implements Resource {
       int height = image.getHeight();
       int width = image.getWidth();
       
-      if(workspace.getLogger().isTrace()) {
-         workspace.getLogger().debug(path + " scaled=" + width + "x" + height);
+      if(workspace.getLogger().isTraceEnabled()) {
+         workspace.getLogger().trace(path + " scaled=" + width + "x" + height);
       }
       response.setStatus(Status.OK);
       response.setValue(CONTENT_TYPE, type);

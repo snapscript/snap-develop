@@ -2,18 +2,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-  <bean id="Workspace" class="org.snapscript.studio.Workspace" init-method="createWorkspace">
-    <constructor-arg>
-      <bean class="org.snapscript.agent.log.ProcessLogger">
-        <constructor-arg>
-          <bean class="org.snapscript.agent.log.FileLog">
-            <constructor-arg value="${log-file}" />
-          </bean>
-        </constructor-arg>
-        <constructor-arg value="${log-level}" />
-      </bean>
-    </constructor-arg>
+  <bean id="Workspace" class="org.snapscript.studio.core.Workspace" init-method="createWorkspace">
     <constructor-arg value="${directory}" />
+    <constructor-arg value="${log-file}" />
+    <constructor-arg value="${log-level}" />
     <constructor-arg value="${project-mode}" />
   </bean>
 
@@ -21,7 +13,7 @@
     <constructor-arg value="20" />
   </bean>
 
-  <bean id="BackupManager" class="org.snapscript.studio.BackupManager">
+  <bean id="BackupManager" class="org.snapscript.studio.core.BackupManager">
     <constructor-arg ref="Workspace" />
   </bean>
 
@@ -36,19 +28,19 @@
     <constructor-arg ref="Workspace" />
   </bean>
 
-  <bean id="ProcessManager" class="org.snapscript.studio.ProcessManager">
+  <bean id="ProcessManager" class="org.snapscript.studio.core.ProcessManager">
     <constructor-arg ref="ProcessConfigurationLoader" />
     <constructor-arg ref="Workspace" />
     <constructor-arg value="${agent-pool}" />
   </bean>
 
-  <bean id="ProcessServer" class="org.snapscript.studio.ProcessServer" init-method="start">
+  <bean id="ProcessServer" class="org.snapscript.studio.core.ProcessServer" init-method="start">
     <constructor-arg ref="ProcessManager" />
     <constructor-arg ref="BrowserLauncher" />
     <constructor-arg ref="WebServer" />
   </bean>
 
-  <bean id="ConnectListener" class="org.snapscript.studio.ConnectListener">
+  <bean id="ConnectListener" class="org.snapscript.studio.core.ConnectListener">
     <constructor-arg ref="Workspace" />
   </bean>
 
@@ -85,6 +77,7 @@
 
   <bean id="FileManager" class="org.snapscript.studio.common.resource.FileManager">
     <constructor-arg value="/resource" />
+    <constructor-arg value="UTF-8" />    
   </bean>
 
   <bean id="FileResolver" class="org.snapscript.studio.common.resource.FileResolver">
@@ -94,6 +87,7 @@
   <bean id="TemplateEngine" class="org.snapscript.studio.common.resource.template.StringTemplateEngine">
     <constructor-arg ref="FileResolver" />
     <constructor-arg value="/" />
+    <constructor-arg value="1000" />
   </bean>
 
   <bean id="TypeScriptCompiler" class="org.snapscript.studio.compile.TypeScriptCompiler">
@@ -139,7 +133,7 @@
   <bean id="FileMatchResource" class="org.snapscript.studio.common.find.file.FileMatchResource">
     <constructor-arg ref="Workspace" />
   </bean>
-  
+
   <bean id="SearchTypeResource" class="org.snapscript.studio.complete.SearchTypeResource">
     <constructor-arg ref="Workspace" />
   </bean>
@@ -223,10 +217,6 @@
     <constructor-arg ref="BackupManager" />
   </bean>
 
-  <bean id="ProjectDefaultResource" class="org.snapscript.studio.resource.project.ProjectDefaultResource">
-    <constructor-arg ref="Workspace" />
-  </bean>
-
   <bean id="ProjectScriptService" class="org.snapscript.studio.resource.project.ProjectScriptService">
     <constructor-arg ref="ProcessManager" />
     <constructor-arg ref="ConnectListener" />
@@ -274,7 +264,6 @@
       <map>
         <entry key="/img/theme/.*.png" value-ref="ImageScaleResource" />
         <entry key="/format.*" value-ref="SourceFormatResource" />
-        <entry key="/default.*" value-ref="ProjectDefaultResource" />
         <entry key="/file.*" value-ref="FileMatchResource" />
         <entry key="/type.*" value-ref="SearchTypeResource" />
         <entry key="/complete.*" value-ref="CompletionResource" />
@@ -300,7 +289,6 @@
         <ref bean="DisplayMatcher" />
       </list>
     </constructor-arg>
-    <constructor-arg ref="NotFoundResource" />
   </bean>
 
   <bean id="ResourceContainer" class="org.snapscript.studio.common.resource.ResourceContainer">

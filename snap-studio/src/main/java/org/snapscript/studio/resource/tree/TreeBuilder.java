@@ -1,7 +1,7 @@
 package org.snapscript.studio.resource.tree;
 
+import org.snapscript.studio.common.resource.display.DisplayModelResolver;
 import org.snapscript.studio.common.resource.template.TemplateModel;
-import org.snapscript.studio.resource.display.DisplayModelResolver;
 
 public class TreeBuilder {
 

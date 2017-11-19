@@ -6,9 +6,14 @@ import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
-import org.snapscript.studio.Workspace;
+import org.snapscript.studio.common.ClassPathResourceLoader;
 import org.snapscript.studio.common.resource.Resource;
+import org.snapscript.studio.common.resource.ResourcePath;
+import org.snapscript.studio.core.Workspace;
+import org.springframework.stereotype.Component;
 
+@Component
+@ResourcePath("/class/.*")
 public class ClassLoaderResource implements Resource {
    
    private final ClassPathResourceLoader loader;
@@ -27,7 +32,7 @@ public class ClassLoaderResource implements Resource {
       PrintStream output = response.getPrintStream();
       byte[] data = loader.loadResource(normal); 
 
-      if(workspace.getLogger().isTrace()) {
+      if(workspace.getLogger().isTraceEnabled()) {
          workspace.getLogger().trace(method + ": " + normal);
       }
       if(data == null) {

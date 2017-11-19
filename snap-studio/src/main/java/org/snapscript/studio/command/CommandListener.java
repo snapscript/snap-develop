@@ -8,17 +8,17 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.simpleframework.common.encode.Base64Encoder;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.socket.FrameChannel;
+import org.slf4j.Logger;
 import org.snapscript.common.command.CommandBuilder;
 import org.snapscript.common.command.Console;
-import org.snapscript.studio.BackupManager;
-import org.snapscript.studio.ProcessManager;
-import org.snapscript.studio.agent.log.ProcessLogger;
 import org.snapscript.studio.common.Problem;
 import org.snapscript.studio.common.ProblemFinder;
+import org.snapscript.studio.common.resource.display.DisplayDefinition;
+import org.snapscript.studio.common.resource.display.DisplayPersister;
 import org.snapscript.studio.configuration.OperatingSystem;
 import org.snapscript.studio.configuration.ProjectConfiguration;
-import org.snapscript.studio.resource.display.DisplayDefinition;
-import org.snapscript.studio.resource.display.DisplayPersister;
+import org.snapscript.studio.core.BackupManager;
+import org.snapscript.studio.core.ProcessManager;
 import org.snapscript.studio.resource.project.Project;
 import org.snapscript.studio.resource.project.ProjectProblemFinder;
 import org.snapscript.studio.resource.tree.TreeContext;
@@ -33,7 +33,7 @@ public class CommandListener {
    private final CommandFilter commandFilter;
    private final CommandClient commandClient;
    private final ProcessManager processManager;
-   private final ProcessLogger processLogger;
+   private final Logger processLogger;
    private final ProblemFinder finder;
    private final BackupManager backupManager;
    private final AtomicLong lastModified;
@@ -48,7 +48,7 @@ public class CommandListener {
          ProjectProblemFinder problemFinder, 
          DisplayPersister displayPersister,
          FrameChannel frameChannel, 
-         ProcessLogger processLogger, 
+         Logger processLogger, 
          BackupManager backupManager, 
          TreeContextManager treeManager, 
          Project project,

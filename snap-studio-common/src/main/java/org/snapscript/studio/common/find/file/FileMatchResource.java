@@ -8,10 +8,14 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.snapscript.studio.common.FileDirectorySource;
 import org.snapscript.studio.common.resource.Resource;
+import org.snapscript.studio.common.resource.ResourcePath;
+import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+@Component
+@ResourcePath("/file.*")
 public class FileMatchResource implements Resource {
 
    private final FileMatchQueryParser parser;

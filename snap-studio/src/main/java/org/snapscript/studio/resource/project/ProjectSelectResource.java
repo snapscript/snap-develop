@@ -5,12 +5,18 @@ import java.io.PrintStream;
 
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.snapscript.studio.Workspace;
+import org.snapscript.core.Bug;
 import org.snapscript.studio.common.resource.Resource;
+import org.snapscript.studio.common.resource.ResourcePath;
+import org.snapscript.studio.common.resource.display.DisplayModelResolver;
 import org.snapscript.studio.common.resource.template.TemplateEngine;
 import org.snapscript.studio.common.resource.template.TemplateModel;
-import org.snapscript.studio.resource.display.DisplayModelResolver;
+import org.snapscript.studio.core.Workspace;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
+@ResourcePath("/")
 public class ProjectSelectResource implements Resource {
    
    private final DisplayModelResolver resolver;
@@ -18,7 +24,8 @@ public class ProjectSelectResource implements Resource {
    private final Workspace workspace;
    private final String resource;
    
-   public ProjectSelectResource(DisplayModelResolver resolver, Workspace workspace, TemplateEngine engine, String resource) {
+   @Bug("must do better")
+   public ProjectSelectResource(DisplayModelResolver resolver, Workspace workspace, TemplateEngine engine, @Value("${select.resource:select.vm}") String resource) {
       this.resolver = resolver;
       this.resource = resource;
       this.workspace = workspace;

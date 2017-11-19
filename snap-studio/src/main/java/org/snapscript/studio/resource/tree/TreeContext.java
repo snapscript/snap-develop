@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.snapscript.studio.Workspace;
 import org.snapscript.studio.configuration.ProjectConfiguration;
+import org.snapscript.studio.core.Workspace;
 import org.snapscript.studio.resource.project.Project;
 
 public class TreeContext implements TreeFolderExpander {

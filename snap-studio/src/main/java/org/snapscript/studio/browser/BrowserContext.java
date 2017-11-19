@@ -2,13 +2,13 @@ package org.snapscript.studio.browser;
 
 import java.io.File;
 
-import org.snapscript.studio.agent.log.ProcessLogger;
+import org.slf4j.Logger;
 
 public class BrowserContext {
 
    private static final String ICON_PATH = "/resource/img/icon_large.png";
    
-   private final ProcessLogger logger;
+   private final Logger logger;
    private final File directory;
    private final String engine;
    private final String host;
@@ -28,7 +28,7 @@ public class BrowserContext {
       return ICON_PATH;
    }
 
-   public ProcessLogger getLogger() {
+   public Logger getLogger() {
       return logger;
    }
    
@@ -59,7 +59,7 @@ public class BrowserContext {
 
    public static class Builder {
       
-      private ProcessLogger logger;
+      private Logger logger;
       private File directory;
       private String engine;
       private String host;
@@ -70,7 +70,7 @@ public class BrowserContext {
          super();
       }
 
-      public Builder withLogger(ProcessLogger logger) {
+      public Builder withLogger(Logger logger) {
          this.logger = logger;
          return this;
       }

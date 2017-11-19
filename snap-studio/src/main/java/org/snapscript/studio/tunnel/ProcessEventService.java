@@ -8,6 +8,7 @@ import java.util.concurrent.Executor;
 import org.simpleframework.transport.Channel;
 import org.simpleframework.transport.reactor.ExecutorReactor;
 import org.simpleframework.transport.reactor.Reactor;
+import org.slf4j.Logger;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.studio.agent.event.MessageEnvelope;
 import org.snapscript.studio.agent.event.ProcessEvent;
@@ -15,22 +16,21 @@ import org.snapscript.studio.agent.event.ProcessEventChannel;
 import org.snapscript.studio.agent.event.ProcessEventListener;
 import org.snapscript.studio.agent.event.ProcessEventMarshaller;
 import org.snapscript.studio.agent.event.ProcessEventType;
-import org.snapscript.studio.agent.log.ProcessLogger;
 
 public class ProcessEventService implements MessageEnvelopeProcessor, ProcessEventChannel {
 
    private final Map<Integer, ProcessEventMarshaller> marshallers;
    private final Map<String, ProcessEventChannel> channels;
    private final ProcessEventRouter router;
-   private final ProcessLogger logger;
    private final Executor executor;
    private final Reactor reactor;
+   private final Logger logger;
    
-   public ProcessEventService(ProcessEventListener listener, ProcessLogger logger) throws IOException {
+   public ProcessEventService(ProcessEventListener listener, Logger logger) throws IOException {
       this(listener, logger, 5);
    }
 
-   public ProcessEventService(ProcessEventListener listener, ProcessLogger logger, int threads) throws IOException {
+   public ProcessEventService(ProcessEventListener listener, Logger logger, int threads) throws IOException {
       this.marshallers = new ConcurrentHashMap<Integer, ProcessEventMarshaller>();
       this.channels = new ConcurrentHashMap<String, ProcessEventChannel>();
       this.router = new ProcessEventRouter(listener);

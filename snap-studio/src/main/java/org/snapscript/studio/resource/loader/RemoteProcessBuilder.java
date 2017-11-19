@@ -7,8 +7,13 @@ import static org.snapscript.studio.configuration.WorkspaceConfiguration.TEMP_PA
 
 import java.io.File;
 
-import org.snapscript.studio.Workspace;
+import javax.annotation.PostConstruct;
 
+import org.snapscript.studio.common.ClassPathResourceLoader;
+import org.snapscript.studio.core.Workspace;
+import org.springframework.stereotype.Component;
+
+@Component
 public class RemoteProcessBuilder {
    
    private final JarFileBuilder builder;
@@ -19,6 +24,7 @@ public class RemoteProcessBuilder {
       this.workspace = workspace;
    }
    
+   @PostConstruct
    public void create() throws Exception {
       File directory = workspace.createFile(TEMP_PATH);
       

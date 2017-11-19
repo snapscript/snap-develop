@@ -11,19 +11,22 @@ import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.snapscript.core.Bug;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class WebContainer implements Container {
 
    private static final Logger LOG = LoggerFactory.getLogger(WebContainer.class);
 
-   private final Container container;
+   private final WebSocketContainer container;
    private final String session;
-   private final String name;
 
-   public WebContainer(Container container, String name, String session) {
+   @Bug("this is rubbish")
+   public WebContainer(WebSocketContainer container, @Value("${session.name:SESSID}") String session) {
       this.container = container;
       this.session = session;
-      this.name = name;
    }
 
    @Override
@@ -38,7 +41,7 @@ public class WebContainer implements Container {
             resp.setCookie(session, value);
          }
          resp.setDate(DATE, time);
-         resp.setValue(SERVER, name);
+         resp.setValue(SERVER, "Apache/2.2.14");
          container.handle(req, resp);
       } catch (Throwable cause) {
          LOG.info("Internal server error", cause);

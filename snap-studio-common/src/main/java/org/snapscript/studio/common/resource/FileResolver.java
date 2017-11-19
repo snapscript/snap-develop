@@ -2,6 +2,9 @@ package org.snapscript.studio.common.resource;
 
 import java.io.IOException;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class FileResolver {
 
    private final FileManager manager;

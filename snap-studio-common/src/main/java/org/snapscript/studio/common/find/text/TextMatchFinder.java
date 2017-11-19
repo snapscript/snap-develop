@@ -7,16 +7,16 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.snapscript.studio.agent.log.ProcessLogger;
+import org.slf4j.Logger;
 import org.snapscript.studio.common.FileReader;
 import org.snapscript.studio.common.find.MatchEvaluator;
 import org.snapscript.studio.common.find.MatchType;
 
 public class TextMatchFinder {
    
-   private final ProcessLogger logger;
+   private final Logger logger;
    
-   public TextMatchFinder(ProcessLogger logger) {
+   public TextMatchFinder(Logger logger) {
       this.logger = logger;
    }
 

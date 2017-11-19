@@ -6,23 +6,27 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.simpleframework.transport.Channel;
+import org.slf4j.Logger;
 import org.snapscript.studio.agent.event.ProcessEvent;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
 import org.snapscript.studio.agent.event.ProcessEventProducer;
+import org.snapscript.studio.agent.log.ProcessLog;
 import org.snapscript.studio.agent.log.ProcessLogger;
 
 public class ProcessAgentClient implements ProcessEventChannel {
 
    private final ProcessEventProducer producer;
-   private final ProcessLogger logger;
+   private final ProcessLogger adapter;
    private final OutputStream stream;
    private final AtomicBoolean open;
+   private final ProcessLog log;
    
-   public ProcessAgentClient(ProcessLogger logger, Executor executor, Channel channel) {
+   public ProcessAgentClient(Logger logger, Executor executor, Channel channel) {
+      this.log = new LoggerLog(logger);
+      this.adapter = new ProcessLogger(log);
       this.stream = new ChannelOutputStream(channel);
-      this.producer = new ProcessEventProducer(logger, stream, stream, executor);
+      this.producer = new ProcessEventProducer(adapter, stream, stream, executor);
       this.open = new AtomicBoolean(true);
-      this.logger = logger;
    }
    
    @Override
@@ -33,7 +37,7 @@ public class ProcessAgentClient implements ProcessEventChannel {
          producer.produce(event);
          return true;
       } catch(Exception e) {
-         logger.info(process + ": Error sending event", e);
+         adapter.info(process + ": Error sending event", e);
          close(process + ": Error sending event " + event + ": " +e);
       }
       return false;
@@ -47,7 +51,7 @@ public class ProcessAgentClient implements ProcessEventChannel {
          Future<Boolean> future = producer.produceAsync(event);
          return future.get();
       } catch(Exception e) {
-         logger.info(process + ": Error sending event", e);
+         adapter.info(process + ": Error sending event", e);
          close(process + ": Error sending async event " + event + ": " +e);
       }
       return false;
@@ -60,7 +64,27 @@ public class ProcessAgentClient implements ProcessEventChannel {
             producer.close(reason);
          }
       } catch(Exception e) {
-         logger.info("Error closing socket", e);
+         adapter.info("Error closing socket", e);
       } 
+   }
+   
+   private static class LoggerLog implements ProcessLog {
+      
+      private final Logger log;
+      
+      public LoggerLog(Logger log) {
+         this.log = log;
+      }
+
+      @Override
+      public void log(Object text) {
+         log.info(""+ text);
+      }
+
+      @Override
+      public void log(Object text, Throwable cause) {
+         log.info("" + text, cause);
+      }
+      
    }
 }

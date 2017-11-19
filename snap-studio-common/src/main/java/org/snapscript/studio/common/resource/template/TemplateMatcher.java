@@ -10,7 +10,9 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.common.resource.ResourceMatcher;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TemplateMatcher implements ResourceMatcher {
    
    private final Map<String, Method> cache;

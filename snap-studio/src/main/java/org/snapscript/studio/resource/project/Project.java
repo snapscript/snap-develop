@@ -19,7 +19,6 @@ import org.snapscript.common.store.NotFoundException;
 import org.snapscript.common.store.Store;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
-import org.snapscript.studio.Workspace;
 import org.snapscript.studio.agent.ClassPathUpdater;
 import org.snapscript.studio.common.DirectoryWatcher;
 import org.snapscript.studio.common.FileDirectory;
@@ -28,6 +27,7 @@ import org.snapscript.studio.configuration.ConfigurationClassLoader;
 import org.snapscript.studio.configuration.ConfigurationReader;
 import org.snapscript.studio.configuration.Dependency;
 import org.snapscript.studio.configuration.ProjectConfiguration;
+import org.snapscript.studio.core.Workspace;
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexScanner;
 

@@ -4,15 +4,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.snapscript.studio.Workspace;
+import lombok.AllArgsConstructor;
 
+import org.snapscript.studio.core.Workspace;
+import org.springframework.stereotype.Component;
+
+@Component
+@AllArgsConstructor
 public class ProcessConfigurationLoader {
    
    private final Workspace workspace;
-   
-   public ProcessConfigurationLoader(Workspace workspace) {
-      this.workspace = workspace;
-   }
 
    public void load(ProcessConfiguration configuration) {
       try {

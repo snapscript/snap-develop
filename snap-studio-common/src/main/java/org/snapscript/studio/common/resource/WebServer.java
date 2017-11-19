@@ -4,19 +4,23 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
-import org.simpleframework.http.core.Container;
+import javax.annotation.PostConstruct;
+
 import org.simpleframework.http.core.ContainerSocketProcessor;
 import org.simpleframework.transport.SocketProcessor;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class WebServer {
 
    private final SocketProcessor server;
    private final Connection connection;
    private final WebAddress address;
    
-   public WebServer(Container container, int port) throws IOException {
+   public WebServer(WebContainer container, @Value("${port}") int port) throws IOException {
       this.server = new ContainerSocketProcessor(container, 10);
       this.connection = new SocketConnection(server);
       this.address = new WebAddress(port);

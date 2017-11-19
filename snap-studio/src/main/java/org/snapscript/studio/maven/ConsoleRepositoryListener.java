@@ -1,14 +1,14 @@
 package org.snapscript.studio.maven;
 
-import org.snapscript.studio.agent.log.ProcessLogger;
+import org.slf4j.Logger;
 import org.sonatype.aether.RepositoryEvent;
 import org.sonatype.aether.RepositoryListener;
 
 public class ConsoleRepositoryListener implements RepositoryListener {
 
-   private ProcessLogger logger;
+   private Logger logger;
 
-   public ConsoleRepositoryListener(ProcessLogger logger) {
+   public ConsoleRepositoryListener(Logger logger) {
       this.logger = logger;
    }
 

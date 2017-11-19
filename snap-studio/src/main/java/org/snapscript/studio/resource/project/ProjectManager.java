@@ -1,14 +1,14 @@
 package org.snapscript.studio.resource.project;
 
-import static org.snapscript.studio.Workspace.createDefaultFile;
+import static org.snapscript.studio.core.Workspace.createDefaultFile;
 
 import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.simpleframework.http.Path;
-import org.snapscript.studio.Workspace;
 import org.snapscript.studio.configuration.ConfigurationReader;
+import org.snapscript.studio.core.Workspace;
 
 public class ProjectManager {
    

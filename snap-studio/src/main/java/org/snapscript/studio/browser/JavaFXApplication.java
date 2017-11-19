@@ -15,7 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import org.snapscript.studio.resource.loader.ClassPathResourceLoader;
+import org.snapscript.studio.common.ClassPathResourceLoader;
 
 public class JavaFXApplication extends Application {
    

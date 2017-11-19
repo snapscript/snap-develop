@@ -3,7 +3,7 @@ package org.snapscript.studio.resource.project;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.snapscript.studio.Workspace;
+import org.snapscript.studio.core.Workspace;
 
 public class ProjectFileCache {
 

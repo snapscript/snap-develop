@@ -10,22 +10,20 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.slf4j.Logger;
 import org.snapscript.common.thread.ThreadPool;
-import org.snapscript.studio.agent.log.ProcessLogger;
 
 public class TextMatchScanner {
    
    private final TextMatchHistory history; // what is available in cache
    private final TextFileScanner scanner;
    private final TextMatchFinder finder;
-   private final ProcessLogger logger;
    private final ThreadPool pool;
    
-   public TextMatchScanner(ProcessLogger logger, ThreadPool pool) {
+   public TextMatchScanner(Logger logger, ThreadPool pool) {
       this.scanner = new TextFileScanner(); // e.g *.snap, *.txt
       this.history = new TextMatchHistory(pool);
       this.finder = new TextMatchFinder(logger);
-      this.logger = logger;
       this.pool = pool;
    }
    

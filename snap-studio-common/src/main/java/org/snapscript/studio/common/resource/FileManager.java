@@ -8,16 +8,18 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
 
+import org.snapscript.core.Bug;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
 public class FileManager {
 
    private final String encoding;
    private final String base;
 
-   public FileManager(String base) {
-      this(base, "UTF-8");
-   }
-   
-   public FileManager(String base, String encoding) {
+   @Bug("this is rubbish")
+   public FileManager(@Value("${resource.base:/resource}") String base, @Value("${resource.encoding:UTF-8}") String encoding) {
       this.encoding = encoding;
       this.base = base;
    }
@@ -36,8 +38,9 @@ public class FileManager {
          }catch(Exception e) {
             return new ClassPathContent(path, resource, encoding);
          }
+         return new ClassPathContent(path, resource, encoding);
       }
-      return new ClassPathContent(path, resource, encoding);
+      return null;
    }
    
    private URL getResource(String path) {

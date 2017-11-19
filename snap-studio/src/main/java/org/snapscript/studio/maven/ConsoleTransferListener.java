@@ -6,7 +6,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.snapscript.studio.agent.log.ProcessLogger;
+import org.slf4j.Logger;
 import org.sonatype.aether.transfer.TransferEvent;
 import org.sonatype.aether.transfer.TransferListener;
 import org.sonatype.aether.transfer.TransferResource;
@@ -14,9 +14,9 @@ import org.sonatype.aether.transfer.TransferResource;
 public class ConsoleTransferListener implements TransferListener {
 
    private Map<TransferResource, Long> downloads; 
-   private ProcessLogger logger;
+   private Logger logger;
 
-   public ConsoleTransferListener(ProcessLogger logger) {
+   public ConsoleTransferListener(Logger logger) {
       this.downloads = new ConcurrentHashMap<TransferResource, Long>();
       this.logger = logger;
    }

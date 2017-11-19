@@ -8,13 +8,19 @@ import org.simpleframework.http.Cookie;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.snapscript.studio.Workspace;
+import org.snapscript.core.Bug;
 import org.snapscript.studio.common.resource.Resource;
-import org.snapscript.studio.resource.display.DisplayModelResolver;
+import org.snapscript.studio.common.resource.ResourcePath;
+import org.snapscript.studio.common.resource.display.DisplayModelResolver;
+import org.snapscript.studio.core.Workspace;
 import org.snapscript.studio.resource.tree.TreeBuilder;
 import org.snapscript.studio.resource.tree.TreeContext;
 import org.snapscript.studio.resource.tree.TreeContextManager;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
+@ResourcePath("/tree.*")
 public class ProjectTreeResource implements Resource {
    
    private final TreeContextManager contextManager;
@@ -23,7 +29,8 @@ public class ProjectTreeResource implements Resource {
    private final Workspace workspace;
    private final String session;
    
-   public ProjectTreeResource(Workspace workspace, TreeContextManager contextManager, DisplayModelResolver modelResolver, String session) {
+   @Bug("session id is used everywhere")
+   public ProjectTreeResource(Workspace workspace, TreeContextManager contextManager, DisplayModelResolver modelResolver, @Value("${session.id:SESSID}") String session) {
       this.treeBuilder = new TreeBuilder(modelResolver);
       this.sessionCounter = new AtomicInteger();
       this.contextManager = contextManager;

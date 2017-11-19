@@ -2,7 +2,7 @@ package org.snapscript.studio.command;
 
 import java.util.Map;
 
-import org.snapscript.studio.FaultLogger;
+import org.slf4j.Logger;
 import org.snapscript.studio.agent.debug.ScopeVariableTree;
 import org.snapscript.studio.agent.event.BeginEvent;
 import org.snapscript.studio.agent.event.ExitEvent;
@@ -16,7 +16,7 @@ import org.snapscript.studio.agent.event.ScopeEvent;
 import org.snapscript.studio.agent.event.SyntaxErrorEvent;
 import org.snapscript.studio.agent.event.WriteErrorEvent;
 import org.snapscript.studio.agent.event.WriteOutputEvent;
-import org.snapscript.studio.agent.log.ProcessLogger;
+import org.snapscript.studio.core.FaultLogger;
 import org.snapscript.studio.resource.project.Project;
 
 public class CommandEventForwarder extends ProcessEventAdapter {
@@ -26,7 +26,7 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    private final CommandClient client;
    private final FaultLogger logger;
    
-   public CommandEventForwarder(CommandClient client, CommandFilter filter, ProcessLogger logger, Project project) {
+   public CommandEventForwarder(CommandClient client, CommandFilter filter, Logger logger, Project project) {
       this.converter = new CommandEventConverter(filter, project);
       this.logger = new FaultLogger(logger);
       this.filter = filter;

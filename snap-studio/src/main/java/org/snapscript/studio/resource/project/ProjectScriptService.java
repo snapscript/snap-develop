@@ -9,16 +9,19 @@ import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.http.socket.Session;
 import org.simpleframework.http.socket.service.Service;
 import org.snapscript.common.thread.ThreadPool;
-import org.snapscript.studio.BackupManager;
-import org.snapscript.studio.ConnectListener;
-import org.snapscript.studio.ProcessManager;
-import org.snapscript.studio.Workspace;
+import org.snapscript.core.Bug;
 import org.snapscript.studio.command.CommandController;
 import org.snapscript.studio.command.CommandListener;
-import org.snapscript.studio.configuration.ConfigurationClassLoader;
-import org.snapscript.studio.resource.display.DisplayPersister;
+import org.snapscript.studio.common.resource.display.DisplayPersister;
+import org.snapscript.studio.core.BackupManager;
+import org.snapscript.studio.core.ConnectListener;
+import org.snapscript.studio.core.ProcessManager;
+import org.snapscript.studio.core.Workspace;
 import org.snapscript.studio.resource.tree.TreeContextManager;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProjectScriptService implements Service {
    
    private final DisplayPersister displayPersister;
@@ -30,6 +33,7 @@ public class ProjectScriptService implements Service {
    private final Workspace workspace;
    private final String session;
    
+   @Bug("le rubbish")
    public ProjectScriptService(
          ProcessManager processManager, 
          ConnectListener connectListener, 
@@ -38,7 +42,7 @@ public class ProjectScriptService implements Service {
          TreeContextManager treeManager, 
          DisplayPersister displayPersister,
          ThreadPool pool, 
-         String session) 
+         @Value("${session.id:SESSID}") String session) 
    {
       this.problemFinder = new ProjectProblemFinder(workspace, pool);
       this.displayPersister = displayPersister;

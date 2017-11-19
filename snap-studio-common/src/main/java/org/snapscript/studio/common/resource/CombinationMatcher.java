@@ -1,25 +1,22 @@
 package org.snapscript.studio.common.resource;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
+import org.snapscript.studio.common.resource.display.DisplayResourceMatcher;
+import org.springframework.stereotype.Component;
 
-public class CombinationMatcher implements ResourceMatcher {
+@Component
+public class CombinationMatcher {
 
    private final List<ResourceMatcher> matchers;
-   private final Resource fallback;
-
-   public CombinationMatcher(List<ResourceMatcher> matchers) {
-      this(matchers, null);
-   }
    
-   public CombinationMatcher(List<ResourceMatcher> matchers, Resource fallback) {
-      this.fallback = fallback;
-      this.matchers = matchers;
+   public CombinationMatcher(RegularExpressionMatcher regexMatcher, DisplayResourceMatcher displayMatcher) {
+      this.matchers = Arrays.asList(regexMatcher, displayMatcher);
    }
 
-   @Override
    public Resource match(Request request, Response response) throws Exception {
       for (ResourceMatcher matcher : matchers) {
          Resource resource = matcher.match(request, response);
@@ -28,7 +25,7 @@ public class CombinationMatcher implements ResourceMatcher {
             return resource;
          }
       }
-      return fallback;
+      return null;
    }
 
 }

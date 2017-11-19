@@ -11,10 +11,14 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.transport.ByteWriter;
 import org.simpleframework.transport.Channel;
-import org.snapscript.studio.ProcessManager;
 import org.snapscript.studio.agent.event.ProcessEventListener;
 import org.snapscript.studio.common.resource.Resource;
+import org.snapscript.studio.common.resource.ResourcePath;
+import org.snapscript.studio.core.ProcessManager;
+import org.springframework.stereotype.Component;
 
+@Component
+@ResourcePath(".*:\\d+")
 public class ProcessTunnelResource implements Resource {
    
    private static final String CONTENT_TYPE = "text/plain";

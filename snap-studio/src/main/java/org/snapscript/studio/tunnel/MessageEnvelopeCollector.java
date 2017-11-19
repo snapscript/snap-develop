@@ -9,16 +9,16 @@ import org.simpleframework.transport.Channel;
 import org.simpleframework.transport.reactor.Operation;
 import org.simpleframework.transport.reactor.Reactor;
 import org.simpleframework.transport.trace.Trace;
-import org.snapscript.studio.agent.log.ProcessLogger;
+import org.slf4j.Logger;
 
 public class MessageEnvelopeCollector implements Operation {
    
    private final MessageEnvelopeConsumer consumer;
-   private final ProcessLogger logger;
    private final Reactor reactor;
    private final Channel channel;
+   private final Logger logger;
    
-   public MessageEnvelopeCollector(ProcessEventService router, ProcessLogger logger, Reactor reactor, Executor executor, Channel channel) {
+   public MessageEnvelopeCollector(ProcessEventService router, Logger logger, Reactor reactor, Executor executor, Channel channel) {
       this.consumer = new MessageEnvelopeConsumer(router, logger, executor, channel);
       this.reactor = reactor;
       this.channel = channel;

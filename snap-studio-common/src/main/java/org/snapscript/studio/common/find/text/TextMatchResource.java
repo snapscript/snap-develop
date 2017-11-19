@@ -8,10 +8,14 @@ import org.simpleframework.http.Response;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.studio.common.FileDirectorySource;
 import org.snapscript.studio.common.resource.Resource;
+import org.snapscript.studio.common.resource.ResourcePath;
+import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+@Component
+@ResourcePath("/find.*")
 public class TextMatchResource implements Resource {
    
    private static final int MAX_COUNT = 1000;

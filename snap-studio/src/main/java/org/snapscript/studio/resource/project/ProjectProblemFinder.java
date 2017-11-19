@@ -5,12 +5,12 @@ import java.util.Set;
 
 import org.simpleframework.http.Path;
 import org.snapscript.common.thread.ThreadPool;
-import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.FileAction;
 import org.snapscript.studio.common.FileProcessor;
 import org.snapscript.studio.common.FileReader;
 import org.snapscript.studio.common.Problem;
 import org.snapscript.studio.common.ProblemFinder;
+import org.snapscript.studio.core.Workspace;
 
 public class ProjectProblemFinder {
 
@@ -42,7 +42,7 @@ public class ProjectProblemFinder {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         if(workspace.getLogger().isTrace()) {
+         if(workspace.getLogger().isTraceEnabled()) {
             workspace.getLogger().trace("Took " + duration + " ms to compile project " + name);
          }
       }
@@ -73,7 +73,7 @@ public class ProjectProblemFinder {
          }
          String source = FileReader.readText(file);
          
-         if(workspace.getLogger().isTrace()) {
+         if(workspace.getLogger().isTraceEnabled()) {
             workspace.getLogger().trace("Compiling " + resourcePath + " in project " + reference);
          }
          return finder.parse(name, resourcePath, source);

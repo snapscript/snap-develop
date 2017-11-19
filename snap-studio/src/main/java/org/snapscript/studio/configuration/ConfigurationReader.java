@@ -25,7 +25,7 @@ import org.simpleframework.xml.core.Commit;
 import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.util.Dictionary;
 import org.simpleframework.xml.util.Entry;
-import org.snapscript.studio.Workspace;
+import org.snapscript.studio.core.Workspace;
 import org.snapscript.studio.maven.RepositoryClient;
 import org.snapscript.studio.maven.RepositoryFactory;
 import org.snapscript.studio.resource.project.Project;

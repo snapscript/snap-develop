@@ -3,7 +3,7 @@ package org.snapscript.studio.resource.project;
 public class ProjectMode {
 
    public static final String SINGLE_MODE = "debug";
-   public static final String MULTIPLE_MODE = "multiple";
+   public static final String DEVELOP_MODE = "develop";
    
    private final String mode;
    
@@ -16,7 +16,7 @@ public class ProjectMode {
    }
    
    public boolean isMultipleMode() {
-      return mode.equals(MULTIPLE_MODE);
+      return mode.equals(DEVELOP_MODE);
    }
    
    public String getMode() {

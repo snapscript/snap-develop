@@ -13,14 +13,18 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
 import org.snapscript.core.Reserved;
-import org.snapscript.studio.BackupFile;
-import org.snapscript.studio.BackupManager;
-import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.resource.Resource;
+import org.snapscript.studio.common.resource.ResourcePath;
+import org.snapscript.studio.core.BackupFile;
+import org.snapscript.studio.core.BackupManager;
+import org.snapscript.studio.core.Workspace;
+import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+@Component
+@ResourcePath("/history.*")
 public class ProjectHistoryResource implements Resource {
 
    private final BackupManager manager;

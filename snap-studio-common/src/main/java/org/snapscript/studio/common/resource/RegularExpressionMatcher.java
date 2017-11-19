@@ -2,32 +2,24 @@ package org.snapscript.studio.common.resource;
 
 import static org.simpleframework.http.Method.CONNECT;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.snapscript.common.LeastRecentlyUsedMap;
-              
+import org.springframework.stereotype.Component;
+
+@Component
 public class RegularExpressionMatcher implements ResourceMatcher {
 
-   private final Map<String, Resource> resources;
    private final Map<String, Resource> cache;
-   private final Resource fallback;
-
-   public RegularExpressionMatcher(Map<String, Resource> resources) {
-      this(resources, null);
-   }
+   private final ResourceSet resources;
    
-   public RegularExpressionMatcher(Map<String, Resource> resources, Resource fallback) {
-      this(resources, fallback, 10000);
-   }
-
-   public RegularExpressionMatcher(Map<String, Resource> resources, Resource fallback, int capacity) {
-      this.cache = new LeastRecentlyUsedMap<String, Resource>(capacity);
+   public RegularExpressionMatcher(ResourceSet resources) {
+      this.cache = new LeastRecentlyUsedMap<String, Resource>(1000);
       this.resources = resources;
-      this.fallback = fallback;
    }
 
    @Override
@@ -35,8 +27,8 @@ public class RegularExpressionMatcher implements ResourceMatcher {
       Path path = request.getPath();
       String target = path.getPath();
       String method = request.getMethod();
-      
-      if(method.equals(CONNECT)) { // connect uses domain:port rather than path
+
+      if (method.equals(CONNECT)) { // connect uses domain:port rather than path
          target = request.getTarget();
       }
       Resource resource = cache.get(target);
@@ -52,15 +44,21 @@ public class RegularExpressionMatcher implements ResourceMatcher {
    }
 
    private synchronized Resource match(Request request, String target) {
-      Set<String> mappings = resources.keySet();
+      List<Resource> list = resources.getResources();
 
-      for (String mapping : mappings) {
-         Resource resource = resources.get(mapping);
+      for (Resource resource : list) {
+         Class<?> type = resource.getClass();
+         ResourcePath path = type.getAnnotation(ResourcePath.class);
 
-         if (target.matches(mapping)) {
+         if (path == null) {
+            throw new IllegalStateException("Could not find annotation on " + type);
+         }
+         String expression = path.value();
+
+         if (target.matches(expression)) {
             return resource;
          }
       }
-      return fallback;
+      return null;
    }
 }

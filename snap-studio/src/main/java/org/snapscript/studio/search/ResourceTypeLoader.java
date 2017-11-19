@@ -28,7 +28,7 @@ import org.snapscript.core.Type;
 import org.snapscript.core.link.Package;
 import org.snapscript.core.link.PackageDefinition;
 import org.snapscript.core.link.PackageLinker;
-import org.snapscript.studio.Workspace;
+import org.snapscript.studio.core.Workspace;
 import org.snapscript.studio.resource.project.Project;
 import org.snapscript.studio.resource.project.ProjectLayout;
 

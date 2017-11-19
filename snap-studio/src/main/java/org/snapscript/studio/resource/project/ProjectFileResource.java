@@ -9,24 +9,22 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
 import org.snapscript.core.Reserved;
-import org.snapscript.studio.Workspace;
 import org.snapscript.studio.common.resource.ContentTypeResolver;
 import org.snapscript.studio.common.resource.Resource;
+import org.snapscript.studio.common.resource.ResourcePath;
+import org.snapscript.studio.core.Workspace;
+import org.springframework.stereotype.Component;
 
+@Component
+@ResourcePath("/resource/.*")
 public class ProjectFileResource implements Resource {
    
    private final ContentTypeResolver resolver;
    private final ProjectFileCache cache;
    private final Workspace workspace;
-   private final boolean download;
-   
+
    public ProjectFileResource(Workspace workspace, ContentTypeResolver resolver){
-      this(workspace, resolver, false);
-   }
-   
-   public ProjectFileResource(Workspace workspace, ContentTypeResolver resolver, boolean download){
       this.cache = new ProjectFileCache(workspace);
-      this.download = download;
       this.workspace = workspace;
       this.resolver = resolver;
    }
@@ -45,7 +43,7 @@ public class ProjectFileResource implements Resource {
       response.setStatus(Status.OK);
       response.setContentType(type);
 
-      if(workspace.getLogger().isTrace()) {
+      if(workspace.getLogger().isTraceEnabled()) {
          workspace.getLogger().trace(method + ": " + path);
       }
       try {
@@ -64,15 +62,19 @@ public class ProjectFileResource implements Resource {
       }
    }
    
-   private String getPath(Project project, Request request) throws Exception {
+   protected String getPath(Project project, Request request) throws Exception {
       Path path = request.getPath(); 
       String projectPath = path.getPath(2); // /<project-name>/<project-path> or /default/blah.snap
       ProjectLayout layout = project.getLayout();
       File rootPath = project.getSourcePath();
       
-      if(download) {
+      if(isDownload()) {
          return layout.getRealPath(rootPath, projectPath);
       }
       return projectPath;
+   }
+   
+   protected boolean isDownload(){
+      return false;
    }
 }
