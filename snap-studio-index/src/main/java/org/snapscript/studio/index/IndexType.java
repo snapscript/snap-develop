@@ -31,6 +31,10 @@ public enum IndexType {
       this.name = name;
    }
    
+   public String getName() {
+      return name;
+   }
+   
    public boolean isRoot() {
       return this == SCRIPT;
    }
@@ -86,10 +90,6 @@ public enum IndexType {
               this == VARIABLE ||
               this == PROPERTY ||
               this == IMPORT;
-   }
-   
-   public String getName() {
-      return name;
    }
    
    public Set<IndexType> getParentTypes() {

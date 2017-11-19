@@ -8,11 +8,9 @@ import org.snapscript.common.store.ClassPathStore;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
-import org.snapscript.studio.index.IndexDatabase;
-import org.snapscript.studio.index.IndexFile;
-import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexPathTranslator;
 import org.snapscript.studio.index.Indexer;
+import org.snapscript.studio.index.MockIndexDatabase;
 
 public class CompletionCompilerTest extends TestCase {
 
@@ -163,50 +161,5 @@ public class CompletionCompilerTest extends TestCase {
       request.setSource(formatted);
       
       return request;
-   }
-   
-   private static class MockIndexDatabase implements IndexDatabase {
-      
-      private Indexer indexer;
-      
-      public void setIndexer(Indexer indexer) {
-         this.indexer = indexer;
-      }
-
-      @Override
-      public Map<String, IndexFile> getFiles() throws Exception {
-         return null;
-      }
-
-      @Override
-      public IndexNode getTypeNode(String typeName) throws Exception {
-         return null;
-      }
-
-      @Override
-      public Map<String, IndexNode> getTypeNodesMatching(String expression) throws Exception {
-         return null;
-      }
-      
-      @Override
-      public Map<String, IndexNode> getTypeNodesMatching(String expression, boolean ignoreCase) throws Exception {
-         return null;
-      }
-
-      @Override
-      public Map<String, IndexNode> getTypeNodes() throws Exception {
-         return null;
-      }
-
-      @Override
-      public IndexFile getFile(String resource, String source) throws Exception {
-         return indexer.index(resource, source);
-      }
-
-      @Override
-      public IndexNode getDefaultImport(String module, String name) throws Exception {
-         return null;
-      }
-      
    }
 }

@@ -10,18 +10,19 @@ import java.util.TreeSet;
 
 import org.snapscript.studio.index.classpath.BootstrapClassPath;
 import org.snapscript.studio.index.classpath.ClassIndexProcessor;
+import org.snapscript.studio.index.counter.BraceCounter;
 
 public class IndexSearcher implements IndexFile {
 
    private final IndexNodeComparator comparator;
-   private final IndexBraceCounter counter;
+   private final BraceCounter counter;
    private final IndexDatabase database;
    private final IndexNode node;
    private final String resource;
    private final String script;
    private final File file;
    
-   public IndexSearcher(IndexDatabase database, IndexBraceCounter counter, IndexNode node, File file, String resource, String script) {
+   public IndexSearcher(IndexDatabase database, BraceCounter counter, IndexNode node, File file, String resource, String script) {
       this.comparator = new IndexNodeComparator(true);
       this.resource = resource;
       this.database = database;

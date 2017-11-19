@@ -74,6 +74,20 @@ public class IndexerTest extends TestCase {
    "   }\n"+
    "}\n";
    
+   public void testDefaultConstructors() throws Exception {
+      IndexDatabase database = new MockIndexDatabase();
+      ClassPathStore store = new ClassPathStore();
+      Context context = new StoreContext(store);
+      IndexPathTranslator translator = new IndexPathTranslator();
+      ThreadPool pool = new ThreadPool(1);
+      Indexer indexer = new Indexer(translator, database, context, pool, null);
+      IndexFile searcher = indexer.index("/some/package.snap", SOURCE);
+      Map<String, IndexNode> nodes = searcher.getTypeNodes();
+   
+      assertNotNull(nodes.get("SomeClass()"));
+      assertEquals(nodes.get("SomeClass()").getType(), IndexType.CONSTRUCTOR);
+   }
+   
    public void testTypeNodes() throws Exception {
       IndexDatabase database = new MockIndexDatabase();
       ClassPathStore store = new ClassPathStore();
@@ -154,7 +168,7 @@ public class IndexerTest extends TestCase {
       IndexFile searcher = indexer.index("/some/package.snap", SOURCE);
       IndexNode node = searcher.getRootNode();
       
-      traverse(node, "");
+      System.err.println(IndexDumper.dump(node));
       
       assertEquals(((IndexSearcher)searcher).getDepthAtLine(4), 1);
       assertEquals(((IndexSearcher)searcher).getDepthAtLine(7), 2);
@@ -182,75 +196,5 @@ public class IndexerTest extends TestCase {
       assertEquals(searcher.getNodeAtLine(45).getName(), "");
       assertEquals(searcher.getNodeAtLine(56).getType(), IndexType.CONSTRUCTOR);
       assertEquals(searcher.getNodeAtLine(56).getName(), "Blah(text)");
-   }
-   
-   private static void traverse(IndexNode node, String indent) throws Exception {
-      if(node != null) {
-         Set<IndexNode> nodes = node.getNodes();
-         IndexType type = node.getType();
-         String name = node.getName();
-         
-         if(!type.isRoot()) {
-            System.err.print(indent);
-            
-            if(!type.isCompound()) {
-               System.err.print(type.getName() + " " + name + " ");
-            }
-            if(type.isLeaf()) {
-               System.err.println();
-            } else {
-               System.err.println("{");
-            }
-         }
-         for(IndexNode entry : nodes) {
-            if(type.isRoot()) {
-               traverse(entry, "");
-            } else {
-               traverse(entry, indent + "   ");
-            }
-         }
-         if(!type.isRoot() && !type.isLeaf()) {
-            System.err.println(indent + "}");
-         }
-      }
-   }
-   
-   private static class MockIndexDatabase implements IndexDatabase {
-
-      @Override
-      public Map<String, IndexFile> getFiles() throws Exception {
-         return null;
-      }
-
-      @Override
-      public IndexNode getTypeNode(String typeName) throws Exception {
-         return null;
-      }
-
-      @Override
-      public Map<String, IndexNode> getTypeNodesMatching(String expression) throws Exception {
-         return null;
-      }
-      
-      @Override
-      public Map<String, IndexNode> getTypeNodesMatching(String expression, boolean ignoreCase) throws Exception {
-         return null;
-      }
-
-      @Override
-      public Map<String, IndexNode> getTypeNodes() throws Exception {
-         return null;
-      }
-
-      @Override
-      public IndexFile getFile(String resource, String source) throws Exception {
-         return null;
-      }
-
-      @Override
-      public IndexNode getDefaultImport(String module, String name) throws Exception {
-         return null;
-      }
-      
    }
 }
