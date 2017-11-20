@@ -11,9 +11,10 @@ import java.util.concurrent.Executor;
 
 import javax.annotation.PostConstruct;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.simpleframework.http.Path;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.studio.common.FileDirectorySource;
 import org.snapscript.studio.configuration.ConfigurationReader;
@@ -24,10 +25,9 @@ import org.snapscript.studio.resource.project.ProjectManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class Workspace implements FileDirectorySource {
-   
-   private static final Logger LOG = LoggerFactory.getLogger(Workspace.class);
 
    private final ConfigurationReader reader;
    private final ProjectManager manager;
@@ -56,7 +56,7 @@ public class Workspace implements FileDirectorySource {
    
    @Override
    public Logger getLogger() {
-      return LOG;
+      return log;
    }
    
    public Project getProject(String name){ 

@@ -5,26 +5,23 @@ import java.io.PrintStream;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.snapscript.core.Bug;
 import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.common.resource.ResourcePath;
 import org.snapscript.studio.common.resource.display.DisplayModelResolver;
 import org.snapscript.studio.common.resource.template.TemplateEngine;
 import org.snapscript.studio.common.resource.template.TemplateModel;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 @ResourcePath("/project/.*")
 public class ProjectResource implements Resource {
    
+   private static final String PROJECT_RESOURCE = "project.vm";
+   
    private final DisplayModelResolver resolver;
    private final TemplateEngine engine;
-   private final String resource;
    
-   @Bug("crap")
-   public ProjectResource(DisplayModelResolver resolver, TemplateEngine engine, @Value("${landing.page:project.vm}") String resource) {
-      this.resource = resource;
+   public ProjectResource(DisplayModelResolver resolver, TemplateEngine engine) {
       this.resolver = resolver;
       this.engine = engine;
    }
@@ -38,7 +35,7 @@ public class ProjectResource implements Resource {
       String projectName = projectPrefix.substring(1); // <project-name>
       model.setAttribute("project", projectName);
       model.setAttribute("projectDirectory", projectDirectory);
-      String text = engine.renderTemplate(model, resource);
+      String text = engine.renderTemplate(model, PROJECT_RESOURCE);
       PrintStream stream = response.getPrintStream();
 
       response.setContentType("text/html");

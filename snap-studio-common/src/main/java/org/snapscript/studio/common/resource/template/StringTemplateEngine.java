@@ -6,23 +6,22 @@ import java.io.StringWriter;
 
 import org.snapscript.common.Cache;
 import org.snapscript.common.LeastRecentlyUsedCache;
-import org.snapscript.core.Bug;
 import org.snapscript.studio.common.resource.Content;
 import org.snapscript.studio.common.resource.FileResolver;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class StringTemplateEngine implements TemplateEngine {
    
+   private static final String DEFAULT_PREFIX = "/";
+   
    private final Cache<String, Template> cache;
    private final TemplateFinder finder;
    private final PropertyBinder binder;
 
-   @Bug("this is rubbish")
-   public StringTemplateEngine(FileResolver resolver, @Value("${template.prefix:/}") String prefix, @Value("${template.cache:1000}") int capacity) {
-      this.cache = new LeastRecentlyUsedCache<String, Template>(capacity);
-      this.finder = new TemplateFinder(resolver, prefix);
+   public StringTemplateEngine(FileResolver resolver) {
+      this.cache = new LeastRecentlyUsedCache<String, Template>(1000);
+      this.finder = new TemplateFinder(resolver, DEFAULT_PREFIX);
       this.binder = new PropertyBinder();
    }   
 

@@ -1,5 +1,6 @@
 package org.snapscript.studio.common.resource;
 
+import static org.snapscript.studio.common.resource.SessionConstants.SESSION_ID;
 import static org.simpleframework.http.Protocol.DATE;
 import static org.simpleframework.http.Protocol.SERVER;
 
@@ -11,8 +12,6 @@ import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snapscript.core.Bug;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,12 +20,9 @@ public class WebContainer implements Container {
    private static final Logger LOG = LoggerFactory.getLogger(WebContainer.class);
 
    private final WebSocketContainer container;
-   private final String session;
 
-   @Bug("this is rubbish")
-   public WebContainer(WebSocketContainer container, @Value("${session.name:SESSID}") String session) {
+   public WebContainer(WebSocketContainer container) {
       this.container = container;
-      this.session = session;
    }
 
    @Override
@@ -34,11 +30,11 @@ public class WebContainer implements Container {
       long time = System.currentTimeMillis();
 
       try {
-         Cookie cookie = req.getCookie(session);
+         Cookie cookie = req.getCookie(SESSION_ID);
          
          if(cookie == null) {
             String value = UUID.randomUUID().toString();
-            resp.setCookie(session, value);
+            resp.setCookie(SESSION_ID, value);
          }
          resp.setDate(DATE, time);
          resp.setValue(SERVER, "Apache/2.2.14");

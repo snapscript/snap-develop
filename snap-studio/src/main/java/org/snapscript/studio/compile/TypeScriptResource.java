@@ -7,16 +7,23 @@ import java.util.List;
 
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.snapscript.core.Bug;
 import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.common.resource.ResourcePath;
 import org.snapscript.studio.common.resource.display.DisplayResourceMatcher;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 @ResourcePath("/.*.js")
 public class TypeScriptResource implements Resource {
+   
+   private static final String SOURCE_FOLDER = "src/main/resources/resource/ts";
+   private static final String[] SOURCE_PATTERNS = {
+      "src/main/resources/resource/js/*.js"
+   };
+   private static final String[] OUTPUT_FOLDERS = {
+      "src/main/resources/resource/js",
+      "target/classes/resource/js"
+   };
 
    private final DisplayResourceMatcher matcher;
    private final TypeScriptCompiler compiler;
@@ -24,18 +31,11 @@ public class TypeScriptResource implements Resource {
    private final List<String> sourceFiles;
    private final File typescriptDir;
    
-   @Bug("more rubbish again")
-   public TypeScriptResource(
-         TypeScriptCompiler compiler, 
-         DisplayResourceMatcher matcher, 
-         @Value("${typescript.dir:src/main/resources/resource/ts}") File typescriptDir, 
-         @Value("${output.dirs:src/main/resources/resource/js,target/classes/resource/js}") String[] outputDirs, 
-         @Value("${source.files:src/main/resources/resource/js/*.js}") String[] sourceFiles) 
-   {
-      this.outputDirs = Arrays.asList(outputDirs);
-      this.sourceFiles = Arrays.asList(sourceFiles);
+   public TypeScriptResource(TypeScriptCompiler compiler, DisplayResourceMatcher matcher) {
+      this.typescriptDir = new File(SOURCE_FOLDER);
+      this.outputDirs = Arrays.asList(OUTPUT_FOLDERS);
+      this.sourceFiles = Arrays.asList(SOURCE_PATTERNS);
       this.compiler = compiler;
-      this.typescriptDir = typescriptDir;
       this.matcher = matcher;
    }
 

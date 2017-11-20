@@ -9,7 +9,6 @@ import java.io.File;
 
 import javax.annotation.PostConstruct;
 
-import org.snapscript.studio.common.ClassPathResourceLoader;
 import org.snapscript.studio.core.Workspace;
 import org.springframework.stereotype.Component;
 

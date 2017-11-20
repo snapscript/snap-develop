@@ -18,33 +18,30 @@ import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
 import org.snapscript.common.Cache;
 import org.snapscript.common.LeastRecentlyUsedCache;
-import org.snapscript.core.Bug;
 import org.snapscript.studio.common.resource.Content;
 import org.snapscript.studio.common.resource.ContentTypeResolver;
 import org.snapscript.studio.common.resource.FileResolver;
 import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.common.resource.ResourcePath;
 import org.snapscript.studio.core.Workspace;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 @ResourcePath("/img/theme/.*.png")
 public class ImageScaleResource implements Resource {
+   
+   private static final int SCALE_HEIGHT = 40;
 
    private final Cache<String, ScaledImage> scaledImages;
    private final ContentTypeResolver typeResolver;
    private final FileResolver fileResolver;
    private final Workspace workspace;
-   private final int height;
 
-   @Bug("crapola!")
-   public ImageScaleResource(ContentTypeResolver typeResolver, FileResolver fileResolver, Workspace workspace, @Value("${image.scale:40}") int height) {
+   public ImageScaleResource(ContentTypeResolver typeResolver, FileResolver fileResolver, Workspace workspace) {
       this.scaledImages = new LeastRecentlyUsedCache<String, ScaledImage>(200);
       this.typeResolver = typeResolver;
       this.fileResolver = fileResolver;
       this.workspace = workspace;
-      this.height = height;
    }
    
    @Override
@@ -87,7 +84,7 @@ public class ImageScaleResource implements Resource {
       imageWriter.setOutput(ImageIO.createImageOutputStream(output));
 
       BufferedImage originalImage = getOriginalImage(path);
-      BufferedImage scaledImage = ImageScaler.scaleHeight(originalImage, height);
+      BufferedImage scaledImage = ImageScaler.scaleHeight(originalImage, SCALE_HEIGHT);
       
       imageWriter.write(scaledImage);
       output.close();

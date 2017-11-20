@@ -4,25 +4,22 @@ import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.simpleframework.xml.core.Persister;
-import org.snapscript.core.Bug;
 import org.snapscript.studio.common.FileDirectorySource;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DisplayPersister {
    
+   private static final String DISPLAY_FILE = ".display";
+   
    private final AtomicReference<DisplayFile> reference;
    private final FileDirectorySource workspace;
    private final Persister persister;
-   private final String theme;
-   
-   @Bug("this is rubbish")
-   public DisplayPersister(FileDirectorySource workspace, @Value("${theme.file:.display}") String theme) {
+
+   public DisplayPersister(FileDirectorySource workspace) {
       this.reference = new AtomicReference<DisplayFile>();
       this.persister = new Persister();
       this.workspace = workspace;
-      this.theme = theme;
    }
    
    public synchronized DisplayDefinition readDefinition(){
@@ -37,7 +34,7 @@ public class DisplayPersister {
       DisplayFile displayFile = reference.get();
       
       if(displayFile == null) {
-         File file = workspace.createFile(theme);
+         File file = workspace.createFile(DISPLAY_FILE);
          displayFile = new DisplayFile(file);
          reference.set(displayFile);
       }

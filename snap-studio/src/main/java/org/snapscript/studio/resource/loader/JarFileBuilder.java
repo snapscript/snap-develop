@@ -14,8 +14,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
-import org.snapscript.studio.common.ClassPathResourceLoader;
-
 public class JarFileBuilder {
 
    private final ClassPathResourceLoader loader;

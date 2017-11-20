@@ -6,21 +6,24 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.simpleframework.xml.core.Persister;
-import org.snapscript.core.Bug;
-import org.snapscript.studio.common.ClassPathResourceLoader;
+import org.snapscript.studio.common.ClassPathReader;
 import org.snapscript.studio.common.resource.template.TemplateModel;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DisplayThemeLoader {
+   
+   private static final String THEME_FOLDER = "context/theme";
 
    private final Map<String, DisplayTheme> themes;
    private final Persister persister;
    private final String path;
    
-   @Bug("this is rubbish")
-   public DisplayThemeLoader(@Value("${theme.folder:/context/theme}") String path) {
+   public DisplayThemeLoader() {
+      this(THEME_FOLDER);
+   }
+   
+   public DisplayThemeLoader(String path) {
       this.themes = new ConcurrentHashMap<String, DisplayTheme>();
       this.persister = new Persister();
       this.path = path;
@@ -35,11 +38,11 @@ public class DisplayThemeLoader {
 
    private InputStream getThemeFile(String name) throws Exception {
       String location = getThemePath(name);
-      byte[] data = ClassPathResourceLoader.findResource(location);
+      byte[] data = ClassPathReader.findResource(location);
       
       if(data == null) {
          location = location.toLowerCase(); // lowercase by convention
-         data = ClassPathResourceLoader.findResource(location); 
+         data = ClassPathReader.findResource(location); 
       }
       if(data == null) {
          throw new IllegalStateException("Could not find theme '" + name + "' in '" + location + "'");

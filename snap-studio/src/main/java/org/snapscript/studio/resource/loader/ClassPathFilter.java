@@ -1,4 +1,4 @@
-package org.snapscript.studio.common;
+package org.snapscript.studio.resource.loader;
 
 public class ClassPathFilter {
 

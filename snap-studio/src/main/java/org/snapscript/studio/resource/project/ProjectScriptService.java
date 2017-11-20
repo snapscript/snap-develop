@@ -1,6 +1,6 @@
 package org.snapscript.studio.resource.project;
 
-import java.io.File;
+import static org.snapscript.studio.common.resource.SessionConstants.SESSION_ID;
 
 import org.simpleframework.http.Cookie;
 import org.simpleframework.http.Path;
@@ -9,7 +9,6 @@ import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.http.socket.Session;
 import org.simpleframework.http.socket.service.Service;
 import org.snapscript.common.thread.ThreadPool;
-import org.snapscript.core.Bug;
 import org.snapscript.studio.command.CommandController;
 import org.snapscript.studio.command.CommandListener;
 import org.snapscript.studio.common.resource.display.DisplayPersister;
@@ -18,7 +17,6 @@ import org.snapscript.studio.core.ConnectListener;
 import org.snapscript.studio.core.ProcessManager;
 import org.snapscript.studio.core.Workspace;
 import org.snapscript.studio.resource.tree.TreeContextManager;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -31,9 +29,7 @@ public class ProjectScriptService implements Service {
    private final ProcessManager processManager;
    private final BackupManager backupManager;
    private final Workspace workspace;
-   private final String session;
    
-   @Bug("le rubbish")
    public ProjectScriptService(
          ProcessManager processManager, 
          ConnectListener connectListener, 
@@ -41,8 +37,7 @@ public class ProjectScriptService implements Service {
          BackupManager backupManager, 
          TreeContextManager treeManager, 
          DisplayPersister displayPersister,
-         ThreadPool pool, 
-         @Value("${session.id:SESSID}") String session) 
+         ThreadPool pool) 
    {
       this.problemFinder = new ProjectProblemFinder(workspace, pool);
       this.displayPersister = displayPersister;
@@ -51,7 +46,6 @@ public class ProjectScriptService implements Service {
       this.connectListener = connectListener;
       this.workspace = workspace;
       this.processManager = processManager;
-      this.session = session;
    }  
   
    @Override
@@ -62,9 +56,7 @@ public class ProjectScriptService implements Service {
       try {
          FrameChannel channel = connection.getChannel();
          Project project = workspace.createProject(path);
-         File projectPath = project.getProjectPath();
-         String projectName = project.getProjectName();
-         Cookie cookie = request.getCookie(session);
+         Cookie cookie = request.getCookie(SESSION_ID);
          String value = null;
          
          if(cookie != null) {

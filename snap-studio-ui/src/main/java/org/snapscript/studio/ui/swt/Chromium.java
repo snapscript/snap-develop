@@ -28,15 +28,18 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Widget;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.snapscript.studio.ui.cef.ChromiumBridge;
 import org.snapscript.studio.ui.cef.ChromiumBridge.App;
 import org.snapscript.studio.ui.cef.ChromiumBridge.Browser;
 import org.snapscript.studio.ui.cef.ChromiumBridge.BrowserProcessHandler;
 import org.snapscript.studio.ui.cef.ChromiumBridge.Client;
-import org.snapscript.studio.ui.cef.ChromiumLog;
 import org.snapscript.studio.ui.swt.internal.NativeExpander;
 
 public class Chromium extends Composite {
+   
+   private static final Logger LOG = LoggerFactory.getLogger(Chromium.class);
 
 	private static String OS = System.getProperty("os.name").toLowerCase();
     
@@ -195,7 +198,7 @@ public class Chromium extends Composite {
 					DEBUG_CALLBACK("GetBrowserProcessHandler");
 					return browserProcessHandler;
 				});
-				ChromiumLog.log("cefrust.path: " + cefrustPath);
+				LOG.info("cefrust.path: " + cefrustPath);
 				//DEBUG_CALLBACK("INIT FROM thread " + Thread.currentThread().getName());
 				lib.cefswt_init(app, cefrustPath);
 			}
@@ -400,7 +403,7 @@ public class Chromium extends Composite {
 	}
 
 	private static jnr.ffi.Pointer DEBUG_CALLBACK(String log) {
-		ChromiumLog.log("J:" + log);
+	   LOG.info("J:" + log);
 		return null;
 	}
 

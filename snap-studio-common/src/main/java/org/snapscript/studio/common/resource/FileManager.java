@@ -8,18 +8,22 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
 
-import org.snapscript.core.Bug;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class FileManager {
+   
+   private static final String DEFAULT_RESOURCE_PATH = "/resource";
+   private static final String DEFAULT_ENCODING = "UTF-8";
 
    private final String encoding;
    private final String base;
 
-   @Bug("this is rubbish")
-   public FileManager(@Value("${resource.base:/resource}") String base, @Value("${resource.encoding:UTF-8}") String encoding) {
+   public FileManager() {
+      this(DEFAULT_RESOURCE_PATH, DEFAULT_ENCODING);
+   }
+
+   public FileManager(String base, String encoding) {
       this.encoding = encoding;
       this.base = base;
    }

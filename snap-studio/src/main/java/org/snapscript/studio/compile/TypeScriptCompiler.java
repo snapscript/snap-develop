@@ -5,13 +5,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.snapscript.core.Bug;
 import org.snapscript.studio.agent.log.ConsoleLog;
 import org.snapscript.studio.agent.log.ProcessLog;
 import org.snapscript.studio.agent.log.ProcessLogger;
 import org.snapscript.studio.core.ConsoleListener;
 import org.snapscript.studio.core.ConsoleManager;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.google.javascript.jscomp.CompilationLevel;
@@ -19,24 +17,22 @@ import com.google.javascript.jscomp.CompilationLevel;
 @Component
 public class TypeScriptCompiler {
    
-   private static final String COMPRESS_SOURCE_FILE = "all.js";
+   private static final String NODE_LOCATION = "C:/Program Files/nodejs/node.exe";
+   private static final String TYPESCRIPT_COMPILER = "src/main/typescript/tsc.js";
+   private static final String COMPRESS_FILE = "all.js";
    
    private final File compiler;
    private final File node;
    private final File root;
    
-   @Bug("yet more rubbish")
-   public TypeScriptCompiler(
-         @Value("${typescript.compiler:src/main/typescript/tsc.js}") String compiler, 
-         @Value("${typescript.node:C:/Program Files/nodejs/node.exe}") String node) throws Exception 
-   {
+   public TypeScriptCompiler() throws Exception  {
       this.root = new File(".").getCanonicalFile();
-      this.node = new File(node).getCanonicalFile();
-      this.compiler = new File(root, compiler).getCanonicalFile();
+      this.node = new File(NODE_LOCATION).getCanonicalFile();
+      this.compiler = new File(root, TYPESCRIPT_COMPILER).getCanonicalFile();
    }
    
    public synchronized void compile(File sourceDir, File outputDir, List<String> libraryFiles) throws Exception {
-      File generatedFile = new File(outputDir, COMPRESS_SOURCE_FILE);
+      File generatedFile = new File(outputDir, COMPRESS_FILE);
       
       if(!sourceDir.exists()) {
          throw new IOException("Source directory '" +sourceDir+"' does not exist");

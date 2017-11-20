@@ -1,5 +1,7 @@
 package org.snapscript.studio.resource.project;
 
+import static org.snapscript.studio.common.resource.SessionConstants.SESSION_ID;
+
 import java.io.File;
 import java.io.PrintStream;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -8,15 +10,14 @@ import org.simpleframework.http.Cookie;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.snapscript.core.Bug;
 import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.common.resource.ResourcePath;
+import org.snapscript.studio.common.resource.SessionConstants;
 import org.snapscript.studio.common.resource.display.DisplayModelResolver;
 import org.snapscript.studio.core.Workspace;
 import org.snapscript.studio.resource.tree.TreeBuilder;
 import org.snapscript.studio.resource.tree.TreeContext;
 import org.snapscript.studio.resource.tree.TreeContextManager;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,15 +28,12 @@ public class ProjectTreeResource implements Resource {
    private final AtomicInteger sessionCounter;
    private final TreeBuilder treeBuilder;
    private final Workspace workspace;
-   private final String session;
-   
-   @Bug("session id is used everywhere")
-   public ProjectTreeResource(Workspace workspace, TreeContextManager contextManager, DisplayModelResolver modelResolver, @Value("${session.id:SESSID}") String session) {
+
+   public ProjectTreeResource(Workspace workspace, TreeContextManager contextManager, DisplayModelResolver modelResolver) {
       this.treeBuilder = new TreeBuilder(modelResolver);
       this.sessionCounter = new AtomicInteger();
       this.contextManager = contextManager;
       this.workspace = workspace;
-      this.session = session;
    }
 
    @Override
@@ -63,13 +61,13 @@ public class ProjectTreeResource implements Resource {
          foldersOnly = Boolean.parseBoolean(folders);
       }
       int count = sessionCounter.getAndIncrement();
-      Cookie cookie = request.getCookie(session);
+      Cookie cookie = request.getCookie(SESSION_ID);
       String value = String.valueOf(count);
       
       if(cookie != null) {
          value = cookie.getValue();
       } else {
-         response.setCookie(session, value);
+         response.setCookie(SESSION_ID, value);
       }
       String projectName = treePath.getName();
       TreeContext context = contextManager.getContext(treePath, projectName, value, isProject);

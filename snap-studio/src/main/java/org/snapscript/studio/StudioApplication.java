@@ -7,6 +7,8 @@ import javax.swing.UIManager;
 
 import org.snapscript.studio.core.CommandLineArgument;
 import org.snapscript.studio.core.CommandLineParser;
+import org.snapscript.studio.resource.project.ProjectMode;
+import org.snapscript.studio.service.ScriptService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -44,6 +46,15 @@ public class StudioApplication {
       if(commands.containsKey(MODE_ARGUMENT)) { // is there a mode setting
          mode = commands.get(MODE_ARGUMENT);
       }
-      SpringApplication.run(StudioApplication.class, list);
+      if(!mode.equals(RUN_MODE)) {
+         if(!mode.equals(DEFAULT_MODE)) {
+            System.setProperty(PROJECT_MODE, ProjectMode.SINGLE_MODE);
+         } else {
+            System.setProperty(PROJECT_MODE, ProjectMode.DEVELOP_MODE);
+         }
+         SpringApplication.run(StudioApplication.class, list);
+      } else {
+         ScriptService.main(list);
+      }
    }
 }

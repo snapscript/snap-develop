@@ -15,7 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import org.snapscript.studio.common.ClassPathResourceLoader;
+import org.snapscript.studio.common.ClassPathReader;
 
 public class JavaFXApplication extends Application {
    
@@ -42,7 +42,7 @@ public class JavaFXApplication extends Application {
          stage.setTitle(context.getDirectory().getCanonicalPath());
          
          if(isPlatformWindows()) {
-            byte[] data = ClassPathResourceLoader.findResource(context.getIconPath());
+            byte[] data = ClassPathReader.findResource(context.getIconPath());
             InputStream stream = new ByteArrayInputStream(data);
             Image image = new Image(stream);
          
