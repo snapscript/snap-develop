@@ -13,7 +13,6 @@ import java.io.StringWriter;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.snapscript.common.store.NotFoundException;
 import org.snapscript.common.store.Store;
@@ -32,7 +31,8 @@ import org.snapscript.studio.project.config.ProjectConfiguration;
 
 public class Project implements FileDirectory {
    
-   private final AtomicReference<IndexDatabase> reference;
+   private static final String INDEX_DATABASE = "database";
+   
    private final ConfigurationClassLoader classLoader;
    private final ConfigurationReader reader;
    private final ProjectFileSystem fileSystem;
@@ -42,7 +42,6 @@ public class Project implements FileDirectory {
    private final Store store;
 
    public Project(ConfigurationReader reader, Workspace workspace, String projectDirectory, String projectName) {
-      this.reference = new AtomicReference<IndexDatabase>();
       this.classLoader = new ConfigurationClassLoader(this);
       this.fileSystem = new ProjectFileSystem(this);
       this.store = new ProjectStore();
@@ -102,11 +101,12 @@ public class Project implements FileDirectory {
       }
    }
    
-   public synchronized IndexDatabase getIndexDatabase(){
-      IndexDatabase database = reference.get();
+   public IndexDatabase getIndexDatabase(){
+      ProjectConfiguration configuraton = getConfiguration();
+      IndexDatabase database = configuraton.getAttribute(INDEX_DATABASE);
       
       if(database == null) {
-         IndexScanner indexScanner = new IndexScanner(
+         database = new IndexScanner(
             getClassLoader(),
             getProjectContext(), 
             getWorkspace().getExecutor(), 
@@ -114,8 +114,7 @@ public class Project implements FileDirectory {
             getProjectName(), 
             getLayout().getPrefixes());
 
-         reference.set(indexScanner);
-         return indexScanner;
+         configuraton.setAttribute(INDEX_DATABASE, database);
       }
       return database;
    }
@@ -132,10 +131,18 @@ public class Project implements FileDirectory {
       return getLayout().getDownloadPath(getSourcePath(), resource);
    }
    
+   public ProjectConfiguration getConfiguration() {
+      try {
+         return reader.loadProjectConfiguration(projectName);
+      } catch (Exception e) {
+         workspace.getLogger().info("Could not read .project file for '" + projectName + "'", e);
+      }
+      return null;
+   }
+   
    public ProjectLayout getLayout() {
       try {
-         ProjectConfiguration configuration = reader.loadProjectConfiguration(projectName);
-         return configuration.getProjectLayout();
+         return getConfiguration().getProjectLayout();
       } catch (Exception e) {
          workspace.getLogger().info("Could not read .project file for '" + projectName + "'", e);
       }
@@ -226,7 +233,7 @@ public class Project implements FileDirectory {
    
    private List<File> resolveDependencies(){ 
       try {
-         ProjectConfiguration configuration = reader.loadProjectConfiguration(projectName);
+         ProjectConfiguration configuration = getConfiguration();
          List<Dependency> dependencies = configuration.getDependencies();
          
          if(!dependencies.isEmpty()) {

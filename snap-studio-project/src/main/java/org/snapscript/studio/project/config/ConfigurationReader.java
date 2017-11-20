@@ -21,6 +21,7 @@ import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Path;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Text;
+import org.simpleframework.xml.Transient;
 import org.simpleframework.xml.core.Commit;
 import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.util.Dictionary;
@@ -33,9 +34,6 @@ import org.snapscript.studio.project.maven.RepositoryClient;
 import org.snapscript.studio.project.maven.RepositoryFactory;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.repository.RemoteRepository;
-
-import com.google.common.reflect.ClassPath;
-import com.google.common.reflect.ClassPath.ClassInfo;
 
 public class ConfigurationReader {
    
@@ -137,42 +135,34 @@ public class ConfigurationReader {
       private List<DependencyDefinition> dependencies;
       
       @ElementList(entry="variable", required=false)
-      private Dictionary<VariableDefinition> environment;
+      private Dictionary<VariableDefinition> properties;
+      
+      @Transient
+      private Map<String, Object> attributes;
       
       @ElementList(entry="path", required=false)
       private List<String> source;
       
-      private Set<ClassInfo> projectClasses;
       private long lastModified;
       
       public ProjectDefinition() {
          this.lastModified = System.currentTimeMillis();
          this.dependencies = new ArrayList<DependencyDefinition>();
-         this.environment = new Dictionary<VariableDefinition>();
+         this.properties = new Dictionary<VariableDefinition>();
+         this.attributes = new ConcurrentHashMap<String, Object>();
          this.source = new ArrayList<String>();
       }
 
-      public Map<String, String> getEnvironmentVariables() {
+      @Override
+      public Map<String, String> getProperties() {
          Map<String, String> map = new LinkedHashMap<String, String>();
          
-         if(environment != null) {
-            for(VariableDefinition data : environment) {
+         if(properties != null) {
+            for(VariableDefinition data : properties) {
                map.put(data.name, data.value);
             }
          }
          return map;
-      }
-      
-      @Override
-      public Set<ClassInfo> getAllClasses() {
-         if(projectClasses == null) {
-            try {
-               projectClasses = ClassPath.from(Thread.currentThread().getContextClassLoader()).getAllClasses();
-            }catch(Exception e) {
-               projectClasses = Collections.emptySet();
-            }
-         }
-         return projectClasses;
       }
       
       @Override
@@ -188,6 +178,16 @@ public class ConfigurationReader {
       @Override
       public long getLastModifiedTime() {
          return lastModified;
+      }
+
+      @Override
+      public <T> T getAttribute(String name) {
+         return (T)attributes.get(name);
+      }
+
+      @Override
+      public void setAttribute(String name, Object value) {
+         attributes.put(name, value);
       }
    }
    
