@@ -35,7 +35,6 @@ class ShipEntity extends Entity {
       if (dx > 0 && x > 750) {
          return;
       }
-      
       super.move(delta);
    }
    

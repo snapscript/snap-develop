@@ -65,12 +65,12 @@ public class CompletionCompiler {
       return new CompletionResponse();
    }
    
-   public static String convertSource(CompletionRequest request) {
+   private static String convertSource(CompletionRequest request) {
       int line = request.getLine();
       String source = request.getSource();
       String lines[] = source.split("\\r?\\n");
       
-      if(lines.length > line && line > 0) {
+      if(lines.length >= line && line > 0) {
          StringBuilder builder = new StringBuilder();
          
          lines[line - 1] = ""; // remove the completion line
@@ -84,7 +84,7 @@ public class CompletionCompiler {
       return source;
    }
    
-   public static String extractUserText(CompletionRequest request) {
+   private static String extractUserText(CompletionRequest request) {
       String completion = request.getComplete();
       int length = completion.length();
       int begin = length -1;
