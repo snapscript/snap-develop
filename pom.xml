@@ -38,6 +38,7 @@
     <module>snap-studio-service</module>
     <module>snap-studio-ui</module>
     <module>snap-studio-index</module>
+    <module>snap-studio-project</module>    
   </modules>
 
 </project>

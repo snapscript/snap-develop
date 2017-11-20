@@ -1,6 +1,6 @@
 package org.snapscript.studio.browser;
 
-import org.snapscript.studio.configuration.OperatingSystem;
+import org.snapscript.studio.project.config.OperatingSystem;
 
 public class BrowserFactory {
    

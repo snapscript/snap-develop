@@ -10,7 +10,8 @@ import lombok.AllArgsConstructor;
 import org.simpleframework.http.Path;
 import org.snapscript.studio.command.CommandListener;
 import org.snapscript.studio.command.ExecuteCommand;
-import org.snapscript.studio.resource.project.Project;
+import org.snapscript.studio.project.Project;
+import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
 @Component

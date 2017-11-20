@@ -8,7 +8,7 @@ import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
 import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.common.resource.ResourcePath;
-import org.snapscript.studio.core.Workspace;
+import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
 @Component

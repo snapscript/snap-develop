@@ -10,7 +10,8 @@ import org.snapscript.studio.common.FileProcessor;
 import org.snapscript.studio.common.FileReader;
 import org.snapscript.studio.common.Problem;
 import org.snapscript.studio.common.ProblemFinder;
-import org.snapscript.studio.core.Workspace;
+import org.snapscript.studio.project.Project;
+import org.snapscript.studio.project.Workspace;
 
 public class ProjectProblemFinder {
 

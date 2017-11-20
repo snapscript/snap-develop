@@ -17,7 +17,7 @@ import org.snapscript.studio.agent.event.SyntaxErrorEvent;
 import org.snapscript.studio.agent.event.WriteErrorEvent;
 import org.snapscript.studio.agent.event.WriteOutputEvent;
 import org.snapscript.studio.core.FaultLogger;
-import org.snapscript.studio.resource.project.Project;
+import org.snapscript.studio.project.Project;
 
 public class CommandEventForwarder extends ProcessEventAdapter {
    

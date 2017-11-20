@@ -3,7 +3,7 @@ package org.snapscript.studio.complete;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.snapscript.studio.resource.project.Project;
+import org.snapscript.studio.project.Project;
 
 public class SourceFormatter {
 

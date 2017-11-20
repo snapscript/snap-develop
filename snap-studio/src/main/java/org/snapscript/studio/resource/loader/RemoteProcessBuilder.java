@@ -1,15 +1,15 @@
 package org.snapscript.studio.resource.loader;
 
+import static org.snapscript.studio.project.config.WorkspaceConfiguration.JAR_FILE;
+import static org.snapscript.studio.project.config.WorkspaceConfiguration.TEMP_PATH;
 import static org.snapscript.core.Reserved.GRAMMAR_FILE;
 import static org.snapscript.core.Reserved.IMPORT_FILE;
-import static org.snapscript.studio.configuration.WorkspaceConfiguration.JAR_FILE;
-import static org.snapscript.studio.configuration.WorkspaceConfiguration.TEMP_PATH;
 
 import java.io.File;
 
 import javax.annotation.PostConstruct;
 
-import org.snapscript.studio.core.Workspace;
+import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
 @Component

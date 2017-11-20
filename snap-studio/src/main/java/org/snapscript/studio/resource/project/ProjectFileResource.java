@@ -12,7 +12,11 @@ import org.snapscript.core.Reserved;
 import org.snapscript.studio.common.resource.ContentTypeResolver;
 import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.common.resource.ResourcePath;
-import org.snapscript.studio.core.Workspace;
+import org.snapscript.studio.project.Project;
+import org.snapscript.studio.project.ProjectFile;
+import org.snapscript.studio.project.ProjectFileCache;
+import org.snapscript.studio.project.ProjectLayout;
+import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
 @Component

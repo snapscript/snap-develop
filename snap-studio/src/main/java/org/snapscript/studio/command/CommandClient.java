@@ -1,7 +1,7 @@
 package org.snapscript.studio.command;
 
 import org.simpleframework.http.socket.FrameChannel;
-import org.snapscript.studio.resource.project.Project;
+import org.snapscript.studio.project.Project;
 
 public class CommandClient {
    

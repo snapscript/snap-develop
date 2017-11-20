@@ -1,7 +1,7 @@
 package org.snapscript.studio.core;
 
-import static org.snapscript.studio.configuration.WorkspaceConfiguration.JAR_FILE;
-import static org.snapscript.studio.configuration.WorkspaceConfiguration.TEMP_PATH;
+import static org.snapscript.studio.project.config.WorkspaceConfiguration.JAR_FILE;
+import static org.snapscript.studio.project.config.WorkspaceConfiguration.TEMP_PATH;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.snapscript.studio.agent.ProcessMode;
-import org.snapscript.studio.configuration.ProcessConfiguration;
+import org.snapscript.studio.project.Workspace;
+import org.snapscript.studio.project.config.ProcessConfiguration;
+import org.snapscript.studio.project.config.WorkspaceConfiguration;
 
 public class ProcessLauncher {
    

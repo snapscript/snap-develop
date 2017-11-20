@@ -15,9 +15,10 @@ import org.snapscript.studio.command.EvaluateCommand;
 import org.snapscript.studio.command.ExecuteCommand;
 import org.snapscript.studio.command.StepCommand;
 import org.snapscript.studio.command.StepCommand.StepType;
-import org.snapscript.studio.configuration.ProcessConfiguration;
-import org.snapscript.studio.configuration.ProcessConfigurationLoader;
-import org.snapscript.studio.resource.project.Project;
+import org.snapscript.studio.project.Project;
+import org.snapscript.studio.project.Workspace;
+import org.snapscript.studio.project.config.ProcessConfiguration;
+import org.snapscript.studio.project.config.ProcessConfigurationLoader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

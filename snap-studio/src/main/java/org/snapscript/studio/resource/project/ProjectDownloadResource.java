@@ -2,7 +2,7 @@ package org.snapscript.studio.resource.project;
 
 import org.snapscript.studio.common.resource.ContentTypeResolver;
 import org.snapscript.studio.common.resource.ResourcePath;
-import org.snapscript.studio.core.Workspace;
+import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
 @Component

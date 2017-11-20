@@ -15,7 +15,8 @@ import org.snapscript.studio.common.resource.display.DisplayPersister;
 import org.snapscript.studio.core.BackupManager;
 import org.snapscript.studio.core.ConnectListener;
 import org.snapscript.studio.core.ProcessManager;
-import org.snapscript.studio.core.Workspace;
+import org.snapscript.studio.project.Project;
+import org.snapscript.studio.project.Workspace;
 import org.snapscript.studio.resource.tree.TreeContextManager;
 import org.springframework.stereotype.Component;
 

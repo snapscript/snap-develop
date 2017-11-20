@@ -10,7 +10,7 @@ import org.snapscript.studio.common.resource.ResourcePath;
 import org.snapscript.studio.common.resource.display.DisplayModelResolver;
 import org.snapscript.studio.common.resource.template.TemplateEngine;
 import org.snapscript.studio.common.resource.template.TemplateModel;
-import org.snapscript.studio.core.Workspace;
+import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
-import org.snapscript.studio.resource.project.Project;
+import org.snapscript.studio.project.Project;
 
 public class SearchTypeCollector {
 

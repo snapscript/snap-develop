@@ -21,7 +21,8 @@ import java.util.TreeMap;
 
 import lombok.AllArgsConstructor;
 
-import org.snapscript.studio.resource.project.Project;
+import org.snapscript.studio.project.Project;
+import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -13,7 +13,8 @@ import org.snapscript.studio.agent.event.ExecuteEvent;
 import org.snapscript.studio.agent.event.PingEvent;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
 import org.snapscript.studio.agent.event.StepEvent;
-import org.snapscript.studio.resource.project.Project;
+import org.snapscript.studio.project.Project;
+import org.snapscript.studio.project.Workspace;
 
 @AllArgsConstructor
 public class ProcessConnection {

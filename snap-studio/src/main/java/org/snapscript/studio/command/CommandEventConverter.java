@@ -15,7 +15,7 @@ import org.snapscript.studio.agent.event.WriteErrorEvent;
 import org.snapscript.studio.agent.event.WriteOutputEvent;
 import org.snapscript.studio.agent.profiler.ProfileResult;
 import org.snapscript.studio.common.TextEscaper;
-import org.snapscript.studio.resource.project.Project;
+import org.snapscript.studio.project.Project;
 
 @AllArgsConstructor
 public class CommandEventConverter {

@@ -8,7 +8,6 @@ import org.simpleframework.http.Response;
 import org.slf4j.Logger;
 import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.common.resource.ResourcePath;
-import org.snapscript.studio.core.Workspace;
 import org.snapscript.studio.index.complete.CompletionCompiler;
 import org.snapscript.studio.index.complete.CompletionRequest;
 import org.snapscript.studio.index.complete.CompletionResponse;
@@ -17,7 +16,8 @@ import org.snapscript.studio.index.complete.FindForFunction;
 import org.snapscript.studio.index.complete.FindForVariable;
 import org.snapscript.studio.index.complete.FindInScopeMatching;
 import org.snapscript.studio.index.complete.FindPossibleImports;
-import org.snapscript.studio.resource.project.Project;
+import org.snapscript.studio.project.Project;
+import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;

@@ -17,7 +17,9 @@ import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.common.resource.ResourcePath;
 import org.snapscript.studio.core.BackupFile;
 import org.snapscript.studio.core.BackupManager;
-import org.snapscript.studio.core.Workspace;
+import org.snapscript.studio.project.Project;
+import org.snapscript.studio.project.ProjectFileSystem;
+import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;

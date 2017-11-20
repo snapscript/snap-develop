@@ -5,7 +5,7 @@ import java.util.Set;
 
 import javax.swing.UIManager;
 
-import org.snapscript.studio.resource.project.ProjectMode;
+import org.snapscript.studio.project.ProjectMode;
 import org.snapscript.studio.service.ScriptService;
 
 //--mode=develop --directory=work --port=4457 --agent-pool=4 --agent-port=4456 --log-level=DEBUG

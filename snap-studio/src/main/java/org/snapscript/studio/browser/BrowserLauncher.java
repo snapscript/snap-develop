@@ -2,7 +2,7 @@ package org.snapscript.studio.browser;
 
 import java.io.File;
 
-import org.snapscript.studio.core.Workspace;
+import org.snapscript.studio.project.Workspace;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

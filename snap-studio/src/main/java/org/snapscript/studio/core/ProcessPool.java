@@ -25,7 +25,8 @@ import org.snapscript.studio.agent.event.ScopeEvent;
 import org.snapscript.studio.agent.event.SyntaxErrorEvent;
 import org.snapscript.studio.agent.event.WriteErrorEvent;
 import org.snapscript.studio.agent.event.WriteOutputEvent;
-import org.snapscript.studio.configuration.ProcessConfiguration;
+import org.snapscript.studio.project.Workspace;
+import org.snapscript.studio.project.config.ProcessConfiguration;
 import org.snapscript.studio.tunnel.ProcessEventService;
 
 public class ProcessPool {
