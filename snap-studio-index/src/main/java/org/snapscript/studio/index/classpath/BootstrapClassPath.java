@@ -19,7 +19,10 @@ public class BootstrapClassPath {
    private static final Set<IndexNode> BOOTSTRAP_CLASSES;
    private static final Map<String, IndexNode> DEFAULT_IMPORT_NAMES;
    private static final Map<String, IndexNode> DEFAULT_IMPORT_CLASSES;
-   private static final String IGNORE_PREFIX = "java.";
+   private static final String[] IGNORE_PREFIXES = {
+      "java.",
+      "javax."
+   };
    private static final String[] DEFAULT_IMPORTS = {
       "java.lang.",
       "java.util.",
@@ -70,12 +73,14 @@ public class BootstrapClassPath {
          for(IndexNode node : nodes) {
             String fullName = node.getFullName();
             
-            if(fullName.startsWith(IGNORE_PREFIX)) {
-               int length = IGNORE_PREFIX.length();
-               String alias = fullName.substring(length);
-               
-               DEFAULT_IMPORT_CLASSES.put(alias, node);
-               DEFAULT_IMPORT_CLASSES.put(fullName, node);
+            for(String ignorePrefix : IGNORE_PREFIXES) {
+               if(fullName.startsWith(ignorePrefix)) {
+                  int length = ignorePrefix.length();
+                  String alias = fullName.substring(length);
+                  
+                  DEFAULT_IMPORT_CLASSES.put(alias, node);
+                  DEFAULT_IMPORT_CLASSES.put(fullName, node);
+               }
             }
          }
          DEFAULT_IMPORT_CLASSES.putAll(names);
@@ -92,9 +97,11 @@ public class BootstrapClassPath {
             String fullName = node.getFullName();
             
             for(String prefix : DEFAULT_IMPORTS) {
-               if(fullName.startsWith(IGNORE_PREFIX)) {
-                  if(fullName.startsWith(prefix) && fullName.equals(prefix + shortName)) {
-                     DEFAULT_IMPORT_NAMES.put(shortName, node);
+               for(String ignorePrefix : IGNORE_PREFIXES) {
+                  if(fullName.startsWith(ignorePrefix)) {
+                     if(fullName.startsWith(prefix) && fullName.equals(prefix + shortName)) {
+                        DEFAULT_IMPORT_NAMES.put(shortName, node);
+                     }
                   }
                }
             }

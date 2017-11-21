@@ -81,8 +81,12 @@ public class FindForVariable implements CompletionFinder {
             IndexType type = handleNode.getType();
             
             if(type.isImport()) {
-               String fullPath = handleNode.getFullName();
-               handleNode = database.getTypeNode(fullPath);
+               String fullName = handleNode.getFullName();
+               handleNode = database.getTypeNode(fullName);
+               
+               if(handleNode == null) {
+                  handleNode = database.getDefaultImport(null, fullName);
+               }
             }
          }
       }
