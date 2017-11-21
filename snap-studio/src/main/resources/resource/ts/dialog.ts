@@ -199,7 +199,7 @@ export module DialogBuilder {
          $('#dialogPath').html(FileTree.cleanResourcePath(selectedDirectory));
       }, 2);  
    }       
-        
+   
    export function createListDialog(listFunction, patternList, dialogTitle) { // listFunction(token): [a, b, c]
       var dialogBody = createListDialogLayout();
       var focusInput = function() {
@@ -225,31 +225,35 @@ export module DialogBuilder {
                dialogBody.init();
                $('#dialogPath').on('change keyup paste', function() {
                   var expressionText = $("#dialogPath").html();
-                  var expressionPattern = null;
                   
-                  if(patternList) {
-                     expressionPattern = $("#dialogFolder").html();
-                     expressionPattern = Common.clearHtml(expressionPattern);
-                  }
-                  if(expressionText) {
-                     expressionText = Common.clearHtml(expressionText);
-                  } 
-                  listFunction(expressionText, expressionPattern, function(list, requestedExpression) {
-                     var currentExpression = $("#dialogPath").html();
+                  // add a delay before you execute
+                  executeIfTextUnchanged(expressionText, "dialogPath", 300, function() {
+                     var expressionPattern = null;
                      
-                     if(!requestedExpression || requestedExpression == currentExpression) {
-                        var content = createDialogListTable(list);
-                        
-                        if(content.content){
-                           $("#dialog").html(content.content);
-                        }else {
-                           $("#dialog").html('');
-                        }
-                        // this is kind of crap, but we need to be sure the html is rendered before binding
-                        if(content.init) {
-                           setTimeout(content.init, 100); // register the init function to run 
-                        }
+                     if(patternList) {
+                        expressionPattern = $("#dialogFolder").html();
+                        expressionPattern = Common.clearHtml(expressionPattern);
                      }
+                     if(expressionText) {
+                        expressionText = Common.clearHtml(expressionText);
+                     } 
+                     listFunction(expressionText, expressionPattern, function(list, requestedExpression) {
+                        var currentExpression = $("#dialogPath").html();
+                        
+                        if(!requestedExpression || requestedExpression == currentExpression) {
+                           var content = createDialogListTable(list);
+                           
+                           if(content.content){
+                              $("#dialog").html(content.content);
+                           }else {
+                              $("#dialog").html('');
+                           }
+                           // this is kind of crap, but we need to be sure the html is rendered before binding
+                           if(content.init) {
+                              setTimeout(content.init, 100); // register the init function to run 
+                           }
+                        }
+                     });
                   });
                });
                focusInput();
@@ -286,36 +290,40 @@ export module DialogBuilder {
       };
       var executeSearch = function() {
          var expressionText = $("#searchText").html();
-         var searchCriteria = {
-               caseSensitive: isCheckboxSelected("inputCaseSensitive"),
-               regularExpression: isCheckboxSelected("inputRegularExpression"),
-               wholeWord: isCheckboxSelected("inputWholeWord")
-            };
-         var expressionPattern = null;
          
-         if(fileFilterPatterns) {
-            expressionPattern = $("#fileFilterPatterns").html();
-            expressionPattern = Common.clearHtml(expressionPattern);
-         }
-         if(expressionText) {
-            expressionText = Common.clearHtml(expressionText);
-         } 
-         listFunction(expressionText, expressionPattern, searchCriteria, function(list, requestedText) {
-            var currentText = $("#searchText").html();
+         // add a delay before you execute
+         executeIfTextUnchanged(expressionText, "searchText", 300, function() {
+            var searchCriteria = {
+                  caseSensitive: isCheckboxSelected("inputCaseSensitive"),
+                  regularExpression: isCheckboxSelected("inputRegularExpression"),
+                  wholeWord: isCheckboxSelected("inputWholeWord")
+               };
+            var expressionPattern = null;
             
-            if(!requestedText || currentText == requestedText) {
-               var content = createDialogListTable(list);
-               
-               if(content.content){
-                  $("#dialog").html(content.content);
-               }else {
-                  $("#dialog").html('');
-               }
-               // this is kind of crap, but we need to be sure the html is rendered before binding
-               if(content.init) {
-                  setTimeout(content.init, 100); // register the init function to run 
-               }
+            if(fileFilterPatterns) {
+               expressionPattern = $("#fileFilterPatterns").html();
+               expressionPattern = Common.clearHtml(expressionPattern);
             }
+            if(expressionText) {
+               expressionText = Common.clearHtml(expressionText);
+            } 
+            listFunction(expressionText, expressionPattern, searchCriteria, function(list, requestedText) {
+               var currentText = $("#searchText").html();
+               
+               if(!requestedText || currentText == requestedText) {
+                  var content = createDialogListTable(list);
+                  
+                  if(content.content){
+                     $("#dialog").html(content.content);
+                  }else {
+                     $("#dialog").html('');
+                  }
+                  // this is kind of crap, but we need to be sure the html is rendered before binding
+                  if(content.init) {
+                     setTimeout(content.init, 100); // register the init function to run 
+                  }
+               }
+            });
          });
       };
       var dialogBody = createTextSearchOnlyDialogLayout(fileFilterPatterns, '', executeSearch);
@@ -373,36 +381,40 @@ export module DialogBuilder {
       };
       var executeSearch = function() {
          var expressionText = $("#searchText").html();
-         var searchCriteria = {
-               caseSensitive: isCheckboxSelected("inputCaseSensitive"),
-               regularExpression: isCheckboxSelected("inputRegularExpression"),
-               wholeWord: isCheckboxSelected("inputWholeWord")
-            };
-         var expressionPattern = null;
          
-         if(fileFilterPatterns) {
-            expressionPattern = $("#fileFilterPatterns").html();
-            expressionPattern = Common.clearHtml(expressionPattern);
-         }
-         if(expressionText) {
-            expressionText = Common.clearHtml(expressionText);
-         } 
-         listFunction(expressionText, expressionPattern, searchCriteria, function(list, requestedText) {
-            var currentText = $("#searchText").html();
+         // add a delay before you execute
+         executeIfTextUnchanged(expressionText, "searchText", 300, function() {
+            var searchCriteria = {
+                  caseSensitive: isCheckboxSelected("inputCaseSensitive"),
+                  regularExpression: isCheckboxSelected("inputRegularExpression"),
+                  wholeWord: isCheckboxSelected("inputWholeWord")
+               };
+            var expressionPattern = null;
             
-            if(!requestedText || currentText == requestedText) {
-               var content = createDialogListTable(list);
-               
-               if(content.content){
-                  $("#dialog").html(content.content);
-               }else {
-                  $("#dialog").html('');
-               }
-               // this is kind of crap, but we need to be sure the html is rendered before binding
-               if(content.init) {
-                  setTimeout(content.init, 100); // register the init function to run 
-               }
+            if(fileFilterPatterns) {
+               expressionPattern = $("#fileFilterPatterns").html();
+               expressionPattern = Common.clearHtml(expressionPattern);
             }
+            if(expressionText) {
+               expressionText = Common.clearHtml(expressionText);
+            } 
+            listFunction(expressionText, expressionPattern, searchCriteria, function(list, requestedText) {
+               var currentText = $("#searchText").html();
+               
+               if(!requestedText || currentText == requestedText) {
+                  var content = createDialogListTable(list);
+                  
+                  if(content.content){
+                     $("#dialog").html(content.content);
+                  }else {
+                     $("#dialog").html('');
+                  }
+                  // this is kind of crap, but we need to be sure the html is rendered before binding
+                  if(content.init) {
+                     setTimeout(content.init, 100); // register the init function to run 
+                  }
+               }
+            });
          });
       };
       var dialogBody = createTextSearchAndReplaceDialogLayout(fileFilterPatterns, '', executeSearch);
@@ -974,6 +986,18 @@ export module DialogBuilder {
          }
       }
       return true;
+   }
+   
+   function executeIfTextUnchanged(text, nameOfElement, delay, functionToExecute) {
+      setTimeout(function() {
+         var currentText = $("#" +  nameOfElement).html();
+         
+         if(text == currentText) {
+            functionToExecute();
+         } else {
+            console.log("Ignoring '" + text + "' as its not current");
+         }
+      }, delay);
    }
    
    function isCheckboxSelected(input) {
