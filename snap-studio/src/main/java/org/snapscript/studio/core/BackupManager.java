@@ -20,11 +20,13 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @AllArgsConstructor
 public class BackupManager {
@@ -70,7 +72,7 @@ public class BackupManager {
          FileTime time = FileTime.fromMillis(creationTime);
          attributes.setTimes(time, time, time);
       } catch(Exception e) {
-         workspace.getLogger().info("Could not find backup from " + file, e);
+         log.info("Could not find backup from " + file, e);
       }
    }
    
@@ -132,7 +134,7 @@ public class BackupManager {
             return backupIterator.next().getFile();
          }
       } catch(Exception e) {
-         workspace.getLogger().info("Could not find backup from " + file, e);
+         log.info("Could not find backup from " + file, e);
       }
       return null;
    }
@@ -183,7 +185,7 @@ public class BackupManager {
             return backupHistory;
          }
       } catch(Exception e) {
-         workspace.getLogger().info("Could not find backup from " + file, e);
+         log.info("Could not find backup from " + file, e);
       }
       return backupHistory;
    }
@@ -201,7 +203,7 @@ public class BackupManager {
          input.close();
          output.close();
       } catch(Exception e) {
-         workspace.getLogger().info("Could not backup " + from + " to " + to);
+         log.info("Could not backup " + from + " to " + to);
       }
    }
    
@@ -225,7 +227,7 @@ public class BackupManager {
             }
          }
       } catch(Exception e) {
-         workspace.getLogger().info("Could not delete " + file);
+         log.info("Could not delete " + file);
       }
    }
    
@@ -242,7 +244,7 @@ public class BackupManager {
          input.close();
          return digest.digest();
       } catch(Exception e) {
-         workspace.getLogger().info("Could not get MD5 digest of " + file);
+         log.info("Could not get MD5 digest of " + file);
       }
       return new byte[]{};
    }
@@ -255,7 +257,7 @@ public class BackupManager {
          encoder.write(content);
          encoder.close();
       } catch(Exception e) {
-         workspace.getLogger().info("Could not save " + file);
+         log.info("Could not save " + file);
       }
    }
    
@@ -266,7 +268,7 @@ public class BackupManager {
          out.write(content);
          out.close();
       } catch(Exception e) {
-         workspace.getLogger().info("Could not save " + file);
+         log.info("Could not save " + file);
       }
    }
    

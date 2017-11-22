@@ -6,24 +6,24 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
+
 import org.sonatype.aether.transfer.TransferEvent;
 import org.sonatype.aether.transfer.TransferListener;
 import org.sonatype.aether.transfer.TransferResource;
 
+@Slf4j
 public class ConsoleTransferListener implements TransferListener {
 
-   private Map<TransferResource, Long> downloads; 
-   private Logger logger;
+   private final Map<TransferResource, Long> downloads; 
 
-   public ConsoleTransferListener(Logger logger) {
+   public ConsoleTransferListener() {
       this.downloads = new ConcurrentHashMap<TransferResource, Long>();
-      this.logger = logger;
    }
 
    @Override
    public void transferStarted(TransferEvent event) {
-      logger.info("Transfer started");
+      log.info("Transfer started");
    }
    
    @Override
@@ -32,7 +32,7 @@ public class ConsoleTransferListener implements TransferListener {
       String repository = event.getResource().getRepositoryUrl();
       String name = event.getResource().getResourceName();
       
-      logger.info(message + ": " + repository + name);
+      log.info(message + ": " + repository + name);
    }
 
    @Override
@@ -47,7 +47,7 @@ public class ConsoleTransferListener implements TransferListener {
          long total = progress.getContentLength();
          long complete = entry.getValue().longValue();
 
-         logger.debug(repository + name + ": " + getStatus(complete, total));;
+         log.debug(repository + name + ": " + getStatus(complete, total));;
       }
    }
 
@@ -84,7 +84,7 @@ public class ConsoleTransferListener implements TransferListener {
          String location = resource.getRepositoryUrl();
          String name = resource.getResourceName();
          
-         logger.info(type + ": " + location + name + " (" + len + throughput + ")");
+         log.info(type + ": " + location + name + " (" + len + throughput + ")");
       }
    }
 
@@ -92,7 +92,7 @@ public class ConsoleTransferListener implements TransferListener {
    public void transferFailed(TransferEvent event) {
       Exception exception = event.getException();
       transferCompleted(event);
-      logger.info("Transfer failed", exception);
+      log.info("Transfer failed", exception);
    }
 
    private void transferCompleted(TransferEvent event) {
@@ -102,7 +102,7 @@ public class ConsoleTransferListener implements TransferListener {
    @Override
    public void transferCorrupted(TransferEvent event) {
       Exception exception = event.getException();
-      logger.info("Transfer corrupted", exception);
+      log.info("Transfer corrupted", exception);
    }
    
    private long toKB(long bytes) {

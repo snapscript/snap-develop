@@ -25,7 +25,7 @@ public class TextMatchResource implements Resource {
    private final Gson gson;
    
    public TextMatchResource(FileDirectorySource workspace, ThreadPool pool) {
-      this.scanner = new TextMatchScanner(workspace.getLogger(), pool);
+      this.scanner = new TextMatchScanner(pool);
       this.gson = new GsonBuilder().setPrettyPrinting().create();
       this.parser = new TextMatchQueryParser(workspace);
    }

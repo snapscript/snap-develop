@@ -5,11 +5,13 @@ function fib(n) {
    }
    return fib(n-1) + fib(n-2);
 }
-var s = System.currentTimeMillis();
-var r = fib(30);
-var f = System.currentTimeMillis();
-println(f-s);
-println(r);
+for(var x in 0..4){
+   var s = System.currentTimeMillis();
+   var r = fib(30);
+   var f = System.currentTimeMillis();
+   println(f-s);
+   println(r);
+}
 
 
 // for(var x in 0..3){

@@ -2,10 +2,11 @@ package org.snapscript.studio.complete;
 
 import java.io.PrintStream;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
-import org.slf4j.Logger;
 import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.common.resource.ResourcePath;
 import org.snapscript.studio.index.complete.CompletionCompiler;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Component;
 import com.google.gson.Gson;
 
 // /complete/<project>
+@Slf4j
 @Component
 @ResourcePath("/complete.*")
 public class CompletionResource implements Resource {
@@ -44,7 +46,6 @@ public class CompletionResource implements Resource {
       ClassLoader classLoader = project.getClassLoader();
       Thread thread = Thread.currentThread();
       thread.setContextClassLoader(classLoader);
-      Logger logger = workspace.getLogger();
       CompletionRequest context = gson.fromJson(content, CompletionRequest.class);
       CompletionCompiler compiler = new CompletionCompiler(project.getIndexDatabase(),
             FindForFunction.class,
@@ -60,6 +61,6 @@ public class CompletionResource implements Resource {
       response.setContentType("application/json");
       out.println(text);
       out.close();
-      logger.debug(details);
+      log.debug(details);
    }
 }

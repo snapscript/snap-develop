@@ -2,7 +2,6 @@ package org.snapscript.studio.project.maven;
 
 import org.apache.maven.repository.internal.DefaultServiceLocator;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
-import org.snapscript.studio.project.Workspace;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.connector.file.FileRepositoryConnectorFactory;
@@ -13,11 +12,9 @@ import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.spi.connector.RepositoryConnectorFactory;
 
 public class RepositoryFactory {
-
-   private final Workspace workspace;
-
-   public RepositoryFactory(Workspace workspace) {
-      this.workspace = workspace;
+   
+   public RepositoryFactory() {
+      super();
    }
 
    public RepositorySystem newRepositorySystem() {
@@ -34,8 +31,8 @@ public class RepositoryFactory {
       LocalRepository localRepo = new LocalRepository(path);
 
       session.setLocalRepositoryManager(system.newLocalRepositoryManager(localRepo));
-      session.setTransferListener(new ConsoleTransferListener(workspace.getLogger()));
-      session.setRepositoryListener(new ConsoleRepositoryListener(workspace.getLogger()));
+      session.setTransferListener(new ConsoleTransferListener());
+      session.setRepositoryListener(new ConsoleRepositoryListener());
 
       return session;
    }

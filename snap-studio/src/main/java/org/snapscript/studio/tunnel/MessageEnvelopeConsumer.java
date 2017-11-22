@@ -4,7 +4,6 @@ import java.util.concurrent.Executor;
 
 import org.simpleframework.transport.ByteCursor;
 import org.simpleframework.transport.Channel;
-import org.slf4j.Logger;
 import org.snapscript.studio.agent.event.MessageEnvelope;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
               
@@ -18,8 +17,8 @@ public class MessageEnvelopeConsumer {
    private int remaining;
    private int count;
    
-   public MessageEnvelopeConsumer(ProcessEventService router, Logger logger, Executor executor, Channel channel) {
-      this.channel = new ProcessAgentClient(logger, executor, channel);
+   public MessageEnvelopeConsumer(ProcessEventService router, Executor executor, Channel channel) {
+      this.channel = new ProcessAgentClient(executor, channel);
       this.buffer = new byte[1024];
       this.router = router;
       

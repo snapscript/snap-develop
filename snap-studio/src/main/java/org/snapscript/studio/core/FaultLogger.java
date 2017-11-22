@@ -6,22 +6,20 @@ import java.util.Map;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-import org.slf4j.Logger;
-
+@Slf4j
 @AllArgsConstructor
 public class FaultLogger {
    
    private static final String INDENT = "   ";
-
-   private final Logger logger;
 
    public void log(String process, Map<String, Map<String, String>> local, String resource, String thread, String cause, int line) {
       String description = createDescription(resource, thread, line);
       String variables = createVariables(local, INDENT);
       String exception = createException(cause, INDENT);
    
-      logger.debug(description + exception + variables);
+      log.debug(description + exception + variables);
    }
    
    private String createDescription(String resource, String thread, int line) {

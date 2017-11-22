@@ -3,6 +3,8 @@ package org.snapscript.studio.resource.project;
 import java.io.File;
 import java.util.Set;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.simpleframework.http.Path;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.studio.common.FileAction;
@@ -13,6 +15,7 @@ import org.snapscript.studio.common.ProblemFinder;
 import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.Workspace;
 
+@Slf4j
 public class ProjectProblemFinder {
 
    private final FileProcessor<Problem> processor;
@@ -43,8 +46,8 @@ public class ProjectProblemFinder {
          long finish = System.currentTimeMillis();
          long duration = finish - start;
          
-         if(workspace.getLogger().isTraceEnabled()) {
-            workspace.getLogger().trace("Took " + duration + " ms to compile project " + name);
+         if(log.isTraceEnabled()) {
+            log.trace("Took " + duration + " ms to compile project " + name);
          }
       }
    }
@@ -74,8 +77,8 @@ public class ProjectProblemFinder {
          }
          String source = FileReader.readText(file);
          
-         if(workspace.getLogger().isTraceEnabled()) {
-            workspace.getLogger().trace("Compiling " + resourcePath + " in project " + reference);
+         if(log.isTraceEnabled()) {
+            log.trace("Compiling " + resourcePath + " in project " + reference);
          }
          return finder.parse(name, resourcePath, source);
       }

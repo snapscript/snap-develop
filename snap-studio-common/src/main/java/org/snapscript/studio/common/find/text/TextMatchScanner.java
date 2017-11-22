@@ -20,10 +20,10 @@ public class TextMatchScanner {
    private final TextMatchFinder finder;
    private final ThreadPool pool;
    
-   public TextMatchScanner(Logger logger, ThreadPool pool) {
+   public TextMatchScanner(ThreadPool pool) {
       this.scanner = new TextFileScanner(); // e.g *.snap, *.txt
       this.history = new TextMatchHistory(pool);
-      this.finder = new TextMatchFinder(logger);
+      this.finder = new TextMatchFinder();
       this.pool = pool;
    }
    

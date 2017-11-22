@@ -1,7 +1,10 @@
 package org.snapscript.studio.browser;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.snapscript.studio.project.config.OperatingSystem;
 
+@Slf4j
 public class BrowserFactory {
    
    private static final String CEF_ENGINE = "cef";
@@ -10,7 +13,7 @@ public class BrowserFactory {
       OperatingSystem os = OperatingSystem.resolveSystem();
       String engine = context.getEngine();
       
-      context.getLogger().info("Engine is " + engine);
+      log.info("Engine is " + engine);
       
       if(os.isWindows() && CEF_ENGINE.equals(engine)) {
          return new ChromiumBrowserClient(context);

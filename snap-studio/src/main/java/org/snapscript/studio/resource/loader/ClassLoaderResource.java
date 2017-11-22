@@ -2,6 +2,8 @@ package org.snapscript.studio.resource.loader;
 
 import java.io.PrintStream;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
@@ -11,6 +13,7 @@ import org.snapscript.studio.common.resource.ResourcePath;
 import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @ResourcePath("/class/.*")
 public class ClassLoaderResource implements Resource {
@@ -31,8 +34,8 @@ public class ClassLoaderResource implements Resource {
       PrintStream output = response.getPrintStream();
       byte[] data = loader.loadResource(normal); 
 
-      if(workspace.getLogger().isTraceEnabled()) {
-         workspace.getLogger().trace(method + ": " + normal);
+      if(log.isTraceEnabled()) {
+         log.trace(method + ": " + normal);
       }
       if(data == null) {
          response.setStatus(Status.NOT_FOUND);

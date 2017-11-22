@@ -3,16 +3,15 @@ package org.snapscript.studio.core;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ProcessListener implements ConsoleListener {
    
    private final Pattern pattern;
-   private final Logger logger;
    
-   public ProcessListener(Logger logger) {
+   public ProcessListener() {
       this.pattern = Pattern.compile("^([ |\\t]+).*", Pattern.DOTALL);
-      this.logger = logger;
    }
 
    @Override
@@ -24,9 +23,9 @@ public class ProcessListener implements ConsoleListener {
          if(matcher.matches()) {
             String indent = matcher.group(1);
             
-            logger.info(process + ": " + indent + trim);
+            log.info(process + ": " + indent + trim);
          } else {
-            logger.info(process + ": " + trim);
+            log.info(process + ": " + trim);
          }
       }catch(Exception e) {
          e.printStackTrace();
@@ -42,9 +41,9 @@ public class ProcessListener implements ConsoleListener {
          if(matcher.matches()) {
             String indent = matcher.group(1);
             
-            logger.info(process + ": " + indent + trim, cause);
+            log.info(process + ": " + indent + trim, cause);
          } else {
-            logger.info(process + ": " + trim, cause);
+            log.info(process + ": " + trim, cause);
          }
       }catch(Exception e) {
          e.printStackTrace();

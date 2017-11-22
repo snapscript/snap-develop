@@ -5,23 +5,24 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.slf4j.Logger;
 
+@Slf4j
 public class ProcessConnectionPool {
 
    private final BlockingQueue<ProcessConnection> pool;
-   private final Logger logger;
    
-   public ProcessConnectionPool(Logger logger){
+   public ProcessConnectionPool(){
       this.pool = new LinkedBlockingQueue<ProcessConnection>();
-      this.logger = logger;
    }
    
    public ProcessConnection acquire(long wait) {
       try {
          return pool.poll(wait, TimeUnit.MILLISECONDS); // take a process from the pool
       }catch(Exception e){
-         logger.info("Could not acquire process", e);
+         log.info("Could not acquire process", e);
       }
       return null;
    }
@@ -45,7 +46,7 @@ public class ProcessConnectionPool {
             }
          }
       }catch(Exception e){
-         logger.info("Could not acquire process '" +process+ "'", e);
+         log.info("Could not acquire process '" +process+ "'", e);
       }
       return acquire(wait);
    }
@@ -69,7 +70,7 @@ public class ProcessConnectionPool {
             }
          }
       }catch(Exception e){
-         logger.info("Could not acquire process", e);
+         log.info("Could not acquire process", e);
       }
       return null;
    }

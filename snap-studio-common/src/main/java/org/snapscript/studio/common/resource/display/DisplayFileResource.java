@@ -6,12 +6,15 @@ import static org.simpleframework.http.Status.OK;
 
 import java.io.OutputStream;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
 import org.snapscript.studio.common.FileDirectorySource;
 import org.snapscript.studio.common.resource.Resource;
 
+@Slf4j
 public class DisplayFileResource implements Resource {
 
    private final DisplayContentProcessor displayProcessor;
@@ -39,8 +42,8 @@ public class DisplayFileResource implements Resource {
       double ratio = content.getCompression();
       long time = content.getDuration();
 
-      if(workspace.getLogger().isTraceEnabled()) {
-         workspace.getLogger().trace(path + " ratio=" + ratio + "% time=" + time + "ms");
+      if(log.isTraceEnabled()) {
+         log.trace(path + " ratio=" + ratio + "% time=" + time + "ms");
       }
       response.setCode(status.code);
       response.setDescription(status.description);

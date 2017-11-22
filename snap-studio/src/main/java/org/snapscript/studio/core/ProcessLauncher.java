@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.snapscript.studio.agent.ProcessMode;
 import org.snapscript.studio.project.Workspace;
 import org.snapscript.studio.project.config.ProcessConfiguration;
-import org.snapscript.studio.project.config.WorkspaceConfiguration;
 
+@Slf4j
 public class ProcessLauncher {
    
    private final ProcessNameGenerator generator;
@@ -60,7 +62,7 @@ public class ProcessLauncher {
          environment.putAll(variables);
       }
       
-      workspace.getLogger().info(name + ": " +command);
+      log.info(name + ": " +command);
       builder.directory(directory);
       builder.redirectErrorStream(true);
       

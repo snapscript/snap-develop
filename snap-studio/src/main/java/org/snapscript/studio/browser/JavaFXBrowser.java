@@ -9,9 +9,12 @@ import javafx.geometry.VPos;
 import javafx.scene.layout.Region;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import lombok.extern.slf4j.Slf4j;
 
 // below is drag an drop
 //https://docs.oracle.com/javase/8/javafx/events-tutorial/hellodraganddropjava.htm#CHDEAEAI
+@Slf4j
+@SuppressWarnings("restriction")
 public class JavaFXBrowser extends Region {
 
    private final BrowserContext context;
@@ -38,7 +41,7 @@ public class JavaFXBrowser extends Region {
                method.invoke(window, "java", JavaFXBrowser.this);
                engine.executeScript("console.log = function(message){java.log(message);};\n");
             } catch (Exception e) {
-               context.getLogger().info("Could not register log listener", e);
+               log.info("Could not register log listener", e);
             }
          }
 
@@ -61,7 +64,7 @@ public class JavaFXBrowser extends Region {
    }
 
    public void log(Object message) {
-      context.getLogger().info(String.valueOf(message));
+      log.info(String.valueOf(message));
    }
 
    @Override

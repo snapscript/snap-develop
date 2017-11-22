@@ -3,6 +3,8 @@ package org.snapscript.studio.resource.project;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
@@ -17,6 +19,7 @@ import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @ResourcePath("/resource/.*")
 public class ProjectFileResource implements Resource {
@@ -45,8 +48,8 @@ public class ProjectFileResource implements Resource {
       response.setStatus(Status.OK);
       response.setContentType(type);
 
-      if(workspace.getLogger().isTraceEnabled()) {
-         workspace.getLogger().trace(method + ": " + path);
+      if(log.isTraceEnabled()) {
+         log.trace(method + ": " + path);
       }
       try {
          byte[] resource = projectFile.getByteArray();

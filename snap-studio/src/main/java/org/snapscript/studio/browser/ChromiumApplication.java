@@ -1,5 +1,7 @@
 package org.snapscript.studio.browser;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
@@ -7,6 +9,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.snapscript.studio.ui.swt.Chromium;
 
+@Slf4j
 public class ChromiumApplication {
 
    public static void launch(BrowserContext context) {
@@ -21,7 +24,7 @@ public class ChromiumApplication {
       try {
          shell.setText(context.getDirectory().getCanonicalPath());
       }catch(Exception e){
-         context.getLogger().info("Could not set title", e);
+         log.info("Could not set title", e);
       }
       browser.setUrl(context.getTarget());
       shell.setSize(1200, 800);

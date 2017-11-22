@@ -2,7 +2,8 @@ package org.snapscript.studio.command;
 
 import java.util.Map;
 
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
+
 import org.snapscript.studio.agent.debug.ScopeVariableTree;
 import org.snapscript.studio.agent.event.BeginEvent;
 import org.snapscript.studio.agent.event.ExitEvent;
@@ -26,9 +27,9 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    private final CommandClient client;
    private final FaultLogger logger;
    
-   public CommandEventForwarder(CommandClient client, CommandFilter filter, Logger logger, Project project) {
+   public CommandEventForwarder(CommandClient client, CommandFilter filter, Project project) {
       this.converter = new CommandEventConverter(filter, project);
-      this.logger = new FaultLogger(logger);
+      this.logger = new FaultLogger();
       this.filter = filter;
       this.client = client;
    } 

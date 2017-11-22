@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.simpleframework.transport.Channel;
 import org.snapscript.studio.agent.event.ProcessEventFilter;
 import org.snapscript.studio.agent.event.ProcessEventListener;
@@ -22,6 +24,7 @@ import org.snapscript.studio.project.config.ProcessConfigurationLoader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class ProcessManager implements ProcessAgentController {
    
@@ -170,7 +173,7 @@ public class ProcessManager implements ProcessAgentController {
       ProcessConnection connection = connections.remove(process);
 
       if(connection != null) {
-         workspace.getLogger().debug(process + ": Detach requested");
+         log.debug(process + ": Detach requested");
       }
       return true;
    }

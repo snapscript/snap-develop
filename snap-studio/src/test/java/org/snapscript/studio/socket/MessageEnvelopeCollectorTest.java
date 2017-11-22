@@ -38,7 +38,7 @@ public class MessageEnvelopeCollectorTest extends TestCase {
       ProcessLogger logger = new ProcessLogger(log, "TRACE");
       ProcessEventAdapter adapter = new ProcessEventAdapter();
       ProcessEventTimer timer = new ProcessEventTimer(adapter, logger);
-      ProcessEventService router = new ProcessEventService(timer, LOG, 7878);
+      ProcessEventService router = new ProcessEventService(timer, 7878);
       ByteArrayOutputStream stream = new ByteArrayOutputStream();
       StreamEventWriter writer = new StreamEventWriter(stream);
       PingEvent event = new PingEvent.Builder("agent-123456789")
@@ -52,7 +52,7 @@ public class MessageEnvelopeCollectorTest extends TestCase {
       InputStream input = new ByteArrayInputStream(data);
       Channel channel = new StreamChannel(input, System.out);
       Reactor reactor = new ExecutorReactor(pool);
-      MessageEnvelopeCollector collector = new MessageEnvelopeCollector(router, LOG, reactor, pool, channel);
+      MessageEnvelopeCollector collector = new MessageEnvelopeCollector(router, reactor, pool, channel);
       
       collector.run();
    }

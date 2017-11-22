@@ -2,9 +2,10 @@ package org.snapscript.studio.common.resource;
 
 import static org.simpleframework.http.Method.CONNECT;
 import static org.simpleframework.http.Protocol.DATE;
-import static org.simpleframework.http.Status.OK;
 
 import java.io.IOException;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
@@ -13,6 +14,7 @@ import org.simpleframework.http.core.Container;
 import org.snapscript.studio.common.FileDirectorySource;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class ResourceContainer implements Container {
 
@@ -37,14 +39,14 @@ public class ResourceContainer implements Container {
          resource.handle(request, response);
       } catch (Throwable cause) {
          cause.printStackTrace();
-         workspace.getLogger().info("Error handling resource", cause);
+         log.info("Error handling resource", cause);
       } finally {
          try {
             if(!method.equals(CONNECT)) {
                response.close();
             }
          } catch (IOException ignore) {
-            workspace.getLogger().info("Could not close response", ignore);
+            log.info("Could not close response", ignore);
          }
       }
    }

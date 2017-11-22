@@ -33,7 +33,6 @@ public class BrowserLauncher {
             .withHost(host)
             .withPort(port)
             .withEngine(engine)
-            .withLogger(workspace.getLogger())
             .withDirectory(directory)
             .build();
          

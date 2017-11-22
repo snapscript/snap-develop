@@ -12,6 +12,8 @@ import javax.imageio.ImageReader;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageInputStream;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
@@ -26,6 +28,7 @@ import org.snapscript.studio.common.resource.ResourcePath;
 import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @ResourcePath("/img/theme/.*.png")
 public class ImageScaleResource implements Resource {
@@ -55,8 +58,8 @@ public class ImageScaleResource implements Resource {
       int height = image.getHeight();
       int width = image.getWidth();
       
-      if(workspace.getLogger().isTraceEnabled()) {
-         workspace.getLogger().trace(path + " scaled=" + width + "x" + height);
+      if(log.isTraceEnabled()) {
+         log.trace(path + " scaled=" + width + "x" + height);
       }
       response.setStatus(Status.OK);
       response.setValue(CONTENT_TYPE, type);

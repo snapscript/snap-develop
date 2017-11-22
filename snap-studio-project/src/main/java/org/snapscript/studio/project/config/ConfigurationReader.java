@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
@@ -26,8 +28,8 @@ import org.simpleframework.xml.core.Commit;
 import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.util.Dictionary;
 import org.simpleframework.xml.util.Entry;
-import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.FileSystem;
+import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.ProjectLayout;
 import org.snapscript.studio.project.Workspace;
 import org.snapscript.studio.project.maven.RepositoryClient;
@@ -35,6 +37,7 @@ import org.snapscript.studio.project.maven.RepositoryFactory;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.repository.RemoteRepository;
 
+@Slf4j
 public class ConfigurationReader {
    
    private final AtomicReference<WorkspaceConfiguration> workspaceReference;
@@ -47,7 +50,7 @@ public class ConfigurationReader {
    public ConfigurationReader(Workspace workspace) {
       this.projectReference = new ConcurrentHashMap<String, ProjectConfiguration>();
       this.workspaceReference = new AtomicReference<WorkspaceConfiguration>();
-      this.factory = new RepositoryFactory(workspace);
+      this.factory = new RepositoryFactory();
       this.filter = new ConfigurationFilter();
       this.persister = new Persister(filter);
       this.workspace = workspace;
@@ -69,7 +72,7 @@ public class ConfigurationReader {
                
                for(String repository : repositories) {
                   String location = locations.get(repository);
-                  workspace.getLogger().info("Repository: '" + repository + "' -> '" + location + "'");
+                  log.info("Repository: '" + repository + "' -> '" + location + "'");
                }
                configuration = new WorkspaceContext(factory, details, variables, arguments);
                workspaceReference.set(configuration);
@@ -99,7 +102,7 @@ public class ConfigurationReader {
          if(configuration != null) {
             return configuration;
          }
-         workspace.getLogger().info("Project '" + name + "' does not contain a .project file");
+         log.info("Project '" + name + "' does not contain a .project file");
       }catch(Exception e) {
          throw new IllegalStateException("Could not read .project file", e);
       }

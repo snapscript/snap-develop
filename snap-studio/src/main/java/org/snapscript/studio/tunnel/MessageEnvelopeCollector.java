@@ -4,6 +4,8 @@ import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.util.concurrent.Executor;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.simpleframework.transport.ByteCursor;
 import org.simpleframework.transport.Channel;
 import org.simpleframework.transport.reactor.Operation;
@@ -11,18 +13,17 @@ import org.simpleframework.transport.reactor.Reactor;
 import org.simpleframework.transport.trace.Trace;
 import org.slf4j.Logger;
 
+@Slf4j
 public class MessageEnvelopeCollector implements Operation {
    
    private final MessageEnvelopeConsumer consumer;
    private final Reactor reactor;
    private final Channel channel;
-   private final Logger logger;
    
-   public MessageEnvelopeCollector(ProcessEventService router, Logger logger, Reactor reactor, Executor executor, Channel channel) {
-      this.consumer = new MessageEnvelopeConsumer(router, logger, executor, channel);
+   public MessageEnvelopeCollector(ProcessEventService router, Reactor reactor, Executor executor, Channel channel) {
+      this.consumer = new MessageEnvelopeConsumer(router, executor, channel);
       this.reactor = reactor;
       this.channel = channel;
-      this.logger = logger;
    }
 
    @Override
@@ -47,7 +48,7 @@ public class MessageEnvelopeCollector implements Operation {
             reactor.process(this, SelectionKey.OP_READ);
          }
       }catch(Exception e) {
-         logger.debug("Could not consume message", e);
+         log.debug("Could not consume message", e);
          cancel(); // close the transport
       }
    }
@@ -57,7 +58,7 @@ public class MessageEnvelopeCollector implements Operation {
       try {
          channel.close();
       }catch(Exception e) {
-         logger.debug("Could not close transport", e);
+         log.debug("Could not close transport", e);
       }
    }
 }

@@ -5,10 +5,11 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicLong;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.simpleframework.common.encode.Base64Encoder;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.socket.FrameChannel;
-import org.slf4j.Logger;
 import org.snapscript.common.command.CommandBuilder;
 import org.snapscript.common.command.Console;
 import org.snapscript.studio.common.Problem;
@@ -24,6 +25,7 @@ import org.snapscript.studio.resource.project.ProjectProblemFinder;
 import org.snapscript.studio.resource.tree.TreeContext;
 import org.snapscript.studio.resource.tree.TreeContextManager;
 
+@Slf4j
 public class CommandListener {
    
    private final DisplayPersister displayPersister;
@@ -33,9 +35,8 @@ public class CommandListener {
    private final CommandFilter commandFilter;
    private final CommandClient commandClient;
    private final ProcessManager processManager;
-   private final Logger processLogger;
-   private final ProblemFinder finder;
    private final BackupManager backupManager;
+   private final ProblemFinder finder;
    private final AtomicLong lastModified;
    private final Project project;
    private final String projectName;
@@ -48,7 +49,6 @@ public class CommandListener {
          ProjectProblemFinder problemFinder, 
          DisplayPersister displayPersister,
          FrameChannel frameChannel, 
-         Logger processLogger, 
          BackupManager backupManager, 
          TreeContextManager treeManager, 
          Project project,
@@ -57,7 +57,7 @@ public class CommandListener {
    {
       this.commandFilter = new CommandFilter();
       this.commandClient = new CommandClient(frameChannel, project);
-      this.forwarder = new CommandEventForwarder(commandClient, commandFilter, processLogger, project);
+      this.forwarder = new CommandEventForwarder(commandClient, commandFilter, project);
       this.lastModified = new AtomicLong(project.getModificationTime());
       this.finder = new ProblemFinder();
       this.projectName = project.getProjectName();
@@ -66,7 +66,6 @@ public class CommandListener {
       this.treeManager = treeManager;
       this.problemFinder = problemFinder;
       this.backupManager = backupManager;
-      this.processLogger = processLogger;
       this.processManager = processManager;
       this.project = project;
       this.cookie = cookie;
@@ -94,19 +93,19 @@ public class CommandListener {
                   String expression = os.createExploreCommand(path);
                   Callable<Console> task = builder.create(expression);
                   
-                  processLogger.info("Executing: " + expression);
+                  log.info("Executing: " + expression);
                   task.call();
                } else {
                   String expression = os.createTerminalCommand(path);
                   Callable<Console> task = builder.create(expression);
                   
-                  processLogger.info("Executing: " + expression);
+                  log.info("Executing: " + expression);
                   task.call();
                }
             }
          }
       } catch(Exception e) {
-         processLogger.info("Error exploring directory " + resource, e);
+         log.info("Error exploring directory " + resource, e);
       }
    }
    
@@ -118,7 +117,7 @@ public class CommandListener {
       
       try {
          if(Boolean.TRUE.equals(dragAndDrop)) {
-            processLogger.info("Drag and drop file: " + name + " to: " + to);
+            log.info("Drag and drop file: " + name + " to: " + to);
          }
          File file = new File(root, to);
          boolean exists = file.exists();
@@ -136,7 +135,7 @@ public class CommandListener {
             onReload();
          }
       } catch(Exception e) {
-         processLogger.info("Error saving " + to, e);
+         log.info("Error saving " + to, e);
       }
    }
    
@@ -180,7 +179,7 @@ public class CommandListener {
             }
          }
       } catch(Exception e) {
-         processLogger.info("Error saving " + resource, e);
+         log.info("Error saving " + resource, e);
       }
    }
    
@@ -191,7 +190,7 @@ public class CommandListener {
       
       try {
          if(Boolean.TRUE.equals(dragAndDrop)) {
-            processLogger.info("Drag and drop from: " + from + " to: " + to);
+            log.info("Drag and drop from: " + from + " to: " + to);
          }
          File fromFile = new File(root, "/" + from);
          File toFile = new File(root, "/" + to); 
@@ -215,7 +214,7 @@ public class CommandListener {
             }
          } 
       } catch(Exception e) {
-         processLogger.info("Error renaming " + from, e);
+         log.info("Error renaming " + from, e);
       }
    }   
    
@@ -245,7 +244,7 @@ public class CommandListener {
             commandClient.sendSyntaxError(resource, description, time, line);
          }
       } catch(Exception e) {
-         processLogger.info("Error executing " + resource, e);
+         log.info("Error executing " + resource, e);
       }
    }
    
@@ -273,7 +272,7 @@ public class CommandListener {
          processManager.attach(command, process);
          processManager.register(forwarder); // make sure we are registered
       } catch(Exception e) {
-         processLogger.info("Error attaching to process " + process, e);
+         log.info("Error attaching to process " + process, e);
       }
    }
    
@@ -286,7 +285,7 @@ public class CommandListener {
             processManager.step(command, focus);
          }
       } catch(Exception e) {
-         processLogger.info("Error stepping through " + thread +" in process " + focus, e);
+         log.info("Error stepping through " + thread +" in process " + focus, e);
       }
    }
    
@@ -310,7 +309,7 @@ public class CommandListener {
             }
          }
       } catch(Exception e) {
-         processLogger.info("Error deleting " + resource, e);
+         log.info("Error deleting " + resource, e);
       }
    }
    
@@ -322,7 +321,7 @@ public class CommandListener {
             processManager.breakpoints(command, focus);
          }
       } catch(Exception e){
-         processLogger.info("Error setting breakpoints for process " + focus, e);
+         log.info("Error setting breakpoints for process " + focus, e);
       }
    }
    
@@ -334,7 +333,7 @@ public class CommandListener {
             processManager.browse(command, focus);
          }
       } catch(Exception e) {
-         processLogger.info("Error browsing variables for process " + focus, e);
+         log.info("Error browsing variables for process " + focus, e);
       }
    }
    
@@ -346,7 +345,7 @@ public class CommandListener {
             processManager.evaluate(command, focus);
          }
       } catch(Exception e) {
-         processLogger.info("Error browsing variables for process " + focus, e);
+         log.info("Error browsing variables for process " + focus, e);
       }
    }
    
@@ -359,11 +358,11 @@ public class CommandListener {
          TreeContext context = treeManager.getContext(root, project, cookie, true);
          
          if(context != null) {
-            processLogger.info("Expand folder: " + folder);
+            log.info("Expand folder: " + folder);
             context.folderExpand(folder);
          }
       } catch(Exception e) {
-         processLogger.info("Error stopping process " + focus, e);
+         log.info("Error stopping process " + focus, e);
       }
    }
    
@@ -376,11 +375,11 @@ public class CommandListener {
          TreeContext context = treeManager.getContext(root, project, cookie, true);
          
          if(context != null) {
-            processLogger.info("Collapse folder: " + folder);
+            log.info("Collapse folder: " + folder);
             context.folderCollapse(folder);
          }
       } catch(Exception e) {
-         processLogger.info("Error stopping process " + focus, e);
+         log.info("Error stopping process " + focus, e);
       }
    }
    
@@ -405,7 +404,7 @@ public class CommandListener {
             displayPersister.saveDefinition(definition);
          }
       } catch(Exception e) {
-         processLogger.info("Error saving definition", e);
+         log.info("Error saving definition", e);
       }
    }
    
@@ -419,7 +418,7 @@ public class CommandListener {
             commandFilter.clearFocus();
          }
       } catch(Exception e) {
-         processLogger.info("Error stopping process " + focus, e);
+         log.info("Error stopping process " + focus, e);
       }
    }
    
@@ -451,7 +450,7 @@ public class CommandListener {
          }
          processManager.register(forwarder); // make sure we are registered
       } catch(Exception e) {
-         processLogger.info("Error pinging process " + focus, e);
+         log.info("Error pinging process " + focus, e);
       }
    }
    
@@ -493,7 +492,7 @@ public class CommandListener {
             commandClient.sendSyntaxError(path,description,  time, line);
          }
       } catch(Exception e) {
-         processLogger.info("Error pinging process " + focus, e);
+         log.info("Error pinging process " + focus, e);
       }
    }
    
@@ -502,7 +501,7 @@ public class CommandListener {
          lastModified.set(project.getModificationTime());
          commandClient.sendReloadTree();
       } catch(Exception e) {
-         processLogger.info("Error reloading tree", e);
+         log.info("Error reloading tree", e);
       }
    }
    
@@ -511,7 +510,7 @@ public class CommandListener {
          //client.sendProcessTerminate();
          processManager.remove(forwarder);
       } catch(Exception e) {
-         processLogger.info("Error removing listener", e);
+         log.info("Error removing listener", e);
       }
    }
 }

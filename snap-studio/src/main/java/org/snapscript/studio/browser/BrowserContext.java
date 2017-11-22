@@ -8,7 +8,6 @@ public class BrowserContext {
 
    private static final String ICON_PATH = "/resource/img/icon_large.png";
    
-   private final Logger logger;
    private final File directory;
    private final String engine;
    private final String host;
@@ -17,7 +16,6 @@ public class BrowserContext {
    
    public BrowserContext(Builder builder) {
       this.directory = builder.directory;
-      this.logger = builder.logger;
       this.engine = builder.engine;
       this.host = builder.host;
       this.debug = builder.debug;
@@ -26,10 +24,6 @@ public class BrowserContext {
    
    public String getIconPath() {
       return ICON_PATH;
-   }
-
-   public Logger getLogger() {
-      return logger;
    }
    
    public String getEngine() {
@@ -68,11 +62,6 @@ public class BrowserContext {
 
       public Builder() {
          super();
-      }
-
-      public Builder withLogger(Logger logger) {
-         this.logger = logger;
-         return this;
       }
       
       public Builder withEngine(String engine) {

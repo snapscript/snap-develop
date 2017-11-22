@@ -10,6 +10,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.simpleframework.transport.Channel;
 import org.snapscript.common.thread.ThreadBuilder;
 import org.snapscript.studio.agent.event.BeginEvent;
@@ -29,6 +31,7 @@ import org.snapscript.studio.project.Workspace;
 import org.snapscript.studio.project.config.ProcessConfiguration;
 import org.snapscript.studio.tunnel.ProcessEventService;
 
+@Slf4j
 public class ProcessPool {
    
    private static final long DEFAULT_WAIT_TIME = 10000;
@@ -55,16 +58,16 @@ public class ProcessPool {
    }
    
    public ProcessPool(ProcessConfiguration configuration, Workspace workspace, int capacity, long frequency) throws IOException {
-      this.connections = new ProcessConnectionPool(workspace.getLogger());
+      this.connections = new ProcessConnectionPool();
       this.listeners = new CopyOnWriteArraySet<ProcessEventListener>();
       this.running = new LinkedBlockingQueue<ProcessConnection>();
       this.interceptor = new ProcessEventInterceptor(listeners);
-      this.router = new ProcessEventService(interceptor, workspace.getLogger());
+      this.router = new ProcessEventService(interceptor);
       this.launcher = new ProcessLauncher(workspace);
       this.pinger = new ProcessAgentPinger(frequency);
       this.starter = new ProcessAgentStarter(pinger);
       this.filter = new ProcessNameGenerator();
-      this.listener = new ProcessListener(workspace.getLogger());
+      this.listener = new ProcessListener();
       this.manager = new ConsoleManager(listener, frequency);
       this.factory = new ThreadBuilder();
       this.configuration = configuration;
@@ -86,7 +89,7 @@ public class ProcessPool {
          launch(); // start a process straight away
          return connection;
       }catch(Exception e){
-         workspace.getLogger().info("Could not acquire process", e);
+         log.info("Could not acquire process", e);
       }
       return null;
    }
@@ -95,7 +98,7 @@ public class ProcessPool {
       try {
          listeners.add(listener);
       }catch(Exception e){
-         workspace.getLogger().info("Could not register process listener", e);
+         log.info("Could not register process listener", e);
       }
    }
    
@@ -103,7 +106,7 @@ public class ProcessPool {
       try {
          listeners.remove(listener);
       }catch(Exception e){
-         workspace.getLogger().info("Could not remove process listener", e);
+         log.info("Could not remove process listener", e);
       }
    }
    
@@ -119,7 +122,7 @@ public class ProcessPool {
             connection.close(process + " Ping did not succeed");
          }
       }catch(Exception e) {
-         workspace.getLogger().info("Could not ping '" + process + "'", e);
+         log.info("Could not ping '" + process + "'", e);
       }
       return false;
    }
@@ -128,7 +131,7 @@ public class ProcessPool {
       try {
          router.connect(channel);
       } catch(Exception e) {
-         workspace.getLogger().info("Could not connect channel", e);
+         log.info("Could not connect channel", e);
       }
    }
    
@@ -137,7 +140,7 @@ public class ProcessPool {
          manager.start();
          pinger.start(host, port);
       } catch(Exception e) {
-         workspace.getLogger().info("Could not start pool on port " + port, e);
+         log.info("Could not start pool on port " + port, e);
       }
    }
    
@@ -148,7 +151,7 @@ public class ProcessPool {
             thread.start();
          }
       } catch(Exception e) {
-         workspace.getLogger().info("Could not launch process", e);
+         log.info("Could not launch process", e);
       }
    }
    
@@ -170,7 +173,7 @@ public class ProcessPool {
             try {
                listener.onRegister(channel, event);
             } catch(Exception e) {
-               workspace.getLogger().info(process + ": Exception processing exit event", e);
+               log.info(process + ": Exception processing exit event", e);
                listeners.remove(listener);
             }
          }
@@ -184,7 +187,7 @@ public class ProcessPool {
             try {
                listener.onExit(channel, event);
             } catch(Exception e) {
-               workspace.getLogger().info(process + ": Exception processing exit event", e);
+               log.info(process + ": Exception processing exit event", e);
                listeners.remove(listener);
             }
          }
@@ -198,7 +201,7 @@ public class ProcessPool {
             try {
                listener.onWriteError(channel, event);
             } catch(Exception e) {
-               workspace.getLogger().info(process + ": Exception processing write error event", e);
+               log.info(process + ": Exception processing write error event", e);
                listeners.remove(listener);
             }
          }
@@ -212,7 +215,7 @@ public class ProcessPool {
             try {
                listener.onWriteOutput(channel, event);
             } catch(Exception e) {
-               workspace.getLogger().info(process + ": Exception processing write output event", e);
+               log.info(process + ": Exception processing write output event", e);
                listeners.remove(listener);
             }
          }
@@ -226,7 +229,7 @@ public class ProcessPool {
             try {
                listener.onSyntaxError(channel, event);
             } catch(Exception e) {
-               workspace.getLogger().info(process + ": Exception processing syntax error event", e);
+               log.info(process + ": Exception processing syntax error event", e);
                listeners.remove(listener);
             }
          }
@@ -240,7 +243,7 @@ public class ProcessPool {
             try {
                listener.onBegin(channel, event);
             } catch(Exception e) {
-               workspace.getLogger().info(process + ": Exception processing begin event", e);
+               log.info(process + ": Exception processing begin event", e);
                listeners.remove(listener);
             }
          }
@@ -254,7 +257,7 @@ public class ProcessPool {
             try {
                listener.onProfile(channel, event);
             } catch(Exception e) {
-               workspace.getLogger().info(process + ": Exception processing profile event", e);
+               log.info(process + ": Exception processing profile event", e);
                listeners.remove(listener);
             }
          }
@@ -268,7 +271,7 @@ public class ProcessPool {
             try {
                listener.onPong(channel, event);
             } catch(Exception e) {
-               workspace.getLogger().info(process + ": Exception processing pong event", e);
+               log.info(process + ": Exception processing pong event", e);
                listeners.remove(listener);
             }
          }
@@ -282,7 +285,7 @@ public class ProcessPool {
             try {
                listener.onScope(channel, event);
             } catch(Exception e) {
-               workspace.getLogger().info(process + ": Exception processing scope event", e);
+               log.info(process + ": Exception processing scope event", e);
                listeners.remove(listener);
             }
          }
@@ -296,7 +299,7 @@ public class ProcessPool {
             try {
                listener.onFault(channel, event);
             } catch(Exception e) {
-               workspace.getLogger().info(process + ": Exception processing fault event", e);
+               log.info(process + ": Exception processing fault event", e);
                listeners.remove(listener);
             }
          }
@@ -316,7 +319,7 @@ public class ProcessPool {
          try {
             pinger.launch();
          }catch(Exception e) {
-            workspace.getLogger().info("Error starting agent", e);
+            log.info("Error starting agent", e);
          }
       }
    }
@@ -348,7 +351,7 @@ public class ProcessPool {
                Thread.sleep(frequency);
                ping();
             }catch(Exception e) {
-               workspace.getLogger().info("Error pinging agents", e);
+               log.info("Error pinging agents", e);
             }
          }
       }
@@ -366,7 +369,7 @@ public class ProcessPool {
                return true;
             }
          }catch(Exception e) {
-            workspace.getLogger().info("Error launching agent", e);
+            log.info("Error launching agent", e);
          }
          return false;
       }
@@ -382,16 +385,16 @@ public class ProcessPool {
                   String name = connection.toString();
                   
                   try {
-                     workspace.getLogger().debug(name + ": Killing process");
+                     log.debug(name + ": Killing process");
                      connection.close(name + ": Killing process due to over capacity");
                   }catch(Exception e) {
-                     workspace.getLogger().info("Error killing agent " + name, e);
+                     log.info("Error killing agent " + name, e);
                   }
                }
                return true;
             }
          }catch(Exception e) {
-            workspace.getLogger().info("Error killing agent", e);
+            log.info("Error killing agent", e);
          }
          return false;
       }
@@ -424,7 +427,7 @@ public class ProcessPool {
             if(remaining < 0 && require > 0) {
                kill(); // kill if pool grows too large
             }
-            workspace.getLogger().debug("Ping has " + pool + " active from " + require);
+            log.debug("Ping has " + pool + " active from " + require);
             active.clear();
             
             while(!connections.isEmpty()) {
@@ -439,7 +442,7 @@ public class ProcessPool {
             }
             running.addAll(active);
          }catch(Exception e){
-            workspace.getLogger().info("Error pinging agents", e);
+            log.info("Error pinging agents", e);
          }
       }
    }

@@ -14,9 +14,12 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
 import org.snapscript.studio.common.ClassPathReader;
 
+@Slf4j
+@SuppressWarnings("restriction")
 public class JavaFXApplication extends Application {
    
    private static BrowserContext context;
@@ -49,7 +52,7 @@ public class JavaFXApplication extends Application {
             stage.getIcons().add(image);
          }
       }catch(Exception e) {
-         context.getLogger().info("Could not load image", e);
+         log.info("Could not load image", e);
       }
       browser = new JavaFXBrowser(context);
       scene = new Scene(browser, 1200, 800, Color.web("#666970"));

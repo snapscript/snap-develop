@@ -10,6 +10,8 @@ import java.io.StringWriter;
 import java.util.Collections;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.snapscript.studio.agent.ClassPathUpdater;
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexScanner;
@@ -17,6 +19,7 @@ import org.snapscript.studio.project.config.ConfigurationReader;
 import org.snapscript.studio.project.config.Dependency;
 import org.snapscript.studio.project.config.ProjectConfiguration;
 
+@Slf4j
 public class ProjectContext {
    
    private static final String INDEX_DATABASE = "database";
@@ -37,7 +40,7 @@ public class ProjectContext {
       try {
          return reader.loadProjectConfiguration(projectName);
       } catch (Exception e) {
-         workspace.getLogger().info("Could not read .project file for '" + projectName + "'", e);
+         log.info("Could not read .project file for '" + projectName + "'", e);
       }
       return null;
    }
@@ -48,7 +51,7 @@ public class ProjectContext {
       try {
          return getConfiguration().getProjectLayout();
       } catch (Exception e) {
-         workspace.getLogger().info("Could not read .project file for '" + projectName + "'", e);
+         log.info("Could not read .project file for '" + projectName + "'", e);
       }
       return new ProjectLayout();
    }
@@ -147,13 +150,13 @@ public class ProjectContext {
             }
          }
          return builder.toString();
-      } catch(Exception e) {
+      } catch(Exception cause) {
          StringWriter writer = new StringWriter();
          PrintWriter printer = new PrintWriter(writer);
          
-         e.printStackTrace(printer);
+         cause.printStackTrace(printer);
          printer.close();
-         workspace.getLogger().info("Could not create class path for project '" + projectName+ "': " + writer);
+         log.info("Could not create class path for project '" + projectName+ "': " + writer);
          
          return writer.toString();
       }

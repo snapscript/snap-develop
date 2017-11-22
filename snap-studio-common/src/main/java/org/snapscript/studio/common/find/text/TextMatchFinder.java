@@ -7,17 +7,17 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
+
 import org.snapscript.studio.common.FileReader;
 import org.snapscript.studio.common.find.MatchEvaluator;
 import org.snapscript.studio.common.find.MatchType;
 
+@Slf4j
 public class TextMatchFinder {
    
-   private final Logger logger;
-   
-   public TextMatchFinder(Logger logger) {
-      this.logger = logger;
+   public TextMatchFinder() {
+      super();
    }
 
    public List<TextMatch> findText(TextFile textFile, MatchType type, String expression, boolean sensitive) {
@@ -43,7 +43,7 @@ public class TextMatchFinder {
          }
          return matches;
       }catch(Exception e) {
-         logger.debug("Could not read file", e);
+         log.debug("Could not read file", e);
       }
       return Collections.emptyList();
    }
@@ -87,7 +87,7 @@ public class TextMatchFinder {
          }
          return matches;
       }catch(Exception e) {
-         logger.debug("Could not read file", e);
+         log.debug("Could not read file", e);
       }
       return Collections.emptyList();      
    }

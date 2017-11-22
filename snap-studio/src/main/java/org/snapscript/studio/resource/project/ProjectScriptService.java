@@ -1,6 +1,7 @@
 package org.snapscript.studio.resource.project;
 
 import static org.snapscript.studio.common.resource.SessionConstants.SESSION_ID;
+import lombok.extern.slf4j.Slf4j;
 
 import org.simpleframework.http.Cookie;
 import org.simpleframework.http.Path;
@@ -20,6 +21,7 @@ import org.snapscript.studio.project.Workspace;
 import org.snapscript.studio.resource.tree.TreeContextManager;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class ProjectScriptService implements Service {
    
@@ -69,7 +71,6 @@ public class ProjectScriptService implements Service {
                   problemFinder, 
                   displayPersister,
                   channel, 
-                  workspace.getLogger(), 
                   backupManager, 
                   treeManager,
                   project,
@@ -80,10 +81,10 @@ public class ProjectScriptService implements Service {
             channel.register(commandController);
             connectListener.connect(commandListener, path); // if there is a script then execute it
          } catch(Exception e) {
-            workspace.getLogger().info("Could not connect " + path, e);
+            log.info("Could not connect " + path, e);
          }
       }catch(Exception e){
-         workspace.getLogger().info("Error connecting " + path, e);
+         log.info("Error connecting " + path, e);
       }
       
    }

@@ -3,10 +3,13 @@ package org.snapscript.studio.common.resource.display;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.simpleframework.xml.core.Persister;
 import org.snapscript.studio.common.FileDirectorySource;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class DisplayPersister {
    
@@ -59,7 +62,7 @@ public class DisplayPersister {
                loadTime = displayFile.lastModified();
             }
          }catch(Exception e) {
-            workspace.getLogger().info("Could not save display", e);
+            log.info("Could not save display", e);
          }
          reference.set(definition);
       }
@@ -78,7 +81,7 @@ public class DisplayPersister {
                }
             }
          }catch(Exception e) {
-            workspace.getLogger().info("Could not read theme", e);
+            log.info("Could not read theme", e);
          }
          if(definition == null) {
             return DisplayDefinition.getDefault();

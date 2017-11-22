@@ -40,7 +40,7 @@ public class Workspace implements FileDirectorySource {
          @Value("${mode}") String mode) 
    {
       this.reader = new ConfigurationReader(this);
-      this.pool = new ThreadPool(6);
+      this.pool = new ThreadPool(10);
       this.manager = new ProjectManager(reader, this, mode);
       this.root = root;
    }
@@ -55,11 +55,6 @@ public class Workspace implements FileDirectorySource {
    
    public Executor getExecutor(){
       return pool;
-   }
-   
-   @Override
-   public Logger getLogger() {
-      return log;
    }
    
    public Project getProject(String name){ 
@@ -186,7 +181,7 @@ public class Workspace implements FileDirectorySource {
          createDefaultFile(directory, ".gitignore", "/.display\n/.workspace\n/.temp/\n/.backup/\n");
          createDefaultFile(directory, ".workspace", "<workspace></workspace>\n");
       }catch(Exception e) {
-         getLogger().info("Could not create default workspace at '" + file + "'", e);
+         log.info("Could not create default workspace at '" + file + "'", e);
       }
    }
    

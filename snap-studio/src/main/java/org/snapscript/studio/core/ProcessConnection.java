@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.snapscript.studio.agent.event.BreakpointsEvent;
 import org.snapscript.studio.agent.event.BrowseEvent;
@@ -16,6 +17,7 @@ import org.snapscript.studio.agent.event.StepEvent;
 import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.Workspace;
 
+@Slf4j
 @AllArgsConstructor
 public class ProcessConnection {
 
@@ -38,7 +40,7 @@ public class ProcessConnection {
 
          return channel.send(event);
       } catch (Exception e) {
-         workspace.getLogger().info(process + ": Error occured sending execute event", e);
+         log.info(process + ": Error occured sending execute event", e);
          close(process + ": Error occured sending execute event: " + e);
          throw new IllegalStateException("Could not execute script '" + resource + "' for '" + process + "'", e);
       }
@@ -52,7 +54,7 @@ public class ProcessConnection {
          
          return channel.send(event);
       } catch (Exception e) {
-         workspace.getLogger().info(process + ": Error occured sending suspend event", e);
+         log.info(process + ": Error occured sending suspend event", e);
          close(process + ": Error occured sending suspend event: " + e);
          throw new IllegalStateException("Could not set breakpoints '" + breakpoints + "' for '" + process + "'", e);
       }
@@ -67,7 +69,7 @@ public class ProcessConnection {
          
          return channel.send(event);
       } catch (Exception e) {
-         workspace.getLogger().info(process + ": Error occured sending browse event", e);
+         log.info(process + ": Error occured sending browse event", e);
          close(process + ": Error occured sending browse event: " + e);
          throw new IllegalStateException("Could not browse '" + thread + "' for '" + process + "'", e);
       }
@@ -84,7 +86,7 @@ public class ProcessConnection {
          
          return channel.send(event);
       } catch (Exception e) {
-         workspace.getLogger().info(process + ": Error occured sending evaluate event", e);
+         log.info(process + ": Error occured sending evaluate event", e);
          close(process + ": Error occured sending evaluate event: " + e);
          throw new IllegalStateException("Could not evaluate '" + expression + "' on '" + thread + "' for '" + process + "'", e);
       }
@@ -99,7 +101,7 @@ public class ProcessConnection {
 
          return channel.send(event);
       } catch (Exception e) {
-         workspace.getLogger().info(process + ": Error occured sending step event", e);
+         log.info(process + ": Error occured sending step event", e);
          close(process + ": Error occured sending step event: " + e);
          throw new IllegalStateException("Could not resume script thread '" + thread + "' for '" + process + "'", e);
       }
@@ -112,12 +114,12 @@ public class ProcessConnection {
             .build();
          
          if(channel.send(event)) {
-            workspace.getLogger().trace(process + ": Ping succeeded");
+            log.trace(process + ": Ping succeeded");
             return true;
          }
-         workspace.getLogger().info(process + ": Ping failed");
+         log.info(process + ": Ping failed");
       } catch (Exception e) {
-         workspace.getLogger().info(process + ": Error occured sending ping event", e);
+         log.info(process + ": Error occured sending ping event", e);
          close(process + ": Error occured sending ping event: " + e);
       }
       return false;
@@ -143,10 +145,10 @@ public class ProcessConnection {
    
    public void close(String reason) {
       try {
-         workspace.getLogger().info(process + ": Closing connection: " +reason);
+         log.info(process + ": Closing connection: " +reason);
          channel.close(process + ": Closing connection: " +reason);
       } catch (Exception e) {
-         workspace.getLogger().info(process + ": Error occured closing channel", e);
+         log.info(process + ": Error occured closing channel", e);
       }
    }
 

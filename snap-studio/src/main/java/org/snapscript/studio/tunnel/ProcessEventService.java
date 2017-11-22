@@ -24,23 +24,21 @@ public class ProcessEventService implements MessageEnvelopeProcessor, ProcessEve
    private final ProcessEventRouter router;
    private final Executor executor;
    private final Reactor reactor;
-   private final Logger logger;
    
-   public ProcessEventService(ProcessEventListener listener, Logger logger) throws IOException {
-      this(listener, logger, 5);
+   public ProcessEventService(ProcessEventListener listener) throws IOException {
+      this(listener, 5);
    }
 
-   public ProcessEventService(ProcessEventListener listener, Logger logger, int threads) throws IOException {
+   public ProcessEventService(ProcessEventListener listener, int threads) throws IOException {
       this.marshallers = new ConcurrentHashMap<Integer, ProcessEventMarshaller>();
       this.channels = new ConcurrentHashMap<String, ProcessEventChannel>();
       this.router = new ProcessEventRouter(listener);
       this.executor = new ThreadPool(threads);
       this.reactor = new ExecutorReactor(executor);
-      this.logger = logger;
    }
    
    public void connect(Channel channel) throws Exception {
-      MessageEnvelopeCollector collector = new MessageEnvelopeCollector(this, logger, reactor, executor, channel);
+      MessageEnvelopeCollector collector = new MessageEnvelopeCollector(this, reactor, executor, channel);
       reactor.process(collector);
    }
 

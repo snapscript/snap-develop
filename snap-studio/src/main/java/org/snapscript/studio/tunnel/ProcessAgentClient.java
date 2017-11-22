@@ -5,6 +5,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.simpleframework.transport.Channel;
 import org.slf4j.Logger;
 import org.snapscript.studio.agent.event.ProcessEvent;
@@ -13,17 +15,18 @@ import org.snapscript.studio.agent.event.ProcessEventProducer;
 import org.snapscript.studio.agent.log.ProcessLog;
 import org.snapscript.studio.agent.log.ProcessLogger;
 
+@Slf4j
 public class ProcessAgentClient implements ProcessEventChannel {
 
    private final ProcessEventProducer producer;
    private final ProcessLogger adapter;
    private final OutputStream stream;
    private final AtomicBoolean open;
-   private final ProcessLog log;
+   private final ProcessLog logger;
    
-   public ProcessAgentClient(Logger logger, Executor executor, Channel channel) {
-      this.log = new LoggerLog(logger);
-      this.adapter = new ProcessLogger(log);
+   public ProcessAgentClient(Executor executor, Channel channel) {
+      this.logger = new LoggerLog(log);
+      this.adapter = new ProcessLogger(logger);
       this.stream = new ChannelOutputStream(channel);
       this.producer = new ProcessEventProducer(adapter, stream, stream, executor);
       this.open = new AtomicBoolean(true);

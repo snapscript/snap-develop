@@ -6,9 +6,12 @@ import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.simpleframework.http.Path;
 import org.snapscript.studio.project.config.ConfigurationReader;
 
+@Slf4j
 public class ProjectManager {
    
    private static final String DEFAULT_PROJECT = "default";
@@ -84,7 +87,7 @@ public class ProjectManager {
          createDefaultFile(directory, ".gitignore", "/.project\n/.classpath\n");
          createDefaultFile(directory, ".project", "<project></project>");
       }catch(Exception e) {
-         workspace.getLogger().info("Could not create default project at '" + file + "'", e);
+         log.info("Could not create default project at '" + file + "'", e);
       }
    }
 }
