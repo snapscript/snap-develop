@@ -3,23 +3,23 @@ package org.snapscript.studio.project;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ProjectFileCache {
+public class FileCache {
 
-   private final Map<String, ProjectFile> cache;
+   private final Map<String, FileData> cache;
    private final Workspace workspace;
    
-   public ProjectFileCache(Workspace workspace) {
-      this.cache = new ConcurrentHashMap<String, ProjectFile>();
+   public FileCache(Workspace workspace) {
+      this.cache = new ConcurrentHashMap<String, FileData>();
       this.workspace = workspace;
    }
    
-   public ProjectFile getFile(String projectName, String projectPath) throws Exception {
+   public FileData getFile(String projectName, String projectPath) throws Exception {
       String pathKey = projectName + ":" + projectPath;
-      ProjectFile file = cache.get(pathKey);
+      FileData file = cache.get(pathKey);
       
       if(file == null || file.isStale()) {
          Project project = workspace.createProject(projectName);
-         ProjectFileSystem fileSystem = project.getFileSystem();
+         FileSystem fileSystem = project.getFileSystem();
          
          file = fileSystem.readFile(projectPath);
          cache.put(pathKey, file);

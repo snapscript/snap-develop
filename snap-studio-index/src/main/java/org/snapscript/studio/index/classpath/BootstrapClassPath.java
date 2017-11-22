@@ -44,7 +44,13 @@ public class BootstrapClassPath {
       }
    }
    
-   public static Set<IndexNode> getBootstrapClasses() {
+   public static void initialize() {
+      getBootstrapClasses();
+      getDefaultImportClasses();
+      getDefaultImportNames();
+   }
+   
+   public static synchronized Set<IndexNode> getBootstrapClasses() {
       if(BOOTSTRAP_CLASSES.isEmpty()) {
          try {
             String javaHome = System.getProperty("java.home");
@@ -65,7 +71,7 @@ public class BootstrapClassPath {
       return Collections.unmodifiableSet(BOOTSTRAP_CLASSES);
    }
    
-   public static Map<String, IndexNode> getDefaultImportClasses() {
+   public static synchronized Map<String, IndexNode> getDefaultImportClasses() {
       if(DEFAULT_IMPORT_CLASSES.isEmpty()) {
          Set<IndexNode> nodes = getBootstrapClasses();
          Map<String, IndexNode> names = getDefaultImportNames();
@@ -88,7 +94,7 @@ public class BootstrapClassPath {
       return Collections.unmodifiableMap(DEFAULT_IMPORT_CLASSES);
    }
    
-   public static Map<String, IndexNode> getDefaultImportNames() {
+   public static synchronized Map<String, IndexNode> getDefaultImportNames() {
       if(DEFAULT_IMPORT_NAMES.isEmpty()) {
          Set<IndexNode> nodes = getBootstrapClasses();
 

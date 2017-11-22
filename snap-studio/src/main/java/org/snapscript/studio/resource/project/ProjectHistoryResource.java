@@ -18,7 +18,7 @@ import org.snapscript.studio.common.resource.ResourcePath;
 import org.snapscript.studio.core.BackupFile;
 import org.snapscript.studio.core.BackupManager;
 import org.snapscript.studio.project.Project;
-import org.snapscript.studio.project.ProjectFileSystem;
+import org.snapscript.studio.project.FileSystem;
 import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
@@ -56,7 +56,7 @@ public class ProjectHistoryResource implements Resource {
       Path path = request.getPath(); 
       String projectPath = path.getPath(2);
       Project project = workspace.createProject(path);
-      ProjectFileSystem system = project.getFileSystem();
+      FileSystem system = project.getFileSystem();
       File file = system.getFile(path);
       String name = project.getProjectName();
       long modificationTime = file.lastModified();
@@ -98,7 +98,7 @@ public class ProjectHistoryResource implements Resource {
       String timeStamp = request.getParameter("time"); // do we load file
       Path path = request.getPath(); 
       Project project = workspace.createProject(path);
-      ProjectFileSystem system = project.getFileSystem();
+      FileSystem system = project.getFileSystem();
       File file = system.getFile(path);
       String name = project.getProjectName();
       List<BackupFile> files = manager.findAllBackups(file, name);

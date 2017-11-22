@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.snapscript.studio.agent.ClassPathUpdater;
 import org.snapscript.studio.project.Project;
-import org.snapscript.studio.project.ProjectFileSystem;
+import org.snapscript.studio.project.FileSystem;
 
 public class ConfigurationClassLoader {
    
@@ -48,7 +48,7 @@ public class ConfigurationClassLoader {
       ClassLoader classLoader = reference.get();
    
       if(classLoader != null) {
-         ProjectFileSystem fileSystem = project.getFileSystem();
+         FileSystem fileSystem = project.getFileSystem();
          File classPathFile = fileSystem.getFile(CLASSPATH_FILE);
          long lastModified = classPathFile.lastModified();
          long updateTime = lastUpdate.get();

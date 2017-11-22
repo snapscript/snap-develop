@@ -17,10 +17,10 @@ import org.simpleframework.http.Path;
 import org.slf4j.Logger;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.studio.common.FileDirectorySource;
+import org.snapscript.studio.index.classpath.BootstrapClassPath;
 import org.snapscript.studio.project.config.ConfigurationReader;
 import org.snapscript.studio.project.config.Dependency;
 import org.snapscript.studio.project.config.ProjectConfiguration;
-import org.snapscript.studio.project.config.WorkspaceConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -46,7 +46,11 @@ public class Workspace implements FileDirectorySource {
    }
    
    public File getRoot() {
-      return createWorkspace();
+      try {
+         return root.getCanonicalFile();
+      }catch(Exception e){
+         throw new IllegalStateException("Could not determine workspace root", e);
+      }
    }
    
    public Executor getExecutor(){
@@ -120,6 +124,12 @@ public class Workspace implements FileDirectorySource {
             directory.mkdirs();
             createDefaultWorkspace(directory);
          }
+         getExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+               BootstrapClassPath.initialize(); // load all classes
+            }
+         });
          getProjects();// resolve the dependencies
          return directory;
       }catch(Exception e) {
@@ -144,8 +154,17 @@ public class Workspace implements FileDirectorySource {
                      File file = new File(directory, ProjectConfiguration.PROJECT_FILE);
                      
                      if(file.exists()) {
-                        Project project = createProject(name);
-                        project.getClassPath(); // resolve dependencies
+                        final Project project = createProject(name);
+                        
+                        getExecutor().execute(new Runnable() {
+                           @Override
+                           public void run() {
+                              try {
+                                 project.getClassPath(); // resolve dependencies
+                                 project.getIndexDatabase().getTypeNodes(); // index all classes
+                              }catch(Throwable e) {}
+                           }
+                        });
                      }
                   }
                }

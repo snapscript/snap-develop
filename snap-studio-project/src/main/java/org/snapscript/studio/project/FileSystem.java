@@ -9,11 +9,11 @@ import java.io.InputStream;
 import org.simpleframework.http.Path;
 import org.snapscript.studio.common.ClassPathReader;
 
-public class ProjectFileSystem {
+public class FileSystem {
 
    private final Project project;
    
-   public ProjectFileSystem(Project project) {
+   public FileSystem(Project project) {
       this.project = project;
    }
    
@@ -75,12 +75,12 @@ public class ProjectFileSystem {
       return buffer.toByteArray();
    }
    
-   public ProjectFile readFile(Path path) throws Exception {
+   public FileData readFile(Path path) throws Exception {
       String projectPath = path.getPath(2); // /<project-name>/<project-path> or /default/blah.snap
       return readFile(projectPath);
    }
    
-   public ProjectFile readFile(String path) throws Exception {
+   public FileData readFile(String path) throws Exception {
       long time = System.currentTimeMillis();
       File sourcePath = project.getSourcePath();
       File rootPath = project.getProjectPath();
@@ -89,11 +89,11 @@ public class ProjectFileSystem {
       File projectFile = new File(rootPath, realPath);
       
       if(sourceFile.exists()) {
-         return new ProjectFile(this, path, sourceFile, time);
+         return new FileData(this, path, sourceFile, time);
       } else if(projectFile.exists()) {
-         return new ProjectFile(this, path, projectFile, time);
+         return new FileData(this, path, projectFile, time);
       }          
-      return new ProjectFile(this, path, null, time);
+      return new FileData(this, path, null, time);
    }
    
 }

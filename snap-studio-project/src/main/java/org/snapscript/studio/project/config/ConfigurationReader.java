@@ -27,7 +27,7 @@ import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.util.Dictionary;
 import org.simpleframework.xml.util.Entry;
 import org.snapscript.studio.project.Project;
-import org.snapscript.studio.project.ProjectFileSystem;
+import org.snapscript.studio.project.FileSystem;
 import org.snapscript.studio.project.ProjectLayout;
 import org.snapscript.studio.project.Workspace;
 import org.snapscript.studio.project.maven.RepositoryClient;
@@ -89,7 +89,7 @@ public class ConfigurationReader {
          
          if(isProjectConfigurationStale(name)) {
             Project project = workspace.createProject(name);
-            ProjectFileSystem fileSystem = project.getFileSystem();
+            FileSystem fileSystem = project.getFileSystem();
             File file = fileSystem.getFile(PROJECT_FILE);
             ProjectDefinition definition = persister.read(ProjectDefinition.class, file);
             
@@ -113,7 +113,7 @@ public class ConfigurationReader {
          return true;
       }
       Project project = workspace.createProject(name);
-      ProjectFileSystem fileSystem = project.getFileSystem();
+      FileSystem fileSystem = project.getFileSystem();
       File file = fileSystem.getFile(PROJECT_FILE);
       
       if(file.exists()) {
