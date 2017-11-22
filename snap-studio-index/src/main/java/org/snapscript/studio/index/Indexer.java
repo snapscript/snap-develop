@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.snapscript.common.ArrayStack;
 import org.snapscript.common.Stack;
@@ -112,9 +113,10 @@ public class Indexer {
       @Override
       public void update(Index index) {
          final IndexFileNode node = new IndexFileNode(database, index, resource);
+         final AtomicBoolean constructors = new AtomicBoolean();
+         final AtomicBoolean merges = new AtomicBoolean();
          final IndexType type = index.getType();
          final int line = index.getLine();
-         int constructors = 0;
          
          while(!stack.isEmpty()) {
             IndexFileNode top = stack.peek();
@@ -126,13 +128,14 @@ public class Indexer {
             }  
             if(parents.contains(type)) {
                if(top.getType().isConstructor()) {
-                  constructors++; // if == 0 then add a no arg constructor
+                  constructors.set(true); // if == 0 then add a no arg constructor
                }
-               if(node.getType().isFunction() && top.getType().isCompound()) {
+               if(node.getType().isFunction() && top.getType().isCompound() && !merges.get()) {
                   Set<IndexNode> nodes = top.getNodes();
                   
                   top.setParent(node);
                   node.getNodes().addAll(nodes);
+                  merges.set(true);
                } else {
                   top.setParent(node);
                   node.getNodes().add(top);
@@ -143,7 +146,7 @@ public class Indexer {
             }
          }
          if(type.isClass()) {
-            if(constructors == 0) {
+            if(!constructors.get()) {
                Index constructorIndex = createDefaultConstructor(index);
                IndexFileNode constructor = new IndexFileNode(database, constructorIndex, resource);
                

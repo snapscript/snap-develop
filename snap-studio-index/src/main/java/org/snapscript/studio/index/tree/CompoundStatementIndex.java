@@ -22,7 +22,7 @@ public class CompoundStatementIndex implements Compilation {
       Object result = statement.compile(module, path, line);
       String prefix = module.getName();
       
-      return new IndexResult(COMPOUND, result, null, prefix, "", path, line);
+      return new IndexResult(COMPOUND, result, null, prefix, "{}", path, line); // N.B name of {} is important for ordering nodes
    }
 
 }

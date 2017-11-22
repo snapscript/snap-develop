@@ -79,7 +79,12 @@ public class CompletionCompiler {
             builder.append(entry);
             builder.append("\n");
          }
-         return builder.toString();
+         source = builder.toString();
+      }
+      int length = source.trim().length();
+      
+      if(length == 0) {
+         return "println();"; // provide some empty source  
       }
       return source;
    }

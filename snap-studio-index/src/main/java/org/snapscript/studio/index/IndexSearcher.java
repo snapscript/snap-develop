@@ -9,10 +9,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.snapscript.studio.index.classpath.BootstrapClassPath;
-import org.snapscript.studio.index.classpath.ClassIndexProcessor;
 import org.snapscript.studio.index.counter.BraceCounter;
 
 public class IndexSearcher implements IndexFile {
+   
+   private static final Map<String, IndexNode> DEFAULT_IMPORTS = BootstrapClassPath.getDefaultImportNames();
 
    private final IndexNodeComparator comparator;
    private final BraceCounter counter;
@@ -105,9 +106,7 @@ public class IndexSearcher implements IndexFile {
    }
    
    public static Map<String, IndexNode> getNodesInScope(IndexNode node) {
-      Map<String, IndexNode> scope = new HashMap<String, IndexNode>();
-      
-      scope.putAll(BootstrapClassPath.getDefaultImportNames());
+      Map<String, IndexNode> scope = new HashMap<String, IndexNode>(DEFAULT_IMPORTS);
       
       while(node != null) {
          Set<IndexNode> nodes = node.getNodes();

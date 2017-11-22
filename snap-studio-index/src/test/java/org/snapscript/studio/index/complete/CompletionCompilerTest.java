@@ -10,14 +10,10 @@ import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
 import org.snapscript.studio.index.IndexDatabase;
-import org.snapscript.studio.index.IndexPathTranslator;
 import org.snapscript.studio.index.IndexScanner;
-import org.snapscript.studio.index.Indexer;
-import org.snapscript.studio.index.MockIndexDatabase;
 
 public class CompletionCompilerTest extends TestCase {
 
-   private static final String SOURCE_TO_REPLACE = "// replace me";
    private static final String SOURCE = 
    "class SomePath {\n"+
    "   var memb1: TypeEnum;\n"+
@@ -66,7 +62,7 @@ public class CompletionCompilerTest extends TestCase {
             FindConstructorsInScope.class,
             FindPossibleImports.class);
       
-      CompletionRequest request = buildRequest(SOURCE, "do");
+      CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE, "do");
       Map<String, String> completion = compiler.compile(request).getTokens();
       
       assertNotNull(completion.get("doSomething()"));
@@ -74,7 +70,7 @@ public class CompletionCompilerTest extends TestCase {
       assertEquals(completion.get("doSomething()"), "function");
       assertEquals(completion.get("doSomething(index)"), "function");
       
-      request = buildRequest(SOURCE, "memb");
+      request = SourceCodeInterpolator.buildRequest(SOURCE, "memb");
       completion = compiler.compile(request).getTokens();
       
       assertNotNull(completion.get("memb1"));
@@ -82,14 +78,14 @@ public class CompletionCompilerTest extends TestCase {
       assertEquals(completion.get("memb1"), "property");
       assertEquals(completion.get("memb2"), "property");
       
-      request = buildRequest(SOURCE, "memb1");
+      request = SourceCodeInterpolator.buildRequest(SOURCE, "memb1");
       completion = compiler.compile(request).getTokens();
       
       assertNotNull(completion.get("memb1"));
       assertNull(completion.get("memb2"));
       assertEquals(completion.get("memb1"), "property");
       
-      request = buildRequest(SOURCE, "InnerClass.");
+      request = SourceCodeInterpolator.buildRequest(SOURCE, "InnerClass.");
       completion = compiler.compile(request).getTokens();
       
       assertNotNull(completion.get("x"));
@@ -99,7 +95,7 @@ public class CompletionCompilerTest extends TestCase {
       assertEquals(completion.get("length"), "property");
       assertEquals(completion.get("someInnerFunc()"), "function");
       
-      request = buildRequest(SOURCE, "InnerClass.l");
+      request = SourceCodeInterpolator.buildRequest(SOURCE, "InnerClass.l");
       completion = compiler.compile(request).getTokens();
       
       assertNull(completion.get("x"));
@@ -107,7 +103,7 @@ public class CompletionCompilerTest extends TestCase {
       assertNull(completion.get("someInnerFunc()"));
       assertEquals(completion.get("length"), "property");
       
-      request = buildRequest(SOURCE, "");
+      request = SourceCodeInterpolator.buildRequest(SOURCE, "");
       completion = compiler.compile(request).getTokens();
       
       assertNotNull(completion.get("SomePath"));
@@ -127,41 +123,10 @@ public class CompletionCompilerTest extends TestCase {
       assertEquals(completion.get("InnerClass"), "class");
       assertEquals(completion.get("TypeEnum"), "enum");
       
-      request = buildRequest(SOURCE, "new ");
+      request = SourceCodeInterpolator.buildRequest(SOURCE, "new ");
       completion = compiler.compile(request).getTokens();
       
       assertNotNull(completion.get("InnerClass(x, length)"));
       assertEquals(completion.get("InnerClass(x, length)"), "constructor");
-   }
-   
-   
-   private static CompletionRequest buildRequest(String source, String expression) {
-      StringBuilder builder = new StringBuilder();
-      CompletionRequest request = new CompletionRequest();
-      String lines[] = source.split("\\r?\\n");
-      int line = -1;
-      
-      for(int i = 0; i < lines.length; i++){
-         String entry = lines[i];
-      
-         if(entry.contains(SOURCE_TO_REPLACE)) {
-            builder.append("");
-            line = i + 1;
-         } else {
-            builder.append(entry);
-         }
-         builder.append("\n");
-      }
-      if(line == -1) {
-         throw new IllegalStateException("Could not find " + SOURCE_TO_REPLACE);
-      }
-      String formatted = builder.toString();
-      
-      request.setComplete(expression);
-      request.setLine(line);
-      request.setResource("/some/resource.snap");
-      request.setSource(formatted);
-      
-      return request;
    }
 }

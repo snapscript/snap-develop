@@ -192,7 +192,7 @@ public class IndexerTest extends TestCase {
       assertEquals(searcher.getNodeAtLine(25).getName(), "ModClass()");
       assertEquals(searcher.getNodeAtLine(25).getFullName(), "ModClass()");      
       assertEquals(searcher.getNodeAtLine(45).getType(), IndexType.COMPOUND);
-      assertEquals(searcher.getNodeAtLine(45).getName(), "");
+      assertEquals(searcher.getNodeAtLine(45).getName(), "{}");
       assertEquals(searcher.getNodeAtLine(56).getType(), IndexType.CONSTRUCTOR);
       assertEquals(searcher.getNodeAtLine(56).getName(), "Blah(text)");
    }

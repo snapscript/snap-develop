@@ -57,4 +57,32 @@ public class ImportCompletionTest extends TestCase {
       assertEquals(completion.get("util.HashMap"), "class");
       assertEquals(completion.get("util.HashSet"), "class");
    }
+   
+   public void testImportCompletionForEmptySource() throws Exception {
+      ClassPathStore store = new ClassPathStore();
+      Context context = new StoreContext(store);
+      ThreadPool pool = new ThreadPool(2);
+      File file = File.createTempFile("test", getClass().getSimpleName());
+      IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
+      CompletionCompiler compiler = new CompletionCompiler(database, 
+            FindForFunction.class,
+            FindForVariable.class,
+            FindInScopeMatching.class,
+            FindConstructorsInScope.class,
+            FindPossibleImports.class);
+      
+      CompletionRequest request = new CompletionRequest();
+      
+      request.setComplete("import Has");
+      request.setSource("");
+      request.setLine(1);
+      request.setResource("/example.snap");
+      
+      Map<String, String> completion = compiler.compile(request).getTokens();
+      
+      assertNotNull(completion.get("util.HashMap"));
+      assertNotNull(completion.get("util.HashSet"));
+      assertEquals(completion.get("util.HashMap"), "class");
+      assertEquals(completion.get("util.HashSet"), "class");
+   }
 }
