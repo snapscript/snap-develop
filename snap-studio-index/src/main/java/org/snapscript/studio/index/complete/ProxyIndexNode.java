@@ -19,6 +19,11 @@ public class ProxyIndexNode implements IndexNode {
    }
    
    @Override
+   public boolean isNative() {
+      return node.isNative();
+   }
+   
+   @Override
    public boolean isPublic(){
       return node.isPublic();
    }

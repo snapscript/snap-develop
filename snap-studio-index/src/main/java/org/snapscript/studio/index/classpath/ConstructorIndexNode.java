@@ -20,9 +20,15 @@ public class ConstructorIndexNode implements IndexNode {
       this.constructor = constructor;
    }
    
+   
    @Override
    public int getLine() {
       return -1;
+   }
+   
+   @Override
+   public boolean isNative(){
+      return true;
    }
    
    @Override

@@ -5,6 +5,7 @@ import java.util.Set;
 public interface IndexNode {
    int getLine();
    boolean isPublic();
+   boolean isNative();
    String getResource();
    String getAbsolutePath();
    String getName();
@@ -15,5 +16,7 @@ public interface IndexNode {
    IndexNode getParent();
    IndexType getType();
    Set<IndexNode> getNodes();
+   // this node should be implemented to form a cache for super lookups
+   //Set<IndexNode> getSuperNodes(); 
 }
  

@@ -21,6 +21,11 @@ public class FieldIndexNode implements IndexNode {
    }
    
    @Override
+   public boolean isNative(){
+      return true;
+   }
+   
+   @Override
    public boolean isPublic(){
       return field.isAccessible();
    }

@@ -57,11 +57,32 @@ public class ClassIndexProcessor {
    public static Set<IndexNode> getChildren(ClassInfo info) {
       Set<IndexNode> nodes = new HashSet<IndexNode>();
       
+      nodes.addAll(getSupers(info));
       nodes.addAll(getConstructors(info));
       nodes.addAll(getMethods(info));
       nodes.addAll(getFields(info));
       nodes.addAll(getInnerClasses(info));
       
+      return nodes;
+   }
+   
+   public static Set<IndexNode> getSupers(ClassInfo info) {
+      Set<IndexNode> nodes = new HashSet<IndexNode>();
+      
+      try{
+         Class type = info.load();
+         Class superType = type.getSuperclass();
+         Class[] declaredInterfaces = type.getInterfaces();
+         
+         for(Class declaredInterface : declaredInterfaces) {
+            IndexNode node = getSuperIndexNode(declaredInterface);
+            nodes.add(node);
+         }
+         IndexNode node = getSuperIndexNode(superType);
+         nodes.add(node);
+      }catch(Throwable cause) {
+         //cause.printStackTrace();
+      }
       return nodes;
    }
 
@@ -187,6 +208,15 @@ public class ClassIndexProcessor {
    public static IndexNode getIndexNode(Class type) {
       ClassInfo info = getClassInfo(type);
       return getIndexNode(info);
+   }
+   
+   public static IndexNode getSuperIndexNode(Class type) {
+      ClassInfo info = getClassInfo(type);
+      return new SuperIndexNode(info);
+   }
+
+   public static IndexNode getSuperIndexNode(ClassInfo info) {
+      return new SuperIndexNode(info);
    }
    
    public static IndexNode getIndexNode(ClassInfo info) {

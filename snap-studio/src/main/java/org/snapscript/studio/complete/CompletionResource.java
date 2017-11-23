@@ -17,6 +17,7 @@ import org.snapscript.studio.index.complete.FindForFunction;
 import org.snapscript.studio.index.complete.FindForVariable;
 import org.snapscript.studio.index.complete.FindInScopeMatching;
 import org.snapscript.studio.index.complete.FindPossibleImports;
+import org.snapscript.studio.index.complete.FindThis;
 import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
@@ -49,6 +50,7 @@ public class CompletionResource implements Resource {
       CompletionRequest context = gson.fromJson(content, CompletionRequest.class);
       CompletionCompiler compiler = new CompletionCompiler(project.getIndexDatabase(),
             FindForFunction.class,
+            FindThis.class,
             FindForVariable.class,
             FindInScopeMatching.class,
             FindConstructorsInScope.class,

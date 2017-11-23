@@ -34,39 +34,66 @@ public class FindForVariable implements CompletionFinder {
    public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, UserText text) throws Exception {
       Map<String, IndexNode> expandedScope = IndexSearcher.getNodesInScope(node);
       String handle = text.getHandle();
-      String unfinished = text.getUnfinished();
       IndexNode handleNode = findHandle(database, expandedScope, handle);
       
       if(handleNode != null) {
-         Set<IndexNode> matched = new HashSet<IndexNode>();
-         Map<String, IndexNode> handleNodeScope = IndexSearcher.getNodesInScope(handleNode);
-         Set<Entry<String, IndexNode>> entries = handleNodeScope.entrySet();
-         String fullName = handleNode.getFullName();
-         
-         for(Entry<String, IndexNode> entry : entries) {
-            String name = entry.getKey();
-            IndexNode childNode = entry.getValue();
-            IndexType type = childNode.getType();
-            
-            if(name.startsWith(unfinished) && !type.isImport()) {
-               if(type.isType()) {
-                  IndexNode parent = childNode.getParent();
-                  
-                  if(parent != null) {
-                     String parentName = parent.getFullName();
-                     
-                     if(fullName.equals(parentName)) {
-                        matched.add(childNode);
-                     }
-                  }
-               } else if(!type.isConstructor()) {
-                  matched.add(childNode);
-               }
-            }
+         if(handleNode.isNative()) {
+            return findForNativeNode(database, handleNode, text);
          }
-         return matched;
+         return findForNode(database, handleNode, text);
       }
       return Collections.emptySet();
+   }
+   
+   private Set<IndexNode> findForNativeNode(IndexDatabase database, IndexNode handleNode, UserText text) throws Exception {
+      Set<IndexNode> matched = new HashSet<IndexNode>();
+      Map<String, IndexNode> handleNodeScope = IndexSearcher.getNodesInScope(handleNode);
+      Set<Entry<String, IndexNode>> entries = handleNodeScope.entrySet();
+      String unfinished = text.getUnfinished();
+      
+      for(Entry<String, IndexNode> entry : entries) {
+         String name = entry.getKey();
+         IndexNode childNode = entry.getValue();
+         IndexType type = childNode.getType();
+         
+         if(name.startsWith(unfinished)) {
+            if(type.isProperty() || type.isMemberFunction()) {
+               matched.add(childNode);
+            }
+         }
+      }
+      return matched;
+   }
+   
+   private Set<IndexNode> findForNode(IndexDatabase database, IndexNode handleNode, UserText text) throws Exception {
+      Set<IndexNode> matched = new HashSet<IndexNode>();
+      Map<String, IndexNode> handleNodeScope = IndexSearcher.getNodesInScope(handleNode);
+      Set<Entry<String, IndexNode>> entries = handleNodeScope.entrySet();
+      String fullName = handleNode.getFullName();
+      String unfinished = text.getUnfinished();
+      
+      for(Entry<String, IndexNode> entry : entries) {
+         String name = entry.getKey();
+         IndexNode childNode = entry.getValue();
+         IndexType type = childNode.getType();
+         
+         if(name.startsWith(unfinished) && !type.isImport()) {
+            if(type.isType()) {
+               IndexNode parent = childNode.getParent();
+               
+               if(parent != null) {
+                  String parentName = parent.getFullName();
+                  
+                  if(fullName.equals(parentName)) { // is the parent the same as the handleNode
+                     matched.add(childNode);
+                  }
+               } 
+            } else if(!type.isConstructor()) {
+               matched.add(childNode);
+            }
+         }
+      }
+      return matched;
    }
 
    private IndexNode findHandle(IndexDatabase database, Map<String, IndexNode> expandedScope, String handle) throws Exception {

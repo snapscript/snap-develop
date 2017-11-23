@@ -17,12 +17,14 @@ public class FileProcessor<T> {
 
    private final Map<String, Map<File, FileExecutor>> executors;
    private final Map<String, Set<File>> active;
+   private final FilePatternWalker walker;
    private final FileAction<T> action;
    private final Executor executor;
    
    public FileProcessor(FileAction<T> action, Executor executor) {
       this.executors = new ConcurrentHashMap<String, Map<File, FileExecutor>>();
       this.active = new ConcurrentHashMap<String, Set<File>>();
+      this.walker = new FilePatternWalker();
       this.action = action;
       this.executor = executor;
    }
@@ -30,7 +32,7 @@ public class FileProcessor<T> {
    public Set<T> process(String reference, String pattern) throws Exception {
       Map<File, FileExecutor> referenceBatch = executors.get(reference);
       Set<File> referenceFiles = active.get(reference);
-      List<File> matchesFiles = FilePatternScanner.scan(pattern);
+      List<File> matchesFiles = walker.walk(pattern);
       
       if(referenceBatch == null) {
          referenceBatch = new ConcurrentHashMap<File, FileExecutor>();

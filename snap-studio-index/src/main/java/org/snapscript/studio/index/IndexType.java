@@ -8,6 +8,7 @@ import java.util.Set;
 public enum IndexType {
    SCRIPT("script"),
    IMPORT("import", "script", "module"),
+   SUPER("super", "class", "trait", "enum"),
    FUNCTION("function", "script"), 
    CONSTRUCTOR("constructor", "class", "enum"), 
    MEMBER_FUNCTION("member-function", "module", "class", "trait", "enum"), 
@@ -17,7 +18,7 @@ public enum IndexType {
    ENUM("enum", "script", "module", "class", "trait", "enum"),
    TRAIT("trait", "script", "module", "class", "trait", "enum"),
    MODULE("module", "script"),
-   PARAMETER("parameter", "function", "member-function", "constructor"),
+   PARAMETER("parameter", "script", "function", "member-function", "constructor"),
    COMPOUND("compound", "script", "function", "member-function", "constructor", "compound");
 
    
@@ -45,6 +46,10 @@ public enum IndexType {
    
    public boolean isClass(){
       return this == CLASS;
+   }
+   
+   public boolean isSuper() {
+      return this == SUPER;
    }
    
    public boolean isProperty(){
@@ -89,6 +94,7 @@ public enum IndexType {
       return this == PARAMETER ||
               this == VARIABLE ||
               this == PROPERTY ||
+              this == SUPER ||
               this == IMPORT;
    }
    

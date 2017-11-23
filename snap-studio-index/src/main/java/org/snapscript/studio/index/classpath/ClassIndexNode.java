@@ -102,6 +102,11 @@ public class ClassIndexNode implements IndexNode {
    }
    
    @Override
+   public boolean isNative(){
+      return true;
+   }
+   
+   @Override
    public boolean isPublic() {
       Class type = getNodeClass();
       

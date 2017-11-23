@@ -11,21 +11,22 @@ public class FilePatternScanner {
    private static final String RECURSIVE_PATTERN = "_RECURSIVE_PATTERN_";
    private static final String SINGLE_PATTERN = "_SINGLE_PATTERN_";
    
-   public static List<File> scan(String token, File root) throws IOException {
+   public static FileSet scan(String token, File root) throws IOException {
       File file = new File(root, token);
       
       if(root.exists()) {
          String expand = file.getAbsolutePath();
          return scan(expand);
       }
-      return Collections.emptyList();
+      return new FileSet(root, Collections.EMPTY_LIST, 0);
    }
    
-   public static List<File> scan(String token) throws IOException {
+   public static FileSet scan(String token) throws IOException {
       File file = new File(token);
       
       if(token.contains("*")) {
          int index = token.indexOf("*");
+         long time = System.currentTimeMillis();
          String expression = token.trim();
          
          if(index != -1) {
@@ -48,7 +49,8 @@ public class FilePatternScanner {
                   List<File> list = FilePatternMatcher.scan(pattern, directory);
                   
                   Collections.sort(list);
-                  return list;
+                  
+                  return new FileSet(directory, list, time);
                }catch(Exception e) {
                   throw new IllegalArgumentException("Could not parse pattern '" +token+ "'", e);
                }
@@ -56,8 +58,12 @@ public class FilePatternScanner {
          }
       }
       if(file.exists()) {
-         return Collections.singletonList(file);
+         long time = System.currentTimeMillis();
+         File directory = file.getParentFile();
+         List<File> files = Collections.singletonList(file);
+         
+         return new FileSet(directory, files, time);
       }
-      return Collections.emptyList();
+      return new FileSet(file, Collections.EMPTY_LIST, 0);
    }
 }

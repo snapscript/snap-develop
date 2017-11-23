@@ -1,9 +1,12 @@
 package org.snapscript.studio.index;
 
+import static java.util.Collections.EMPTY_MAP;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -107,20 +110,54 @@ public class IndexSearcher implements IndexFile {
    
    public static Map<String, IndexNode> getNodesInScope(IndexNode node) {
       Map<String, IndexNode> scope = new HashMap<String, IndexNode>(DEFAULT_IMPORTS);
+      Set<IndexNode> supers = new HashSet<IndexNode>();
       
       while(node != null) {
          Set<IndexNode> nodes = node.getNodes();
          
          for(IndexNode entry : nodes) {
             String name = entry.getName();
+            IndexType type = entry.getType();
             Map<String, IndexNode> children = getChildNodes(entry);
             
-            scope.put(name, entry);
-            scope.putAll(children);
+            if(type.isSuper()) {
+               supers.add(entry);
+            }else {
+               scope.put(name, entry);
+               scope.putAll(children);
+            }
          }
          node = node.getParent();
       }
+      Map<String, IndexNode> inherited = getInheritedNodes(scope, supers);
+      
+      if(!inherited.isEmpty()) {
+         scope.putAll(inherited);
+      }
       return scope;
+   }
+   
+   private static Map<String, IndexNode> getInheritedNodes(Map<String, IndexNode> scope, Set<IndexNode> supers) {
+      Map<String, IndexNode> inherited = new HashMap<String, IndexNode>();
+      
+      for(IndexNode superNode : supers) {
+         String name = superNode.getName();
+         IndexNode realNode = scope.get(name);
+         
+         if(realNode != null) {
+            Set<IndexNode> children = realNode.getNodes();
+            
+            for(IndexNode child : children) {
+               IndexType type = child.getType();
+               String childName = child.getName();
+               
+               if(type.isProperty() || type.isMemberFunction()) {
+                  inherited.put(childName, child);
+               }
+            }
+         }
+      }
+      return inherited;
    }
 
    private static Map<String, IndexNode> getChildNodes(IndexNode node) {
