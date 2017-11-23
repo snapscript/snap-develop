@@ -31,6 +31,40 @@ public class ExtendedTypeCompletionTest extends TestCase {
    "   // replace me\n"+
    "}\n";
    
+   private static final String SOURCE_3 =
+   "try {\n"+
+   "   throw new Exception();\n"+
+   "}catch(e: String) {\n"+
+   "   println(e);\n"+
+   "   // replace me\n"+
+   "}\n";
+   
+   public void testExceptionWithStringCompletion() throws Exception {
+      System.err.println(SOURCE_3);
+      ClassPathStore store = new ClassPathStore();
+      Context context = new StoreContext(store);
+      ThreadPool pool = new ThreadPool(2);
+      File file = File.createTempFile("test", getClass().getSimpleName());
+      IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
+      CompletionCompiler compiler = new CompletionCompiler(database, 
+            FindForFunction.class,
+            FindForVariable.class,
+            FindInScopeMatching.class,
+            FindConstructorsInScope.class,
+            FindPossibleImports.class);
+      
+      CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE_3, "e.");
+      CompletionResponse response = compiler.compile(request);
+      Map<String, String> completion = response.getTokens();
+      
+      System.err.println(response.getDetails());
+   
+      assertNotNull(completion.get("substring(a)"));
+      assertNotNull(completion.get("substring(a, b)"));
+      assertEquals(completion.get("substring(a)"), "function");
+      assertEquals(completion.get("substring(a, b)"), "function");
+   }
+   
    public void testExceptionCompletion() throws Exception {
       System.err.println(SOURCE_2);
       ClassPathStore store = new ClassPathStore();

@@ -30,3 +30,4 @@ System.err.println("static="+StaticVar.PI);
 System.err.println(StaticVar.inc());
 System.err.println(StaticVar.inc());
 System.err.println(StaticVar.inc());
+
