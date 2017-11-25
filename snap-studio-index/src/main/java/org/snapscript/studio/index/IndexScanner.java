@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Executor;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -109,7 +108,15 @@ public class IndexScanner implements IndexDatabase {
       Map<String, IndexNode> nodes = getTypeNodes();
       
       if(!nodes.isEmpty()) {
-         return nodes.get(typeName);
+         IndexNode node = nodes.get(typeName);
+         
+         if(node == null) {
+            node = BootstrapClassPath.getDefaultImportNames().get(typeName);
+         }
+         if(node == null) {
+            node = BootstrapClassPath.getDefaultImportClasses().get(typeName);
+         }
+         return node;
       }
       return null;
    }
@@ -152,7 +159,7 @@ public class IndexScanner implements IndexDatabase {
       IndexNode node = getTypeNode(module + "." + name);
       
       if(node == null) {
-         return BootstrapClassPath.getDefaultImportClasses().get(name);
+         return getTypeNode(name);
       }
       return node;
    }
@@ -199,15 +206,9 @@ public class IndexScanner implements IndexDatabase {
       Map<String, IndexNode> result = new HashMap<String, IndexNode>();
       
       try{
-         Map<String, IndexNode> types = getTypeNodes();
-         
          for(IndexNode entry : enclosing) {
-            Set<IndexNode> members = getMemberNodes(entry, types);
-            
-            for(IndexNode member : members) {
-               String name = member.getName();
-               result.put(name, member);
-            }
+            Map<String, IndexNode> members = getMemberNodes(entry);
+            result.putAll(members);
          }
       }catch(Throwable cause) {
          log.info("Could not get members", cause);
@@ -215,12 +216,12 @@ public class IndexScanner implements IndexDatabase {
       return result;
    }
    
-   private static Set<IndexNode> getMemberNodes(IndexNode node,  Map<String, IndexNode> types) {
-      Set<IndexNode> nodes = new HashSet<IndexNode>();
+   public Map<String, IndexNode> getMemberNodes(IndexNode node) {
+      Map<String, IndexNode> nodes = new HashMap<String, IndexNode>();
       Map<String, IndexNode> hierarchy = new HashMap<String, IndexNode>();
       
       try{
-         collectHierarchy(node, types, hierarchy);
+         collectHierarchy(node, hierarchy);
          
          for(IndexNode entry : hierarchy.values()) {
             Set<IndexNode> children = entry.getNodes();
@@ -230,7 +231,8 @@ public class IndexScanner implements IndexDatabase {
                   IndexType type = child.getType();
                   
                   if(type.isFunction() || type.isProperty()) {
-                     nodes.add(child);
+                     String name = child.getName();
+                     nodes.put(name, child);
                   }
                }
             }
@@ -241,7 +243,7 @@ public class IndexScanner implements IndexDatabase {
       return nodes;
    }
    
-   private static void collectHierarchy(IndexNode node, Map<String, IndexNode> types, Map<String, IndexNode> done) {
+   private void collectHierarchy(IndexNode node, Map<String, IndexNode> done) {
       try{
          String fullName = node.getFullName();
          
@@ -250,15 +252,12 @@ public class IndexScanner implements IndexDatabase {
             
             for(IndexNode baseNode : superAndInterfaces) {
                String baseNodeName = baseNode.getFullName();
-               IndexNode realNode = types.get(baseNodeName);
+               IndexNode realNode = getTypeNode(baseNodeName);
                
-               if(realNode == null) {
-                  realNode = DEFAULT_IMPORTS.get(baseNodeName);
-               }
                if(realNode == null) {
                   realNode = baseNode;
                }
-               collectHierarchy(realNode, types, done);
+               collectHierarchy(realNode, done);
             }
          }
       }catch(Throwable cause) {

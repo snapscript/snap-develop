@@ -38,14 +38,19 @@ public class FindInScopeMatching implements CompletionFinder {
          
          for(Entry<String, IndexNode> entry : entries) {
             String name = entry.getKey();
-            IndexNode value = entry.getValue();
-            IndexType type = value.getType();
             
-            if(!type.isImport()) {
+            if(name.startsWith(unfinished)) {
+               IndexNode value = entry.getValue();
+               IndexType type = value.getType();
+               
+               if(type.isImport()) {
+                  String fullName = value.getFullName();
+                  
+                  value = database.getTypeNode(fullName);
+                  type = value.getType();
+               }
                if(type.isType() || type.isConstrained()) {
-                  if(name.startsWith(unfinished)) {
-                     matched.add(value);
-                  }
+                  matched.add(value);
                }
             }
          }

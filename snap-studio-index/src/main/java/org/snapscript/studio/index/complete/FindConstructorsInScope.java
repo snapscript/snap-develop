@@ -35,7 +35,6 @@ public class FindConstructorsInScope implements CompletionFinder {
    public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, UserText text) throws Exception {
       Map<String, IndexNode> expandedScope = database.getNodesInScope(node);
       Set<Entry<String, IndexNode>> entries = expandedScope.entrySet();
-      Map<String, IndexNode> allNodes = database.getTypeNodes();
       String unfinished = text.getUnfinished();
       
       if(!entries.isEmpty()) {
@@ -49,7 +48,7 @@ public class FindConstructorsInScope implements CompletionFinder {
             if(name.startsWith(unfinished)) {
                if(type.isImport() || type.isClass()) {
                   String fullName = value.getFullName();
-                  IndexNode imported = allNodes.get(fullName);
+                  IndexNode imported = database.getTypeNode(fullName);
                   
                   if(imported != null) {
                      Set<IndexNode> nodes = imported.getNodes();

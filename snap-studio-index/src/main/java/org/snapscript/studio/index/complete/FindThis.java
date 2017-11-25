@@ -3,14 +3,13 @@ package org.snapscript.studio.index.complete;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexNode;
-import org.snapscript.studio.index.IndexSearcher;
 import org.snapscript.studio.index.IndexType;
 
 public class FindThis implements CompletionFinder {
@@ -30,7 +29,7 @@ public class FindThis implements CompletionFinder {
 
    @Override
    public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, UserText text) throws Exception {
-      IndexNode typeNode = findTypeNode(node);
+      IndexNode typeNode = findThisNode(node);
       
       if(typeNode != null) {
          Map<String, IndexNode> expandedScope = database.getNodesInScope(typeNode);
@@ -62,7 +61,7 @@ public class FindThis implements CompletionFinder {
       return Collections.emptySet();
    }
    
-   private IndexNode findTypeNode(IndexNode node) throws Exception {
+   public static IndexNode findThisNode(IndexNode node) throws Exception {
       while(node != null) {
          IndexType type = node.getType();
          

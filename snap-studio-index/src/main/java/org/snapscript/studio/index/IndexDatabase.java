@@ -10,5 +10,6 @@ public interface IndexDatabase {
    Map<String, IndexNode> getTypeNodes() throws Exception;
    Map<String, IndexFile> getFiles() throws Exception;
    Map<String, IndexNode> getNodesInScope(IndexNode node) throws Exception;
+   Map<String, IndexNode> getMemberNodes(IndexNode node) throws Exception;
    IndexFile getFile(String resource, String source) throws Exception;
 }
