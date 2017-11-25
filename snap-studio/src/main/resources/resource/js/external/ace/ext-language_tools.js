@@ -1060,11 +1060,16 @@ var AcePopup = function(parentNode) {
 
         var last = -1;
         var flag, c;
-        for (var i = 0; i < data.caption.length; i++) {
+        
+        if(data.caption.length > 0 && data.className) {
+           // niall render the style on the first token only
+           tokens.push({type: data.className, value: data.caption[0]});
+        }
+        for (var i = 1; i < data.caption.length; i++) {
             c = data.caption[i];
             flag = data.matchMask & (1 << i) ? 1 : 0;
             if (last !== flag) {
-                tokens.push({type: data.className || "" + ( flag ? "completion-highlight" : ""), value: c});
+                tokens.push({type: "" + ( flag ? "autocomplete_highlight" : ""), value: c});
                 last = flag;
             } else {
                 tokens[tokens.length - 1].value += c;
@@ -1176,7 +1181,7 @@ var AcePopup = function(parentNode) {
 
 dom.importCssString("\
 .ace_editor.ace_autocomplete .ace_marker-layer .ace_active-line {\
-    background-color: #CAD6FA;\
+    background-color: ${DIALOG_ENTRY_HIGHLIGHT_COLOR};\
     z-index: 1;\
 }\
 .ace_editor.ace_autocomplete .ace_line-hover {\
@@ -1194,7 +1199,8 @@ dom.importCssString("\
    box-shadow: none;\
 }\
 .ace_rightAlignedText {\
-    color: gray;\
+    color: ${DIALOG_FONT_COLOR};\
+    font-style: italic;\
     display: inline-block;\
     position: absolute;\
     right: 4px;\
@@ -1203,20 +1209,20 @@ dom.importCssString("\
 }\
 .ace_editor.ace_autocomplete .ace_completion-highlight{\
     color: #000;\
-    text-shadow: 0 0 0.01em;\
 }\
 .ace_editor.ace_autocomplete {\
-    width: 280px;\
+    width: 600px;\
     z-index: 200000;\
-    background: #fbfbfb;\
-    color: #444;\
-    border: 1px lightgray solid;\
+    background: ${DIALOG_BACKGROUND_COLOR};\
+    color: ${DIALOG_FONT_COLOR};\
+    min-width: 700px;\
+    border: 1px ${DIALOG_ENTRY_BORDER_COLOR} solid;\
     position: fixed;\
-    box-shadow: 2px 3px 5px rgba(0,0,0,.2);\
     line-height: 1.4;\
 }");
 
 exports.AcePopup = AcePopup;
+
 
 });
 
@@ -1680,10 +1686,16 @@ var FilteredList = function(array, filterText) {
             var matches = this.all;
 
         this.filterText = str;
-        matches = this.filterCompletions(matches, this.filterText);
+        
+        if(this.filterText != null && this.filterText != "") {
+           matches = this.filterCompletions(matches, this.filterText);
+        } 
+        /*
+         niall this sort does not work
         matches = matches.sort(function(a, b) {
             return b.exactMatch - a.exactMatch || b.score - a.score;
         });
+        */
         var prev = null;
         matches = matches.filter(function(item){
             var caption = item.snippet || item.caption || item.value;
