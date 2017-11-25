@@ -1,5 +1,6 @@
 package org.snapscript.studio.index;
 
+import java.io.File;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -74,11 +75,12 @@ public class IndexerTest extends TestCase {
    "}\n";
    
    public void testDefaultConstructors() throws Exception {
-      IndexDatabase database = new MockIndexDatabase();
       ClassPathStore store = new ClassPathStore();
       Context context = new StoreContext(store);
+      ThreadPool pool = new ThreadPool(2);
+      File file = File.createTempFile("test", getClass().getSimpleName());
+      IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
       IndexPathTranslator translator = new IndexPathTranslator();
-      ThreadPool pool = new ThreadPool(1);
       Indexer indexer = new Indexer(translator, database, context, pool, null);
       IndexFile searcher = indexer.index("/some/package.snap", SOURCE);
       Map<String, IndexNode> nodes = searcher.getNodesInScope(5);
@@ -88,11 +90,12 @@ public class IndexerTest extends TestCase {
    }
    
    public void testTypeNodes() throws Exception {
-      IndexDatabase database = new MockIndexDatabase();
       ClassPathStore store = new ClassPathStore();
       Context context = new StoreContext(store);
+      ThreadPool pool = new ThreadPool(2);
+      File file = File.createTempFile("test", getClass().getSimpleName());
+      IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
       IndexPathTranslator translator = new IndexPathTranslator();
-      ThreadPool pool = new ThreadPool(1);
       Indexer indexer = new Indexer(translator, database, context, pool, null);
       IndexFile searcher = indexer.index("/some/package.snap", SOURCE);
       Map<String, IndexNode> nodes = searcher.getTypeNodes();
@@ -119,11 +122,12 @@ public class IndexerTest extends TestCase {
    }
    
    public void testNodesInScope() throws Exception {
-      IndexDatabase database = new MockIndexDatabase();
       ClassPathStore store = new ClassPathStore();
       Context context = new StoreContext(store);
+      ThreadPool pool = new ThreadPool(2);
+      File file = File.createTempFile("test", getClass().getSimpleName());
+      IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
       IndexPathTranslator translator = new IndexPathTranslator();
-      ThreadPool pool = new ThreadPool(1);
       Indexer indexer = new Indexer(translator, database, context, pool, null);
       IndexFile searcher = indexer.index("/some/package.snap", SOURCE);
       Map<String, IndexNode> nodes = searcher.getNodesInScope(6);
@@ -158,11 +162,12 @@ public class IndexerTest extends TestCase {
    }
    
    public void testNodeSearch() throws Exception {
-      IndexDatabase database = new MockIndexDatabase();
       ClassPathStore store = new ClassPathStore();
       Context context = new StoreContext(store);
+      ThreadPool pool = new ThreadPool(2);
+      File file = File.createTempFile("test", getClass().getSimpleName());
+      IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
       IndexPathTranslator translator = new IndexPathTranslator();
-      ThreadPool pool = new ThreadPool(1);
       Indexer indexer = new Indexer(translator, database, context, pool, null);
       IndexFile searcher = indexer.index("/some/package.snap", SOURCE);
       IndexNode node = searcher.getRootNode();

@@ -49,7 +49,7 @@ public class CompletionInCompoundScopeTest extends TestCase {
    "      var blah: String = 'xx';\n"+
    "      try {\n"+
    "         source = source.substring(1);\n"+
-   "      } catch(e: Throwable) {\n"+
+   "      } catch(e: IllegalStateException) {\n"+
    "         // replace me\n"+
    "         e.printStackTrace();\n"+
    "      }\n"+

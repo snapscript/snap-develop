@@ -1,10 +1,12 @@
 class Foo {
    call(){
       func();
-      }
+   }
+   blahfun(){}
 }
 function func(v...){
    println("x=${v.length}");
    printf("xx%n");
 }
 new Foo().call();
+var f:Foo=null;

@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexNode;
-import org.snapscript.studio.index.IndexSearcher;
+import org.snapscript.studio.index.IndexType;
 
 public class FindInScopeMatching implements CompletionFinder {
 
@@ -28,8 +28,8 @@ public class FindInScopeMatching implements CompletionFinder {
    }
 
    @Override
-   public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, UserText text) {
-      Map<String, IndexNode> expandedScope = IndexSearcher.getNodesInScope(node);
+   public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, UserText text) throws Exception {
+      Map<String, IndexNode> expandedScope = database.getNodesInScope(node);
       Set<Entry<String, IndexNode>> entries = expandedScope.entrySet();
       String unfinished = text.getUnfinished();
       
@@ -39,9 +39,14 @@ public class FindInScopeMatching implements CompletionFinder {
          for(Entry<String, IndexNode> entry : entries) {
             String name = entry.getKey();
             IndexNode value = entry.getValue();
+            IndexType type = value.getType();
             
-            if(name.startsWith(unfinished)) {
-               matched.add(value);
+            if(!type.isImport()) {
+               if(type.isType() || type.isConstrained()) {
+                  if(name.startsWith(unfinished)) {
+                     matched.add(value);
+                  }
+               }
             }
          }
          return matched;

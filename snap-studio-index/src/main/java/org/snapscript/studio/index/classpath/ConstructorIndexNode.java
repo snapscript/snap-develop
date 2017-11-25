@@ -1,6 +1,7 @@
 package org.snapscript.studio.index.classpath;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.Set;
 
@@ -33,7 +34,8 @@ public class ConstructorIndexNode implements IndexNode {
    
    @Override
    public boolean isPublic(){
-      return constructor.isAccessible();
+      int modifiers = constructor.getModifiers();
+      return Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers);
    }
    
    @Override

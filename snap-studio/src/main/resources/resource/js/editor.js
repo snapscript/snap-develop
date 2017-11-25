@@ -564,7 +564,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                             for (var token in tokens) {
                                 if (tokens.hasOwnProperty(token)) {
                                     var type = tokens[token];
-                                    suggestions.push({ name: token, value: token, score: 300, meta: type });
+                                    suggestions.push({ className: 'autocomplete_' + type, name: token, value: token, score: 300, meta: type });
                                 }
                             }
                             callback(null, suggestions);

@@ -17,6 +17,10 @@ import com.google.common.reflect.ClassPath.ResourceInfo;
 
 public class ClassIndexProcessor {
    
+   private static final String[] RESOURCE_EXTENSIONS = {
+      ".java",
+      ".class"
+   };
    private static final Method RESOURCE_METHOD;
 
    static  {
@@ -36,9 +40,11 @@ public class ClassIndexProcessor {
    }
 
    public static ClassInfo getClassInfo(String path) throws Exception {
-      if (path.endsWith(".class") && path.startsWith("java")) {
-         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-         return (ClassInfo) RESOURCE_METHOD.invoke(null, path, loader);
+      for(String extension : RESOURCE_EXTENSIONS) {
+         if (path.endsWith(extension)) {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            return (ClassInfo) RESOURCE_METHOD.invoke(null, path, loader);
+         }
       }
       return null;
    }
@@ -68,18 +74,57 @@ public class ClassIndexProcessor {
    
    public static Set<IndexNode> getSupers(ClassInfo info) {
       Set<IndexNode> nodes = new HashSet<IndexNode>();
+      Set<Class> done = new HashSet<Class>();
       
       try{
          Class type = info.load();
+         Set<Class> hierarchy = getHierarchy(type, done);
+         
+         hierarchy.remove(type);
+         
+         for(Class entry : hierarchy) {
+            IndexNode node = getSuperIndexNode(entry);
+            nodes.add(node);
+         }
+      }catch(Throwable cause) {
+         //cause.printStackTrace();
+      }
+      return nodes;
+   }
+   
+   private static Set<Class> getHierarchy(Class type, Set<Class> types) {
+      Set<Class> nodes = new HashSet<Class>();
+      
+      try{
+         if(nodes.add(type)) {
+            Set<Class> superAndInterfaces = getSuperTypeAndInterfaces(type);
+            
+            for(Class baseNode : superAndInterfaces) {
+               if(nodes.add(baseNode)) {
+                  nodes.addAll(getHierarchy(baseNode, nodes));
+               }
+            }
+            
+         }
+      }catch(Throwable cause) {
+         //cause.printStackTrace();
+      }
+      return nodes;
+   }
+   
+   private static Set<Class> getSuperTypeAndInterfaces(Class type) {
+      Set<Class> nodes = new HashSet<Class>();
+      
+      try {
          Class superType = type.getSuperclass();
          Class[] declaredInterfaces = type.getInterfaces();
          
-         for(Class declaredInterface : declaredInterfaces) {
-            IndexNode node = getSuperIndexNode(declaredInterface);
-            nodes.add(node);
+         for(Class interfaceType : declaredInterfaces) {
+            nodes.add(interfaceType);
          }
-         IndexNode node = getSuperIndexNode(superType);
-         nodes.add(node);
+         if(superType != null){
+            nodes.add(superType);  
+         }
       }catch(Throwable cause) {
          //cause.printStackTrace();
       }

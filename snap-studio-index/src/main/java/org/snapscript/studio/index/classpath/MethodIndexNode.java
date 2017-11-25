@@ -1,6 +1,7 @@
 package org.snapscript.studio.index.classpath;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.Set;
 
@@ -32,7 +33,8 @@ public class MethodIndexNode implements IndexNode {
    
    @Override
    public boolean isPublic(){
-      return method.isAccessible();
+      int modifiers = method.getModifiers();
+      return Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers);
    }
    
    @Override

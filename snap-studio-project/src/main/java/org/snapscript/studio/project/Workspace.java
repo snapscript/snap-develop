@@ -4,6 +4,7 @@ import static org.snapscript.studio.project.config.WorkspaceConfiguration.WORKSP
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,11 @@ import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 import org.simpleframework.http.Path;
-import org.slf4j.Logger;
+
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.Level;
+
+import org.slf4j.LoggerFactory;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.studio.common.FileDirectorySource;
 import org.snapscript.studio.index.classpath.BootstrapClassPath;
@@ -31,6 +36,7 @@ public class Workspace implements FileDirectorySource {
    private final ConfigurationReader reader;
    private final ProjectManager manager;
    private final ThreadPool pool;
+   private final String level;
    private final File root;
    
    public Workspace(
@@ -42,6 +48,7 @@ public class Workspace implements FileDirectorySource {
       this.reader = new ConfigurationReader(this);
       this.pool = new ThreadPool(10);
       this.manager = new ProjectManager(reader, this, mode);
+      this.level = level;
       this.root = root;
    }
    
@@ -112,23 +119,39 @@ public class Workspace implements FileDirectorySource {
    @PostConstruct
    public File createWorkspace() {
       try {
-         File directory = root.getCanonicalFile();
-         File workspaceFile = new File(directory, WORKSPACE_FILE);
-         
-         if(!directory.exists() || !workspaceFile.exists()){
-            directory.mkdirs();
-            createDefaultWorkspace(directory);
-         }
-         getExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-               BootstrapClassPath.initialize(); // load all classes
-            }
-         });
-         getProjects();// resolve the dependencies
-         return directory;
+         updateLogLevel();
+         return newWorkspace();
       }catch(Exception e) {
          throw new IllegalStateException("Could not create directory " + root, e);
+      }
+   }
+
+   private File newWorkspace() throws IOException {
+      File directory = root.getCanonicalFile();
+      File workspaceFile = new File(directory, WORKSPACE_FILE);
+      
+      if(!directory.exists() || !workspaceFile.exists()){
+         directory.mkdirs();
+         createDefaultWorkspace(directory);
+      }
+      getExecutor().execute(new Runnable() {
+         @Override
+         public void run() {
+            BootstrapClassPath.initialize(); // load all classes
+         }
+      });
+      getProjects();// resolve the dependencies
+      return directory;
+   }
+
+   private void updateLogLevel() {
+      try {
+         Level logLevel = Level.valueOf(level);
+         Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+         
+         logger.setLevel(logLevel);
+      }catch(Throwable e) {
+         
       }
    }
    

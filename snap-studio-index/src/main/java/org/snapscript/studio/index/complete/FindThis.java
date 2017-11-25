@@ -33,7 +33,7 @@ public class FindThis implements CompletionFinder {
       IndexNode typeNode = findTypeNode(node);
       
       if(typeNode != null) {
-         Map<String, IndexNode> expandedScope = IndexSearcher.getNodesInScope(typeNode);
+         Map<String, IndexNode> expandedScope = database.getNodesInScope(typeNode);
          String unfinished = text.getUnfinished();
          
          if(!expandedScope.isEmpty()) {

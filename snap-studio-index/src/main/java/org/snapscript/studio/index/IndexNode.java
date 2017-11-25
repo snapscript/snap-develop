@@ -16,7 +16,5 @@ public interface IndexNode {
    IndexNode getParent();
    IndexType getType();
    Set<IndexNode> getNodes();
-   // this node should be implemented to form a cache for super lookups
-   //Set<IndexNode> getSuperNodes(); 
 }
  

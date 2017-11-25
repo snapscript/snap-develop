@@ -32,7 +32,7 @@ public class FindForVariable implements CompletionFinder {
 
    @Override
    public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, UserText text) throws Exception {
-      Map<String, IndexNode> expandedScope = IndexSearcher.getNodesInScope(node);
+      Map<String, IndexNode> expandedScope = database.getNodesInScope(node);
       String handle = text.getHandle();
       IndexNode handleNode = findHandle(database, expandedScope, handle);
       
@@ -47,7 +47,7 @@ public class FindForVariable implements CompletionFinder {
    
    private Set<IndexNode> findForNativeNode(IndexDatabase database, IndexNode handleNode, UserText text) throws Exception {
       Set<IndexNode> matched = new HashSet<IndexNode>();
-      Map<String, IndexNode> handleNodeScope = IndexSearcher.getNodesInScope(handleNode);
+      Map<String, IndexNode> handleNodeScope = database.getNodesInScope(handleNode);
       Set<Entry<String, IndexNode>> entries = handleNodeScope.entrySet();
       String unfinished = text.getUnfinished();
       
@@ -67,7 +67,7 @@ public class FindForVariable implements CompletionFinder {
    
    private Set<IndexNode> findForNode(IndexDatabase database, IndexNode handleNode, UserText text) throws Exception {
       Set<IndexNode> matched = new HashSet<IndexNode>();
-      Map<String, IndexNode> handleNodeScope = IndexSearcher.getNodesInScope(handleNode);
+      Map<String, IndexNode> handleNodeScope = database.getNodesInScope(handleNode);
       Set<Entry<String, IndexNode>> entries = handleNodeScope.entrySet();
       String fullName = handleNode.getFullName();
       String unfinished = text.getUnfinished();

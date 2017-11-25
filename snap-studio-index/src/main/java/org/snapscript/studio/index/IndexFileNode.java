@@ -123,17 +123,21 @@ public class IndexFileNode implements IndexNode {
          String module = index.getModule();
          
          if(constraint != null) {
-            Map<String, IndexNode> nodes = IndexSearcher.getNodesInScope(this);
-            IndexNode node = nodes.get(constraint);
-            
-            if(node == null) {
-               return getConstraint(module, constraint);
-            } else {
-               if(node.getType().isImport()) {
-                  String fullName = node.getFullName();
-                  return getConstraint(module, fullName);
+            try {
+               Map<String, IndexNode> nodes = database.getNodesInScope(this);
+               IndexNode node = nodes.get(constraint);
+               
+               if(node == null) {
+                  return getConstraint(module, constraint);
+               } else {
+                  if(node.getType().isImport()) {
+                     String fullName = node.getFullName();
+                     return getConstraint(module, fullName);
+                  }
+                  return node;
                }
-               return node;
+            }catch(Throwable e){
+               e.printStackTrace();
             }
          }
          return getConstraint(null, null);

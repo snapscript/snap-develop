@@ -36,6 +36,7 @@ public class CompletionCompiler {
          
          if(text != null) {
             Set<IndexNode> matches = finder.findMatches(database, node, text);
+            Map<String, IndexNode> nodes = database.getTypeNodes();
             Map<String, String> tokens = new TreeMap<String, String>();
             
             for(IndexNode match : matches) {
@@ -47,7 +48,7 @@ public class CompletionCompiler {
                   type = IndexType.FUNCTION;
                }
                if(type == IndexType.IMPORT) {
-                  IndexNode imported = database.getTypeNode(fullName);
+                  IndexNode imported = nodes.get(fullName);
                   
                   if(imported != null) {
                      name = imported.getName();

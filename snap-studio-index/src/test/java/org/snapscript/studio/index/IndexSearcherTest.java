@@ -25,7 +25,7 @@ public class IndexSearcherTest extends TestCase {
       System.err.println(detail);
       
       IndexNode node = indexFile.getNodeAtLine(2);
-      Map<String, IndexNode> nodes = IndexSearcher.getNodesInScope(node);
+      Map<String, IndexNode> nodes = database.getNodesInScope(node);
       
       assertNotNull(nodes.get("x"));
       assertNotNull(nodes.get("run()"));
