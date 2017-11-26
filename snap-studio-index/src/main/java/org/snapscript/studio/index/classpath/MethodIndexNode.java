@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.Set;
 
+import org.snapscript.core.PrimitivePromoter;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
 
@@ -14,10 +15,12 @@ public class MethodIndexNode implements IndexNode {
    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", 
    "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
    
+   private PrimitivePromoter promoter;
    private String description;
    private Method method;
    
    public MethodIndexNode(Method method) {
+      this.promoter = new PrimitivePromoter();
       this.method = method;
    }
    
@@ -89,7 +92,8 @@ public class MethodIndexNode implements IndexNode {
    @Override
    public IndexNode getConstraint() {
       Class returnType = method.getReturnType();
-      return ClassIndexProcessor.getIndexNode(returnType);
+      Class real = promoter.promote(returnType);
+      return ClassIndexProcessor.getIndexNode(real);
    }
 
    @Override

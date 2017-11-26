@@ -5,14 +5,17 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.Set;
 
+import org.snapscript.core.PrimitivePromoter;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
 
 public class FieldIndexNode implements IndexNode {
 
+   private final PrimitivePromoter promoter;
    private final Field field;
    
    public FieldIndexNode(Field field) {
+      this.promoter = new PrimitivePromoter();
       this.field = field;
    }
    
@@ -65,7 +68,8 @@ public class FieldIndexNode implements IndexNode {
    @Override
    public IndexNode getConstraint() {
       Class type = field.getType();
-      return ClassIndexProcessor.getIndexNode(type);
+      Class real = promoter.promote(type);
+      return ClassIndexProcessor.getIndexNode(real);
    }
 
    @Override
