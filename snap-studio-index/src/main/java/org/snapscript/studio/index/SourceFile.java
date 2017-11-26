@@ -3,7 +3,7 @@ package org.snapscript.studio.index;
 import java.io.File;
 import java.util.Map;
 
-public interface IndexFile {
+public interface SourceFile {
    File getFile();
    String getScriptPath();
    String getRealPath();

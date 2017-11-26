@@ -21,8 +21,7 @@ public class NewInstanceCompletionTest extends TestCase {
       File file = File.createTempFile("test", getClass().getSimpleName());
       IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
       CompletionCompiler compiler = new CompletionCompiler(database, 
-            FindForFunction.class,
-            FindForVariable.class,
+            FindForExpression.class,
             FindInScopeMatching.class,
             FindConstructorsInScope.class,
             FindPossibleImports.class);

@@ -23,11 +23,13 @@ import org.snapscript.parse.GrammarResolver;
 import org.snapscript.parse.SourceProcessor;
 import org.snapscript.parse.SyntaxNode;
 import org.snapscript.parse.SyntaxParser;
+import org.snapscript.studio.index.compile.IndexInstructionBuilder;
+import org.snapscript.studio.index.compile.IndexInstructionResolver;
 import org.snapscript.studio.index.counter.TokenBraceCounter;
 import org.snapscript.tree.Instruction;
 import org.snapscript.tree.OperationResolver;
 
-public class Indexer {
+public class SourceIndexer {
    
    private static final String GRAMMAR_FILE = "grammar.txt";
 
@@ -37,7 +39,7 @@ public class Indexer {
    private final GrammarCompiler grammarCompiler;  
    private final SourceProcessor sourceProcessor;
    private final FilePathConverter converter;
-   private final IndexPathTranslator translator;
+   private final PathTranslator translator;
    private final IndexDatabase database;
    private final SyntaxParser parser;
    private final GrammarReader reader;
@@ -45,11 +47,11 @@ public class Indexer {
    private final Context context;
    private final File root;
 
-   public Indexer(IndexPathTranslator translator, IndexDatabase database, Context context, Executor executor, File root) {
+   public SourceIndexer(PathTranslator translator, IndexDatabase database, Context context, Executor executor, File root) {
       this(translator, database, context, executor, root, GRAMMAR_FILE);
    }
    
-   public Indexer(IndexPathTranslator translator, IndexDatabase database, Context context, Executor executor, File root, String file) {
+   public SourceIndexer(PathTranslator translator, IndexDatabase database, Context context, Executor executor, File root, String file) {
       this.grammarIndexer = new GrammarIndexer();
       this.grammars = new LinkedHashMap<String, Grammar>();      
       this.grammarResolver = new GrammarResolver(grammars);
@@ -73,7 +75,7 @@ public class Indexer {
       }
    }
    
-   public IndexFile index(String resource, String source) throws Exception {
+   public SourceFile index(String resource, String source) throws Exception {
       String script = translator.getScriptPath(root, resource);
       File file = new File(root, resource);
       NodeBuilder listener = new NodeBuilder(database, resource);
@@ -91,12 +93,12 @@ public class Indexer {
    
    private static class NodeBuilder implements IndexListener {
       
-      private final Stack<IndexFileNode> stack;
+      private final Stack<SourceFileNode> stack;
       private final IndexDatabase database;
       private final String resource;
       
       public NodeBuilder(IndexDatabase database, String resource) {
-         this.stack = new ArrayStack<IndexFileNode>();
+         this.stack = new ArrayStack<SourceFileNode>();
          this.database = database;
          this.resource = resource;
       }
@@ -112,14 +114,14 @@ public class Indexer {
 
       @Override
       public void update(Index index) {
-         final IndexFileNode node = new IndexFileNode(database, index, resource);
+         final SourceFileNode node = new SourceFileNode(database, index, resource);
          final AtomicBoolean constructors = new AtomicBoolean();
          final AtomicBoolean merges = new AtomicBoolean();
          final IndexType type = index.getType();
          final int line = index.getLine();
          
          while(!stack.isEmpty()) {
-            IndexFileNode top = stack.peek();
+            SourceFileNode top = stack.peek();
             Set<IndexType> parents = top.getParentTypes();
             int offset = top.getLine();
             
@@ -148,7 +150,7 @@ public class Indexer {
          if(type.isClass()) {
             if(!constructors.get()) {
                Index constructorIndex = createDefaultConstructor(index);
-               IndexFileNode constructor = new IndexFileNode(database, constructorIndex, resource);
+               SourceFileNode constructor = new SourceFileNode(database, constructorIndex, resource);
                
                constructor.setParent(node);
                node.getNodes().add(constructor);

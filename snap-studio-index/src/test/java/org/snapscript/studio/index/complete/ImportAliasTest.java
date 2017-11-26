@@ -10,7 +10,7 @@ import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
 import org.snapscript.studio.index.IndexDatabase;
-import org.snapscript.studio.index.IndexFile;
+import org.snapscript.studio.index.SourceFile;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexScanner;
 import org.snapscript.studio.index.IndexType;
@@ -23,7 +23,7 @@ public class ImportAliasTest extends TestCase {
       ThreadPool pool = new ThreadPool(2);
       File file = File.createTempFile("test", getClass().getSimpleName());
       IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
-      IndexFile resource = database.getFile("/test.snap", "import sound.sampled.AudioFormat;");
+      SourceFile resource = database.getFile("/test.snap", "import sound.sampled.AudioFormat;");
       IndexNode root = resource.getRootNode();
       Map<String, IndexNode> nodes = database.getNodesInScope(root);
       

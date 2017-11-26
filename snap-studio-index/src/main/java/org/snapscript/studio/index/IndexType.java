@@ -47,6 +47,10 @@ public enum IndexType {
    public boolean isClass(){
       return this == CLASS;
    }
+
+   public boolean isTrait(){
+      return this == TRAIT;
+   }
    
    public boolean isSuper() {
       return this == SUPER;

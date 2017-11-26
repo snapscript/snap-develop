@@ -13,12 +13,11 @@ import org.snapscript.studio.index.complete.CompletionCompiler;
 import org.snapscript.studio.index.complete.CompletionRequest;
 import org.snapscript.studio.index.complete.CompletionResponse;
 import org.snapscript.studio.index.complete.FindConstructorsInScope;
-import org.snapscript.studio.index.complete.FindForFunction;
-import org.snapscript.studio.index.complete.FindForVariable;
+import org.snapscript.studio.index.complete.FindForExpression;
 import org.snapscript.studio.index.complete.FindInScopeMatching;
 import org.snapscript.studio.index.complete.FindPossibleImports;
-import org.snapscript.studio.index.complete.FindThis;
-import org.snapscript.studio.index.complete.FindThisChain;
+import org.snapscript.studio.index.complete.FindTraitToImplement;
+import org.snapscript.studio.index.complete.FindTypesToExtend;
 import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
@@ -50,13 +49,12 @@ public class CompletionResource implements Resource {
       thread.setContextClassLoader(classLoader);
       CompletionRequest context = gson.fromJson(content, CompletionRequest.class);
       CompletionCompiler compiler = new CompletionCompiler(project.getIndexDatabase(),
-            FindForFunction.class,
-            FindThis.class,
-            FindThisChain.class,
-            FindForVariable.class,
+            FindForExpression.class,
             FindInScopeMatching.class,
             FindConstructorsInScope.class,
-            FindPossibleImports.class);
+            FindPossibleImports.class,
+            FindTypesToExtend.class,
+            FindTraitToImplement.class);
       
       CompletionResponse results = compiler.compile(context);
       String details = results.getDetails();     

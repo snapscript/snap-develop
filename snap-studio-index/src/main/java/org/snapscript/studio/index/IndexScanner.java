@@ -29,37 +29,37 @@ public class IndexScanner implements IndexDatabase {
    private static final Map<String, IndexNode> DEFAULT_IMPORTS = BootstrapClassPath.getDefaultImportNames();
 
    private final AtomicReference<IndexFileCache> reference;
-   private final FileProcessor<IndexFile> processor;
-   private final FileAction<IndexFile> action;
-   private final IndexPathTranslator translator;
+   private final FileProcessor<SourceFile> processor;
+   private final FileAction<SourceFile> action;
+   private final PathTranslator translator;
    private final ClassPathSearcher searcher;
-   private final Indexer indexer;
+   private final SourceIndexer indexer;
    private final String project;
    private final File root;
    
    public IndexScanner(ClassLoader loader, Context context, Executor executor, File root, String project, String... prefixes) {
       this.reference = new AtomicReference<IndexFileCache>();
       this.searcher = new ClassPathSearcher(loader);
-      this.translator = new IndexPathTranslator(prefixes);
-      this.indexer = new Indexer(translator, this, context, executor, root);
+      this.translator = new PathTranslator(prefixes);
+      this.indexer = new SourceIndexer(translator, this, context, executor, root);
       this.action = new CompileAction(indexer, root);
-      this.processor = new FileProcessor<IndexFile>(action, executor);
+      this.processor = new FileProcessor<SourceFile>(action, executor);
       this.project = project;
       this.root = root;
    }
 
    @Override
-   public Map<String, IndexFile> getFiles() throws Exception {
+   public Map<String, SourceFile> getFiles() throws Exception {
       IndexFileCache cache = reference.get();
       
       if(cache == null || cache.isExpired()) {
          String path = root.getCanonicalPath();
-         Set<IndexFile> results = processor.process(project, path + "/**.snap"); // build all resources
+         Set<SourceFile> results = processor.process(project, path + "/**.snap"); // build all resources
    
          if(!results.isEmpty()) {
-            Map<String, IndexFile> matches = new HashMap<String, IndexFile>();
+            Map<String, SourceFile> matches = new HashMap<String, SourceFile>();
             
-            for(IndexFile file : results) {
+            for(SourceFile file : results) {
                String resource = file.getRealPath();
                matches.put(resource, file);
             }
@@ -74,13 +74,13 @@ public class IndexScanner implements IndexDatabase {
    
    @Override
    public Map<String, IndexNode> getTypeNodes() throws Exception {
-      Map<String, IndexFile> files = getFiles();
-      Collection<IndexFile> list = files.values();
+      Map<String, SourceFile> files = getFiles();
+      Collection<SourceFile> list = files.values();
       
       if(!files.isEmpty()) {
          Map<String, IndexNode> matches = new HashMap<String, IndexNode>();
          
-         for(IndexFile file : list) {
+         for(SourceFile file : list) {
             Map<String, IndexNode> nodes = file.getTypeNodes();
             Set<Entry<String, IndexNode>> entries = nodes.entrySet();
             
@@ -165,7 +165,7 @@ public class IndexScanner implements IndexDatabase {
    }
 
    @Override
-   public IndexFile getFile(String resource, String source) throws Exception {
+   public SourceFile getFile(String resource, String source) throws Exception {
       return indexer.index(resource, source);
    }
    
@@ -331,21 +331,21 @@ public class IndexScanner implements IndexDatabase {
    
    private static class IndexFileCache {
       
-      private final Map<String, IndexFile> files;
+      private final Map<String, SourceFile> files;
       private final long created;
       private final long expiry;
       
-      public IndexFileCache(Map<String, IndexFile> files) {
+      public IndexFileCache(Map<String, SourceFile> files) {
          this(files, 5000);
       }
       
-      public IndexFileCache(Map<String, IndexFile> files, long expiry) {
+      public IndexFileCache(Map<String, SourceFile> files, long expiry) {
          this.created = System.currentTimeMillis();
          this.files = files;
          this.expiry = expiry;
       }
       
-      public Map<String, IndexFile> getFiles() {
+      public Map<String, SourceFile> getFiles() {
          return files;
       }
       
@@ -355,18 +355,18 @@ public class IndexScanner implements IndexDatabase {
    }
    
    
-   private static class CompileAction implements FileAction<IndexFile> {
+   private static class CompileAction implements FileAction<SourceFile> {
    
-      private final Indexer indexer;
+      private final SourceIndexer indexer;
       private final File root;
       
-      public CompileAction(Indexer indexer, File root) {
+      public CompileAction(SourceIndexer indexer, File root) {
          this.indexer = indexer;
          this.root = root;
       }
       
       @Override
-      public IndexFile execute(String reference, File file) throws Exception {
+      public SourceFile execute(String reference, File file) throws Exception {
          String rootPath = root.getCanonicalPath();
          String filePath = file.getCanonicalPath();
          String relativePath = filePath.replace(rootPath, "");

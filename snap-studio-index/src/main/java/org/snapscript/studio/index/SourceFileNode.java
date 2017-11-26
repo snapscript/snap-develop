@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.snapscript.core.Reserved;
 
-public class IndexFileNode implements IndexNode {
+public class SourceFileNode implements IndexNode {
    
    private static final String DEFAULT_CONSTRAINT = Object.class.getName();
 
@@ -19,7 +19,7 @@ public class IndexFileNode implements IndexNode {
    private final String resource;
    private final Index index;
    
-   public IndexFileNode(IndexDatabase database, Index index, String resource) {
+   public SourceFileNode(IndexDatabase database, Index index, String resource) {
       this.parent = new AtomicReference<IndexNode>();
       this.comparator = new IndexNodeComparator();
       this.nodes = new TreeSet<IndexNode>(comparator);

@@ -3,8 +3,6 @@ package org.snapscript.studio.index.complete;
 import java.io.File;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.snapscript.common.store.ClassPathStore;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.compile.StoreContext;
@@ -12,16 +10,15 @@ import org.snapscript.core.Context;
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexScanner;
 
-public class ThisCompletionTest extends TestCase {
+import junit.framework.TestCase;
+
+public class NoExpressionCompletionTest extends TestCase {
 
    private static final String SOURCE =
    "class TextBuffer {\n"+
    "   var stringBuilder: StringBuilder;\n"+
    "   append(source: String, offset: Integer, length: Integer) {\n"+
-   "      var blah: String = 'xx';\n"+
-   "      if(length == 0) {\n"+
-   "         // replace me\n"+
-   "      }\n"+
+   "      // replace me\n"+
    "   }\n"+
    "}\n";
          
@@ -38,25 +35,19 @@ public class ThisCompletionTest extends TestCase {
             FindConstructorsInScope.class,
             FindPossibleImports.class);
       
-      CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE, "this.a");
+      CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE, "");
       CompletionResponse response = compiler.compile(request);
       Map<String, String> completion = response.getTokens();
       
       System.err.println(response.getDetails());
       
+      assertNotNull(completion.get("Integer"));
+      assertNotNull(completion.get("ArrayList"));
       assertNotNull(completion.get("append(source, offset, length)"));
-      assertEquals(completion.get("append(source, offset, length)"), "function");
-      
-      request = SourceCodeInterpolator.buildRequest(SOURCE, "this.str");
-      response = compiler.compile(request);
-      completion = response.getTokens();
-      
-      System.err.println(response.getDetails());
-
-      assertNull(completion.get("source"));
       assertNotNull(completion.get("stringBuilder"));
+      assertEquals(completion.get("Integer"), "class");
+      assertEquals(completion.get("ArrayList"), "class");
+      assertEquals(completion.get("append(source, offset, length)"), "function");
       assertEquals(completion.get("stringBuilder"), "property");
-      
-
    }
 }

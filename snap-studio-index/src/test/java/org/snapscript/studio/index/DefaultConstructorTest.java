@@ -36,9 +36,9 @@ public class DefaultConstructorTest extends TestCase {
       ThreadPool pool = new ThreadPool(2);
       File file = File.createTempFile("test", getClass().getSimpleName());
       IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
-      IndexPathTranslator translator = new IndexPathTranslator();
-      Indexer indexer = new Indexer(translator, database, context, pool, null);
-      IndexFile searcher = indexer.index("/double.snap", SOURCE_1);
+      PathTranslator translator = new PathTranslator();
+      SourceIndexer indexer = new SourceIndexer(translator, database, context, pool, null);
+      SourceFile searcher = indexer.index("/double.snap", SOURCE_1);
       Map<String, IndexNode> nodes = searcher.getNodesInScope(1);
    
       assertNotNull(nodes.get("DoubleComparator()"));
@@ -53,9 +53,9 @@ public class DefaultConstructorTest extends TestCase {
       ThreadPool pool = new ThreadPool(2);
       File file = File.createTempFile("test", getClass().getSimpleName());
       IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
-      IndexPathTranslator translator = new IndexPathTranslator();
-      Indexer indexer = new Indexer(translator, database, context, pool, null);
-      IndexFile searcher = indexer.index("/double.snap", SOURCE_2);
+      PathTranslator translator = new PathTranslator();
+      SourceIndexer indexer = new SourceIndexer(translator, database, context, pool, null);
+      SourceFile searcher = indexer.index("/double.snap", SOURCE_2);
       Map<String, IndexNode> nodes = searcher.getNodesInScope(1);
 
       assertNull(nodes.get("DoubleComparator()"));

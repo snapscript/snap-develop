@@ -12,9 +12,13 @@ import org.snapscript.studio.index.IndexScanner;
 
 import junit.framework.TestCase;
 
-public class CompletionForEmptyFileTest extends TestCase {
+public class ExpressionCompletionTest extends TestCase {
+   
+   private static final String SOURCE = 
+   "var list: List = new ArrayList();\n"+
+   "// replace me";
 
-   public void testCompletionForEmptySource() throws Exception {
+   public void testExpression() throws Exception {
       ClassPathStore store = new ClassPathStore();
       Context context = new StoreContext(store);
       ThreadPool pool = new ThreadPool(2);
@@ -26,18 +30,10 @@ public class CompletionForEmptyFileTest extends TestCase {
             FindConstructorsInScope.class,
             FindPossibleImports.class);
       
-      CompletionRequest request = new CompletionRequest();
-      
-      request.setComplete("new S");
-      request.setSource("");
-      request.setLine(1);
-      request.setResource("/example.snap");
-      
+      CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE, "list.stream().filter(x -> {return x > 0}).fo");
       Map<String, String> completion = compiler.compile(request).getTokens();
       
-      assertNotNull(completion.get("StringBuilder()"));
-      assertNotNull(completion.get("StringBuilder(a)"));
-      assertEquals(completion.get("StringBuilder()"), "constructor");
-      assertEquals(completion.get("StringBuilder(a)"), "constructor");
+      assertNotNull(completion.get("forEach(a)"));
+      assertEquals(completion.get("forEach(a)"), "function");
    }
 }

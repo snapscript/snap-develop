@@ -2,11 +2,11 @@ package org.snapscript.studio.index;
 
 import java.io.File;
 
-public class IndexPathTranslator {
+public class PathTranslator {
    
    private final String[] prefixes;
    
-   public IndexPathTranslator(String... paths) {
+   public PathTranslator(String... paths) {
       this.prefixes = new String[paths.length];
       
       for(int i = 0; i < paths.length; i++) {

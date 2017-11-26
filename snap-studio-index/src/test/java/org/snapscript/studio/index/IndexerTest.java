@@ -80,9 +80,9 @@ public class IndexerTest extends TestCase {
       ThreadPool pool = new ThreadPool(2);
       File file = File.createTempFile("test", getClass().getSimpleName());
       IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
-      IndexPathTranslator translator = new IndexPathTranslator();
-      Indexer indexer = new Indexer(translator, database, context, pool, null);
-      IndexFile searcher = indexer.index("/some/package.snap", SOURCE);
+      PathTranslator translator = new PathTranslator();
+      SourceIndexer indexer = new SourceIndexer(translator, database, context, pool, null);
+      SourceFile searcher = indexer.index("/some/package.snap", SOURCE);
       Map<String, IndexNode> nodes = searcher.getNodesInScope(5);
    
       assertNotNull(nodes.get("SomeClass()"));
@@ -95,9 +95,9 @@ public class IndexerTest extends TestCase {
       ThreadPool pool = new ThreadPool(2);
       File file = File.createTempFile("test", getClass().getSimpleName());
       IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
-      IndexPathTranslator translator = new IndexPathTranslator();
-      Indexer indexer = new Indexer(translator, database, context, pool, null);
-      IndexFile searcher = indexer.index("/some/package.snap", SOURCE);
+      PathTranslator translator = new PathTranslator();
+      SourceIndexer indexer = new SourceIndexer(translator, database, context, pool, null);
+      SourceFile searcher = indexer.index("/some/package.snap", SOURCE);
       Map<String, IndexNode> nodes = searcher.getTypeNodes();
       
       assertNotNull(nodes.get("String"));
@@ -127,9 +127,9 @@ public class IndexerTest extends TestCase {
       ThreadPool pool = new ThreadPool(2);
       File file = File.createTempFile("test", getClass().getSimpleName());
       IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
-      IndexPathTranslator translator = new IndexPathTranslator();
-      Indexer indexer = new Indexer(translator, database, context, pool, null);
-      IndexFile searcher = indexer.index("/some/package.snap", SOURCE);
+      PathTranslator translator = new PathTranslator();
+      SourceIndexer indexer = new SourceIndexer(translator, database, context, pool, null);
+      SourceFile searcher = indexer.index("/some/package.snap", SOURCE);
       Map<String, IndexNode> nodes = searcher.getNodesInScope(6);
       
       assertNotNull(nodes.get("String"));
@@ -167,9 +167,9 @@ public class IndexerTest extends TestCase {
       ThreadPool pool = new ThreadPool(2);
       File file = File.createTempFile("test", getClass().getSimpleName());
       IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
-      IndexPathTranslator translator = new IndexPathTranslator();
-      Indexer indexer = new Indexer(translator, database, context, pool, null);
-      IndexFile searcher = indexer.index("/some/package.snap", SOURCE);
+      PathTranslator translator = new PathTranslator();
+      SourceIndexer indexer = new SourceIndexer(translator, database, context, pool, null);
+      SourceFile searcher = indexer.index("/some/package.snap", SOURCE);
       IndexNode node = searcher.getRootNode();
       
       System.err.println(IndexDumper.dump(node));

@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.snapscript.studio.index.counter.BraceCounter;
 
 @Slf4j
-public class IndexSearcher implements IndexFile {
+public class IndexSearcher implements SourceFile {
 
    private final IndexNodeComparator comparator;
    private final BraceCounter counter;

@@ -1,4 +1,4 @@
-package org.snapscript.studio.index;
+package org.snapscript.studio.index.compile;
 
 import org.snapscript.common.Cache;
 import org.snapscript.common.CopyOnWriteCache;

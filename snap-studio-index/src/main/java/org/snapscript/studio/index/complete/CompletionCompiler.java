@@ -6,26 +6,29 @@ import java.util.TreeMap;
 
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexDumper;
-import org.snapscript.studio.index.IndexFile;
+import org.snapscript.studio.index.SourceFile;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
+import org.snapscript.studio.index.expression.ExpressionFinder;
 
 public class CompletionCompiler {
 
    private final Class<? extends CompletionFinder>[] finders;
+   private final ExpressionFinder finder;
    private final IndexDatabase database;
    
    public CompletionCompiler(IndexDatabase database, Class<? extends CompletionFinder>... finders) {
+      this.finder = new ExpressionFinder(database);
       this.database = database;
       this.finders = finders;
    }
    
    public CompletionResponse compile(CompletionRequest request) throws Exception {
-      String source = convertSource(request);
-      String complete = extractUserText(request);
-      String resource = request.getResource();
       int line = request.getLine();
-      IndexFile file = database.getFile(resource, source);
+      String source = UserTextExtractor.convertSource(request);
+      String complete = UserTextExtractor.extractUserText(request);
+      String resource = request.getResource();
+      SourceFile file = database.getFile(resource, source);
       IndexNode node = file.getNodeAtLine(line);
       IndexNode root = file.getRootNode();
       String details = IndexDumper.dump(root);
@@ -64,60 +67,5 @@ public class CompletionCompiler {
          }
       }
       return new CompletionResponse();
-   }
-   
-   private static String convertSource(CompletionRequest request) {
-      int line = request.getLine();
-      String source = request.getSource();
-      String lines[] = source.split("\\r?\\n");
-      
-      if(lines.length >= line && line > 0) {
-         StringBuilder builder = new StringBuilder();
-         
-         lines[line - 1] = ""; // remove the completion line
-         
-         for(String entry : lines) {
-            builder.append(entry);
-            builder.append("\n");
-         }
-         source = builder.toString();
-      }
-      int length = source.trim().length();
-      
-      if(length == 0) {
-         return "println();"; // provide some empty source  
-      }
-      return source;
-   }
-   
-   private static String extractUserText(CompletionRequest request) {
-      String completion = request.getComplete();
-      int length = completion.length();
-      int begin = length -1;
-      
-      while(begin > 0) {
-         char next = completion.charAt(begin);
-         
-         if(isTerminal(next)) {
-            return completion.substring(begin + 1, length);
-         }
-         begin--;
-      }
-      return completion;
-   }
-   
-   private static boolean isTerminal(char value) {
-      switch(value) {
-      case ',': case '{':
-      case '(': case '+':
-      case '-': case '*':
-      case '/': case '%':
-      case '|': case '&':
-      case '?': case ':':
-      case '=': case '<':
-      case '>':
-         return true;
-      }
-      return false;
    }
 }
