@@ -20,18 +20,18 @@ public class FindPossibleImports implements CompletionFinder {
    };
    
    @Override
-   public UserText parseExpression(String expression) {
+   public UserExpression parseExpression(String expression) {
       Matcher matcher = PATTERN.matcher(expression);
       
       if(matcher.matches()) {
          String unfinished = matcher.group(1);
-         return new UserText(null, unfinished);
+         return new UserExpression(null, unfinished);
       }
       return null;
    }
 
    @Override
-   public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, UserText text) {
+   public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, UserExpression text) {
       try {
          Map<String, IndexNode> allTypes = database.getTypeNodes();
          Set<Entry<String, IndexNode>> entries = allTypes.entrySet();

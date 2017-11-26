@@ -20,19 +20,19 @@ public class FindConstructorsInScope implements CompletionFinder {
    private static final Pattern PATTERN = Pattern.compile(".*new\\s+([a-zA-Z0-9_]*)$");
    
    @Override
-   public UserText parseExpression(String expression) {
+   public UserExpression parseExpression(String expression) {
       Matcher matcher = PATTERN.matcher(expression);
       
       if(matcher.matches()) {
          String unfinished = matcher.group(1);
          
-         return new UserText(null, unfinished);
+         return new UserExpression(null, unfinished);
       }
       return null;
    }
 
    @Override
-   public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, UserText text) throws Exception {
+   public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, UserExpression text) throws Exception {
       Map<String, IndexNode> expandedScope = database.getNodesInScope(node);
       Set<Entry<String, IndexNode>> entries = expandedScope.entrySet();
       String unfinished = text.getUnfinished();

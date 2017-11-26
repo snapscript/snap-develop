@@ -6,6 +6,6 @@ import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexNode;
 
 public interface CompletionFinder {
-   UserText parseExpression(String expression);
-   Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, UserText text) throws Exception;
+   UserExpression parseExpression(String expression);
+   Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, UserExpression text) throws Exception;
 }

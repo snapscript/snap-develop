@@ -1,11 +1,11 @@
 package org.snapscript.studio.index.complete;
 
-public class UserText {
+public class UserExpression {
 
    private final String handle;
    private final String unfinished;
    
-   public UserText(String handle, String unfinished) {
+   public UserExpression(String handle, String unfinished) {
       this.handle = handle;
       this.unfinished = unfinished;
    }

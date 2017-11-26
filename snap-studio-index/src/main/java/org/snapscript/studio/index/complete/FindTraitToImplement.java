@@ -15,18 +15,18 @@ public class FindTraitToImplement implements CompletionFinder {
    private static final Pattern PATTERN = Pattern.compile(".*\\s*with\\s+([a-zA-Z0-9_]*)$");
    
    @Override
-   public UserText parseExpression(String expression) {
+   public UserExpression parseExpression(String expression) {
       Matcher matcher = PATTERN.matcher(expression);
       
       if(matcher.matches()) {
          String unfinished = matcher.group(1);
-         return new UserText(null, unfinished);
+         return new UserExpression(null, unfinished);
       }
       return null;
    }
 
    @Override
-   public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, UserText text) throws Exception {
+   public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, UserExpression text) throws Exception {
       String unfinished = text.getUnfinished();
       Set<IndexNode> types = FindTypesToExtend.findAllTypes(database, node, unfinished);
       

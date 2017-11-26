@@ -8,33 +8,9 @@ import org.snapscript.common.ArrayStack;
 import org.snapscript.common.Stack;
 import org.snapscript.studio.index.expression.ExpressionBraceType;
 
-public class UserTextExtractor {
+public class UserInputExtractor {
    
-   public static String convertSource(CompletionRequest request) {
-      int line = request.getLine();
-      String source = request.getSource();
-      String lines[] = source.split("\\r?\\n");
-      
-      if(lines.length >= line && line > 0) {
-         StringBuilder builder = new StringBuilder();
-         
-         lines[line - 1] = ""; // remove the completion line
-         
-         for(String entry : lines) {
-            builder.append(entry);
-            builder.append("\n");
-         }
-         source = builder.toString();
-      }
-      int length = source.trim().length();
-      
-      if(length == 0) {
-         return "println();"; // provide some empty source  
-      }
-      return source;
-   }
-   
-   public static String extractUserText(CompletionRequest request) {
+   public static UserInput extractInput(CompletionRequest request) {
       String source = request.getSource();
       String completion = request.getComplete();
       String lines[] = source.split("\\r?\\n");
@@ -55,17 +31,36 @@ public class UserTextExtractor {
          }
          lines[line - 1] = completion; // insert expression at line
          String result = parseLine(lines, line);
+         String finished = createSource(lines, line);
          char last = completion.charAt(length -1);
          
          if(isSpace(last)) {
-            return result + " ";
+            return new UserInput(finished, result + " ");
          }
-         return result;
+         return new UserInput(finished, result);
       }
-      return "";
+      return new UserInput(source, "");
+   }
+   
+   private static String createSource(String[] lines, int index) {
+      StringBuilder builder = new StringBuilder();
+      
+      lines[index -1] = "";
+      
+      for(String entry : lines) {
+         builder.append(entry);
+         builder.append("\n");
+      }
+      String source = builder.toString();
+      int length = source.trim().length();
+      
+      if(length == 0) {
+         return "println();"; // provide some empty source  
+      }
+      return source;
    }
 
-   public static String parseLine(String source, int index) {
+   public static String parseLine(String source, int index) { // for testing
       String lines[] = source.split("\\r?\\n");
       String expression = parseLine(lines, index);
       
@@ -140,6 +135,7 @@ public class UserTextExtractor {
                builder.insert(0, next);
                begin--;
             }
+            lines[i - 1] = ""; // clear the expression
          }
       }
       return builder.toString();
