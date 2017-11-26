@@ -64,7 +64,10 @@ public class CompletionResource implements Resource {
       response.setContentType("application/json");
       out.println(text);
       out.close();
-      log.debug(expression);
-      log.debug(details);
+      
+      if(log.isDebugEnabled()) {
+         log.debug("Expression: " + expression);
+         log.debug("Tree: \n" + details);
+      }
    }
 }
