@@ -56,13 +56,15 @@ public class CompletionResource implements Resource {
             FindTypesToExtend.class,
             FindTraitToImplement.class);
       
-      CompletionResponse results = compiler.compile(context);
-      String details = results.getDetails();     
-      String text = gson.toJson(results);
+      CompletionResponse result = compiler.compile(context);
+      String expression = result.getExpression();
+      String details = result.getDetails();     
+      String text = gson.toJson(result);
       
       response.setContentType("application/json");
       out.println(text);
       out.close();
+      log.debug(expression);
       log.debug(details);
    }
 }
