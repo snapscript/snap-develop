@@ -1,6 +1,2 @@
 <theme name="monokai" extend="dark">
-  <value key="TREE_BACKGROUND_COLOR">#2f3129</value>
-  <value key="TREE_FONT_COLOR">#F8F8F2</value>  
-  <value key="HELP_BACKGROUND_COLOR">#2f3129</value>
-  <value key="HELP_FONT_COLOR">#F8F8F2</value>    
 </theme>

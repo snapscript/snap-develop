@@ -1,5 +1,5 @@
 <displayDefinition>
-   <theme-name>chrome</theme-name>
+   <theme-name>monokai</theme-name>
    <console-capacity>50000</console-capacity>
    <font>
       <font-family>Lucida Console</font-family>

@@ -77,17 +77,15 @@ border-color: #F8F8F2\
 .ace-monokai .ace_storage.ace_type,\
 .ace-monokai .ace_support.ace_class,\
 .ace-monokai .ace_support.ace_type {\
-font-style: italic;\
-color: #66D9EF\
+color: #F92672\
 }\
 .ace-monokai .ace_entity.ace_name.ace_function,\
 .ace-monokai .ace_entity.ace_other,\
 .ace-monokai .ace_entity.ace_other.ace_attribute-name,\
 .ace-monokai .ace_variable {\
-color: #A6E22E\
+color: #F8F8F2\
 }\
 .ace-monokai .ace_variable.ace_parameter {\
-font-style: italic;\
 color: #FD971F\
 }\
 .ace-monokai .ace_string {\
