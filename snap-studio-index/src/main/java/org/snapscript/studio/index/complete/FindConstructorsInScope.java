@@ -1,7 +1,6 @@
 package org.snapscript.studio.index.complete;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,9 +10,7 @@ import java.util.regex.Pattern;
 
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexNode;
-import org.snapscript.studio.index.IndexSearcher;
 import org.snapscript.studio.index.IndexType;
-import org.snapscript.studio.index.classpath.BootstrapClassPath;
 
 public class FindConstructorsInScope implements CompletionFinder {
 

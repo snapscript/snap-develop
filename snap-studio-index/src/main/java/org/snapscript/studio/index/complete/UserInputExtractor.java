@@ -107,6 +107,14 @@ public class UserInputExtractor {
                      quotes.push(next);
                   } else if(isCloseBrace(next)) {
                      ExpressionBraceType type = resolveBraceType(next);
+
+                     if(isTerminal(next)) { 
+                        int size = braces.size();
+                        
+                        if(size == 0) {
+                           return builder.toString();
+                        }
+                     }
                      braces.push(type);
                   } else if(isOpenBrace(next)) {
                      int current = builder.length();
@@ -168,6 +176,7 @@ public class UserInputExtractor {
       case '?': case ':':
       case '=': case '<':
       case '>': case ';':
+      case '}':   
          return true;
       }
       return false;

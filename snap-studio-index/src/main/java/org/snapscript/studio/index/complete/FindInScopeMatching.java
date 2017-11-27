@@ -45,9 +45,12 @@ public class FindInScopeMatching implements CompletionFinder {
                
                if(type.isImport()) {
                   String fullName = value.getFullName();
+                  IndexNode match = database.getTypeNode(fullName);
                   
-                  value = database.getTypeNode(fullName);
-                  type = value.getType();
+                  if(match != null) {
+                     type = match.getType();
+                     value = match;
+                  }
                }
                if(type.isType() || type.isConstrained()) {
                   matched.add(value);

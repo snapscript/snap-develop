@@ -49,12 +49,12 @@ public class CompletionResource implements Resource {
       thread.setContextClassLoader(classLoader);
       CompletionRequest context = gson.fromJson(content, CompletionRequest.class);
       CompletionCompiler compiler = new CompletionCompiler(project.getIndexDatabase(),
-            FindForExpression.class,
-            FindInScopeMatching.class,
             FindConstructorsInScope.class,
             FindPossibleImports.class,
             FindTypesToExtend.class,
-            FindTraitToImplement.class);
+            FindTraitToImplement.class,
+            FindForExpression.class,
+            FindInScopeMatching.class);
       
       CompletionResponse result = compiler.compile(context);
       String expression = result.getExpression();

@@ -8,16 +8,15 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.snapscript.core.Reserved;
+import org.snapscript.core.link.ImportPathResolver;
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexNode;
 
 public class FindPossibleImports implements CompletionFinder {
 
-   private static final Pattern PATTERN = Pattern.compile("\\s*import\\s+([a-zA-Z0-9_]*)$");
-   private static final String[] IGNORE_PREFIXES = {
-      "java.",
-      "javax.",
-   };
+   private static final Pattern PATTERN = Pattern.compile("\\s*import\\s+([a-zA-Z0-9_\\.]*)$");
+   private static final ImportPathResolver IMPORT_RESOLVER = new ImportPathResolver(Reserved.IMPORT_FILE); 
    
    @Override
    public UserExpression parseExpression(String expression) {
@@ -45,7 +44,7 @@ public class FindPossibleImports implements CompletionFinder {
                IndexNode value = entry.getValue();
                
                if(name.contains(unfinished) && value.isPublic()) {
-                  String importName = getImportName(name);
+                  String importName = IMPORT_RESOLVER.resolveName(name);
                   ImportIndexNode imported = new ImportIndexNode(value, importName);
                   matched.add(imported);
                }
@@ -56,16 +55,6 @@ public class FindPossibleImports implements CompletionFinder {
          e.printStackTrace();
       }
       return Collections.emptySet();
-   }
-   
-   private static String getImportName(String fullName) {
-      for(String prefix : IGNORE_PREFIXES) {
-         if(fullName.startsWith(prefix)) {
-            int length = prefix.length();
-            return fullName.substring(length);
-         }
-      }
-      return fullName;
    }
    
    private static class ImportIndexNode extends ProxyIndexNode {

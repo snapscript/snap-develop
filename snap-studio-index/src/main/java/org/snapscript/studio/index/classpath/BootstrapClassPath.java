@@ -3,6 +3,7 @@ package org.snapscript.studio.index.classpath;
 import java.io.File;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,25 +11,18 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.snapscript.core.Reserved;
+import org.snapscript.core.link.ImportPathResolver;
 import org.snapscript.studio.index.IndexNode;
 
 import com.google.common.reflect.ClassPath.ClassInfo;
 
 public class BootstrapClassPath {
 
+   private static final ImportPathResolver IMPORT_RESOLVER;
    private static final Set<IndexNode> BOOTSTRAP_CLASSES;
    private static final Map<String, IndexNode> DEFAULT_IMPORT_NAMES;
    private static final Map<String, IndexNode> DEFAULT_IMPORT_CLASSES;
-   private static final String[] IGNORE_PREFIXES = {
-      "java.",
-      "javax."
-   };
-   private static final String[] DEFAULT_IMPORTS = {
-      "java.lang.",
-      "java.util.",
-      "java.net.",
-      "java.io."
-   };
    private static final String[] RUNTIME_JAR_PATHS = {
       "/jre/lib/rt.jar",
       "/lib/rt.jar"
@@ -36,6 +30,7 @@ public class BootstrapClassPath {
    
    static {
       try {
+         IMPORT_RESOLVER = new ImportPathResolver(Reserved.IMPORT_FILE); 
          DEFAULT_IMPORT_NAMES = new ConcurrentHashMap<String, IndexNode>();
          DEFAULT_IMPORT_CLASSES = new ConcurrentHashMap<String, IndexNode>();
          BOOTSTRAP_CLASSES = new CopyOnWriteArraySet<IndexNode>();
@@ -78,16 +73,12 @@ public class BootstrapClassPath {
 
          for(IndexNode node : nodes) {
             String fullName = node.getFullName();
+            String alias = IMPORT_RESOLVER.resolveName(fullName);
             
-            for(String ignorePrefix : IGNORE_PREFIXES) {
-               if(fullName.startsWith(ignorePrefix)) {
-                  int length = ignorePrefix.length();
-                  String alias = fullName.substring(length);
-                  
-                  DEFAULT_IMPORT_CLASSES.put(alias, node);
-                  DEFAULT_IMPORT_CLASSES.put(fullName, node);
-               }
+            if(!fullName.equals(alias)) { 
+               DEFAULT_IMPORT_CLASSES.put(alias, node);
             }
+            DEFAULT_IMPORT_CLASSES.put(fullName, node);
          }
          DEFAULT_IMPORT_CLASSES.putAll(names);
       }
@@ -101,15 +92,10 @@ public class BootstrapClassPath {
          for(IndexNode node : nodes) {
             String shortName = node.getName();
             String fullName = node.getFullName();
+            List<String> resolvePath = IMPORT_RESOLVER.resolvePath(shortName);
             
-            for(String prefix : DEFAULT_IMPORTS) {
-               for(String ignorePrefix : IGNORE_PREFIXES) {
-                  if(fullName.startsWith(ignorePrefix)) {
-                     if(fullName.startsWith(prefix) && fullName.equals(prefix + shortName)) {
-                        DEFAULT_IMPORT_NAMES.put(shortName, node);
-                     }
-                  }
-               }
+            if(resolvePath.contains(fullName)) {
+               DEFAULT_IMPORT_NAMES.put(shortName, node);
             }
          }
       }

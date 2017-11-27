@@ -33,6 +33,14 @@ public class UserTextExtractorTest extends TestCase {
    
    private static final String SOURCE_6 =
    "  value + array[index].g";
+   
+   private static final String SOURCE_7 =
+   "module Constants {\n"+
+   "   const MAX_VAL = 11;\n"+
+   "   const MIN_VAL = 0;\n"+      
+   "}\n"+
+   "\n"+
+   "Constants.M";
      
    public void testMultiLineExpression() throws Exception {
       String expression = UserInputExtractor.parseLine(SOURCE_1, 5);
@@ -62,5 +70,10 @@ public class UserTextExtractorTest extends TestCase {
    public void testExpressionInCalculation() throws Exception {
       String expression = UserInputExtractor.parseLine(SOURCE_6, 1);
       assertEquals(expression, "array[index].g");
+   }
+   
+   public void testExpressionBeforeClosingBrace() throws Exception {
+      String expression = UserInputExtractor.parseLine(SOURCE_7, 6);
+      assertEquals(expression, "Constants.M");
    }
 }
