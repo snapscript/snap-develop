@@ -1,2 +1,4 @@
 <theme name="monokai" extend="dark">
+  <value key="TREE_BACKGROUND_COLOR">#414141</value>
+  <value key="HELP_BACKGROUND_COLOR">#414141</value>
 </theme>
