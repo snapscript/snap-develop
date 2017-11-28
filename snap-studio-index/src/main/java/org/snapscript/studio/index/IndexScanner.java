@@ -172,6 +172,7 @@ public class IndexScanner implements IndexDatabase {
 
    public Map<String, IndexNode> getNodesInScope(IndexNode node) {
       Map<String, IndexNode> scope = new HashMap<String, IndexNode>(DEFAULT_IMPORTS);
+      Map<String, IndexNode> additional = new HashMap<String, IndexNode>();
       Set<IndexNode> enclosing = new HashSet<IndexNode>();
       
       while(node != null) {
@@ -183,8 +184,8 @@ public class IndexScanner implements IndexDatabase {
             Map<String, IndexNode> children = getChildNodes(entry);
             
             if(!type.isSuper()) {
-               scope.put(name, entry);
-               scope.putAll(children);
+               additional.put(name, entry);
+               additional.putAll(children);
             }
          }
          IndexType type = node.getType();
@@ -196,9 +197,9 @@ public class IndexScanner implements IndexDatabase {
       }
       Map<String, IndexNode> inherited = getMemberNodes(enclosing); // get enclosing methods
       
-      if(!inherited.isEmpty()) {
-         scope.putAll(inherited);
-      }
+      scope.putAll(inherited);
+      scope.putAll(additional);
+      
       return scope;
    }
    

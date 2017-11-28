@@ -28,7 +28,12 @@ public class BraceStack {
       short type = token.getType();
       
       if((type & TokenType.LITERAL.mask) == TokenType.LITERAL.mask) {
-         if(value.equals("{")){
+         if(value.equals("{}")){
+            BraceNode current = stack.peek();
+            
+            current.open(BraceType.COMPOUND, line, size);
+            current.close(BraceType.COMPOUND, line);
+         } else if(value.equals("{")){
             BraceNode current = stack.peek();
             BraceNode node = current.open(BraceType.COMPOUND, line, size);
 
@@ -36,11 +41,8 @@ public class BraceStack {
          }else if(value.equals("}")) {
             BraceNode current = stack.pop();
             BraceNode parent = current.getParent();
-            int depth = parent.close(BraceType.COMPOUND, line);
             
-            if(depth != 0) {
-               throw new IllegalStateException("Bracket not closed");
-            }
+            parent.close(BraceType.COMPOUND, line);
          }else if(value.equals("(")) {
             open(BraceType.NORMAL, line);
          }else if(value.equals(")")) {

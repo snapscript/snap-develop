@@ -1,12 +1,6 @@
-class Foo {
-   call(){
-      func();
-   }
-   blahfun(){}
+import util.regex.Pattern;
+function func(p: Pattern){
+   ;
+   println(p);
 }
-function func(v...){
-   println("x=${v.length}");
-   printf("xx%n");
-}
-new Foo().call();
-var f:Foo=null;
+func(null);

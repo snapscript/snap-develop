@@ -8,57 +8,7 @@ import org.snapscript.common.ArrayStack;
 import org.snapscript.common.Stack;
 import org.snapscript.studio.index.expression.ExpressionBraceType;
 
-public class UserInputExtractor {
-   
-   public static UserInput extractInput(CompletionRequest request) {
-      String source = request.getSource();
-      String completion = request.getComplete();
-      String lines[] = source.split("\\r?\\n");
-      int length = completion.length();
-      int line = request.getLine();
-
-      if(length > 0) {
-         if(lines.length < line) {
-            String[] copy = new String[line];
-
-            for(int i = 0; i < lines.length; i++) {
-               copy[i] = lines[i];
-            }
-            for(int i = lines.length; i < line; i++) {
-               copy[i] = "";
-            }
-            lines = copy;
-         }
-         lines[line - 1] = completion; // insert expression at line
-         String result = parseLine(lines, line);
-         String finished = createSource(lines, line);
-         char last = completion.charAt(length -1);
-         
-         if(isSpace(last)) {
-            return new UserInput(finished, result + " ");
-         }
-         return new UserInput(finished, result);
-      }
-      return new UserInput(source, "");
-   }
-   
-   private static String createSource(String[] lines, int index) {
-      StringBuilder builder = new StringBuilder();
-      
-      lines[index -1] = "";
-      
-      for(String entry : lines) {
-         builder.append(entry);
-         builder.append("\n");
-      }
-      String source = builder.toString();
-      int length = source.trim().length();
-      
-      if(length == 0) {
-         return "println();"; // provide some empty source  
-      }
-      return source;
-   }
+public class InputExpressionParser {
 
    public static String parseLine(String source, int index) { // for testing
       String lines[] = source.split("\\r?\\n");
@@ -67,14 +17,21 @@ public class UserInputExtractor {
       return expression.trim();
    }
    
-   private static String parseLine(String[] lines, int index) {
+   public static String parseLine(String[] lines, int index) {
       Stack<ExpressionBraceType> braces = new ArrayStack<ExpressionBraceType>();
       Stack<Character> quotes = new ArrayStack<Character>();
       StringBuilder builder = new StringBuilder();
       
       if(lines.length >= index) {
+         char lastNonSpace = '\n'; // last character not a space
+         
          for(int i = index; i > 0; i--) {
             String trimmed = lines[i - 1].trim(); // lines start at 1
+            int comment = trimmed.indexOf("//"); // does it end with a comment
+            
+            if(comment != -1) {
+               trimmed = trimmed.substring(0, comment);
+            }
             int length = trimmed.length();
             int begin = length -1;
             
@@ -140,6 +97,17 @@ public class UserInputExtractor {
                      }
                   }
                }
+               if(!isSpace(next)) {
+                  lastNonSpace = next;
+               } else {
+                  if(lastNonSpace != 0) {
+                     char previousAppend = builder.charAt(0);
+                     
+                     if(isAlpha(next) && isSpace(previousAppend) && isAlpha(lastNonSpace)) { // e.g retur[n f]oo.blah()
+                        return builder.toString();
+                     }
+                  }
+               }
                builder.insert(0, next);
                begin--;
             }
@@ -149,9 +117,14 @@ public class UserInputExtractor {
       return builder.toString();
    }
    
+   private static boolean isAlpha(char value) {
+      return Character.isDigit(value) && Character.isAlphabetic(value);
+   }
+   
    private static boolean isSpace(char value) {
       switch(value){
       case ' ': case '\t':
+      case '\r': case '\n':
          return true;
       }
       return false;

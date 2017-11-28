@@ -83,6 +83,6 @@ public class BraceNode {
    
    @Override
    public String toString() {
-      return String.valueOf(type);
+      return String.format("%s -> %s", type, stack);
    }
 }

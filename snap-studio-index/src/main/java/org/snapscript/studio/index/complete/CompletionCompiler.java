@@ -22,7 +22,7 @@ public class CompletionCompiler {
    
    public CompletionResponse compile(CompletionRequest request) throws Exception {
       int line = request.getLine();
-      UserInput input = UserInputExtractor.extractInput(request);
+      EditContext input = EditContextExtractor.extractContext(request);
       String source = input.getSource();
       String complete = input.getExpression();
       String resource = request.getResource();
@@ -30,10 +30,11 @@ public class CompletionCompiler {
       IndexNode node = file.getNodeAtLine(line);
       IndexNode root = file.getRootNode();
       String details = IndexDumper.dump(root);
-      
+      System.out.println(complete);
+      System.out.println(source);
       for(Class<? extends CompletionFinder> finderType : finders) {
          CompletionFinder finder = finderType.newInstance();
-         UserExpression text = finder.parseExpression(complete);
+         InputText text = finder.parseExpression(complete);
          
          if(text != null) {
             Set<IndexNode> matches = finder.findMatches(database, node, text);
