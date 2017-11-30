@@ -184,8 +184,16 @@ public class IndexScanner implements IndexDatabase {
             Map<String, IndexNode> children = getChildNodes(entry);
             
             if(!type.isSuper()) {
-               additional.put(name, entry);
-               additional.putAll(children);
+               Set<Entry<String, IndexNode>> pairs = children.entrySet();
+               
+               additional.putIfAbsent(name, entry);
+               
+               for(Entry<String, IndexNode> pair : pairs) {
+                  String key = pair.getKey();
+                  IndexNode value = pair.getValue();
+                  
+                  additional.putIfAbsent(key, value);
+               }
             }
          }
          IndexType type = node.getType();
