@@ -170,10 +170,11 @@ public class IndexScanner implements IndexDatabase {
    }
    
 
-   public Map<String, IndexNode> getNodesInScope(IndexNode node) {
+   public Map<String, IndexNode> getNodesInScope(IndexNode node) throws Exception {
       Map<String, IndexNode> scope = new HashMap<String, IndexNode>(DEFAULT_IMPORTS);
       Map<String, IndexNode> additional = new HashMap<String, IndexNode>();
       Set<IndexNode> enclosing = new HashSet<IndexNode>();
+      String module = node.getModule();
       
       while(node != null) {
          Set<IndexNode> nodes = node.getNodes();
@@ -199,16 +200,49 @@ public class IndexScanner implements IndexDatabase {
          IndexType type = node.getType();
          
          if(type.isType()) {
+            module = node.getModule();
             enclosing.add(node);
          }
          node = node.getParent();
       }
+      Map<String, IndexNode> packageNodes = getNodesInSamePackage(module); // nodes in same package
       Map<String, IndexNode> inherited = getMemberNodes(enclosing); // get enclosing methods
       
+      scope.putAll(packageNodes);
       scope.putAll(inherited);
       scope.putAll(additional);
       
       return scope;
+   }
+   
+   private Map<String, IndexNode> getNodesInSamePackage(String module) throws Exception {
+      Map<String, SourceFile> files = getFiles();
+      Collection<SourceFile> list = files.values();
+      
+      if(!files.isEmpty()) {
+         Map<String, IndexNode> matches = new HashMap<String, IndexNode>();
+         
+         for(SourceFile file : list) {
+            Map<String, IndexNode> nodes = file.getTypeNodes();
+            Set<Entry<String, IndexNode>> entries = nodes.entrySet();
+            
+            for(Entry<String, IndexNode> entry : entries) {
+               IndexNode node = entry.getValue();
+               String name = node.getName();
+               
+               if(name != null) {
+                  String nodeModule = node.getModule();
+                  IndexType type = node.getType();
+                  
+                  if(type.isType() && nodeModule.equals(module)) {
+                     matches.put(name, node);
+                  }
+               }
+            }
+         }
+         return Collections.unmodifiableMap(matches);
+      }
+      return Collections.emptyMap();
    }
    
    private Map<String, IndexNode> getMemberNodes(Set<IndexNode> enclosing) {

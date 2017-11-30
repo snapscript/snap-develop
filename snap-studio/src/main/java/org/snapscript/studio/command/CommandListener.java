@@ -1,6 +1,7 @@
 package org.snapscript.studio.command;
 
 import java.io.File;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicLong;
@@ -19,6 +20,7 @@ import org.snapscript.studio.common.resource.display.DisplayPersister;
 import org.snapscript.studio.core.BackupManager;
 import org.snapscript.studio.core.ProcessManager;
 import org.snapscript.studio.project.Project;
+import org.snapscript.studio.project.config.DependencyFile;
 import org.snapscript.studio.project.config.OperatingSystem;
 import org.snapscript.studio.project.config.ProjectConfiguration;
 import org.snapscript.studio.resource.project.ProjectProblemFinder;
@@ -441,7 +443,16 @@ public class CommandListener {
             onReload();
          }
          try {
-            project.getDependencies();
+            List<DependencyFile> files = project.getDependencies();
+            
+            for(DependencyFile file : files) {
+               String message = file.getMessage();
+               
+               if(message != null){
+                  long time = System.currentTimeMillis();
+                  commandClient.sendDependencyError(ProjectConfiguration.PROJECT_FILE, message, time, 1);
+               }
+            }
          } catch(Exception e) {
             String message = e.getMessage();
             long time = System.currentTimeMillis();

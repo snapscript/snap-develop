@@ -67,11 +67,11 @@ public class InputExpressionParser {
                      }
                      braces.push(type);
                   } else if(isOpenBrace(next)) {
-                     int current = builder.length();
+                     int size = builder.length();
                      int depth = braces.size();
                      
                      if(depth == 0) { // no braces in stack
-                        if(current > 0 || i != index) { // we have something or new lines
+                        if(size > 0 || i != index) { // we have something or new lines
                            return builder.toString();
                         }
                      } else {
@@ -83,9 +83,22 @@ public class InputExpressionParser {
                         braces.pop(); // remove brace
                      }
                   } else if(isTerminal(next)) {
-                     int size = braces.size();
+                     int depth = braces.size();
                      
-                     if(size == 0) {
+                     if(isSafeNavigation(next)) { // [?].blah
+                        int done = builder.length();
+                        
+                        if(done > 0) {
+                           char previous = builder.charAt(0); // ?[.]blah
+                           
+                           if(isNavigation(previous)) {
+                              builder.delete(0, 1); // remove '.'
+                              depth = 1; // don't finish
+                              next = '.';  // insert '.'
+                           }
+                        } 
+                     } 
+                     if(depth == 0) {
                         return builder.toString();
                      }
                   }
@@ -126,6 +139,14 @@ public class InputExpressionParser {
    
    private static boolean isAlphaOrDigit(char value) {
       return Character.isDigit(value) || Character.isAlphabetic(value);
+   }
+
+   public static boolean isNavigation(char value) {
+      return value == '.';
+   }
+   
+   public static boolean isSafeNavigation(char value) {
+      return value == '?';
    }
    
    private static boolean isSpace(char value) {

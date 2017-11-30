@@ -45,6 +45,9 @@ public class InputExpressionParserTest extends TestCase {
    private static final String SOURCE_8 =
    "  return list.stream().filter(x -> x.bool).comp";
    
+   private static final String SOURCE_9 =
+   "  map?.entrySet()?.stream()";
+   
    public void testMultiLineExpression() throws Exception {
       String expression = InputExpressionParser.parseLine(SOURCE_1, 5);
       assertEquals(expression, "list.stream().filter(x -> { return x > 0; }).map(x -> x.y).collect(");
@@ -83,5 +86,10 @@ public class InputExpressionParserTest extends TestCase {
    public void testReturnExpression() throws Exception {
       String expression = InputExpressionParser.parseLine(SOURCE_8, 1);
       assertEquals(expression, "list.stream().filter(x -> x.bool).comp");
+   }
+   
+   public void testSafeNavigationExpression() throws Exception {
+      String expression = InputExpressionParser.parseLine(SOURCE_9, 1);
+      assertEquals(expression, "map.entrySet().stream()");
    }
 }

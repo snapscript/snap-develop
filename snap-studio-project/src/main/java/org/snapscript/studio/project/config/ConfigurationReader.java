@@ -230,15 +230,15 @@ public class ConfigurationReader {
                      String message = set.getMessage();
 
                      if(matches.isEmpty()) {
-                        DependencyFile file = new DependencyFile(null, key, message);
+                        DependencyFile file = new DependencyFile(null, message);
                         files.add(file);
                      } else {
                         for (File match : matches) {
                            if(match.exists()) {
-                              DependencyFile file = new DependencyFile(match, key);
+                              DependencyFile file = new DependencyFile(match);
                               files.add(file);
                            } else {
-                              DependencyFile file = new DependencyFile(match, key, "Could not resolve " + key);
+                              DependencyFile file = new DependencyFile(match, "Could not resolve " + key);
                               files.add(file);
                            }
                         }

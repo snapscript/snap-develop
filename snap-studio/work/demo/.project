@@ -8,8 +8,8 @@
       <path>misc/src</path>
       <path>misc/assets</path>
    </source>
-   <dependencies> 
-      <dependency> 
+   <dependencies>  
+      <dependency>  
          <groupId>org.springframework.boot</groupId>
          <artifactId>spring-boot-starter-parent</artifactId>
          <version>1.5.8.RELEASE</version>
