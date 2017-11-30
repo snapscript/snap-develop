@@ -18,7 +18,12 @@ import org.simpleframework.http.Path;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.Level;
-
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.core.FileAppender;
+import ch.qos.logback.core.util.StatusPrinter;
+import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.LoggerContext;
 import org.slf4j.LoggerFactory;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.studio.common.FileDirectorySource;
@@ -37,6 +42,7 @@ public class Workspace implements FileDirectorySource {
    private final ConfigurationReader reader;
    private final ProjectManager manager;
    private final ThreadPool pool;
+   private final File logFile;
    private final String level;
    private final File root;
    
@@ -49,6 +55,7 @@ public class Workspace implements FileDirectorySource {
       this.reader = new ConfigurationReader(this);
       this.pool = new ThreadPool(10);
       this.manager = new ProjectManager(reader, this, mode);
+      this.logFile = logFile;
       this.level = level;
       this.root = root;
    }
@@ -120,7 +127,7 @@ public class Workspace implements FileDirectorySource {
    @PostConstruct
    public File createWorkspace() {
       try {
-         updateLogLevel();
+         updateLogger();
          return newWorkspace();
       }catch(Exception e) {
          throw new IllegalStateException("Could not create directory " + root, e);
@@ -145,11 +152,26 @@ public class Workspace implements FileDirectorySource {
       return directory;
    }
 
-   private void updateLogLevel() {
+   private void updateLogger() {
+      FileAppender appender = new FileAppender();
+      PatternLayoutEncoder encoder = new PatternLayoutEncoder();
+      
       try {
          Level logLevel = Level.valueOf(level);
          Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+         String path = logFile.getCanonicalPath();
          
+         appender.setContext(context);
+         appender.setName("workspace");
+         appender.setFile(path);
+         encoder.setContext(context);
+         encoder.setPattern("%d{\"yyyy/MM/dd HH:mm:ss,SSS\"} [%p] [%t] %C{0}.%M - %msg%n");
+         encoder.start();
+         appender.setEncoder(encoder);
+         appender.start();
+
+         logger.addAppender(appender);
          logger.setLevel(logLevel);
       }catch(Throwable e) {
          
