@@ -212,8 +212,8 @@ public class ConfigurationReader {
       }
       
       @Override
-      public List<File> getDependencies(RepositoryFactory factory, List<Dependency> dependencies) {
-         List<File> files = new ArrayList<File>();
+      public List<DependencyFile> getDependencies(RepositoryFactory factory, List<Dependency> dependencies) {
+         List<DependencyFile> files = new ArrayList<DependencyFile>();
       
          try {
             if(repository != null) {
@@ -224,13 +224,24 @@ public class ConfigurationReader {
                      String groupId = dependency.getGroupId();
                      String artifactId = dependency.getArtifactId();
                      String version = dependency.getVersion();
-                     List<File> matches = client.resolve(groupId, artifactId, version);
-   
-                     for (File match : matches) {
-                        if (!match.exists()) {
-                           throw new IllegalStateException("Could not resolve file " + match);
+                     String key = String.format("%s:%s:%s", groupId, artifactId, version);
+                     DependencyFileSet set = client.resolve(groupId, artifactId, version);
+                     List<File> matches = set.getFiles();
+                     String message = set.getMessage();
+
+                     if(matches.isEmpty()) {
+                        DependencyFile file = new DependencyFile(null, key, message);
+                        files.add(file);
+                     } else {
+                        for (File match : matches) {
+                           if(match.exists()) {
+                              DependencyFile file = new DependencyFile(match, key);
+                              files.add(file);
+                           } else {
+                              DependencyFile file = new DependencyFile(match, key, "Could not resolve " + key);
+                              files.add(file);
+                           }
                         }
-                        files.add(match);
                      }
                   }
                }

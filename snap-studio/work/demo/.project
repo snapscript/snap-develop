@@ -8,7 +8,17 @@
       <path>misc/src</path>
       <path>misc/assets</path>
    </source>
-   <dependencies>
+   <dependencies> 
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-parent</artifactId>
+         <version>1.5.8.RELEASE</version>
+      </dependency>      
+      <dependency>
+         <groupId>commons-net</groupId>
+         <artifactId>commons-net</artifactId>
+         <version>3.6</version>
+      </dependency>      
       <dependency>
          <groupId>commons-net</groupId>
          <artifactId>commons-net</artifactId>

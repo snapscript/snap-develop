@@ -25,6 +25,7 @@ import org.snapscript.studio.common.FileDirectorySource;
 import org.snapscript.studio.index.classpath.BootstrapClassPath;
 import org.snapscript.studio.project.config.ConfigurationReader;
 import org.snapscript.studio.project.config.Dependency;
+import org.snapscript.studio.project.config.DependencyFile;
 import org.snapscript.studio.project.config.ProjectConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -97,7 +98,7 @@ public class Workspace implements FileDirectorySource {
       }  
    }
    
-   public List<File> resolveDependencies(List<Dependency> dependencies) {
+   public List<DependencyFile> resolveDependencies(List<Dependency> dependencies) {
       return reader.loadWorkspaceConfiguration().getDependencies(dependencies);
    }
    

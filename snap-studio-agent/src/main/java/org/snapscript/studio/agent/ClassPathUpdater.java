@@ -28,8 +28,10 @@ public class ClassPathUpdater {
             int length = token.length();
             
             if(length > 0) {
-               File file = new File(token);
-               files.add(file);
+               if(!token.startsWith("#")) {
+                  File file = new File(token);
+                  files.add(file);
+               }
             }
             line = reader.readLine();
          }

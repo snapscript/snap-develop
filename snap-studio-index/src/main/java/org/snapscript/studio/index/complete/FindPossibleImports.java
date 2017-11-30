@@ -19,18 +19,19 @@ public class FindPossibleImports implements CompletionFinder {
    private static final ImportPathResolver IMPORT_RESOLVER = new ImportPathResolver(Reserved.IMPORT_FILE); 
    
    @Override
-   public InputText parseExpression(String expression) {
+   public InputExpression parseExpression(EditContext context) {
+      String expression = context.getOriginalExpression();
       Matcher matcher = PATTERN.matcher(expression);
       
       if(matcher.matches()) {
          String unfinished = matcher.group(1);
-         return new InputText(null, unfinished);
+         return new InputExpression(null, unfinished);
       }
       return null;
    }
 
    @Override
-   public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, InputText text) {
+   public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, InputExpression text) {
       try {
          Map<String, IndexNode> allTypes = database.getTypeNodes();
          Set<Entry<String, IndexNode>> entries = allTypes.entrySet();

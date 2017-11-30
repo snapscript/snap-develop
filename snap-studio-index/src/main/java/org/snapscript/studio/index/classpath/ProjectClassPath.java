@@ -26,7 +26,7 @@ public class ProjectClassPath {
             }
          }
       } catch(Throwable e) {
-         e.printStackTrace();;
+         //e.printStackTrace();
       }
       nodes.addAll(BootstrapClassPath.getBootstrapClasses());
       return Collections.unmodifiableSet(nodes);

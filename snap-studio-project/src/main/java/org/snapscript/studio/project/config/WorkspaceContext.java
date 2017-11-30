@@ -1,6 +1,5 @@
 package org.snapscript.studio.project.config;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +20,7 @@ public class WorkspaceContext implements WorkspaceConfiguration {
    }
 
    @Override
-   public List<File> getDependencies(List<Dependency> dependencies) {
+   public List<DependencyFile> getDependencies(List<Dependency> dependencies) {
       if(loader == null) {
          throw new IllegalStateException("Could not resolve dependencies");
       }

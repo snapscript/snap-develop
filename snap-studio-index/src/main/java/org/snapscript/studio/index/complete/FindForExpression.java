@@ -9,16 +9,18 @@ import org.snapscript.studio.index.expression.ExpressionFinder;
 public class FindForExpression implements CompletionFinder {
 
    @Override
-   public InputText parseExpression(String expression) {
+   public InputExpression parseExpression(EditContext context) {
+      String expression = context.getExpression();
+      
       if(expression.contains(".")) {
          String text = expression.trim();
-         return new InputText(text, null);
+         return new InputExpression(text, null);
       }
       return null;
    }
 
    @Override
-   public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, InputText text) throws Exception {
+   public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, InputExpression text) throws Exception {
       ExpressionFinder finder = new ExpressionFinder(database);
       String expression = text.getHandle();
       return finder.find(node, expression);

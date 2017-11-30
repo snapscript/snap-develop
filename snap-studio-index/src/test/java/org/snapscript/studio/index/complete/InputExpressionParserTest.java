@@ -2,7 +2,7 @@ package org.snapscript.studio.index.complete;
 
 import junit.framework.TestCase;
 
-public class UserTextExtractorTest extends TestCase {
+public class InputExpressionParserTest extends TestCase {
 
    private static final String SOURCE_1 =
    "var list: List = new ArrayList();\n"+
@@ -42,6 +42,9 @@ public class UserTextExtractorTest extends TestCase {
    "\n"+
    "Constants.M";
      
+   private static final String SOURCE_8 =
+   "  return list.stream().filter(x -> x.bool).comp";
+   
    public void testMultiLineExpression() throws Exception {
       String expression = InputExpressionParser.parseLine(SOURCE_1, 5);
       assertEquals(expression, "list.stream().filter(x -> { return x > 0; }).map(x -> x.y).collect(");
@@ -75,5 +78,10 @@ public class UserTextExtractorTest extends TestCase {
    public void testExpressionBeforeClosingBrace() throws Exception {
       String expression = InputExpressionParser.parseLine(SOURCE_7, 6);
       assertEquals(expression, "Constants.M");
+   }
+   
+   public void testReturnExpression() throws Exception {
+      String expression = InputExpressionParser.parseLine(SOURCE_8, 1);
+      assertEquals(expression, "list.stream().filter(x -> x.bool).comp");
    }
 }

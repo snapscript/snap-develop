@@ -17,6 +17,7 @@ import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.project.config.ClassPathExecutor;
 import org.snapscript.studio.project.config.ConfigurationClassLoader;
 import org.snapscript.studio.project.config.ConfigurationReader;
+import org.snapscript.studio.project.config.DependencyFile;
 
 public class Project implements FileDirectory {
    
@@ -106,11 +107,11 @@ public class Project implements FileDirectory {
       return context.getLayout().getDownloadPath(path, resource);
    }
 
-   public List<File> getDependencies() {
+   public List<DependencyFile> getDependencies() {
       return context.getDependencies();
    }
    
-   public String getClassPath() {
+   public ClassPathFile getClassPath() {
       return context.getClassPath();
    }
    

@@ -24,17 +24,15 @@ public class CompletionCompiler {
       int line = request.getLine();
       EditContext input = EditContextExtractor.extractContext(request);
       String source = input.getSource();
-      String complete = input.getExpression();
       String resource = request.getResource();
       SourceFile file = database.getFile(resource, source);
       IndexNode node = file.getNodeAtLine(line);
       IndexNode root = file.getRootNode();
       String details = IndexDumper.dump(root);
-      System.out.println(complete);
-      System.out.println(source);
+      
       for(Class<? extends CompletionFinder> finderType : finders) {
          CompletionFinder finder = finderType.newInstance();
-         InputText text = finder.parseExpression(complete);
+         InputExpression text = finder.parseExpression(input);
          
          if(text != null) {
             Set<IndexNode> matches = finder.findMatches(database, node, text);
@@ -62,7 +60,8 @@ public class CompletionCompiler {
                String category = type.getName();
                tokens.put(name, category);
             }
-            return new CompletionResponse(tokens, complete, details);
+            String expression = input.getExpression();
+            return new CompletionResponse(tokens, expression, details);
          }
       }
       return new CompletionResponse();

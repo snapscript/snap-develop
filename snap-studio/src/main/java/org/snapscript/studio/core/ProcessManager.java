@@ -17,6 +17,7 @@ import org.snapscript.studio.command.EvaluateCommand;
 import org.snapscript.studio.command.ExecuteCommand;
 import org.snapscript.studio.command.StepCommand;
 import org.snapscript.studio.command.StepCommand.StepType;
+import org.snapscript.studio.project.ClassPathFile;
 import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.Workspace;
 import org.snapscript.studio.project.config.ProcessConfiguration;
@@ -63,7 +64,8 @@ public class ProcessManager implements ProcessAgentController {
          Map<String, Map<Integer, Boolean>> breakpoints = command.getBreakpoints();
          String projectName = command.getProject();
          Project project = workspace.getProject(projectName);
-         String dependencies = project.getClassPath();
+         ClassPathFile classPath = project.getClassPath();
+         String dependencies = classPath.getPath();
          String resource = command.getResource();
          String process = connection.toString();
          boolean debug = command.isDebug();

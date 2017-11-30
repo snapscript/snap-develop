@@ -21,15 +21,17 @@ import org.snapscript.studio.index.classpath.ClassIndexProcessor;
 @Slf4j
 public class ExpressionFinder {
    
+   private final ExpressionExtractor extractor;
    private final IndexDatabase database;
    
    public ExpressionFinder(IndexDatabase database) {
+      this.extractor = new ExpressionExtractor();
       this.database = database;
    }
    
-   public Set<IndexNode> find(IndexNode node, String expression) {
-      ExpressionParser parser = new ExpressionParser(expression);
-      return collect(node, parser);
+   public Set<IndexNode> find(IndexNode node, String text) {
+      Expression expression = extractor.extract(text);
+      return collect(node, expression);
    }
 
    private Set<IndexNode> collect(IndexNode node, Expression expression) {

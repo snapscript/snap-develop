@@ -1,6 +1,5 @@
 package org.snapscript.studio.project.config;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,7 @@ public class EmptyConfiguration implements WorkspaceConfiguration {
    }
 
    @Override
-   public List<File> getDependencies(List<Dependency> dependencies) {
+   public List<DependencyFile> getDependencies(List<Dependency> dependencies) {
       return Collections.emptyList();
    }
    

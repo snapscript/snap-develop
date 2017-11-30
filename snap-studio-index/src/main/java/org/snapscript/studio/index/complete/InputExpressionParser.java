@@ -23,15 +23,8 @@ public class InputExpressionParser {
       StringBuilder builder = new StringBuilder();
       
       if(lines.length >= index) {
-         char lastNonSpace = '\n'; // last character not a space
-         
          for(int i = index; i > 0; i--) {
             String trimmed = lines[i - 1].trim(); // lines start at 1
-            int comment = trimmed.indexOf("//"); // does it end with a comment
-            
-            if(comment != -1) {
-               trimmed = trimmed.substring(0, comment);
-            }
             int length = trimmed.length();
             int begin = length -1;
             
@@ -66,18 +59,18 @@ public class InputExpressionParser {
                      ExpressionBraceType type = resolveBraceType(next);
 
                      if(isTerminal(next)) { 
-                        int size = braces.size();
+                        int depth = braces.size();
                         
-                        if(size == 0) {
+                        if(depth == 0) {
                            return builder.toString();
                         }
                      }
                      braces.push(type);
                   } else if(isOpenBrace(next)) {
                      int current = builder.length();
-                     int size = braces.size();
+                     int depth = braces.size();
                      
-                     if(size == 0) { // no braces in stack
+                     if(depth == 0) { // no braces in stack
                         if(current > 0 || i != index) { // we have something or new lines
                            return builder.toString();
                         }
@@ -97,14 +90,24 @@ public class InputExpressionParser {
                      }
                   }
                }
-               if(!isSpace(next)) {
-                  lastNonSpace = next;
-               } else {
-                  if(lastNonSpace != 0) {
-                     char previousAppend = builder.charAt(0);
+               if(isAlphaOrDigit(next)) {
+                  int depth = braces.size();
+                  int done = builder.length();
+                  
+                  if(done > 0 && depth == 0) {
+                     char previous = builder.charAt(0);
                      
-                     if(isAlpha(next) && isSpace(previousAppend) && isAlpha(lastNonSpace)) { // e.g retur[n f]oo.blah()
-                        return builder.toString();
+                     if(isSpace(previous)) {
+                        for(int j = 0; j < done; j++) {
+                           char seek = builder.charAt(j);
+                           
+                           if(!isSpace(seek)) {
+                              if(isAlpha(seek)) {
+                                 builder.delete(0, j);
+                                 return builder.toString();
+                              }
+                           }
+                        }
                      }
                   }
                }
@@ -116,9 +119,13 @@ public class InputExpressionParser {
       }
       return builder.toString();
    }
-   
+
    private static boolean isAlpha(char value) {
-      return Character.isDigit(value) && Character.isAlphabetic(value);
+      return Character.isAlphabetic(value);
+   }
+   
+   private static boolean isAlphaOrDigit(char value) {
+      return Character.isDigit(value) || Character.isAlphabetic(value);
    }
    
    private static boolean isSpace(char value) {

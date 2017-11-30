@@ -11,8 +11,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.snapscript.studio.agent.ClassPathUpdater;
-import org.snapscript.studio.project.Project;
+import org.snapscript.studio.project.ClassPathFile;
 import org.snapscript.studio.project.FileSystem;
+import org.snapscript.studio.project.Project;
 
 public class ConfigurationClassLoader {
    
@@ -32,8 +33,9 @@ public class ConfigurationClassLoader {
       
       try {
          if(isClassLoaderStale()) {
-            String classPath = project.getClassPath();
-            ClassLoader classLoader = createClassLoader(classPath);
+            ClassPathFile classPath = project.getClassPath();
+            String content = classPath.getPath();
+            ClassLoader classLoader = createClassLoader(content);
             
             lastUpdate.set(time);
             reference.set(classLoader);

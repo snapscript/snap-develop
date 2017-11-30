@@ -237,6 +237,11 @@ public class ExpressionParser extends StringParser implements Expression {
       return ch == '.' || ch == ';';
    }
    
+   @Override
+   public String toString() {
+      return getExpression();
+   }
+   
    private class QuoteStack {
       
       private char[] stack;

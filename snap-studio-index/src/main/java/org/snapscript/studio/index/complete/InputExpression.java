@@ -1,11 +1,11 @@
 package org.snapscript.studio.index.complete;
 
-public class InputText {
+public class InputExpression {
 
    private final String handle;
    private final String unfinished;
    
-   public InputText(String handle, String unfinished) {
+   public InputExpression(String handle, String unfinished) {
       this.handle = handle;
       this.unfinished = unfinished;
    }

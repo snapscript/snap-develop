@@ -5,8 +5,7 @@ import static org.snapscript.studio.project.config.ProjectConfiguration.PROJECT_
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,6 +16,7 @@ import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexScanner;
 import org.snapscript.studio.project.config.ConfigurationReader;
 import org.snapscript.studio.project.config.Dependency;
+import org.snapscript.studio.project.config.DependencyFile;
 import org.snapscript.studio.project.config.ProjectConfiguration;
 
 @Slf4j
@@ -74,23 +74,28 @@ public class ProjectContext {
       return database;
    }
 
-   public synchronized List<File> getDependencies() {
+   public synchronized List<DependencyFile> getDependencies() {
+      List<DependencyFile> dependencies = new ArrayList<DependencyFile>();
+      
       try {
-         String classPath = getClassPath();
-         List<File> files = ClassPathUpdater.parseClassPath(classPath);
+         ClassPathFile classPath = getClassPath();
+         String content = classPath.getPath();
+         List<File> files = ClassPathUpdater.parseClassPath(content);
          
          for(File file : files) {
             if(!file.exists()) {
                return getDeclaredDependencies(); // force a maven lookup
             }
+            DependencyFile entry = new DependencyFile(file);
+            dependencies.add(entry);
          }
-         return files;
       } catch(Exception e) {
          throw new IllegalStateException(e.getMessage(), e);
       }
+      return dependencies;
    }
    
-   public synchronized String getClassPath() {
+   public synchronized ClassPathFile getClassPath() {
       File projectFile = project.getFileSystem().getFile(PROJECT_FILE);
       File classPathFile = project.getFileSystem().getFile(CLASSPATH_FILE);
       
@@ -99,8 +104,9 @@ public class ProjectContext {
             FileWriter writer = new FileWriter(classPathFile);
             
             try {
-               String classPath = getClassPathFile();
-               writer.write(classPath);
+               ClassPathFile classPath = getClassPathFile();
+               String text = classPath.getPath();
+               writer.write(text);
                return classPath;
             } finally {
                writer.close();
@@ -114,55 +120,56 @@ public class ProjectContext {
                FileWriter writer = new FileWriter(classPathFile);
                
                try {
-                  String classPath = getClassPathFile();  
-                  writer.write(classPath);
+                  ClassPathFile classPath = getClassPathFile();
+                  String text = classPath.getPath();
+                  writer.write(text);
                   return classPath;
                } finally {
                   writer.close();
                }
             }
          }
-         return project.getFileSystem().readAsString(CLASSPATH_FILE);
+         String classPath = project.getFileSystem().readAsString(CLASSPATH_FILE);
+         return new ClassPathFile(classPath);
       } catch(Exception e) {
          throw new IllegalStateException("Could not create " + CLASSPATH_FILE, e);
       }
    }
    
-   private synchronized String getClassPathFile() throws Exception {
-      String projectName = project.getProjectName();
+   private synchronized ClassPathFile getClassPathFile() throws Exception {
+      StringBuilder builder = new StringBuilder();
+      List<String> errors = new ArrayList<String>();
       
       try {
-         List<File> dependencies = getDeclaredDependencies();
-         StringBuilder builder = new StringBuilder();
+         List<DependencyFile> dependencies = getDeclaredDependencies();
    
          builder.append(".");
          builder.append("\n");
          
          if(dependencies != null) {
-            for(File dependency : dependencies) {
-               if(!dependency.exists()) {
-                  throw new IllegalStateException("Could not find dependency " + dependency);
-               }
-               String normal = dependency.getCanonicalPath();
+            for(DependencyFile dependency : dependencies) {
+               File file = dependency.getFile();
+               String message = dependency.getMessage();
                
-               builder.append(normal);
+               if(message == null && file != null) {
+                  String normal = file.getCanonicalPath();
+                  builder.append(normal);
+               } else if(message != null){
+                  errors.add(message);
+                  builder.append("# ");
+                  builder.append(message);
+               }
                builder.append("\n");
             }
          }
-         return builder.toString();
       } catch(Exception cause) {
-         StringWriter writer = new StringWriter();
-         PrintWriter printer = new PrintWriter(writer);
-         
-         cause.printStackTrace(printer);
-         printer.close();
-         log.info("Could not create class path for project '" + projectName+ "': " + writer);
-         
-         return writer.toString();
+         log.info("Could not create class path", cause);
       }
+      String path = builder.toString();
+      return new ClassPathFile(path, errors);
    }
    
-   private synchronized List<File> getDeclaredDependencies(){ 
+   private synchronized List<DependencyFile> getDeclaredDependencies(){ 
       try {
          ProjectConfiguration configuration = getConfiguration();
          List<Dependency> dependencies = configuration.getDependencies();
