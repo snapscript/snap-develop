@@ -20,12 +20,12 @@ import org.snapscript.studio.common.resource.display.DisplayPersister;
 import org.snapscript.studio.core.BackupManager;
 import org.snapscript.studio.core.ProcessManager;
 import org.snapscript.studio.project.Project;
+import org.snapscript.studio.project.ProjectProblemFinder;
 import org.snapscript.studio.project.config.DependencyFile;
 import org.snapscript.studio.project.config.OperatingSystem;
 import org.snapscript.studio.project.config.ProjectConfiguration;
-import org.snapscript.studio.resource.project.ProjectProblemFinder;
-import org.snapscript.studio.resource.tree.TreeContext;
-import org.snapscript.studio.resource.tree.TreeContextManager;
+import org.snapscript.studio.tree.TreeContext;
+import org.snapscript.studio.tree.TreeContextManager;
 
 @Slf4j
 public class CommandListener {

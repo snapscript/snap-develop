@@ -1,4 +1,4 @@
-package org.snapscript.studio.resource.tree;
+package org.snapscript.studio.tree;
 
 import java.util.HashSet;
 import java.util.Set;

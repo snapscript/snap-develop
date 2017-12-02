@@ -1,4 +1,4 @@
-package org.snapscript.studio.resource.tree;
+package org.snapscript.studio.tree;
 
 public class TreeEntryBuilder {
    

@@ -1,4 +1,4 @@
-package org.snapscript.studio.resource.project;
+package org.snapscript.studio.project;
 
 import org.snapscript.studio.common.resource.ContentTypeResolver;
 import org.snapscript.studio.common.resource.ResourcePath;

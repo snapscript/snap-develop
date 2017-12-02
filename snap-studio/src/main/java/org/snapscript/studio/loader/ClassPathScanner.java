@@ -1,4 +1,4 @@
-package org.snapscript.studio.resource.loader;
+package org.snapscript.studio.loader;
 
 import java.io.File;
 import java.net.URI;

@@ -1,4 +1,4 @@
-package org.snapscript.studio.resource.project;
+package org.snapscript.studio.project;
 
 import static org.snapscript.studio.common.resource.SessionConstants.SESSION_ID;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import org.snapscript.studio.core.ConnectListener;
 import org.snapscript.studio.core.ProcessManager;
 import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.Workspace;
-import org.snapscript.studio.resource.tree.TreeContextManager;
+import org.snapscript.studio.tree.TreeContextManager;
 import org.springframework.stereotype.Component;
 
 @Slf4j

@@ -1,4 +1,4 @@
-package org.snapscript.studio.resource.project;
+package org.snapscript.studio.project;
 
 import static org.snapscript.studio.common.resource.SessionConstants.SESSION_ID;
 
@@ -16,9 +16,9 @@ import org.snapscript.studio.common.resource.SessionConstants;
 import org.snapscript.studio.common.resource.display.DisplayModelResolver;
 import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.Workspace;
-import org.snapscript.studio.resource.tree.TreeBuilder;
-import org.snapscript.studio.resource.tree.TreeContext;
-import org.snapscript.studio.resource.tree.TreeContextManager;
+import org.snapscript.studio.tree.TreeBuilder;
+import org.snapscript.studio.tree.TreeContext;
+import org.snapscript.studio.tree.TreeContextManager;
 import org.springframework.stereotype.Component;
 
 @Component

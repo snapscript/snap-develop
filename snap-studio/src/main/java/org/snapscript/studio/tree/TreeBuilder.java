@@ -1,4 +1,4 @@
-package org.snapscript.studio.resource.tree;
+package org.snapscript.studio.tree;
 
 import org.snapscript.studio.common.resource.display.DisplayModelResolver;
 import org.snapscript.studio.common.resource.template.TemplateModel;

@@ -1,4 +1,4 @@
-package org.snapscript.studio.resource.project;
+package org.snapscript.studio.project;
 
 import java.io.OutputStream;
 import java.io.PrintStream;

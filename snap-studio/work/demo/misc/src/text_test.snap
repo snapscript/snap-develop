@@ -3,4 +3,4 @@ function func(p: Pattern){
    ;
    println(p);
 }
-func(null);
+func(null).f;

@@ -1,4 +1,4 @@
-package org.snapscript.studio.resource.loader;
+package org.snapscript.studio.loader;
 
 import static org.snapscript.studio.project.config.WorkspaceConfiguration.JAR_FILE;
 import static org.snapscript.studio.project.config.WorkspaceConfiguration.TEMP_PATH;

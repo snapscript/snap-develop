@@ -1,8 +1,8 @@
-package org.snapscript.studio.resource.tree;
+package org.snapscript.studio.tree;
 
-import static org.snapscript.studio.resource.tree.TreeConstants.INDENT;
-import static org.snapscript.studio.resource.tree.TreeConstants.PREFIX;
-import static org.snapscript.studio.resource.tree.TreeConstants.ROOT;
+import static org.snapscript.studio.tree.TreeConstants.INDENT;
+import static org.snapscript.studio.tree.TreeConstants.PREFIX;
+import static org.snapscript.studio.tree.TreeConstants.ROOT;
 
 import java.io.File;
 import java.util.List;
