@@ -1,31 +1,47 @@
 import util.stream.Collectors;
 
+
+var x = [1,2,3];
+
+for(i in x){
+   println(i);
+}
+
+foo(1
+);
+function foo(var b, const a...){
+   println(b);
+   b++;
+}
+
+
+
 // var l:[] = ["a", "bb", "ccc"];
 // println(l.stream().map(a->a.toUpperCase).collect(Collectors.toList()));
 
 
-var x = 11;
+// var x = 11;
 
-println(98 as Character);
-println(98 as Double);
-println(x as Float);
+// println(98 as Character);
+// println(98 as Double);
+// println(x as Float);
 
 
 
-new File("c:\\temp\\chat.out")
-   .stream()
-   .buffer(100)
-   .reader()
-   .readLines()
-   .stream()
-   .forEach(line -> println(line));
+// new File("c:\\temp\\chat.out")
+//    .stream()
+//    .buffer(100)
+//    .reader()
+//    .readLines()
+//    .stream()
+//    .forEach(line -> println(line));
    
 
-new URL("http://www.bbc.co.uk/")
-   .header("User-Agent", "test/1.0")
-   .header("Accept", "text/html")
-   .get()
-   .response()
-   .readBytes()
-   .stream()
-   .forEach(byte -> println(byte as Character));
+// new URL("http://www.bbc.co.uk/")
+//    .header("User-Agent", "test/1.0")
+//    .header("Accept", "text/html")
+//    .get()
+//    .response()
+//    .readBytes()
+//    .stream()
+//    .forEach(byte -> println(byte as Character));
