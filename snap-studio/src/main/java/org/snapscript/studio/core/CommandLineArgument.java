@@ -12,7 +12,7 @@ public enum CommandLineArgument {
    LOG("log-file", "log/snapd.log", "Log file to use", ".+"),
    SCRIPT("script", null, "Script to launch", ".*.snap"),
    SERVER_ONLY("server-only", "false", "Launch server only", "(true|false)"),
-   BROWSER_ENGINE("browser-engine", "javafx", "Browser engine to use", "(javafx|cef)"),
+   BROWSER_ENGINE("browser-engine", "cef", "Browser engine to use", "(javafx|cef)"),
    CLIENT_DEBUG("client-debug", "false", "Enable client debugger", "(true|false)"); // firebug
    
    public final String description;

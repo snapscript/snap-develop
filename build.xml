@@ -29,6 +29,5 @@
       <arg value="--log-level=DEBUG"/>  
       <arg value="--agent-pool=6"/>
       <arg value="--client=true"/> 
-      <arg value="--browser-engine=cef"/>     
    </exec>        
 </project>
