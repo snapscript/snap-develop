@@ -22,6 +22,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             keys_1.KeyBinder.bindKeys(); // register key bindings
             project_1.Project.changeProjectFont(); // project.js update font
             FileEditor.scrollEditorToPosition();
+            FileEditor.updateProjectTabOnChange(); // listen to change
             spinner_1.LoadSpinner.finish();
         };
         return FileEditorView;
@@ -412,10 +413,13 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             var editorData = loadEditor();
             if (editorData.resource && editorData.source) {
                 var md5Hash = md5_1.md5(editorData.source);
+                var currentText = editorView.editorPanel.getValue();
+                var saveText = isEditorChanged() ? currentText : null; // keep text if changed
                 editorView.editorHistory[editorData.resource.resourcePath] = {
                     hash: md5Hash,
                     history: editorData.history,
-                    position: editorData.position
+                    position: editorData.position,
+                    buffer: saveText // save the buffer if it has changed
                 };
             }
         }
@@ -449,11 +453,38 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             }
             session.setUndoManager(manager); // reset undo history
         }
+        function clearSavedEditorBuffer(resource) {
+            var editorResource = tree_1.FileTree.createResourcePath(resource);
+            var history = editorView.editorHistory[editorResource.resourcePath];
+            if (history) {
+                history.buffer = null; // clear the buffer
+                updateEditorTabMarkForResource(editorResource.resourcePath); // remove the *
+            }
+        }
+        FileEditor.clearSavedEditorBuffer = clearSavedEditorBuffer;
+        function loadSavedEditorBuffer(resource) {
+            var editorResource = tree_1.FileTree.createResourcePath(resource);
+            if (isEditorResourcePath(editorResource.resourcePath)) {
+                var editorData = loadEditor();
+                return editorData.source; // if its the current buffer then return it
+            }
+            var history = editorView.editorHistory[editorResource.resourcePath];
+            if (history) {
+                return history.buffer;
+            }
+            return null;
+        }
+        FileEditor.loadSavedEditorBuffer = loadSavedEditorBuffer;
         function updateEditor(text, resource) {
             var session = editorView.editorPanel.getSession();
             var currentMode = session.getMode();
             var actualMode = resolveEditorMode(resource);
-            text = encodeEditorText(text, resource); // change JSON conversion
+            var encodedText = encodeEditorText(text, resource); // change JSON conversion
+            var savedHistoryBuffer = loadSavedEditorBuffer(resource); // load saved buffer
+            var textToDisplay = encodedText;
+            if (savedHistoryBuffer) {
+                textToDisplay = savedHistoryBuffer;
+            }
             saveEditorHistory(); // save any existing history
             if (actualMode != currentMode) {
                 session.setMode({
@@ -462,11 +493,11 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                 });
             }
             editorView.editorPanel.setReadOnly(false);
-            editorView.editorPanel.setValue(text, 1);
-            createEditorUndoManager(session, text, resource); // restore any existing history
+            editorView.editorPanel.setValue(textToDisplay, 1);
+            createEditorUndoManager(session, textToDisplay, resource); // restore any existing history
             clearEditor();
             editorView.editorResource = tree_1.FileTree.createResourcePath(resource);
-            editorView.editorText = text;
+            editorView.editorText = encodedText; // save the real text NOT the text to display
             window.location.hash = editorView.editorResource.projectPath; // update # anchor
             problem_1.ProblemManager.highlightProblems(); // higlight problems on this resource
             if (resource != null && editorView.editorResource) {
@@ -481,12 +512,13 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                     }
                 }
             }
-            indexEditorTokens(text, resource); // create some tokens we can link to dynamically
+            indexEditorTokens(textToDisplay, resource); // create some tokens we can link to dynamically
             project_1.Project.createEditorTab(); // update the tab name
             history_1.History.showFileHistory(); // update the history
             status_1.StatusPanel.showActiveFile(editorView.editorResource.projectPath);
             FileEditor.showEditorFileInTree();
             scrollEditorToPosition();
+            updateEditorTabMark(); // add a * to the name if its not in sync
         }
         FileEditor.updateEditor = updateEditor;
         function showEditorFileInTree() {
@@ -507,6 +539,25 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             return false;
         }
         FileEditor.isEditorChanged = isEditorChanged;
+        function isEditorChangedForPath(resource) {
+            if (isEditorResourcePath(resource)) {
+                return isEditorChanged();
+            }
+            var savedHistoryBuffer = loadSavedEditorBuffer(resource); // load saved buffer
+            if (savedHistoryBuffer) {
+                return true;
+            }
+            return false;
+        }
+        FileEditor.isEditorChangedForPath = isEditorChangedForPath;
+        function isEditorResourcePath(resource) {
+            if (editorView.editorResource != null) {
+                if (editorView.editorResource.resourcePath == resource) {
+                    return true;
+                }
+            }
+            return false;
+        }
         function scrollEditorToPosition() {
             var session = editorView.editorPanel.getSession();
             if (editorView.editorResource && editorView.editorResource.resourcePath) {
@@ -535,6 +586,18 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             editorView.editorPanel.focus();
         }
         FileEditor.scrollEditorToPosition = scrollEditorToPosition;
+        function updateProjectTabOnChange() {
+            editorView.editorPanel.on("input", function () {
+                updateEditorTabMark(); // on input then you update star
+            });
+        }
+        FileEditor.updateProjectTabOnChange = updateProjectTabOnChange;
+        function updateEditorTabMark() {
+            updateEditorTabMarkForResource(editorView.editorResource.resourcePath);
+        }
+        function updateEditorTabMarkForResource(resource) {
+            project_1.Project.markEditorTab(resource, isEditorChangedForPath(resource));
+        }
         function createEditorAutoComplete() {
             return {
                 getCompletions: function createAutoComplete(editor, session, pos, prefix, callback) {

@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", "tree", "threads", "history", "variables", "explorer", "commands", "debug", "keys"], function (require, exports, $, w2ui_1, console_1, problem_1, editor_1, tree_1, threads_1, history_1, variables_1, explorer_1, commands_1, debug_1, keys_1) {
+define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", "editor", "tree", "threads", "history", "variables", "explorer", "commands", "debug", "keys", "alert"], function (require, exports, $, w2ui_1, common_1, console_1, problem_1, editor_1, tree_1, threads_1, history_1, variables_1, explorer_1, commands_1, debug_1, keys_1, alert_1) {
     "use strict";
     var Project;
     (function (Project) {
@@ -357,6 +357,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             if (data.resource) {
                 var tabs = findActiveEditorTabLayout();
                 if (tabs.tabs.length > 1) {
+                    closeEditorTabForPath(data.resource.resourcePath);
                     deleteEditorTab(data.resource.resourcePath);
                 }
             }
@@ -367,7 +368,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             var tabs = findActiveEditorTabLayout();
             if (tabs != null && resource != null) {
                 var removeTab = tabs.get(resource);
-                if (removeTab.closable) {
+                if (removeTab && removeTab.closable) {
                     tabs.remove(resource); // remove the tab
                     if (removeTab.active) {
                         activateAnyEditorTab(resource); // if it was active then activate another
@@ -407,6 +408,31 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             }
         }
         Project.renameEditorTab = renameEditorTab;
+        function markEditorTab(name, isModified) {
+            var layout = findActiveEditorLayout();
+            var tabs = findActiveEditorTabLayout();
+            var editorData = editor_1.FileEditor.loadEditor();
+            if (tabs != null && name != null) {
+                var tabList = tabs.tabs;
+                var count = 0;
+                for (var i = 0; i < tabList.length; i++) {
+                    var nextTab = tabList[i];
+                    if (nextTab != null && nextTab.id == name) {
+                        var tabPath = tree_1.FileTree.createResourcePath(name);
+                        var tabFromName = (isModified ? "" : "*") + tabPath.fileName;
+                        var tabToName = (isModified ? "*" : "") + tabPath.fileName;
+                        var isAlreadyModified = common_1.Common.stringContains(nextTab.text, "*" + tabPath.fileName);
+                        if (isModified != isAlreadyModified) {
+                            nextTab.caption = common_1.Common.stringReplaceText(nextTab.caption, tabFromName, tabToName);
+                            nextTab.text = common_1.Common.stringReplaceText(nextTab.text, tabFromName, tabToName);
+                            tabs.refresh();
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        Project.markEditorTab = markEditorTab;
         function createEditorTab() {
             var layout = findActiveEditorLayout();
             var tabs = findActiveEditorTabLayout();
@@ -460,25 +486,46 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             }
         }
         Project.createEditorTab = createEditorTab;
+        function closeEditorTabForPath(resourcePathToClose) {
+            if (editor_1.FileEditor.isEditorChangedForPath(resourcePathToClose)) {
+                var currentBuffer = editor_1.FileEditor.loadSavedEditorBuffer(resourcePathToClose);
+                var editorResource = tree_1.FileTree.createResourcePath(resourcePathToClose);
+                var resourcePath = editorResource.resourcePath;
+                var filePath = editorResource.filePath;
+                var message = "Save resource " + filePath;
+                alert_1.Alerts.createConfirmAlert("File Changed", message, "Save", "Ignore", function () {
+                    commands_1.Command.saveEditorForResource(currentBuffer, editorResource); // save the file
+                }, function () {
+                    editor_1.FileEditor.clearSavedEditorBuffer(resourcePath);
+                    console.log("Not saving " + resourcePath);
+                });
+            }
+            activateAnyEditorTab(resourcePathToClose); // activate some other tab
+        }
         function activateAnyEditorTab(resourcePathDeleted) {
             var layout = findActiveEditorLayout();
             var tabs = findActiveEditorTabLayout();
             if (tabs != null) {
                 var tabList = tabs.tabs;
+                var wasDeleted = false;
                 for (var i = 0; i < tabList.length; i++) {
                     var nextTab = tabList[i];
                     if (nextTab != null && nextTab.id == resourcePathDeleted) {
                         nextTab.id = 'editTab'; // make sure not to enable, bit of a hack
                         nextTab.closable = true;
+                        nextTab.active = false;
+                        wasDeleted = true;
                     }
                 }
-                for (var i = 0; i < tabList.length; i++) {
-                    var nextTab = tabList[i];
-                    if (nextTab != null && nextTab.id != 'editTab') {
-                        tabs.active = nextTab.id;
-                        tabs.closable = false;
-                        explorer_1.FileExplorer.openTreeFile(nextTab.id, function () { }); // browse style makes no difference here
-                        break;
+                if (wasDeleted) {
+                    for (var i = 0; i < tabList.length; i++) {
+                        var nextTab = tabList[i];
+                        if (nextTab != null && nextTab.id != 'editTab') {
+                            tabs.active = nextTab.id;
+                            tabs.closable = false;
+                            explorer_1.FileExplorer.openTreeFile(nextTab.id, function () { }); // browse style makes no difference here
+                            break;
+                        }
                     }
                 }
             }
@@ -571,7 +618,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                                 });
                             },
                             onClose: function (event) {
-                                activateAnyEditorTab(event.target);
+                                closeEditorTabForPath(event.target);
                             }
                         }
                     }]
@@ -747,7 +794,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                                 });
                             },
                             onClose: function (event) {
-                                activateAnyEditorTab(event.target);
+                                closeEditorTabForPath(event.target);
                             }
                         }
                     }]

@@ -5,7 +5,7 @@ class A{
 class B{
    const b=3+new CB().cb;
 }
-
+// this is to be saved..........
 class CB{
    static const DEFAULT =2;
    const cb=DEFAULT;

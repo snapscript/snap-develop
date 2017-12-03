@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "commands", "alert"], function (require, exports, $, common_1, socket_1, tree_1, editor_1, commands_1, alert_1) {
+define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "commands"], function (require, exports, $, common_1, socket_1, tree_1, editor_1, commands_1) {
     "use strict";
     var FileExplorer;
     (function (FileExplorer) {
@@ -99,19 +99,22 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
             }
             else {
                 var mode = editor_1.FileEditor.resolveEditorMode(resourcePath);
-                if (editor_1.FileEditor.isEditorChanged()) {
-                    var editorData = editor_1.FileEditor.loadEditor();
-                    var editorResource = editorData.resource;
-                    var message = "Save resource " + editorResource.filePath;
-                    alert_1.Alerts.createConfirmAlert("File Changed", message, "Save", "Ignore", function () {
-                        commands_1.Command.saveEditor(true); // save the file
-                    }, function () {
-                        editor_1.FileEditor.updateEditor(response, resourcePath);
-                    });
-                }
-                else {
-                    editor_1.FileEditor.updateEditor(response, resourcePath);
-                }
+                //         if(FileEditor.isEditorChanged()) {
+                //            var editorData = FileEditor.loadEditor();
+                //            var editorResource = editorData.resource;
+                //            var message = "Save resource " + editorResource.filePath;
+                //            
+                //            Alerts.createConfirmAlert("File Changed", message, "Save", "Ignore", 
+                //                  function(){
+                //                     Command.saveEditor(true); // save the file
+                //                  },
+                //                  function(){
+                //                     FileEditor.updateEditor(response, resourcePath);
+                //                  });
+                //         } else {
+                //            FileEditor.updateEditor(response, resourcePath);
+                //         }
+                editor_1.FileEditor.updateEditor(response, resourcePath);
             }
             afterLoad();
         }

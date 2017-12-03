@@ -411,6 +411,22 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
             }
         }
         Command.saveEditor = saveEditor;
+        function saveEditorForResource(editorText, editorResource) {
+            var editorPath = editorResource.resourcePath;
+            if (editorPath != null) {
+                var message = {
+                    project: document.title,
+                    resource: editorResource.filePath,
+                    source: editorText,
+                    directory: false,
+                    create: false
+                };
+                //ProcessConsole.clearConsole();
+                socket_1.EventBus.sendEvent("SAVE", message);
+                editor_1.FileEditor.clearSavedEditorBuffer(editorPath); // make sure its synced
+            }
+        }
+        Command.saveEditorForResource = saveEditorForResource;
         function deleteFile(resourceDetails) {
             var editorData = editor_1.FileEditor.loadEditor();
             if (resourceDetails == null && editorData.resource != null) {

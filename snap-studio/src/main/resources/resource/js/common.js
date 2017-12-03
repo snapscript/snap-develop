@@ -189,6 +189,20 @@ define(["require", "exports", "jquery"], function (require, exports, $) {
             return 0;
         }
         Common.calculateScrollOffset = calculateScrollOffset;
+        function stringReplaceText(text, from, to) {
+            if (text && from && to) {
+                return text.split(from).join(to);
+            }
+            return text;
+        }
+        Common.stringReplaceText = stringReplaceText;
+        function stringContains(text, token) {
+            if (text && token) {
+                return text.indexOf(token) !== -1;
+            }
+            return false;
+        }
+        Common.stringContains = stringContains;
         function stringEndsWith(text, token) {
             if (text && token && text.length >= token.length) {
                 return text.slice(-token.length) == token;

@@ -1,4 +1,4 @@
-
+// some comment
 var a: Double[] = [1,2,3,4L];
 var b = [1,2,3,4L];
 

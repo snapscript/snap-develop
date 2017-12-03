@@ -111,21 +111,22 @@ export module FileExplorer {
       } else {
          var mode = FileEditor.resolveEditorMode(resourcePath);
          
-         if(FileEditor.isEditorChanged()) {
-            var editorData = FileEditor.loadEditor();
-            var editorResource = editorData.resource;
-            var message = "Save resource " + editorResource.filePath;
-            
-            Alerts.createConfirmAlert("File Changed", message, "Save", "Ignore", 
-                  function(){
-                     Command.saveEditor(true); // save the file
-                  },
-                  function(){
-                     FileEditor.updateEditor(response, resourcePath);
-                  });
-         } else {
-            FileEditor.updateEditor(response, resourcePath);
-         }
+//         if(FileEditor.isEditorChanged()) {
+//            var editorData = FileEditor.loadEditor();
+//            var editorResource = editorData.resource;
+//            var message = "Save resource " + editorResource.filePath;
+//            
+//            Alerts.createConfirmAlert("File Changed", message, "Save", "Ignore", 
+//                  function(){
+//                     Command.saveEditor(true); // save the file
+//                  },
+//                  function(){
+//                     FileEditor.updateEditor(response, resourcePath);
+//                  });
+//         } else {
+//            FileEditor.updateEditor(response, resourcePath);
+//         }
+         FileEditor.updateEditor(response, resourcePath);
       }
       afterLoad();
    }

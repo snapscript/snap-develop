@@ -14,6 +14,7 @@ import {FileExplorer} from "explorer"
 import {Command} from "commands" 
 import {DebugManager} from "debug"
 import {KeyBinder} from "keys"
+import {Alerts} from "alert"
 
 export module Project {
    
@@ -419,6 +420,7 @@ export module Project {
          var tabs = findActiveEditorTabLayout();
          
          if(tabs.tabs.length > 1) {
+            closeEditorTabForPath(data.resource.resourcePath);
             deleteEditorTab(data.resource.resourcePath);
          }
       }
@@ -431,7 +433,7 @@ export module Project {
       if(tabs != null && resource != null) {
          var removeTab = tabs.get(resource);
          
-         if(removeTab.closable) {
+         if(removeTab && removeTab.closable) {
             tabs.remove(resource); // remove the tab
             
             if(removeTab.active) {
@@ -470,6 +472,35 @@ export module Project {
                   newTab.text = newTab.text.replace(fileNameReplace, toPath.fileName).replace(filePathReplace, toPath.resourcePath); // rename the tab
                   newTab.id = toPath.resourcePath;
                   tabs.add(newTab);
+               }
+               break;
+            }
+         }
+      }
+   }
+   
+   export function markEditorTab(name, isModified) {
+      var layout = findActiveEditorLayout();
+      var tabs = findActiveEditorTabLayout();
+      var editorData = FileEditor.loadEditor();
+      
+      if(tabs != null && name != null) {
+         var tabList = tabs.tabs;
+         var count = 0;
+         
+         for(var i = 0; i < tabList.length; i++) {
+            var nextTab = tabList[i];
+            
+            if(nextTab != null && nextTab.id == name) {
+               var tabPath = FileTree.createResourcePath(name);
+               var tabFromName = (isModified ? "" : "*") + tabPath.fileName; 
+               var tabToName =  (isModified ? "*" : "") + tabPath.fileName; 
+               var isAlreadyModified = Common.stringContains(nextTab.text, "*" + tabPath.fileName);
+               
+               if(isModified != isAlreadyModified) {
+                  nextTab.caption = Common.stringReplaceText(nextTab.caption, tabFromName, tabToName);
+                  nextTab.text = Common.stringReplaceText(nextTab.text, tabFromName, tabToName);
+                  tabs.refresh();
                }
                break;
             }
@@ -537,12 +568,34 @@ export module Project {
       }
    }
    
+   function closeEditorTabForPath(resourcePathToClose) {
+       if(FileEditor.isEditorChangedForPath(resourcePathToClose)) {
+          var currentBuffer = FileEditor.loadSavedEditorBuffer(resourcePathToClose);
+          var editorResource = FileTree.createResourcePath(resourcePathToClose);
+          var resourcePath = editorResource.resourcePath;
+          var filePath = editorResource.filePath;
+          var message = "Save resource " + filePath;
+          
+          Alerts.createConfirmAlert("File Changed", message, "Save", "Ignore", 
+             function(){
+                Command.saveEditorForResource(currentBuffer, editorResource); // save the file
+             },
+             function(){
+                FileEditor.clearSavedEditorBuffer(resourcePath);
+                console.log("Not saving " + resourcePath);
+             });
+       }
+       activateAnyEditorTab(resourcePathToClose); // activate some other tab
+   }
+   
+   
    function activateAnyEditorTab(resourcePathDeleted) {
       var layout = findActiveEditorLayout();
       var tabs = findActiveEditorTabLayout();
       
       if(tabs != null) {
          var tabList = tabs.tabs;
+         var wasDeleted = false;
    
          for(var i = 0; i < tabList.length; i++) {
             var nextTab = tabList[i];
@@ -550,16 +603,20 @@ export module Project {
             if(nextTab != null && nextTab.id == resourcePathDeleted) {
                nextTab.id = 'editTab'; // make sure not to enable, bit of a hack
                nextTab.closable = true;
+               nextTab.active = false;
+               wasDeleted = true;
             }
          }
-         for(var i = 0; i < tabList.length; i++) {
-            var nextTab = tabList[i];
-            
-            if(nextTab != null && nextTab.id != 'editTab') {
-               tabs.active = nextTab.id;
-               tabs.closable = false;
-               FileExplorer.openTreeFile(nextTab.id, function(){}); // browse style makes no difference here
-               break;
+         if(wasDeleted) {
+            for(var i = 0; i < tabList.length; i++) {
+               var nextTab = tabList[i];
+               
+               if(nextTab != null && nextTab.id != 'editTab') {
+                  tabs.active = nextTab.id;
+                  tabs.closable = false;
+                  FileExplorer.openTreeFile(nextTab.id, function(){}); // browse style makes no difference here
+                  break;
+               }
             }
          }
       }
@@ -660,7 +717,7 @@ export module Project {
                   });
                },
                onClose : function(event) {
-                  activateAnyEditorTab(event.target);
+                  closeEditorTabForPath(event.target);
                }
             }
          } ]
@@ -848,7 +905,7 @@ export module Project {
                   });
                },
                onClose : function(event) {
-                  activateAnyEditorTab(event.target);
+                  closeEditorTabForPath(event.target);
                }
             }
          } ]

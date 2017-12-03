@@ -454,6 +454,23 @@ export module Command {
       }
    }
    
+   export function saveEditorForResource(editorText, editorResource) {
+      var editorPath = editorResource.resourcePath;
+      
+      if(editorPath != null) {
+         var message = {
+            project : document.title,
+            resource : editorResource.filePath,
+            source : editorText,
+            directory: false,
+            create: false
+         };
+         //ProcessConsole.clearConsole();
+         EventBus.sendEvent("SAVE", message);
+         FileEditor.clearSavedEditorBuffer(editorPath); // make sure its synced
+      }
+   }
+   
    export function deleteFile(resourceDetails) {
       var editorData = FileEditor.loadEditor();
       if(resourceDetails == null && editorData.resource != null) {
