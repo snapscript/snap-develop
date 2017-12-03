@@ -9,11 +9,11 @@
       <path>misc/assets</path>
    </source>
    <dependencies>  
-      <dependency>  
+      <!--dependency>  
          <groupId>org.springframework.boot</groupId>
          <artifactId>spring-boot-starter-parent</artifactId>
          <version>1.5.8.RELEASE</version>
-      </dependency>      
+      </dependency-->      
       <dependency>
          <groupId>commons-net</groupId>
          <artifactId>commons-net</artifactId>
