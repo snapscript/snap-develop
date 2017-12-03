@@ -12,28 +12,19 @@ import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
 
-public class FindInScopeMatching implements CompletionFinder {
+public class FindMethodReference implements CompletionFinder {
 
-   private static final Pattern[] PATTERNS = {
-      Pattern.compile("\\s*([a-zA-Z0-9_]*)$"),
-      Pattern.compile("\\s*return\\s+([a-zA-Z0-9_]*)$"),
-      Pattern.compile("\\s*var\\s+[a-zA-Z0-9_]+\\s*\\:\\s*([a-zA-Z0-9_]*)$"),
-      Pattern.compile("\\s*const\\s+[a-zA-Z0-9_]+\\s*\\:\\s*([a-zA-Z0-9_]*)$"),
-      Pattern.compile(".*\\s+var\\s+[a-zA-Z0-9_]+\\s*\\:\\s*([a-zA-Z0-9_]*)$"),
-      Pattern.compile(".*\\s+const\\s+[a-zA-Z0-9_]+\\s*\\:\\s*([a-zA-Z0-9_]*)$")  
-   };
+   private static final Pattern  PATTERN = Pattern.compile(".*?([a-zA-Z0-9_]+)::([a-zA-Z0-9_]*)$");
    
    @Override
    public InputExpression parseExpression(EditContext context) {
       String expression = context.getOriginalExpression();
+      Matcher matcher = PATTERN.matcher(expression);
       
-      for(Pattern pattern : PATTERNS) {
-         Matcher matcher = pattern.matcher(expression);
-         
-         if(matcher.matches()) {
-            String unfinished = matcher.group(1);
-            return new InputExpression(null, unfinished);
-         }
+      if(matcher.matches()) {
+         String handle = matcher.group(1);
+         String unfinished = matcher.group(2);
+         return new InputExpression(handle, unfinished);
       }
       return null;
    }
@@ -41,10 +32,25 @@ public class FindInScopeMatching implements CompletionFinder {
    @Override
    public Set<IndexNode> findMatches(IndexDatabase database, IndexNode node, InputExpression text) throws Exception {
       Map<String, IndexNode> expandedScope = database.getNodesInScope(node);
-      Set<Entry<String, IndexNode>> entries = expandedScope.entrySet();
       String unfinished = text.getUnfinished();
+      String handle = text.getHandle();
+      IndexNode match = expandedScope.get(handle);
       
-      if(!entries.isEmpty()) {
+      if(match != null) {
+         IndexType type = match.getType();
+         
+         if(type.isType()) {
+            return findMembersMatching(database, match, unfinished);
+         }
+      }
+      return Collections.emptySet();
+   }
+   
+   private Set<IndexNode> findMembersMatching(IndexDatabase database, IndexNode node, String unfinished) throws Exception {
+      Map<String, IndexNode> members = database.getMemberNodes(node);
+      Set<Entry<String, IndexNode>> entries = members.entrySet();
+      
+      if(!members.isEmpty()) {
          Set<IndexNode> matched = new HashSet<IndexNode>();
          
          for(Entry<String, IndexNode> entry : entries) {
@@ -54,16 +60,7 @@ public class FindInScopeMatching implements CompletionFinder {
                IndexNode value = entry.getValue();
                IndexType type = value.getType();
                
-               if(type.isImport()) {
-                  String fullName = value.getFullName();
-                  IndexNode match = database.getTypeNode(fullName);
-                  
-                  if(match != null) {
-                     type = match.getType();
-                     value = match;
-                  }
-               }
-               if(type.isType() || type.isConstrained()) {
+               if(type.isMemberFunction()) {
                   matched.add(value);
                }
             }

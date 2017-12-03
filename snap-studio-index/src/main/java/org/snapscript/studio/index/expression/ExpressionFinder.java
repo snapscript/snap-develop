@@ -112,12 +112,28 @@ public class ExpressionFinder {
          if(braces == ExpressionBraceType.INVOKE) {
             return findFunction(node, token);
          }
-         return findVariable(node, token);
+         return findVariableOrType(node, token);
       }
       if(braces == ExpressionBraceType.INDEX) {
-         return findVariable(node, token);
+         return findVariableOrType(node, token);
       }
       return findFunction(node, token);
+   }
+   
+   private IndexNode findVariableOrType(IndexNode node, ExpressionToken token) {
+      IndexNode match = findVariable(node, token);
+      
+      if(match == null) {
+         try {
+            String name = token.getName();
+            Map<String, IndexNode> types = database.getNodesInScope(node);
+            
+            return types.get(name);
+         } catch(Exception e) {
+            log.info("Could not find nodes", e);
+         }
+      }
+      return match;
    }
    
    private IndexNode findVariable(IndexNode node, ExpressionToken token) {

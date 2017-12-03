@@ -15,6 +15,7 @@ import org.snapscript.studio.index.complete.CompletionResponse;
 import org.snapscript.studio.index.complete.FindConstructorsInScope;
 import org.snapscript.studio.index.complete.FindForExpression;
 import org.snapscript.studio.index.complete.FindInScopeMatching;
+import org.snapscript.studio.index.complete.FindMethodReference;
 import org.snapscript.studio.index.complete.FindPossibleImports;
 import org.snapscript.studio.index.complete.FindTraitToImplement;
 import org.snapscript.studio.index.complete.FindTypesToExtend;
@@ -54,7 +55,8 @@ public class CompletionResource implements Resource {
             FindTypesToExtend.class,
             FindTraitToImplement.class,
             FindForExpression.class,
-            FindInScopeMatching.class);
+            FindInScopeMatching.class,
+            FindMethodReference.class);
       
       CompletionResponse result = compiler.compile(context);
       String expression = result.getExpression();

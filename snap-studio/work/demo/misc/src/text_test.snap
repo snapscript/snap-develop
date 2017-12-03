@@ -1,6 +1,24 @@
-import util.regex.Pattern;
-function func(p: Pattern){
-   ;
-   println(p);
-}
-func(null).f;
+import util.stream.Collectors;
+
+// var l:[] = ["a", "bb", "ccc"];
+// println(l.stream().map(a->a.toUpperCase).collect(Collectors.toList()));
+
+
+
+new File("c:\\temp\\chat.out")
+   .stream()
+   .buffer(100)
+   .reader()
+   .readLines()
+   .stream()
+   .forEach(line -> println(line));
+   
+
+new URL("http://www.bbc.co.uk/")
+   .header("User-Agent", "test/1.0")
+   .header("Accept", "text/html")
+   .get()
+   .response()
+   .reader()
+   .readLines()
+   .forEach(line -> println(line));
