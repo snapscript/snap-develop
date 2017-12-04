@@ -708,6 +708,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
             createHistoryTab();
             w2ui_1.w2ui['exploreMainLayout'].content('top', w2ui_1.w2ui['topLayout']);
             //w2ui['exploreMainLayout'].content('left', '<table cellpadding="2"><tr><td><span id="leftProjectRoot"></span></td><tr><tr><td><span id="leftDirectory"></span></td><tr><tr><td></td><tr></table>');
+            w2ui_1.w2ui['exploreMainLayout'].content('left', '<table cellpadding="2"><tr><td></td></tr></table>');
             w2ui_1.w2ui['exploreMainLayout'].content('main', w2ui_1.w2ui['exploreLeftTabLayout']);
             w2ui_1.w2ui['exploreMainLayout'].content('right', w2ui_1.w2ui['exploreEditorLayout']);
             w2ui_1.w2ui['exploreEditorLayout'].content('main', w2ui_1.w2ui['exploreEditorTabLayout']);
