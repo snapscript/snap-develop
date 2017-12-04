@@ -3,6 +3,7 @@
   <value key="PROJECT_FONT_COLOR">#ffffff</value>
   <value key="PROJECT_BACKGROUND_COLOR">#515151</value>
   <value key="PROJECT_MENU_COLOR">#515151</value>
+  <value key="PROJECT_BORDER_COLOR">#C0C0C0</value>
   <value key="FANCY_TREE_CSS_FILE">fancytree-dark.css</value>
   <value key="W2UI_CSS_FILE">w2ui-flat-dark.css</value>
   <value key="DIALOG_BACKGROUND_COLOR">#717171</value>

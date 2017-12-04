@@ -454,21 +454,24 @@ export module Command {
       }
    }
    
-   export function saveEditorForResource(editorText, editorResource) {
-      var editorPath = editorResource.resourcePath;
-      
-      if(editorPath != null) {
-         var message = {
-            project : document.title,
-            resource : editorResource.filePath,
-            source : editorText,
-            directory: false,
-            create: false
-         };
-         //ProcessConsole.clearConsole();
-         EventBus.sendEvent("SAVE", message);
-         FileEditor.clearSavedEditorBuffer(editorPath); // make sure its synced
-      }
+   export function saveEditorOnClose(editorText, editorResource) {
+      if (editorResource != null && editorResource.resourcePath)) {
+         DialogBuilder.openTreeDialog(editorResource, true, function(resourceDetails) {
+            var message = {
+               project : document.title,
+               resource : editorResource.filePath,
+               source : editorText,
+               directory: false,
+               create: false
+            };
+            //ProcessConsole.clearConsole();
+            EventBus.sendEvent("SAVE", message);
+            FileEditor.clearSavedEditorBuffer(editorResource.resourcePath); // make sure its synced
+         }, 
+         function(resourceDetails) {
+            FileEditor.clearSavedEditorBuffer(editorResource.resourcePath); 
+         });
+      } 
    }
    
    export function deleteFile(resourceDetails) {

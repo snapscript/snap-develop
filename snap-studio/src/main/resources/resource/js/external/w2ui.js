@@ -7005,7 +7005,7 @@ w2utils.keyboard = (function (obj) {
                     '-o-transition'      : '0s'
                 });
                 obj.resize();
-            }, 500);
+            }, 100);
             return true;
         },
 
@@ -7037,7 +7037,7 @@ w2utils.keyboard = (function (obj) {
                 // show
                 setTimeout(function() {
                     $('#layout_'+ obj.name +'_panel_'+ panel).css({ 'opacity': '1' });
-                }, 250);
+                }, 100);
                 // clean
                 setTimeout(function () {
                     $(obj.box).find(' > div > .w2ui-panel').css({
@@ -7048,7 +7048,7 @@ w2utils.keyboard = (function (obj) {
                     });
                     obj.trigger($.extend(eventData, { phase: 'after' }));
                     obj.resize();
-                }, 500);
+                }, 100);
             }
             return true;
         },
@@ -7088,7 +7088,7 @@ w2utils.keyboard = (function (obj) {
                     });
                     obj.trigger($.extend(eventData, { phase: 'after' }));
                     obj.resize();
-                }, 500);
+                }, 100);
             }
             return true;
         },

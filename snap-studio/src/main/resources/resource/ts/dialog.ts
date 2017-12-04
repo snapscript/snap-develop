@@ -9,39 +9,39 @@ import {FileTree} from "tree"
  
 export module DialogBuilder {
    
-   export function openTreeDialog(resourceDetails, foldersOnly, saveCallback) {
+   export function openTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback) {
       if (resourceDetails != null) {
-         createProjectDialog(resourceDetails, foldersOnly, saveCallback, false, "Save Changes");
+         createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, false, "Save Changes");
       } else {
-         createProjectDialog(resourceDetails, foldersOnly, saveCallback, false, "Save As");
+         createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, false, "Save As");
       }
    }
    
-   export function renameFileTreeDialog(resourceDetails, foldersOnly, saveCallback){
-      createProjectDialog(resourceDetails, foldersOnly, saveCallback, false, "Rename File");
+   export function renameFileTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback){
+      createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, false, "Rename File");
    }
    
-   export function renameDirectoryTreeDialog(resourceDetails, foldersOnly, saveCallback){
-      createProjectDialog(resourceDetails, foldersOnly, saveCallback, false, "Rename Directory");
+   export function renameDirectoryTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback){
+      createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, false, "Rename Directory");
    }
    
-   export function newFileTreeDialog(resourceDetails, foldersOnly, saveCallback){
-      createProjectDialog(resourceDetails, foldersOnly, saveCallback, true, "New File");
+   export function newFileTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback){
+      createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, true, "New File");
    }
    
-   export function newDirectoryTreeDialog(resourceDetails, foldersOnly, saveCallback){
-      createProjectDialog(resourceDetails, foldersOnly, saveCallback, true, "New Directory");
+   export function newDirectoryTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback){
+      createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, true, "New Directory");
    }
    
    export function evaluateExpressionDialog(expressionToEvaluate){
       createEvaluateDialog(expressionToEvaluate, "Evaluate Expression");
    }
    
-   function createProjectDialog(resourceDetails, foldersOnly, saveCallback, nameIsBlank, dialogTitle) {
-      createTreeDialog(resourceDetails, foldersOnly, saveCallback, nameIsBlank, dialogTitle, "/" +document.title)
+   function createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle) {
+      createTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle, "/" +document.title)
    }
    
-   function createTreeDialog(resourceDetails, foldersOnly, saveCallback, nameIsBlank, dialogTitle, treePath) {
+   function createTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle, treePath) {
       var dialogExpandPath = "/";
    
       if (resourceDetails != null) {
@@ -53,6 +53,16 @@ export module DialogBuilder {
          element.contentEditable = true;
          element.focus();
       };
+      var createFinalPath = function() {
+         var originalDialogFileName = $('#dialogPath').html();
+         var originalDialogFolder = $('#dialogFolder').html();
+         var dialogPathName = FileTree.cleanResourcePath(originalDialogFileName);
+         var dialogFolder = FileTree.cleanResourcePath(originalDialogFolder);
+         var dialogProjectPath = dialogFolder + "/" + dialogPathName; // /src/blah/script.snap
+         var dialogPathDetails = FileTree.createResourcePath(dialogProjectPath); 
+         
+         return dialogPathDetails;
+      }
       w2popup.open({
          title : dialogTitle,
          body : dialogBody.content, 
@@ -94,17 +104,17 @@ export module DialogBuilder {
          }
       });
       $("#dialogSave").click(function() {
-         var originalDialogFileName = $('#dialogPath').html();
-         var originalDialogFolder = $('#dialogFolder').html();
-         var dialogPathName = FileTree.cleanResourcePath(originalDialogFileName);
-         var dialogFolder = FileTree.cleanResourcePath(originalDialogFolder);
-         var dialogProjectPath = dialogFolder + "/" + dialogPathName; // /src/blah/script.snap
-         var dialogPathDetails = FileTree.createResourcePath(dialogProjectPath); 
-         
-         saveCallback(dialogPathDetails);
+         if(saveCallback) {
+            var dialogPathDetails = createFinalPath(); 
+            saveCallback(dialogPathDetails);
+         }
          w2popup.close();
       });
       $("#dialogCancel").click(function() {
+         if(ignoreOrCancelCallback) {
+            var dialogPathDetails = createFinalPath(); 
+            ignoreOrCancelCallback(dialogPathDetails);
+         }
          w2popup.close();
       });
       if (resourceDetails != null) {

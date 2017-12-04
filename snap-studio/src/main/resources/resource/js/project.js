@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", "editor", "tree", "threads", "history", "variables", "explorer", "commands", "debug", "keys", "alert"], function (require, exports, $, w2ui_1, common_1, console_1, problem_1, editor_1, tree_1, threads_1, history_1, variables_1, explorer_1, commands_1, debug_1, keys_1, alert_1) {
+define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", "editor", "tree", "threads", "history", "variables", "explorer", "commands", "debug", "keys"], function (require, exports, $, w2ui_1, common_1, console_1, problem_1, editor_1, tree_1, threads_1, history_1, variables_1, explorer_1, commands_1, debug_1, keys_1) {
     "use strict";
     var Project;
     (function (Project) {
@@ -186,11 +186,18 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
                 var leftPanel = w2ui_1.w2ui['exploreMainLayout'].get("left");
                 var bottomPanel = w2ui_1.w2ui['exploreEditorLayout'].get("bottom");
                 if (leftPanel.hidden || bottomPanel.hidden) {
+                    w2ui_1.w2ui['exploreMainLayout'].sizeTo("right", '75%', true);
+                    w2ui_1.w2ui['exploreMainLayout'].sizeTo("main", '25%', true);
                     w2ui_1.w2ui['exploreMainLayout'].show("left", true);
+                    w2ui_1.w2ui['exploreMainLayout'].show("main", true);
                     w2ui_1.w2ui['exploreEditorLayout'].show("bottom");
                 }
                 else {
+                    w2ui_1.w2ui['exploreMainLayout'].sizeTo("right", '100%', true);
+                    w2ui_1.w2ui['exploreMainLayout'].sizeTo("main", '0%', true);
+                    w2ui_1.w2ui['exploreMainLayout'].sizeTo("left", '0%', true);
                     w2ui_1.w2ui['exploreMainLayout'].hide("left", true);
+                    w2ui_1.w2ui['exploreMainLayout'].hide("main", true);
                     w2ui_1.w2ui['exploreEditorLayout'].hide("bottom");
                 }
             }
@@ -490,15 +497,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
             if (editor_1.FileEditor.isEditorChangedForPath(resourcePathToClose)) {
                 var currentBuffer = editor_1.FileEditor.loadSavedEditorBuffer(resourcePathToClose);
                 var editorResource = tree_1.FileTree.createResourcePath(resourcePathToClose);
-                var resourcePath = editorResource.resourcePath;
-                var filePath = editorResource.filePath;
-                var message = "Save resource " + filePath;
-                alert_1.Alerts.createConfirmAlert("File Changed", message, "Save", "Ignore", function () {
-                    commands_1.Command.saveEditorForResource(currentBuffer, editorResource); // save the file
-                }, function () {
-                    editor_1.FileEditor.clearSavedEditorBuffer(resourcePath);
-                    console.log("Not saving " + resourcePath);
-                });
+                commands_1.Command.saveEditorOnClose(currentBuffer, editorResource); // save the file;
             }
             activateAnyEditorTab(resourcePathToClose); // activate some other tab
         }
@@ -555,21 +554,20 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
                         resizable: false,
                         style: pstyle
                     }, {
-                        type: 'left',
+                        type: 'right',
+                        size: '75%',
+                        resizable: true,
+                        style: pstyle
+                    }, {
+                        type: 'main',
                         size: '25%',
                         resizable: true,
                         style: pstyle
                     }, {
-                        type: 'right',
-                        size: '0%',
-                        resizable: true,
-                        hidden: true,
-                        style: pstyle
-                    }, {
-                        type: 'main',
-                        size: '75%',
-                        resizable: true,
-                        style: pstyle
+                        type: 'left',
+                        size: '25px',
+                        resizable: false,
+                        style: pstyle + " margin-top: 32px; border-top: 1px solid ${PROJECT_BORDER_COLOR};"
                     }, {
                         type: 'bottom',
                         size: '25px',
@@ -709,8 +707,9 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
             createThreadsTab();
             createHistoryTab();
             w2ui_1.w2ui['exploreMainLayout'].content('top', w2ui_1.w2ui['topLayout']);
-            w2ui_1.w2ui['exploreMainLayout'].content('left', w2ui_1.w2ui['exploreLeftTabLayout']);
-            w2ui_1.w2ui['exploreMainLayout'].content('main', w2ui_1.w2ui['exploreEditorLayout']);
+            //w2ui['exploreMainLayout'].content('left', '<table cellpadding="2"><tr><td><span id="leftProjectRoot"></span></td><tr><tr><td><span id="leftDirectory"></span></td><tr><tr><td></td><tr></table>');
+            w2ui_1.w2ui['exploreMainLayout'].content('main', w2ui_1.w2ui['exploreLeftTabLayout']);
+            w2ui_1.w2ui['exploreMainLayout'].content('right', w2ui_1.w2ui['exploreEditorLayout']);
             w2ui_1.w2ui['exploreEditorLayout'].content('main', w2ui_1.w2ui['exploreEditorTabLayout']);
             w2ui_1.w2ui['exploreEditorLayout'].content('bottom', w2ui_1.w2ui['exploreBottomTabLayout']);
             w2ui_1.w2ui['exploreEditorTabLayout'].refresh();

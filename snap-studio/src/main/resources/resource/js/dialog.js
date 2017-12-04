@@ -2,39 +2,39 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
     "use strict";
     var DialogBuilder;
     (function (DialogBuilder) {
-        function openTreeDialog(resourceDetails, foldersOnly, saveCallback) {
+        function openTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback) {
             if (resourceDetails != null) {
-                createProjectDialog(resourceDetails, foldersOnly, saveCallback, false, "Save Changes");
+                createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, false, "Save Changes");
             }
             else {
-                createProjectDialog(resourceDetails, foldersOnly, saveCallback, false, "Save As");
+                createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, false, "Save As");
             }
         }
         DialogBuilder.openTreeDialog = openTreeDialog;
-        function renameFileTreeDialog(resourceDetails, foldersOnly, saveCallback) {
-            createProjectDialog(resourceDetails, foldersOnly, saveCallback, false, "Rename File");
+        function renameFileTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback) {
+            createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, false, "Rename File");
         }
         DialogBuilder.renameFileTreeDialog = renameFileTreeDialog;
-        function renameDirectoryTreeDialog(resourceDetails, foldersOnly, saveCallback) {
-            createProjectDialog(resourceDetails, foldersOnly, saveCallback, false, "Rename Directory");
+        function renameDirectoryTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback) {
+            createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, false, "Rename Directory");
         }
         DialogBuilder.renameDirectoryTreeDialog = renameDirectoryTreeDialog;
-        function newFileTreeDialog(resourceDetails, foldersOnly, saveCallback) {
-            createProjectDialog(resourceDetails, foldersOnly, saveCallback, true, "New File");
+        function newFileTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback) {
+            createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, true, "New File");
         }
         DialogBuilder.newFileTreeDialog = newFileTreeDialog;
-        function newDirectoryTreeDialog(resourceDetails, foldersOnly, saveCallback) {
-            createProjectDialog(resourceDetails, foldersOnly, saveCallback, true, "New Directory");
+        function newDirectoryTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback) {
+            createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, true, "New Directory");
         }
         DialogBuilder.newDirectoryTreeDialog = newDirectoryTreeDialog;
         function evaluateExpressionDialog(expressionToEvaluate) {
             createEvaluateDialog(expressionToEvaluate, "Evaluate Expression");
         }
         DialogBuilder.evaluateExpressionDialog = evaluateExpressionDialog;
-        function createProjectDialog(resourceDetails, foldersOnly, saveCallback, nameIsBlank, dialogTitle) {
-            createTreeDialog(resourceDetails, foldersOnly, saveCallback, nameIsBlank, dialogTitle, "/" + document.title);
+        function createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle) {
+            createTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle, "/" + document.title);
         }
-        function createTreeDialog(resourceDetails, foldersOnly, saveCallback, nameIsBlank, dialogTitle, treePath) {
+        function createTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle, treePath) {
             var dialogExpandPath = "/";
             if (resourceDetails != null) {
                 dialogExpandPath = resourceDetails.projectDirectory; // /src/blah
@@ -44,6 +44,15 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 var element = document.getElementById('dialogPath');
                 element.contentEditable = true;
                 element.focus();
+            };
+            var createFinalPath = function () {
+                var originalDialogFileName = $('#dialogPath').html();
+                var originalDialogFolder = $('#dialogFolder').html();
+                var dialogPathName = tree_1.FileTree.cleanResourcePath(originalDialogFileName);
+                var dialogFolder = tree_1.FileTree.cleanResourcePath(originalDialogFolder);
+                var dialogProjectPath = dialogFolder + "/" + dialogPathName; // /src/blah/script.snap
+                var dialogPathDetails = tree_1.FileTree.createResourcePath(dialogProjectPath);
+                return dialogPathDetails;
             };
             w2ui_1.w2popup.open({
                 title: dialogTitle,
@@ -86,16 +95,17 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 }
             });
             $("#dialogSave").click(function () {
-                var originalDialogFileName = $('#dialogPath').html();
-                var originalDialogFolder = $('#dialogFolder').html();
-                var dialogPathName = tree_1.FileTree.cleanResourcePath(originalDialogFileName);
-                var dialogFolder = tree_1.FileTree.cleanResourcePath(originalDialogFolder);
-                var dialogProjectPath = dialogFolder + "/" + dialogPathName; // /src/blah/script.snap
-                var dialogPathDetails = tree_1.FileTree.createResourcePath(dialogProjectPath);
-                saveCallback(dialogPathDetails);
+                if (saveCallback) {
+                    var dialogPathDetails = createFinalPath();
+                    saveCallback(dialogPathDetails);
+                }
                 w2ui_1.w2popup.close();
             });
             $("#dialogCancel").click(function () {
+                if (ignoreOrCancelCallback) {
+                    var dialogPathDetails = createFinalPath();
+                    ignoreOrCancelCallback(dialogPathDetails);
+                }
                 w2ui_1.w2popup.close();
             });
             if (resourceDetails != null) {

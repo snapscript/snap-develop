@@ -218,10 +218,17 @@ export module Project {
          var bottomPanel = w2ui['exploreEditorLayout'].get("bottom");
          
          if(leftPanel.hidden || bottomPanel.hidden) {
+            w2ui['exploreMainLayout'].sizeTo("right", '75%', true);
+            w2ui['exploreMainLayout'].sizeTo("main", '25%', true);
             w2ui['exploreMainLayout'].show("left", true);
+            w2ui['exploreMainLayout'].show("main", true);
             w2ui['exploreEditorLayout'].show("bottom");
          } else {
+            w2ui['exploreMainLayout'].sizeTo("right", '100%', true);
+            w2ui['exploreMainLayout'].sizeTo("main", '0%', true);
+            w2ui['exploreMainLayout'].sizeTo("left", '0%', true);
             w2ui['exploreMainLayout'].hide("left", true);
+            w2ui['exploreMainLayout'].hide("main", true);
             w2ui['exploreEditorLayout'].hide("bottom");
          }
       }
@@ -572,18 +579,8 @@ export module Project {
        if(FileEditor.isEditorChangedForPath(resourcePathToClose)) {
           var currentBuffer = FileEditor.loadSavedEditorBuffer(resourcePathToClose);
           var editorResource = FileTree.createResourcePath(resourcePathToClose);
-          var resourcePath = editorResource.resourcePath;
-          var filePath = editorResource.filePath;
-          var message = "Save resource " + filePath;
-          
-          Alerts.createConfirmAlert("File Changed", message, "Save", "Ignore", 
-             function(){
-                Command.saveEditorForResource(currentBuffer, editorResource); // save the file
-             },
-             function(){
-                FileEditor.clearSavedEditorBuffer(resourcePath);
-                console.log("Not saving " + resourcePath);
-             });
+
+          Command.saveEditorOnClose(currentBuffer, editorResource); // save the file;
        }
        activateAnyEditorTab(resourcePathToClose); // activate some other tab
    }
@@ -652,21 +649,20 @@ export module Project {
             resizable : false,
             style : pstyle
          }, {
-            type : 'left',
-            size : '25%',
-            resizable : true,
-            style : pstyle      
-         },{
             type : 'right',
-            size : '0%',
-            resizable : true,
-            hidden: true,
-            style : pstyle
-         },{
-            type : 'main',
             size : '75%',
             resizable : true,
             style : pstyle
+         },{
+            type : 'main',
+            size : '25%',
+            resizable : true,
+            style : pstyle
+         },{
+            type : 'left',
+            size : '25px',
+            resizable : false,
+            style : pstyle + " margin-top: 32px; border-top: 1px solid ${PROJECT_BORDER_COLOR};"
          } , {
             type : 'bottom',
             size : '25px',
@@ -812,8 +808,9 @@ export module Project {
       createHistoryTab();
       
       w2ui['exploreMainLayout'].content('top', w2ui['topLayout']);
-      w2ui['exploreMainLayout'].content('left', w2ui['exploreLeftTabLayout']);
-      w2ui['exploreMainLayout'].content('main', w2ui['exploreEditorLayout']);
+      //w2ui['exploreMainLayout'].content('left', '<table cellpadding="2"><tr><td><span id="leftProjectRoot"></span></td><tr><tr><td><span id="leftDirectory"></span></td><tr><tr><td></td><tr></table>');
+      w2ui['exploreMainLayout'].content('main', w2ui['exploreLeftTabLayout']);
+      w2ui['exploreMainLayout'].content('right', w2ui['exploreEditorLayout']);
       w2ui['exploreEditorLayout'].content('main', w2ui['exploreEditorTabLayout']);
       w2ui['exploreEditorLayout'].content('bottom', w2ui['exploreBottomTabLayout']);
       w2ui['exploreEditorTabLayout'].refresh();
