@@ -38,7 +38,6 @@ public class ResourceContainer implements Container {
          response.setStatus(Status.OK);
          resource.handle(request, response);
       } catch (Throwable cause) {
-         cause.printStackTrace();
          log.info("Error handling resource", cause);
       } finally {
          try {

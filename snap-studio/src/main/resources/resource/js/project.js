@@ -186,18 +186,11 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
                 var leftPanel = w2ui_1.w2ui['exploreMainLayout'].get("left");
                 var bottomPanel = w2ui_1.w2ui['exploreEditorLayout'].get("bottom");
                 if (leftPanel.hidden || bottomPanel.hidden) {
-                    w2ui_1.w2ui['exploreMainLayout'].sizeTo("right", '75%', true);
-                    w2ui_1.w2ui['exploreMainLayout'].sizeTo("main", '25%', true);
                     w2ui_1.w2ui['exploreMainLayout'].show("left", true);
-                    w2ui_1.w2ui['exploreMainLayout'].show("main", true);
                     w2ui_1.w2ui['exploreEditorLayout'].show("bottom");
                 }
                 else {
-                    w2ui_1.w2ui['exploreMainLayout'].sizeTo("right", '100%', true);
-                    w2ui_1.w2ui['exploreMainLayout'].sizeTo("main", '0%', true);
-                    w2ui_1.w2ui['exploreMainLayout'].sizeTo("left", '0%', true);
                     w2ui_1.w2ui['exploreMainLayout'].hide("left", true);
-                    w2ui_1.w2ui['exploreMainLayout'].hide("main", true);
                     w2ui_1.w2ui['exploreEditorLayout'].hide("bottom");
                 }
             }
@@ -545,6 +538,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
             // $('#topLayer').spin({ lines: 10, length: 30, width: 20, radius: 40 });
             // -- LAYOUT
             var pstyle = 'background-color: ${PROJECT_BACKGROUND_COLOR}; overflow: hidden;';
+            var leftStyle = pstyle + " margin-top: 32px; border-top: 1px solid ${PROJECT_BORDER_COLOR};";
             $('#mainLayout').w2layout({
                 name: 'exploreMainLayout',
                 padding: 0,
@@ -554,20 +548,21 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
                         resizable: false,
                         style: pstyle
                     }, {
-                        type: 'right',
-                        size: '75%',
-                        resizable: true,
-                        style: pstyle
-                    }, {
-                        type: 'main',
+                        type: 'left',
                         size: '25%',
                         resizable: true,
                         style: pstyle
                     }, {
-                        type: 'left',
-                        size: '25px',
-                        resizable: false,
-                        style: pstyle + " margin-top: 32px; border-top: 1px solid ${PROJECT_BORDER_COLOR};"
+                        type: 'right',
+                        size: '0%',
+                        resizable: true,
+                        hidden: true,
+                        style: pstyle
+                    }, {
+                        type: 'main',
+                        size: '75%',
+                        resizable: true,
+                        style: pstyle
                     }, {
                         type: 'bottom',
                         size: '25px',
@@ -708,9 +703,9 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
             createHistoryTab();
             w2ui_1.w2ui['exploreMainLayout'].content('top', w2ui_1.w2ui['topLayout']);
             //w2ui['exploreMainLayout'].content('left', '<table cellpadding="2"><tr><td><span id="leftProjectRoot"></span></td><tr><tr><td><span id="leftDirectory"></span></td><tr><tr><td></td><tr></table>');
-            w2ui_1.w2ui['exploreMainLayout'].content('left', '<table cellpadding="2"><tr><td></td></tr></table>');
-            w2ui_1.w2ui['exploreMainLayout'].content('main', w2ui_1.w2ui['exploreLeftTabLayout']);
-            w2ui_1.w2ui['exploreMainLayout'].content('right', w2ui_1.w2ui['exploreEditorLayout']);
+            //w2ui['exploreMainLayout'].content('left', '<div style="border: dotted 1px ${PROJECT_BORDER_COLOR}; padding: 1px; margin-top: 10px; margin-left: 5px;"><table cellpadding="2"><tr><td>&nbsp;</td><tr><tr><td><!--span id="leftProjectRoot"></span--></td></tr></table></div>');      
+            w2ui_1.w2ui['exploreMainLayout'].content('left', w2ui_1.w2ui['exploreLeftTabLayout']);
+            w2ui_1.w2ui['exploreMainLayout'].content('main', w2ui_1.w2ui['exploreEditorLayout']);
             w2ui_1.w2ui['exploreEditorLayout'].content('main', w2ui_1.w2ui['exploreEditorTabLayout']);
             w2ui_1.w2ui['exploreEditorLayout'].content('bottom', w2ui_1.w2ui['exploreBottomTabLayout']);
             w2ui_1.w2ui['exploreEditorTabLayout'].refresh();
