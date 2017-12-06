@@ -8,7 +8,6 @@ import java.util.concurrent.Executor;
 import org.simpleframework.transport.Channel;
 import org.simpleframework.transport.reactor.ExecutorReactor;
 import org.simpleframework.transport.reactor.Reactor;
-import org.slf4j.Logger;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.studio.agent.event.MessageEnvelope;
 import org.snapscript.studio.agent.event.ProcessEvent;

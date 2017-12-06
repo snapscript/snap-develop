@@ -11,7 +11,6 @@ import org.simpleframework.transport.Channel;
 import org.simpleframework.transport.reactor.Operation;
 import org.simpleframework.transport.reactor.Reactor;
 import org.simpleframework.transport.trace.Trace;
-import org.slf4j.Logger;
 
 @Slf4j
 public class MessageEnvelopeCollector implements Operation {

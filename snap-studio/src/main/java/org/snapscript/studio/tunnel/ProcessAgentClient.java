@@ -12,7 +12,9 @@ import org.slf4j.Logger;
 import org.snapscript.studio.agent.event.ProcessEvent;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
 import org.snapscript.studio.agent.event.ProcessEventProducer;
-import org.snapscript.studio.agent.log.ProcessLog;
+import org.snapscript.studio.agent.log.Log;
+import org.snapscript.studio.agent.log.LogLevel;
+import org.snapscript.studio.agent.log.LogLogger;
 import org.snapscript.studio.agent.log.ProcessLogger;
 
 @Slf4j
@@ -22,11 +24,11 @@ public class ProcessAgentClient implements ProcessEventChannel {
    private final ProcessLogger adapter;
    private final OutputStream stream;
    private final AtomicBoolean open;
-   private final ProcessLog logger;
+   private final Log logger;
    
    public ProcessAgentClient(Executor executor, Channel channel) {
       this.logger = new LoggerLog(log);
-      this.adapter = new ProcessLogger(logger);
+      this.adapter = new LogLogger(logger);
       this.stream = new ChannelOutputStream(channel);
       this.producer = new ProcessEventProducer(adapter, stream, stream, executor);
       this.open = new AtomicBoolean(true);
@@ -71,7 +73,7 @@ public class ProcessAgentClient implements ProcessEventChannel {
       } 
    }
    
-   private static class LoggerLog implements ProcessLog {
+   private static class LoggerLog implements Log {
       
       private final Logger log;
       
@@ -80,13 +82,33 @@ public class ProcessAgentClient implements ProcessEventChannel {
       }
 
       @Override
-      public void log(Object text) {
-         log.info(""+ text);
+      public void log(LogLevel level, Object text) {
+         String message = String.valueOf(text);
+         
+         if(level == LogLevel.TRACE) {
+            log.trace(message);
+         } else if(level == LogLevel.DEBUG) {
+            log.debug(message);
+         } else if(level == LogLevel.INFO) {
+            log.info(message);
+         } else {
+            log.error(message);
+         }
       }
 
       @Override
-      public void log(Object text, Throwable cause) {
-         log.info("" + text, cause);
+      public void log(LogLevel level, Object text, Throwable cause) {
+         String message = String.valueOf(text);
+         
+         if(level == LogLevel.TRACE) {
+            log.trace(message, cause);
+         } else if(level == LogLevel.DEBUG) {
+            log.debug(message);
+         } else if(level == LogLevel.INFO) {
+            log.info(message);
+         } else {
+            log.error(message);
+         }
       }
       
    }

@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.snapscript.studio.agent.log.ConsoleLog;
-import org.snapscript.studio.agent.log.ProcessLog;
+import org.snapscript.studio.agent.log.Log;
+import org.snapscript.studio.agent.log.LogLogger;
 import org.snapscript.studio.agent.log.ProcessLogger;
 import org.snapscript.studio.core.ConsoleListener;
 import org.snapscript.studio.core.ConsoleManager;
@@ -127,11 +128,11 @@ public class TypeScriptCompiler {
    private static class CompilerListener implements ConsoleListener {
       
       private final ProcessLogger logger;
-      private final ProcessLog log;
+      private final Log log;
       
       public CompilerListener() {
          this.log = new ConsoleLog();
-         this.logger = new ProcessLogger(log);
+         this.logger = new LogLogger(log);
       }
 
       @Override

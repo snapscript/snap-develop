@@ -1,34 +1,87 @@
 import util.stream.Collectors;
 
-// add in comment 
 
-var l:[] = ["a", "bb", "ccc"];
-println(l.stream().map(a->a.toUpperCase).collect(Collectors.toList()));
-
-l.iterator().forEachRemaining(x->println("##${x}"));
-
-var x = 11;
-
-println(98 as Character);
-println(98 as Double);
-println(x as Float);
-
-
-
-new File("c:\\temp\\chat.out")
+const blah = new Foo();
+const result = ['a', 'b', 'c', null, 'd']
    .stream()
-   .buffer(100)
+   .filter(blah::isNotNull)
+   .map(blah::toUpper)
+   .collect(Collectors.toList());
+   
+assert result[0] == 'A';
+assert result[1] == 'B';
+assert result[2] == 'C';
+assert result[3] == 'D';
+
+class Foo {
+   isNotNull(o){
+      return o != null;
+   }
+   toUpper(o){
+      return `${o}`.toUpperCase();
+   }
+}
+
+println(result);
+
+
+new URL("http://localhost:4457/")
+   .header("User-Agent", "test/1.0")
+   .header("Accept", "application/json")
+   .post("{}")
+   .response()
    .reader()
    .readLines()
    .stream()
    .forEach(line -> println(line));
    
-
-new URL("http://www.bbc.co.uk/")
+new URL("http://localhost:4457/")
    .header("User-Agent", "test/1.0")
-   .header("Accept", "text/html")
-   .get()
-   .success( -> println("OK"))
-   .failure(response -> println(response.response().reader().readText()));
+   .header("Accept", "application/json")
+   .post("{}")
+   .success(url -> {
+      url.response()
+         .reader()
+         .readLines()
+         .forEach(line -> println(line));
+   })
+   .failure(url -> {
+      url.response()
+         .reader()
+         .readLines()
+         .forEach(line -> println(line));
+   });
+
+
+// add in comment 
+
+// var l:[] = ["a", "bb", "ccc"];
+// println(l.stream().map(a->a.toUpperCase).collect(Collectors.toList()));
+
+// l.iterator().forEachRemaining(x->println("##${x}"));
+
+// var x = 11;
+
+// println(98 as Character);
+// println(98 as Double);
+// println(x as Float);
+
+
+
+// new File("c:\\temp\\chat.out")
+//    .stream()
+//    .buffer(100)
+//    .reader()
+//    .readLines()
+//    .stream()
+//    .forEach(line -> println(line));
+   
+
+// new URL("http://www.bbc.co.uk/")
+//    .header("User-Agent", "test/1.0")
+//    .header("Accept", "text/html")
+//    .get()
+//    .success( -> println("OK"))
+//    .failure(response -> println(response.response().reader().readText()));
    
    

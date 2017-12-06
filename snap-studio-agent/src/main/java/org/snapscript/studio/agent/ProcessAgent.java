@@ -13,8 +13,10 @@ import org.snapscript.studio.agent.event.ProcessEventChannel;
 import org.snapscript.studio.agent.event.ProcessEventTimer;
 import org.snapscript.studio.agent.event.RegisterEvent;
 import org.snapscript.studio.agent.event.client.ProcessEventClient;
+import org.snapscript.studio.agent.log.AsyncLog;
 import org.snapscript.studio.agent.log.ConsoleLog;
-import org.snapscript.studio.agent.log.ProcessLog;
+import org.snapscript.studio.agent.log.Log;
+import org.snapscript.studio.agent.log.LogLogger;
 import org.snapscript.studio.agent.log.ProcessLogger;
 import org.snapscript.studio.agent.profiler.ProcessProfiler;
 
@@ -59,8 +61,9 @@ public class ProcessAgent {
       int port = root.getPort();
       
       try {
-         ProcessLog log = new ConsoleLog();
-         ProcessLogger logger = new ProcessLogger(log, level);
+         Log log = new ConsoleLog();
+         Log adapter = new AsyncLog(log);
+         ProcessLogger logger = new LogLogger(adapter, level);
          SystemValidator validator = new SystemValidator(context);
          ConnectionChecker checker = new ConnectionChecker(context, process, system);
          ProcessResourceExecutor executor = new ProcessResourceExecutor(context, mode, model);

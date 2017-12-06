@@ -23,8 +23,10 @@ import org.snapscript.studio.agent.event.ProcessEventAdapter;
 import org.snapscript.studio.agent.event.ProcessEventMarshaller;
 import org.snapscript.studio.agent.event.ProcessEventTimer;
 import org.snapscript.studio.agent.event.ProcessEventType;
-import org.snapscript.studio.agent.log.ProcessLog;
+import org.snapscript.studio.agent.log.Log;
+import org.snapscript.studio.agent.log.LogLogger;
 import org.snapscript.studio.agent.log.ProcessLogger;
+import org.snapscript.studio.common.log.LoggerLog;
 import org.snapscript.studio.tunnel.MessageEnvelopeCollector;
 import org.snapscript.studio.tunnel.ProcessEventService;
 
@@ -34,8 +36,8 @@ public class MessageEnvelopeCollectorTest extends TestCase {
    
    public void testCollector() throws Exception {
       ThreadPool pool = new ThreadPool(5);
-      ProcessLog log = new LoggerLog(LOG);
-      ProcessLogger logger = new ProcessLogger(log, "TRACE");
+      Log log = new LoggerLog(LOG);
+      ProcessLogger logger = new LogLogger(log, "TRACE");
       ProcessEventAdapter adapter = new ProcessEventAdapter();
       ProcessEventTimer timer = new ProcessEventTimer(adapter, logger);
       ProcessEventService router = new ProcessEventService(timer, 7878);
@@ -83,25 +85,5 @@ public class MessageEnvelopeCollectorTest extends TestCase {
    
          writer.write(message);
       }
-   }
-   
-   private static class LoggerLog implements ProcessLog {
-      
-      private final Logger log;
-      
-      public LoggerLog(Logger log) {
-         this.log = log;
-      }
-
-      @Override
-      public void log(Object text) {
-         log.info(""+ text);
-      }
-
-      @Override
-      public void log(Object text, Throwable cause) {
-         log.info("" + text, cause);
-      }
-      
    }
 }
