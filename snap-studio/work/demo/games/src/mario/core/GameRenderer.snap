@@ -196,7 +196,7 @@ class GameRenderer {
                 }
            }
            
-          if(map == mainMap) {
+          if(map === mainMap) {
                 
              for(var i = 0; i < map.creatures().size(); i++) { 
                   

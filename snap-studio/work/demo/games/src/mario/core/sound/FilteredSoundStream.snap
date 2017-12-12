@@ -20,9 +20,8 @@ class FilteredSoundStream extends FilterInputStream {
         specified InputStream and SoundFilter.
     */
     public new(input: InputStream,
-        soundFilter: SoundFilter)
+        soundFilter: SoundFilter): super(input)
     {
-        super(input);
         this.soundFilter = soundFilter;
         remainingSize = REMAINING_SIZE_UNKNOWN;
     }
