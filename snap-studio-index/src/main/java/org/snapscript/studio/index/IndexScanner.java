@@ -21,6 +21,7 @@ import org.snapscript.studio.common.FileAction;
 import org.snapscript.studio.common.FileProcessor;
 import org.snapscript.studio.common.FileReader;
 import org.snapscript.studio.index.classpath.BootstrapClassPath;
+import org.snapscript.studio.index.classpath.IndexPath;
 import org.snapscript.studio.index.classpath.ClassPathSearcher;
 
 @Slf4j
@@ -37,9 +38,9 @@ public class IndexScanner implements IndexDatabase {
    private final String project;
    private final File root;
    
-   public IndexScanner(ClassLoader loader, Context context, Executor executor, File root, String project, String... prefixes) {
+   public IndexScanner(IndexPath path, Context context, Executor executor, File root, String project, String... prefixes) {
       this.reference = new AtomicReference<IndexFileCache>();
-      this.searcher = new ClassPathSearcher(loader);
+      this.searcher = new ClassPathSearcher(path);
       this.translator = new PathTranslator(prefixes);
       this.indexer = new SourceIndexer(translator, this, context, executor, root);
       this.action = new CompileAction(indexer, root);

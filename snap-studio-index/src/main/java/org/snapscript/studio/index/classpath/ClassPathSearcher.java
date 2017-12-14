@@ -13,9 +13,9 @@ public class ClassPathSearcher {
    private final Map<String, IndexNode> cache;
    private final Set<IndexNode> nodes;
    
-   public ClassPathSearcher(ClassLoader loader) {
+   public ClassPathSearcher(IndexPath path) {
       this.cache = new ConcurrentHashMap<String, IndexNode>();
-      this.nodes = ProjectClassPath.getProjectClassPath(loader);
+      this.nodes = ProjectClassPath.getProjectClassPath(path);
    }
    
    public Map<String, IndexNode> getTypeNodesMatching(String expression) {

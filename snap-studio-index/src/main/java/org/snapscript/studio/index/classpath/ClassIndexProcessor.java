@@ -1,18 +1,14 @@
 package org.snapscript.studio.index.classpath;
 
-import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.jar.JarFile;
 
 import org.snapscript.studio.index.IndexNode;
 
-import com.google.common.reflect.ClassPath.ClassInfo;
 import com.google.common.reflect.ClassPath.ResourceInfo;
 
 public class ClassIndexProcessor {
@@ -39,28 +35,28 @@ public class ClassIndexProcessor {
       return BootstrapClassPath.getDefaultImportClasses().get(name);
    }
 
-   public static ClassInfo getClassInfo(String path) throws Exception {
+   public static ClassFile getClassFile(String path) throws Exception {
       for(String extension : RESOURCE_EXTENSIONS) {
-         if (path.endsWith(extension)) {
+         if (path.endsWith(extension)) {            
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            return (ClassInfo) RESOURCE_METHOD.invoke(null, path, loader);
+            return new ResourcePathClassFile(path, loader);
          }
       }
       return null;
    }
    
-   public static ClassInfo getClassInfo(Class type) {
+   public static ClassFile getClassFile(Class type) {
       String path = ClassIndexProcessor.getFullPath(type);
       
       try {
-         return getClassInfo(path);
+         return getClassFile(path);
       }catch(Throwable cause) {
          cause.printStackTrace();
       }
       return null;
    }
    
-   public static Set<IndexNode> getChildren(ClassInfo info) {
+   public static Set<IndexNode> getChildren(ClassFile info) {
       Set<IndexNode> nodes = new HashSet<IndexNode>();
       
       nodes.addAll(getSupers(info));
@@ -72,12 +68,12 @@ public class ClassIndexProcessor {
       return nodes;
    }
    
-   public static Set<IndexNode> getSupers(ClassInfo info) {
+   public static Set<IndexNode> getSupers(ClassFile info) {
       Set<IndexNode> nodes = new HashSet<IndexNode>();
       Set<Class> done = new HashSet<Class>();
       
       try{
-         Class type = info.load();
+         Class type = info.loadClass();
          Set<Class> hierarchy = getHierarchy(type, done);
          
          hierarchy.remove(type);
@@ -131,11 +127,11 @@ public class ClassIndexProcessor {
       return nodes;
    }
 
-   public static Set<IndexNode> getConstructors(ClassInfo info) {
+   public static Set<IndexNode> getConstructors(ClassFile info) {
       Set<IndexNode> nodes = new HashSet<IndexNode>();
       
       try{
-         Class type = info.load();
+         Class type = info.loadClass();
          Constructor[] constructors = type.getDeclaredConstructors();
          
          for(Constructor constructor : constructors) {
@@ -148,11 +144,11 @@ public class ClassIndexProcessor {
       return nodes;
    }
    
-   public static Set<IndexNode> getMethods(ClassInfo info) {
+   public static Set<IndexNode> getMethods(ClassFile info) {
       Set<IndexNode> nodes = new HashSet<IndexNode>();
       
       try{
-         Class type = info.load();
+         Class type = info.loadClass();
          Method[] methods = type.getDeclaredMethods();
          
          for(Method method : methods) {
@@ -165,11 +161,11 @@ public class ClassIndexProcessor {
       return nodes;
    }
    
-   public static Set<IndexNode> getFields(ClassInfo info) {
+   public static Set<IndexNode> getFields(ClassFile info) {
       Set<IndexNode> nodes = new HashSet<IndexNode>();
       
       try{
-         Class type = info.load();
+         Class type = info.loadClass();
          Field[] fields = type.getDeclaredFields();
          
          for(Field field : fields) {
@@ -182,11 +178,11 @@ public class ClassIndexProcessor {
       return nodes;
    }
    
-   public static Set<IndexNode> getInnerClasses(ClassInfo info) {
+   public static Set<IndexNode> getInnerClasses(ClassFile info) {
       Set<IndexNode> nodes = new HashSet<IndexNode>();
       
       try{
-         Class type = info.load();
+         Class type = info.loadClass();
          Class[] children = type.getDeclaredClasses();
          
          for(Class child : children) {
@@ -198,73 +194,26 @@ public class ClassIndexProcessor {
       }
       return nodes;
    }
-   
-   public static String getAbsolutePath(ClassInfo info) {
-      URL url = info.url();
-      String location = String.valueOf(url).toLowerCase();
-      
-      if(location.startsWith("jar:file")) {
-         try {
-            JarURLConnection connection = (JarURLConnection) url.openConnection();
-            JarFile jarFile = connection.getJarFile();
-            File file = new File(jarFile.getName());
-            
-            return file.getCanonicalPath();
-         } catch(Throwable e) {}
-      }
-      return getFullPath(info);
-   }
-   
-   public static String getResource(ClassInfo info) {
-      URL url = info.url();
-      String location = String.valueOf(url).toLowerCase();
-      
-      if(location.startsWith("jar:file")) {
-         try {
-            JarURLConnection connection = (JarURLConnection)url.openConnection();
-            URL jarUrl = connection.getJarFileURL();
-            File file = new File(jarUrl.toURI());
-            
-            return file.getCanonicalFile().getName();
-         } catch(Throwable e) {}
-      }
-      return getFullPath(info);
-   }
-   
-   public static String getFullPath(ClassInfo info) {
-      String path = info.getName();
-      
-      if(!path.startsWith("/")) {
-         path = "/" + path;
-      }
-      if(path.endsWith(".class")) {
-         path = path.substring(0, path.lastIndexOf(".class"));
-      }
-      if(path.contains("$")) {
-         return path.substring(0, path.indexOf('$'));
-      }
-      return path.replace(".", "/") + ".java";
-   }
-   
+
    public static String getFullPath(Class type) {
       return type.getCanonicalName().replace('.', '/') + ".class";
    }
    
    public static IndexNode getIndexNode(Class type) {
-      ClassInfo info = getClassInfo(type);
+      ClassFile info = getClassFile(type);
       return getIndexNode(info);
    }
    
    public static IndexNode getSuperIndexNode(Class type) {
-      ClassInfo info = getClassInfo(type);
+      ClassFile info = getClassFile(type);
       return new SuperIndexNode(info);
    }
 
-   public static IndexNode getSuperIndexNode(ClassInfo info) {
+   public static IndexNode getSuperIndexNode(ClassFile info) {
       return new SuperIndexNode(info);
    }
    
-   public static IndexNode getIndexNode(ClassInfo info) {
+   public static IndexNode getIndexNode(ClassFile info) {
       return new ClassIndexNode(info);
    }
 
@@ -279,51 +228,6 @@ public class ClassIndexProcessor {
    public static IndexNode getIndexNode(Field field) {
       return new FieldIndexNode(field);
    }
-   
-   public static String getFullName(ClassInfo info) {
-      String path = info.getResourceName();
-      
-      if(path.startsWith("/") || path.startsWith("\\")) {
-         path = path.substring(1);
-      }
-      int length = path.length();
-      int extension = ".class".length();
-      
-      path = path.substring(0, length - extension);
-      path = path.replace('/', '.');
-      path = path.replace('\\', '.');
-      
-      return path;
-   }
-   
-   public static String getTypeName(ClassInfo info) {
-      String name = getFullName(info);
-      int index = name.lastIndexOf('.');
-      
-      if(index != -1) {
-         return name.substring(index + 1);
-      }
-      return name;
-   }
-   
-   public static String getName(ClassInfo info) {
-      String name = getTypeName(info);
-      int index = name.lastIndexOf('$');
-      
-      if(index != -1) {
-         return name.substring(index + 1);
-      }
-      return name;
-   }
-   
-   public static String getModule(ClassInfo info) {
-      String name = getFullName(info);
-      int index = name.lastIndexOf('.');
-      
-      if(index != -1) {
-         return name.substring(0, index);
-      }
-      return name;
-   }
+
    
 }

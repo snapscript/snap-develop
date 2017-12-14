@@ -1,12 +1,14 @@
 package org.snapscript.studio.project;
 
 import static org.snapscript.studio.project.config.ProjectConfiguration.CLASSPATH_FILE;
+import static org.snapscript.studio.project.config.ProjectConfiguration.INDEX_FILE;
 import static org.snapscript.studio.project.config.ProjectConfiguration.PROJECT_FILE;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.snapscript.studio.agent.ClassPathUpdater;
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexScanner;
+import org.snapscript.studio.index.classpath.ClassFile;
+import org.snapscript.studio.index.classpath.IndexPath;
+import org.snapscript.studio.index.classpath.ProjectClassPath;
+import org.snapscript.studio.index.classpath.ResourcePathClassFile;
 import org.snapscript.studio.project.config.ConfigurationReader;
 import org.snapscript.studio.project.config.Dependency;
 import org.snapscript.studio.project.config.DependencyFile;
@@ -24,6 +30,7 @@ public class ProjectContext {
    
    private static final String INDEX_DATABASE_KEY = "database";
    private static final String CLASSPATH_KEY = "classpath";
+   private static final String INDEX_KEY = "index";
    
    private final ConfigurationReader reader;
    private final Workspace workspace;
@@ -63,7 +70,7 @@ public class ProjectContext {
       
       if(database == null) {
          database = new IndexScanner(
-            project.getClassLoader(),
+            getIndexFile(),
             project.getProjectContext(), 
             workspace.getExecutor(), 
             project.getSourcePath(), 
@@ -149,6 +156,110 @@ public class ProjectContext {
          configuraton.setAttribute(CLASSPATH_KEY, null);
          throw new IllegalStateException("Could not create " + CLASSPATH_FILE, e);
       }
+   }
+   
+   public synchronized IndexPath getIndexFile() {
+      File projectFile = getProjectFile(PROJECT_FILE);
+      File indexFile = getProjectFile(INDEX_FILE);
+      ProjectConfiguration configuraton = getConfiguration();
+      
+      try {
+         if(!indexFile.exists()) {
+            FileWriter writer = new FileWriter(indexFile);
+            
+            try {
+               IndexPath indexPath = getNewIndexPath();
+               String text = indexPath.getText();
+               configuraton.setAttribute(INDEX_KEY, indexPath);
+               writer.write(text);
+               return indexPath;
+            } finally {
+               writer.close();
+            }
+         }
+         if(projectFile.exists()) {
+            long projectFileChange = projectFile.lastModified();
+            long classPathFileChange = indexFile.lastModified();
+            
+            if(projectFileChange > classPathFileChange) {
+               IndexPath indexPath = getIndexFile(INDEX_FILE);
+               FileWriter writer = new FileWriter(indexFile);
+               
+               try {
+                  String text = indexPath.getText();
+                  configuraton.setAttribute(INDEX_KEY, indexPath);
+                  writer.write(text);
+                  return indexPath;
+               } finally {
+                  writer.close();
+               }
+            }
+         }
+         IndexPath indexPath = configuraton.getAttribute(INDEX_KEY);
+         
+         if(indexPath == null) {
+            indexPath = getIndexFile(INDEX_FILE);
+            configuraton.setAttribute(INDEX_KEY, indexPath);
+         }
+         return indexPath;
+      } catch(Exception e) {
+         configuraton.setAttribute(INDEX_KEY, null);
+         throw new IllegalStateException("Could not create " + INDEX_FILE, e);
+      }
+   }
+   
+   private synchronized IndexPath getIndexFile(String name) {
+      StringBuilder builder = new StringBuilder();
+      List<ClassFile> files = new ArrayList<ClassFile>();
+      ClassLoader loader = project.getClassLoader();
+      
+      try {
+         String content = project.getFileSystem().readAsString(name);
+         String[] lines = content.split("\\r?\\n");
+         
+         for(String line : lines) {
+            String trimmed = line.trim();
+            
+            if(!line.isEmpty()) {
+               if(!line.startsWith("#")) {
+                  ClassFile file = new ResourcePathClassFile(trimmed, loader);
+                  files.add(file);
+               } 
+               builder.append(trimmed); // keep comments also
+               builder.append("\n");
+            }
+         }
+      } catch(Exception e) {
+         return getNewIndexPath();
+      }
+      String text = builder.toString();
+      return new IndexPath(loader, files, text);
+   }
+   
+   private synchronized IndexPath getNewIndexPath() {
+      Date date = new Date();
+      StringBuilder builder = new StringBuilder();
+      List<ClassFile> files = new ArrayList<ClassFile>();
+      ClassLoader loader = project.getClassLoader();
+      
+      try {
+         files = ProjectClassPath.getClassFiles(loader);
+         
+         builder.append("# ");
+         builder.append(date);
+         builder.append("\n");
+         
+         for(ClassFile file : files) {
+            String path = file.getResourceName();
+         
+            builder.append(path);
+            builder.append("\n");
+         }
+      } catch(Exception e) {
+         return null;
+      }
+      String text = builder.toString();
+      return new IndexPath(loader, files, text);
    }
    
    private synchronized ClassPathFile getClassPathFile(String name) {

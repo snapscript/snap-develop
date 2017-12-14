@@ -8,6 +8,7 @@ import static org.snapscript.studio.project.config.WorkspaceConfiguration.WORKSP
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -190,7 +191,11 @@ public class ConfigurationReader {
 
       @Override
       public void setAttribute(String name, Object value) {
-         attributes.put(name, value);
+         if(value != null) {
+            attributes.put(name, value);
+         } else {
+            attributes.remove(name);
+         }
       }
    }
    
@@ -214,7 +219,8 @@ public class ConfigurationReader {
       @Override
       public List<DependencyFile> getDependencies(RepositoryFactory factory, List<Dependency> dependencies) {
          List<DependencyFile> files = new ArrayList<DependencyFile>();
-      
+         Set<String> done = new HashSet<String>();
+         
          try {
             if(repository != null) {
                RepositoryClient client = repository.getClient(factory);
@@ -225,21 +231,28 @@ public class ConfigurationReader {
                      String artifactId = dependency.getArtifactId();
                      String version = dependency.getVersion();
                      String key = String.format("%s:%s:%s", groupId, artifactId, version);
-                     DependencyFileSet set = client.resolve(groupId, artifactId, version);
-                     List<File> matches = set.getFiles();
-                     String message = set.getMessage();
-
-                     if(matches.isEmpty()) {
-                        DependencyFile file = new DependencyFile(null, message);
-                        files.add(file);
-                     } else {
-                        for (File match : matches) {
-                           if(match.exists()) {
-                              DependencyFile file = new DependencyFile(match);
-                              files.add(file);
-                           } else {
-                              DependencyFile file = new DependencyFile(match, "Could not resolve " + key);
-                              files.add(file);
+                     
+                     if(done.add(key)) { // has this already been resolved
+                        DependencyFileSet set = client.resolve(groupId, artifactId, version);
+                        List<File> matches = set.getFiles();
+                        String message = set.getMessage();
+   
+                        if(matches.isEmpty()) {
+                           DependencyFile file = new DependencyFile(null, message);
+                           files.add(file);
+                        } else {
+                           for (File match : matches) {
+                              String path = match.getCanonicalPath();
+                              
+                              if(done.add(path)) { // has file already been added
+                                 if(match.exists()) {
+                                    DependencyFile file = new DependencyFile(match);
+                                    files.add(file);
+                                 } else {
+                                    DependencyFile file = new DependencyFile(match, "Could not resolve " + key);
+                                    files.add(file);
+                                 }
+                              }
                            }
                         }
                      }

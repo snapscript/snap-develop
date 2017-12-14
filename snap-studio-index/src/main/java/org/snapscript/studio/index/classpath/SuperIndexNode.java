@@ -6,12 +6,10 @@ import java.util.Set;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
 
-import com.google.common.reflect.ClassPath.ClassInfo;
-
 public class SuperIndexNode extends ClassIndexNode {
    
-   public SuperIndexNode(ClassInfo info) {
-      super(info);
+   public SuperIndexNode(ClassFile file) {
+      super(file);
    }
 
    @Override

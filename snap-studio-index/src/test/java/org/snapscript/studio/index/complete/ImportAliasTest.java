@@ -14,6 +14,7 @@ import org.snapscript.studio.index.SourceFile;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexScanner;
 import org.snapscript.studio.index.IndexType;
+import org.snapscript.studio.index.classpath.ProjectClassPath;
 
 public class ImportAliasTest extends TestCase {
    
@@ -22,7 +23,7 @@ public class ImportAliasTest extends TestCase {
       Context context = new StoreContext(store);
       ThreadPool pool = new ThreadPool(2);
       File file = File.createTempFile("test", getClass().getSimpleName());
-      IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
+      IndexDatabase database = new IndexScanner(ProjectClassPath.getSystemClassPath(), context, pool, file, "test");
       SourceFile resource = database.getFile("/test.snap", "import sound.sampled.AudioFormat;");
       IndexNode root = resource.getRootNode();
       Map<String, IndexNode> nodes = database.getNodesInScope(root);

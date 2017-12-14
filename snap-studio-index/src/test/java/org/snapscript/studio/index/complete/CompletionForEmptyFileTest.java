@@ -9,6 +9,7 @@ import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexScanner;
+import org.snapscript.studio.index.classpath.ProjectClassPath;
 
 import junit.framework.TestCase;
 
@@ -19,7 +20,7 @@ public class CompletionForEmptyFileTest extends TestCase {
       Context context = new StoreContext(store);
       ThreadPool pool = new ThreadPool(2);
       File file = File.createTempFile("test", getClass().getSimpleName());
-      IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
+      IndexDatabase database = new IndexScanner(ProjectClassPath.getSystemClassPath(), context, pool, file, "test");
       CompletionCompiler compiler = new CompletionCompiler(database, 
             FindForExpression.class,
             FindInScopeMatching.class,

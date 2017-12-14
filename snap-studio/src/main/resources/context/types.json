@@ -22,5 +22,6 @@
 	".*.snap": "text/plain",
 	".*.woff": "text/plain",
 	".*.project": "text/xml",
+	".*.index": "text/plain",
 	".*.classpath": "text/plain"
 }

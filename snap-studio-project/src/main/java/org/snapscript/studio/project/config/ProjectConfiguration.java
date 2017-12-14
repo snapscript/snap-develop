@@ -9,6 +9,7 @@ public interface ProjectConfiguration {
    
    String PROJECT_FILE = ".project";
    String CLASSPATH_FILE = ".classpath";
+   String INDEX_FILE = ".index";
    
    List<Dependency> getDependencies();
    Map<String, String> getProperties();

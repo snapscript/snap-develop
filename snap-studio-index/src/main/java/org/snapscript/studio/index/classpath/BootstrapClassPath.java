@@ -111,7 +111,7 @@ public class BootstrapClassPath {
          while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
             String location = entry.getName();
-            ClassInfo info = ClassIndexProcessor.getClassInfo(location);
+            ClassFile info = ClassIndexProcessor.getClassFile(location);
             
             if (info != null) {
                IndexNode node = ClassIndexProcessor.getIndexNode(info);

@@ -1,12 +1,6 @@
 import util.stream.Collectors;
 
 
-const blah = new Foo();
-const result = ['a', 'b', 'c', null, 'd']
-   .stream()
-   .filter(blah::isNotNull)
-   .map(blah::toUpper)
-   .collect(Collectors.toList());
    
 assert result[0] == 'A';
 assert result[1] == 'B';

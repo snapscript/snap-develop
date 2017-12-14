@@ -14,6 +14,7 @@ import org.snapscript.studio.index.IndexDumper;
 import org.snapscript.studio.index.SourceFile;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexScanner;
+import org.snapscript.studio.index.classpath.ProjectClassPath;
 
 public class ExpressionFinderTest extends TestCase {
    
@@ -56,7 +57,7 @@ public class ExpressionFinderTest extends TestCase {
       Context context = new StoreContext(store);
       ThreadPool pool = new ThreadPool(2);
       File file = File.createTempFile("test", getClass().getSimpleName());
-      IndexDatabase database = new IndexScanner(ClassLoader.getSystemClassLoader(), context, pool, file, "test");
+      IndexDatabase database = new IndexScanner(ProjectClassPath.getSystemClassPath(), context, pool, file, "test");
       ExpressionFinder finder = new ExpressionFinder(database);
       SourceFile indexFile = database.getFile("/test.snap", SOURCE_1);
       IndexNode nodeAtLine = indexFile.getNodeAtLine(5);

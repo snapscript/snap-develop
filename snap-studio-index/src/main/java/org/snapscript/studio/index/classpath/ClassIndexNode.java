@@ -1,31 +1,27 @@
 package org.snapscript.studio.index.classpath;
 
 import java.lang.reflect.Modifier;
-import java.net.URL;
 import java.util.Set;
 
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
-
-import com.google.common.reflect.ClassPath.ClassInfo;
 
 public class ClassIndexNode implements IndexNode {
    
    private Set<IndexNode> children;
    private String fullName;
    private String typeName;
-   private ClassInfo info;
+   private ClassFile file;
    private String absolute;
    private String resource;
    private String module;
    private String name;
    private Class type;
-   private URL url;
    private int modifiers;
    
-   public ClassIndexNode(ClassInfo info) {
+   public ClassIndexNode(ClassFile info) {
       this.modifiers = -1;
-      this.info = info;
+      this.file = info;
    }
    
    @Override
@@ -36,7 +32,7 @@ public class ClassIndexNode implements IndexNode {
    @Override
    public String getResource(){
       if(resource == null) {
-         resource = ClassIndexProcessor.getResource(info);
+         resource = file.getLocation();
       }
       return resource;
    }
@@ -44,7 +40,7 @@ public class ClassIndexNode implements IndexNode {
    @Override
    public String getAbsolutePath(){
       if(absolute == null) {
-         absolute = ClassIndexProcessor.getAbsolutePath(info);
+         absolute = file.getAbsolutePath();
       }
       return absolute;
    }
@@ -52,7 +48,7 @@ public class ClassIndexNode implements IndexNode {
    @Override
    public String getModule() {
       if(module == null) {
-         module = ClassIndexProcessor.getModule(info);
+         module = file.getModule();
       }
       return module;
    }
@@ -61,7 +57,7 @@ public class ClassIndexNode implements IndexNode {
    @Override
    public String getName() {
       if(name == null) {
-         name = ClassIndexProcessor.getName(info);
+         name = file.getName();
       }
       return name;
    }
@@ -69,7 +65,7 @@ public class ClassIndexNode implements IndexNode {
    @Override
    public String getTypeName() {
       if(typeName == null) {
-         typeName = ClassIndexProcessor.getTypeName(info);
+         typeName = file.getTypeName();
       }
       return typeName;
    }
@@ -77,7 +73,7 @@ public class ClassIndexNode implements IndexNode {
    @Override
    public String getFullName() {
       if(fullName == null) {
-         fullName = ClassIndexProcessor.getFullName(info);
+         fullName = file.getFullName();
       }
       return fullName;
    }
@@ -137,22 +133,15 @@ public class ClassIndexNode implements IndexNode {
    @Override
    public Set<IndexNode> getNodes() {
       if(children == null) {
-         children = ClassIndexProcessor.getChildren(info);
+         children = ClassIndexProcessor.getChildren(file);
       }
       return children;
-   }
-   
-   public URL getURL() {
-      if(url == null) {
-         url = info.url();
-      }
-      return url;
    }
    
    private Class getNodeClass() {
       if(type == null) {
          try {
-            type = info.load();
+            type = file.loadClass();
          } catch(Throwable e) {
             return null;
          }
