@@ -67,6 +67,7 @@ public class FileSystem {
          buffer = new ByteArrayOutputStream((int)length);
          inputStream = new FileInputStream(projectFile);
       } else {
+         buffer = new ByteArrayOutputStream();
          inputStream = ClassPathReader.class.getResourceAsStream(path);
       }
       byte[] chunk = new byte[8192];

@@ -1,5 +1,6 @@
 package org.snapscript.studio.project.generate;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,11 @@ public class SearchIndexFileGenerator implements ConfigFileGenerator {
          for(ClassFile file : files) {
             try {
                Map<String, String> data = ClassFileMarshaller.toAttributes(file);
-               dataList.add(data);
+               int modifiers = file.getModifiers();
+               
+               if(Modifier.isPublic(modifiers)) { // reduce the size of the file
+                  dataList.add(data);
+               }
             }catch(Throwable e) {
                log.info("Could not load file", e);
             }

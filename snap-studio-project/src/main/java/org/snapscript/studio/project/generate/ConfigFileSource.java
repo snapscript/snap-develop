@@ -47,12 +47,14 @@ public class ConfigFileSource {
          File configFile = fileSystem.getFile(configPath);
          
          try {
+            String configKey = configFile.getCanonicalPath();
+            
             if(!configFile.exists()) {
                ConfigFile file = generator.generateConfig(project);
                String source = file.getConfigSource();
                
                fileSystem.writeAsString(configPath, source);
-               files.put(configPath, file);
+               files.put(configKey, file);
             } else if(projectFile.exists()) {
                long projectFileChange = projectFile.lastModified();
                long configFileChange = configFile.lastModified();
@@ -62,23 +64,24 @@ public class ConfigFileSource {
                   String source = file.getConfigSource();
                   
                   fileSystem.writeAsString(configPath, source);
-                  files.put(configPath, file);
+                  files.put(configKey, file);
                }
             } 
-            ConfigFile file = files.get(configPath);
+            ConfigFile file = files.get(configKey);
             
             if(file == null) {
                String source = fileSystem.readAsString(configPath);
                ConfigFile parsedFile = generator.parseConfig(project, source);
             
                if(parsedFile != null) {
-                  files.put(configPath, parsedFile);
+                  files.put(configKey, parsedFile);
                }
             }
+            return (T)files.get(configKey);
          } catch(Exception e) {
             log.info("Could not generate configuration file " + configPath, e);
          }
       }
-      return (T)files.get(path);
+      return null;
    }
 }
