@@ -1,9 +1,8 @@
 package org.snapscript.studio.index.classpath;
 
-import java.net.URL;
-
 public interface ClassFile {
-   URL getURL();
+   ClassFileCategory getClassCategory();
+   ClassFileType getClassType();
    String getAbsolutePath();
    String getResourceName();
    String getLocation();
@@ -12,4 +11,5 @@ public interface ClassFile {
    String getName();
    String getModule();
    Class loadClass();
+   int getModifiers();
 }

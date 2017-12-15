@@ -3,53 +3,24 @@ package org.snapscript.studio.index.classpath;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.snapscript.studio.index.IndexNode;
-
-import com.google.common.reflect.ClassPath.ResourceInfo;
+import org.snapscript.studio.index.classpath.node.ClassIndexNode;
+import org.snapscript.studio.index.classpath.node.ConstructorIndexNode;
+import org.snapscript.studio.index.classpath.node.FieldIndexNode;
+import org.snapscript.studio.index.classpath.node.MethodIndexNode;
+import org.snapscript.studio.index.classpath.node.SuperIndexNode;
+import org.snapscript.studio.index.scan.ClassPathScanner;
 
 public class ClassIndexProcessor {
-   
-   private static final String[] RESOURCE_EXTENSIONS = {
-      ".java",
-      ".class"
-   };
-   private static final Method RESOURCE_METHOD;
-
-   static  {
-      try {
-         RESOURCE_METHOD = ResourceInfo.class.getDeclaredMethod("of", String.class, ClassLoader.class);
-   
-         if (!RESOURCE_METHOD.isAccessible()) {
-            RESOURCE_METHOD.setAccessible(true);
-         }
-      } catch (Throwable e) {
-         throw new ExceptionInInitializerError(e);
-      }
-   }
-   
-   public static IndexNode getDefaultImport(String name) {
-      return BootstrapClassPath.getDefaultImportClasses().get(name);
-   }
-
-   public static ClassFile getClassFile(String path) throws Exception {
-      for(String extension : RESOURCE_EXTENSIONS) {
-         if (path.endsWith(extension)) {            
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            return new ResourcePathClassFile(path, loader);
-         }
-      }
-      return null;
-   }
    
    public static ClassFile getClassFile(Class type) {
       String path = ClassIndexProcessor.getFullPath(type);
       
       try {
-         return getClassFile(path);
+         return ClassPathScanner.createClassFile(path);
       }catch(Throwable cause) {
          cause.printStackTrace();
       }

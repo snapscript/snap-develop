@@ -145,7 +145,8 @@ export module FileExplorer {
               Common.stringEndsWith(filePath, ".js") || 
               Common.stringEndsWith(filePath, ".xml") ||
               Common.stringEndsWith(filePath, ".project") ||
-              Common.stringEndsWith(filePath, ".classpath")
+              Common.stringEndsWith(filePath, ".classpath") ||
+              Common.stringEndsWith(filePath, ".index");
    }
    
    function isImageFileType(contentType) {

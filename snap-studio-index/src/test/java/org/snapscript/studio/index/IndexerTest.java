@@ -9,7 +9,7 @@ import org.snapscript.common.store.ClassPathStore;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
-import org.snapscript.studio.index.classpath.ProjectClassPath;
+import org.snapscript.studio.index.config.SystemIndexConfigFile;
 
 public class IndexerTest extends TestCase {
 
@@ -80,7 +80,7 @@ public class IndexerTest extends TestCase {
       Context context = new StoreContext(store);
       ThreadPool pool = new ThreadPool(2);
       File file = File.createTempFile("test", getClass().getSimpleName());
-      IndexDatabase database = new IndexScanner(ProjectClassPath.getSystemClassPath(), context, pool, file, "test");
+      IndexDatabase database = new IndexScanner(SystemIndexConfigFile.getSystemClassPath(), context, pool, file, "test");
       PathTranslator translator = new PathTranslator();
       SourceIndexer indexer = new SourceIndexer(translator, database, context, pool, null);
       SourceFile searcher = indexer.index("/some/package.snap", SOURCE);
@@ -95,7 +95,7 @@ public class IndexerTest extends TestCase {
       Context context = new StoreContext(store);
       ThreadPool pool = new ThreadPool(2);
       File file = File.createTempFile("test", getClass().getSimpleName());
-      IndexDatabase database = new IndexScanner(ProjectClassPath.getSystemClassPath(), context, pool, file, "test");
+      IndexDatabase database = new IndexScanner(SystemIndexConfigFile.getSystemClassPath(), context, pool, file, "test");
       PathTranslator translator = new PathTranslator();
       SourceIndexer indexer = new SourceIndexer(translator, database, context, pool, null);
       SourceFile searcher = indexer.index("/some/package.snap", SOURCE);
@@ -127,7 +127,7 @@ public class IndexerTest extends TestCase {
       Context context = new StoreContext(store);
       ThreadPool pool = new ThreadPool(2);
       File file = File.createTempFile("test", getClass().getSimpleName());
-      IndexDatabase database = new IndexScanner(ProjectClassPath.getSystemClassPath(), context, pool, file, "test");
+      IndexDatabase database = new IndexScanner(SystemIndexConfigFile.getSystemClassPath(), context, pool, file, "test");
       PathTranslator translator = new PathTranslator();
       SourceIndexer indexer = new SourceIndexer(translator, database, context, pool, null);
       SourceFile searcher = indexer.index("/some/package.snap", SOURCE);
@@ -167,7 +167,7 @@ public class IndexerTest extends TestCase {
       Context context = new StoreContext(store);
       ThreadPool pool = new ThreadPool(2);
       File file = File.createTempFile("test", getClass().getSimpleName());
-      IndexDatabase database = new IndexScanner(ProjectClassPath.getSystemClassPath(), context, pool, file, "test");
+      IndexDatabase database = new IndexScanner(SystemIndexConfigFile.getSystemClassPath(), context, pool, file, "test");
       PathTranslator translator = new PathTranslator();
       SourceIndexer indexer = new SourceIndexer(translator, database, context, pool, null);
       SourceFile searcher = indexer.index("/some/package.snap", SOURCE);

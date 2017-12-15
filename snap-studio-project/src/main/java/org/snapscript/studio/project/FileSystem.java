@@ -30,7 +30,7 @@ public class FileSystem {
       return new File(sourcePath, realPath);
    }
    
-   public void writeAsByteArray(String path, String resource) throws Exception {
+   public void writeAsString(String path, String resource) throws Exception {
       byte[] octets = resource.getBytes("UTF-8");
       writeAsByteArray(path, octets);
    }

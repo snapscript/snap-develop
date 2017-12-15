@@ -7,15 +7,18 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.snapscript.studio.index.IndexNode;
+import org.snapscript.studio.index.config.IndexConfigFile;
 
 public class ClassPathSearcher {
    
    private final Map<String, IndexNode> cache;
    private final Set<IndexNode> nodes;
+   private final IndexConfigFile config;
    
-   public ClassPathSearcher(IndexPath path) {
+   public ClassPathSearcher(IndexConfigFile config) {
       this.cache = new ConcurrentHashMap<String, IndexNode>();
-      this.nodes = ProjectClassPath.getProjectClassPath(path);
+      this.nodes = config.getAllProjectClasses();
+      this.config = config;
    }
    
    public Map<String, IndexNode> getTypeNodesMatching(String expression) {
@@ -50,7 +53,7 @@ public class ClassPathSearcher {
       IndexNode node = nodes.get(fullName);
       
       if(node == null) {
-         node = BootstrapClassPath.getDefaultImportClasses().get(fullName);
+         node = config.getDefaultImportClasses().get(fullName);
       }
       return node;
    }

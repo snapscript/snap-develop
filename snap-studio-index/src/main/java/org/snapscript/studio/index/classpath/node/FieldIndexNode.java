@@ -1,4 +1,4 @@
-package org.snapscript.studio.index.classpath;
+package org.snapscript.studio.index.classpath.node;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -8,6 +8,7 @@ import java.util.Set;
 import org.snapscript.core.PrimitivePromoter;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
+import org.snapscript.studio.index.classpath.ClassIndexProcessor;
 
 public class FieldIndexNode implements IndexNode {
 

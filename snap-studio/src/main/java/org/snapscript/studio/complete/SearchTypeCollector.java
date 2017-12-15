@@ -18,7 +18,6 @@ public class SearchTypeCollector {
       
       if(database != null) {
          Map<String, IndexNode> nodes = database.getTypeNodesMatching(expression, true);
-         Map<String, IndexNode> types = project.getIndexDatabase().getTypeNodes();
          Set<Entry<String, IndexNode>> entries = nodes.entrySet();
          
          if(!entries.isEmpty()) {
@@ -32,6 +31,7 @@ public class SearchTypeCollector {
                   String fullName = node.getFullName();
    
                   if(type == IndexType.IMPORT) {
+                     Map<String, IndexNode> types = project.getIndexDatabase().getTypeNodes();
                      IndexNode imported = types.get(fullName);
                      
                      if(imported != null) {

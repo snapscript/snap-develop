@@ -1,28 +1,72 @@
-package org.snapscript.studio.index.classpath;
+package org.snapscript.studio.index.scan;
 
 import java.io.File;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.jar.JarFile;
 
-public class ResourcePathClassFile implements ClassFile {
+import lombok.extern.slf4j.Slf4j;
+
+import org.snapscript.studio.index.classpath.ClassFile;
+import org.snapscript.studio.index.classpath.ClassFileCategory;
+import org.snapscript.studio.index.classpath.ClassFileType;
+
+@Slf4j
+class ResourceClassFile implements ClassFile {
    
-   private ClassLoader loader;
+   private final ClassFileCategory category;
+   private final ClassLoader loader;
+   private final String path;
    private String fullName;
    private String absolute;
    private String location;
+   private Class type;
    private URL url;
-   private String path;
    
-   public ResourcePathClassFile(String path, ClassLoader loader) {
+   public ResourceClassFile(String path, ClassLoader loader, boolean jdk) {
+      this.category = jdk ? ClassFileCategory.JDK : ClassFileCategory.PROJECT;
       this.loader = loader;
       this.path = path;
    }
+
+   @Override
+   public ClassFileCategory getClassCategory() {
+      return category;
+   }
    
    @Override
-   public URL getURL(){
+   public ClassFileType getClassType() {
+      try {
+         Class type = loadClass();
+         
+         if(type != null) {
+            if(type.isInterface()) {
+               return ClassFileType.INTERFACE;
+            }
+            if(type.isEnum()) {
+               return ClassFileType.ENUM;
+            }
+         }
+         return ClassFileType.CLASS;
+      } catch(Throwable e){
+         return ClassFileType.CLASS;
+      }
+   }
+
+   @Override
+   public int getModifiers() {
+      try{
+         Class type = loadClass();
+         return type.getModifiers();
+      } catch(Throwable e){
+         return 0;
+      }
+   }
+   
+   private URL getURL(){
       try {
          if(url == null){
+            log.info("Resolving URL for " + path);
             url = loader.getResource(path);
          }
       }catch(Throwable e){
@@ -34,11 +78,15 @@ public class ResourcePathClassFile implements ClassFile {
    @Override
    public Class loadClass() {
       try {
-         String path = getFullName();
-         return loader.loadClass(path);
+         if(type == null) {
+            String path = getFullName();
+            log.info("Loading class for " + path);
+            type = loader.loadClass(path);
+         }
       } catch(Throwable e) {
          return null;
       }
+      return type;
    }
    
    @Override

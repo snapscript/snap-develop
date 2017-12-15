@@ -130,7 +130,8 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                 common_1.Common.stringEndsWith(filePath, ".js") ||
                 common_1.Common.stringEndsWith(filePath, ".xml") ||
                 common_1.Common.stringEndsWith(filePath, ".project") ||
-                common_1.Common.stringEndsWith(filePath, ".classpath");
+                common_1.Common.stringEndsWith(filePath, ".classpath") ||
+                common_1.Common.stringEndsWith(filePath, ".index");
         }
         function isImageFileType(contentType) {
             if (contentType) {

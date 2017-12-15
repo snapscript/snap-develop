@@ -15,25 +15,22 @@ import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 import org.simpleframework.http.Path;
-
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import ch.qos.logback.core.FileAppender;
-import ch.qos.logback.core.util.StatusPrinter;
-import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.LoggerContext;
 import org.slf4j.LoggerFactory;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.studio.common.FileDirectorySource;
-import org.snapscript.studio.index.classpath.BootstrapClassPath;
 import org.snapscript.studio.project.config.ConfigurationReader;
 import org.snapscript.studio.project.config.Dependency;
 import org.snapscript.studio.project.config.DependencyFile;
 import org.snapscript.studio.project.config.ProjectConfiguration;
+import org.snapscript.studio.project.generate.ConfigFileSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.core.FileAppender;
 
 @Slf4j
 @Component
@@ -47,6 +44,7 @@ public class Workspace implements FileDirectorySource {
    private final File root;
    
    public Workspace(
+         ConfigFileSource source,
          @Value("${directory}") File root, 
          @Value("${log-file}") File logFile, 
          @Value("${log-level}") String level, 
@@ -54,7 +52,7 @@ public class Workspace implements FileDirectorySource {
    {
       this.reader = new ConfigurationReader(this);
       this.pool = new ThreadPool(10);
-      this.manager = new ProjectManager(reader, this, mode);
+      this.manager = new ProjectManager(reader, source, this, mode);
       this.logFile = logFile;
       this.level = level;
       this.root = root;
@@ -142,12 +140,6 @@ public class Workspace implements FileDirectorySource {
          directory.mkdirs();
          createDefaultWorkspace(directory);
       }
-      getExecutor().execute(new Runnable() {
-         @Override
-         public void run() {
-            BootstrapClassPath.initialize(); // load all classes
-         }
-      });
       getProjects();// resolve the dependencies
       return directory;
    }

@@ -20,14 +20,11 @@ import org.snapscript.core.Context;
 import org.snapscript.studio.common.FileAction;
 import org.snapscript.studio.common.FileProcessor;
 import org.snapscript.studio.common.FileReader;
-import org.snapscript.studio.index.classpath.BootstrapClassPath;
-import org.snapscript.studio.index.classpath.IndexPath;
 import org.snapscript.studio.index.classpath.ClassPathSearcher;
+import org.snapscript.studio.index.config.IndexConfigFile;
 
 @Slf4j
 public class IndexScanner implements IndexDatabase {
-   
-   private static final Map<String, IndexNode> DEFAULT_IMPORTS = BootstrapClassPath.getDefaultImportNames();
 
    private final AtomicReference<IndexFileCache> reference;
    private final FileProcessor<SourceFile> processor;
@@ -35,10 +32,11 @@ public class IndexScanner implements IndexDatabase {
    private final PathTranslator translator;
    private final ClassPathSearcher searcher;
    private final SourceIndexer indexer;
+   private final IndexConfigFile path;
    private final String project;
    private final File root;
    
-   public IndexScanner(IndexPath path, Context context, Executor executor, File root, String project, String... prefixes) {
+   public IndexScanner(IndexConfigFile path, Context context, Executor executor, File root, String project, String... prefixes) {
       this.reference = new AtomicReference<IndexFileCache>();
       this.searcher = new ClassPathSearcher(path);
       this.translator = new PathTranslator(prefixes);
@@ -47,6 +45,7 @@ public class IndexScanner implements IndexDatabase {
       this.processor = new FileProcessor<SourceFile>(action, executor);
       this.project = project;
       this.root = root;
+      this.path = path;
    }
 
    @Override
@@ -112,10 +111,10 @@ public class IndexScanner implements IndexDatabase {
          IndexNode node = nodes.get(typeName);
          
          if(node == null) {
-            node = BootstrapClassPath.getDefaultImportNames().get(typeName);
+            node = path.getDefaultImportNames().get(typeName);
          }
          if(node == null) {
-            node = BootstrapClassPath.getDefaultImportClasses().get(typeName);
+            node = path.getDefaultImportClasses().get(typeName);
          }
          return node;
       }
@@ -172,7 +171,8 @@ public class IndexScanner implements IndexDatabase {
    
 
    public Map<String, IndexNode> getNodesInScope(IndexNode node) throws Exception {
-      Map<String, IndexNode> scope = new HashMap<String, IndexNode>(DEFAULT_IMPORTS);
+      Map<String, IndexNode> defaultImports = path.getDefaultImportNames();
+      Map<String, IndexNode> scope = new HashMap<String, IndexNode>(defaultImports);
       Map<String, IndexNode> additional = new HashMap<String, IndexNode>();
       Set<IndexNode> enclosing = new HashSet<IndexNode>();
       String module = node.getModule();

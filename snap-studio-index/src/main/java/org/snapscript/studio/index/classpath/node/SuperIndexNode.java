@@ -1,10 +1,11 @@
-package org.snapscript.studio.index.classpath;
+package org.snapscript.studio.index.classpath.node;
 
 import java.util.Collections;
 import java.util.Set;
 
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
+import org.snapscript.studio.index.classpath.ClassFile;
 
 public class SuperIndexNode extends ClassIndexNode {
    

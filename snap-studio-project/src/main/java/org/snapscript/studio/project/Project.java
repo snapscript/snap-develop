@@ -18,6 +18,7 @@ import org.snapscript.studio.project.config.ClassPathExecutor;
 import org.snapscript.studio.project.config.ConfigurationClassLoader;
 import org.snapscript.studio.project.config.ConfigurationReader;
 import org.snapscript.studio.project.config.DependencyFile;
+import org.snapscript.studio.project.generate.ConfigFileSource;
 
 public class Project implements FileDirectory {
    
@@ -29,8 +30,8 @@ public class Project implements FileDirectory {
    private final String projectDirectory;
    private final Store store;
 
-   public Project(ConfigurationReader reader, Workspace workspace, String projectDirectory, String projectName) {
-      this.context = new ProjectContext(reader, workspace, this);
+   public Project(ConfigurationReader reader, ConfigFileSource source, Workspace workspace, String projectDirectory, String projectName) {
+      this.context = new ProjectContext(reader, source, workspace, this);
       this.classLoader = new ConfigurationClassLoader(this);
       this.fileSystem = new FileSystem(this);
       this.store = new ProjectStore();
@@ -109,6 +110,10 @@ public class Project implements FileDirectory {
 
    public List<DependencyFile> getDependencies() {
       return context.getDependencies();
+   }
+
+   public List<DependencyFile> getDependencies(boolean refresh) {
+      return context.getDependencies(refresh);
    }
    
    public ClassPathFile getClassPath() {

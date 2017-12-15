@@ -1,10 +1,13 @@
-package org.snapscript.studio.index.classpath;
+package org.snapscript.studio.index.classpath.node;
 
 import java.lang.reflect.Modifier;
 import java.util.Set;
 
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
+import org.snapscript.studio.index.classpath.ClassFile;
+import org.snapscript.studio.index.classpath.ClassFileType;
+import org.snapscript.studio.index.classpath.ClassIndexProcessor;
 
 public class ClassIndexNode implements IndexNode {
    
@@ -17,10 +20,8 @@ public class ClassIndexNode implements IndexNode {
    private String module;
    private String name;
    private Class type;
-   private int modifiers;
    
    public ClassIndexNode(ClassFile info) {
-      this.modifiers = -1;
       this.file = info;
    }
    
@@ -104,26 +105,19 @@ public class ClassIndexNode implements IndexNode {
    
    @Override
    public boolean isPublic() {
-      Class type = getNodeClass();
-      
-      if(type != null) {
-         if(modifiers == -1) {
-            modifiers = type.getModifiers();
-         }
-         return Modifier.isPublic(modifiers);
-      }
-      return false;
+      int modifiers = file.getModifiers();
+      return Modifier.isPublic(modifiers);
    }
 
    @Override
    public IndexType getType() {
-      Class type = getNodeClass();
+      ClassFileType type = file.getClassType();;
       
       if(type != null) {
-         if(type.isInterface()) {
+         if(type == ClassFileType.INTERFACE) {
             return IndexType.TRAIT;
          }
-         if(type.isEnum()) {
+         if(type == ClassFileType.ENUM) {
             return IndexType.ENUM;
          }
       }

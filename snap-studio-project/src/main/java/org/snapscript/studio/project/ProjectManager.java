@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.simpleframework.http.Path;
 import org.snapscript.studio.project.config.ConfigurationReader;
+import org.snapscript.studio.project.generate.ConfigFileSource;
 
 @Slf4j
 public class ProjectManager {
@@ -18,15 +19,17 @@ public class ProjectManager {
 
    private final Map<String, Project> projects;
    private final ConfigurationReader reader;
+   private final ConfigFileSource source;
    private final Workspace workspace;
    private final ProjectMode mode;
    private final Project single;
    
-   public ProjectManager(ConfigurationReader reader, Workspace workspace, String mode){
+   public ProjectManager(ConfigurationReader reader, ConfigFileSource source, Workspace workspace, String mode){
       this.projects = new ConcurrentHashMap<String, Project>();
-      this.single = new Project(reader, workspace, ".", DEFAULT_PROJECT);
+      this.single = new Project(reader, source, workspace, ".", DEFAULT_PROJECT);
       this.mode = new ProjectMode(mode);
       this.workspace = workspace;
+      this.source = source;
       this.reader = reader;
    }
    
@@ -63,7 +66,7 @@ public class ProjectManager {
          Project project = projects.get(projectName);
          
          if(project == null) {
-            project = new Project(reader, workspace, projectName, projectName);
+            project = new Project(reader, source, workspace, projectName, projectName);
             projects.put(projectName, project);
          }
          File file = project.getProjectPath();
@@ -84,7 +87,7 @@ public class ProjectManager {
          if(!directory.exists() && !directory.mkdirs()) {
             throw new IllegalStateException("Could not build project directory " + directory);
          }
-         createDefaultFile(directory, ".gitignore", "/.project\n/.classpath\n");
+         createDefaultFile(directory, ".gitignore", "/.project\n/.classpath\n/.index\n");
          createDefaultFile(directory, ".project", "<project></project>");
       }catch(Exception e) {
          log.info("Could not create default project at '" + file + "'", e);

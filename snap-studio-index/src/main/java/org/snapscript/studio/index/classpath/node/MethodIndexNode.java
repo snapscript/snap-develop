@@ -1,26 +1,29 @@
-package org.snapscript.studio.index.classpath;
+package org.snapscript.studio.index.classpath.node;
 
-import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.Set;
 
+import org.snapscript.core.PrimitivePromoter;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
+import org.snapscript.studio.index.classpath.ClassIndexProcessor;
 
-public class ConstructorIndexNode implements IndexNode {
+public class MethodIndexNode implements IndexNode {
    
    private static final String[] PREFIX = {
    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", 
    "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
    
-   private Constructor constructor;
+   private PrimitivePromoter promoter;
    private String description;
+   private Method method;
    
-   public ConstructorIndexNode(Constructor constructor) {
-      this.constructor = constructor;
+   public MethodIndexNode(Method method) {
+      this.promoter = new PrimitivePromoter();
+      this.method = method;
    }
-   
    
    @Override
    public int getLine() {
@@ -34,7 +37,7 @@ public class ConstructorIndexNode implements IndexNode {
    
    @Override
    public boolean isPublic(){
-      int modifiers = constructor.getModifiers();
+      int modifiers = method.getModifiers();
       return Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers);
    }
    
@@ -56,8 +59,8 @@ public class ConstructorIndexNode implements IndexNode {
    @Override
    public String getName() {
       if(description == null) {
-         Class[] types = constructor.getParameterTypes();
-         String name = constructor.getDeclaringClass().getSimpleName();
+         Class[] types = method.getParameterTypes();
+         String name = method.getName();
          StringBuilder builder = new StringBuilder();
          
          builder.append(name);
@@ -89,19 +92,20 @@ public class ConstructorIndexNode implements IndexNode {
 
    @Override
    public IndexNode getConstraint() {
-      Class returnType = constructor.getDeclaringClass();
-      return ClassIndexProcessor.getIndexNode(returnType);
+      Class returnType = method.getReturnType();
+      Class real = promoter.promote(returnType);
+      return ClassIndexProcessor.getIndexNode(real);
    }
 
    @Override
    public IndexNode getParent() {
-      Class parent = constructor.getDeclaringClass();
+      Class parent = method.getDeclaringClass();
       return ClassIndexProcessor.getIndexNode(parent);
    }
 
    @Override
    public IndexType getType() {
-      return IndexType.CONSTRUCTOR;
+      return IndexType.MEMBER_FUNCTION;
    }
 
    @Override
