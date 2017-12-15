@@ -8,13 +8,13 @@ import java.util.jar.JarFile;
 import lombok.extern.slf4j.Slf4j;
 
 import org.snapscript.studio.index.classpath.ClassFile;
-import org.snapscript.studio.index.classpath.ClassFileCategory;
-import org.snapscript.studio.index.classpath.ClassFileType;
+import org.snapscript.studio.index.classpath.ClassOrigin;
+import org.snapscript.studio.index.classpath.ClassCategory;
 
 @Slf4j
 class ResourceClassFile implements ClassFile {
    
-   private final ClassFileCategory category;
+   private final ClassOrigin category;
    private final ClassLoader loader;
    private final String path;
    private String fullName;
@@ -24,32 +24,32 @@ class ResourceClassFile implements ClassFile {
    private URL url;
    
    public ResourceClassFile(String path, ClassLoader loader, boolean jdk) {
-      this.category = jdk ? ClassFileCategory.JDK : ClassFileCategory.PROJECT;
+      this.category = jdk ? ClassOrigin.JDK : ClassOrigin.PROJECT;
       this.loader = loader;
       this.path = path;
    }
 
    @Override
-   public ClassFileCategory getClassCategory() {
+   public ClassOrigin getOrigin() {
       return category;
    }
    
    @Override
-   public ClassFileType getClassType() {
+   public ClassCategory getCategory() {
       try {
          Class type = loadClass();
          
          if(type != null) {
             if(type.isInterface()) {
-               return ClassFileType.INTERFACE;
+               return ClassCategory.INTERFACE;
             }
             if(type.isEnum()) {
-               return ClassFileType.ENUM;
+               return ClassCategory.ENUM;
             }
          }
-         return ClassFileType.CLASS;
+         return ClassCategory.CLASS;
       } catch(Throwable e){
-         return ClassFileType.CLASS;
+         return ClassCategory.CLASS;
       }
    }
 
@@ -92,7 +92,7 @@ class ResourceClassFile implements ClassFile {
    @Override
    public String getFullName() {
       if(fullName == null) {
-         String path = getResourceName();
+         String path = getResource();
          
          if(path.startsWith("/") || path.startsWith("\\")) {
             path = path.substring(1);
@@ -121,7 +121,7 @@ class ResourceClassFile implements ClassFile {
    }
    
    @Override
-   public String getName() {
+   public String getShortName() {
       String name = getTypeName();
       int index = name.lastIndexOf('$');
       
@@ -143,7 +143,7 @@ class ResourceClassFile implements ClassFile {
    }
    
    @Override
-   public String getAbsolutePath() {
+   public String getLibraryPath() {
       if(absolute == null) {
          URL url = getURL();
          String token = String.valueOf(url).toLowerCase();
@@ -158,13 +158,13 @@ class ResourceClassFile implements ClassFile {
                return absolute;
             } catch(Throwable e) {}
          }
-         absolute = getResourceName();
+         absolute = getResource();
       }
       return absolute;
    }
 
    @Override
-   public String getLocation() {
+   public String getLibrary() {
       if(location == null) {
          URL url = getURL();
          String token = String.valueOf(url).toLowerCase();
@@ -179,13 +179,13 @@ class ResourceClassFile implements ClassFile {
                return location;
             } catch(Throwable e) {}
          }
-         location = getResourceName();
+         location = getResource();
       }
       return location;
    }
    
    @Override
-   public String getResourceName() {
+   public String getResource() {
       return path;
    }
 }

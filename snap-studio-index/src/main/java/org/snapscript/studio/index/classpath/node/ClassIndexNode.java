@@ -6,7 +6,7 @@ import java.util.Set;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
 import org.snapscript.studio.index.classpath.ClassFile;
-import org.snapscript.studio.index.classpath.ClassFileType;
+import org.snapscript.studio.index.classpath.ClassCategory;
 import org.snapscript.studio.index.classpath.ClassIndexProcessor;
 
 public class ClassIndexNode implements IndexNode {
@@ -33,7 +33,7 @@ public class ClassIndexNode implements IndexNode {
    @Override
    public String getResource(){
       if(resource == null) {
-         resource = file.getLocation();
+         resource = file.getLibrary();
       }
       return resource;
    }
@@ -41,7 +41,7 @@ public class ClassIndexNode implements IndexNode {
    @Override
    public String getAbsolutePath(){
       if(absolute == null) {
-         absolute = file.getAbsolutePath();
+         absolute = file.getLibraryPath();
       }
       return absolute;
    }
@@ -58,7 +58,7 @@ public class ClassIndexNode implements IndexNode {
    @Override
    public String getName() {
       if(name == null) {
-         name = file.getName();
+         name = file.getShortName();
       }
       return name;
    }
@@ -111,13 +111,13 @@ public class ClassIndexNode implements IndexNode {
 
    @Override
    public IndexType getType() {
-      ClassFileType type = file.getClassType();;
+      ClassCategory type = file.getCategory();;
       
       if(type != null) {
-         if(type == ClassFileType.INTERFACE) {
+         if(type == ClassCategory.INTERFACE) {
             return IndexType.TRAIT;
          }
-         if(type == ClassFileType.ENUM) {
+         if(type == ClassCategory.ENUM) {
             return IndexType.ENUM;
          }
       }

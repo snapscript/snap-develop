@@ -1,14 +1,14 @@
 package org.snapscript.studio.index.classpath;
 
 public interface ClassFile {
-   ClassFileCategory getClassCategory();
-   ClassFileType getClassType();
-   String getAbsolutePath();
-   String getResourceName();
-   String getLocation();
+   ClassOrigin getOrigin();
+   ClassCategory getCategory();
+   String getLibraryPath();
+   String getLibrary();
+   String getResource();
    String getFullName();
    String getTypeName();   
-   String getName();
+   String getShortName();
    String getModule();
    Class loadClass();
    int getModifiers();

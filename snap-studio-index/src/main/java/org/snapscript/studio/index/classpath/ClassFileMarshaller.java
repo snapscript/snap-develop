@@ -8,76 +8,76 @@ import com.google.common.base.Preconditions;
 
 public class ClassFileMarshaller {
    
-   private static final String ABSOLUTE_PATH = "absolutePath";
-   private static final String RESOURCE_NAME = "resourceName";
-   private static final String LOCATION = "location";
-   private static final String FULL_NAME = "fullName";
-   private static final String TYPE_NAME = "typeName";
-   private static final String CLASS_TYPE = "classType";
-   private static final String CLASS_CATEGORY = "classCategory";
-   private static final String MODIFIERS = "classModifiers";
-   private static final String NAME = "name";
+   private static final String LIBRARY_PATH = "libraryPath";
+   private static final String LIBRARY = "library";
+   private static final String RESOURCE = "resource";
+   private static final String FULL_NAME = "class";
+   private static final String TYPE_NAME = "name";
+   private static final String CATEGORY = "category";
+   private static final String ORIGIN = "origin";
+   private static final String MODIFIERS = "modifiers";
+   private static final String SHORT_NAME = "shortName";
    private static final String MODULE = "module";
 
    public static Map<String, String> toAttributes(ClassFile file) {
       Map<String, String> map = new HashMap<String, String>();
     
-      String name = file.getName();
-      String absolutePath = file.getAbsolutePath();
-      String resourceName = file.getResourceName();
-      String location = file.getLocation();
+      String shortName = file.getShortName();
+      String libraryPath = file.getLibraryPath();
+      String resource = file.getResource();
+      String library = file.getLibrary();
       String fullName = file.getFullName();
       String typeName = file.getTypeName();
       String module = file.getModule();
-      ClassFileType type = file.getClassType();
-      ClassFileCategory category = file.getClassCategory();
+      ClassCategory type = file.getCategory();
+      ClassOrigin origin = file.getOrigin();
       int modifiers = file.getModifiers();
       
-      Preconditions.checkNotNull(absolutePath, "Attribute '" + ABSOLUTE_PATH + "' does not exist");
-      Preconditions.checkNotNull(resourceName, "Attribute '" + RESOURCE_NAME + "' does not exist");
-      Preconditions.checkNotNull(location, "Attribute '" + LOCATION + "' does not exist");
+      Preconditions.checkNotNull(libraryPath, "Attribute '" + LIBRARY_PATH + "' does not exist");
+      Preconditions.checkNotNull(resource, "Attribute '" + RESOURCE + "' does not exist");
+      Preconditions.checkNotNull(library, "Attribute '" + LIBRARY + "' does not exist");
       Preconditions.checkNotNull(fullName, "Attribute '" + FULL_NAME + "' does not exist");
       Preconditions.checkNotNull(typeName, "Attribute '" + TYPE_NAME + "' does not exist");
       Preconditions.checkNotNull(module, "Attribute '" + MODULE + "' does not exist");
-      Preconditions.checkNotNull(type, "Attribute '" + CLASS_TYPE + "' does not exist");
-      Preconditions.checkNotNull(category, "Attribute '" + CLASS_CATEGORY + "' does not");
-      Preconditions.checkNotNull(name, "Attribute '" + NAME + "' does not exist");
+      Preconditions.checkNotNull(type, "Attribute '" + CATEGORY + "' does not exist");
+      Preconditions.checkNotNull(origin, "Attribute '" + ORIGIN + "' does not");
+      Preconditions.checkNotNull(shortName, "Attribute '" + SHORT_NAME + "' does not exist");
       
-      map.put(ABSOLUTE_PATH, absolutePath);
-      map.put(RESOURCE_NAME, resourceName);
-      map.put(LOCATION, location);
+      map.put(LIBRARY_PATH, libraryPath);
+      map.put(RESOURCE, resource);
+      map.put(LIBRARY, library);
       map.put(FULL_NAME, fullName);
       map.put(TYPE_NAME, typeName);
-      map.put(CLASS_TYPE, type.name());
-      map.put(CLASS_CATEGORY, category.name());
+      map.put(CATEGORY, type.name());
+      map.put(ORIGIN, origin.name());
       map.put(MODIFIERS, String.valueOf(modifiers));
-      map.put(NAME, name);
+      map.put(SHORT_NAME, shortName);
       map.put(MODULE, module);
       
       return Collections.unmodifiableMap(map);
    }
    
    public static ClassFile fromAttributes(Map<String, String> map, ClassLoader loader) {
-      String name = map.get(NAME);
-      String absolutePath = map.get(ABSOLUTE_PATH);
-      String resourceName = map.get(RESOURCE_NAME);
-      String location = map.get(LOCATION);
+      String shortName = map.get(SHORT_NAME);
+      String libraryPath = map.get(LIBRARY_PATH);
+      String resource = map.get(RESOURCE);
+      String library = map.get(LIBRARY);
       String fullName = map.get(FULL_NAME);
       String typeName = map.get(TYPE_NAME);
       String module = map.get(MODULE);
-      String type = map.get(CLASS_TYPE);
-      String category = map.get(CLASS_CATEGORY);
+      String category = map.get(CATEGORY);
+      String origin = map.get(ORIGIN);
       String modifiers = map.get(MODIFIERS);
       
-      Preconditions.checkNotNull(absolutePath, "Attribute '" + ABSOLUTE_PATH + "' does not exist for: " + map);
-      Preconditions.checkNotNull(resourceName, "Attribute '" + RESOURCE_NAME + "' does not exist for: " + map);
-      Preconditions.checkNotNull(location, "Attribute '" + LOCATION + "' does not exist for: " + map);
+      Preconditions.checkNotNull(libraryPath, "Attribute '" + LIBRARY_PATH + "' does not exist for: " + map);
+      Preconditions.checkNotNull(resource, "Attribute '" + RESOURCE + "' does not exist for: " + map);
+      Preconditions.checkNotNull(library, "Attribute '" + LIBRARY + "' does not exist for: " + map);
       Preconditions.checkNotNull(fullName, "Attribute '" + FULL_NAME + "' does not exist for: " + map);
       Preconditions.checkNotNull(typeName, "Attribute '" + TYPE_NAME + "' does not exist for: " + map);
       Preconditions.checkNotNull(module, "Attribute '" + MODULE + "' does not exist for: " + map);
-      Preconditions.checkNotNull(type, "Attribute '" + CLASS_TYPE + "' does not exist for: " + map);
-      Preconditions.checkNotNull(category, "Attribute '" + CLASS_CATEGORY + "' does not exist for: " + map);
-      Preconditions.checkNotNull(name, "Attribute '" + NAME + "' does not exist for: " + map);
+      Preconditions.checkNotNull(category, "Attribute '" + CATEGORY + "' does not exist for: " + map);
+      Preconditions.checkNotNull(origin, "Attribute '" + ORIGIN + "' does not exist for: " + map);
+      Preconditions.checkNotNull(shortName, "Attribute '" + SHORT_NAME + "' does not exist for: " + map);
       Preconditions.checkNotNull(modifiers, "Attribute '" + MODIFIERS + "' does not exist for: " + map);
       
       return new MapClassFile(map, loader);
@@ -95,15 +95,15 @@ public class ClassFileMarshaller {
       }
 
       @Override
-      public ClassFileType getClassType() {
-         String type = getAttribute(CLASS_TYPE);
-         return ClassFileType.valueOf(type);
+      public ClassCategory getCategory() {
+         String type = getAttribute(CATEGORY);
+         return ClassCategory.valueOf(type);
       }
 
       @Override
-      public ClassFileCategory getClassCategory() {
-         String category = getAttribute(CLASS_CATEGORY);
-         return ClassFileCategory.valueOf(category);
+      public ClassOrigin getOrigin() {
+         String category = getAttribute(ORIGIN);
+         return ClassOrigin.valueOf(category);
       }
 
       @Override
@@ -112,30 +112,37 @@ public class ClassFileMarshaller {
          return Integer.parseInt(modifiers);
       }
 
-      public String getAbsolutePath() {
-         return getAttribute(ABSOLUTE_PATH);
+      @Override
+      public String getLibraryPath() {
+         return getAttribute(LIBRARY_PATH);
       }
 
-      public String getResourceName() {
-         return getAttribute(RESOURCE_NAME);
+      @Override
+      public String getResource() {
+         return getAttribute(RESOURCE);
       }
 
-      public String getLocation() {
-         return getAttribute(LOCATION);
+      @Override
+      public String getLibrary() {
+         return getAttribute(LIBRARY);
       }
 
+      @Override
       public String getFullName() {
          return getAttribute(FULL_NAME);
       }
 
+      @Override
       public String getTypeName() {
          return getAttribute(TYPE_NAME);
       }
 
-      public String getName() {
-         return getAttribute(NAME);
+      @Override
+      public String getShortName() {
+         return getAttribute(SHORT_NAME);
       }
 
+      @Override
       public String getModule() {
          return getAttribute(MODULE);
       }

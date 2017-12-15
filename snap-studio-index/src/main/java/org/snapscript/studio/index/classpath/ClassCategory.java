@@ -1,6 +1,6 @@
 package org.snapscript.studio.index.classpath;
 
-public enum ClassFileType {
+public enum ClassCategory {
    ENUM,
    CLASS,
    INTERFACE
