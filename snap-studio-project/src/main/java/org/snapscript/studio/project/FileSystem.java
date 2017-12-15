@@ -50,22 +50,26 @@ public class FileSystem {
    }
    
    public byte[] readAsByteArray(String path) throws Exception {
-      ByteArrayOutputStream buffer = new ByteArrayOutputStream();
       File sourcePath = project.getSourcePath();
       File rootPath = project.getProjectPath();
       String realPath = path.replace('/', File.separatorChar);
       File sourceFile = new File(sourcePath, realPath);
       File projectFile = new File(rootPath, realPath);
+      ByteArrayOutputStream buffer = null;
       InputStream inputStream = null;
       
       if(sourceFile.exists()) {
+         long length = sourceFile.length();
+         buffer = new ByteArrayOutputStream((int)length);
          inputStream = new FileInputStream(sourceFile);
       } else if(projectFile.exists()) {
+         long length = sourceFile.length();
+         buffer = new ByteArrayOutputStream((int)length);
          inputStream = new FileInputStream(projectFile);
       } else {
          inputStream = ClassPathReader.class.getResourceAsStream(path);
       }
-      byte[] chunk = new byte[1024];
+      byte[] chunk = new byte[8192];
       int count = 0;
 
       while((count = inputStream.read(chunk)) != -1) {
