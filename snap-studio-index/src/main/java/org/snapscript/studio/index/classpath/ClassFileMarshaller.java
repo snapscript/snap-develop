@@ -3,6 +3,9 @@ package org.snapscript.studio.index.classpath;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.common.base.Preconditions;
 
@@ -18,8 +21,14 @@ public class ClassFileMarshaller {
    private static final String MODIFIERS = "modifiers";
    private static final String SHORT_NAME = "shortName";
    private static final String MODULE = "module";
+   
+   private final Map<String, String> interned;
+   
+   public ClassFileMarshaller() {
+      this.interned = new ConcurrentHashMap<String, String>();
+   }
 
-   public static Map<String, String> toAttributes(ClassFile file) {
+   public Map<String, String> toAttributes(ClassFile file) {
       Map<String, String> map = new HashMap<String, String>();
     
       String shortName = file.getShortName();
@@ -57,30 +66,59 @@ public class ClassFileMarshaller {
       return Collections.unmodifiableMap(map);
    }
    
-   public static ClassFile fromAttributes(Map<String, String> map, ClassLoader loader) {
-      String shortName = map.get(SHORT_NAME);
-      String libraryPath = map.get(LIBRARY_PATH);
-      String resource = map.get(RESOURCE);
-      String library = map.get(LIBRARY);
-      String fullName = map.get(FULL_NAME);
-      String typeName = map.get(TYPE_NAME);
-      String module = map.get(MODULE);
-      String category = map.get(CATEGORY);
-      String origin = map.get(ORIGIN);
-      String modifiers = map.get(MODIFIERS);
+   public ClassFile fromAttributes(Map<String, String> map, ClassLoader loader) {
+      Map<String, String> interned = intern(map);
       
-      Preconditions.checkNotNull(libraryPath, "Attribute '" + LIBRARY_PATH + "' does not exist for: " + map);
-      Preconditions.checkNotNull(resource, "Attribute '" + RESOURCE + "' does not exist for: " + map);
-      Preconditions.checkNotNull(library, "Attribute '" + LIBRARY + "' does not exist for: " + map);
-      Preconditions.checkNotNull(fullName, "Attribute '" + FULL_NAME + "' does not exist for: " + map);
-      Preconditions.checkNotNull(typeName, "Attribute '" + TYPE_NAME + "' does not exist for: " + map);
-      Preconditions.checkNotNull(module, "Attribute '" + MODULE + "' does not exist for: " + map);
-      Preconditions.checkNotNull(category, "Attribute '" + CATEGORY + "' does not exist for: " + map);
-      Preconditions.checkNotNull(origin, "Attribute '" + ORIGIN + "' does not exist for: " + map);
-      Preconditions.checkNotNull(shortName, "Attribute '" + SHORT_NAME + "' does not exist for: " + map);
-      Preconditions.checkNotNull(modifiers, "Attribute '" + MODIFIERS + "' does not exist for: " + map);
+      String shortName = interned.get(SHORT_NAME);
+      String libraryPath = interned.get(LIBRARY_PATH);
+      String resource = interned.get(RESOURCE);
+      String library = interned.get(LIBRARY);
+      String fullName = interned.get(FULL_NAME);
+      String typeName = interned.get(TYPE_NAME);
+      String module = interned.get(MODULE);
+      String category = interned.get(CATEGORY);
+      String origin = interned.get(ORIGIN);
+      String modifiers = interned.get(MODIFIERS);
       
-      return new MapClassFile(map, loader);
+      Preconditions.checkNotNull(libraryPath, "Attribute '" + LIBRARY_PATH + "' does not exist for: " + interned);
+      Preconditions.checkNotNull(resource, "Attribute '" + RESOURCE + "' does not exist for: " + interned);
+      Preconditions.checkNotNull(library, "Attribute '" + LIBRARY + "' does not exist for: " + interned);
+      Preconditions.checkNotNull(fullName, "Attribute '" + FULL_NAME + "' does not exist for: " + interned);
+      Preconditions.checkNotNull(typeName, "Attribute '" + TYPE_NAME + "' does not exist for: " + interned);
+      Preconditions.checkNotNull(module, "Attribute '" + MODULE + "' does not exist for: " + interned);
+      Preconditions.checkNotNull(category, "Attribute '" + CATEGORY + "' does not exist for: " + interned);
+      Preconditions.checkNotNull(origin, "Attribute '" + ORIGIN + "' does not exist for: " + interned);
+      Preconditions.checkNotNull(shortName, "Attribute '" + SHORT_NAME + "' does not exist for: " + interned);
+      Preconditions.checkNotNull(modifiers, "Attribute '" + MODIFIERS + "' does not exist for: " + interned);
+      
+      return new MapClassFile(interned, loader);
+   }
+   
+   private Map<String, String> intern(Map<String, String> map) {
+      Set<Entry<String, String>> entries = map.entrySet();
+      
+      if(!entries.isEmpty()) {
+         Map<String, String> copy = new HashMap<String, String>();
+         
+         for(Entry<String, String> entry : entries) {
+            String value = entry.getValue();
+            String key = entry.getKey();
+            String internedValue = interned.get(value);
+            String internedKey = interned.get(key);
+            
+            if(internedValue == null) {
+               internedValue = value.intern();
+               interned.put(internedValue, internedValue);
+            }
+            if(internedKey == null) {
+               internedKey = key.intern();
+               interned.put(internedKey, internedKey);
+            }
+            copy.put(internedKey, internedValue);
+         }
+         return Collections.unmodifiableMap(copy);
+      }
+      return map;
    }
    
    private static class MapClassFile implements ClassFile {

@@ -23,9 +23,11 @@ public class SearchIndexFileGenerator implements ConfigFileGenerator {
    
    private static final String SEARCH_INDEX_FILE = ProjectConfiguration.INDEX_FILE;
    
+   private final ClassFileMarshaller marshaller;
    private final Gson gson;
    
    public SearchIndexFileGenerator() {
+      this.marshaller = new ClassFileMarshaller();
       this.gson = new GsonBuilder().setPrettyPrinting().create();
    }
 
@@ -41,7 +43,7 @@ public class SearchIndexFileGenerator implements ConfigFileGenerator {
          
          for(ClassFile file : files) {
             try {
-               Map<String, String> data = ClassFileMarshaller.toAttributes(file);
+               Map<String, String> data = marshaller.toAttributes(file);
                int modifiers = file.getModifiers();
                
                if(Modifier.isPublic(modifiers)) { // reduce the size of the file
@@ -70,7 +72,7 @@ public class SearchIndexFileGenerator implements ConfigFileGenerator {
          List<Map<String, String>> types = gson.fromJson(content, List.class);
          
          for(Map<String, String> type : types) {
-            ClassFile file = ClassFileMarshaller.fromAttributes(type, loader);
+            ClassFile file = marshaller.fromAttributes(type, loader);
             files.add(file);
          }
          builder.append(content);
