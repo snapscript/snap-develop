@@ -622,7 +622,9 @@ export module DialogBuilder {
             content += "</div></td>";
             
             clickFunctions[i] = function() { // this is a little rubbish, we are overriding the row click
-               if(cell.line) {
+               if(cell.decompile) { // bit of a hack job
+                  return submitDialogListResourceForDecompile(cell.link);
+               } else if(cell.line) {
                   return submitDialogListResource(cell.resource, cell.line);
                } else {
                   return submitDialogListResource(cell.link);
@@ -972,6 +974,17 @@ export module DialogBuilder {
       }else {
          location.href = resource;
       }
+      return false
+   }
+   
+   function submitDialogListResourceForDecompile(resource) {
+      $("#dialogCancel").click(); // force the click
+      
+      FileExplorer.openTreeFile(resource, function() {
+         window.setTimeout(function() {
+            FileEditor.showEditorLine(line);
+         }, 100); // delay focus on line, some bug here that needs a delay 
+      });
       return false
    }
    

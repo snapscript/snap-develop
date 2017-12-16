@@ -22,6 +22,8 @@ import org.snapscript.studio.project.config.ConfigurationReader;
 import org.snapscript.studio.project.config.Dependency;
 import org.snapscript.studio.project.config.DependencyFile;
 import org.snapscript.studio.project.config.ProjectConfiguration;
+import org.snapscript.studio.project.config.WorkspaceConfiguration;
+import org.snapscript.studio.project.decompile.Decompiler;
 import org.snapscript.studio.project.generate.ConfigFileSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -61,6 +63,15 @@ public class Workspace implements FileDirectorySource {
    public File getRoot() {
       try {
          return root.getCanonicalFile();
+      }catch(Exception e){
+         throw new IllegalStateException("Could not determine workspace root", e);
+      }
+   }
+   
+   public Decompiler getDecompiler() {
+      try {
+         File outputDir = new File(root, WorkspaceConfiguration.TEMP_PATH);
+         return new Decompiler(outputDir);
       }catch(Exception e){
          throw new IllegalStateException("Could not determine workspace root", e);
       }

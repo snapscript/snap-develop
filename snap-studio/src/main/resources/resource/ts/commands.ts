@@ -31,6 +31,7 @@ export module Command {
                var resourceLink = "/project/" + typesFound[i].project;
                var typePackage = "<i style='opacity: 0.5'>" + typesFound[i].module + "<i>";
                var absolutePath = ""
+               var decompile = false;
                   
                if(typesFound[i].extra){
                   absolutePath = "<i style='opacity: 0.5'>" + typesFound[i].extra + "<i>";
@@ -38,17 +39,27 @@ export module Command {
                if(debug) {
                   resourceLink += debugToggle;
                }
-               resourceLink += "#" + typesFound[i].resource;
-               
+               if(typesFound[i].extra && Common.stringEndsWith(typesFound[i].extra, ".jar")) { // java class in a JAR file
+                  var libraryPath = Common.stringReplaceText(typesFound[i].extra, "\\", "/")
+                  var className = typesFound[i].module + "." + typesFound[i].name;
+                  
+                  resourceLink = "/decompile/" + document.title + "/" + libraryPath + "/" + className + ".java";
+                  decompile = true;
+                  console.log("Decompile: " + resourceLink);
+               } else {
+                  resourceLink += "#" + typesFound[i].resource;
+               }
                var typeCell = {
                   text: typesFound[i].name + "&nbsp;&nbsp;" + typePackage,
                   link: resourceLink,
-                  style: typesFound[i].type == 'module' ? 'moduleNode' : 'typeNode'
+                  style: typesFound[i].type == 'module' ? 'moduleNode' : 'typeNode',
+                  decompile: decompile
                };
                var resourceCell = {
                   text: typesFound[i].resource + "&nbsp;&nbsp;" + absolutePath,
                   link: resourceLink,
-                  style: 'resourceNode'
+                  style: 'resourceNode',
+                  decompile: decompile
                };
                typeRows.push([typeCell, resourceCell]);
             }

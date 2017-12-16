@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "project", "alert", "socket", "console", "editor", "tree", "threads", "dialog", "explorer", "debug"], function (require, exports, $, project_1, alert_1, socket_1, console_1, editor_1, tree_1, threads_1, dialog_1, explorer_1, debug_1) {
+define(["require", "exports", "jquery", "common", "project", "alert", "socket", "console", "editor", "tree", "threads", "dialog", "explorer", "debug"], function (require, exports, $, common_1, project_1, alert_1, socket_1, console_1, editor_1, tree_1, threads_1, dialog_1, explorer_1, debug_1) {
     "use strict";
     var Command;
     (function (Command) {
@@ -14,22 +14,34 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                         var resourceLink = "/project/" + typesFound[i].project;
                         var typePackage = "<i style='opacity: 0.5'>" + typesFound[i].module + "<i>";
                         var absolutePath = "";
+                        var decompile = false;
                         if (typesFound[i].extra) {
                             absolutePath = "<i style='opacity: 0.5'>" + typesFound[i].extra + "<i>";
                         }
                         if (debug) {
                             resourceLink += debugToggle;
                         }
-                        resourceLink += "#" + typesFound[i].resource;
+                        if (typesFound[i].extra && common_1.Common.stringEndsWith(typesFound[i].extra, ".jar")) {
+                            var libraryPath = common_1.Common.stringReplaceText(typesFound[i].extra, "\\", "/");
+                            var className = typesFound[i].module + "." + typesFound[i].name;
+                            resourceLink = "/decompile/" + document.title + "/" + libraryPath + "/" + className + ".java";
+                            decompile = true;
+                            console.log("Decompile: " + resourceLink);
+                        }
+                        else {
+                            resourceLink += "#" + typesFound[i].resource;
+                        }
                         var typeCell = {
                             text: typesFound[i].name + "&nbsp;&nbsp;" + typePackage,
                             link: resourceLink,
-                            style: typesFound[i].type == 'module' ? 'moduleNode' : 'typeNode'
+                            style: typesFound[i].type == 'module' ? 'moduleNode' : 'typeNode',
+                            decompile: decompile
                         };
                         var resourceCell = {
                             text: typesFound[i].resource + "&nbsp;&nbsp;" + absolutePath,
                             link: resourceLink,
-                            style: 'resourceNode'
+                            style: 'resourceNode',
+                            decompile: decompile
                         };
                         typeRows.push([typeCell, resourceCell]);
                     }

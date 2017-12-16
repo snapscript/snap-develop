@@ -588,7 +588,10 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                     content += cell.text;
                     content += "</div></td>";
                     clickFunctions[i] = function () {
-                        if (cell.line) {
+                        if (cell.decompile) {
+                            return submitDialogListResourceForDecompile(cell.link);
+                        }
+                        else if (cell.line) {
                             return submitDialogListResource(cell.resource, cell.line);
                         }
                         else {
@@ -921,6 +924,15 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             else {
                 location.href = resource;
             }
+            return false;
+        }
+        function submitDialogListResourceForDecompile(resource) {
+            $("#dialogCancel").click(); // force the click
+            explorer_1.FileExplorer.openTreeFile(resource, function () {
+                window.setTimeout(function () {
+                    editor_1.FileEditor.showEditorLine(line);
+                }, 100); // delay focus on line, some bug here that needs a delay 
+            });
             return false;
         }
         function focusDialogInput(name) {
