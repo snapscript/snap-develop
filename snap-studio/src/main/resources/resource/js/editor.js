@@ -356,59 +356,6 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             return "ace/mode/text";
         }
         FileEditor.resolveEditorMode = resolveEditorMode;
-        function indexEditorTokens(text, resource) {
-            var token = resource.toLowerCase();
-            var functionRegex = /(function|static|public|private|abstract|override|)\s+([a-z][a-zA-Z0-9]*)\s*\(/g;
-            var variableRegex = /(var|const)\s+([a-z][a-zA-Z0-9]*)/g;
-            var classRegex = /(class|trait|enum)\s+([A-Z][a-zA-Z0-9]*)/g;
-            var importRegex = /import\s+([a-z][a-zA-Z0-9\.]*)\.([A-Z][a-zA-Z]*)/g;
-            var tokenList = {};
-            if (common_1.Common.stringEndsWith(token, ".snap")) {
-                var lines = text.split(/\r?\n/);
-                for (var i = 0; i < lines.length; i++) {
-                    var line = lines[i];
-                    indexEditorLine(line, i + 1, functionRegex, tokenList, ["%s("], false);
-                    indexEditorLine(line, i + 1, variableRegex, tokenList, ["%s.", "%s=", "%s =", "%s<", "%s <", "%s>", "%s >", "%s!", "%s !", "%s-", "%s -", "%s+", "%s +", "%s*", "%s *", "%s%", "%s %", "%s/", "%s /"], false);
-                    indexEditorLine(line, i + 1, importRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s", ".%s;", " as %s", "%s["], true);
-                    indexEditorLine(line, i + 1, classRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s", ".%s;", " as %s", "%s["], false);
-                }
-            }
-            editorView.editorCurrentTokens = tokenList; // keep these tokens for indexing
-            if (editorView.editorFocusToken != null) {
-                var focusToken = editorView.editorCurrentTokens[editorView.editorFocusToken];
-                if (focusToken != null) {
-                    setTimeout(function () {
-                        showEditorLine(focusToken.line); // focus on the line there
-                        // was a token
-                    }, 100);
-                    editorView.editorFocusToken = null; // clear for next open
-                }
-            }
-        }
-        function indexEditorLine(line, number, expression, tokenList, templates, external) {
-            expression.lastIndex = 0; // you have to reset regex to its start position
-            var tokens = expression.exec(line);
-            if (tokens != null && tokens.length > 0) {
-                var resourceToken = tokens[1]; // only for 'import' which is external
-                var indexToken = tokens[2];
-                for (var i = 0; i < templates.length; i++) {
-                    var template = templates[i];
-                    var indexKey = template.replace("%s", indexToken);
-                    if (external) {
-                        tokenList[indexKey] = {
-                            resource: "/" + resourceToken.replace(".", "/") + ".snap",
-                            line: number // save the line number
-                        };
-                    }
-                    else {
-                        tokenList[indexKey] = {
-                            resource: null,
-                            line: number // save the line number
-                        };
-                    }
-                }
-            }
-        }
         function saveEditorHistory() {
             var editorData = loadEditor();
             if (editorData.resource && editorData.source) {
@@ -512,7 +459,6 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                     }
                 }
             }
-            indexEditorTokens(textToDisplay, resource); // create some tokens we can link to dynamically
             project_1.Project.createEditorTab(); // update the tab name
             history_1.History.showFileHistory(); // update the history
             status_1.StatusPanel.showActiveFile(editorView.editorResource.projectPath);

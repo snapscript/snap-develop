@@ -23,7 +23,6 @@ require.config({
         'explorer': './explorer${JS_EXTENSION}',
         'history': './history${JS_EXTENSION}',
         'keys': './keys${JS_EXTENSION}',
-        'link': './links${JS_EXTENSION}',
         'problem': './problem${JS_EXTENSION}',
         'profiler': './profiler${JS_EXTENSION}',
         'project': './project${JS_EXTENSION}',
