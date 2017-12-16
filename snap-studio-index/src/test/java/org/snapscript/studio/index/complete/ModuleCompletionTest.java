@@ -42,7 +42,7 @@ public class ModuleCompletionTest extends TestCase {
             FindPossibleImports.class);
       
       CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE, "M");
-      CompletionResponse response = compiler.compile(request);
+      CompletionResponse response = compiler.completeExpression(request);
       Map<String, String> completion = response.getTokens();
       
       System.err.println(response.getDetails());
@@ -55,7 +55,7 @@ public class ModuleCompletionTest extends TestCase {
       assertEquals(completion.get("Map"), "trait");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE, "");
-      response = compiler.compile(request);
+      response = compiler.completeExpression(request);
       completion = response.getTokens();
       
       System.err.println(response.getDetails());

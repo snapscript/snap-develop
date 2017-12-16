@@ -47,7 +47,7 @@ public class CompletionWithClosureTest extends TestCase {
             FindPossibleImports.class);
       
       CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE, "c.c");
-      CompletionResponse response = compiler.compile(request);
+      CompletionResponse response = compiler.completeExpression(request);
       Map<String, String> completion = response.getTokens();
       
       System.err.println(response.getDetails());
@@ -56,7 +56,7 @@ public class CompletionWithClosureTest extends TestCase {
       assertNotNull(completion.get("compile(a)"), "function");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE, "a.s");
-      response = compiler.compile(request);
+      response = compiler.completeExpression(request);
       completion = response.getTokens();
       
       System.err.println(response.getDetails());

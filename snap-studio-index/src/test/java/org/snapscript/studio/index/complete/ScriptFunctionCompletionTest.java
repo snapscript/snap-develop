@@ -71,7 +71,7 @@ public class ScriptFunctionCompletionTest extends TestCase {
 
    private void checkSource(CompletionCompiler compiler, String source) throws Exception {
       CompletionRequest request = SourceCodeInterpolator.buildRequest(source, "p.c");
-      CompletionResponse response = compiler.compile(request);
+      CompletionResponse response = compiler.completeExpression(request);
       Map<String, String> completion = response.getTokens();
       
       System.err.println(response.getDetails());

@@ -40,7 +40,7 @@ public class ThisChainCompletionTest extends TestCase {
             FindPossibleImports.class);
       
       CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE, "this.stringBuilder.");
-      CompletionResponse response = compiler.compile(request);
+      CompletionResponse response = compiler.completeExpression(request);
       Map<String, String> completion = response.getTokens();
       
       System.err.println(response.getDetails());
@@ -53,7 +53,7 @@ public class ThisChainCompletionTest extends TestCase {
       assertEquals(completion.get("setLength(a)"), "function");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE, "this.stringBuilder.s");
-      response = compiler.compile(request);
+      response = compiler.completeExpression(request);
       completion = response.getTokens();
       
       System.err.println(response.getDetails());

@@ -41,25 +41,22 @@ export module Command {
                }
                if(typesFound[i].extra && Common.stringEndsWith(typesFound[i].extra, ".jar")) { // java class in a JAR file
                   var libraryPath = Common.stringReplaceText(typesFound[i].extra, "\\", "/")
-                  var className = typesFound[i].module + "." + typesFound[i].name;
+                  var packageName = typesFound[i].module;
+                  var className = typesFound[i].name;
                   
-                  resourceLink = "/decompile/" + document.title + "/" + libraryPath + "/" + className + ".java";
-                  decompile = true;
-                  console.log("Decompile: " + resourceLink);
+                  resourceLink += "#/decompile/" + libraryPath + "/" + packageName + "/" + className + ".java";
                } else {
                   resourceLink += "#" + typesFound[i].resource;
                }
                var typeCell = {
                   text: typesFound[i].name + "&nbsp;&nbsp;" + typePackage,
                   link: resourceLink,
-                  style: typesFound[i].type == 'module' ? 'moduleNode' : 'typeNode',
-                  decompile: decompile
+                  style: typesFound[i].type == 'module' ? 'moduleNode' : 'typeNode'
                };
                var resourceCell = {
                   text: typesFound[i].resource + "&nbsp;&nbsp;" + absolutePath,
                   link: resourceLink,
-                  style: 'resourceNode',
-                  decompile: decompile
+                  style: 'resourceNode'
                };
                typeRows.push([typeCell, resourceCell]);
             }
@@ -101,6 +98,84 @@ export module Command {
             },
             async: true
          });
+      } else {
+         onComplete([], originalExpression);
+      }
+   }
+   
+   export function searchOutline() {
+      DialogBuilder.createListDialog(function(text, ignoreMe, onComplete){
+         findOutline(text, function(outlinesFound, originalExpression) {
+            var pathPrefix = "/resource/" + document.title;
+            var outlineRows = [];
+            
+            for(var i = 0; i < outlinesFound.length; i++) {
+               var outlineFound = outlinesFound[i];
+               var outlineType = outlineFound.type.toLowerCase();
+               var constraintInfo = "<i style='opacity: 0.5'>" + outlineFound.constraint + "<i>";
+               var outlineCell = {
+                  text: outlineFound.name + "&nbsp;&nbsp;" + constraintInfo,
+                  resource: pathPrefix + outlineFound.resource,
+                  line: outlineFound.line,
+                  style: outlineType == 'function' ? 'functionNode' : 'propertyNode'
+               };
+               var typeCell = {
+                  text: outlineType,
+                  resource: pathPrefix + outlineFound.resource,
+                  line: outlineFound.line,
+                  style: "textNode"
+               };
+               outlineRows.push([outlineCell, typeCell]);
+            }
+            onComplete(outlineRows, originalExpression);
+         });
+      }, null, "Search Outline");  
+   }
+   
+   function findOutline(text, onComplete) {
+      let originalExpression = text; // keep track of the requested expression
+      
+      if(text || text == "") {  
+         let line = FileEditor.getCurrentLineForEditor();
+         let editorData = FileEditor.loadEditor();
+         let message = JSON.stringify({
+            resource: editorData.resource.projectPath,
+            line: line,
+            complete: originalExpression.trim(),
+            source: editorData.source
+         });
+         $.ajax({
+            contentType: 'application/json',
+            data: message,
+            dataType: 'json',
+            success: function(response){
+               var outlinesFound = response.outlines;
+               var outlineDetails = [];
+               
+               for (var outlineName in outlinesFound) {
+                  if (outlinesFound.hasOwnProperty(outlineName)) {
+                     var outlineDetail = outlinesFound[outlineName];
+                     
+                     outlineDetails.push({
+                        name: outlineName,
+                        type: outlineDetail.type,
+                        resource: outlineDetail.resource,
+                        line: outlineDetail.line,
+                        constraint: outlineDetail.constraint
+                     });
+                  }
+               }
+               onComplete(outlineDetails, originalExpression);
+            },
+            error: function(){
+                onComplete([], originalExpression);
+                console.log("Could not complete outline");
+            },
+            async: true,
+            processData: false,
+            type: 'POST',
+            url: '/outline/' + document.title
+        });
       } else {
          onComplete([], originalExpression);
       }

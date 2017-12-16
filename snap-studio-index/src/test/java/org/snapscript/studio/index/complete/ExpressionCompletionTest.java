@@ -32,7 +32,7 @@ public class ExpressionCompletionTest extends TestCase {
             FindPossibleImports.class);
       
       CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE, "list.stream().filter(x -> {return x > 0}).fo");
-      Map<String, String> completion = compiler.compile(request).getTokens();
+      Map<String, String> completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("forEach(a)"));
       assertEquals(completion.get("forEach(a)"), "function");

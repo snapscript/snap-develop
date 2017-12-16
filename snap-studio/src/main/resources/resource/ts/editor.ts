@@ -30,7 +30,7 @@ export class FileEditorView {
    editorCurrentTokens = {}; // current editor hyperlinks
    editorFocusToken = null; // token to focus on editor load
    editorHistory = {}; // store all editor context
-   editorPanel = null;
+   editorPanel = null; // this actual editor
    
    constructor(editorPanel: any, editorTheme: string) {
       this.editorPanel = editorPanel;
@@ -598,6 +598,10 @@ export module FileEditor {
       var resourcePath = editorData.resource;
       
       FileTree.showTreeNode('explorerTree', resourcePath);
+   }
+   
+   export function getCurrentLineForEditor() {
+      return editorView.editorPanel.getSelectionRange().start.row;
    }
    
    export function getSelectedText() {

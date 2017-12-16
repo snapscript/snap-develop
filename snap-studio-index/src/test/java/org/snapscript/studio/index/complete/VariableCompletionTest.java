@@ -58,7 +58,7 @@ public class VariableCompletionTest extends TestCase {
       request.setLine(22);
       request.setResource("/example.snap");
       
-      Map<String, String> completion = compiler.compile(request).getTokens();
+      Map<String, String> completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("getX()"));
       assertNotNull(completion.get("getY()"));
@@ -72,7 +72,7 @@ public class VariableCompletionTest extends TestCase {
       request.setLine(22);
       request.setResource("/other.snap");
       
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("append(a)"));
       assertNotNull(completion.get("append(a, b, c)"));

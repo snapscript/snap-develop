@@ -2,11 +2,10 @@ package org.snapscript.studio.index.complete;
 
 public class CompletionRequest {
 
-   private String resource;
-   private String source;
-   private String prefix;
-   private String complete;
-   private int line;
+   private String resource; // name of file
+   private String source; // source code of file from edit buffer
+   private String complete; // the text expression to complete
+   private int line; // the line the expression is on
    
    public CompletionRequest() {
       super();
@@ -42,13 +41,5 @@ public class CompletionRequest {
 
    public void setSource(String source) {
       this.source = source;
-   }
-
-   public String getPrefix() {
-      return prefix;
-   }
-
-   public void setPrefix(String prefix) {
-      this.prefix = prefix;
    }
 }

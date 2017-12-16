@@ -34,7 +34,7 @@ public class ImportCompletionTest extends TestCase {
       request.setLine(1);
       request.setResource("/example.snap");
       
-      Map<String, String> completion = compiler.compile(request).getTokens();
+      Map<String, String> completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("lang.String"));
       assertNotNull(completion.get("lang.System"));
@@ -48,7 +48,7 @@ public class ImportCompletionTest extends TestCase {
       request.setLine(1);
       request.setResource("/other.snap");
       
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("util.concurrent.ConcurrentHashMap"));
       assertNotNull(completion.get("util.HashMap"));
@@ -77,7 +77,7 @@ public class ImportCompletionTest extends TestCase {
       request.setLine(1);
       request.setResource("/example.snap");
       
-      Map<String, String> completion = compiler.compile(request).getTokens();
+      Map<String, String> completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("util.HashMap"));
       assertNotNull(completion.get("util.HashSet"));

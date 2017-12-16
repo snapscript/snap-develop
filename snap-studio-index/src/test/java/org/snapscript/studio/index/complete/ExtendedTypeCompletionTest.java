@@ -54,7 +54,7 @@ public class ExtendedTypeCompletionTest extends TestCase {
             FindPossibleImports.class);
       
       CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE_3, "e.");
-      CompletionResponse response = compiler.compile(request);
+      CompletionResponse response = compiler.completeExpression(request);
       Map<String, String> completion = response.getTokens();
       
       System.err.println(response.getDetails());
@@ -79,7 +79,7 @@ public class ExtendedTypeCompletionTest extends TestCase {
             FindPossibleImports.class);
       
       CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE_2, "e.");
-      CompletionResponse response = compiler.compile(request);
+      CompletionResponse response = compiler.completeExpression(request);
       Map<String, String> completion = response.getTokens();
       
       System.err.println(response.getDetails());
@@ -107,7 +107,7 @@ public class ExtendedTypeCompletionTest extends TestCase {
             FindPossibleImports.class);
       
       CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE_1, "");
-      CompletionResponse response = compiler.compile(request);
+      CompletionResponse response = compiler.completeExpression(request);
       Map<String, String> completion = response.getTokens();
       
       System.err.println(response.getDetails());

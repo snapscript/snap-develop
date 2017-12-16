@@ -138,6 +138,28 @@
 	padding-left: 22px; /* Or size of icon + spacing */
 }
 
+.functionNode {
+	/*font-family: "Lucida Console", sans-serif; 
+    font-size: 1.2em;*/
+	font-size: 1.1em;
+	background-image: url('${IMAGE_FOLDER}/green_circle.png');
+	background-size: contain;
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}
+
+.propertyNode {
+	/*font-family: "Lucida Console", sans-serif; 
+    font-size: 1.2em;*/
+	font-size: 1.1em;
+	background-image: url('${IMAGE_FOLDER}/grey_circle.png');
+	background-size: contain;
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}
+
 .resourceNode {
 	/*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/

@@ -34,7 +34,7 @@ public class ReturnValueCompletionTest extends TestCase {
             FindPossibleImports.class);
       
       CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE, "return list.stream().filter(x -> x.bool).coll");
-      CompletionResponse response = compiler.compile(request);
+      CompletionResponse response = compiler.completeExpression(request);
       Map<String, String> completion = response.getTokens();
      
       assertNotNull(completion);

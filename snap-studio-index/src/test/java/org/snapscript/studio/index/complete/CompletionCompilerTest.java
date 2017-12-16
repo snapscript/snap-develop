@@ -63,7 +63,7 @@ public class CompletionCompilerTest extends TestCase {
             FindPossibleImports.class);
       
       CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE, "do");
-      Map<String, String> completion = compiler.compile(request).getTokens();
+      Map<String, String> completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("doSomething()"));
       assertNotNull(completion.get("doSomething(index)"));
@@ -71,7 +71,7 @@ public class CompletionCompilerTest extends TestCase {
       assertEquals(completion.get("doSomething(index)"), "function");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE, "memb");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("memb1"));
       assertNotNull(completion.get("memb2"));
@@ -79,14 +79,14 @@ public class CompletionCompilerTest extends TestCase {
       assertEquals(completion.get("memb2"), "property");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE, "memb1");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("memb1"));
       assertNull(completion.get("memb2"));
       assertEquals(completion.get("memb1"), "property");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE, "InnerClass.");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("x"));
       assertNotNull(completion.get("length"));
@@ -96,7 +96,7 @@ public class CompletionCompilerTest extends TestCase {
       assertEquals(completion.get("someInnerFunc()"), "function");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE, "InnerClass.l");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNull(completion.get("x"));
       assertNotNull(completion.get("length"));
@@ -104,7 +104,7 @@ public class CompletionCompilerTest extends TestCase {
       assertEquals(completion.get("length"), "property");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE, "");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("SomePath"));
       assertNotNull(completion.get("memb1"));
@@ -124,7 +124,7 @@ public class CompletionCompilerTest extends TestCase {
       assertEquals(completion.get("TypeEnum"), "enum");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE, "new ");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("InnerClass(x, length)"));
       assertEquals(completion.get("InnerClass(x, length)"), "constructor");

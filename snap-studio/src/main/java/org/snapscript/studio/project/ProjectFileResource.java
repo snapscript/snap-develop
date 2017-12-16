@@ -17,6 +17,7 @@ import org.snapscript.studio.project.FileCache;
 import org.snapscript.studio.project.FileData;
 import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.Workspace;
+import org.snapscript.studio.project.decompile.Decompiler;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -36,6 +37,18 @@ public class ProjectFileResource implements Resource {
 
    @Override
    public void handle(Request request, Response response) throws Throwable {
+      Path path = request.getPath();
+      Project project = workspace.getProject(path);
+      String projectPath = getPath(project, request); // /<project-name>/<project-path> or /default/blah.snap
+   
+      if(projectPath.startsWith("/decompile") && projectPath.endsWith(".java")) {
+         handleDecompile(request, response);
+      } else {
+         handleFile(request, response);
+      }
+   }
+   
+   private void handleFile(Request request, Response response) throws Throwable {
       Path path = request.getPath();
       Project project = workspace.getProject(path);
       String projectName = project.getProjectName();
@@ -65,6 +78,41 @@ public class ProjectFileResource implements Resource {
          }
          out.close();
       }
+   }
+   
+   // /resource/<project-name>/decompile/<jar-file>/<package-name>/<name>.java
+   private void handleDecompile(Request request, Response response) throws Throwable {
+      Path path = request.getPath(); 
+      String[] segments = path.getSegments();
+      String className = path.getPath(segments.length -2); // remove leading slash
+      String jarFile = path.getPath(3, segments.length-5);
+      String method = request.getMethod();
+      
+      if(className.startsWith("/")) {
+         className = className.substring(1);
+      }
+      if(className.contains("/")) {
+         className = className.replace("/", ".");
+      }
+      if(className.endsWith(".java")) {
+         int length = className.length();
+         int chop = ".java".length();
+         
+         className = className.substring(0, length-chop);
+      }
+      if(jarFile.startsWith("/")) {
+         jarFile = jarFile.substring(1);
+      }
+      Decompiler decompiler = workspace.getDecompiler();
+      String source = decompiler.decompile(jarFile, className);
+      PrintStream stream = response.getPrintStream();
+
+      if(log.isTraceEnabled()) {
+         log.trace(method + ": " + path);
+      }
+      response.setContentType("text/plain");
+      stream.print(source);
+      stream.close();
    }
    
    protected String getPath(Project project, Request request) throws Exception {

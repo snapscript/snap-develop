@@ -83,7 +83,7 @@ public class CompletionInCompoundScopeTest extends TestCase {
             FindPossibleImports.class);
       
       CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE_4, "id");
-      CompletionResponse response = compiler.compile(request);
+      CompletionResponse response = compiler.completeExpression(request);
       Map<String, String> completion = response.getTokens();
       
       System.err.println(response.getDetails());
@@ -92,7 +92,7 @@ public class CompletionInCompoundScopeTest extends TestCase {
       assertEquals(completion.get("idx"), "variable");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE_3, "source.");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("substring(a)"));
       assertNotNull(completion.get("substring(a, b)"));
@@ -100,19 +100,19 @@ public class CompletionInCompoundScopeTest extends TestCase {
       assertEquals(completion.get("substring(a, b)"), "function");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE_3, "appe");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("append(source, offset, length)"));
       assertEquals(completion.get("append(source, offset, length)"), "function");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE_3, "b");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("blah"));
       assertEquals(completion.get("blah"), "variable");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE_3, "blah.");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertEquals(completion.get("substring(a)"), "function");
       assertEquals(completion.get("getBytes(a)"), "function");
@@ -131,7 +131,7 @@ public class CompletionInCompoundScopeTest extends TestCase {
             FindPossibleImports.class);
       
       CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE_3, "e.");
-      CompletionResponse response = compiler.compile(request);
+      CompletionResponse response = compiler.completeExpression(request);
       Map<String, String> completion = response.getTokens();
       
       //System.err.println(response.getDetails());
@@ -142,7 +142,7 @@ public class CompletionInCompoundScopeTest extends TestCase {
       assertEquals(completion.get("printStackTrace(a)"), "function");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE_3, "source.");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("substring(a)"));
       assertNotNull(completion.get("substring(a, b)"));
@@ -150,19 +150,19 @@ public class CompletionInCompoundScopeTest extends TestCase {
       assertEquals(completion.get("substring(a, b)"), "function");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE_3, "appe");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("append(source, offset, length)"));
       assertEquals(completion.get("append(source, offset, length)"), "function");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE_3, "b");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("blah"));
       assertEquals(completion.get("blah"), "variable");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE_3, "blah.");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertEquals(completion.get("substring(a)"), "function");
       assertEquals(completion.get("getBytes(a)"), "function");
@@ -181,7 +181,7 @@ public class CompletionInCompoundScopeTest extends TestCase {
             FindPossibleImports.class);
       
       CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE_2, "s");
-      CompletionResponse response = compiler.compile(request);
+      CompletionResponse response = compiler.completeExpression(request);
       Map<String, String> completion = response.getTokens();
       
       //System.err.println(response.getDetails());
@@ -192,7 +192,7 @@ public class CompletionInCompoundScopeTest extends TestCase {
       assertEquals(completion.get("source"), "parameter");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE_2, "source.");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("substring(a)"));
       assertNotNull(completion.get("substring(a, b)"));
@@ -200,19 +200,19 @@ public class CompletionInCompoundScopeTest extends TestCase {
       assertEquals(completion.get("substring(a, b)"), "function");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE_2, "y");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("y"));
       assertEquals(completion.get("y"), "variable");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE_2, "y.");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("valueOf(a)"));
       assertEquals(completion.get("valueOf(a)"), "function");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE_2, "appe");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("append(source, offset, length)"));
       assertEquals(completion.get("append(source, offset, length)"), "function");
@@ -231,7 +231,7 @@ public class CompletionInCompoundScopeTest extends TestCase {
             FindPossibleImports.class);
       
       CompletionRequest request = SourceCodeInterpolator.buildRequest(SOURCE_1, "s");
-      Map<String, String> completion = compiler.compile(request).getTokens();
+      Map<String, String> completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("source"));
       assertNotNull(completion.get("stringBuilder"));
@@ -239,7 +239,7 @@ public class CompletionInCompoundScopeTest extends TestCase {
       assertEquals(completion.get("source"), "parameter");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE_1, "source.");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("substring(a)"));
       assertNotNull(completion.get("substring(a, b)"));
@@ -247,13 +247,13 @@ public class CompletionInCompoundScopeTest extends TestCase {
       assertEquals(completion.get("substring(a, b)"), "function");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE_1, "appe");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("append(source, offset, length)"));
       assertEquals(completion.get("append(source, offset, length)"), "function");
       
       request = SourceCodeInterpolator.buildRequest(SOURCE_1, "bl");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("blah"));
       assertEquals(completion.get("blah"), "variable");

@@ -30,7 +30,7 @@ public class ExtendOrImplementCompletionTest extends TestCase {
             FindPossibleImports.class);
       
       CompletionRequest request = SourceCodeInterpolator.buildRequest("// replace me", "class Foo extends H");
-      Map<String, String> completion = compiler.compile(request).getTokens();
+      Map<String, String> completion = compiler.completeExpression(request).getTokens();
    
       assertNotNull(completion.get("HashMap"));
       assertNotNull(completion.get("HashSet"));
@@ -38,7 +38,7 @@ public class ExtendOrImplementCompletionTest extends TestCase {
       assertEquals(completion.get("HashSet"), "class");  
       
       request = SourceCodeInterpolator.buildRequest("// replace me", "class Foo extends R");
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
    
       assertNotNull(completion.get("Random"));
       assertNull(completion.get("Runnable"));
@@ -65,7 +65,7 @@ public class ExtendOrImplementCompletionTest extends TestCase {
             FindPossibleImports.class);
       
       CompletionRequest request = SourceCodeInterpolator.buildRequest("// replace me", "class Foo with R");
-      Map<String, String> completion = compiler.compile(request).getTokens();
+      Map<String, String> completion = compiler.completeExpression(request).getTokens();
    
       assertNotNull(completion.get("Runnable"));
       assertNull(completion.get("Random"));

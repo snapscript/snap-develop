@@ -10,32 +10,25 @@ import org.simpleframework.http.Response;
 import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.common.resource.ResourcePath;
 import org.snapscript.studio.index.complete.CompletionCompiler;
+import org.snapscript.studio.index.complete.CompletionOutlineResponse;
 import org.snapscript.studio.index.complete.CompletionRequest;
-import org.snapscript.studio.index.complete.CompletionResponse;
-import org.snapscript.studio.index.complete.FindConstructorsInScope;
-import org.snapscript.studio.index.complete.FindForExpression;
-import org.snapscript.studio.index.complete.FindInScopeMatching;
-import org.snapscript.studio.index.complete.FindMethodReference;
-import org.snapscript.studio.index.complete.FindPossibleImports;
-import org.snapscript.studio.index.complete.FindTraitToImplement;
-import org.snapscript.studio.index.complete.FindTypesToExtend;
 import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-// /complete/<project>
 @Slf4j
 @Component
-@ResourcePath("/complete.*")
-public class CompletionResource implements Resource {
-
+@ResourcePath("/outline.*")
+public class SearchOutlineResource implements Resource {
+   
    private final Workspace workspace;
    private final Gson gson;
    
-   public CompletionResource(Workspace workspace) {
-      this.gson = new Gson();
+   public SearchOutlineResource(Workspace workspace) {
+      this.gson = new GsonBuilder().setPrettyPrinting().create();
       this.workspace = workspace;
    }
 
@@ -49,16 +42,8 @@ public class CompletionResource implements Resource {
       Thread thread = Thread.currentThread();
       thread.setContextClassLoader(classLoader);
       CompletionRequest context = gson.fromJson(content, CompletionRequest.class);
-      CompletionCompiler compiler = new CompletionCompiler(project.getIndexDatabase(),
-            FindConstructorsInScope.class,
-            FindPossibleImports.class,
-            FindTypesToExtend.class,
-            FindTraitToImplement.class,
-            FindForExpression.class,
-            FindInScopeMatching.class,
-            FindMethodReference.class);
-      
-      CompletionResponse result = compiler.completeExpression(context);
+      CompletionCompiler compiler = new CompletionCompiler(project.getIndexDatabase());
+      CompletionOutlineResponse result = compiler.completeOutline(context);
       String expression = result.getExpression();
       String details = result.getDetails();     
       String text = gson.toJson(result);

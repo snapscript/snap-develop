@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,9 +18,15 @@ public class Decompiler {
    private static final String DECOMPILE_DIRECTORY = "decompile";
    
    private final File outputDir;
+   private final boolean includeComment;
 
    public Decompiler(File outputDir) {
+      this(outputDir, false);
+   }
+   
+   public Decompiler(File outputDir, boolean includeComment) {
       this.outputDir = new File(outputDir, DECOMPILE_DIRECTORY);
+      this.includeComment = includeComment;
    }
    
    public String decompile(String jarFile, String className) throws Exception{
@@ -35,9 +42,15 @@ public class Decompiler {
          }
          File decompiledJavaFile = new File(rootDir, javaFile);
          InputStream stream = new FileInputStream(decompiledJavaFile);
+         Date time = new Date();
          
          try {
-            return IOUtils.toString(stream);
+            String source = IOUtils.toString(stream);
+            
+            if(includeComment) {
+               return "// Decompiled on " + time + "\n\n" + source;
+            }
+            return source;
          }finally {
             try {
                stream.close();

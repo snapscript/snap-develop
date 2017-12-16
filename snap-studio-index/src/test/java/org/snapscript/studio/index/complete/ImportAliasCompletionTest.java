@@ -34,7 +34,7 @@ public class ImportAliasCompletionTest extends TestCase {
       request.setLine(2);
       request.setResource("/example.snap");
       
-      Map<String, String> completion = compiler.compile(request).getTokens();
+      Map<String, String> completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("AudioFormat"));
       assertNotNull(completion.get("AutoCloseable"));

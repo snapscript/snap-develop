@@ -34,7 +34,7 @@ public class StaticMethodCompletionTest extends TestCase {
       request.setLine(1);
       request.setResource("/example.snap");
       
-      Map<String, String> completion = compiler.compile(request).getTokens();
+      Map<String, String> completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("currentTimeMillis()"));
       assertEquals(completion.get("currentTimeMillis()"), "function");
@@ -46,7 +46,7 @@ public class StaticMethodCompletionTest extends TestCase {
       request.setLine(1);
       request.setResource("/other.snap");
       
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("getRuntime()"));
       assertEquals(completion.get("getRuntime()"), "function");
@@ -58,7 +58,7 @@ public class StaticMethodCompletionTest extends TestCase {
       request.setLine(1);
       request.setResource("/blah.snap");
       
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("MAX_VALUE"));
       assertNotNull(completion.get("MIN_VALUE"));

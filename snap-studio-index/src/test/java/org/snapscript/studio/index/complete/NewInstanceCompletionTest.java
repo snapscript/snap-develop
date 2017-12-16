@@ -34,7 +34,7 @@ public class NewInstanceCompletionTest extends TestCase {
       request.setLine(1);
       request.setResource("/example.snap");
       
-      Map<String, String> completion = compiler.compile(request).getTokens();
+      Map<String, String> completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("SomeClass()"));
       assertNotNull(completion.get("StringBuilder()"));

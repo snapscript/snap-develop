@@ -14,7 +14,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             this.editorCurrentTokens = {}; // current editor hyperlinks
             this.editorFocusToken = null; // token to focus on editor load
             this.editorHistory = {}; // store all editor context
-            this.editorPanel = null;
+            this.editorPanel = null; // this actual editor
             this.editorPanel = editorPanel;
             this.editorTheme = editorTheme;
         }
@@ -527,6 +527,10 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             tree_1.FileTree.showTreeNode('explorerTree', resourcePath);
         }
         FileEditor.showEditorFileInTree = showEditorFileInTree;
+        function getCurrentLineForEditor() {
+            return editorView.editorPanel.getSelectionRange().start.row;
+        }
+        FileEditor.getCurrentLineForEditor = getCurrentLineForEditor;
         function getSelectedText() {
             return editorView.editorPanel.getSelectedText();
         }

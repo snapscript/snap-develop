@@ -34,7 +34,7 @@ public class ClassCompletionTest extends TestCase {
       request.setLine(1);
       request.setResource("/example.snap");
       
-      Map<String, String> completion = compiler.compile(request).getTokens();
+      Map<String, String> completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("String"));
       assertNotNull(completion.get("System"));
@@ -50,7 +50,7 @@ public class ClassCompletionTest extends TestCase {
       request.setLine(1);
       request.setResource("/other.snap");
       
-      completion = compiler.compile(request).getTokens();
+      completion = compiler.completeExpression(request).getTokens();
       
       assertNotNull(completion.get("HashMap"));
       assertNotNull(completion.get("HashSet"));

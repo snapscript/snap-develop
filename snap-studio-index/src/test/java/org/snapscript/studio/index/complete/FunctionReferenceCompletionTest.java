@@ -30,7 +30,7 @@ public class FunctionReferenceCompletionTest extends TestCase {
             FindMethodReference.class);
       
       CompletionRequest request = SourceCodeInterpolator.buildRequest("// replace me", "list.stream().map(String::t");
-      Map<String, String> completion = compiler.compile(request).getTokens();
+      Map<String, String> completion = compiler.completeExpression(request).getTokens();
    
       assertNotNull(completion.get("toUpperCase()"));
       assertNotNull(completion.get("toLowerCase()"));
