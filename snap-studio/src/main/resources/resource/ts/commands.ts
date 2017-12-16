@@ -15,7 +15,7 @@ import {VariableManager} from "variables"
 import {DialogBuilder} from "dialog"
 import {FileExplorer} from "explorer"
 import {DebugManager} from "debug"
- 
+  
 export module Command {
    
    export function searchTypes() {

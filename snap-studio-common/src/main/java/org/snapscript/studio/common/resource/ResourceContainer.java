@@ -35,8 +35,14 @@ public class ResourceContainer implements Container {
          Resource resource = matcher.match(request, response);
 
          response.setDate(DATE, time);
-         response.setStatus(Status.OK);
-         resource.handle(request, response);
+         
+         if(resource != null) {
+            response.setStatus(Status.OK);
+            resource.handle(request, response);
+         } else {
+            response.setStatus(Status.NOT_FOUND);
+            response.close();
+         }
       } catch (Throwable cause) {
          log.info("Error handling resource", cause);
       } finally {

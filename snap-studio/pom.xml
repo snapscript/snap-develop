@@ -16,48 +16,13 @@
   <dependencies>
     <dependency>
       <groupId>org.snapscript</groupId>
-      <artifactId>snap-platform</artifactId>
-      <version>1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.snapscript</groupId>
-      <artifactId>snap-studio-agent</artifactId>
+      <artifactId>snap-studio-build</artifactId>
       <version>1.2</version>
     </dependency>
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-studio-service</artifactId>
       <version>1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.snapscript</groupId>
-      <artifactId>snap-studio-ui</artifactId>
-      <version>1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.snapscript</groupId>
-      <artifactId>snap-studio-project</artifactId>
-      <version>1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.simpleframework</groupId>
-      <artifactId>simple-xml</artifactId>
-      <version>2.7.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.simpleframework</groupId>
-      <artifactId>simple-http</artifactId>
-      <version>6.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.javascript</groupId>
-      <artifactId>closure-compiler</artifactId>
-      <version>v20161201</version>
-    </dependency>
-    <dependency>
-      <groupId>cglib</groupId>
-      <artifactId>cglib</artifactId>
-      <version>3.2.5</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -70,7 +35,7 @@
       <artifactId>mockito-all</artifactId>
       <version>1.9.5</version>
       <scope>test</scope>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -78,7 +43,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
   <build>
     <plugins>
       <plugin>
@@ -107,6 +71,16 @@
         <configuration>
           <mainClass>org.snapscript.studio.StudioApplication</mainClass>
           <finalName>snapd</finalName>
+          <excludes>
+            <exclude>
+              <groupId>org.snapscript</groupId>
+              <artifactId>snap-studio-build</artifactId> <!-- only needed for development -->
+            </exclude>
+            <exclude>
+              <groupId>com.google.javascript</groupId>
+              <artifactId>closure-compiler</artifactId> <!-- only needed for development -->
+            </exclude>
+          </excludes>
         </configuration>
         <executions>
           <execution>
