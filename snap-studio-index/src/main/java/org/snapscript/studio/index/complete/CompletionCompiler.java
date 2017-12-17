@@ -85,7 +85,7 @@ public class CompletionCompiler {
       String filter = complete.toLowerCase();
       
       if(!entries.isEmpty()) {
-         Map<String, CompletionOutline> tokens = new TreeMap<String, CompletionOutline>();
+         Map<String, CompletionOutline> tokens = new TreeMap<String, CompletionOutline>(String.CASE_INSENSITIVE_ORDER);
          
          for(Entry<String, IndexNode> entry : entries) {
             String name = entry.getKey();
@@ -97,7 +97,7 @@ public class CompletionCompiler {
                if(type == IndexType.MEMBER_FUNCTION) {
                   type = IndexType.FUNCTION;
                }
-               if((type.isConstrained() || type.isConstructor()) && (type != IndexType.VARIABLE && type != IndexType.PARAMETER)) {
+               if(type.isMember()) {
                   IndexNode constraintNode = match.getConstraint();
                   String constraint = Object.class.getName();
                   IndexNode parent = match.getParent();
@@ -129,7 +129,7 @@ public class CompletionCompiler {
    }
 
    private Map<String, String> completeExpressionTokens(Set<IndexNode> matches, Map<String, IndexNode> nodes) {
-      Map<String, String> tokens = new TreeMap<String, String>();
+      Map<String, String> tokens = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
       
       for(IndexNode match : matches) {
          String name = match.getName();

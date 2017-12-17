@@ -68,6 +68,13 @@ public enum IndexType {
               this == IMPORT;
    }
    
+   public boolean isMember() {
+      return this == FUNCTION ||
+            this == CONSTRUCTOR ||
+            this == MEMBER_FUNCTION ||
+            this == PROPERTY;
+   }
+   
    public boolean isConstructor(){
       return this == CONSTRUCTOR;
    }

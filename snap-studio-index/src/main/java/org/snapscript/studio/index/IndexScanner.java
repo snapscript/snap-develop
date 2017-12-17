@@ -137,7 +137,7 @@ public class IndexScanner implements IndexDatabase {
       Pattern pattern = Pattern.compile(expression, ignoreCase ? Pattern.CASE_INSENSITIVE : 0);
       
       if(!nodes.isEmpty()) {
-         Map<String, IndexNode> matches = new TreeMap<String, IndexNode>();
+         Map<String, IndexNode> matches = new TreeMap<String, IndexNode>(String.CASE_INSENSITIVE_ORDER);
          
          for(Entry<String, IndexNode> entry : entries) {
             IndexNode node = entry.getValue();
