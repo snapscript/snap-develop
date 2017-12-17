@@ -32,7 +32,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                     },
                     error: function (response) {
                         var type = header.getResponseHeader("content-type");
-                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath, "text/plain", resourcePath);
+                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", resourcePath);
                     },
                     async: false
                 });
@@ -46,7 +46,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                         handleOpenTreeFile(resourcePath, afterLoad, response, contentType, resourcePath);
                     },
                     error: function (response) {
-                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath, "text/plain", resourcePath);
+                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", resourcePath);
                     },
                     async: false
                 });
@@ -68,7 +68,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                         handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL);
                     },
                     error: function (response) {
-                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath, "text/plain", downloadURL);
+                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", downloadURL);
                     },
                     async: false
                 });
@@ -83,7 +83,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                         handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL);
                     },
                     error: function (response) {
-                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath, "text/plain", downloadURL);
+                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", downloadURL);
                     },
                     async: false
                 });

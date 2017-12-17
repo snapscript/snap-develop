@@ -70,6 +70,7 @@ class ResourceClassFile implements ClassFile {
             url = loader.getResource(path);
          }
       }catch(Throwable e){
+         e.printStackTrace();
          return null;
       }
       return url;
@@ -84,6 +85,7 @@ class ResourceClassFile implements ClassFile {
             type = loader.loadClass(path);
          }
       } catch(Throwable e) {
+         e.printStackTrace();
          return null;
       }
       return type;

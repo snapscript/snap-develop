@@ -4,7 +4,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.classpath.node.ClassIndexNode;
@@ -15,16 +17,24 @@ import org.snapscript.studio.index.classpath.node.SuperIndexNode;
 import org.snapscript.studio.index.scan.ClassPathScanner;
 
 public class ClassIndexProcessor {
+
+   private static final Map<Class, IndexNode> CACHED_NODES = new ConcurrentHashMap<Class, IndexNode>();
+   private static final Map<Class, ClassFile> CACHED_FILES = new ConcurrentHashMap<Class, ClassFile>();
    
    public static ClassFile getClassFile(Class type) {
-      String path = ClassIndexProcessor.getFullPath(type);
+      ClassFile file = CACHED_FILES.get(type);
       
-      try {
-         return ClassPathScanner.createClassFile(path);
-      }catch(Throwable cause) {
-         cause.printStackTrace();
+      if(file == null) {
+         String path = ClassIndexProcessor.getFullPath(type);
+         
+         try {
+            file = ClassPathScanner.createClassFile(path);
+            CACHED_FILES.put(type, file);
+         }catch(Throwable cause) {
+            cause.printStackTrace();
+         }
       }
-      return null;
+      return file;
    }
    
    public static Set<IndexNode> getChildren(ClassFile info) {
@@ -106,7 +116,7 @@ public class ClassIndexProcessor {
          Constructor[] constructors = type.getDeclaredConstructors();
          
          for(Constructor constructor : constructors) {
-            IndexNode node = getIndexNode(constructor);
+            IndexNode node = getIndexNode(info, constructor);
             nodes.add(node);
          }
       }catch(Throwable cause) {
@@ -123,7 +133,7 @@ public class ClassIndexProcessor {
          Method[] methods = type.getDeclaredMethods();
          
          for(Method method : methods) {
-            IndexNode node = getIndexNode(method);
+            IndexNode node = getIndexNode(info, method);
             nodes.add(node);
          }
       }catch(Throwable cause) {
@@ -140,7 +150,7 @@ public class ClassIndexProcessor {
          Field[] fields = type.getDeclaredFields();
          
          for(Field field : fields) {
-            IndexNode node = getIndexNode(field);
+            IndexNode node = getIndexNode(info, field);
             nodes.add(node);
          }
       }catch(Throwable cause) {
@@ -167,12 +177,18 @@ public class ClassIndexProcessor {
    }
 
    public static String getFullPath(Class type) {
-      return type.getCanonicalName().replace('.', '/') + ".class";
+      return type.getName().replace('.', '/') + ".class";
    }
    
    public static IndexNode getIndexNode(Class type) {
-      ClassFile info = getClassFile(type);
-      return getIndexNode(info);
+      IndexNode node = CACHED_NODES.get(type);
+      
+      if(node == null) {
+         ClassFile info = getClassFile(type);
+         node = getIndexNode(info);
+         CACHED_NODES.put(type, node);
+      }
+      return node;
    }
    
    public static IndexNode getSuperIndexNode(Class type) {
@@ -188,16 +204,16 @@ public class ClassIndexProcessor {
       return new ClassIndexNode(info);
    }
 
-   public static IndexNode getIndexNode(Constructor constructor) {
-      return new ConstructorIndexNode(constructor);
+   public static IndexNode getIndexNode(ClassFile file, Constructor constructor) {
+      return new ConstructorIndexNode(file, constructor);
    }
    
-   public static IndexNode getIndexNode(Method method) {
-      return new MethodIndexNode(method);
+   public static IndexNode getIndexNode(ClassFile file, Method method) {
+      return new MethodIndexNode(file, method);
    }
    
-   public static IndexNode getIndexNode(Field field) {
-      return new FieldIndexNode(field);
+   public static IndexNode getIndexNode(ClassFile file, Field field) {
+      return new FieldIndexNode(file, field);
    }
 
    

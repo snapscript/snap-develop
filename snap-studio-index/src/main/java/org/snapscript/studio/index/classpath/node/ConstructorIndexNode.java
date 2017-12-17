@@ -7,9 +7,10 @@ import java.util.Set;
 
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
+import org.snapscript.studio.index.classpath.ClassFile;
 import org.snapscript.studio.index.classpath.ClassIndexProcessor;
 
-public class ConstructorIndexNode implements IndexNode {
+public class ConstructorIndexNode extends ClassFileNode {
    
    private static final String[] PREFIX = {
    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", 
@@ -18,42 +19,17 @@ public class ConstructorIndexNode implements IndexNode {
    private Constructor constructor;
    private String description;
    
-   public ConstructorIndexNode(Constructor constructor) {
+   public ConstructorIndexNode(ClassFile file, Constructor constructor) {
+      super(file);
       this.constructor = constructor;
    }
-   
-   
-   @Override
-   public int getLine() {
-      return -1;
-   }
-   
-   @Override
-   public boolean isNative(){
-      return true;
-   }
-   
+
    @Override
    public boolean isPublic(){
       int modifiers = constructor.getModifiers();
       return Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers);
    }
-   
-   @Override
-   public String getModule(){
-      return getParent().getModule();
-   }
-   
-   @Override
-   public String getResource(){
-      return null;
-   }
-   
-   @Override
-   public String getAbsolutePath(){
-      return null;
-   } 
-    
+
    @Override
    public String getName() {
       if(description == null) {

@@ -97,6 +97,18 @@ public class SourceFileNode implements IndexNode {
       if(type.isImport()) {
          return index.getModule();
       }
+      if(type.isSuper()) {
+         try {
+            Map<String, IndexNode> nodes = database.getImportsInScope(this);
+            IndexNode node = nodes.get(name);
+            
+            if(node != null) {
+               return node.getFullName();
+            }
+         }catch(Throwable e){
+            e.printStackTrace();
+         }
+      }
       if(type.isType()) {
          IndexNode parentNode = parent.get();
          IndexType parentType = parentNode.getType();

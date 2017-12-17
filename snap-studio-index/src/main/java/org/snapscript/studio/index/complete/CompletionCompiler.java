@@ -6,6 +6,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.snapscript.core.Reserved;
+import org.snapscript.core.link.ImportPathResolver;
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexDumper;
 import org.snapscript.studio.index.IndexNode;
@@ -15,9 +17,11 @@ import org.snapscript.studio.index.SourceFile;
 public class CompletionCompiler {
 
    private final Class<? extends CompletionFinder>[] finders;
+   private final ImportPathResolver importResolver;
    private final IndexDatabase database;
    
    public CompletionCompiler(IndexDatabase database, Class<? extends CompletionFinder>... finders) {
+      this.importResolver = new ImportPathResolver(Reserved.IMPORT_FILE); 
       this.database = database;
       this.finders = finders;
    }
@@ -85,9 +89,9 @@ public class CompletionCompiler {
          
          for(Entry<String, IndexNode> entry : entries) {
             String name = entry.getKey();
+            IndexNode match = entry.getValue();
             
             if(name.toLowerCase().startsWith(filter)) {
-               IndexNode match = entry.getValue();
                IndexType type = match.getType();
                
                if(type == IndexType.MEMBER_FUNCTION) {
@@ -95,14 +99,26 @@ public class CompletionCompiler {
                }
                if(type.isConstrained() && type != IndexType.VARIABLE && type != IndexType.PARAMETER) {
                   IndexNode constraintNode = match.getConstraint();
-                  String resource = match.getResource();
-                  String constraint = "lang.Object";
-                  int line = match.getLine();
+                  String constraint = Object.class.getName();
+                  IndexNode parent = match.getParent();
+                  String declaringClass = null;
+                  String libraryPath = null;
                   
+                  if(parent != null) {
+                     declaringClass = parent.getFullName();
+                  }
+                  if(match.isNative()) {
+                     libraryPath = match.getAbsolutePath();
+                  }
                   if(constraintNode != null) {
                      constraint = constraintNode.getFullName();
                   }
-                  CompletionOutline outline = new CompletionOutline(type, constraint, resource, line);
+                  //String constraintName = importResolver.resolveName(constraint);
+                  String constraintName = constraint;
+                  String resource = match.getResource();
+                  int line = match.getLine();
+                  
+                  CompletionOutline outline = new CompletionOutline(type, constraintName, libraryPath, declaringClass, resource, line);
                   tokens.put(name, outline);
                }
             }

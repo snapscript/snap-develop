@@ -9,52 +9,18 @@ import org.snapscript.studio.index.classpath.ClassFile;
 import org.snapscript.studio.index.classpath.ClassCategory;
 import org.snapscript.studio.index.classpath.ClassIndexProcessor;
 
-public class ClassIndexNode implements IndexNode {
+public class ClassIndexNode extends ClassFileNode {
    
    private Set<IndexNode> children;
    private String fullName;
    private String typeName;
-   private ClassFile file;
-   private String absolute;
-   private String resource;
-   private String module;
    private String name;
    private Class type;
    
-   public ClassIndexNode(ClassFile info) {
-      this.file = info;
+   public ClassIndexNode(ClassFile file) {
+      super(file);
    }
    
-   @Override
-   public int getLine() {
-      return -1;
-   }
-
-   @Override
-   public String getResource(){
-      if(resource == null) {
-         resource = file.getLibrary();
-      }
-      return resource;
-   }
-   
-   @Override
-   public String getAbsolutePath(){
-      if(absolute == null) {
-         absolute = file.getLibraryPath();
-      }
-      return absolute;
-   }
-   
-   @Override
-   public String getModule() {
-      if(module == null) {
-         module = file.getModule();
-      }
-      return module;
-   }
-   
-    
    @Override
    public String getName() {
       if(name == null) {
@@ -96,11 +62,6 @@ public class ClassIndexNode implements IndexNode {
          }
       }
       return null;
-   }
-   
-   @Override
-   public boolean isNative(){
-      return true;
    }
    
    @Override

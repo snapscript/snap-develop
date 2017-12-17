@@ -8,26 +8,18 @@ import java.util.Set;
 import org.snapscript.core.PrimitivePromoter;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
+import org.snapscript.studio.index.classpath.ClassFile;
 import org.snapscript.studio.index.classpath.ClassIndexProcessor;
 
-public class FieldIndexNode implements IndexNode {
+public class FieldIndexNode extends ClassFileNode {
 
    private final PrimitivePromoter promoter;
    private final Field field;
    
-   public FieldIndexNode(Field field) {
+   public FieldIndexNode(ClassFile file, Field field) {
+      super(file);
       this.promoter = new PrimitivePromoter();
       this.field = field;
-   }
-   
-   @Override
-   public int getLine() {
-      return -1;
-   }
-   
-   @Override
-   public boolean isNative(){
-      return true;
    }
    
    @Override
@@ -35,22 +27,7 @@ public class FieldIndexNode implements IndexNode {
       int modifiers = field.getModifiers();
       return Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers);
    }
-   
-   @Override
-   public String getModule() {
-      return getParent().getModule();
-   }
-   
-   @Override
-   public String getResource(){
-      return null;
-   }
-   
-   @Override
-   public String getAbsolutePath(){
-      return null;
-   } 
-    
+
    @Override
    public String getName() {
       return field.getName();

@@ -21,11 +21,10 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                         if (debug) {
                             resourceLink += debugToggle;
                         }
-                        if (typesFound[i].extra && common_1.Common.stringEndsWith(typesFound[i].extra, ".jar")) {
-                            var libraryPath = common_1.Common.stringReplaceText(typesFound[i].extra, "\\", "/");
+                        if (isJavaResource(typesFound[i].extra)) {
                             var packageName = typesFound[i].module;
                             var className = typesFound[i].name;
-                            resourceLink += "#/decompile/" + libraryPath + "/" + packageName + "/" + className + ".java";
+                            resourceLink += '#' + createLinkForJavaResource(typesFound[i].extra, packageName + "." + className);
                         }
                         else {
                             resourceLink += "#" + typesFound[i].resource;
@@ -47,6 +46,21 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             }, null, "Search Types");
         }
         Command.searchTypes = searchTypes;
+        function isJavaResource(libraryPath) {
+            return libraryPath && common_1.Common.stringEndsWith(libraryPath, ".jar");
+        }
+        function createLinkForJavaResource(libraryPath, className) {
+            var jarFile = common_1.Common.stringReplaceText(libraryPath, "\\", "/");
+            var packageName = createPackageNameFromFullClassName(className);
+            var typeName = createTypeNameFromFullClassName(className);
+            return "/decompile/" + jarFile + "/" + packageName + "/" + typeName + ".java";
+        }
+        function createPackageNameFromFullClassName(className) {
+            return className.substring(0, className.lastIndexOf('.'));
+        }
+        function createTypeNameFromFullClassName(className) {
+            return className.substring(className.lastIndexOf('.') + 1);
+        }
         function findTypesMatching(text, onComplete) {
             var originalExpression = text; // keep track of the requested expression
             if (text && text.length > 1) {
@@ -86,23 +100,38 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         function searchOutline() {
             dialog_1.DialogBuilder.createListDialog(function (text, ignoreMe, onComplete) {
                 findOutline(text, function (outlinesFound, originalExpression) {
-                    var pathPrefix = "/resource/" + document.title;
                     var outlineRows = [];
                     for (var i = 0; i < outlinesFound.length; i++) {
                         var outlineFound = outlinesFound[i];
                         var outlineType = outlineFound.type.toLowerCase();
                         var constraintInfo = "<i style='opacity: 0.5'>" + outlineFound.constraint + "<i>";
+                        var typeName = createTypeNameFromFullClassName(outlineFound.declaringClass);
+                        var packageName = createPackageNameFromFullClassName(outlineFound.declaringClass);
+                        var typePackage = "<i style='opacity: 0.5'>" + packageName + "<i>";
+                        var resource = outlineFound.resource;
+                        var line = outlineFound.line;
+                        var resourceLink = null;
+                        var libraryPath = "";
+                        if (isJavaResource(outlineFound.libraryPath) && outlineFound.declaringClass) {
+                            resourceLink = "/project/" + document.title + "#" + createLinkForJavaResource(outlineFound.libraryPath, outlineFound.declaringClass);
+                            line = null;
+                        }
+                        else {
+                            resource = "/resource/" + document.title + resource;
+                        }
                         var outlineCell = {
                             text: outlineFound.name + "&nbsp;&nbsp;" + constraintInfo,
-                            resource: pathPrefix + outlineFound.resource,
-                            line: outlineFound.line,
+                            resource: resource,
+                            link: resourceLink,
+                            line: line,
                             style: outlineType == 'function' ? 'functionNode' : 'propertyNode'
                         };
                         var typeCell = {
-                            text: outlineType,
-                            resource: pathPrefix + outlineFound.resource,
-                            line: outlineFound.line,
-                            style: "textNode"
+                            text: typeName + "&nbsp;&nbsp;" + typePackage,
+                            resource: resource,
+                            link: resourceLink,
+                            line: line,
+                            style: "resourceNode"
                         };
                         outlineRows.push([outlineCell, typeCell]);
                     }
@@ -137,7 +166,9 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                                     type: outlineDetail.type,
                                     resource: outlineDetail.resource,
                                     line: outlineDetail.line,
-                                    constraint: outlineDetail.constraint
+                                    constraint: outlineDetail.constraint,
+                                    declaringClass: outlineDetail.declaringClass,
+                                    libraryPath: outlineDetail.libraryPath
                                 });
                             }
                         }

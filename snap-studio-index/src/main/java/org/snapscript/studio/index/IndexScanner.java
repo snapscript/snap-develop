@@ -5,10 +5,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
@@ -26,6 +28,7 @@ import org.snapscript.studio.index.config.IndexConfigFile;
 @Slf4j
 public class IndexScanner implements IndexDatabase {
 
+   private final Map<String, Map<String, IndexNode>> members;
    private final AtomicReference<IndexFileCache> reference;
    private final FileProcessor<SourceFile> processor;
    private final FileAction<SourceFile> action;
@@ -37,6 +40,7 @@ public class IndexScanner implements IndexDatabase {
    private final File root;
    
    public IndexScanner(IndexConfigFile path, Context context, Executor executor, File root, String project, String... prefixes) {
+      this.members = new ConcurrentHashMap<String, Map<String, IndexNode>>();
       this.reference = new AtomicReference<IndexFileCache>();
       this.searcher = new ClassPathSearcher(path);
       this.translator = new PathTranslator(prefixes);
@@ -169,6 +173,26 @@ public class IndexScanner implements IndexDatabase {
       return indexer.index(resource, source);
    }
    
+   @Override
+   public Map<String, IndexNode> getImportsInScope(IndexNode node) throws Exception {
+      Map<String, IndexNode> defaultImports = path.getDefaultImportNames();
+      Map<String, IndexNode> scope = new HashMap<String, IndexNode>(defaultImports);
+      
+      while(node != null) {
+         Set<IndexNode> nodes = node.getNodes();
+         
+         for(IndexNode entry : nodes) {
+            String name = entry.getName();
+            IndexType type = entry.getType();
+            
+            if(type.isImport()) {
+               scope.put(name, entry);
+            }
+         }
+         node = node.getParent();
+      }
+      return scope;
+   }
 
    public Map<String, IndexNode> getNodesInScope(IndexNode node) throws Exception {
       Map<String, IndexNode> defaultImports = path.getDefaultImportNames();
@@ -261,28 +285,44 @@ public class IndexScanner implements IndexDatabase {
    }
    
    public Map<String, IndexNode> getMemberNodes(IndexNode node) {
-      Map<String, IndexNode> nodes = new HashMap<String, IndexNode>();
-      Map<String, IndexNode> hierarchy = new HashMap<String, IndexNode>();
+      String fullName = node.getFullName();
+      String absolutePath = node.getAbsolutePath();
+      String typeKey = String.format("%s:%s", fullName, absolutePath);
+      Map<String, IndexNode> nodes = members.get(typeKey);
       
-      try{
-         collectHierarchy(node, hierarchy);
+      if(nodes == null) {
+         Map<String, IndexNode> memberNodes = new LinkedHashMap<String, IndexNode>();
+         Map<String, IndexNode> hierarchy = new LinkedHashMap<String, IndexNode>();
          
-         for(IndexNode entry : hierarchy.values()) {
-            Set<IndexNode> children = entry.getNodes();
+         try{
+            collectHierarchy(node, hierarchy);
             
-            for(IndexNode child : children) {
-               if(child.isPublic()) {
-                  IndexType type = child.getType();
-                  
-                  if(type.isFunction() || type.isProperty()) {
-                     String name = child.getName();
-                     nodes.put(name, child);
+            for(IndexNode entry : hierarchy.values()) {
+               Set<IndexNode> children = entry.getNodes();
+               
+               for(IndexNode child : children) {
+                  if(child.isPublic()) {
+                     IndexType type = child.getType();
+                     
+                     if(type.isFunction() || type.isProperty()) {
+                        String name = child.getName();
+                        
+                        if(!memberNodes.containsKey(name)) {
+                           memberNodes.put(name, child);
+                        }
+                     }
                   }
                }
             }
+         }catch(Throwable cause) {
+            log.info("Could not get members", cause);
          }
-      }catch(Throwable cause) {
-         log.info("Could not get members", cause);
+         memberNodes = Collections.unmodifiableMap(memberNodes);
+         
+         if(node.isNative()) {
+            members.put(typeKey, memberNodes);
+         }
+         return memberNodes;
       }
       return nodes;
    }
