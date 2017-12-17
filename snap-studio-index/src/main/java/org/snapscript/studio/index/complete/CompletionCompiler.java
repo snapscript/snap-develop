@@ -97,7 +97,7 @@ public class CompletionCompiler {
                if(type == IndexType.MEMBER_FUNCTION) {
                   type = IndexType.FUNCTION;
                }
-               if(type.isConstrained() && type != IndexType.VARIABLE && type != IndexType.PARAMETER) {
+               if((type.isConstrained() || type.isConstructor()) && (type != IndexType.VARIABLE && type != IndexType.PARAMETER)) {
                   IndexNode constraintNode = match.getConstraint();
                   String constraint = Object.class.getName();
                   IndexNode parent = match.getParent();

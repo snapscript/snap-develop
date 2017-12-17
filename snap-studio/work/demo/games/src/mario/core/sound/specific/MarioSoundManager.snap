@@ -19,7 +19,7 @@ class MarioSoundManager {
       public var name: String;
       public var location: String;
       public var hz: Integer;
-      public SoundRecord(name: String, location: String, hz: Integer) {
+      public new(name: String, location: String, hz: Integer) {
          this.name = name;
          this.location = location;
          this.hz = hz;
