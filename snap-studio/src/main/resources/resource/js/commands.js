@@ -145,7 +145,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             if (text || text == "") {
                 var line = editor_1.FileEditor.getCurrentLineForEditor();
                 var editorData = editor_1.FileEditor.loadEditor();
-                var message = JSON.stringify({
+                var message_1 = JSON.stringify({
                     resource: editorData.resource.projectPath,
                     line: line,
                     complete: originalExpression.trim(),
@@ -153,7 +153,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                 });
                 $.ajax({
                     contentType: 'application/json',
-                    data: message,
+                    data: message_1,
                     dataType: 'json',
                     success: function (response) {
                         var outlinesFound = response.outlines;
@@ -174,9 +174,9 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                         }
                         onComplete(outlineDetails, originalExpression);
                     },
-                    error: function () {
+                    error: function (response) {
                         onComplete([], originalExpression);
-                        console.log("Could not complete outline");
+                        console.log("Could not complete outline for text '" + originalExpression + "'", message_1);
                     },
                     async: true,
                     processData: false,

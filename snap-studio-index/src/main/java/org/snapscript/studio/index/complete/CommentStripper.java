@@ -45,11 +45,14 @@ public class CommentStripper {
             
             if(next == '!') {
                while(read < count) {
-                  char terminal = original[read];
+                  char terminal = original[read++];
                   
                   if(terminal == '\n') {
                      clean[write++] = '\n';
                      return true;
+                  }
+                  if(clean.length <= write) {
+                     throw new IllegalStateException("Buffer overflow for " + clean.length + " at " + write);
                   }
                   clean[write++] = ' ';
                }

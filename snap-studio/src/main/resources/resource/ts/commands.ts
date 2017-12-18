@@ -203,9 +203,9 @@ export module Command {
                }
                onComplete(outlineDetails, originalExpression);
             },
-            error: function(){
+            error: function(response){
                 onComplete([], originalExpression);
-                console.log("Could not complete outline");
+                console.log("Could not complete outline for text '" + originalExpression + "'", message);
             },
             async: true,
             processData: false,
