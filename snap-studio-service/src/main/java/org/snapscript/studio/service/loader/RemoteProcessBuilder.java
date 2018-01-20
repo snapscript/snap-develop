@@ -1,14 +1,15 @@
 package org.snapscript.studio.service.loader;
 
-import static org.snapscript.studio.project.config.WorkspaceConfiguration.JAR_FILE;
-import static org.snapscript.studio.project.config.WorkspaceConfiguration.TEMP_PATH;
 import static org.snapscript.core.Reserved.GRAMMAR_FILE;
 import static org.snapscript.core.Reserved.IMPORT_FILE;
+import static org.snapscript.studio.project.config.WorkspaceConfiguration.JAR_FILE;
+import static org.snapscript.studio.project.config.WorkspaceConfiguration.TEMP_PATH;
 
 import java.io.File;
 
 import javax.annotation.PostConstruct;
 
+import org.snapscript.studio.project.HomeDirectory;
 import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,7 @@ public class RemoteProcessBuilder {
    
    @PostConstruct
    public void create() throws Exception {
-      File directory = workspace.createFile(TEMP_PATH);
+      File directory = HomeDirectory.getPath(TEMP_PATH);
       
       if(!directory.exists()) {
          directory.mkdirs();

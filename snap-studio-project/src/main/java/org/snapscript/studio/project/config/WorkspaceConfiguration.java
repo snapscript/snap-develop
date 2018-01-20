@@ -7,7 +7,9 @@ public interface WorkspaceConfiguration {
 
    String CLASS_EXTENSION = ".class";
    String WORKSPACE_FILE = ".workspace";
-   String TEMP_PATH = ".temp";
+   String INDEX_PATH = "index";
+   String BACKUP_PATH = "backup";
+   String TEMP_PATH = "temp";
    String JAR_FILE = "agent.jar";
    
    List<DependencyFile> getDependencies(List<Dependency> dependencies);

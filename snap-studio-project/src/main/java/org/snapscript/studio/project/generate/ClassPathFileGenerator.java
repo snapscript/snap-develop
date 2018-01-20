@@ -6,6 +6,8 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.snapscript.studio.project.FileSystem;
+import org.snapscript.studio.project.HomeDirectory;
 import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.config.DependencyFile;
 import org.snapscript.studio.project.config.ProjectConfiguration;
@@ -83,7 +85,20 @@ public class ClassPathFileGenerator implements ConfigFileGenerator {
    }
    
    @Override
-   public String getConfigFilePath() {
+   public File getConfigFilePath(Project project) {
+      try {
+         FileSystem fileSystem = project.getFileSystem();
+         File file = fileSystem.getFile(CLASSPATH_FILE);
+
+         return file.getCanonicalFile();
+      } catch(Exception e) {
+         log.info("Could not create config path " + CLASSPATH_FILE, e);
+         throw new IllegalStateException("Could not create config path " + CLASSPATH_FILE, e);
+      }
+   }
+   
+   @Override
+   public String getConfigName(Project project) {
       return CLASSPATH_FILE;
    }
 }

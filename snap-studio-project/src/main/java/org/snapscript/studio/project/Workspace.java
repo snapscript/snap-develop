@@ -70,7 +70,7 @@ public class Workspace implements FileDirectorySource {
    
    public Decompiler getDecompiler() {
       try {
-         File outputDir = new File(root, WorkspaceConfiguration.TEMP_PATH);
+         File outputDir = HomeDirectory.getPath(WorkspaceConfiguration.TEMP_PATH);
          return new Decompiler(outputDir);
       }catch(Exception e){
          throw new IllegalStateException("Could not determine workspace root", e);

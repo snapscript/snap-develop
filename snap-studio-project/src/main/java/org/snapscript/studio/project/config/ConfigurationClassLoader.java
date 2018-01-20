@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.snapscript.studio.agent.ClassPathUpdater;
 import org.snapscript.studio.project.ClassPathFile;
 import org.snapscript.studio.project.FileSystem;
+import org.snapscript.studio.project.HomeDirectory;
 import org.snapscript.studio.project.Project;
 
 public class ConfigurationClassLoader {
@@ -63,8 +64,7 @@ public class ConfigurationClassLoader {
    private ClassLoader createClassLoader(String dependencies) {
       try {
          List<File> files = ClassPathUpdater.parseClassPath(dependencies);
-         File workspaceRoot = project.getWorkspace().getRoot();
-         File tempPath = new File(workspaceRoot, WorkspaceConfiguration.TEMP_PATH);
+         File tempPath = HomeDirectory.getPath(WorkspaceConfiguration.TEMP_PATH);
          File agentFile = new File(tempPath, WorkspaceConfiguration.JAR_FILE);
          List<URL> locations = new ArrayList<URL>();
          

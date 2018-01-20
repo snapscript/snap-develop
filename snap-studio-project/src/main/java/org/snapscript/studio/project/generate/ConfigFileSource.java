@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 
 import org.snapscript.studio.project.FileSystem;
+import org.snapscript.studio.project.FilePersister;
 import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.config.ProjectConfiguration;
 import org.springframework.stereotype.Component;
@@ -29,22 +30,21 @@ public class ConfigFileSource {
       this.generators = generators;
    }
 
-   public synchronized <T extends ConfigFile> T getConfigFile(Project project, String path) {
+   public synchronized <T extends ConfigFile> T getConfigFile(Project project, String name) {
       if(generators.isPresent() && cache.isEmpty()) {
          List<ConfigFileGenerator> list = generators.get();
          
          for(ConfigFileGenerator generator : list) {
-            String configPath = generator.getConfigFilePath();
+            String configPath = generator.getConfigName(project);
             cache.put(configPath, generator);
          }
       }
-      ConfigFileGenerator generator = cache.get(path);
+      ConfigFileGenerator generator = cache.get(name);
       FileSystem fileSystem = project.getFileSystem();
       
       if(generator != null) {
          File projectFile = fileSystem.getFile(PROJECT_FILE);
-         String configPath = generator.getConfigFilePath();
-         File configFile = fileSystem.getFile(configPath);
+         File configFile = generator.getConfigFilePath(project);
          
          try {
             String configKey = configFile.getCanonicalPath();
@@ -53,7 +53,7 @@ public class ConfigFileSource {
                ConfigFile file = generator.generateConfig(project);
                String source = file.getConfigSource();
                
-               fileSystem.writeAsString(configPath, source);
+               FilePersister.writeAsString(configFile, source);
                files.put(configKey, file);
             } else if(projectFile.exists()) {
                long projectFileChange = projectFile.lastModified();
@@ -63,14 +63,14 @@ public class ConfigFileSource {
                   ConfigFile file = generator.generateConfig(project);
                   String source = file.getConfigSource();
                   
-                  fileSystem.writeAsString(configPath, source);
+                  FilePersister.writeAsString(configFile, source);
                   files.put(configKey, file);
                }
             } 
             ConfigFile file = files.get(configKey);
             
             if(file == null) {
-               String source = fileSystem.readAsString(configPath);
+               String source = FilePersister.readAsString(configFile);
                ConfigFile parsedFile = generator.parseConfig(project, source);
             
                if(parsedFile != null) {
@@ -79,7 +79,7 @@ public class ConfigFileSource {
             }
             return (T)files.get(configKey);
          } catch(Exception e) {
-            log.info("Could not generate configuration file " + configPath, e);
+            log.info("Could not generate configuration file " + configFile, e);
          }
       }
       return null;

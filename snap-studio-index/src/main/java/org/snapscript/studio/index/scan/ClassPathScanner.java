@@ -25,7 +25,10 @@ public class ClassPathScanner {
       "/jre/lib/rt.jar",
       "/lib/rt.jar"
    };
-   private static final String TARGET_PATH = "target/";
+   private static final String[] TARGET_PATHS = {
+      "target/classes/",
+      "target/test-classes/"
+   };
    
    static {
       scanBootstrapClassPath();
@@ -86,7 +89,12 @@ public class ClassPathScanner {
    }
    
    private static boolean isTargetResource(String resourcePath) {
-      return resourcePath.startsWith(TARGET_PATH);
+      for(String targetPath : TARGET_PATHS) {
+         if(resourcePath.contains(targetPath)){
+            return true;
+         }
+      }
+      return false;
    }
    
    private static void findClassesInJar(List<ClassFile> classFiles, String path, boolean jdk) throws Exception {

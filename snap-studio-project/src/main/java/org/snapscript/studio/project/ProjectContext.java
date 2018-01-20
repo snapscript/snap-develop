@@ -67,7 +67,7 @@ public class ProjectContext {
             (IndexConfigFile)source.getConfigFile(project, ProjectConfiguration.INDEX_FILE),
             project.getProjectContext(), 
             workspace.getExecutor(), 
-            project.getSourcePath(), 
+            project.getProjectPath(), 
             project.getProjectName(), 
             getLayout().getPrefixes());
 

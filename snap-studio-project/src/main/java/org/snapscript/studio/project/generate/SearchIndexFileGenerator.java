@@ -1,5 +1,6 @@
 package org.snapscript.studio.project.generate;
 
+import java.io.File;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.snapscript.studio.index.classpath.ClassFile;
 import org.snapscript.studio.index.classpath.ClassFileMarshaller;
 import org.snapscript.studio.index.scan.ClassPathScanner;
+import org.snapscript.studio.project.HomeDirectory;
 import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.config.ProjectConfiguration;
+import org.snapscript.studio.project.config.WorkspaceConfiguration;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -22,6 +25,7 @@ import com.google.gson.GsonBuilder;
 public class SearchIndexFileGenerator implements ConfigFileGenerator {
    
    private static final String SEARCH_INDEX_FILE = ProjectConfiguration.INDEX_FILE;
+   private static final String SEARCH_INDEX_DIRECTORY = WorkspaceConfiguration.INDEX_PATH;
    
    private final ClassFileMarshaller marshaller;
    private final Gson gson;
@@ -85,7 +89,20 @@ public class SearchIndexFileGenerator implements ConfigFileGenerator {
    }
 
    @Override
-   public String getConfigFilePath() {
+   public File getConfigFilePath(Project project) {
+      try {
+         String projectName = project.getProjectName();
+         File file = HomeDirectory.getPath(SEARCH_INDEX_DIRECTORY, projectName, SEARCH_INDEX_FILE);
+         
+         return file.getCanonicalFile();
+      } catch(Exception e) {
+         log.info("Could not create config path " + SEARCH_INDEX_FILE, e);
+         throw new IllegalStateException("Could not create config path " + SEARCH_INDEX_FILE, e);
+      }
+   }
+   
+   @Override
+   public String getConfigName(Project project) {
       return SEARCH_INDEX_FILE;
    }
 

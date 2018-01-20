@@ -61,15 +61,7 @@ public class Project implements FileDirectory {
    }
    
    public long getModificationTime(){
-      return DirectoryWatcher.lastModified(getSourcePath());
-   }
-
-   public File getSourcePath() {
-      try {
-         return workspace.createFile(projectName);
-      } catch (Exception e) {
-         throw new IllegalStateException("Could not get source path for '" + projectName + "'", e);
-      }
+      return DirectoryWatcher.lastModified(getProjectPath());
    }
 
    public File getProjectPath() {
@@ -99,12 +91,12 @@ public class Project implements FileDirectory {
    }
    
    public String getRealPath(String resource) {
-      File path = getSourcePath();
+      File path = getProjectPath();
       return context.getLayout().getRealPath(path, resource);
    }
    
    public String getScriptPath(String resource) {
-      File path = getSourcePath();
+      File path = getProjectPath();
       return context.getLayout().getDownloadPath(path, resource);
    }
 
@@ -126,7 +118,7 @@ public class Project implements FileDirectory {
       public InputStream getInputStream(String path) {
          try {
             ProjectLayout layout = context.getLayout();
-            File rootPath = getSourcePath();
+            File rootPath = getProjectPath();
             String projectPath = layout.getRealPath(rootPath, path);
             File realFile = fileSystem.getFile(projectPath);
             return new FileInputStream(realFile);

@@ -15,11 +15,11 @@ import org.simpleframework.http.Status;
 import org.snapscript.core.Reserved;
 import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.common.resource.ResourcePath;
+import org.snapscript.studio.project.BackupFile;
+import org.snapscript.studio.project.BackupManager;
 import org.snapscript.studio.project.FileSystem;
 import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.Workspace;
-import org.snapscript.studio.service.core.BackupFile;
-import org.snapscript.studio.service.core.BackupManager;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;

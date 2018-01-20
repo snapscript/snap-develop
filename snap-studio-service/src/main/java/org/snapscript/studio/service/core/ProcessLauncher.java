@@ -11,6 +11,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
 import org.snapscript.studio.agent.ProcessMode;
+import org.snapscript.studio.project.HomeDirectory;
 import org.snapscript.studio.project.Workspace;
 import org.snapscript.studio.project.config.ProcessConfiguration;
 
@@ -32,7 +33,7 @@ public class ProcessLauncher {
       String name = generator.generate();
       String mode = ProcessMode.SCRIPT.name();
       String home = System.getProperty("java.home");
-      File directory = workspace.createFile(TEMP_PATH);
+      File directory = HomeDirectory.getPath(TEMP_PATH);
       File file = new File(directory, JAR_FILE);
       String agent = file.getCanonicalPath();
       String java = String.format("%s%sbin%sjava", home, File.separatorChar, File.separatorChar);
