@@ -4,20 +4,20 @@ import org.snapscript.core.Compilation;
 import org.snapscript.core.Module;
 import org.snapscript.core.Path;
 import org.snapscript.core.Scope;
-import org.snapscript.core.Statement;
 import org.snapscript.core.Value;
 import org.snapscript.studio.index.IndexResult;
 import org.snapscript.studio.index.IndexType;
 import org.snapscript.tree.annotation.AnnotationList;
 import org.snapscript.tree.define.ModuleDefinition;
 import org.snapscript.tree.define.ModuleName;
+import org.snapscript.tree.define.ModulePart;
 
 public class ModuleDefinitionIndex implements Compilation {
    
    private final ModuleDefinition definition;
    private final ModuleName identifier;
    
-   public ModuleDefinitionIndex(AnnotationList annotations, ModuleName module, Statement... body) {
+   public ModuleDefinitionIndex(AnnotationList annotations, ModuleName module, ModulePart... body) {
       this.definition = new ModuleDefinition(annotations, module, body);
       this.identifier = module;
    }
