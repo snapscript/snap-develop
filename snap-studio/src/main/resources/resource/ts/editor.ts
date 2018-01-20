@@ -30,7 +30,7 @@ export class FileEditorView {
    editorCurrentTokens = {}; // current editor hyperlinks
    editorFocusToken = null; // token to focus on editor load
    editorHistory = {}; // store all editor context
-   editorPanel = null;
+   editorPanel = null; // this actual editor
    
    constructor(editorPanel: any, editorTheme: string) {
       this.editorPanel = editorPanel;
@@ -41,6 +41,7 @@ export class FileEditorView {
       KeyBinder.bindKeys(); // register key bindings
       Project.changeProjectFont(); // project.js update font
       FileEditor.scrollEditorToPosition();
+      FileEditor.updateProjectTabOnChange(); // listen to change
       LoadSpinner.finish();
    }
 }
@@ -397,71 +398,9 @@ export module FileEditor {
          return "ace/mode/xml";
       }
       if(Common.stringEndsWith(token, ".classpath")) {
-         return "ace/mode/xml";
+         return "ace/mode/text";
       }
       return "ace/mode/text";
-   }
-   
-   function indexEditorTokens(text, resource) { // create dynamic hyperlinks
-      var token = resource.toLowerCase();
-      var functionRegex = /(function|static|public|private|abstract|override|)\s+([a-z][a-zA-Z0-9]*)\s*\(/g;
-      var variableRegex = /(var|const)\s+([a-z][a-zA-Z0-9]*)/g;
-      var classRegex = /(class|trait|enum)\s+([A-Z][a-zA-Z0-9]*)/g;
-      var importRegex = /import\s+([a-z][a-zA-Z0-9\.]*)\.([A-Z][a-zA-Z]*)/g;
-      var tokenList = {};
-      
-      if(Common.stringEndsWith(token, ".snap")) {
-         var lines = text.split(/\r?\n/);
-         
-         for(var i = 0; i < lines.length; i++) {
-            var line = lines[i];
-            
-            indexEditorLine(line, i+1, functionRegex, tokenList, ["%s("], false);
-            indexEditorLine(line, i+1, variableRegex, tokenList, ["%s.", "%s=", "%s =", "%s<", "%s <", "%s>", "%s >", "%s!", "%s !", "%s-", "%s -", "%s+", "%s +", "%s*", "%s *", "%s%", "%s %", "%s/", "%s /"], false);     
-            indexEditorLine(line, i+1, importRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s", ".%s;", " as %s", "%s["], true);  
-            indexEditorLine(line, i+1, classRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s", ".%s;", " as %s", "%s["], false); 
-         }
-      }
-      editorView.editorCurrentTokens = tokenList; // keep these tokens for indexing
-      
-      if(editorView.editorFocusToken != null) {
-         var focusToken = editorView.editorCurrentTokens[editorView.editorFocusToken];
-         
-         if(focusToken != null) {
-            setTimeout(function() { // delay to allow the editor to complete loading
-               showEditorLine(focusToken.line);  // focus on the line there
-                                                   // was a token
-            }, 100);
-            editorView.editorFocusToken = null; // clear for next open
-         }
-      }
-   }
-   
-   function indexEditorLine(line, number, expression, tokenList, templates, external) {
-      expression.lastIndex = 0; // you have to reset regex to its start position
-      var tokens = expression.exec(line);
-   
-      if(tokens != null && tokens.length >0){
-         var resourceToken = tokens[1]; // only for 'import' which is external
-         var indexToken = tokens[2];
-         
-         for(var i = 0; i < templates.length; i++) {
-            var template = templates[i];
-            var indexKey = template.replace("%s", indexToken);
-            
-            if(external) { // 
-               tokenList[indexKey] = {
-                  resource: "/" + resourceToken.replace(".", "/") + ".snap",
-                  line: number // save the line number
-               };
-            }else {
-               tokenList[indexKey] = {
-                  resource: null,
-                  line: number // save the line number
-               };
-            }
-         }
-      }
    }
    
    function saveEditorHistory() {
@@ -469,11 +408,14 @@ export module FileEditor {
       
       if(editorData.resource && editorData.source) {
          var md5Hash = md5(editorData.source);
+         var currentText = editorView.editorPanel.getValue();
+         var saveText = isEditorChanged() ? currentText : null; // keep text if changed
          
          editorView.editorHistory[editorData.resource.resourcePath] = {
             hash: md5Hash,
             history: editorData.history,
-            position: editorData.position
+            position: editorData.position,
+            buffer: saveText // save the buffer if it has changed
          };
       }
    }
@@ -512,13 +454,43 @@ export module FileEditor {
       session.setUndoManager(manager); // reset undo history
    }
    
+   export function clearSavedEditorBuffer(resource) {
+      var editorResource = FileTree.createResourcePath(resource);
+      var history = editorView.editorHistory[editorResource.resourcePath];
+      
+      if(history) {
+         history.buffer = null; // clear the buffer
+         updateEditorTabMarkForResource(editorResource.resourcePath); // remove the *
+      }
+   }
+   
+   export function loadSavedEditorBuffer(resource) {
+      var editorResource = FileTree.createResourcePath(resource);
+      
+      if(isEditorResourcePath(editorResource.resourcePath)) {
+         var editorData = loadEditor();
+         return editorData.source; // if its the current buffer then return it
+      }
+      var history = editorView.editorHistory[editorResource.resourcePath];
+      
+      if(history) {
+         return history.buffer;
+      }
+      
+      return null;
+   }
+   
    export function updateEditor(text, resource) {
       var session = editorView.editorPanel.getSession();
       var currentMode = session.getMode();
       var actualMode = resolveEditorMode(resource);
+      var encodedText = encodeEditorText(text, resource); // change JSON conversion
+      var savedHistoryBuffer = loadSavedEditorBuffer(resource); // load saved buffer
+      var textToDisplay = encodedText;
       
-      text = encodeEditorText(text, resource); // change JSON conversion
-      
+      if(savedHistoryBuffer) {
+         textToDisplay = savedHistoryBuffer;
+      }
       saveEditorHistory(); // save any existing history
       
       if(actualMode != currentMode) {
@@ -528,12 +500,12 @@ export module FileEditor {
          })
       }
       editorView.editorPanel.setReadOnly(false);
-      editorView.editorPanel.setValue(text, 1);
-      createEditorUndoManager(session, text, resource); // restore any existing history
+      editorView.editorPanel.setValue(textToDisplay, 1);
+      createEditorUndoManager(session, textToDisplay, resource); // restore any existing history
       
       clearEditor();
       editorView.editorResource = FileTree.createResourcePath(resource);
-      editorView.editorText = text;
+      editorView.editorText = encodedText; // save the real text NOT the text to display
       window.location.hash = editorView.editorResource.projectPath; // update # anchor
       ProblemManager.highlightProblems(); // higlight problems on this resource
       
@@ -550,12 +522,12 @@ export module FileEditor {
             }
          }
       }
-      indexEditorTokens(text, resource); // create some tokens we can link to dynamically
       Project.createEditorTab(); // update the tab name
       History.showFileHistory(); // update the history
       StatusPanel.showActiveFile(editorView.editorResource.projectPath);  
       FileEditor.showEditorFileInTree();
       scrollEditorToPosition();
+      updateEditorTabMark(); // add a * to the name if its not in sync
    }
    
    export function showEditorFileInTree() {
@@ -563,6 +535,10 @@ export module FileEditor {
       var resourcePath = editorData.resource;
       
       FileTree.showTreeNode('explorerTree', resourcePath);
+   }
+   
+   export function getCurrentLineForEditor() {
+      return editorView.editorPanel.getSelectionRange().start.row;
    }
    
    export function getSelectedText() {
@@ -574,6 +550,27 @@ export module FileEditor {
          var text = editorView.editorPanel.getValue();
       
          return text != editorView.editorText;
+      }
+      return false;
+   }
+   
+   export function isEditorChangedForPath(resource) {
+      if(isEditorResourcePath(resource)) {
+         return isEditorChanged();
+      }
+      var savedHistoryBuffer = loadSavedEditorBuffer(resource); // load saved buffer
+      
+      if(savedHistoryBuffer) {
+         return true;
+      }
+      return false;
+   }
+   
+   function isEditorResourcePath(resource) {
+      if(editorView.editorResource != null) {
+         if(editorView.editorResource.resourcePath == resource) {
+            return true;
+         }
       }
       return false;
    }
@@ -606,19 +603,34 @@ export module FileEditor {
       editorView.editorPanel.focus();
    }
    
+   export function updateProjectTabOnChange() {
+      editorView.editorPanel.on("input", function() {
+         updateEditorTabMark(); // on input then you update star
+     });
+   }
+   
+   function updateEditorTabMark() {
+      updateEditorTabMarkForResource(editorView.editorResource.resourcePath);
+   }
+   
+   function updateEditorTabMarkForResource(resource) {
+      Project.markEditorTab(resource, isEditorChangedForPath(resource));
+   }
+   
    function createEditorAutoComplete() {
       return {
          getCompletions: function createAutoComplete(editor, session, pos, prefix, callback) {
-             if (prefix.length === 0) { 
-                callback(null, []); 
-                return; 
-             }
+//             if (prefix.length === 0) { 
+//                callback(null, []); 
+//                return; 
+//             }
              var text = editor.getValue();
              var line = editor.session.getLine(pos.row);
-             var complete = line.substring(0, pos.column - prefix.length);
+             var resource = editorView.editorResource.projectPath;
+             var complete = line.substring(0, pos.column);
              var message = JSON.stringify({
-                resource: editorResource.projectPath,
-                line: pos.row,
+                resource: resource,
+                line: pos.row + 1,
                 complete: complete,
                 source: text,
                 prefix: prefix
@@ -635,7 +647,7 @@ export module FileEditor {
                    for(var token in tokens) {
                       if (tokens.hasOwnProperty(token)) {
                          var type = tokens[token];
-                         suggestions.push({name: token, value: token, score: 300, meta: type });
+                         suggestions.push({className: 'autocomplete_' + type, name: token, value: token, score: 300, meta: type });
                       }
                    }
                    callback(null, suggestions);

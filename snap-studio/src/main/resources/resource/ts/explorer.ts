@@ -33,7 +33,7 @@ export module FileExplorer {
    export function openTreeFile(resourcePath, afterLoad) {
       var filePath = resourcePath.toLowerCase();
       
-      if(Common.stringEndsWith(filePath, ".json") || Common.stringEndsWith(filePath, ".js") || Common.stringEndsWith(filePath, ".xml")) { // is it json or javascript
+      if(isTextFile(filePath)) { // is it json or javascript
          //var type = header.getResponseHeader("content-type");
          
          $.ajax({
@@ -46,7 +46,7 @@ export module FileExplorer {
             },
             error: function(response) {
                var type = header.getResponseHeader("content-type");
-               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath, "text/plain", resourcePath);
+               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", resourcePath);
             },
             async: false
          });
@@ -59,7 +59,7 @@ export module FileExplorer {
                handleOpenTreeFile(resourcePath, afterLoad, response, contentType, resourcePath);
             },
             error: function(response) {
-               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath, "text/plain", resourcePath);
+               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", resourcePath);
             },
             async: false
          });
@@ -71,7 +71,7 @@ export module FileExplorer {
       var backupResourcePath = resourcePath.replace(/^\/resource/i, "/history");
       //var backupUrl = backupResourcePath + "?time=" + timeStamp;
       
-      if(Common.stringEndsWith(filePath, ".json") || Common.stringEndsWith(filePath, ".js") || Common.stringEndsWith(filePath, ".xml")) { // is it json or javascript
+      if(isTextFile(filePath)) { // is it json or javascript
          var downloadURL = backupResourcePath + "?time=" + timeStamp;
          $.ajax({
             url: downloadURL,
@@ -82,7 +82,7 @@ export module FileExplorer {
                handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL);
             },
             error: function (response) {
-               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath, "text/plain", downloadURL);
+               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", downloadURL);
             },
             async: false
          });
@@ -96,7 +96,7 @@ export module FileExplorer {
                handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL);
             },
             error: function (response) {
-               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath, "text/plain", downloadURL);
+               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", downloadURL);
             },
             async: false
          });
@@ -111,21 +111,22 @@ export module FileExplorer {
       } else {
          var mode = FileEditor.resolveEditorMode(resourcePath);
          
-         if(FileEditor.isEditorChanged()) {
-            var editorData = FileEditor.loadEditor();
-            var editorResource = editorData.resource;
-            var message = "Save resource " + editorResource.filePath;
-            
-            Alerts.createConfirmAlert("File Changed", message, "Save", "Ignore", 
-                  function(){
-                     Command.saveEditor(true); // save the file
-                  },
-                  function(){
-                     FileEditor.updateEditor(response, resourcePath);
-                  });
-         } else {
-            FileEditor.updateEditor(response, resourcePath);
-         }
+//         if(FileEditor.isEditorChanged()) {
+//            var editorData = FileEditor.loadEditor();
+//            var editorResource = editorData.resource;
+//            var message = "Save resource " + editorResource.filePath;
+//            
+//            Alerts.createConfirmAlert("File Changed", message, "Save", "Ignore", 
+//                  function(){
+//                     Command.saveEditor(true); // save the file
+//                  },
+//                  function(){
+//                     FileEditor.updateEditor(response, resourcePath);
+//                  });
+//         } else {
+//            FileEditor.updateEditor(response, resourcePath);
+//         }
+         FileEditor.updateEditor(response, resourcePath);
       }
       afterLoad();
    }
@@ -138,6 +139,15 @@ export module FileExplorer {
    function handleDownloadFile(downloadURL) {
       window.location.href = downloadURL;
     }
+   
+   function isTextFile(filePath) {
+      return Common.stringEndsWith(filePath, ".json") || 
+              Common.stringEndsWith(filePath, ".js") || 
+              Common.stringEndsWith(filePath, ".xml") ||
+              Common.stringEndsWith(filePath, ".project") ||
+              Common.stringEndsWith(filePath, ".classpath") ||
+              Common.stringEndsWith(filePath, ".index");
+   }
    
    function isImageFileType(contentType) {
       if(contentType) {
@@ -185,6 +195,8 @@ export module FileExplorer {
          Command.newDirectory(resourcePath);
       }else if(commandName == "exploreDirectory") {
          Command.exploreDirectory(resourcePath);
+      }else if(commandName == "openTerminal") {
+         Command.openTerminal(resourcePath);
       }else if(commandName == "renameFile") {
          if(isDirectory) {
             Command.renameDirectory(resourcePath);

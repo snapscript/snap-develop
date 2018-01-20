@@ -1,37 +1,47 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.snapscript</groupId>
-	<artifactId>snap</artifactId>
-	<version>1.2</version>
-	<packaging>pom</packaging>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.snapscript</groupId>
+  <artifactId>snap-studio-parent</artifactId>
+  <version>1.2.1</version>
+  <packaging>pom</packaging>
 
-	<properties>
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
-		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
-	</properties>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>1.5.8.RELEASE</version>
+  </parent>
 
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.1</version>
-					<configuration>
-						<encoding>ISO-8859-1</encoding>
-						<compilerVersion>1.6</compilerVersion>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
+  <properties>
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.compiler.target>1.6</maven.compiler.target>
+    <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+    <start-class>org.snapscript.studio.StudioApplication</start-class>
+  </properties>
 
-   <modules>
-           <module>snap-agent</module>
-           <module>snap-studio</module>           
-           <module>snap-service</module>          
-	</modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <modules>
+    <module>snap-studio</module>
+    <module>snap-studio-common</module>    
+    <module>snap-studio-agent</module>
+    <module>snap-studio-service</module>
+    <module>snap-studio-ui</module>
+    <module>snap-studio-index</module>
+    <module>snap-studio-project</module>  
+    <module>snap-studio-build</module>  
+    <module>snap-studio-cli</module>            
+  </modules>
 
 </project>
 

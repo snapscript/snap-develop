@@ -1,10 +1,10 @@
-define(["require", "exports", "jquery", "project", "alert", "socket", "console", "editor", "tree", "threads", "dialog", "explorer", "debug"], function (require, exports, $, project_1, alert_1, socket_1, console_1, editor_1, tree_1, threads_1, dialog_1, explorer_1, debug_1) {
+define(["require", "exports", "jquery", "common", "project", "alert", "socket", "console", "editor", "tree", "threads", "dialog", "explorer", "debug"], function (require, exports, $, common_1, project_1, alert_1, socket_1, console_1, editor_1, tree_1, threads_1, dialog_1, explorer_1, debug_1) {
     "use strict";
     var Command;
     (function (Command) {
         function searchTypes() {
             dialog_1.DialogBuilder.createListDialog(function (text, ignoreMe, onComplete) {
-                findTypesMatching(text, function (typesFound) {
+                findTypesMatching(text, function (typesFound, originalExpression) {
                     var typeRows = [];
                     for (var i = 0; i < typesFound.length; i++) {
                         var debugToggle = ";debug";
@@ -12,31 +12,60 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                         var locationHash = window.document.location.hash;
                         var debug = locationPath.indexOf(debugToggle, locationPath.length - debugToggle.length) !== -1;
                         var resourceLink = "/project/" + typesFound[i].project;
+                        var typePackage = "<i style='opacity: 0.5'>" + typesFound[i].module + "<i>";
+                        var absolutePath = "";
+                        var decompile = false;
+                        if (typesFound[i].extra) {
+                            absolutePath = "<i style='opacity: 0.5'>" + typesFound[i].extra + "<i>";
+                        }
                         if (debug) {
                             resourceLink += debugToggle;
                         }
-                        resourceLink += "#" + typesFound[i].resource;
+                        if (isJavaResource(typesFound[i].extra)) {
+                            var packageName = typesFound[i].module;
+                            var className = typesFound[i].name;
+                            resourceLink += '#' + createLinkForJavaResource(typesFound[i].extra, packageName + "." + className);
+                        }
+                        else {
+                            resourceLink += "#" + typesFound[i].resource;
+                        }
                         var typeCell = {
-                            text: typesFound[i].name,
+                            text: typesFound[i].name + "&nbsp;&nbsp;" + typePackage,
                             link: resourceLink,
                             style: typesFound[i].type == 'module' ? 'moduleNode' : 'typeNode'
                         };
                         var resourceCell = {
-                            text: typesFound[i].resource,
+                            text: typesFound[i].resource + "&nbsp;&nbsp;" + absolutePath,
                             link: resourceLink,
                             style: 'resourceNode'
                         };
                         typeRows.push([typeCell, resourceCell]);
                     }
-                    onComplete(typeRows);
+                    onComplete(typeRows, originalExpression);
                 });
             }, null, "Search Types");
         }
         Command.searchTypes = searchTypes;
+        function isJavaResource(libraryPath) {
+            return libraryPath && common_1.Common.stringEndsWith(libraryPath, ".jar");
+        }
+        function createLinkForJavaResource(libraryPath, className) {
+            var jarFile = common_1.Common.stringReplaceText(libraryPath, "\\", "/");
+            var packageName = createPackageNameFromFullClassName(className);
+            var typeName = createTypeNameFromFullClassName(className);
+            return "/decompile/" + jarFile + "/" + packageName + "/" + typeName + ".java";
+        }
+        function createPackageNameFromFullClassName(className) {
+            return className.substring(0, className.lastIndexOf('.'));
+        }
+        function createTypeNameFromFullClassName(className) {
+            return className.substring(className.lastIndexOf('.') + 1);
+        }
         function findTypesMatching(text, onComplete) {
-            if (text) {
+            var originalExpression = text; // keep track of the requested expression
+            if (text && text.length > 1) {
                 $.ajax({
-                    url: '/type/' + document.title + '?expression=' + text,
+                    url: '/type/' + document.title + '?expression=' + originalExpression,
                     success: function (typeMatches) {
                         var sortedMatches = [];
                         for (var typeMatch in typeMatches) {
@@ -52,18 +81,111 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                             var typeEntry = {
                                 name: typeReference.name,
                                 resource: typeReference.resource,
+                                module: typeReference.module,
+                                extra: typeReference.extra,
                                 type: typeReference.type,
                                 project: document.title
                             };
                             response.push(typeEntry);
                         }
-                        onComplete(response);
+                        onComplete(response, originalExpression);
                     },
                     async: true
                 });
             }
             else {
-                onComplete([]);
+                onComplete([], originalExpression);
+            }
+        }
+        function searchOutline() {
+            dialog_1.DialogBuilder.createListDialog(function (text, ignoreMe, onComplete) {
+                findOutline(text, function (outlinesFound, originalExpression) {
+                    var outlineRows = [];
+                    for (var i = 0; i < outlinesFound.length; i++) {
+                        var outlineFound = outlinesFound[i];
+                        var outlineType = outlineFound.type.toLowerCase();
+                        var constraintInfo = "<i style='opacity: 0.5'>" + outlineFound.constraint + "<i>";
+                        var typeName = createTypeNameFromFullClassName(outlineFound.declaringClass);
+                        var packageName = createPackageNameFromFullClassName(outlineFound.declaringClass);
+                        var typePackage = "<i style='opacity: 0.5'>" + packageName + "<i>";
+                        var resource = outlineFound.resource;
+                        var line = outlineFound.line;
+                        var resourceLink = null;
+                        var libraryPath = "";
+                        if (isJavaResource(outlineFound.libraryPath) && outlineFound.declaringClass) {
+                            resourceLink = "/project/" + document.title + "#" + createLinkForJavaResource(outlineFound.libraryPath, outlineFound.declaringClass);
+                            line = null;
+                        }
+                        else {
+                            resource = "/resource/" + document.title + resource;
+                        }
+                        var outlineCell = {
+                            text: outlineFound.name + "&nbsp;&nbsp;" + constraintInfo,
+                            resource: resource,
+                            link: resourceLink,
+                            line: line,
+                            style: outlineType == 'function' ? 'functionNode' : 'propertyNode'
+                        };
+                        var typeCell = {
+                            text: typeName + "&nbsp;&nbsp;" + typePackage,
+                            resource: resource,
+                            link: resourceLink,
+                            line: line,
+                            style: "resourceNode"
+                        };
+                        outlineRows.push([outlineCell, typeCell]);
+                    }
+                    onComplete(outlineRows, originalExpression);
+                });
+            }, null, "Search Outline");
+        }
+        Command.searchOutline = searchOutline;
+        function findOutline(text, onComplete) {
+            var originalExpression = text; // keep track of the requested expression
+            if (text || text == "") {
+                var line = editor_1.FileEditor.getCurrentLineForEditor();
+                var editorData = editor_1.FileEditor.loadEditor();
+                var message_1 = JSON.stringify({
+                    resource: editorData.resource.projectPath,
+                    line: line,
+                    complete: originalExpression.trim(),
+                    source: editorData.source
+                });
+                $.ajax({
+                    contentType: 'application/json',
+                    data: message_1,
+                    dataType: 'json',
+                    success: function (response) {
+                        var outlinesFound = response.outlines;
+                        var outlineDetails = [];
+                        for (var outlineName in outlinesFound) {
+                            if (outlinesFound.hasOwnProperty(outlineName)) {
+                                var outlineDetail = outlinesFound[outlineName];
+                                outlineDetails.push({
+                                    name: outlineName,
+                                    type: outlineDetail.type,
+                                    resource: outlineDetail.resource,
+                                    line: outlineDetail.line,
+                                    constraint: outlineDetail.constraint,
+                                    declaringClass: outlineDetail.declaringClass,
+                                    libraryPath: outlineDetail.libraryPath
+                                });
+                            }
+                        }
+                        onComplete(outlineDetails, originalExpression);
+                    },
+                    error: function (response) {
+                        onComplete([], originalExpression);
+                        console.log("Could not complete outline for text '" + originalExpression + "'", message_1);
+                    },
+                    async: true,
+                    processData: false,
+                    type: 'POST',
+                    url: '/outline/' + document.title
+                });
+            }
+            else {
+                onComplete([], originalExpression);
             }
         }
         function replaceTokenInFiles(matchText, searchCriteria, filePatterns) {
@@ -98,7 +220,7 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                 searchFunction = dialog_1.DialogBuilder.createTextSearchAndReplaceDialog;
             }
             searchFunction(function (text, fileTypes, searchCriteria, onComplete) {
-                findFilesWithText(text, fileTypes, searchCriteria, function (filesFound) {
+                findFilesWithText(text, fileTypes, searchCriteria, function (filesFound, originalText) {
                     var fileRows = [];
                     for (var i = 0; i < filesFound.length; i++) {
                         var fileFound = filesFound[i];
@@ -126,15 +248,16 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                         };
                         fileRows.push([resourceCell, textCell]);
                     }
-                    return onComplete(fileRows);
+                    return onComplete(fileRows, originalText);
                 });
             }, filePatterns, enableReplace ? "Replace Text" : "Find Text");
         }
         function findFilesWithText(text, fileTypes, searchCriteria, onComplete) {
+            var originalText = text;
             if (text && text.length > 1) {
                 var searchUrl = '';
                 searchUrl += '/find/' + document.title;
-                searchUrl += '?expression=' + encodeURIComponent(text);
+                searchUrl += '?expression=' + encodeURIComponent(originalText);
                 searchUrl += '&pattern=' + encodeURIComponent(fileTypes);
                 searchUrl += "&caseSensitive=" + encodeURIComponent(searchCriteria.caseSensitive);
                 searchUrl += "&regularExpression=" + encodeURIComponent(searchCriteria.regularExpression);
@@ -154,18 +277,18 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                             };
                             response.push(fileMatch);
                         }
-                        onComplete(response);
+                        onComplete(response, originalText);
                     },
                     async: true
                 });
             }
             else {
-                onComplete([]);
+                onComplete([], originalText);
             }
         }
         function findFileNames() {
             dialog_1.DialogBuilder.createListDialog(function (text, ignoreMe, onComplete) {
-                findFilesByName(text, function (filesFound) {
+                findFilesByName(text, function (filesFound, originalText) {
                     var fileRows = [];
                     for (var i = 0; i < filesFound.length; i++) {
                         var fileFound = filesFound[i];
@@ -180,44 +303,60 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
                         resourceLink += "#" + fileFound.resource;
                         var resourceCell = {
                             text: fileFound.text,
+                            name: fileFound.name,
                             link: resourceLink,
                             style: 'resourceNode'
                         };
                         fileRows.push([resourceCell]);
                     }
-                    return onComplete(fileRows);
+                    return onComplete(fileRows, originalText);
                 });
             }, null, "Find Files");
         }
         Command.findFileNames = findFileNames;
         function findFilesByName(text, onComplete) {
+            var originalText = text;
             if (text && text.length > 1) {
                 $.ajax({
-                    url: '/file/' + document.title + '?expression=' + text,
+                    url: '/file/' + document.title + '?expression=' + originalText,
                     success: function (filesMatched) {
                         var response = [];
                         for (var i = 0; i < filesMatched.length; i++) {
                             var fileMatch = filesMatched[i];
                             var typeEntry = {
                                 resource: fileMatch.resource,
+                                path: fileMatch.path,
+                                name: fileMatch.name,
                                 project: document.title
                             };
                             response.push(fileMatch);
                         }
-                        onComplete(response);
+                        onComplete(response, originalText);
                     },
                     async: true
                 });
             }
             else {
-                onComplete([]);
+                onComplete([], originalText);
             }
         }
+        function openTerminal(resourcePath) {
+            if (tree_1.FileTree.isResourceFolder(resourcePath.filePath)) {
+                var message = {
+                    project: document.title,
+                    resource: resourcePath.filePath,
+                    terminal: true
+                };
+                socket_1.EventBus.sendEvent("EXPLORE", message);
+            }
+        }
+        Command.openTerminal = openTerminal;
         function exploreDirectory(resourcePath) {
             if (tree_1.FileTree.isResourceFolder(resourcePath.filePath)) {
                 var message = {
                     project: document.title,
-                    resource: resourcePath.filePath
+                    resource: resourcePath.filePath,
+                    terminal: false
                 };
                 socket_1.EventBus.sendEvent("EXPLORE", message);
             }
@@ -386,6 +525,27 @@ define(["require", "exports", "jquery", "project", "alert", "socket", "console",
             }
         }
         Command.saveEditor = saveEditor;
+        function saveEditorOnClose(editorText, editorResource) {
+            if (editorResource != null && editorResource.resourcePath)
+                ;
+            {
+                dialog_1.DialogBuilder.openTreeDialog(editorResource, true, function (resourceDetails) {
+                    var message = {
+                        project: document.title,
+                        resource: editorResource.filePath,
+                        source: editorText,
+                        directory: false,
+                        create: false
+                    };
+                    //ProcessConsole.clearConsole();
+                    socket_1.EventBus.sendEvent("SAVE", message);
+                    editor_1.FileEditor.clearSavedEditorBuffer(editorResource.resourcePath); // make sure its synced
+                }, function (resourceDetails) {
+                    editor_1.FileEditor.clearSavedEditorBuffer(editorResource.resourcePath);
+                });
+            }
+        }
+        Command.saveEditorOnClose = saveEditorOnClose;
         function deleteFile(resourceDetails) {
             var editorData = editor_1.FileEditor.loadEditor();
             if (resourceDetails == null && editorData.resource != null) {

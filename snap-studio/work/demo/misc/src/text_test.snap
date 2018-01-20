@@ -1,0 +1,17 @@
+
+Fud.func();
+println(Fud.x);
+
+module Fud {
+
+   var x=0;
+   
+   for(i in 0..10){
+   println(i);
+      x+=i;
+   }
+
+   func(){
+      println("func");
+   }
+}

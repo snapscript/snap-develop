@@ -5,13 +5,14 @@ import {Common} from "common"
 import {FileEditor} from "editor"
 import {Command} from "commands"
 import {Project} from "project"
+import {History} from "history"
 
 export module KeyBinder {
 
    const MAX_PRESS_REPEAT = 250; // 250 milliseconds
    const pressTimes = {};
    var controlPressed = false;
-   var keyBindings = {};
+   var keyBindings = {};  
    
    export function getKeyBindings() {
       return keyBindings;
@@ -20,14 +21,26 @@ export module KeyBinder {
    export function bindKeys() {
       disableBrowserKeys();
       
+      createKeyBinding("alt left", "Navigate Back", true, function() {
+         History.navigateBackward();
+      });
+      createKeyBinding("alt right", "Navigate Forward", true, function() {
+         History.navigateForward();
+      });
       createKeyBinding("ctrl n", "New File", true, function() {
          Command.newFile(null);
       });
       createKeyBinding("ctrl s", "Save File", true, function() {
          Command.saveFile(null);
       });
+      createKeyBinding("ctrl q", "Close File", true, function() {
+         Project.closeEditorTab();
+      });      
       createKeyBinding("ctrl shift s", "Search Types", true, function() {
          Command.searchTypes();
+      });
+      createKeyBinding("ctrl shift o", "Search Outline", true, function() {
+         Command.searchOutline();
       });
       createKeyBinding("ctrl tab", "Format Source", true, function() {
          FileEditor.formatEditorSource();

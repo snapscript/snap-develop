@@ -46,7 +46,12 @@ export module History {
    }
    
    export function navigateBackward() {
-      window.history.back();
+      var location = window.location.hash;
+      var hashIndex = location.indexOf('#'); // if we are currently on a file
+      
+      if(hashIndex != -1) {
+         window.history.back();
+      }
    }
    
    function updateEditorFromHistory(){

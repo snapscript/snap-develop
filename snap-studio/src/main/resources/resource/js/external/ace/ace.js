@@ -15636,6 +15636,7 @@ position: absolute;\
 -moz-box-sizing: border-box;\
 -webkit-box-sizing: border-box;\
 box-sizing: border-box;\
+width: 600px;\
 min-width: 100%;\
 }\
 .ace_dragging .ace_scroller:before{\

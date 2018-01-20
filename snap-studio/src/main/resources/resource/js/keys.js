@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "mousetrap", "common", "editor", "commands", "project"], function (require, exports, $, Mousetrap, common_1, editor_1, commands_1, project_1) {
+define(["require", "exports", "jquery", "mousetrap", "common", "editor", "commands", "project", "history"], function (require, exports, $, Mousetrap, common_1, editor_1, commands_1, project_1, history_1) {
     "use strict";
     var KeyBinder;
     (function (KeyBinder) {
@@ -12,14 +12,26 @@ define(["require", "exports", "jquery", "mousetrap", "common", "editor", "comman
         KeyBinder.getKeyBindings = getKeyBindings;
         function bindKeys() {
             disableBrowserKeys();
+            createKeyBinding("alt left", "Navigate Back", true, function () {
+                history_1.History.navigateBackward();
+            });
+            createKeyBinding("alt right", "Navigate Forward", true, function () {
+                history_1.History.navigateForward();
+            });
             createKeyBinding("ctrl n", "New File", true, function () {
                 commands_1.Command.newFile(null);
             });
             createKeyBinding("ctrl s", "Save File", true, function () {
                 commands_1.Command.saveFile(null);
             });
+            createKeyBinding("ctrl q", "Close File", true, function () {
+                project_1.Project.closeEditorTab();
+            });
             createKeyBinding("ctrl shift s", "Search Types", true, function () {
                 commands_1.Command.searchTypes();
+            });
+            createKeyBinding("ctrl shift o", "Search Outline", true, function () {
+                commands_1.Command.searchOutline();
             });
             createKeyBinding("ctrl tab", "Format Source", true, function () {
                 editor_1.FileEditor.formatEditorSource();

@@ -211,7 +211,21 @@ export module Common {
          return bottomOfChildRect - bottomOfParentRect;
       } 
       return 0;
-  }
+   }
+   
+   export function stringReplaceText(text, from, to) {
+      if(text && from && to) {
+         return text.split(from).join(to);
+      }
+      return text;
+   }
+   
+   export function stringContains(text, token) {
+      if(text && token) {
+         return text.indexOf(token) !== -1;
+      }
+      return false;
+   }
    
    export function stringEndsWith(text, token) {
       if(text && token && text.length >= token.length) {

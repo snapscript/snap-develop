@@ -49,8 +49,7 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor"], fun
                     }
                 }
             }
-            w2ui_1.w2ui['problems'].records = problemRecords;
-            w2ui_1.w2ui['problems'].refresh();
+            common_1.Common.updateTableRecords(problemRecords, 'problems');
         }
         ProblemManager.showProblems = showProblems;
         function clearProblems() {
@@ -78,6 +77,7 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor"], fun
                     }
                 }
                 else {
+                    console.log("Clear highlights in " + editorResource);
                     editor_1.FileEditor.clearEditorHighlights(); // clear if the resource is focused
                 }
             }

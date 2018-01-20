@@ -175,6 +175,23 @@
 	background-repeat: no-repeat;
     padding: 12px; 
 }
+
+#leftProjectRoot {
+	background-image: url('${IMAGE_FOLDER}/project_index.png');	
+	background-size: 16px 16px;
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px; 
+}
+
+#leftDirectory {
+	background-image: url('${IMAGE_FOLDER}/file_directory.png');	
+	background-size: 16px 16px;
+	background-position: center;
+	background-repeat: no-repeat;
+    padding: 12px; 
+}
+
 .toolbarTop {
 	padding: 8px;
 	height: 45px;

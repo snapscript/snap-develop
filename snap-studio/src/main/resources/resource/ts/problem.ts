@@ -60,8 +60,7 @@ export module ProblemManager {
          	}
          }
       }
-      w2ui['problems'].records = problemRecords;
-      w2ui['problems'].refresh();
+      Common.updateTableRecords(problemRecords, 'problems');
    }
    
    function clearProblems() {
@@ -93,6 +92,7 @@ export module ProblemManager {
                FileEditor.clearEditorHighlights(); // clear if the resource is focused
             }
          } else {
+            console.log("Clear highlights in " + editorResource);
             FileEditor.clearEditorHighlights(); // clear if the resource is focused
          }
       }
@@ -112,7 +112,7 @@ export module ProblemManager {
    	if(problemInfo.line >= 0) {
    	   currentProblems[resourcePath.resourcePath] = problemInfo;
    	} else {
-   	     currentProblems[resourcePath.resourcePath] = null;
+   	   currentProblems[resourcePath.resourcePath] = null;
    	}
    	showProblems();
    	highlightProblems(); // highlight the problems

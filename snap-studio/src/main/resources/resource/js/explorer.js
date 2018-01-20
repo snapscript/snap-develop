@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "commands", "alert"], function (require, exports, $, common_1, socket_1, tree_1, editor_1, commands_1, alert_1) {
+define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "commands"], function (require, exports, $, common_1, socket_1, tree_1, editor_1, commands_1) {
     "use strict";
     var FileExplorer;
     (function (FileExplorer) {
@@ -20,7 +20,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
         }
         function openTreeFile(resourcePath, afterLoad) {
             var filePath = resourcePath.toLowerCase();
-            if (common_1.Common.stringEndsWith(filePath, ".json") || common_1.Common.stringEndsWith(filePath, ".js") || common_1.Common.stringEndsWith(filePath, ".xml")) {
+            if (isTextFile(filePath)) {
                 //var type = header.getResponseHeader("content-type");
                 $.ajax({
                     url: resourcePath,
@@ -32,7 +32,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                     },
                     error: function (response) {
                         var type = header.getResponseHeader("content-type");
-                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath, "text/plain", resourcePath);
+                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", resourcePath);
                     },
                     async: false
                 });
@@ -46,7 +46,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                         handleOpenTreeFile(resourcePath, afterLoad, response, contentType, resourcePath);
                     },
                     error: function (response) {
-                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath, "text/plain", resourcePath);
+                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", resourcePath);
                     },
                     async: false
                 });
@@ -57,7 +57,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
             var filePath = resourcePath.toLowerCase();
             var backupResourcePath = resourcePath.replace(/^\/resource/i, "/history");
             //var backupUrl = backupResourcePath + "?time=" + timeStamp;
-            if (common_1.Common.stringEndsWith(filePath, ".json") || common_1.Common.stringEndsWith(filePath, ".js") || common_1.Common.stringEndsWith(filePath, ".xml")) {
+            if (isTextFile(filePath)) {
                 var downloadURL = backupResourcePath + "?time=" + timeStamp;
                 $.ajax({
                     url: downloadURL,
@@ -68,7 +68,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                         handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL);
                     },
                     error: function (response) {
-                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath, "text/plain", downloadURL);
+                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", downloadURL);
                     },
                     async: false
                 });
@@ -83,7 +83,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                         handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL);
                     },
                     error: function (response) {
-                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + filePath, "text/plain", downloadURL);
+                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", downloadURL);
                     },
                     async: false
                 });
@@ -99,19 +99,22 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
             }
             else {
                 var mode = editor_1.FileEditor.resolveEditorMode(resourcePath);
-                if (editor_1.FileEditor.isEditorChanged()) {
-                    var editorData = editor_1.FileEditor.loadEditor();
-                    var editorResource = editorData.resource;
-                    var message = "Save resource " + editorResource.filePath;
-                    alert_1.Alerts.createConfirmAlert("File Changed", message, "Save", "Ignore", function () {
-                        commands_1.Command.saveEditor(true); // save the file
-                    }, function () {
-                        editor_1.FileEditor.updateEditor(response, resourcePath);
-                    });
-                }
-                else {
-                    editor_1.FileEditor.updateEditor(response, resourcePath);
-                }
+                //         if(FileEditor.isEditorChanged()) {
+                //            var editorData = FileEditor.loadEditor();
+                //            var editorResource = editorData.resource;
+                //            var message = "Save resource " + editorResource.filePath;
+                //            
+                //            Alerts.createConfirmAlert("File Changed", message, "Save", "Ignore", 
+                //                  function(){
+                //                     Command.saveEditor(true); // save the file
+                //                  },
+                //                  function(){
+                //                     FileEditor.updateEditor(response, resourcePath);
+                //                  });
+                //         } else {
+                //            FileEditor.updateEditor(response, resourcePath);
+                //         }
+                editor_1.FileEditor.updateEditor(response, resourcePath);
             }
             afterLoad();
         }
@@ -121,6 +124,14 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
         }
         function handleDownloadFile(downloadURL) {
             window.location.href = downloadURL;
+        }
+        function isTextFile(filePath) {
+            return common_1.Common.stringEndsWith(filePath, ".json") ||
+                common_1.Common.stringEndsWith(filePath, ".js") ||
+                common_1.Common.stringEndsWith(filePath, ".xml") ||
+                common_1.Common.stringEndsWith(filePath, ".project") ||
+                common_1.Common.stringEndsWith(filePath, ".classpath") ||
+                common_1.Common.stringEndsWith(filePath, ".index");
         }
         function isImageFileType(contentType) {
             if (contentType) {
@@ -170,6 +181,9 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
             }
             else if (commandName == "exploreDirectory") {
                 commands_1.Command.exploreDirectory(resourcePath);
+            }
+            else if (commandName == "openTerminal") {
+                commands_1.Command.openTerminal(resourcePath);
             }
             else if (commandName == "renameFile") {
                 if (isDirectory) {

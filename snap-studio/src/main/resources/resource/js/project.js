@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", "tree", "threads", "history", "variables", "explorer", "commands", "debug", "keys"], function (require, exports, $, w2ui_1, console_1, problem_1, editor_1, tree_1, threads_1, history_1, variables_1, explorer_1, commands_1, debug_1, keys_1) {
+define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", "editor", "tree", "threads", "history", "variables", "explorer", "commands", "debug", "keys"], function (require, exports, $, w2ui_1, common_1, console_1, problem_1, editor_1, tree_1, threads_1, history_1, variables_1, explorer_1, commands_1, debug_1, keys_1) {
     "use strict";
     var Project;
     (function (Project) {
@@ -352,12 +352,23 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             }
             return null;
         }
+        function closeEditorTab() {
+            var data = editor_1.FileEditor.loadEditor();
+            if (data.resource) {
+                var tabs = findActiveEditorTabLayout();
+                if (tabs.tabs.length > 1) {
+                    closeEditorTabForPath(data.resource.resourcePath);
+                    deleteEditorTab(data.resource.resourcePath);
+                }
+            }
+        }
+        Project.closeEditorTab = closeEditorTab;
         function deleteEditorTab(resource) {
             var layout = findActiveEditorLayout();
             var tabs = findActiveEditorTabLayout();
             if (tabs != null && resource != null) {
                 var removeTab = tabs.get(resource);
-                if (removeTab.closable) {
+                if (removeTab && removeTab.closable) {
                     tabs.remove(resource); // remove the tab
                     if (removeTab.active) {
                         activateAnyEditorTab(resource); // if it was active then activate another
@@ -397,6 +408,31 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             }
         }
         Project.renameEditorTab = renameEditorTab;
+        function markEditorTab(name, isModified) {
+            var layout = findActiveEditorLayout();
+            var tabs = findActiveEditorTabLayout();
+            var editorData = editor_1.FileEditor.loadEditor();
+            if (tabs != null && name != null) {
+                var tabList = tabs.tabs;
+                var count = 0;
+                for (var i = 0; i < tabList.length; i++) {
+                    var nextTab = tabList[i];
+                    if (nextTab != null && nextTab.id == name) {
+                        var tabPath = tree_1.FileTree.createResourcePath(name);
+                        var tabFromName = (isModified ? "" : "*") + tabPath.fileName;
+                        var tabToName = (isModified ? "*" : "") + tabPath.fileName;
+                        var isAlreadyModified = common_1.Common.stringContains(nextTab.text, "*" + tabPath.fileName);
+                        if (isModified != isAlreadyModified) {
+                            nextTab.caption = common_1.Common.stringReplaceText(nextTab.caption, tabFromName, tabToName);
+                            nextTab.text = common_1.Common.stringReplaceText(nextTab.text, tabFromName, tabToName);
+                            tabs.refresh();
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        Project.markEditorTab = markEditorTab;
         function createEditorTab() {
             var layout = findActiveEditorLayout();
             var tabs = findActiveEditorTabLayout();
@@ -450,25 +486,38 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             }
         }
         Project.createEditorTab = createEditorTab;
+        function closeEditorTabForPath(resourcePathToClose) {
+            if (editor_1.FileEditor.isEditorChangedForPath(resourcePathToClose)) {
+                var currentBuffer = editor_1.FileEditor.loadSavedEditorBuffer(resourcePathToClose);
+                var editorResource = tree_1.FileTree.createResourcePath(resourcePathToClose);
+                commands_1.Command.saveEditorOnClose(currentBuffer, editorResource); // save the file;
+            }
+            activateAnyEditorTab(resourcePathToClose); // activate some other tab
+        }
         function activateAnyEditorTab(resourcePathDeleted) {
             var layout = findActiveEditorLayout();
             var tabs = findActiveEditorTabLayout();
             if (tabs != null) {
                 var tabList = tabs.tabs;
+                var wasDeleted = false;
                 for (var i = 0; i < tabList.length; i++) {
                     var nextTab = tabList[i];
                     if (nextTab != null && nextTab.id == resourcePathDeleted) {
                         nextTab.id = 'editTab'; // make sure not to enable, bit of a hack
                         nextTab.closable = true;
+                        nextTab.active = false;
+                        wasDeleted = true;
                     }
                 }
-                for (var i = 0; i < tabList.length; i++) {
-                    var nextTab = tabList[i];
-                    if (nextTab != null && nextTab.id != 'editTab') {
-                        tabs.active = nextTab.id;
-                        tabs.closable = false;
-                        explorer_1.FileExplorer.openTreeFile(nextTab.id, function () { }); // browse style makes no difference here
-                        break;
+                if (wasDeleted) {
+                    for (var i = 0; i < tabList.length; i++) {
+                        var nextTab = tabList[i];
+                        if (nextTab != null && nextTab.id != 'editTab') {
+                            tabs.active = nextTab.id;
+                            tabs.closable = false;
+                            explorer_1.FileExplorer.openTreeFile(nextTab.id, function () { }); // browse style makes no difference here
+                            break;
+                        }
                     }
                 }
             }
@@ -489,6 +538,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             // $('#topLayer').spin({ lines: 10, length: 30, width: 20, radius: 40 });
             // -- LAYOUT
             var pstyle = 'background-color: ${PROJECT_BACKGROUND_COLOR}; overflow: hidden;';
+            var leftStyle = pstyle + " margin-top: 32px; border-top: 1px solid ${PROJECT_BORDER_COLOR};";
             $('#mainLayout').w2layout({
                 name: 'exploreMainLayout',
                 padding: 0,
@@ -499,18 +549,18 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                         style: pstyle
                     }, {
                         type: 'left',
-                        size: '20%',
+                        size: '25%',
                         resizable: true,
                         style: pstyle
                     }, {
                         type: 'right',
-                        size: '20%',
+                        size: '0%',
                         resizable: true,
                         hidden: true,
                         style: pstyle
                     }, {
                         type: 'main',
-                        size: '80%',
+                        size: '75%',
                         resizable: true,
                         style: pstyle
                     }, {
@@ -561,7 +611,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                                 });
                             },
                             onClose: function (event) {
-                                activateAnyEditorTab(event.target);
+                                closeEditorTabForPath(event.target);
                             }
                         }
                     }]
@@ -652,6 +702,8 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
             createThreadsTab();
             createHistoryTab();
             w2ui_1.w2ui['exploreMainLayout'].content('top', w2ui_1.w2ui['topLayout']);
+            //w2ui['exploreMainLayout'].content('left', '<table cellpadding="2"><tr><td><span id="leftProjectRoot"></span></td><tr><tr><td><span id="leftDirectory"></span></td><tr><tr><td></td><tr></table>');
+            //w2ui['exploreMainLayout'].content('left', '<div style="border: dotted 1px ${PROJECT_BORDER_COLOR}; padding: 1px; margin-top: 10px; margin-left: 5px;"><table cellpadding="2"><tr><td>&nbsp;</td><tr><tr><td><!--span id="leftProjectRoot"></span--></td></tr></table></div>');      
             w2ui_1.w2ui['exploreMainLayout'].content('left', w2ui_1.w2ui['exploreLeftTabLayout']);
             w2ui_1.w2ui['exploreMainLayout'].content('main', w2ui_1.w2ui['exploreEditorLayout']);
             w2ui_1.w2ui['exploreEditorLayout'].content('main', w2ui_1.w2ui['exploreEditorTabLayout']);
@@ -737,7 +789,7 @@ define(["require", "exports", "jquery", "w2ui", "console", "problem", "editor", 
                                 });
                             },
                             onClose: function (event) {
-                                activateAnyEditorTab(event.target);
+                                closeEditorTabForPath(event.target);
                             }
                         }
                     }]

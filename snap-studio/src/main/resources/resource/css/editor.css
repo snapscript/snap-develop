@@ -138,6 +138,28 @@
 	padding-left: 22px; /* Or size of icon + spacing */
 }
 
+.functionNode {
+	/*font-family: "Lucida Console", sans-serif; 
+    font-size: 1.2em;*/
+	font-size: 1.1em;
+	background-image: url('${IMAGE_FOLDER}/green_circle.png');
+	background-size: contain;
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}
+
+.propertyNode {
+	/*font-family: "Lucida Console", sans-serif; 
+    font-size: 1.2em;*/
+	font-size: 1.1em;
+	background-image: url('${IMAGE_FOLDER}/grey_circle.png');
+	background-size: contain;
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}
+
 .resourceNode {
 	/*font-family: "Lucida Console", sans-serif; 
     font-size: 1.2em;*/
@@ -169,4 +191,98 @@
 .typeTable tr:hover {
 	background-color: #eff9fe;
 	border: #70c0e7 1px solid;
+}
+
+.ace_autocomplete_highlight {
+	/* right now e do nothing */
+}
+
+.ace_autocomplete_class {
+	/*font-family: "Lucida Console", sans-serif;*/
+    font-size: 1.0em;
+	background-image: url('${IMAGE_FOLDER}/green_circle.png');	
+	background-size: contain;
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}
+
+.ace_autocomplete_enum {
+	/*font-family: "Lucida Console", sans-serif;*/
+    font-size: 1.0em;
+	background-image: url('${IMAGE_FOLDER}/green_circle.png');	
+	background-size: contain;
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}
+
+.ace_autocomplete_trait {
+	/*font-family: "Lucida Console", sans-serif;*/
+    font-size: 1.0em;
+	background-image: url('${IMAGE_FOLDER}/green_circle.png');	
+	background-size: contain;
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}
+
+.ace_autocomplete_module {
+	/*font-family: "Lucida Console", sans-serif;*/
+    font-size: 1.0em;
+	background-image: url('${IMAGE_FOLDER}/green_circle.png');	
+	background-size: contain;
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}
+
+.ace_autocomplete_function {
+	/*font-family: "Lucida Console", sans-serif;*/
+    font-size: 1.0em;
+	background-image: url('${IMAGE_FOLDER}/green_circle.png');	
+	background-size: contain;
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}
+
+.ace_autocomplete_property {
+	/*font-family: "Lucida Console", sans-serif;*/
+    font-size: 1.0em;
+	background-image: url('${IMAGE_FOLDER}/green_circle.png');	
+	background-size: contain;
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}
+
+.ace_autocomplete_variable {
+	/*font-family: "Lucida Console", sans-serif;*/
+    font-size: 1.0em;
+	background-image: url('${IMAGE_FOLDER}/grey_circle.png');	
+	background-size: contain;
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}
+
+.ace_autocomplete_parameter {
+	/*font-family: "Lucida Console", sans-serif;*/
+    font-size: 1.0em;
+	background-image: url('${IMAGE_FOLDER}/grey_circle.png');	
+	background-size: contain;
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
+}
+
+.ace_autocomplete_constructor {
+	/*font-family: "Lucida Console", sans-serif;*/
+    font-size: 1.0em;
+	background-image: url('${IMAGE_FOLDER}/green_circle.png');	
+	background-size: contain;
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 22px; /* Or size of icon + spacing */
 }

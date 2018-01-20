@@ -14,7 +14,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             this.editorCurrentTokens = {}; // current editor hyperlinks
             this.editorFocusToken = null; // token to focus on editor load
             this.editorHistory = {}; // store all editor context
-            this.editorPanel = null;
+            this.editorPanel = null; // this actual editor
             this.editorPanel = editorPanel;
             this.editorTheme = editorTheme;
         }
@@ -22,6 +22,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             keys_1.KeyBinder.bindKeys(); // register key bindings
             project_1.Project.changeProjectFont(); // project.js update font
             FileEditor.scrollEditorToPosition();
+            FileEditor.updateProjectTabOnChange(); // listen to change
             spinner_1.LoadSpinner.finish();
         };
         return FileEditorView;
@@ -350,72 +351,22 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                 return "ace/mode/xml";
             }
             if (common_1.Common.stringEndsWith(token, ".classpath")) {
-                return "ace/mode/xml";
+                return "ace/mode/text";
             }
             return "ace/mode/text";
         }
         FileEditor.resolveEditorMode = resolveEditorMode;
-        function indexEditorTokens(text, resource) {
-            var token = resource.toLowerCase();
-            var functionRegex = /(function|static|public|private|abstract|override|)\s+([a-z][a-zA-Z0-9]*)\s*\(/g;
-            var variableRegex = /(var|const)\s+([a-z][a-zA-Z0-9]*)/g;
-            var classRegex = /(class|trait|enum)\s+([A-Z][a-zA-Z0-9]*)/g;
-            var importRegex = /import\s+([a-z][a-zA-Z0-9\.]*)\.([A-Z][a-zA-Z]*)/g;
-            var tokenList = {};
-            if (common_1.Common.stringEndsWith(token, ".snap")) {
-                var lines = text.split(/\r?\n/);
-                for (var i = 0; i < lines.length; i++) {
-                    var line = lines[i];
-                    indexEditorLine(line, i + 1, functionRegex, tokenList, ["%s("], false);
-                    indexEditorLine(line, i + 1, variableRegex, tokenList, ["%s.", "%s=", "%s =", "%s<", "%s <", "%s>", "%s >", "%s!", "%s !", "%s-", "%s -", "%s+", "%s +", "%s*", "%s *", "%s%", "%s %", "%s/", "%s /"], false);
-                    indexEditorLine(line, i + 1, importRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s", ".%s;", " as %s", "%s["], true);
-                    indexEditorLine(line, i + 1, classRegex, tokenList, ["new %s(", "%s.", ":%s", ": %s", "extends %s", "with %s", "extends  %s", "with  %s", ".%s;", " as %s", "%s["], false);
-                }
-            }
-            editorView.editorCurrentTokens = tokenList; // keep these tokens for indexing
-            if (editorView.editorFocusToken != null) {
-                var focusToken = editorView.editorCurrentTokens[editorView.editorFocusToken];
-                if (focusToken != null) {
-                    setTimeout(function () {
-                        showEditorLine(focusToken.line); // focus on the line there
-                        // was a token
-                    }, 100);
-                    editorView.editorFocusToken = null; // clear for next open
-                }
-            }
-        }
-        function indexEditorLine(line, number, expression, tokenList, templates, external) {
-            expression.lastIndex = 0; // you have to reset regex to its start position
-            var tokens = expression.exec(line);
-            if (tokens != null && tokens.length > 0) {
-                var resourceToken = tokens[1]; // only for 'import' which is external
-                var indexToken = tokens[2];
-                for (var i = 0; i < templates.length; i++) {
-                    var template = templates[i];
-                    var indexKey = template.replace("%s", indexToken);
-                    if (external) {
-                        tokenList[indexKey] = {
-                            resource: "/" + resourceToken.replace(".", "/") + ".snap",
-                            line: number // save the line number
-                        };
-                    }
-                    else {
-                        tokenList[indexKey] = {
-                            resource: null,
-                            line: number // save the line number
-                        };
-                    }
-                }
-            }
-        }
         function saveEditorHistory() {
             var editorData = loadEditor();
             if (editorData.resource && editorData.source) {
                 var md5Hash = md5_1.md5(editorData.source);
+                var currentText = editorView.editorPanel.getValue();
+                var saveText = isEditorChanged() ? currentText : null; // keep text if changed
                 editorView.editorHistory[editorData.resource.resourcePath] = {
                     hash: md5Hash,
                     history: editorData.history,
-                    position: editorData.position
+                    position: editorData.position,
+                    buffer: saveText // save the buffer if it has changed
                 };
             }
         }
@@ -449,11 +400,38 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             }
             session.setUndoManager(manager); // reset undo history
         }
+        function clearSavedEditorBuffer(resource) {
+            var editorResource = tree_1.FileTree.createResourcePath(resource);
+            var history = editorView.editorHistory[editorResource.resourcePath];
+            if (history) {
+                history.buffer = null; // clear the buffer
+                updateEditorTabMarkForResource(editorResource.resourcePath); // remove the *
+            }
+        }
+        FileEditor.clearSavedEditorBuffer = clearSavedEditorBuffer;
+        function loadSavedEditorBuffer(resource) {
+            var editorResource = tree_1.FileTree.createResourcePath(resource);
+            if (isEditorResourcePath(editorResource.resourcePath)) {
+                var editorData = loadEditor();
+                return editorData.source; // if its the current buffer then return it
+            }
+            var history = editorView.editorHistory[editorResource.resourcePath];
+            if (history) {
+                return history.buffer;
+            }
+            return null;
+        }
+        FileEditor.loadSavedEditorBuffer = loadSavedEditorBuffer;
         function updateEditor(text, resource) {
             var session = editorView.editorPanel.getSession();
             var currentMode = session.getMode();
             var actualMode = resolveEditorMode(resource);
-            text = encodeEditorText(text, resource); // change JSON conversion
+            var encodedText = encodeEditorText(text, resource); // change JSON conversion
+            var savedHistoryBuffer = loadSavedEditorBuffer(resource); // load saved buffer
+            var textToDisplay = encodedText;
+            if (savedHistoryBuffer) {
+                textToDisplay = savedHistoryBuffer;
+            }
             saveEditorHistory(); // save any existing history
             if (actualMode != currentMode) {
                 session.setMode({
@@ -462,11 +440,11 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                 });
             }
             editorView.editorPanel.setReadOnly(false);
-            editorView.editorPanel.setValue(text, 1);
-            createEditorUndoManager(session, text, resource); // restore any existing history
+            editorView.editorPanel.setValue(textToDisplay, 1);
+            createEditorUndoManager(session, textToDisplay, resource); // restore any existing history
             clearEditor();
             editorView.editorResource = tree_1.FileTree.createResourcePath(resource);
-            editorView.editorText = text;
+            editorView.editorText = encodedText; // save the real text NOT the text to display
             window.location.hash = editorView.editorResource.projectPath; // update # anchor
             problem_1.ProblemManager.highlightProblems(); // higlight problems on this resource
             if (resource != null && editorView.editorResource) {
@@ -481,12 +459,12 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                     }
                 }
             }
-            indexEditorTokens(text, resource); // create some tokens we can link to dynamically
             project_1.Project.createEditorTab(); // update the tab name
             history_1.History.showFileHistory(); // update the history
             status_1.StatusPanel.showActiveFile(editorView.editorResource.projectPath);
             FileEditor.showEditorFileInTree();
             scrollEditorToPosition();
+            updateEditorTabMark(); // add a * to the name if its not in sync
         }
         FileEditor.updateEditor = updateEditor;
         function showEditorFileInTree() {
@@ -495,6 +473,10 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             tree_1.FileTree.showTreeNode('explorerTree', resourcePath);
         }
         FileEditor.showEditorFileInTree = showEditorFileInTree;
+        function getCurrentLineForEditor() {
+            return editorView.editorPanel.getSelectionRange().start.row;
+        }
+        FileEditor.getCurrentLineForEditor = getCurrentLineForEditor;
         function getSelectedText() {
             return editorView.editorPanel.getSelectedText();
         }
@@ -507,6 +489,25 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             return false;
         }
         FileEditor.isEditorChanged = isEditorChanged;
+        function isEditorChangedForPath(resource) {
+            if (isEditorResourcePath(resource)) {
+                return isEditorChanged();
+            }
+            var savedHistoryBuffer = loadSavedEditorBuffer(resource); // load saved buffer
+            if (savedHistoryBuffer) {
+                return true;
+            }
+            return false;
+        }
+        FileEditor.isEditorChangedForPath = isEditorChangedForPath;
+        function isEditorResourcePath(resource) {
+            if (editorView.editorResource != null) {
+                if (editorView.editorResource.resourcePath == resource) {
+                    return true;
+                }
+            }
+            return false;
+        }
         function scrollEditorToPosition() {
             var session = editorView.editorPanel.getSession();
             if (editorView.editorResource && editorView.editorResource.resourcePath) {
@@ -535,19 +536,32 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             editorView.editorPanel.focus();
         }
         FileEditor.scrollEditorToPosition = scrollEditorToPosition;
+        function updateProjectTabOnChange() {
+            editorView.editorPanel.on("input", function () {
+                updateEditorTabMark(); // on input then you update star
+            });
+        }
+        FileEditor.updateProjectTabOnChange = updateProjectTabOnChange;
+        function updateEditorTabMark() {
+            updateEditorTabMarkForResource(editorView.editorResource.resourcePath);
+        }
+        function updateEditorTabMarkForResource(resource) {
+            project_1.Project.markEditorTab(resource, isEditorChangedForPath(resource));
+        }
         function createEditorAutoComplete() {
             return {
                 getCompletions: function createAutoComplete(editor, session, pos, prefix, callback) {
-                    if (prefix.length === 0) {
-                        callback(null, []);
-                        return;
-                    }
+                    //             if (prefix.length === 0) { 
+                    //                callback(null, []); 
+                    //                return; 
+                    //             }
                     var text = editor.getValue();
                     var line = editor.session.getLine(pos.row);
-                    var complete = line.substring(0, pos.column - prefix.length);
+                    var resource = editorView.editorResource.projectPath;
+                    var complete = line.substring(0, pos.column);
                     var message = JSON.stringify({
-                        resource: editorResource.projectPath,
-                        line: pos.row,
+                        resource: resource,
+                        line: pos.row + 1,
                         complete: complete,
                         source: text,
                         prefix: prefix
@@ -563,7 +577,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                             for (var token in tokens) {
                                 if (tokens.hasOwnProperty(token)) {
                                     var type = tokens[token];
-                                    suggestions.push({ name: token, value: token, score: 300, meta: type });
+                                    suggestions.push({ className: 'autocomplete_' + type, name: token, value: token, score: 300, meta: type });
                                 }
                             }
                             callback(null, suggestions);

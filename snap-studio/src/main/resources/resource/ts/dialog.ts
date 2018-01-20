@@ -9,45 +9,60 @@ import {FileTree} from "tree"
  
 export module DialogBuilder {
    
-   export function openTreeDialog(resourceDetails, foldersOnly, saveCallback) {
+   export function openTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback) {
       if (resourceDetails != null) {
-         createProjectDialog(resourceDetails, foldersOnly, saveCallback, false, "Save Changes");
+         createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, false, "Save Changes");
       } else {
-         createProjectDialog(resourceDetails, foldersOnly, saveCallback, false, "Save As");
+         createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, false, "Save As");
       }
    }
    
-   export function renameFileTreeDialog(resourceDetails, foldersOnly, saveCallback){
-      createProjectDialog(resourceDetails, foldersOnly, saveCallback, false, "Rename File");
+   export function renameFileTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback){
+      createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, false, "Rename File");
    }
    
-   export function renameDirectoryTreeDialog(resourceDetails, foldersOnly, saveCallback){
-      createProjectDialog(resourceDetails, foldersOnly, saveCallback, false, "Rename Directory");
+   export function renameDirectoryTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback){
+      createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, false, "Rename Directory");
    }
    
-   export function newFileTreeDialog(resourceDetails, foldersOnly, saveCallback){
-      createProjectDialog(resourceDetails, foldersOnly, saveCallback, true, "New File");
+   export function newFileTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback){
+      createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, true, "New File");
    }
    
-   export function newDirectoryTreeDialog(resourceDetails, foldersOnly, saveCallback){
-      createProjectDialog(resourceDetails, foldersOnly, saveCallback, true, "New Directory");
+   export function newDirectoryTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback){
+      createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, true, "New Directory");
    }
    
    export function evaluateExpressionDialog(expressionToEvaluate){
       createEvaluateDialog(expressionToEvaluate, "Evaluate Expression");
    }
    
-   function createProjectDialog(resourceDetails, foldersOnly, saveCallback, nameIsBlank, dialogTitle) {
-      createTreeDialog(resourceDetails, foldersOnly, saveCallback, nameIsBlank, dialogTitle, "/" +document.title)
+   function createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle) {
+      createTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle, "/" +document.title)
    }
    
-   function createTreeDialog(resourceDetails, foldersOnly, saveCallback, nameIsBlank, dialogTitle, treePath) {
+   function createTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle, treePath) {
       var dialogExpandPath = "/";
    
       if (resourceDetails != null) {
          dialogExpandPath = resourceDetails.projectDirectory; // /src/blah
       }
       var dialogBody = createFileSelectionDialogLayout(dialogExpandPath, '');
+      var focusInput = function() {
+         var element = document.getElementById('dialogPath');
+         element.contentEditable = true;
+         element.focus();
+      };
+      var createFinalPath = function() {
+         var originalDialogFileName = $('#dialogPath').html();
+         var originalDialogFolder = $('#dialogFolder').html();
+         var dialogPathName = FileTree.cleanResourcePath(originalDialogFileName);
+         var dialogFolder = FileTree.cleanResourcePath(originalDialogFolder);
+         var dialogProjectPath = dialogFolder + "/" + dialogPathName; // /src/blah/script.snap
+         var dialogPathDetails = FileTree.createResourcePath(dialogProjectPath); 
+         
+         return dialogPathDetails;
+      }
       w2popup.open({
          title : dialogTitle,
          body : dialogBody.content, 
@@ -64,10 +79,7 @@ export module DialogBuilder {
          onOpen : function(event) {
             setTimeout(function() {
                dialogBody.init();
-               var element = document.getElementById('dialogPath');
-               
-               element.contentEditable = true;
-               element.focus();
+               focusInput();
             }, 200);
          },
          onClose : function(event) {
@@ -76,27 +88,33 @@ export module DialogBuilder {
          onMax : function(event) {
             console.log('max');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            };
          },
          onMin : function(event) {
             console.log('min');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            };
          },
          onKeydown : function(event) {
             console.log('keydown');
          }
       });
       $("#dialogSave").click(function() {
-         var originalDialogFileName = $('#dialogPath').html();
-         var originalDialogFolder = $('#dialogFolder').html();
-         var dialogPathName = FileTree.cleanResourcePath(originalDialogFileName);
-         var dialogFolder = FileTree.cleanResourcePath(originalDialogFolder);
-         var dialogProjectPath = dialogFolder + "/" + dialogPathName; // /src/blah/script.snap
-         var dialogPathDetails = FileTree.createResourcePath(dialogProjectPath); 
-         
-         saveCallback(dialogPathDetails);
+         if(saveCallback) {
+            var dialogPathDetails = createFinalPath(); 
+            saveCallback(dialogPathDetails);
+         }
          w2popup.close();
       });
       $("#dialogCancel").click(function() {
+         if(ignoreOrCancelCallback) {
+            var dialogPathDetails = createFinalPath(); 
+            ignoreOrCancelCallback(dialogPathDetails);
+         }
          w2popup.close();
       });
       if (resourceDetails != null) {
@@ -132,7 +150,11 @@ export module DialogBuilder {
          openCallback(dialogPathDetails, selectedDirectory);
       };
       var dialogBody = createFileFolderSelectionDialogLayout();
-      
+      var focusInput = function() {
+         var element = document.getElementById('dialogPath');
+         element.contentEditable = true;
+         element.focus();
+      };
       w2popup.open({
          title : dialogTitle,
          body : dialogBody.content,
@@ -149,10 +171,7 @@ export module DialogBuilder {
          onOpen : function(event) {
             setTimeout(function() {
                dialogBody.init();
-               var element = document.getElementById('dialogPath');
-               
-               element.contentEditable = true;
-               element.focus();
+               focusInput();
             }, 200);
          },
          onClose : function(event) { 
@@ -161,10 +180,16 @@ export module DialogBuilder {
          onMax : function(event) {
             console.log('max');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            }
          },
          onMin : function(event) {
             console.log('min');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            }
          },
          onKeydown : function(event) {
             console.log('keydown');
@@ -184,9 +209,14 @@ export module DialogBuilder {
          $('#dialogPath').html(FileTree.cleanResourcePath(selectedDirectory));
       }, 2);  
    }       
-        
+   
    export function createListDialog(listFunction, patternList, dialogTitle) { // listFunction(token): [a, b, c]
       var dialogBody = createListDialogLayout();
+      var focusInput = function() {
+         var element = document.getElementById('dialogPath');
+         element.contentEditable = true;
+         element.focus();
+      };
       w2popup.open({
          title : dialogTitle,
          body : dialogBody.content,
@@ -205,42 +235,53 @@ export module DialogBuilder {
                dialogBody.init();
                $('#dialogPath').on('change keyup paste', function() {
                   var expressionText = $("#dialogPath").html();
-                  var expressionPattern = null;
                   
-                  if(patternList) {
-                     expressionPattern = $("#dialogFolder").html();
-                     expressionPattern = Common.clearHtml(expressionPattern);
-                  }
-                  if(expressionText) {
-                     expressionText = Common.clearHtml(expressionText);
-                  } 
-                  listFunction(expressionText, expressionPattern, function(list) {
-                     var content = createDialogListTable(list);
+                  // add a delay before you execute
+                  executeIfTextUnchanged(expressionText, "dialogPath", 300, function() {
+                     var expressionPattern = null;
                      
-                     if(content.content){
-                        $("#dialog").html(content.content);
-                     }else {
-                        $("#dialog").html('');
+                     if(patternList) {
+                        expressionPattern = $("#dialogFolder").html();
+                        expressionPattern = Common.clearHtml(expressionPattern);
                      }
-                     // this is kind of crap, but we need to be sure the html is rendered before binding
-                     if(content.init) {
-                        setTimeout(content.init, 100); // register the init function to run 
-                     }
+                     if(expressionText) {
+                        expressionText = Common.clearHtml(expressionText);
+                     } 
+                     listFunction(expressionText, expressionPattern, function(list, requestedExpression) {
+                        var currentExpression = $("#dialogPath").html();
+                        
+                        if(!requestedExpression || requestedExpression == currentExpression) {
+                           var content = createDialogListTable(list);
+                           
+                           if(content.content){
+                              $("#dialog").html(content.content);
+                           }else {
+                              $("#dialog").html('');
+                           }
+                           // this is kind of crap, but we need to be sure the html is rendered before binding
+                           if(content.init) {
+                              setTimeout(content.init, 100); // register the init function to run 
+                           }
+                        }
+                     });
                   });
                });
-               var element = document.getElementById('dialogPath');
-               
-               element.contentEditable = true;
-               element.focus();
+               focusInput();
             }, 200);
          },
          onMax : function(event) {
             console.log('max');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            };
          },
          onMin : function(event) {
             console.log('min');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            };
          }
       });
       $("#dialogSave").click(function() {
@@ -252,34 +293,47 @@ export module DialogBuilder {
    }
    
    export function createTextSearchOnlyDialog(listFunction, fileFilterPatterns, dialogTitle) { // listFunction(token): [a, b, c]
+      var focusInput = function() {
+         var element = document.getElementById('searchText');
+         element.contentEditable = true;
+         element.focus();
+      };
       var executeSearch = function() {
          var expressionText = $("#searchText").html();
-         var searchCriteria = {
-               caseSensitive: isCheckboxSelected("inputCaseSensitive"),
-               regularExpression: isCheckboxSelected("inputRegularExpression"),
-               wholeWord: isCheckboxSelected("inputWholeWord")
-            };
-         var expressionPattern = null;
          
-         if(fileFilterPatterns) {
-            expressionPattern = $("#fileFilterPatterns").html();
-            expressionPattern = Common.clearHtml(expressionPattern);
-         }
-         if(expressionText) {
-            expressionText = Common.clearHtml(expressionText);
-         } 
-         listFunction(expressionText, expressionPattern, searchCriteria, function(list) {
-            var content = createDialogListTable(list);
+         // add a delay before you execute
+         executeIfTextUnchanged(expressionText, "searchText", 300, function() {
+            var searchCriteria = {
+                  caseSensitive: isCheckboxSelected("inputCaseSensitive"),
+                  regularExpression: isCheckboxSelected("inputRegularExpression"),
+                  wholeWord: isCheckboxSelected("inputWholeWord")
+               };
+            var expressionPattern = null;
             
-            if(content.content){
-               $("#dialog").html(content.content);
-            }else {
-               $("#dialog").html('');
+            if(fileFilterPatterns) {
+               expressionPattern = $("#fileFilterPatterns").html();
+               expressionPattern = Common.clearHtml(expressionPattern);
             }
-            // this is kind of crap, but we need to be sure the html is rendered before binding
-            if(content.init) {
-               setTimeout(content.init, 100); // register the init function to run 
-            }
+            if(expressionText) {
+               expressionText = Common.clearHtml(expressionText);
+            } 
+            listFunction(expressionText, expressionPattern, searchCriteria, function(list, requestedText) {
+               var currentText = $("#searchText").html();
+               
+               if(!requestedText || currentText == requestedText) {
+                  var content = createDialogListTable(list);
+                  
+                  if(content.content){
+                     $("#dialog").html(content.content);
+                  }else {
+                     $("#dialog").html('');
+                  }
+                  // this is kind of crap, but we need to be sure the html is rendered before binding
+                  if(content.init) {
+                     setTimeout(content.init, 100); // register the init function to run 
+                  }
+               }
+            });
          });
       };
       var dialogBody = createTextSearchOnlyDialogLayout(fileFilterPatterns, '', executeSearch);
@@ -303,19 +357,22 @@ export module DialogBuilder {
 //               $('#inputCaseSensitive').change(executeSearch);
 //               $('#inputRegularExpression').change(executeSearch);
 //               $('#inputWholeWord').change(executeSearch);
-               var element = document.getElementById('searchText');
-               
-               element.contentEditable = true;
-               element.focus();
+               focusInput();
             }, 200);
          },
          onMax : function(event) {
             console.log('max');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            };
          },
          onMin : function(event) {
             console.log('min');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            };
          }
       });
       $("#dialogSave").click(function() {
@@ -327,34 +384,47 @@ export module DialogBuilder {
    }  
    
    export function createTextSearchAndReplaceDialog(listFunction, fileFilterPatterns, dialogTitle) { // listFunction(token): [a, b, c]
+      var focusInput = function() {
+         var element = document.getElementById('searchText');
+         element.contentEditable = true;
+         element.focus();
+      };
       var executeSearch = function() {
          var expressionText = $("#searchText").html();
-         var searchCriteria = {
-               caseSensitive: isCheckboxSelected("inputCaseSensitive"),
-               regularExpression: isCheckboxSelected("inputRegularExpression"),
-               wholeWord: isCheckboxSelected("inputWholeWord")
-            };
-         var expressionPattern = null;
          
-         if(fileFilterPatterns) {
-            expressionPattern = $("#fileFilterPatterns").html();
-            expressionPattern = Common.clearHtml(expressionPattern);
-         }
-         if(expressionText) {
-            expressionText = Common.clearHtml(expressionText);
-         } 
-         listFunction(expressionText, expressionPattern, searchCriteria, function(list) {
-            var content = createDialogListTable(list);
+         // add a delay before you execute
+         executeIfTextUnchanged(expressionText, "searchText", 300, function() {
+            var searchCriteria = {
+                  caseSensitive: isCheckboxSelected("inputCaseSensitive"),
+                  regularExpression: isCheckboxSelected("inputRegularExpression"),
+                  wholeWord: isCheckboxSelected("inputWholeWord")
+               };
+            var expressionPattern = null;
             
-            if(content.content){
-               $("#dialog").html(content.content);
-            }else {
-               $("#dialog").html('');
+            if(fileFilterPatterns) {
+               expressionPattern = $("#fileFilterPatterns").html();
+               expressionPattern = Common.clearHtml(expressionPattern);
             }
-            // this is kind of crap, but we need to be sure the html is rendered before binding
-            if(content.init) {
-               setTimeout(content.init, 100); // register the init function to run 
-            }
+            if(expressionText) {
+               expressionText = Common.clearHtml(expressionText);
+            } 
+            listFunction(expressionText, expressionPattern, searchCriteria, function(list, requestedText) {
+               var currentText = $("#searchText").html();
+               
+               if(!requestedText || currentText == requestedText) {
+                  var content = createDialogListTable(list);
+                  
+                  if(content.content){
+                     $("#dialog").html(content.content);
+                  }else {
+                     $("#dialog").html('');
+                  }
+                  // this is kind of crap, but we need to be sure the html is rendered before binding
+                  if(content.init) {
+                     setTimeout(content.init, 100); // register the init function to run 
+                  }
+               }
+            });
          });
       };
       var dialogBody = createTextSearchAndReplaceDialogLayout(fileFilterPatterns, '', executeSearch);
@@ -378,19 +448,22 @@ export module DialogBuilder {
 //               $('#inputCaseSensitive').change(executeSearch);
 //               $('#inputRegularExpression').change(executeSearch);
 //               $('#inputWholeWord').change(executeSearch);
-               var element = document.getElementById('searchText');
-               
-               element.contentEditable = true;
-               element.focus();
+               focusInput();
             }, 200);
          },
          onMax : function(event) {
             console.log('max');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            };
          },
          onMin : function(event) {
             console.log('min');
             $(window).trigger('resize');
+            event.onComplete = function() {
+               focusInput();
+            };
          }
       });
       $("#dialogSave").click(function() {
@@ -415,6 +488,11 @@ export module DialogBuilder {
    
    function createEvaluateDialog(inputText, dialogTitle) { 
       var dialogBody = createGridDialogLayout(inputText ? Common.escapeHtml(inputText) : '');
+      var focusInput = function() {
+         var element = document.getElementById('dialogPath');
+         element.contentEditable = true;
+         element.focus();
+      };
       var executeEvaluation = function() {
          var text = $("#dialogPath").html();
          var expression = Common.clearHtml(text);
@@ -471,10 +549,7 @@ export module DialogBuilder {
                      }
                   }               
                }); 
-               var element = document.getElementById('dialogPath');
-               
-               element.contentEditable = true;
-               element.focus();
+               focusInput();
                
                setTimeout(function() {
                   VariableManager.showVariables();
@@ -490,12 +565,14 @@ export module DialogBuilder {
          onMax : function(event) {
             event.onComplete = function() {
                w2ui['evaluation'].refresh(); // resize
+               focusInput();
             }
             $(window).trigger('resize');
          },
          onMin : function(event) {
             event.onComplete = function() {
                w2ui['evaluation'].refresh(); // resize
+               focusInput();
             }
             $(window).trigger('resize');
          },
@@ -525,15 +602,20 @@ export module DialogBuilder {
          }
          content += " id='" + dialogListEntryId + "'>";
 
+         /*
          mouseOverFunctions[i] = function(rowId) {
             var selectedIndex = selectedIndexOfDialogListTable();
             selectDialogListTableRow(selectedIndex, rowId);
          };
+         */
          for(var j = 0; j < row.length; j++) {
             const cell = row[j];
             const entryId = "listEntry_" + i + "_" + j;
             
-            content += "<td width='50%'><div id='" + entryId + "' class='";
+            if(j > 0) {
+               content += "<td>&nbsp;&nbsp;</td>"; // if there is overflow we should show a space
+            }
+            content += "<td width='50%' nowrap><div id='" + entryId + "' class='";
             content += cell.style;
             content += "'>";
             content += cell.text;
@@ -665,6 +747,9 @@ export module DialogBuilder {
             $('#dialogPath').on('click', function(e) {
                return focusDialogInput('dialogPath');
             });
+            $('#dialogPath').on('paste', function(e) {
+               return pasteInPlainText('dialogPath', e);
+            });            
             $('#w2ui-popup').on('keydown', function(e) {
                navigateDialogListTable(e);
                return submitDialog(e);
@@ -684,6 +769,9 @@ export module DialogBuilder {
             $('#dialogPath').on('click', function(e) {
                return focusDialogInput('dialogPath');
             }); 
+            $('#dialogPath').on('paste', function(e) {
+               return pasteInPlainText('dialogPath', e);
+            });            
             $('#w2ui-popup').on('keydown', function(e) {
                navigateDialogListTable(e);
                return submitDialog(e);
@@ -703,6 +791,9 @@ export module DialogBuilder {
             $('#dialogPath').on('click', function(e) {
                return focusDialogInput('dialogPath');
             }); 
+            $('#dialogPath').on('paste', function(e) {
+               return pasteInPlainText('dialogPath', e);
+            });            
             $('#w2ui-popup').on('keydown', function(e) {
                navigateDialogListTable(e);
                return submitDialog(e);
@@ -729,6 +820,9 @@ export module DialogBuilder {
          init: function() {
             $('#dialogPath').on('click', function(e) {
                return focusDialogInput('dialogPath');
+            });
+            $('#dialogPath').on('paste', function(e) {
+               return pasteInPlainText('dialogPath', e);
             });
             $('#w2ui-popup').on('keydown', function(e) {
                navigateDialogListTable(e);
@@ -769,8 +863,14 @@ export module DialogBuilder {
             $('#fileFilterPatterns').on('click', function(e) {
                return focusDialogInput('fileFilterPatterns');
             });
+            $('#fileFilterPatterns').on('paste', function(e) {
+               return pasteInPlainText('fileFilterPatterns', e);
+            });
             $('#searchText').on('click', function(e) {
                return focusDialogInput('searchText');
+            });
+            $('#searchText').on('paste', function(e) {
+               return pasteInPlainText('searchText', e);
             });
             $('#inputCaseSensitiveRow').on('click', function(e) {
                toggleCheckboxSelection('inputCaseSensitive');
@@ -824,11 +924,20 @@ export module DialogBuilder {
             $('#fileFilterPatterns').on('click', function(e) {
                return focusDialogInput('fileFilterPatterns');
             });
+            $('#fileFilterPatterns').on('paste', function(e) {
+               return pasteInPlainText('fileFilterPatterns'. e);
+            });
             $('#searchText').on('click', function(e) {
                return focusDialogInput('searchText');
             });
+            $('#searchText').on('paste', function(e) {
+               return pasteInPlainText('searchText', e);
+            });
             $('#replaceText').on('click', function(e) {
                return focusDialogInput('replaceText');
+            });
+            $('#replaceText').on('paste', function(e) {
+               return pasteInPlainText('replaceText', e);
             });
             $('#inputCaseSensitiveRow').on('click', function(e) {
                toggleCheckboxSelection('inputCaseSensitive');
@@ -873,7 +982,33 @@ export module DialogBuilder {
       return true;
    }
 
-
+   function pasteInPlainText(name, event) {
+      if(event && event.originalEvent) {
+         var text = event.originalEvent.clipboardData.getData("text/plain");
+         var element = document.getElementById(name);
+         
+         if(text && element) {
+            text = text.replace(/[\n\r]/g, '');
+            text = Common.escapeHtml(text);
+            
+            element.innerHTML = text;
+            return false;
+         }
+      }
+      return true;
+   }
+   
+   function executeIfTextUnchanged(text, nameOfElement, delay, functionToExecute) {
+      setTimeout(function() {
+         var currentText = $("#" +  nameOfElement).html();
+         
+         if(text == currentText) {
+            functionToExecute();
+         } else {
+            console.log("Ignoring '" + text + "' as its not current");
+         }
+      }, delay);
+   }
    
    function isCheckboxSelected(input) {
       var inputField = document.getElementById(input);

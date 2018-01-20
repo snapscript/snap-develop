@@ -15,12 +15,12 @@ import {VariableManager} from "variables"
 import {DialogBuilder} from "dialog"
 import {FileExplorer} from "explorer"
 import {DebugManager} from "debug"
- 
+  
 export module Command {
    
    export function searchTypes() {
       DialogBuilder.createListDialog(function(text, ignoreMe, onComplete){
-         findTypesMatching(text, function(typesFound) {
+         findTypesMatching(text, function(typesFound, originalExpression) {
             var typeRows = [];
            
             for(var i = 0; i < typesFound.length; i++) {
@@ -29,33 +29,67 @@ export module Command {
                var locationHash = window.document.location.hash;
                var debug = locationPath.indexOf(debugToggle, locationPath.length - debugToggle.length) !== -1;
                var resourceLink = "/project/" + typesFound[i].project;
-               
+               var typePackage = "<i style='opacity: 0.5'>" + typesFound[i].module + "<i>";
+               var absolutePath = ""
+               var decompile = false;
+                  
+               if(typesFound[i].extra){
+                  absolutePath = "<i style='opacity: 0.5'>" + typesFound[i].extra + "<i>";
+               }
                if(debug) {
                   resourceLink += debugToggle;
                }
-               resourceLink += "#" + typesFound[i].resource;
-               
+               if(isJavaResource(typesFound[i].extra)) { // java class in a JAR file
+                  var packageName = typesFound[i].module;
+                  var className = typesFound[i].name;
+                  
+                  resourceLink += '#' + createLinkForJavaResource(typesFound[i].extra, packageName + "." + className);
+               } else {
+                  resourceLink += "#" + typesFound[i].resource;
+               }
                var typeCell = {
-                  text: typesFound[i].name,
+                  text: typesFound[i].name + "&nbsp;&nbsp;" + typePackage,
                   link: resourceLink,
                   style: typesFound[i].type == 'module' ? 'moduleNode' : 'typeNode'
                };
                var resourceCell = {
-                  text: typesFound[i].resource,
+                  text: typesFound[i].resource + "&nbsp;&nbsp;" + absolutePath,
                   link: resourceLink,
                   style: 'resourceNode'
                };
                typeRows.push([typeCell, resourceCell]);
             }
-            onComplete(typeRows);
+            onComplete(typeRows, originalExpression);
          });
-     }, null, "Search Types");
+     }, null, "Search Types");  
+   }
+   
+   function isJavaResource(libraryPath) {
+      return libraryPath && Common.stringEndsWith(libraryPath, ".jar");
+   }
+   
+   function createLinkForJavaResource(libraryPath, className) {
+      var jarFile = Common.stringReplaceText(libraryPath, "\\", "/")
+      var packageName = createPackageNameFromFullClassName(className);
+      var typeName = createTypeNameFromFullClassName(className);
+      
+      return "/decompile/" + jarFile + "/" + packageName + "/" + typeName + ".java";
+   }
+
+   function createPackageNameFromFullClassName(className) {
+      return className.substring(0, className.lastIndexOf('.'));
+   }
+   
+   function createTypeNameFromFullClassName(className) {
+      return className.substring(className.lastIndexOf('.')+1);
    }
    
    function findTypesMatching(text, onComplete) {
-      if(text) {
+      let originalExpression = text; // keep track of the requested expression
+      
+      if(text && text.length > 1) {         
          $.ajax({
-            url: '/type/' + document.title + '?expression=' + text,
+            url: '/type/' + document.title + '?expression=' + originalExpression,
             success: function (typeMatches) {
                var sortedMatches = [];
                
@@ -70,19 +104,116 @@ export module Command {
                   var typeMatch = sortedMatches[i];
                   var typeReference = typeMatches[typeMatch];
                   var typeEntry = {
-                        name: typeReference.name,
-                        resource: typeReference.resource,
-                        type: typeReference.type,
-                        project: document.title
+                     name: typeReference.name,
+                     resource: typeReference.resource,
+                     module: typeReference.module,
+                     extra: typeReference.extra,
+                     type: typeReference.type,
+                     project: document.title
                   };
                   response.push(typeEntry);
                }
-               onComplete(response);
+               onComplete(response, originalExpression);
             },
             async: true
          });
       } else {
-         onComplete([]);
+         onComplete([], originalExpression);
+      }
+   }
+   
+   export function searchOutline() {
+      DialogBuilder.createListDialog(function(text, ignoreMe, onComplete){
+         findOutline(text, function(outlinesFound, originalExpression) {
+            var outlineRows = [];
+            
+            for(var i = 0; i < outlinesFound.length; i++) {
+               var outlineFound = outlinesFound[i];
+               var outlineType = outlineFound.type.toLowerCase();
+               var constraintInfo = "<i style='opacity: 0.5'>" + outlineFound.constraint + "<i>";
+               var typeName = createTypeNameFromFullClassName(outlineFound.declaringClass);
+               var packageName = createPackageNameFromFullClassName(outlineFound.declaringClass);
+               var typePackage = "<i style='opacity: 0.5'>" + packageName + "<i>";
+               var resource = outlineFound.resource;
+               var line = outlineFound.line;
+               var resourceLink = null;
+               var libraryPath = "";
+               
+               if(isJavaResource(outlineFound.libraryPath) && outlineFound.declaringClass) { // java class in a JAR file
+                  resourceLink = "/project/" + document.title + "#" + createLinkForJavaResource(outlineFound.libraryPath, outlineFound.declaringClass);
+                  line = null;
+               } else {
+                  resource = "/resource/" + document.title + resource;
+               }
+               var outlineCell = {
+                  text: outlineFound.name + "&nbsp;&nbsp;" + constraintInfo,
+                  resource: resource,
+                  link: resourceLink,
+                  line: line,
+                  style: outlineType == 'function' ? 'functionNode' : 'propertyNode'
+               };
+               var typeCell = {
+                  text: typeName + "&nbsp;&nbsp;" + typePackage,
+                  resource: resource,
+                  link: resourceLink,
+                  line: line,
+                  style: "resourceNode"
+               };
+               outlineRows.push([outlineCell, typeCell]);
+            }
+            onComplete(outlineRows, originalExpression);
+         });
+      }, null, "Search Outline");  
+   }
+   
+   function findOutline(text, onComplete) {
+      let originalExpression = text; // keep track of the requested expression
+      
+      if(text || text == "") {  
+         let line = FileEditor.getCurrentLineForEditor();
+         let editorData = FileEditor.loadEditor();
+         let message = JSON.stringify({
+            resource: editorData.resource.projectPath,
+            line: line,
+            complete: originalExpression.trim(),
+            source: editorData.source
+         });
+         $.ajax({
+            contentType: 'application/json',
+            data: message,
+            dataType: 'json',
+            success: function(response){
+               var outlinesFound = response.outlines;
+               var outlineDetails = [];
+               
+               for (var outlineName in outlinesFound) {
+                  if (outlinesFound.hasOwnProperty(outlineName)) {
+                     var outlineDetail = outlinesFound[outlineName];
+                     
+                     outlineDetails.push({
+                        name: outlineName,
+                        type: outlineDetail.type,
+                        resource: outlineDetail.resource,
+                        line: outlineDetail.line,
+                        constraint: outlineDetail.constraint,
+                        declaringClass: outlineDetail.declaringClass,
+                        libraryPath: outlineDetail.libraryPath
+                     });
+                  }
+               }
+               onComplete(outlineDetails, originalExpression);
+            },
+            error: function(response){
+                onComplete([], originalExpression);
+                console.log("Could not complete outline for text '" + originalExpression + "'", message);
+            },
+            async: true,
+            processData: false,
+            type: 'POST',
+            url: '/outline/' + document.title
+        });
+      } else {
+         onComplete([], originalExpression);
       }
    }
    
@@ -121,7 +252,7 @@ export module Command {
          searchFunction = DialogBuilder.createTextSearchAndReplaceDialog;
       }
       searchFunction(function(text, fileTypes, searchCriteria, onComplete){
-         findFilesWithText(text, fileTypes, searchCriteria, function(filesFound) { // don't replace in the search phase
+         findFilesWithText(text, fileTypes, searchCriteria, function(filesFound, originalText) { // don't replace in the search phase
             var fileRows = [];
            
             for(var i = 0; i < filesFound.length; i++) {
@@ -151,17 +282,19 @@ export module Command {
                };
                fileRows.push([resourceCell, /*lineCell, */textCell]);
             }
-            return onComplete(fileRows);
+            return onComplete(fileRows, originalText);
          });
      }, filePatterns, enableReplace ? "Replace Text" : "Find Text");
    }
    
    function findFilesWithText(text, fileTypes, searchCriteria, onComplete) {
+      let originalText = text;
+      
       if(text && text.length > 1) {
          var searchUrl = '';
          
          searchUrl += '/find/' + document.title;
-         searchUrl += '?expression=' + encodeURIComponent(text);
+         searchUrl += '?expression=' + encodeURIComponent(originalText);
          searchUrl += '&pattern=' + encodeURIComponent(fileTypes);
          searchUrl += "&caseSensitive=" + encodeURIComponent(searchCriteria.caseSensitive);
          searchUrl += "&regularExpression=" + encodeURIComponent(searchCriteria.regularExpression);
@@ -177,24 +310,24 @@ export module Command {
                for(var i = 0; i < filesMatched.length; i++) {
                   var fileMatch = filesMatched[i];
                   var typeEntry = {
-                        resource: fileMatch.resource,
-                        line: fileMatch.line,
-                        project: document.title
+                     resource: fileMatch.resource,
+                     line: fileMatch.line,
+                     project: document.title
                   };
                   response.push(fileMatch);   
                }
-               onComplete(response);
+               onComplete(response, originalText);
             },
             async: true
          });
       }else {
-         onComplete([]);
+         onComplete([], originalText);
       }
    }
    
    export function findFileNames() {
       DialogBuilder.createListDialog(function(text, ignoreMe, onComplete){
-         findFilesByName(text, function(filesFound) {
+         findFilesByName(text, function(filesFound, originalText) {
             var fileRows = [];
            
             for(var i = 0; i < filesFound.length; i++) {
@@ -212,37 +345,53 @@ export module Command {
                
                var resourceCell = {
                   text: fileFound.text,
+                  name: fileFound.name,
                   link: resourceLink,
                   style: 'resourceNode'
                };
                fileRows.push([resourceCell]);
             }
-            return onComplete(fileRows);
+            return onComplete(fileRows, originalText);
          });
      }, null, "Find Files");
    }
    
    function findFilesByName(text, onComplete) {
+      let originalText = text;
+      
       if(text && text.length > 1) {
          $.ajax({
-            url: '/file/' + document.title + '?expression=' + text,
+            url: '/file/' + document.title + '?expression=' + originalText,
             success: function (filesMatched) {
                var response = [];
                
                for(var i = 0; i < filesMatched.length; i++) {
                   var fileMatch = filesMatched[i];
                   var typeEntry = {
-                        resource: fileMatch.resource,
-                        project: document.title
+                     resource: fileMatch.resource,
+                     path: fileMatch.path,
+                     name: fileMatch.name,
+                     project: document.title
                   };
                   response.push(fileMatch);
                }
-               onComplete(response);
+               onComplete(response, originalText);
             },
             async: true
          });
       } else {
-         onComplete([]);
+         onComplete([], originalText);
+      }
+   }
+   
+   export function openTerminal(resourcePath) {
+      if(FileTree.isResourceFolder(resourcePath.filePath)) {
+         var message = {
+            project : document.title,
+            resource : resourcePath.filePath,
+            terminal: true
+         };
+         EventBus.sendEvent("EXPLORE", message);
       }
    }
    
@@ -251,6 +400,7 @@ export module Command {
          var message = {
             project : document.title,
             resource : resourcePath.filePath,
+            terminal: false
          };
          EventBus.sendEvent("EXPLORE", message);
       }
@@ -424,6 +574,26 @@ export module Command {
             FileEditor.updateEditor(editorData.source, editorPath.projectPath);
          }
       }
+   }
+   
+   export function saveEditorOnClose(editorText, editorResource) {
+      if (editorResource != null && editorResource.resourcePath)) {
+         DialogBuilder.openTreeDialog(editorResource, true, function(resourceDetails) {
+            var message = {
+               project : document.title,
+               resource : editorResource.filePath,
+               source : editorText,
+               directory: false,
+               create: false
+            };
+            //ProcessConsole.clearConsole();
+            EventBus.sendEvent("SAVE", message);
+            FileEditor.clearSavedEditorBuffer(editorResource.resourcePath); // make sure its synced
+         }, 
+         function(resourceDetails) {
+            FileEditor.clearSavedEditorBuffer(editorResource.resourcePath); 
+         });
+      } 
    }
    
    export function deleteFile(resourceDetails) {
