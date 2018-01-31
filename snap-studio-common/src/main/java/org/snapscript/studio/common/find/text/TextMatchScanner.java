@@ -10,9 +10,13 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.slf4j.Logger;
-import org.snapscript.common.thread.ThreadPool;
+import lombok.extern.slf4j.Slf4j;
 
+import org.snapscript.common.thread.ThreadPool;
+import org.springframework.stereotype.Component;
+
+@Slf4j
+@Component
 public class TextMatchScanner {
    
    private final TextMatchHistory history; // what is available in cache

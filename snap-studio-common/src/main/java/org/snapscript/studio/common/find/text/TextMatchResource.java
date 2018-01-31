@@ -1,49 +1,66 @@
 package org.snapscript.studio.common.find.text;
 
-import java.io.PrintStream;
+import java.io.File;
 import java.util.List;
 
-import org.simpleframework.http.Request;
-import org.simpleframework.http.Response;
-import org.snapscript.common.thread.ThreadPool;
+import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+
+import org.snapscript.studio.common.FileDirectory;
 import org.snapscript.studio.common.FileDirectorySource;
-import org.snapscript.studio.common.resource.Resource;
-import org.snapscript.studio.common.resource.ResourcePath;
-import org.springframework.stereotype.Component;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-@Component
-@ResourcePath("/find.*")
-public class TextMatchResource implements Resource {
+@Path("/find")
+public class TextMatchResource {
    
    private static final int MAX_COUNT = 1000;
    
-   private final TextMatchQueryParser parser;
+   private final FileDirectorySource workspace;
    private final TextMatchScanner scanner;
-   private final Gson gson;
    
-   public TextMatchResource(FileDirectorySource workspace, ThreadPool pool) {
-      this.scanner = new TextMatchScanner(pool);
-      this.gson = new GsonBuilder().setPrettyPrinting().create();
-      this.parser = new TextMatchQueryParser(workspace);
+   @Inject
+   public TextMatchResource(FileDirectorySource workspace, TextMatchScanner scanner) {
+      this.workspace = workspace;
+      this.scanner = scanner;
    }
-
-   @Override
-   public void handle(Request request, Response response) throws Throwable {
-      TextMatchQuery query = parser.parse(request);
-      PrintStream stream = response.getPrintStream(8192);
+   
+   @GET
+   @Path("/{project}")
+   @Produces("application/json")
+   public List<TextMatch> findMatches(
+         @PathParam("project") String project,
+         @QueryParam("expression") String expression,
+         @QueryParam("replace") String replace,
+         @QueryParam("pattern") @DefaultValue(".*") String pattern,
+         @QueryParam("caseSensitive") @DefaultValue("false") boolean caseSensitive,
+         @QueryParam("regularExpression") @DefaultValue("false") boolean regularExpression,
+         @QueryParam("wholeWord") @DefaultValue("false") boolean wholeWord,
+         @QueryParam("enableReplace") @DefaultValue("false") boolean enableReplace) throws Exception 
+   {
+      FileDirectory directory = workspace.getProject(project);
+      File root = directory.getProjectPath();
+      TextMatchQuery query = TextMatchQuery.builder()
+            .pattern(pattern)
+            .query(expression)
+            .path(root)
+            .replace(replace)
+            .project(project)
+            .enableReplace(enableReplace)
+            .caseSensitive(caseSensitive)
+            .regularExpression(regularExpression)
+            .wholeWord(wholeWord)
+            .build();
+   
       List<TextMatch> matches = scanner.process(query);
       int length = matches.size();
       
       if(length > MAX_COUNT) {
-         matches = matches.subList(0, MAX_COUNT);
+         return matches.subList(0, MAX_COUNT);
       }
-      String text = gson.toJson(matches);
-      response.setContentType("application/json");
-      stream.println(text);
-      stream.close();
+      return matches;
    }
-
 }

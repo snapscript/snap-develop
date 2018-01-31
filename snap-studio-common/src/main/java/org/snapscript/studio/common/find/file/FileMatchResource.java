@@ -1,44 +1,40 @@
 package org.snapscript.studio.common.find.file;
 
 import java.io.File;
-import java.io.PrintStream;
 import java.util.List;
 
-import org.simpleframework.http.Request;
-import org.simpleframework.http.Response;
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+
+import org.snapscript.studio.common.FileDirectory;
 import org.snapscript.studio.common.FileDirectorySource;
-import org.snapscript.studio.common.resource.Resource;
-import org.snapscript.studio.common.resource.ResourcePath;
-import org.springframework.stereotype.Component;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+@Path("/file")
+public class FileMatchResource {
 
-@Component
-@ResourcePath("/file.*")
-public class FileMatchResource implements Resource {
-
-   private final FileMatchQueryParser parser;
+   private final FileDirectorySource workspace;
    private final FileMatchScanner scanner;
-   private final Gson gson;
    
+   @Inject
    public FileMatchResource(FileDirectorySource workspace) {
-      this.parser = new FileMatchQueryParser(workspace);
       this.scanner = new FileMatchScanner();
-      this.gson = new GsonBuilder().setPrettyPrinting().create();
+      this.workspace = workspace;
    }
-
-   @Override
-   public void handle(Request request, Response response) throws Throwable {
-      FileMatchQuery query = parser.parse(request);
-      String name = query.getProject();
-      File directory = query.getPath();
-      String expression = query.getQuery();
-      PrintStream out = response.getPrintStream(8192);
-      List<FileMatch> matches = scanner.findAllFiles(directory, name, expression);
-      String text = gson.toJson(matches);
-      response.setContentType("application/json");
-      out.println(text);
-      out.close();
+   
+   @GET
+   @Produces("application/json")
+   @Path("/{project}")
+   public List<FileMatch> findFiles(
+         @PathParam("project") String name, 
+         @QueryParam("expression") String expression) throws Exception 
+   {
+      FileDirectory project = workspace.getProject(name);
+      File directory = project.getProjectPath();
+      
+      return scanner.findAllFiles(directory, name, expression);
    }
 }
