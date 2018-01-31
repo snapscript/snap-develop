@@ -80,6 +80,10 @@
               <groupId>com.google.javascript</groupId>
               <artifactId>closure-compiler</artifactId> <!-- only needed for development -->
             </exclude>
+            <exclude>
+              <groupId>com.google.protobuf</groupId>
+              <artifactId>protobuf-java</artifactId>
+            </exclude>
           </excludes>
         </configuration>
         <executions>
