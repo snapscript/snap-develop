@@ -48,18 +48,20 @@ public class ResourceClassScanner {
                String location = target.toString();
                String name = resolve(location); // remove .class and path prefix
                
-               try {
-                  Class<?> type = loader.loadClass(name);
-                  Path annotation = type.getAnnotation(Path.class);
-                  
-                  if(annotation != null) {
-                     log.info("Loading resource " + resource);
-                     matches.add(type);
-                  } else {
-                     log.info("Ignoring resource " + resource);
+               if(name.startsWith(RESOURCE_PACKAGE)) {
+                  try {
+                     Class<?> type = loader.loadClass(name);
+                     Path annotation = type.getAnnotation(Path.class);
+                     
+                     if(annotation != null) {
+                        log.info("Loading resource " + resource);
+                        matches.add(type);
+                     } else {
+                        log.info("Ignoring resource " + resource);
+                     }
+                  } catch(Exception e) {
+                     log.info("Could not load " + name);
                   }
-               } catch(Exception e) {
-                  log.info("Could not load " + name);
                }
             }
             return matches;
