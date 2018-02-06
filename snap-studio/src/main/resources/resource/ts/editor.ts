@@ -484,7 +484,7 @@ export module FileEditor {
       var session = editorView.editorPanel.getSession();
       var currentMode = session.getMode();
       var actualMode = resolveEditorMode(resource);
-      var encodedText = encodeEditorText(text, resource); // change JSON conversion
+      var encodedText = text; // encodeEditorText(text, resource); // change JSON conversion
       var savedHistoryBuffer = loadSavedEditorBuffer(resource); // load saved buffer
       var textToDisplay = encodedText;
       
@@ -665,6 +665,8 @@ export module FileEditor {
    
    export function formatEditorSource() {
       var text = editorView.editorPanel.getValue();
+      var path = editorView.editorResource.filePath;
+      
       $.ajax({
          contentType: 'text/plain',
          data: text,
@@ -677,7 +679,7 @@ export module FileEditor {
          },
          processData: false,
          type: 'POST',
-         url: '/format/' + document.title
+         url: '/format/' + document.title + path
      });
    }
    

@@ -426,7 +426,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             var session = editorView.editorPanel.getSession();
             var currentMode = session.getMode();
             var actualMode = resolveEditorMode(resource);
-            var encodedText = encodeEditorText(text, resource); // change JSON conversion
+            var encodedText = text; // encodeEditorText(text, resource); // change JSON conversion
             var savedHistoryBuffer = loadSavedEditorBuffer(resource); // load saved buffer
             var textToDisplay = encodedText;
             if (savedHistoryBuffer) {
@@ -594,6 +594,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         function formatEditorSource() {
             var text = editorView.editorPanel.getValue();
+            var path = editorView.editorResource.filePath;
             $.ajax({
                 contentType: 'text/plain',
                 data: text,
@@ -606,7 +607,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                 },
                 processData: false,
                 type: 'POST',
-                url: '/format/' + document.title
+                url: '/format/' + document.title + path
             });
         }
         FileEditor.formatEditorSource = formatEditorSource;

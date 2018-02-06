@@ -5,15 +5,35 @@ import java.util.regex.Pattern;
 
 import org.snapscript.studio.project.Project;
 
+import com.fasterxml.jackson.core.PrettyPrinter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
 public class SourceFormatter {
 
+   private static final String JSON_EXTENSION = ".json";
+   private static final String XML_EXTENSION = ".xml";
+   
+   private final PrettyPrinter printer;
+   private final ObjectMapper mapper;
    private final Pattern pattern;
    
    public SourceFormatter(){
+      this.printer = new DefaultPrettyPrinter();
+      this.mapper = new ObjectMapper();
       this.pattern = Pattern.compile("^(\\s+)(.*)$");
    }
    
-   public String format(Project project, String source, int indent) throws Exception {
+   public String format(Project project, String path, String source, int indent) throws Exception {
+      String resource = path.toLowerCase();
+      
+      if(resource.endsWith(JSON_EXTENSION)) {
+         Object object = mapper.readValue(source, Object.class);
+         ObjectWriter writer = mapper.writer(printer);
+         
+         return writer.writeValueAsString(object);
+      }
       String lines[] = source.split("\\r?\\n");
       String pad = "";
       

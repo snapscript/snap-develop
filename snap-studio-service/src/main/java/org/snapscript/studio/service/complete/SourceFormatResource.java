@@ -11,7 +11,7 @@ import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
-// /format/<project>
+// /format/<project>/<file>
 @Component
 @ResourcePath("/format.*")
 public class SourceFormatResource implements Resource {
@@ -31,10 +31,11 @@ public class SourceFormatResource implements Resource {
       PrintStream out = response.getPrintStream();
       String content = request.getContent();
       Path path = request.getPath();
+      String normal = path.getPath();
       String token = request.getParameter("indent");
       Integer indent = token == null ? DEFAULT_INDENT : Integer.parseInt(token);
       Project project = workspace.createProject(path);
-      String result = formatter.format(project, content, indent);
+      String result = formatter.format(project, normal, content, indent);
       response.setContentType("text/plain");
       out.println(result);
       out.close();
