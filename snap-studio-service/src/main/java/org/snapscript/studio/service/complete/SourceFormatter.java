@@ -4,12 +4,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.snapscript.studio.project.Project;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
+@Component
 public class SourceFormatter {
 
    private static final String JSON_EXTENSION = ".json";
@@ -17,12 +19,10 @@ public class SourceFormatter {
    
    private final PrettyPrinter printer;
    private final ObjectMapper mapper;
-   private final Pattern pattern;
    
    public SourceFormatter(){
       this.printer = new DefaultPrettyPrinter();
       this.mapper = new ObjectMapper();
-      this.pattern = Pattern.compile("^(\\s+)(.*)$");
    }
    
    public String format(Project project, String path, String source, int indent) throws Exception {
@@ -34,6 +34,7 @@ public class SourceFormatter {
          
          return writer.writeValueAsString(object);
       }
+      Pattern pattern = Pattern.compile("^(\\s+)(.*)$");
       String lines[] = source.split("\\r?\\n");
       String pad = "";
       
