@@ -115,6 +115,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                 //            FileEditor.updateEditor(response, resourcePath);
                 //         }
                 editor_1.FileEditor.updateEditor(response, resourcePath);
+                console.log("OPEN: " + resourcePath);
             }
             afterLoad();
         }

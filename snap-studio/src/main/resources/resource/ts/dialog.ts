@@ -42,6 +42,8 @@ export module DialogBuilder {
    }
    
    function createTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle, treePath) {
+      var windowHeight = $(window).height();   // returns height of browser viewport
+      var windowWidth = $(window).width();   // returns width of browser viewport
       var dialogExpandPath = "/";
    
       if (resourceDetails != null) {
@@ -67,8 +69,8 @@ export module DialogBuilder {
          title : dialogTitle,
          body : dialogBody.content, 
          buttons : '<button id="dialogSave" class="btn dialogButton">Save</button><button id="dialogCancel" class="btn dialogButton">Cancel</button>',
-         width : 500,
-         height : 400,
+         width : Math.max(500, windowWidth / 2),
+         height : Math.max(400, windowHeight / 2),
          overflow : 'hidden',
          color : '#999',
          speed : '0.3',
@@ -138,6 +140,8 @@ export module DialogBuilder {
    }
    
    export function createTreeOpenDialog(openCallback, closeCallback, dialogTitle, buttonText, treePath) {
+      var windowHeight = $(window).height();   // returns height of browser viewport
+      var windowWidth = $(window).width();   // returns width of browser viewport
       var completeFunction = function() {
          var originalDialogFolder = $('#dialogPath').html();
          var dialogFolder = FileTree.cleanResourcePath(originalDialogFolder); // clean up path
@@ -159,8 +163,8 @@ export module DialogBuilder {
          title : dialogTitle,
          body : dialogBody.content,
          buttons : '<button id="dialogSave" class="btn dialogButton">'+buttonText+'</button>',
-         width : 500,
-         height : 400,
+         width : Math.max(500, windowWidth / 2),
+         height : Math.max(400, windowHeight / 2),
          overflow : 'hidden',
          color : '#999',
          speed : '0.3',
@@ -211,6 +215,8 @@ export module DialogBuilder {
    }       
    
    export function createListDialog(listFunction, patternList, dialogTitle) { // listFunction(token): [a, b, c]
+      var windowHeight = $(window).height();   // returns height of browser viewport
+      var windowWidth = $(window).width();   // returns width of browser viewport
       var dialogBody = createListDialogLayout();
       var focusInput = function() {
          var element = document.getElementById('dialogPath');
@@ -221,8 +227,8 @@ export module DialogBuilder {
          title : dialogTitle,
          body : dialogBody.content,
          buttons : '<button id="dialogCancel" class="btn dialogButton">Cancel</button>',
-         width : 800,
-         height : 400, 
+         width : Math.max(800, windowWidth / 2),
+         height : Math.max(400, windowHeight / 2),
          overflow : 'hidden',
          color : '#999',
          speed : '0.3',
@@ -293,6 +299,8 @@ export module DialogBuilder {
    }
    
    export function createTextSearchOnlyDialog(listFunction, fileFilterPatterns, dialogTitle) { // listFunction(token): [a, b, c]
+      var windowHeight = $(window).height();   // returns height of browser viewport
+      var windowWidth = $(window).width();   // returns width of browser viewport
       var focusInput = function() {
          var element = document.getElementById('searchText');
          element.contentEditable = true;
@@ -341,8 +349,8 @@ export module DialogBuilder {
          title : dialogTitle,
          body : dialogBody.content,
          buttons : '<button id="dialogCancel" class="btn dialogButton">Cancel</button>',
-         width : 800,
-         height : 400, 
+         width : Math.max(800, windowWidth / 2),
+         height : Math.max(400, windowHeight / 2),
          overflow : 'hidden',
          color : '#999',
          speed : '0.3',
@@ -384,6 +392,8 @@ export module DialogBuilder {
    }  
    
    export function createTextSearchAndReplaceDialog(listFunction, fileFilterPatterns, dialogTitle) { // listFunction(token): [a, b, c]
+      var windowHeight = $(window).height();   // returns height of browser viewport
+      var windowWidth = $(window).width();   // returns width of browser viewport
       var focusInput = function() {
          var element = document.getElementById('searchText');
          element.contentEditable = true;
@@ -432,8 +442,8 @@ export module DialogBuilder {
          title : dialogTitle,
          body : dialogBody.content,
          buttons : '<button id="dialogSave" class="btn dialogButton">Replace</button><button id="dialogCancel" class="btn dialogButton">Cancel</button>',
-         width : 800,
-         height : 400, 
+         width : Math.max(800, windowWidth / 2),
+         height : Math.max(400, windowHeight / 2),
          overflow : 'hidden',
          color : '#999',
          speed : '0.3',
@@ -487,6 +497,8 @@ export module DialogBuilder {
    }
    
    function createEvaluateDialog(inputText, dialogTitle) { 
+      var windowHeight = $(window).height();   // returns height of browser viewport
+      var windowWidth = $(window).width();   // returns width of browser viewport
       var dialogBody = createGridDialogLayout(inputText ? Common.escapeHtml(inputText) : '');
       var focusInput = function() {
          var element = document.getElementById('dialogPath');
@@ -503,8 +515,8 @@ export module DialogBuilder {
          title : dialogTitle,
          body : dialogBody.content,
          buttons : '<button id="dialogSave" class="btn dialogButton">Evaluate</button>',
-         width : 700,
-         height : 400,
+         width : Math.max(700, windowWidth / 2),
+         height : Math.max(400, windowHeight / 2),
          overflow : 'hidden',
          color : '#999',
          speed : '0.3',

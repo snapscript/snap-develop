@@ -541,6 +541,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                     socket_1.EventBus.sendEvent("SAVE", message);
                     editor_1.FileEditor.clearSavedEditorBuffer(editorResource.resourcePath); // make sure its synced
                 }, function (resourceDetails) {
+                    // file was not saved
                     editor_1.FileEditor.clearSavedEditorBuffer(editorResource.resourcePath);
                 });
             }

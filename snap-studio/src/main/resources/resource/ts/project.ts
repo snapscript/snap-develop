@@ -574,6 +574,9 @@ export module Project {
           var editorResource = FileTree.createResourcePath(resourcePathToClose);
 
           Command.saveEditorOnClose(currentBuffer, editorResource); // save the file;
+          console.log("CLOSE: " + resourcePathToClose);
+       } else {
+          console.log("CLOSE: " + resourcePathToClose);
        }
        activateAnyEditorTab(resourcePathToClose); // activate some other tab
    }

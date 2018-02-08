@@ -35,6 +35,8 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             createTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle, "/" + document.title);
         }
         function createTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle, treePath) {
+            var windowHeight = $(window).height(); // returns height of browser viewport
+            var windowWidth = $(window).width(); // returns width of browser viewport
             var dialogExpandPath = "/";
             if (resourceDetails != null) {
                 dialogExpandPath = resourceDetails.projectDirectory; // /src/blah
@@ -58,8 +60,8 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 title: dialogTitle,
                 body: dialogBody.content,
                 buttons: '<button id="dialogSave" class="btn dialogButton">Save</button><button id="dialogCancel" class="btn dialogButton">Cancel</button>',
-                width: 500,
-                height: 400,
+                width: Math.max(500, windowWidth / 2),
+                height: Math.max(400, windowHeight / 2),
                 overflow: 'hidden',
                 color: '#999',
                 speed: '0.3',
@@ -126,6 +128,8 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             });
         }
         function createTreeOpenDialog(openCallback, closeCallback, dialogTitle, buttonText, treePath) {
+            var windowHeight = $(window).height(); // returns height of browser viewport
+            var windowWidth = $(window).width(); // returns width of browser viewport
             var completeFunction = function () {
                 var originalDialogFolder = $('#dialogPath').html();
                 var dialogFolder = tree_1.FileTree.cleanResourcePath(originalDialogFolder); // clean up path
@@ -146,8 +150,8 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 title: dialogTitle,
                 body: dialogBody.content,
                 buttons: '<button id="dialogSave" class="btn dialogButton">' + buttonText + '</button>',
-                width: 500,
-                height: 400,
+                width: Math.max(500, windowWidth / 2),
+                height: Math.max(400, windowHeight / 2),
                 overflow: 'hidden',
                 color: '#999',
                 speed: '0.3',
@@ -197,6 +201,8 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
         }
         DialogBuilder.createTreeOpenDialog = createTreeOpenDialog;
         function createListDialog(listFunction, patternList, dialogTitle) {
+            var windowHeight = $(window).height(); // returns height of browser viewport
+            var windowWidth = $(window).width(); // returns width of browser viewport
             var dialogBody = createListDialogLayout();
             var focusInput = function () {
                 var element = document.getElementById('dialogPath');
@@ -207,8 +213,8 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 title: dialogTitle,
                 body: dialogBody.content,
                 buttons: '<button id="dialogCancel" class="btn dialogButton">Cancel</button>',
-                width: 800,
-                height: 400,
+                width: Math.max(800, windowWidth / 2),
+                height: Math.max(400, windowHeight / 2),
                 overflow: 'hidden',
                 color: '#999',
                 speed: '0.3',
@@ -276,6 +282,8 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
         }
         DialogBuilder.createListDialog = createListDialog;
         function createTextSearchOnlyDialog(listFunction, fileFilterPatterns, dialogTitle) {
+            var windowHeight = $(window).height(); // returns height of browser viewport
+            var windowWidth = $(window).width(); // returns width of browser viewport
             var focusInput = function () {
                 var element = document.getElementById('searchText');
                 element.contentEditable = true;
@@ -321,8 +329,8 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 title: dialogTitle,
                 body: dialogBody.content,
                 buttons: '<button id="dialogCancel" class="btn dialogButton">Cancel</button>',
-                width: 800,
-                height: 400,
+                width: Math.max(800, windowWidth / 2),
+                height: Math.max(400, windowHeight / 2),
                 overflow: 'hidden',
                 color: '#999',
                 speed: '0.3',
@@ -364,6 +372,8 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
         }
         DialogBuilder.createTextSearchOnlyDialog = createTextSearchOnlyDialog;
         function createTextSearchAndReplaceDialog(listFunction, fileFilterPatterns, dialogTitle) {
+            var windowHeight = $(window).height(); // returns height of browser viewport
+            var windowWidth = $(window).width(); // returns width of browser viewport
             var focusInput = function () {
                 var element = document.getElementById('searchText');
                 element.contentEditable = true;
@@ -409,8 +419,8 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 title: dialogTitle,
                 body: dialogBody.content,
                 buttons: '<button id="dialogSave" class="btn dialogButton">Replace</button><button id="dialogCancel" class="btn dialogButton">Cancel</button>',
-                width: 800,
-                height: 400,
+                width: Math.max(800, windowWidth / 2),
+                height: Math.max(400, windowHeight / 2),
                 overflow: 'hidden',
                 color: '#999',
                 speed: '0.3',
@@ -463,6 +473,8 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
         }
         DialogBuilder.createTextSearchAndReplaceDialog = createTextSearchAndReplaceDialog;
         function createEvaluateDialog(inputText, dialogTitle) {
+            var windowHeight = $(window).height(); // returns height of browser viewport
+            var windowWidth = $(window).width(); // returns width of browser viewport
             var dialogBody = createGridDialogLayout(inputText ? common_1.Common.escapeHtml(inputText) : '');
             var focusInput = function () {
                 var element = document.getElementById('dialogPath');
@@ -478,8 +490,8 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 title: dialogTitle,
                 body: dialogBody.content,
                 buttons: '<button id="dialogSave" class="btn dialogButton">Evaluate</button>',
-                width: 700,
-                height: 400,
+                width: Math.max(700, windowWidth / 2),
+                height: Math.max(400, windowHeight / 2),
                 overflow: 'hidden',
                 color: '#999',
                 speed: '0.3',

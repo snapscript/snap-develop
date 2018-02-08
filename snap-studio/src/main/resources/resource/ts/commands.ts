@@ -591,6 +591,7 @@ export module Command {
             FileEditor.clearSavedEditorBuffer(editorResource.resourcePath); // make sure its synced
          }, 
          function(resourceDetails) {
+            // file was not saved
             FileEditor.clearSavedEditorBuffer(editorResource.resourcePath); 
          });
       } 

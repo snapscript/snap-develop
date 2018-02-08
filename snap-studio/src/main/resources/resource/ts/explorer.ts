@@ -127,6 +127,7 @@ export module FileExplorer {
 //            FileEditor.updateEditor(response, resourcePath);
 //         }
          FileEditor.updateEditor(response, resourcePath);
+         console.log("OPEN: " + resourcePath)
       }
       afterLoad();
    }

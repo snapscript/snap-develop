@@ -491,6 +491,10 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
                 var currentBuffer = editor_1.FileEditor.loadSavedEditorBuffer(resourcePathToClose);
                 var editorResource = tree_1.FileTree.createResourcePath(resourcePathToClose);
                 commands_1.Command.saveEditorOnClose(currentBuffer, editorResource); // save the file;
+                console.log("CLOSE: " + resourcePathToClose);
+            }
+            else {
+                console.log("CLOSE: " + resourcePathToClose);
             }
             activateAnyEditorTab(resourcePathToClose); // activate some other tab
         }
