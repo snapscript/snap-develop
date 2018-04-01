@@ -56,7 +56,7 @@ public class ProcessProfiler extends TraceAdapter {
    }
    
    @Override
-   public void before(Scope scope, Trace trace) {
+   public void traceBefore(Scope scope, Trace trace) {
       Path path = trace.getPath();
       String resource = path.getPath();
       ResourceProfiler profiler = profilers.get(resource);
@@ -84,7 +84,7 @@ public class ProcessProfiler extends TraceAdapter {
    }
 
    @Override
-   public void after(Scope scope, Trace trace) {
+   public void traceAfter(Scope scope, Trace trace) {
       Path path = trace.getPath();
       String resource = path.getPath();
       ResourceProfiler profiler = profilers.get(resource);

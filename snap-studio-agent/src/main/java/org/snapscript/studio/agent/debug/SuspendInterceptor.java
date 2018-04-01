@@ -30,7 +30,7 @@ public class SuspendInterceptor extends TraceAdapter {
    }
 
    @Override
-   public void before(Scope scope, Trace trace) {
+   public void traceBefore(Scope scope, Trace trace) {
       ThreadProgress progress = monitor.get();
       TraceType type = trace.getType();
       Module module = scope.getModule();
@@ -67,7 +67,7 @@ public class SuspendInterceptor extends TraceAdapter {
    }
 
    @Override
-   public void after(Scope scope, Trace trace) {
+   public void traceAfter(Scope scope, Trace trace) {
       ThreadProgress progress = monitor.get();
       TraceType type = trace.getType();
       Module module = scope.getModule();

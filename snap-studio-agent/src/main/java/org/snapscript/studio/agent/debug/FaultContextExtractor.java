@@ -40,7 +40,7 @@ public class FaultContextExtractor extends TraceAdapter {
    }
 
    @Override
-   public void error(Scope scope, Trace trace, Exception cause) {      
+   public void traceRuntimeError(Scope scope, Trace trace, Exception cause) {      
       if(logger.isDebug()) {
          ScopeVariableTree variables = createVariables(scope);
          String error = createException(scope, cause);

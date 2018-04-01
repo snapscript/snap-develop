@@ -1,4 +1,5 @@
 import util.stream.Collectors;
+import compile.verify.VerifyException;
 
 trait TestCase {
 	
@@ -13,6 +14,11 @@ trait TestCase {
         	   tearDown();
    	   }
          return methods;
+      }catch(e: VerifyException){  
+         for(var error in e.errors){
+            println(error.description);
+            error.cause.printStackTrace();
+         }
       }catch(e){
          e.printStackTrace();
          throw e;
