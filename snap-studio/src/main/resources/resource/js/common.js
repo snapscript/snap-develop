@@ -50,8 +50,8 @@ define(["require", "exports", "jquery"], function (require, exports, $) {
                 var scrollTop = $('#grid_' + name + '_records').prop('scrollTop');
                 var current = grid.records; // find the table
                 var sortData = grid.sortData;
+                var different = false;
                 if (update.length == current.length) {
-                    var different = false;
                     for (var i = 0; i < update.length; i++) {
                         var currentRow = current[i];
                         var updateRow = update[i];
@@ -82,12 +82,15 @@ define(["require", "exports", "jquery"], function (require, exports, $) {
                 else {
                     grid.records = sortRecords(update, sortData); // maintain the sort
                     grid.refresh();
+                    different = true;
                 }
                 if (update.length > current.length) {
                     grid.reload();
                     $('#grid_' + name + '_records').prop('scrollTop', scrollTop);
                 }
+                return different;
             }
+            return false;
         }
         Common.updateTableRecords = updateTableRecords;
         function sortRecords(records, sortData) {

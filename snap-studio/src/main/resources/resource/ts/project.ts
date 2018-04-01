@@ -45,6 +45,16 @@ export module Project {
       attachClickEvents();
    }
    
+   export function showProblemsTab() {
+      var perspective = determineProjectLayout();
+      
+      if (perspective == "debug") {
+         w2ui['debugBottomTabLayout_main_tabs'].click('problemsTab');
+      } else {
+         w2ui['exploreBottomTabLayout_main_tabs'].click('problemsTab');
+      }
+   }
+   
    function attachClickEvents() {
       $('#toolbarResize').on('click', function(e) {
          toggleFullScreen();

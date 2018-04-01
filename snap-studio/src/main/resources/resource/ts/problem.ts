@@ -4,6 +4,7 @@ import {Common} from "common"
 import {EventBus} from "socket"
 import {FileTree} from "tree"
 import {FileEditor} from "editor"
+import {Project} from "project"
 
 export module ProblemManager {
    
@@ -60,7 +61,9 @@ export module ProblemManager {
          	}
          }
       }
-      Common.updateTableRecords(problemRecords, 'problems');
+      if(Common.updateTableRecords(problemRecords, 'problems')) {
+         Project.showProblemsTab(); // focus the problems tab
+      }
    }
    
    function clearProblems() {
