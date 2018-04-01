@@ -8,7 +8,7 @@ import test.*;
 println("hello".substring(0,1));
 println("xX");
 
-var lists =[];
+var list =[];
 
 for(var x in 1..10)
    list.add(new Thread(->{

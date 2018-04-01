@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.snapscript.core.index.ModifierConverter;
+import org.snapscript.core.type.index.ModifierConverter;
 import org.snapscript.studio.agent.debug.ScopeNode;
 import org.snapscript.studio.agent.debug.ScopeNodeBuilder;
 

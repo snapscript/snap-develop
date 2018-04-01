@@ -2,8 +2,8 @@ package org.snapscript.studio.agent;
 
 import java.net.URI;
 
-import org.snapscript.core.EmptyModel;
-import org.snapscript.core.Model;
+import org.snapscript.core.scope.EmptyModel;
+import org.snapscript.core.scope.Model;
 import org.snapscript.core.trace.TraceInterceptor;
 import org.snapscript.studio.agent.debug.BreakpointMatcher;
 import org.snapscript.studio.agent.debug.FaultContextExtractor;

@@ -36,7 +36,7 @@ module SpriteStore {
          // from the appropriate place, this helps with deploying the game
          // from a remote server. You could equally do a file look
          // up here.
-         var stream = this.getResource(ref);
+         var stream = SpriteStore.getResource(ref);
          
          if (stream == null) {
             fail("Can't find ref: "+ref);

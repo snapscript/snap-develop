@@ -1,10 +1,10 @@
 package org.snapscript.studio.index.tree;
 
 import org.snapscript.core.Compilation;
-import org.snapscript.core.Module;
-import org.snapscript.core.Path;
-import org.snapscript.core.Scope;
-import org.snapscript.core.Value;
+import org.snapscript.core.module.Module;
+import org.snapscript.core.module.Path;
+import org.snapscript.core.scope.Scope;
+import org.snapscript.core.scope.Value;
 import org.snapscript.studio.index.IndexResult;
 import org.snapscript.studio.index.IndexType;
 import org.snapscript.tree.annotation.AnnotationList;

@@ -10,8 +10,8 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.snapscript.core.Path;
-import org.snapscript.core.Scope;
+import org.snapscript.core.module.Path;
+import org.snapscript.core.scope.Scope;
 import org.snapscript.core.trace.Trace;
 import org.snapscript.studio.agent.debug.TraceAdapter;
 

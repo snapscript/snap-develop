@@ -2,12 +2,12 @@ package org.snapscript.studio.index.tree;
 
 import org.snapscript.core.Bug;
 import org.snapscript.core.Compilation;
-import org.snapscript.core.InternalStateException;
-import org.snapscript.core.Module;
-import org.snapscript.core.Path;
-import org.snapscript.core.Scope;
-import org.snapscript.core.Type;
-import org.snapscript.core.Value;
+import org.snapscript.core.error.InternalStateException;
+import org.snapscript.core.module.Module;
+import org.snapscript.core.module.Path;
+import org.snapscript.core.scope.Scope;
+import org.snapscript.core.scope.Value;
+import org.snapscript.core.type.Type;
 import org.snapscript.parse.StringToken;
 import org.snapscript.tree.constraint.ArrayConstraint;
 import org.snapscript.tree.reference.TypeReference;

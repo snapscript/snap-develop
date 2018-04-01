@@ -2,7 +2,7 @@ package org.snapscript.studio.agent.debug;
 
 import junit.framework.TestCase;
 
-import org.snapscript.core.Path;
+import org.snapscript.core.module.Path;
 import org.snapscript.core.trace.Trace;
 import org.snapscript.core.trace.TraceType;
 import org.snapscript.studio.agent.debug.BreakpointMatcher;

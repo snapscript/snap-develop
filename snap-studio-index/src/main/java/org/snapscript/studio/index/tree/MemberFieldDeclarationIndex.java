@@ -4,11 +4,11 @@ import static org.snapscript.studio.index.IndexType.PROPERTY;
 
 import org.snapscript.core.Compilation;
 import org.snapscript.core.Evaluation;
-import org.snapscript.core.Module;
-import org.snapscript.core.Path;
-import org.snapscript.core.Scope;
-import org.snapscript.core.Type;
-import org.snapscript.core.Value;
+import org.snapscript.core.module.Module;
+import org.snapscript.core.module.Path;
+import org.snapscript.core.scope.Scope;
+import org.snapscript.core.scope.Value;
+import org.snapscript.core.type.Type;
 import org.snapscript.core.constraint.Constraint;
 import org.snapscript.studio.index.IndexResult;
 import org.snapscript.tree.define.MemberFieldDeclaration;

@@ -4,11 +4,11 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.snapscript.core.FilePathConverter;
-import org.snapscript.core.MapModel;
-import org.snapscript.core.Model;
-import org.snapscript.core.Path;
-import org.snapscript.core.PathConverter;
+import org.snapscript.core.module.FilePathConverter;
+import org.snapscript.core.module.Path;
+import org.snapscript.core.module.PathConverter;
+import org.snapscript.core.scope.MapModel;
+import org.snapscript.core.scope.Model;
 
 public class CommandLineParser {
    

@@ -1,8 +1,8 @@
 package org.snapscript.studio.agent.debug;
 
 import org.snapscript.core.Context;
-import org.snapscript.core.Type;
-import org.snapscript.core.define.Instance;
+import org.snapscript.core.scope.instance.Instance;
+import org.snapscript.core.type.Type;
 import org.snapscript.studio.agent.debug.ArrayStringBuilder;
 import org.snapscript.studio.agent.debug.ValueData;
 

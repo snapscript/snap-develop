@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.snapscript.core.Context;
-import org.snapscript.core.Scope;
+import org.snapscript.core.scope.Scope;
 import org.snapscript.studio.agent.debug.ScopeBrowser;
 import org.snapscript.studio.agent.debug.ScopeNodeEvaluator;
 import org.snapscript.studio.agent.debug.ScopeNodeTraverser;

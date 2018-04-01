@@ -9,7 +9,7 @@ import org.snapscript.compile.Executable;
 import org.snapscript.compile.ResourceCompiler;
 import org.snapscript.compile.verify.VerifyError;
 import org.snapscript.compile.verify.VerifyException;
-import org.snapscript.core.Model;
+import org.snapscript.core.scope.Model;
 import org.snapscript.core.trace.Trace;
 import org.snapscript.studio.agent.event.BeginEvent;
 import org.snapscript.studio.agent.event.ExitEvent;

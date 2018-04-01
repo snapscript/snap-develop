@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.snapscript.core.Context;
 import org.snapscript.core.PrimitivePromoter;
-import org.snapscript.core.convert.ProxyWrapper;
-import org.snapscript.core.define.Instance;
+import org.snapscript.core.convert.proxy.ProxyWrapper;
+import org.snapscript.core.scope.instance.Instance;
 import org.snapscript.studio.agent.debug.ArrayScopeNode;
 import org.snapscript.studio.agent.debug.InstanceScopeNode;
 import org.snapscript.studio.agent.debug.ObjectScopeNode;

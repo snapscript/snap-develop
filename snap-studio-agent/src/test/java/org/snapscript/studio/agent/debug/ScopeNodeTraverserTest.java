@@ -19,18 +19,18 @@ import junit.framework.TestCase;
 import org.snapscript.common.store.ClassPathStore;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
-import org.snapscript.core.MapModel;
-import org.snapscript.core.Model;
-import org.snapscript.core.ModelScope;
-import org.snapscript.core.Reference;
-import org.snapscript.core.Scope;
-import org.snapscript.core.State;
-import org.snapscript.core.Type;
-import org.snapscript.core.define.Instance;
-import org.snapscript.core.define.PrimitiveInstance;
+import org.snapscript.core.scope.MapModel;
+import org.snapscript.core.scope.Model;
+import org.snapscript.core.scope.ModelScope;
+import org.snapscript.core.scope.Reference;
+import org.snapscript.core.scope.Scope;
+import org.snapscript.core.scope.State;
+import org.snapscript.core.scope.instance.Instance;
+import org.snapscript.core.scope.instance.PrimitiveInstance;
+import org.snapscript.core.type.Type;
 import org.snapscript.core.function.AccessorProperty;
-import org.snapscript.core.index.ScopeType;
 import org.snapscript.core.property.Property;
+import org.snapscript.core.type.index.ScopeType;
 import org.snapscript.studio.agent.debug.ScopeNodeTraverser;
 
 public class ScopeNodeTraverserTest extends TestCase {

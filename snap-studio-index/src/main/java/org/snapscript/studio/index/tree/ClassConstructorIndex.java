@@ -4,11 +4,11 @@ import static org.snapscript.core.Reserved.TYPE_CONSTRUCTOR;
 import static org.snapscript.studio.index.IndexType.CONSTRUCTOR;
 
 import org.snapscript.core.Compilation;
-import org.snapscript.core.Module;
-import org.snapscript.core.Path;
-import org.snapscript.core.Scope;
 import org.snapscript.core.Statement;
-import org.snapscript.core.TypePart;
+import org.snapscript.core.module.Module;
+import org.snapscript.core.module.Path;
+import org.snapscript.core.scope.Scope;
+import org.snapscript.core.type.TypePart;
 import org.snapscript.studio.index.IndexResult;
 import org.snapscript.tree.ModifierList;
 import org.snapscript.tree.annotation.AnnotationList;

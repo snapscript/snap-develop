@@ -4,7 +4,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.snapscript.common.thread.ThreadBuilder;
-import org.snapscript.core.Model;
+import org.snapscript.core.scope.Model;
 import org.snapscript.studio.agent.event.ExecuteData;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
 

@@ -12,9 +12,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.snapscript.common.store.NotFoundException;
 import org.snapscript.common.store.Store;
-import org.snapscript.core.FilePathConverter;
-import org.snapscript.core.Path;
-import org.snapscript.core.PathConverter;
+import org.snapscript.core.module.FilePathConverter;
+import org.snapscript.core.module.Path;
+import org.snapscript.core.module.PathConverter;
 
 public class FileCacheStore implements Store {
 

@@ -3,7 +3,7 @@ package org.snapscript.studio.agent.debug;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.snapscript.core.Path;
+import org.snapscript.core.module.Path;
 import org.snapscript.core.trace.Trace;
 import org.snapscript.core.trace.TraceType;
 import org.snapscript.studio.agent.debug.BreakpointMatcher;

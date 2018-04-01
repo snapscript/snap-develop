@@ -3,8 +3,8 @@ package org.snapscript.studio.cli;
 import java.io.File;
 
 import org.snapscript.common.store.Store;
-import org.snapscript.core.Model;
-import org.snapscript.core.Path;
+import org.snapscript.core.module.Path;
+import org.snapscript.core.scope.Model;
 
 public class CommandLine {
 

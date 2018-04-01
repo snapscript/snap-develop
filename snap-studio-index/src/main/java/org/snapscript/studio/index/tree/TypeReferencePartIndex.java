@@ -2,10 +2,10 @@ package org.snapscript.studio.index.tree;
 
 import org.snapscript.core.Compilation;
 import org.snapscript.core.Evaluation;
-import org.snapscript.core.Module;
-import org.snapscript.core.Path;
-import org.snapscript.core.Scope;
-import org.snapscript.core.Value;
+import org.snapscript.core.module.Module;
+import org.snapscript.core.module.Path;
+import org.snapscript.core.scope.Scope;
+import org.snapscript.core.scope.Value;
 import org.snapscript.tree.NameReference;
 
 public class TypeReferencePartIndex implements Compilation {

@@ -11,8 +11,8 @@ import javax.ws.rs.Path;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.snapscript.core.Any;
 import org.snapscript.core.ContextClassLoader;
+import org.snapscript.core.type.Any;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;

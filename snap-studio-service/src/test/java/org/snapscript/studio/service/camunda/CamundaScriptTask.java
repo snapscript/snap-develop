@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.snapscript.core.MapModel;
+import org.snapscript.core.scope.MapModel;
 import org.snapscript.studio.agent.ProcessAgent;
 import org.snapscript.studio.agent.ProcessAgentService;
 import org.snapscript.studio.agent.ProcessMode;

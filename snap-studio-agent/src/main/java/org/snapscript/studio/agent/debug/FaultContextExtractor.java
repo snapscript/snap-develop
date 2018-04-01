@@ -10,12 +10,12 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.snapscript.core.Context;
-import org.snapscript.core.Module;
-import org.snapscript.core.Path;
-import org.snapscript.core.Scope;
-import org.snapscript.core.State;
 import org.snapscript.core.error.InternalError;
 import org.snapscript.core.error.InternalErrorBuilder;
+import org.snapscript.core.module.Module;
+import org.snapscript.core.module.Path;
+import org.snapscript.core.scope.Scope;
+import org.snapscript.core.scope.State;
 import org.snapscript.core.stack.ThreadStack;
 import org.snapscript.core.trace.Trace;
 import org.snapscript.studio.agent.debug.ScopeNodeTraverser;

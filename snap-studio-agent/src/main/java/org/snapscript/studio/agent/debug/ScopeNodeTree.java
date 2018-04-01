@@ -6,11 +6,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.snapscript.core.Local;
-import org.snapscript.core.Scope;
-import org.snapscript.core.State;
-import org.snapscript.core.Table;
-import org.snapscript.core.Value;
+import org.snapscript.core.scope.Scope;
+import org.snapscript.core.scope.State;
+import org.snapscript.core.scope.Value;
+import org.snapscript.core.scope.index.Local;
+import org.snapscript.core.scope.index.Table;
 
 public class ScopeNodeTree implements ScopeNode {
    

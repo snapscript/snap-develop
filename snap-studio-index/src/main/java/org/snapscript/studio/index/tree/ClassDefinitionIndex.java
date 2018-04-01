@@ -3,10 +3,10 @@ package org.snapscript.studio.index.tree;
 import static org.snapscript.studio.index.IndexType.CLASS;
 
 import org.snapscript.core.Compilation;
-import org.snapscript.core.Module;
-import org.snapscript.core.Path;
-import org.snapscript.core.Scope;
-import org.snapscript.core.TypePart;
+import org.snapscript.core.module.Module;
+import org.snapscript.core.module.Path;
+import org.snapscript.core.scope.Scope;
+import org.snapscript.core.type.TypePart;
 import org.snapscript.studio.index.IndexResult;
 import org.snapscript.tree.annotation.AnnotationList;
 import org.snapscript.tree.define.ClassDefinition;

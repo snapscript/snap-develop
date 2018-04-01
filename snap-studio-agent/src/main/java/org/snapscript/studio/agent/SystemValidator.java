@@ -1,7 +1,7 @@
 package org.snapscript.studio.agent;
 
-import org.snapscript.core.Path;
 import org.snapscript.core.link.PackageLinker;
+import org.snapscript.core.module.Path;
 
 public class SystemValidator {
    

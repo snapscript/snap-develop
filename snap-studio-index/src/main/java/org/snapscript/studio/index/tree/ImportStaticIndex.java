@@ -3,10 +3,10 @@ package org.snapscript.studio.index.tree;
 import static org.snapscript.studio.index.IndexType.IMPORT;
 
 import org.snapscript.core.Compilation;
-import org.snapscript.core.Module;
 import org.snapscript.core.NoStatement;
-import org.snapscript.core.Path;
 import org.snapscript.core.Statement;
+import org.snapscript.core.module.Module;
+import org.snapscript.core.module.Path;
 import org.snapscript.studio.index.IndexResult;
 import org.snapscript.tree.Qualifier;
 

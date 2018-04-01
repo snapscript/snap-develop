@@ -15,10 +15,10 @@ import org.snapscript.compile.verify.VerifyException;
 import org.snapscript.compile.verify.VerifyError;
 import org.snapscript.core.Context;
 import org.snapscript.core.ExpressionEvaluator;
-import org.snapscript.core.FilePathConverter;
-import org.snapscript.core.Model;
-import org.snapscript.core.Path;
-import org.snapscript.core.PathConverter;
+import org.snapscript.core.module.FilePathConverter;
+import org.snapscript.core.module.Path;
+import org.snapscript.core.module.PathConverter;
+import org.snapscript.core.scope.Model;
 
 public class ScriptExecutor {
 

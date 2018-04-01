@@ -1,6 +1,6 @@
 package org.snapscript.studio.agent.debug;
 
-import org.snapscript.core.Scope;
+import org.snapscript.core.scope.Scope;
 import org.snapscript.core.trace.Trace;
 import org.snapscript.core.trace.TraceListener;
 

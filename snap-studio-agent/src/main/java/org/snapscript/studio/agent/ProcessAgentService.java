@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-import org.snapscript.core.Model;
 import org.snapscript.core.ResourceManager;
+import org.snapscript.core.scope.Model;
 import org.snapscript.studio.agent.debug.BreakpointMatcher;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
 

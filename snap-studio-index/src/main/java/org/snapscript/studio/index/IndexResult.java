@@ -1,6 +1,6 @@
 package org.snapscript.studio.index;
 
-import org.snapscript.core.Path;
+import org.snapscript.core.module.Path;
 
 public class IndexResult implements Index {
 

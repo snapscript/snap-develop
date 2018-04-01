@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 
 import org.snapscript.core.Reserved;
-import org.snapscript.core.Type;
+import org.snapscript.core.type.Type;
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;

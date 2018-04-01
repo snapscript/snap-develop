@@ -3,7 +3,7 @@ package org.snapscript.studio.agent;
 import java.util.Map;
 import java.util.Set;
 
-import org.snapscript.core.Model;
+import org.snapscript.core.scope.Model;
 import org.snapscript.core.trace.TraceInterceptor;
 import org.snapscript.studio.agent.debug.BreakpointMatcher;
 import org.snapscript.studio.agent.debug.ResumeType;

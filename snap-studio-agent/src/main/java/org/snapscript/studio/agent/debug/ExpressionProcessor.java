@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.snapscript.core.Context;
 import org.snapscript.core.ExpressionEvaluator;
-import org.snapscript.core.Scope;
+import org.snapscript.core.scope.Scope;
 
 public class ExpressionProcessor {
    

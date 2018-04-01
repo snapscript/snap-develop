@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.snapscript.core.Context;
-import org.snapscript.core.Type;
-import org.snapscript.core.convert.ProxyWrapper;
-import org.snapscript.core.define.Instance;
+import org.snapscript.core.scope.instance.Instance;
+import org.snapscript.core.type.Type;
+import org.snapscript.core.convert.proxy.ProxyWrapper;
 
 public class ArrayStringBuilder {
    

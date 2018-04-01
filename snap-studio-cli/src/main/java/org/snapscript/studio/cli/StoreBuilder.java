@@ -6,7 +6,7 @@ import java.net.URI;
 import org.snapscript.common.store.FileStore;
 import org.snapscript.common.store.RemoteStore;
 import org.snapscript.common.store.Store;
-import org.snapscript.core.Path;
+import org.snapscript.core.module.Path;
 
 public class StoreBuilder {
 

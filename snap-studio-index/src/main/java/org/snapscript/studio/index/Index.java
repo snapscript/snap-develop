@@ -1,6 +1,6 @@
 package org.snapscript.studio.index;
 
-import org.snapscript.core.Path;
+import org.snapscript.core.module.Path;
 
 public interface Index {
    IndexType getType();

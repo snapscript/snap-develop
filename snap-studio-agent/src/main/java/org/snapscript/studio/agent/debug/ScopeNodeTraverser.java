@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.snapscript.core.Context;
-import org.snapscript.core.Scope;
+import org.snapscript.core.scope.Scope;
 import org.snapscript.studio.agent.debug.ScopeNode;
 import org.snapscript.studio.agent.debug.ScopeNodeBuilder;
 import org.snapscript.studio.agent.debug.ScopeNodeTree;
