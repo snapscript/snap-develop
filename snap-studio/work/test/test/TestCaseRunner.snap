@@ -2,11 +2,11 @@ import util.concurrent.ScheduledThreadPoolExecutor;
 import util.concurrent.ConcurrentHashMap;
 import util.concurrent.CopyOnWriteArraySet;
 import util.concurrent.LinkedBlockingQueue;
+import common.store.FileStore;
 import compile.StoreContext;
 import compile.ResourceCompiler;
-import core.FilePathConverter;
-import common.store.FileStore;
-import core.EmptyModel;
+import core.module.FilePathConverter;
+import core.scope.EmptyModel;
 
 class TestCaseRunner {
 

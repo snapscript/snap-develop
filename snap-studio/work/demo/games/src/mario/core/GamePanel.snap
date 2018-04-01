@@ -264,7 +264,7 @@ class GamePanel extends JPanel with Runnable {
           // 'Z' is pressed.
            if (key == KeyEvent.VK_Z) { // pause
               if(panel.gameFreeze == false) {
-                 panel.gameFreeze2 = true;
+                 panel.gameFreeze = true;
                  player.setPaused(true);
                  panel.SM_22050_Hz.playPause();
               }
