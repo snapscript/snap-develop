@@ -12,6 +12,6 @@ public class ScriptService {
       
       ScriptClassLoader.update(classpath);
       line.validate();
-      executor.call();
+      executor.execute();
    }
 }

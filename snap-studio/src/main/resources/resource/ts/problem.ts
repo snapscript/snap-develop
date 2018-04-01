@@ -24,7 +24,7 @@ export module ProblemManager {
             var problemInfo = currentProblems[currentProblem];
             
             if(problemInfo != null) {
-               if(problemInfo.time + 10000 > timeMillis) {
+               if(problemInfo.time + 100000 > timeMillis) {
                   activeProblems[currentProblem] = problemInfo;
                } else {
                   expiryCount++;
@@ -80,20 +80,28 @@ export module ProblemManager {
       var editorResource = editorData.resource;
       
       if(editorResource != null) {
-         //FileEditor.clearEditorHighlights(); this makes breakpoints jitter
+         var highlightUpdates = [];
          
-         if (currentProblems.hasOwnProperty(editorResource.resourcePath)) {
-            var problemInfo = currentProblems[editorResource.resourcePath];
-            
-            if(problemInfo != null) {
-               FileEditor.clearEditorHighlights(); // clear if the resource is focused
-               FileEditor.createEditorHighlight(problemInfo.line, "problemHighlight");
-            } else {
-               FileEditor.clearEditorHighlights(); // clear if the resource is focused
+         //FileEditor.clearEditorHighlights(); this makes breakpoints jitter
+         for (var currentProblem in currentProblems) {
+            if (currentProblems.hasOwnProperty(currentProblem)) {
+               if(Common.stringStartsWith(currentProblem, editorResource.resourcePath)) {
+                  var problemInfo = currentProblems[currentProblem];
+                  
+                  if(problemInfo != null) {
+                     FileEditor.clearEditorHighlights(); // clear if the resource is focused
+                     highlightUpdates.push(problemInfo.line);
+                  } else {
+                     FileEditor.clearEditorHighlights(); // clear if the resource is focused
+                  }
+               } else {
+                  console.log("Clear highlights in " + editorResource);
+                  FileEditor.clearEditorHighlights(); // clear if the resource is focused
+               }
             }
-         } else {
-            console.log("Clear highlights in " + editorResource);
-            FileEditor.clearEditorHighlights(); // clear if the resource is focused
+         }
+         if(highlightUpdates.length > 0) {
+            FileEditor.createMultipleEditorHighlights(highlightUpdates, "problemHighlight");
          }
       }
    }
@@ -110,9 +118,15 @@ export module ProblemManager {
    	      time: message.time
    	};
    	if(problemInfo.line >= 0) {
-   	   currentProblems[resourcePath.resourcePath] = problemInfo;
+   	   currentProblems[resourcePath.resourcePath + ":" + problemInfo.line] = problemInfo;
    	} else {
-   	   currentProblems[resourcePath.resourcePath] = null;
+         for (var currentProblem in currentProblems) {
+            if (currentProblems.hasOwnProperty(currentProblem)) {
+               if(Common.stringStartsWith(currentProblem, resourcePath.resourcePath)) {
+                  currentProblems[currentProblem] = null;
+               }
+            }
+         }
    	}
    	showProblems();
    	highlightProblems(); // highlight the problems

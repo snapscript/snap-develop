@@ -83,11 +83,11 @@ public class ProcessEventTimer implements ProcessEventListener {
    }
 
    @Override
-   public void onSyntaxError(ProcessEventChannel channel, SyntaxErrorEvent event) throws Exception {
+   public void onScriptError(ProcessEventChannel channel, ScriptErrorEvent event) throws Exception {
       long start = System.currentTimeMillis();
       
       try {
-         listener.onSyntaxError(channel, event);
+         listener.onScriptError(channel, event);
       }finally {
          long finish = System.currentTimeMillis();
          long duration = finish - start;

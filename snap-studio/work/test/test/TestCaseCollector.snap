@@ -64,7 +64,7 @@ class TestCaseCollector {
       }
       if(file.exists()) {
          var base = directory.toURI();
-         var relative = base.relativize(entry.toURI).getPath();
+         var relative = base.relativize(file.toURI).getPath();
          
          return [relative];
       }

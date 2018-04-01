@@ -38,16 +38,6 @@ class ModuleImportTest with TestCase {
       
       assert l.size() == 2;
       assert l.getClass().simpleName == 'CopyOnWriteArrayList';
-      
-      var failure = false;
-      try {
-         println("Checking M.class");
-         println(M.class);
-      } catch(e){
-         e.printStackTrace();
-         failure=true;
-      }
-      assert failure;
       assert L.class.name == 'CountDownLatch';
    }
 }

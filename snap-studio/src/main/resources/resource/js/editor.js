@@ -83,6 +83,18 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             editorView.editorMarkers[line] = marker;
         }
         FileEditor.createEditorHighlight = createEditorHighlight;
+        function createMultipleEditorHighlights(lines, css) {
+            var Range = ace_1.ace.require('ace/range').Range;
+            var session = editorView.editorPanel.getSession();
+            // clearEditorHighlight(line);
+            clearEditorHighlights(); // clear all highlights in editor
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i];
+                var marker = session.addMarker(new Range(line - 1, 0, line - 1, 1), css, "fullLine");
+                editorView.editorMarkers[line] = marker;
+            }
+        }
+        FileEditor.createMultipleEditorHighlights = createMultipleEditorHighlights;
         function findAndReplaceTextInEditor() {
             var editorData = loadEditor();
             commands_1.Command.searchAndReplaceFiles(editorData.resource.projectPath);

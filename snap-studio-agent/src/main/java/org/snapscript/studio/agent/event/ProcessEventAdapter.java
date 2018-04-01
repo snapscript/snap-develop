@@ -6,7 +6,7 @@ public class ProcessEventAdapter implements ProcessEventListener {
    public void onWriteError(ProcessEventChannel channel, WriteErrorEvent event) throws Exception {}
    public void onWriteOutput(ProcessEventChannel channel, WriteOutputEvent event) throws Exception {}
    public void onRegister(ProcessEventChannel channel, RegisterEvent event) throws Exception {}
-   public void onSyntaxError(ProcessEventChannel channel, SyntaxErrorEvent event) throws Exception {}
+   public void onScriptError(ProcessEventChannel channel, ScriptErrorEvent event) throws Exception {}
    public void onScope(ProcessEventChannel channel, ScopeEvent event) throws Exception {}
    public void onBreakpoints(ProcessEventChannel channel, BreakpointsEvent event) throws Exception {}
    public void onBegin(ProcessEventChannel channel, BeginEvent event) throws Exception {}

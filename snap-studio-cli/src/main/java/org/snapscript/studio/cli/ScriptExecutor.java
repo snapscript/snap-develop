@@ -2,7 +2,7 @@ package org.snapscript.studio.cli;
 
 import static org.snapscript.core.Reserved.DEFAULT_PACKAGE;
 
-import java.util.concurrent.Callable;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 import org.snapscript.common.store.Store;
@@ -11,6 +11,8 @@ import org.snapscript.compile.Compiler;
 import org.snapscript.compile.Executable;
 import org.snapscript.compile.ResourceCompiler;
 import org.snapscript.compile.StoreContext;
+import org.snapscript.compile.verify.VerifyException;
+import org.snapscript.compile.verify.VerifyError;
 import org.snapscript.core.Context;
 import org.snapscript.core.ExpressionEvaluator;
 import org.snapscript.core.FilePathConverter;
@@ -18,16 +20,15 @@ import org.snapscript.core.Model;
 import org.snapscript.core.Path;
 import org.snapscript.core.PathConverter;
 
-public class ScriptExecutor implements Callable<Context> {
+public class ScriptExecutor {
 
    private final CommandLine line;
    
    public ScriptExecutor(CommandLine line) {
       this.line = line;
    }
-   
-   @Override
-   public Context call() throws Exception {
+  
+   public void execute() throws Exception {
       Store store = line.getStore();
       String evaluate = line.getEvaluation();
       Path script = line.getScript();
@@ -44,18 +45,25 @@ public class ScriptExecutor implements Callable<Context> {
       Compiler compiler = new ResourceCompiler(context);
       Executable executable = null;
       
-      if(script != null) {
-         String file = script.getPath();
+      try {
+         if(script != null) {
+            String file = script.getPath();
+            
+            module = converter.createModule(file);
+            executable = compiler.compile(file);
+         }
+         if(evaluate != null) {
+            ExpressionEvaluator evaluator = context.getEvaluator();
+            evaluator.evaluate(model, evaluate, module);
+         } else {
+            executable.execute(model);
+         }
+      } catch(VerifyException e){
+         List<VerifyError> errors = e.getErrors();
          
-         module = converter.createModule(file);
-         executable = compiler.compile(file);
-      }
-      if(evaluate != null) {
-         ExpressionEvaluator evaluator = context.getEvaluator();
-         evaluator.evaluate(model, evaluate, module);
-      } else {
-         executable.execute(model);
-      }
-      return context;
+         for(VerifyError error : errors) {
+            System.err.println(error);
+         }
+      } 
    }
 }

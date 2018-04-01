@@ -6,7 +6,7 @@ public interface ProcessEventListener {
    void onWriteError(ProcessEventChannel channel, WriteErrorEvent event) throws Exception;
    void onWriteOutput(ProcessEventChannel channel, WriteOutputEvent event) throws Exception;
    void onRegister(ProcessEventChannel channel, RegisterEvent event) throws Exception;
-   void onSyntaxError(ProcessEventChannel channel, SyntaxErrorEvent event) throws Exception;
+   void onScriptError(ProcessEventChannel channel, ScriptErrorEvent event) throws Exception;
    void onScope(ProcessEventChannel channel, ScopeEvent event) throws Exception;
    void onBreakpoints(ProcessEventChannel channel, BreakpointsEvent event) throws Exception;
    void onBegin(ProcessEventChannel channel, BeginEvent event) throws Exception;

@@ -1,16 +1,21 @@
 package org.snapscript.studio.agent;
 
+import java.util.List;
 import java.util.SortedSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.snapscript.compile.Executable;
 import org.snapscript.compile.ResourceCompiler;
+import org.snapscript.compile.verify.VerifyError;
+import org.snapscript.compile.verify.VerifyException;
 import org.snapscript.core.Model;
+import org.snapscript.core.trace.Trace;
 import org.snapscript.studio.agent.event.BeginEvent;
 import org.snapscript.studio.agent.event.ExitEvent;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
 import org.snapscript.studio.agent.event.ProfileEvent;
+import org.snapscript.studio.agent.event.ScriptErrorEvent;
 import org.snapscript.studio.agent.profiler.ProcessProfiler;
 import org.snapscript.studio.agent.profiler.ProfileResult;
 import org.snapscript.studio.agent.profiler.ProfileResultUpdater;
@@ -62,6 +67,23 @@ public class ProcessTask implements Runnable {
             updater.start(process); // start sending profile events!!!
             middle = System.nanoTime();
             executable.execute(model); // execute the script
+         } catch(VerifyException e) {
+            List<VerifyError> errors = e.getErrors();
+            
+            for(VerifyError error : errors) {
+               Exception cause = error.getCause();
+               Trace trace = error.getTrace();
+               String description = cause.getMessage();
+               String path = trace.getPath().toString();
+               int line = trace.getLine();
+               ScriptErrorEvent message = new ScriptErrorEvent.Builder(process)
+                  .withDescription(description)
+                  .withResource(path)
+                  .withLine(line)
+                  .build();
+               
+               client.send(message);
+            }
          } catch(Throwable e) {
             e.printStackTrace();
          }finally {

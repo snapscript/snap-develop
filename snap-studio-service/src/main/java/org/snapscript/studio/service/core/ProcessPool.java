@@ -24,7 +24,7 @@ import org.snapscript.studio.agent.event.ProcessEventListener;
 import org.snapscript.studio.agent.event.ProfileEvent;
 import org.snapscript.studio.agent.event.RegisterEvent;
 import org.snapscript.studio.agent.event.ScopeEvent;
-import org.snapscript.studio.agent.event.SyntaxErrorEvent;
+import org.snapscript.studio.agent.event.ScriptErrorEvent;
 import org.snapscript.studio.agent.event.WriteErrorEvent;
 import org.snapscript.studio.agent.event.WriteOutputEvent;
 import org.snapscript.studio.common.console.ConsoleManager;
@@ -223,12 +223,12 @@ public class ProcessPool {
       }
       
       @Override
-      public void onSyntaxError(ProcessEventChannel channel, SyntaxErrorEvent event) throws Exception {
+      public void onScriptError(ProcessEventChannel channel, ScriptErrorEvent event) throws Exception {
          String process = event.getProcess();
          
          for(ProcessEventListener listener : listeners) {
             try {
-               listener.onSyntaxError(channel, event);
+               listener.onScriptError(channel, event);
             } catch(Exception e) {
                log.info(process + ": Exception processing syntax error event", e);
                listeners.remove(listener);

@@ -34,7 +34,7 @@ public class CommandClient {
       channel.send(message);
    }
    
-   public void sendSyntaxError(String resource, String description, long time, int line) throws Exception {
+   public void sendScriptError(String resource, String description, long time, int line) throws Exception {
       String name = project.getProjectName();
       ProblemCommand command = ProblemCommand.builder()
             .project(name)

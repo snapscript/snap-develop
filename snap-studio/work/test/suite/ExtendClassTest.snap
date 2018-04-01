@@ -12,7 +12,7 @@ class ExtendClassLoader extends URLClassLoader {
    override loadClass(name: String, resolve: Boolean): Class {
       sequence.add("ExtendClassLoader::loadClass");
       println("ExtendClassLoader::loadClass(${name}, ${resolve})");
-      dump();
+      (this as ExtendExtendClassLoader).dump();
       return super.loadClass(name, resolve);
    }
 }

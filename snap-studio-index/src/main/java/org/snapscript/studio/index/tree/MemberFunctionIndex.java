@@ -8,11 +8,12 @@ import org.snapscript.core.Module;
 import org.snapscript.core.Path;
 import org.snapscript.core.Scope;
 import org.snapscript.core.Statement;
+import org.snapscript.core.Type;
 import org.snapscript.core.Value;
+import org.snapscript.core.constraint.Constraint;
 import org.snapscript.studio.index.IndexResult;
 import org.snapscript.tree.ModifierList;
 import org.snapscript.tree.annotation.AnnotationList;
-import org.snapscript.tree.constraint.Constraint;
 import org.snapscript.tree.define.MemberFunction;
 import org.snapscript.tree.function.ParameterList;
 
@@ -54,9 +55,7 @@ public class MemberFunctionIndex implements Compilation {
          name = name + parameters.create(scope);
       }
       if(constraint != null) {
-         Value result = constraint.evaluate(scope, null);
-         Object object = result.getValue();
-         
+         Type object = constraint.getType(scope);
          type = String.valueOf(object);
       }
       return new IndexResult(MEMBER_FUNCTION, function, type, prefix, name, path, line);

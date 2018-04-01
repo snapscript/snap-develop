@@ -7,14 +7,15 @@ import org.snapscript.core.Evaluation;
 import org.snapscript.core.Module;
 import org.snapscript.core.Path;
 import org.snapscript.core.Scope;
+import org.snapscript.core.Type;
 import org.snapscript.core.Value;
+import org.snapscript.core.constraint.Constraint;
 import org.snapscript.core.function.Parameter;
 import org.snapscript.studio.index.IndexResult;
 import org.snapscript.tree.Modifier;
 import org.snapscript.tree.ModifierList;
 import org.snapscript.tree.NameReference;
 import org.snapscript.tree.annotation.AnnotationList;
-import org.snapscript.tree.constraint.Constraint;
 import org.snapscript.tree.function.ParameterDeclaration;
 
 public class ParameterDeclarationIndex implements Compilation  {
@@ -50,8 +51,7 @@ public class ParameterDeclarationIndex implements Compilation  {
       String type = null;
       
       if(constraint != null) {
-         Value result = constraint.evaluate(scope, null);
-         Object object = result.getValue();
+         Type object = constraint.getType(scope);
          
          type = String.valueOf(object);
       }

@@ -20,8 +20,7 @@ class LoopingByteInputStream extends ByteArrayInputStream {
     
     // Creates a new LoopingByteInputStream with the specified Byte array.
     // The array is not copied.
-    public LoopingByteInputStream(buffer) {
-        super(buffer);
+    public new(buffer): super(buffer) {        
         closed = false;
     }
 

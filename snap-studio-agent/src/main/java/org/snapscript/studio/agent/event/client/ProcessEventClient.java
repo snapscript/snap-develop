@@ -27,7 +27,7 @@ import org.snapscript.studio.agent.event.ProfileEvent;
 import org.snapscript.studio.agent.event.RegisterEvent;
 import org.snapscript.studio.agent.event.ScopeEvent;
 import org.snapscript.studio.agent.event.StepEvent;
-import org.snapscript.studio.agent.event.SyntaxErrorEvent;
+import org.snapscript.studio.agent.event.ScriptErrorEvent;
 import org.snapscript.studio.agent.event.WriteErrorEvent;
 import org.snapscript.studio.agent.event.WriteOutputEvent;
 import org.snapscript.studio.agent.log.ProcessLogger;
@@ -117,8 +117,8 @@ public class ProcessEventClient {
                   listener.onExecute(this, (ExecuteEvent)event);                  
                } else if(event instanceof RegisterEvent) {
                   listener.onRegister(this, (RegisterEvent)event);
-               } else if(event instanceof SyntaxErrorEvent) {
-                  listener.onSyntaxError(this, (SyntaxErrorEvent)event);
+               } else if(event instanceof ScriptErrorEvent) {
+                  listener.onScriptError(this, (ScriptErrorEvent)event);
                } else if(event instanceof WriteErrorEvent) {
                   listener.onWriteError(this, (WriteErrorEvent)event);
                } else if(event instanceof WriteOutputEvent) {

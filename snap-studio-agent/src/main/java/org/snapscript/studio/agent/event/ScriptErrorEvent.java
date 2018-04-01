@@ -1,13 +1,13 @@
 package org.snapscript.studio.agent.event;
 
-public class SyntaxErrorEvent implements ProcessEvent {
+public class ScriptErrorEvent implements ProcessEvent {
 
    private final String description;
    private final String resource;
    private final String process;
    private final int line;
    
-   private SyntaxErrorEvent(Builder builder) {
+   private ScriptErrorEvent(Builder builder) {
       this.description = builder.description;
       this.process = builder.process;
       this.resource = builder.resource;
@@ -62,8 +62,8 @@ public class SyntaxErrorEvent implements ProcessEvent {
          return this;
       }
       
-      public SyntaxErrorEvent build(){
-         return new SyntaxErrorEvent(this);
+      public ScriptErrorEvent build(){
+         return new ScriptErrorEvent(this);
       }
       
       

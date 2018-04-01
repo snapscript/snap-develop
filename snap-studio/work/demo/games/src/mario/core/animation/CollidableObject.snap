@@ -13,8 +13,8 @@ class CollidableObject extends Sprite {
       this.soundManager = soundManager;
    }
    
-   public new(pixelX: Integer, pixelY: Integer) {
-      this(pixelX, pixelY, null);
+   public new(pixelX: Integer, pixelY: Integer): this(pixelX, pixelY, null) {
+     
    }
    
    public isCollidable(): Boolean {

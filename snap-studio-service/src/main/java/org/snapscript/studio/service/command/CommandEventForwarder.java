@@ -12,7 +12,7 @@ import org.snapscript.studio.agent.event.ProcessEventChannel;
 import org.snapscript.studio.agent.event.ProfileEvent;
 import org.snapscript.studio.agent.event.RegisterEvent;
 import org.snapscript.studio.agent.event.ScopeEvent;
-import org.snapscript.studio.agent.event.SyntaxErrorEvent;
+import org.snapscript.studio.agent.event.ScriptErrorEvent;
 import org.snapscript.studio.agent.event.WriteErrorEvent;
 import org.snapscript.studio.agent.event.WriteOutputEvent;
 import org.snapscript.studio.project.Project;
@@ -67,7 +67,7 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    }
    
    @Override
-   public void onSyntaxError(ProcessEventChannel channel, SyntaxErrorEvent event) throws Exception {
+   public void onScriptError(ProcessEventChannel channel, ScriptErrorEvent event) throws Exception {
       ProblemCommand command = converter.convert(event);
       client.sendCommand(command);
    }

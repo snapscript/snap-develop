@@ -6,13 +6,13 @@ import org.snapscript.core.Compilation;
 import org.snapscript.core.Module;
 import org.snapscript.core.Path;
 import org.snapscript.core.Scope;
+import org.snapscript.core.TypePart;
 import org.snapscript.studio.index.IndexResult;
 import org.snapscript.tree.annotation.AnnotationList;
 import org.snapscript.tree.define.EnumDefinition;
 import org.snapscript.tree.define.EnumList;
 import org.snapscript.tree.define.TypeHierarchy;
 import org.snapscript.tree.define.TypeName;
-import org.snapscript.tree.define.TypePart;
 
 public class EnumDefinitionIndex implements Compilation {
    

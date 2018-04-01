@@ -16,7 +16,7 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor"], fun
                 if (currentProblems.hasOwnProperty(currentProblem)) {
                     var problemInfo = currentProblems[currentProblem];
                     if (problemInfo != null) {
-                        if (problemInfo.time + 10000 > timeMillis) {
+                        if (problemInfo.time + 100000 > timeMillis) {
                             activeProblems[currentProblem] = problemInfo;
                         }
                         else {
@@ -65,20 +65,28 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor"], fun
             var editorData = editor_1.FileEditor.loadEditor();
             var editorResource = editorData.resource;
             if (editorResource != null) {
+                var highlightUpdates = [];
                 //FileEditor.clearEditorHighlights(); this makes breakpoints jitter
-                if (currentProblems.hasOwnProperty(editorResource.resourcePath)) {
-                    var problemInfo = currentProblems[editorResource.resourcePath];
-                    if (problemInfo != null) {
-                        editor_1.FileEditor.clearEditorHighlights(); // clear if the resource is focused
-                        editor_1.FileEditor.createEditorHighlight(problemInfo.line, "problemHighlight");
-                    }
-                    else {
-                        editor_1.FileEditor.clearEditorHighlights(); // clear if the resource is focused
+                for (var currentProblem in currentProblems) {
+                    if (currentProblems.hasOwnProperty(currentProblem)) {
+                        if (common_1.Common.stringStartsWith(currentProblem, editorResource.resourcePath)) {
+                            var problemInfo = currentProblems[currentProblem];
+                            if (problemInfo != null) {
+                                editor_1.FileEditor.clearEditorHighlights(); // clear if the resource is focused
+                                highlightUpdates.push(problemInfo.line);
+                            }
+                            else {
+                                editor_1.FileEditor.clearEditorHighlights(); // clear if the resource is focused
+                            }
+                        }
+                        else {
+                            console.log("Clear highlights in " + editorResource);
+                            editor_1.FileEditor.clearEditorHighlights(); // clear if the resource is focused
+                        }
                     }
                 }
-                else {
-                    console.log("Clear highlights in " + editorResource);
-                    editor_1.FileEditor.clearEditorHighlights(); // clear if the resource is focused
+                if (highlightUpdates.length > 0) {
+                    editor_1.FileEditor.createMultipleEditorHighlights(highlightUpdates, "problemHighlight");
                 }
             }
         }
@@ -95,10 +103,16 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor"], fun
                 time: message.time
             };
             if (problemInfo.line >= 0) {
-                currentProblems[resourcePath.resourcePath] = problemInfo;
+                currentProblems[resourcePath.resourcePath + ":" + problemInfo.line] = problemInfo;
             }
             else {
-                currentProblems[resourcePath.resourcePath] = null;
+                for (var currentProblem in currentProblems) {
+                    if (currentProblems.hasOwnProperty(currentProblem)) {
+                        if (common_1.Common.stringStartsWith(currentProblem, resourcePath.resourcePath)) {
+                            currentProblems[currentProblem] = null;
+                        }
+                    }
+                }
             }
             showProblems();
             highlightProblems(); // highlight the problems

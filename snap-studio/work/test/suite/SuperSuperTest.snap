@@ -19,7 +19,7 @@ class Two extends One{
       return super.dump();
    }
    foo() {
-      blah();
+      (this as Three).blah();
    }
 }
 

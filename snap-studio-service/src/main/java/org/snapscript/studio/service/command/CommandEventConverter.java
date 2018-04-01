@@ -10,7 +10,7 @@ import org.snapscript.studio.agent.event.PongEvent;
 import org.snapscript.studio.agent.event.ProfileEvent;
 import org.snapscript.studio.agent.event.RegisterEvent;
 import org.snapscript.studio.agent.event.ScopeEvent;
-import org.snapscript.studio.agent.event.SyntaxErrorEvent;
+import org.snapscript.studio.agent.event.ScriptErrorEvent;
 import org.snapscript.studio.agent.event.WriteErrorEvent;
 import org.snapscript.studio.agent.event.WriteOutputEvent;
 import org.snapscript.studio.agent.profiler.ProfileResult;
@@ -65,7 +65,7 @@ public class CommandEventConverter {
             .build();
    }
    
-   public ProblemCommand convert(SyntaxErrorEvent event) throws Exception {
+   public ProblemCommand convert(ScriptErrorEvent event) throws Exception {
       String resource = event.getResource();
       String path = project.getRealPath(resource);
       String name = project.getProjectName();

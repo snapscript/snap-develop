@@ -169,7 +169,7 @@ class Animation {
      * @return the AnimFrame of the given frame.
      * This is used in update to get the end time of the current frame.
      */
-    private getFrame(i: Integer): {} {
+    private getFrame(i: Integer) {
         return frames[i];
     }
 

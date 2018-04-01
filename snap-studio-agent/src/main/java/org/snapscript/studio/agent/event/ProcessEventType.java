@@ -7,7 +7,7 @@ public enum ProcessEventType {
    PONG(PongEventMarshaller.class, PongEvent.class, 4),
    EXECUTE(ExecuteEventMarshaller.class, ExecuteEvent.class, 5),
    REGISTER(RegisterEventMarshaller.class, RegisterEvent.class, 6),
-   SYNTAX_ERROR(SyntaxErrorEventMarshaller.class, SyntaxErrorEvent.class, 7),
+   SCRIPT_ERROR(ScriptErrorEventMarshaller.class, ScriptErrorEvent.class, 7),
    EXIT(ExitEventMarshaller.class, ExitEvent.class, 8),
    SCOPE(ScopeEventMarshaller.class, ScopeEvent.class, 9),
    BREAKPOINTS(BreakpointsEventMarshaller.class, BreakpointsEvent.class, 10),

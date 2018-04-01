@@ -36,7 +36,7 @@ module ImageManipulator {
    } 
    
    private loadResource(filename) {
-      return ImageManipulator.class.getModule()
+      return ImageManipulator
                .getContext().getManager().getInputStream(filename);
     }
    

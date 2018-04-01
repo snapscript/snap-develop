@@ -16,7 +16,7 @@ import org.snapscript.studio.agent.event.ProfileEvent;
 import org.snapscript.studio.agent.event.RegisterEvent;
 import org.snapscript.studio.agent.event.ScopeEvent;
 import org.snapscript.studio.agent.event.StepEvent;
-import org.snapscript.studio.agent.event.SyntaxErrorEvent;
+import org.snapscript.studio.agent.event.ScriptErrorEvent;
 import org.snapscript.studio.agent.event.WriteErrorEvent;
 import org.snapscript.studio.agent.event.WriteOutputEvent;
 
@@ -35,8 +35,8 @@ public class ProcessEventRouter {
          listener.onExecute(channel, (ExecuteEvent)event);                  
       } else if(event instanceof RegisterEvent) {
          listener.onRegister(channel, (RegisterEvent)event);
-      } else if(event instanceof SyntaxErrorEvent) {
-         listener.onSyntaxError(channel, (SyntaxErrorEvent)event);
+      } else if(event instanceof ScriptErrorEvent) {
+         listener.onScriptError(channel, (ScriptErrorEvent)event);
       } else if(event instanceof WriteErrorEvent) {
          listener.onWriteError(channel, (WriteErrorEvent)event);
       } else if(event instanceof WriteOutputEvent) {

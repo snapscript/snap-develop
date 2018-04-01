@@ -109,6 +109,20 @@ export module FileEditor {
       editorView.editorMarkers[line] = marker;
    }
    
+   export function createMultipleEditorHighlights(lines, css) {
+      var Range = ace.require('ace/range').Range;
+      var session = editorView.editorPanel.getSession();
+   
+      // clearEditorHighlight(line);
+      clearEditorHighlights(); // clear all highlights in editor
+
+      for(var i = 0; i < lines.length; i++) {
+         var line = lines[i];
+         var marker = session.addMarker(new Range(line - 1, 0, line - 1, 1), css, "fullLine");
+         editorView.editorMarkers[line] = marker;
+      }
+   }
+   
    export function findAndReplaceTextInEditor(){
       var editorData = loadEditor();
       Command.searchAndReplaceFiles(editorData.resource.projectPath);

@@ -101,7 +101,7 @@ class GamePanel extends JPanel with Runnable {
       
       JPopupMenu.setDefaultLightWeightPopupEnabled(false);
       this.addKeyListener(new SpriteListener(mario));
-      this.addKeyListener(new GameListener());
+      this.addKeyListener(new GameListener(this, player));
       this.setFocusable(true); 
    }
    
@@ -250,33 +250,41 @@ class GamePanel extends JPanel with Runnable {
     */
    class GameListener extends KeyAdapter {
       
+      const panel;
+      const player;
+      
+      new(panel, player) {
+         this.panel = panel;
+         this.player = player;
+      }
+      
        public keyReleased(e: KeyEvent) {
           var key = e.getKeyCode();
          
           // 'Z' is pressed.
            if (key == KeyEvent.VK_Z) { // pause
-              if(gameFreeze == false) {
-                 gameFreeze = true;
+              if(panel.gameFreeze == false) {
+                 panel.gameFreeze = true;
                  player.setPaused(true);
-                 SM_22050_Hz.playPause();
+                 panel.SM_22050_Hz.playPause();
               }
            }
            
            // 'X' is pressed.
            if (key == KeyEvent.VK_X) { // resume
-              if(gameFreeze == true) {
-                 gameFreeze = false;
+              if(panel.gameFreeze == true) {
+                 panel.gameFreeze = false;
                  player.setPaused(false);
-                 SM_22050_Hz.playPause();
+                 panel.SM_22050_Hz.playPause();
               }
            }
            
            // '1' is pressed.
            if (key == KeyEvent.VK_1) {
-              if(gameFreeze == true) {
+              if(panel.gameFreeze == true) {
                  System.out.println();
                  System.out.println("Game Update (1) Starting...");
-                 gameAction();
+                 panel.gameAction();
                  System.out.println();
                  System.out.println("Game Update (1) Completed.");
               }
@@ -288,7 +296,7 @@ class GamePanel extends JPanel with Runnable {
        public keyPressed(e: KeyEvent) {
           var key = e.getKeyCode();
           if (key == KeyEvent.VK_L) {
-             gameAction();
+             panel.gameAction();
           }
 
        }

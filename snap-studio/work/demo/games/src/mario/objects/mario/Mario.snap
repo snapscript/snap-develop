@@ -518,13 +518,13 @@ class Mario extends CollidableObject{
             } else if(creature instanceof RedShell) {
                
                if(this.isJumping() && this.getdY() > 0) {
-                  creature.jumpedOn(this.getdX() > 0, this.getdX());
+                  creature!.jumpedOn(this.getdX() > 0, this.getdX());
                   creatureHop();
                   soundManager.playKick();   
                   
-               } else if(!isJumping() && !creature.isMoving()) {
+               } else if(!isJumping() && !creature!.isMoving()) {
                   var right: Boolean = this.getdX() > 0;
-                  creature.jumpedOn(right, this.getdX());
+                  creature!.jumpedOn(right, this.getdX());
                   soundManager.playKick();
                   // offset to ainstant death, needed for sure
                   if(right) {

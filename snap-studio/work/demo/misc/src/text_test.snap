@@ -1,6 +1,7 @@
-
-class Foo extends Arc{
-   func(){
-      println("Foo.func()");
+trait Foo{
+   static getX(){
+      return X;
    }
+   static const X=10;
 }
+Foo.getX();

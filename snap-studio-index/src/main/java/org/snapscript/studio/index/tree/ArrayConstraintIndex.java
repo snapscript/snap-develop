@@ -1,9 +1,12 @@
 package org.snapscript.studio.index.tree;
 
+import org.snapscript.core.Bug;
 import org.snapscript.core.Compilation;
+import org.snapscript.core.InternalStateException;
 import org.snapscript.core.Module;
 import org.snapscript.core.Path;
 import org.snapscript.core.Scope;
+import org.snapscript.core.Type;
 import org.snapscript.core.Value;
 import org.snapscript.parse.StringToken;
 import org.snapscript.tree.constraint.ArrayConstraint;
@@ -35,13 +38,18 @@ public class ArrayConstraintIndex implements Compilation {
          this.bounds = bounds;
       }
    
+      @Bug("fix this")
       @Override
-      public Value evaluate(Scope scope, Object left) throws Exception {
-         Value value = reference.evaluate(scope, null);
-         String entry = value.getValue();
-         String array = entry + DIMENSIONS[bounds.length];
-
-         return Value.getTransient(array);
+      public Type getType(Scope scope) {
+         try {
+            Value value = reference.evaluate(scope, null);
+            String entry = value.getValue();
+            
+            //return entry + DIMENSIONS[bounds.length];
+            return null;
+         } catch(Exception e) {
+            throw new InternalStateException("Invalid array constraint", e);
+         }
       }
    }
 }

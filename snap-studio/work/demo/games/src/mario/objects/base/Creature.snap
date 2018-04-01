@@ -314,13 +314,13 @@ class Creature extends CollidableObject {
             // ______________________________________
             // creature 1 is a RedShell, creature 2 is not.
             if(this instanceof RedShell && creature !instanceof RedShell) {
-               if(this.isMoving()) {
+               if(this!.isMoving()) {
                   creature.flip();
                   soundManager.playKick();
                }
             // creature 2 is a RedShell, creature 1 is not.
             } else if(this !instanceof RedShell && creature instanceof RedShell) {
-               if(creature.isMoving()) {
+               if(creature!.isMoving()) {
                   this.flip();
                   soundManager.playKick();
                }

@@ -18,7 +18,7 @@ class ArrayCoercionTest with TestCase {
    testArrayCoercion() {
       var array1: Score[] = [new Score(1.1), new Score(1.0), new Score(2.0)];
       var array2: Comparable[] = array1;
-      var array3: Score[] = array2;
+      var array3: Score[] = array2 as Score[];
       var array4: Comparable[] = array3;
       
       assert array1.length == 3;
@@ -32,9 +32,9 @@ class ArrayCoercionTest with TestCase {
       assert array1[2] == array2[2]; 
       
       assert array2.length == 3;
-      assert array2[0].score == 1.1;
-      assert array2[1].score == 1.0;
-      assert array2[2].score == 2.0;  
+      assert (array2[0] as Score).score == 1.1;
+      assert (array2[1] as Score).score == 1.0;
+      assert (array2[2] as Score).score == 2.0;  
       
       assert array2.length == array3.length;
       assert array2[0] == array3[0];
@@ -52,8 +52,8 @@ class ArrayCoercionTest with TestCase {
       assert array3[2] == array4[2];    
       
       assert array4.length == 3;
-      assert array4[0].score == 1.1;
-      assert array4[1].score == 1.0;
-      assert array4[2].score == 2.0;   
+      assert (array2[0] as Score).score == 1.1;
+      assert (array2[1] as Score).score == 1.0;
+      assert (array2[2] as Score).score == 2.0;   
    }
 }

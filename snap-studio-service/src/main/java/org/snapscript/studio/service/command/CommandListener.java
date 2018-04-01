@@ -160,13 +160,13 @@ public class CommandListener {
                backupManager.saveFile(file, source);
                
                if(problem == null) {
-                  commandClient.sendSyntaxError(resource, "", 0, -1); // clear problem
+                  commandClient.sendScriptError(resource, "", 0, -1); // clear problem
                } else {
                   String description = problem.getDescription();
                   int line = problem.getLine();
                   long time = System.currentTimeMillis();
                   
-                  commandClient.sendSyntaxError(resource, description, time, line);
+                  commandClient.sendScriptError(resource, description, time, line);
                }
                if(!exists) {
                   onReload();
@@ -235,7 +235,7 @@ public class CommandListener {
                backupManager.backupFile(file, projectName);
             }
             backupManager.saveFile(file, source);
-            commandClient.sendSyntaxError(resource, "", 0, -1); // clear problem
+            commandClient.sendScriptError(resource, "", 0, -1); // clear problem
             processManager.register(forwarder); // make sure we are registered
             processManager.execute(command, commandFilter); 
          } else {
@@ -243,7 +243,7 @@ public class CommandListener {
             int line = problem.getLine();
             long time = System.currentTimeMillis();
             
-            commandClient.sendSyntaxError(resource, description, time, line);
+            commandClient.sendScriptError(resource, description, time, line);
          }
       } catch(Exception e) {
          log.info("Error executing " + resource, e);
@@ -500,7 +500,7 @@ public class CommandListener {
             int line = problem.getLine();
             long time = System.currentTimeMillis();
             
-            commandClient.sendSyntaxError(path,description,  time, line);
+            commandClient.sendScriptError(path,description,  time, line);
          }
       } catch(Exception e) {
          log.info("Error pinging process " + focus, e);

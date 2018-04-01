@@ -7,9 +7,10 @@ import org.snapscript.core.Evaluation;
 import org.snapscript.core.Module;
 import org.snapscript.core.Path;
 import org.snapscript.core.Scope;
+import org.snapscript.core.Type;
 import org.snapscript.core.Value;
+import org.snapscript.core.constraint.Constraint;
 import org.snapscript.studio.index.IndexResult;
-import org.snapscript.tree.constraint.Constraint;
 import org.snapscript.tree.define.MemberFieldDeclaration;
 import org.snapscript.tree.literal.TextLiteral;
 
@@ -46,9 +47,7 @@ public class MemberFieldDeclarationIndex implements Compilation {
       String type = null;
       
       if(constraint != null) {
-         Value result = constraint.evaluate(scope, null);
-         Object object = result.getValue();
-         
+         Type object = constraint.getType(scope);
          type = String.valueOf(object);
       }
       return new IndexResult(PROPERTY, declaration, type, prefix, name, path, line);

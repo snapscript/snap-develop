@@ -47,7 +47,7 @@ class VariableCoercionTest with TestCase {
       assert y[3] == 44;
       assert y[3].class == Integer.class; 
       
-      var s: String[] = y;
+      var s: String[] = y as String[];
       
       assert s[0] == "123";
       assert s[0].class == String.class;   
@@ -58,7 +58,7 @@ class VariableCoercionTest with TestCase {
       assert s[3] == "44";
       assert s[3].class == String.class;  
       
-      var t: String[] = x;
+      var t: String[] = x as String[];
       
       assert t[0] == "123";
       assert t[0].class == String.class;   

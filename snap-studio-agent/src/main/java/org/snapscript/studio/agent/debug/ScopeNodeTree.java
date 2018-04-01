@@ -11,8 +11,6 @@ import org.snapscript.core.Scope;
 import org.snapscript.core.State;
 import org.snapscript.core.Table;
 import org.snapscript.core.Value;
-import org.snapscript.studio.agent.debug.ScopeNode;
-import org.snapscript.studio.agent.debug.ScopeNodeBuilder;
 
 public class ScopeNodeTree implements ScopeNode {
    
