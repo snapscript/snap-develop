@@ -18,9 +18,6 @@ import org.snapscript.core.scope.Scope;
 import org.snapscript.core.scope.State;
 import org.snapscript.core.stack.ThreadStack;
 import org.snapscript.core.trace.Trace;
-import org.snapscript.studio.agent.debug.ScopeNodeTraverser;
-import org.snapscript.studio.agent.debug.ScopeVariableTree;
-import org.snapscript.studio.agent.debug.TraceAdapter;
 import org.snapscript.studio.agent.event.FaultEvent;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
 import org.snapscript.studio.agent.log.ProcessLogger;
@@ -103,7 +100,7 @@ public class FaultContextExtractor extends TraceAdapter {
          StringWriter builder = new StringWriter();
          PrintWriter writer = new PrintWriter(builder);
          
-         InternalError error = converter.createError(cause);
+         InternalError error = converter.createInternalError(cause);
          Object inner = error.getValue();
          
          if(Throwable.class.isInstance(inner)) {
