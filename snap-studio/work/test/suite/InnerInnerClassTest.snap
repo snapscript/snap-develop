@@ -48,6 +48,14 @@ class InnerInnerClassTest with TestCase {
       println(A.B.C.Word.X.name);
       
       assert A.B.C.Word.X instanceof A.B.C.Word;
+      
+      println("A=" + A);
+      println("A.B=" + A.B);
+      println("A.B.C=" + A.B.C);
+      println("A.B.C.Word=" + A.B.C.Word);
+      println("A.B.C.Word.X=" + A.B.C.Word.X);
+      println("A.B.C.Word.X.name=" + A.B.C.Word.X.name);
+      
       assert A.B.C.Word.X.name == 'X';
       
       var c = new A.B.C('a', A.B.C.Word.Z);
