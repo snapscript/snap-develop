@@ -2,7 +2,7 @@ package org.snapscript.studio.index.tree;
 
 import org.snapscript.core.Bug;
 import org.snapscript.core.Compilation;
-import org.snapscript.core.error.InternalStateException;
+import org.snapscript.core.InternalStateException;
 import org.snapscript.core.module.Module;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
