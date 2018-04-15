@@ -23,10 +23,10 @@ class ImportTest with TestCase {
       assert A.class == B.class;
       assert B.class == C.class;
       assert C.class == ConcurrentHashMap.class;   
-      assert A.name == 'ConcurrentHashMap';
-      assert B.name == 'ConcurrentHashMap';
-      assert C.name == 'ConcurrentHashMap';
-      assert ConcurrentHashMap.name == 'ConcurrentHashMap';   
+      assert A.class.name == 'ConcurrentHashMap';
+      assert B.class.name == 'ConcurrentHashMap';
+      assert C.class.name == 'ConcurrentHashMap';
+      assert ConcurrentHashMap.class.name == 'ConcurrentHashMap';   
       
       println(A.class);
       println(B.class);
@@ -38,8 +38,8 @@ class ImportTest with TestCase {
       assert D.class == B.class;
       assert E.class == C.class;
       assert D.class == ConcurrentHashMap.class;   
-      assert D.name == 'ConcurrentHashMap';
-      assert E.name == 'ConcurrentHashMap';
+      assert D.class.name == 'ConcurrentHashMap';
+      assert E.class.name == 'ConcurrentHashMap';
       
       println(A.class);
       println(B.class);
