@@ -12,10 +12,7 @@ import org.snapscript.core.scope.Model;
 
 public class CommandLineParser {
    
-   private static final String DIRECTORY = "root";
-   private static final String SCRIPT = "script";
-   private static final String EVALUATE = "evaluate";
-   private static final String CLASSPATH = "classpath";
+   private static final String TEMPLATE = "Illegal option '%s', options take the format --<option>=<value>";
 
    private final Map<String, Object> values;
    private final PathConverter converter;
@@ -29,34 +26,49 @@ public class CommandLineParser {
    
    public CommandLine parse(String[] options) throws Exception {
       File classpath = new File(".");
-      String root = ".";
+      File directory = new File(".");
+      String url = null;
       Path script = null;
       String evaluate = null;
+      boolean debug = false;
       
       for(String option : options) {
          if(!option.startsWith("--")) {
-            throw new IllegalArgumentException("Illegal option '" + option + "'");
+            String warning = String.format(TEMPLATE, option);
+            CommandLineUsage.usage(warning);
          }
          String command = option.substring(2);
          String[] pair = command.split("=");
+         String name = pair[0];
+         CommandLineArgument argument = CommandLineArgument.resolveArgument(name);
+         String value = null;
          
          if(pair.length > 1) {
-            String name = pair[0];
-            String value = pair[1];
-            
-            if(name.equals(DIRECTORY)) {
-               root = value;
-            } else if(name.equals(CLASSPATH)) {
+            value = pair[1];
+         } else if(argument != null){
+            value = argument.value;
+         } else {
+            values.put(name, value);
+         }
+         if(value != null) {
+            if(argument.isVerbose()) {
+               debug = Boolean.parseBoolean(value);
+            } else if(argument.isURL()) {
+               url = value;
+            } else if(argument.isDirectory()) {
+               directory = new File(value);
+            } else if(argument.isClassPath()) {
                classpath = new File(value);
-            } else if(name.equals(SCRIPT)) {
+            } else if(argument.isScript()) {
                script = converter.createPath(value);
-            } else if(name.equals(EVALUATE)) {
+            } else if(argument.isExpression()) {
                evaluate = value;
-            } else {
-               values.put(name, value);
             }
+         } else {
+            String warning = String.format(TEMPLATE, option);
+            CommandLineUsage.usage(warning);
          }
       }
-      return new CommandLine(model, root, classpath, script, evaluate);
+      return new CommandLine(model, url, directory, classpath, script, evaluate, debug);
    }
 }

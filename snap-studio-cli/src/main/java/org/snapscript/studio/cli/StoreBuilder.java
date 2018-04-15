@@ -10,13 +10,17 @@ import org.snapscript.core.module.Path;
 
 public class StoreBuilder {
 
-   private Path script;
+   private final File path;
+   private final String url;
+   private final boolean debug;
+   private final Path script;
    private Store store;
-   private String root;
    
-   public StoreBuilder(String root, Path script) {
+   public StoreBuilder(String url, File path, Path script, boolean debug) {
+      this.debug = debug;
       this.script = script;
-      this.root = root;
+      this.path = path;
+      this.url = url;
    }
    
    public Store create() {
@@ -28,7 +32,11 @@ public class StoreBuilder {
    
    private Store createStore() {
       try {
-         return createRemoteStore(); 
+         if(url != null) {
+            return createRemoteStore(); 
+         } else {
+            return createFileStore();
+         }
       }catch(Exception e) {
          return createFileStore();
       }
@@ -36,25 +44,23 @@ public class StoreBuilder {
    
    private Store createRemoteStore() {
       try {
-         String location = root.toLowerCase();
+         String location = url.toLowerCase();
          
          if(!location.startsWith("http:") && !location.startsWith("https:")) {
             throw new IllegalStateException("Resource '" + location + "' is not a url");
          }
-         URI file = new URI(root);
+         URI file = new URI(url);
          Store delegate = new RemoteStore(file);
-         return new FileCacheStore(delegate, script, root);
+         return new FileCacheStore(delegate, script, url, debug);
       } catch(Exception e) {
-         throw new IllegalStateException("Could not create store from " + root);
+         throw new IllegalStateException("Could not create store from " + url);
       }
    }
    
    private Store createFileStore() {
-      File file = new File(root);
-      
-      if(!file.exists()) {
-         throw new IllegalStateException("Could not create store from " + root);
+      if(!path.exists()) {
+         throw new IllegalStateException("Could not create store from " + path);
       }
-      return new FileStore(file);
+      return new FileStore(path);
    }
 }

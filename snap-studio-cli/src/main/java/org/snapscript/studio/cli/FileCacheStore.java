@@ -20,17 +20,19 @@ public class FileCacheStore implements Store {
 
    private static final long EXPIRY = TimeUnit.DAYS.toMillis(1);
    
-   private PathConverter converter;
-   private Store store;
-   private Path script;
+   private final PathConverter converter;
+   private final Store store;
+   private final Path script;
+   private final String url;
+   private final boolean debug;
    private File temp;
-   private String root;
    
-   public FileCacheStore(Store store, Path script, String root) throws IOException {
+   public FileCacheStore(Store store, Path script, String url, boolean debug) throws IOException {
       this.converter = new FilePathConverter();
       this.store = store;
       this.script = script;
-      this.root = root;
+      this.url = url;
+      this.debug = debug;
    }
 
    @Override
@@ -52,7 +54,10 @@ public class FileCacheStore implements Store {
                      while((count = remote.read(data)) != -1){
                         output.write(data, 0, count);
                      }
-                     System.out.println("downloaded: " + path + " to " + output.getFile());
+                     if(debug) {
+                        String file = output.getFile();
+                        System.err.println("Downloaded " + path + " to " + file);
+                     }
                      output.close();
                   } finally {
                      remote.close();
@@ -60,7 +65,7 @@ public class FileCacheStore implements Store {
                   return getTempInputStream(path);
                }
             }catch(Exception e) {
-               throw new IllegalStateException("Could not process '" + path + "' from '" + root + "'", e);
+               throw new IllegalStateException("Could not process '" + path + "' from '" + url + "'", e);
             }
          } catch(NotFoundException e) {
             OutputStream output = getTempOutputStream(path); // save cache miss
@@ -75,10 +80,12 @@ public class FileCacheStore implements Store {
             throw e;
          }
       }
-      System.out.println("Loading " + path + " from "+ stream.getFile());
-      
+      if(debug) {
+         String file = stream.getFile();
+         System.err.println("Loading " + path + " from "+ file);
+      }
       if(stream != null && stream.isFailure()) {
-         throw new NotFoundException("Could not find resource '" + path + "' from '" + root + "'");
+         throw new NotFoundException("Could not find resource '" + path + "' from '" + url + "'");
       }
       return stream;
    }

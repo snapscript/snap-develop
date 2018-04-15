@@ -14,8 +14,8 @@ public class CommandLine {
    private final Path script;
    private final Model model;
    
-   public CommandLine(Model model, String root, File classpath, Path script, String evaluation) {
-      this.builder = new StoreBuilder(root, script);
+   public CommandLine(Model model, String url, File root, File classpath, Path script, String evaluation, boolean debug) {
+      this.builder = new StoreBuilder(url, root, script, debug);
       this.evaluation = evaluation;
       this.classpath = classpath;
       this.script = script;
@@ -24,7 +24,7 @@ public class CommandLine {
    
    public void validate() {
       if(!classpath.exists()) {
-         throw new IllegalArgumentException("Could not find classpath directory " + classpath);
+         CommandLineUsage.usage("Could not find classpath " + classpath);
       }
       if(script != null) {
          String resource = script.getPath();

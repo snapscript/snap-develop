@@ -10,8 +10,13 @@ public class ScriptService {
       File classpath = line.getClasspath();
       ScriptExecutor executor = new ScriptExecutor(line);
       
-      ScriptClassLoader.update(classpath);
-      line.validate();
+      try {
+         ScriptClassLoader.update(classpath);
+         line.validate();
+      }catch(Exception cause) {
+         String message = cause.getMessage();
+         CommandLineUsage.usage(message);
+      }
       executor.execute();
    }
 }

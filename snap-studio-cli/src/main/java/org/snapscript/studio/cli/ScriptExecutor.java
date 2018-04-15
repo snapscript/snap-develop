@@ -36,8 +36,7 @@ public class ScriptExecutor {
       String module = DEFAULT_PACKAGE;
       
       if(evaluate == null && script == null) {
-         System.err.println("Neither --evaluate or --script have been specified");
-         System.exit(0);
+         CommandLineUsage.usage();
       }
       PathConverter converter = new FilePathConverter();
       Executor executor = new ThreadPool(8);
@@ -58,11 +57,12 @@ public class ScriptExecutor {
          } else {
             executable.execute(model);
          }
-      } catch(VerifyException e){
-         List<VerifyError> errors = e.getErrors();
+      } catch(VerifyException cause){
+         List<VerifyError> errors = cause.getErrors();
          
          for(VerifyError error : errors) {
             System.err.println(error);
+            System.err.flush();
          }
       } 
    }

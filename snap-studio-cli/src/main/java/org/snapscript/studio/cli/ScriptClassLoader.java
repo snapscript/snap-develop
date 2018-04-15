@@ -12,11 +12,13 @@ import java.util.List;
 
 public class ScriptClassLoader {
    
+   private static final String WARNING = "Could not find classpath file %s";
    private static final String ADD_URL_METHOD = "addURL";
    
    public static void update(File dependencies) throws Exception {
       if(!dependencies.exists()) {
-         throw new IllegalArgumentException("Could not find classpath file " + dependencies);
+         String warning = String.format(WARNING, dependencies);
+         CommandLineUsage.usage(warning);
       }
       if(dependencies.isFile()) {
          FileReader source = new FileReader(dependencies);
