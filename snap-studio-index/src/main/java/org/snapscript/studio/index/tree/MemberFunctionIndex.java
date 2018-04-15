@@ -8,8 +8,8 @@ import org.snapscript.core.Statement;
 import org.snapscript.core.module.Module;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
-import org.snapscript.core.scope.Value;
 import org.snapscript.core.type.Type;
+import org.snapscript.core.variable.Value;
 import org.snapscript.core.constraint.Constraint;
 import org.snapscript.studio.index.IndexResult;
 import org.snapscript.tree.ModifierList;
@@ -48,7 +48,7 @@ public class MemberFunctionIndex implements Compilation {
       Scope scope = module.getScope();
       Value value = identifier.evaluate(scope, null);
       String name = value.getString();
-      String prefix = module.getName();
+      String prefix = module.getName(); // this is not the correct package
       String type = null;
       
       if(parameters != null) {

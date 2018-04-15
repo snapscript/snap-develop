@@ -27,8 +27,8 @@ class Coin extends Creature {
       setIsItem(true);
       
       //turn = new Animation(1000).addFrame(c[0]).addFrame(c[1]).addFrame(c[2]).addFrame(c[3]);
-      shoot = new Animation(-> kill()).setDAL(120).addFrame(Coin.c[0]).addFrame(Coin.c[1]).addFrame(Coin.c[2]).addFrame(Coin.c[3]);
-      setAnimation(Coin.turn);
+      shoot = new Animation(-> kill()).setDAL(120).addFrame(c[0]).addFrame(c[1]).addFrame(c[2]).addFrame(c[3]);
+      setAnimation(turn);
    }
    
 //   public draw(g, pixelX, pixelY) {

@@ -8,9 +8,9 @@ import java.util.Set;
 
 import org.snapscript.core.scope.Scope;
 import org.snapscript.core.scope.State;
-import org.snapscript.core.scope.Value;
 import org.snapscript.core.scope.index.Local;
 import org.snapscript.core.scope.index.Table;
+import org.snapscript.core.variable.Value;
 
 public class ScopeNodeTree implements ScopeNode {
    

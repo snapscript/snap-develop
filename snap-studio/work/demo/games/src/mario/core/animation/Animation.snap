@@ -145,7 +145,7 @@ class Animation {
      * @return an array of the images in this animation.
      * note: this method is never called.
      */
-    private getImages(): BufferedImage[] {
+    private getImages() {
        if(frames.size() == 0) {
           return null;
        } else {

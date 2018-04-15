@@ -19,7 +19,7 @@ class ThreadPool extends ThreadGroup {
         Creates a new ThreadPool.
         @param numThreads The number of threads in the pool.
     */
-    public new(numThreads: Integer): super("ThreadPool-" + (ThreadPool.threadPoolID++)) {
+    public new(numThreads: Integer): super("ThreadPool-" + threadPoolID++) {
         this.setDaemon(true); // ??
 
         isAlive = true;

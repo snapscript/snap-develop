@@ -8,11 +8,11 @@ import java.util.Set;
 
 import org.snapscript.core.scope.Scope;
 import org.snapscript.core.scope.State;
-import org.snapscript.core.scope.Value;
 import org.snapscript.core.scope.instance.Instance;
 import org.snapscript.core.type.Type;
 import org.snapscript.core.property.Property;
 import org.snapscript.core.type.TypeTraverser;
+import org.snapscript.core.variable.Value;
 import org.snapscript.studio.agent.debug.ScopeNode;
 import org.snapscript.studio.agent.debug.ScopeNodeBuilder;
 

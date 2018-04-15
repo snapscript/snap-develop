@@ -1,7 +1,12 @@
-trait Foo{
-   static getX(){
-      return X;
+
+class Foo{
+   private var x;
+   class Bar{
+      var f: Foo;
+      func(){
+         return f.x;
+      }
    }
-   static const X=10;
 }
-Foo.getX();
+// is Foo a super type of Bar
+// is Foo an enclosing type of Bar

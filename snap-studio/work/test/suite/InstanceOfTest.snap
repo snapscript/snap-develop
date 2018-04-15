@@ -51,9 +51,8 @@ class InstanceOfTest with TestCase {
       assert []instanceof Collection.class;
       assert []!instanceof Map.class;
       assert []!instanceof null;
-   }
-   
-   @Ignore
+   }   
+  
    testInstanceOfWithArray(){
       var a = new Task[1];
       var b = new Integer[1];
@@ -61,7 +60,6 @@ class InstanceOfTest with TestCase {
       assert a instanceof Task[];
       assert b instanceof Integer[];
       assert c instanceof String[][];
-      assert a instanceof Task[].class;
       assert a !instanceof null;
       assert null!instanceof Integer.class;
    }

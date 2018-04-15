@@ -19,12 +19,17 @@ import org.snapscript.studio.index.tree.ScriptFunctionIndex;
 import org.snapscript.studio.index.tree.ScriptIndex;
 import org.snapscript.studio.index.tree.TraitDefinitionIndex;
 import org.snapscript.studio.index.tree.TraitReferenceIndex;
+import org.snapscript.studio.index.tree.TypeConstraintIndex;
 import org.snapscript.studio.index.tree.TypeHierarchyIndex;
 import org.snapscript.studio.index.tree.TypeReferencePartIndex;
 
 public enum IndexInstruction {
    DECLARATION(DeclarationIndex.class, "declaration"),
    ARRAY_CONSTRAINT(ArrayConstraintIndex.class, "array-constraint"),
+   TYPE_CONSTRAINT(TypeConstraintIndex.class, "type-constraint"),
+   LIST_CONSTRAINT(TypeConstraintIndex.class, "list-constraint"),   
+   SET_CONSTRAINT(TypeConstraintIndex.class, "set-constraint"),   
+   MAP_CONSTRAINT(TypeConstraintIndex.class, "map-constraint"),     
    PARAMETER(ParameterDeclarationIndex.class, "parameter-declaration"),
    COMPOUND_STATEMENT(CompoundStatementIndex.class, "compound-statement"),
    SCRIPT_FUNCTION(ScriptFunctionIndex.class, "script-function"),

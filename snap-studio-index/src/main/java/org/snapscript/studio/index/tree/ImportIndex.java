@@ -9,7 +9,7 @@ import org.snapscript.core.Statement;
 import org.snapscript.core.module.Module;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
-import org.snapscript.core.scope.Value;
+import org.snapscript.core.variable.Value;
 import org.snapscript.studio.index.IndexResult;
 import org.snapscript.tree.Qualifier;
 

@@ -18,7 +18,7 @@ class SpriteMap {
     private var sprites: BufferedImage[]; 
     
     public new(filename: String, c: Integer, r: Integer) {
-        this.loadSprites(filename, c, r);
+        loadSprites(filename, c, r);
     }
     
     // returns the sprites array

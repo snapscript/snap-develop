@@ -7,8 +7,8 @@ import org.snapscript.core.Evaluation;
 import org.snapscript.core.module.Module;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
-import org.snapscript.core.scope.Value;
 import org.snapscript.core.type.Type;
+import org.snapscript.core.variable.Value;
 import org.snapscript.core.constraint.Constraint;
 import org.snapscript.core.function.Parameter;
 import org.snapscript.studio.index.IndexResult;
@@ -52,7 +52,6 @@ public class ParameterDeclarationIndex implements Compilation  {
       
       if(constraint != null) {
          Type object = constraint.getType(scope);
-         
          type = String.valueOf(object);
       }
       return new IndexResult(PARAMETER, declaration, type, prefix, name, path, line);

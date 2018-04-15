@@ -5,7 +5,7 @@ import org.snapscript.core.Evaluation;
 import org.snapscript.core.module.Module;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
-import org.snapscript.core.scope.Value;
+import org.snapscript.core.variable.Value;
 import org.snapscript.tree.NameReference;
 
 public class TypeReferencePartIndex implements Compilation {

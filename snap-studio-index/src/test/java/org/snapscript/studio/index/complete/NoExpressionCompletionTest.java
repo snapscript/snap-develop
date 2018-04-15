@@ -17,7 +17,7 @@ public class NoExpressionCompletionTest extends TestCase {
 
    private static final String SOURCE =
    "class TextBuffer {\n"+
-   "   var stringBuilder: StringBuilder;\n"+
+   "   var builder: StringBuilder;\n"+
    "   append(source: String, offset: Integer, length: Integer) {\n"+
    "      // replace me\n"+
    "   }\n"+
@@ -45,10 +45,11 @@ public class NoExpressionCompletionTest extends TestCase {
       assertNotNull(completion.get("Integer"));
       assertNotNull(completion.get("ArrayList"));
       assertNotNull(completion.get("append(source, offset, length)"));
-      assertNotNull(completion.get("stringBuilder"));
+      assertNotNull(completion.get("builder"));
       assertEquals(completion.get("Integer"), "class");
       assertEquals(completion.get("ArrayList"), "class");
       assertEquals(completion.get("append(source, offset, length)"), "function");
-      assertEquals(completion.get("stringBuilder"), "property");
+      assertEquals(completion.get("builder"), "property");
+      assertEquals(completion.get("StringBuilder"), "class");
    }
 }
