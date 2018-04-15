@@ -47,10 +47,12 @@ public class CommandLineParser {
             value = pair[1];
          } else if(argument != null){
             value = argument.value;
-         } else {
-            values.put(name, value);
+         } 
+         if(value == null) {
+            String warning = String.format(TEMPLATE, option);
+            CommandLineUsage.usage(warning);
          }
-         if(value != null) {
+         if(argument != null) {
             if(argument.isVerbose()) {
                debug = Boolean.parseBoolean(value);
             } else if(argument.isURL()) {
@@ -65,8 +67,7 @@ public class CommandLineParser {
                evaluate = value;
             }
          } else {
-            String warning = String.format(TEMPLATE, option);
-            CommandLineUsage.usage(warning);
+            values.put(name, value);
          }
       }
       return new CommandLine(model, url, directory, classpath, script, evaluate, debug);
