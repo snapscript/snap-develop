@@ -81,6 +81,9 @@ public class ThreadProgress {
       if(matcher.isBreakpoint(resource, line)){
          return true;
       }
+      if(traceType == TraceType.DEBUG) {
+         return true;
+      }
       if(traceType == TraceType.NORMAL) {
          ResumeType resumeType = resume.get();
          int require = match.get();

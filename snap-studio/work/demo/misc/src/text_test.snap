@@ -1,12 +1,5 @@
 
-class Foo{
-   private var x;
-   class Bar{
-      var f: Foo;
-      func(){
-         return f.x;
-      }
-   }
+for(i in 0..20){
+   println(i);
+   debug i > 2;
 }
-// is Foo a super type of Bar
-// is Foo an enclosing type of Bar

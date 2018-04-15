@@ -243,6 +243,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             for (var editorMarker in session.$backMarkers) {
                 session.removeMarker(editorView.editorMarker);
             }
+            clearEditorHighlights();
             var breakpoints = session.getBreakpoints();
             var remove = false;
             for (var breakpoint in breakpoints) {

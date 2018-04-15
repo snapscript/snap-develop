@@ -279,9 +279,11 @@ export module FileEditor {
    function clearEditor() {
       var session = editorView.editorPanel.getSession();
    
-      for(var editorMarker in session.$backMarkers) {
+      for(var editorMarker in session.$backMarkers) { // what is this???
          session.removeMarker(editorView.editorMarker);
       }
+      clearEditorHighlights(); // clear highlighting
+      
       var breakpoints = session.getBreakpoints();
       var remove = false;
    
