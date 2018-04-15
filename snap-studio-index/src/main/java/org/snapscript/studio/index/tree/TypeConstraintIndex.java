@@ -9,7 +9,7 @@ import org.snapscript.core.constraint.Constraint;
 import org.snapscript.core.module.Module;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
-import org.snapscript.core.type.CanonicalNameBuilder;
+import org.snapscript.core.type.NameBuilder;
 import org.snapscript.core.type.Category;
 import org.snapscript.core.type.NameBuilder;
 import org.snapscript.core.type.Type;
