@@ -1,5 +1,9 @@
-
-for(i in 0..20){
-   println(i);
-   debug i > 2;
-}
+//class X{
+   const f = (const x: String) -> {
+      x++;
+      for(i in 0..100)
+         yield i;
+   };
+   f(10);
+//}
+//X.f.iterator.forEachRemaining(x -> println(x));
