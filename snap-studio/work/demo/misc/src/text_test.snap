@@ -1,4 +1,14 @@
-const f = (const it: Iterable<String>, const func: (s: String)) -> it.iterator.forEachRemaining(x -> func(x));
+class Boo{}
+class Foo<T: Boo>{
+   blah():T{
+      return new Boo();
+   }
+}
+class Blah<T:String> extends Foo<T>{
+   func():T{   
+      return 11;
+   }
+}
 
-f([1,2,3,4,5], x -> println(x));
-
+println(Foo$T.class);
+println(Blah$T.class);

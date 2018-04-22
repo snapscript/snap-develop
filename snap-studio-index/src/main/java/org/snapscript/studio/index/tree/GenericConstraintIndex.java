@@ -9,24 +9,28 @@ import org.snapscript.core.constraint.Constraint;
 import org.snapscript.core.module.Module;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
-import org.snapscript.core.type.NameBuilder;
-import org.snapscript.core.type.Category;
-import org.snapscript.core.type.NameBuilder;
 import org.snapscript.core.type.Type;
 import org.snapscript.core.type.index.ScopeType;
 import org.snapscript.core.variable.Value;
+import org.snapscript.tree.constraint.ConstraintList;
 
-public class TypeConstraintIndex implements Compilation {
+public class GenericConstraintIndex implements Compilation {
    
-   private final IndexConstraint constraint;
+   private final Evaluation evaluation;
+   private final ConstraintList list;
    
-   public TypeConstraintIndex(Evaluation evaluation) {
-      this.constraint = new IndexConstraint(evaluation);
+   public GenericConstraintIndex(Evaluation evaluation) {
+      this(evaluation, null);
+   }
+   
+   public GenericConstraintIndex(Evaluation evaluation, ConstraintList list) {
+      this.evaluation = evaluation;
+      this.list = list;
    }
 
    @Override
    public Object compile(Module module, Path path, int line) throws Exception {
-      return constraint;
+      return new IndexConstraint(evaluation);
    }
    
    private static class IndexConstraint extends Constraint {
@@ -42,7 +46,7 @@ public class TypeConstraintIndex implements Compilation {
          try {
             Value value = reference.evaluate(scope, null);
             Module module = scope.getModule();
-            String entry = value.getValue();            
+            String entry = value.getValue();               
 
             return new IndexType(module, entry);
          } catch(Exception e) {

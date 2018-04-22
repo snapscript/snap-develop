@@ -1,5 +1,6 @@
 package org.snapscript.studio.index.tree;
 
+import static org.snapscript.core.constraint.Constraint.NONE;
 import static org.snapscript.studio.index.IndexType.PARAMETER;
 
 import org.snapscript.core.Compilation;
@@ -71,7 +72,7 @@ public class ParameterDeclarationIndex implements Compilation  {
       @Override
       public Parameter get(Scope scope) throws Exception {
          String name = reference.getName(scope);
-         return new Parameter(name, null, modifier != null);
+         return new Parameter(name, NONE, modifier != null);
       }
    }
 }
