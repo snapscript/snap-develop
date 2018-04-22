@@ -1,9 +1,4 @@
-//class X{
-   const f = (const x: String) -> {
-      x++;
-      for(i in 0..100)
-         yield i;
-   };
-   f(10);
-//}
-//X.f.iterator.forEachRemaining(x -> println(x));
+const f = (const it: Iterable<String>, const func: (s: String)) -> it.iterator.forEachRemaining(x -> func(x));
+
+f([1,2,3,4,5], x -> println(x));
+

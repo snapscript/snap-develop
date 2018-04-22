@@ -6,22 +6,22 @@ import org.snapscript.core.Compilation;
 import org.snapscript.core.module.Module;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
-import org.snapscript.core.variable.Value;
+import org.snapscript.core.type.Type;
 import org.snapscript.studio.index.IndexResult;
+import org.snapscript.tree.constraint.TraitConstraint;
+import org.snapscript.tree.constraint.TypeConstraint;
 import org.snapscript.tree.define.TypeHierarchy;
-import org.snapscript.tree.reference.TraitReference;
-import org.snapscript.tree.reference.TypeReference;
 
 public class TypeHierarchyIndex implements Compilation {
    
    private final TypeHierarchy hierarchy;
-   private final TypeReference name;
+   private final TypeConstraint name;
    
-   public TypeHierarchyIndex(TraitReference... traits) {
+   public TypeHierarchyIndex(TraitConstraint... traits) {
       this(null, traits);     
    }
    
-   public TypeHierarchyIndex(TypeReference name, TraitReference... traits) {
+   public TypeHierarchyIndex(TypeConstraint name, TraitConstraint... traits) {
       this.hierarchy = new TypeHierarchy(name, traits);
       this.name = name;
    }
@@ -30,9 +30,8 @@ public class TypeHierarchyIndex implements Compilation {
    public Object compile(Module module, Path path, int line) throws Exception {
       if(name != null) {
          Scope scope = module.getScope();
-         Value value = name.evaluate(scope, null);
-         Object object = value.getValue();
-         String type = String.valueOf(object);
+         Type constraint = name.getType(scope);
+         String type = String.valueOf(constraint);
          String prefix = module.getName();
          
          return new IndexResult(SUPER, hierarchy, null, prefix, type, path, line);
