@@ -10,6 +10,7 @@ import org.snapscript.core.type.TypePart;
 import org.snapscript.studio.index.IndexResult;
 import org.snapscript.tree.annotation.AnnotationList;
 import org.snapscript.tree.define.ClassDefinition;
+import org.snapscript.tree.define.ClassName;
 import org.snapscript.tree.define.TypeHierarchy;
 import org.snapscript.tree.define.TypeName;
 
@@ -18,7 +19,7 @@ public class ClassDefinitionIndex implements Compilation {
    private final ClassDefinition definition;
    private final TypeName identifier;
    
-   public ClassDefinitionIndex(AnnotationList annotations, TypeName name, TypeHierarchy hierarchy, TypePart... parts) {
+   public ClassDefinitionIndex(AnnotationList annotations, ClassName name, TypeHierarchy hierarchy, TypePart... parts) {
       this.definition = new ClassDefinition(annotations, name, hierarchy, parts);
       this.identifier = name;
    }

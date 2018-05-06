@@ -7,7 +7,7 @@ import org.snapscript.studio.index.tree.CompoundStatementIndex;
 import org.snapscript.studio.index.tree.DeclarationIndex;
 import org.snapscript.studio.index.tree.EnumConstructorIndex;
 import org.snapscript.studio.index.tree.EnumDefinitionIndex;
-import org.snapscript.studio.index.tree.GenericConstraintIndex;
+import org.snapscript.studio.index.tree.GenericReferenceIndex;
 import org.snapscript.studio.index.tree.ImportIndex;
 import org.snapscript.studio.index.tree.ImportStaticIndex;
 import org.snapscript.studio.index.tree.MemberFieldDeclarationIndex;
@@ -25,13 +25,13 @@ import org.snapscript.studio.index.tree.TypeHierarchyIndex;
 import org.snapscript.studio.index.tree.TypeReferencePartIndex;
 
 public enum IndexInstruction {
-   DECLARATION(DeclarationIndex.class, "declaration"),
-   ARRAY_CONSTRAINT(ArrayConstraintIndex.class, "array-constraint"),
-   GENERIC_CONSTRAINT(GenericConstraintIndex.class, "generic-constraint"),
-   LIST_CONSTRAINT(GenericConstraintIndex.class, "list-constraint"),   
-   SET_CONSTRAINT(GenericConstraintIndex.class, "set-constraint"),   
-   MAP_CONSTRAINT(GenericConstraintIndex.class, "map-constraint"),     
-   TRAIT_CONSTRAINT(TraitConstraintIndex.class, "trait-constraint"),
+   DECLARATION(DeclarationIndex.class, "declaration"),   
+   GENERIC_REFERENCE(GenericReferenceIndex.class, "generic-reference"),
+   LIST_REFERENCE(GenericReferenceIndex.class, "list-reference"),   
+   SET_REFERENCE(GenericReferenceIndex.class, "set-reference"),   
+   MAP_REFERENCE(GenericReferenceIndex.class, "map-reference"),     
+   ARRAY_REFERENCE(ArrayConstraintIndex.class, "array-reference"),
+   TRAIT_CONSTRAINT(TraitConstraintIndex.class, "trait-constraint"),   
    PARAMETER(ParameterDeclarationIndex.class, "parameter-declaration"),
    COMPOUND_STATEMENT(CompoundStatementIndex.class, "compound-statement"),
    SCRIPT_FUNCTION(ScriptFunctionIndex.class, "script-function"),

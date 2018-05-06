@@ -8,21 +8,21 @@ import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
 import org.snapscript.core.type.Type;
 import org.snapscript.studio.index.IndexResult;
+import org.snapscript.tree.constraint.ClassConstraint;
 import org.snapscript.tree.constraint.TraitConstraint;
-import org.snapscript.tree.constraint.TypeConstraint;
 import org.snapscript.tree.define.ClassHierarchy;
 import org.snapscript.tree.define.TypeHierarchy;
 
 public class TypeHierarchyIndex implements Compilation {
    
    private final ClassHierarchy hierarchy;
-   private final TypeConstraint name;
+   private final ClassConstraint name;
    
    public TypeHierarchyIndex(TraitConstraint... traits) {
       this(null, traits);     
    }
    
-   public TypeHierarchyIndex(TypeConstraint name, TraitConstraint... traits) {
+   public TypeHierarchyIndex(ClassConstraint name, TraitConstraint... traits) {
       this.hierarchy = new ClassHierarchy(name, traits);
       this.name = name;
    }

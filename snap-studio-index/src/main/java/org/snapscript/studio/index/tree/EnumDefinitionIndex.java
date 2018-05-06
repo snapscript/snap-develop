@@ -11,6 +11,7 @@ import org.snapscript.studio.index.IndexResult;
 import org.snapscript.tree.annotation.AnnotationList;
 import org.snapscript.tree.define.EnumDefinition;
 import org.snapscript.tree.define.EnumList;
+import org.snapscript.tree.define.EnumName;
 import org.snapscript.tree.define.TypeHierarchy;
 import org.snapscript.tree.define.TypeName;
 
@@ -19,7 +20,7 @@ public class EnumDefinitionIndex implements Compilation {
    private final EnumDefinition definition;
    private final TypeName identifier;
    
-   public EnumDefinitionIndex(AnnotationList annotations, TypeName name, TypeHierarchy hierarchy, EnumList list, TypePart... parts) {
+   public EnumDefinitionIndex(AnnotationList annotations, EnumName name, TypeHierarchy hierarchy, EnumList list, TypePart... parts) {
       this.definition = new EnumDefinition(annotations, name, hierarchy, list, parts);
       this.identifier = name;
    }

@@ -4,6 +4,7 @@ import static org.snapscript.core.type.Category.CLASS;
 
 import org.snapscript.core.Compilation;
 import org.snapscript.core.Evaluation;
+import org.snapscript.core.Identity;
 import org.snapscript.core.InternalStateException;
 import org.snapscript.core.constraint.Constraint;
 import org.snapscript.core.module.Module;
@@ -12,26 +13,27 @@ import org.snapscript.core.scope.Scope;
 import org.snapscript.core.type.Type;
 import org.snapscript.core.type.index.ScopeType;
 import org.snapscript.core.variable.Value;
-import org.snapscript.tree.constraint.ConstraintList;
+import org.snapscript.tree.reference.GenericArgumentList;
 
-public class GenericConstraintIndex implements Compilation {
+public class GenericReferenceIndex implements Compilation {
    
+   private final GenericArgumentList list;
    private final Evaluation evaluation;
-   private final ConstraintList list;
    
-   public GenericConstraintIndex(Evaluation evaluation) {
+   public GenericReferenceIndex(Evaluation evaluation) {
       this(evaluation, null);
    }
    
-   public GenericConstraintIndex(Evaluation evaluation, ConstraintList list) {
+   public GenericReferenceIndex(Evaluation evaluation, GenericArgumentList list) {
       this.evaluation = evaluation;
       this.list = list;
    }
 
    @Override
-   public Object compile(Module module, Path path, int line) throws Exception {
-      return new IndexConstraint(evaluation);
-   }
+   public Evaluation compile(Module module, Path path, int line) throws Exception {
+      Constraint constraint = new IndexConstraint(evaluation);
+      return new Identity(constraint, constraint);
+   }   
    
    private static class IndexConstraint extends Constraint {
       
