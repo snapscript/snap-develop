@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.snapscript.core.PrimitivePromoter;
+import org.snapscript.core.convert.PrimitivePromoter;
 
 public class ScopeNodeChecker {
 

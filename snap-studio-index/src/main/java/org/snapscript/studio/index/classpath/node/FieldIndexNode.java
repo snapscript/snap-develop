@@ -5,7 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.Set;
 
-import org.snapscript.core.PrimitivePromoter;
+import org.snapscript.core.convert.PrimitivePromoter;
 import org.snapscript.studio.index.IndexNode;
 import org.snapscript.studio.index.IndexType;
 import org.snapscript.studio.index.classpath.ClassFile;

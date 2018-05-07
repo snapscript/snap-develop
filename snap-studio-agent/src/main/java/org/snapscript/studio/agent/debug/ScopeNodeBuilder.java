@@ -4,7 +4,7 @@ import java.lang.reflect.Proxy;
 import java.util.Map;
 
 import org.snapscript.core.Context;
-import org.snapscript.core.PrimitivePromoter;
+import org.snapscript.core.convert.PrimitivePromoter;
 import org.snapscript.core.convert.proxy.ProxyWrapper;
 import org.snapscript.core.scope.instance.Instance;
 import org.snapscript.studio.agent.debug.ArrayScopeNode;

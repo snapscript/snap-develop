@@ -4,7 +4,7 @@ import static org.snapscript.core.type.Category.CLASS;
 
 import org.snapscript.core.Compilation;
 import org.snapscript.core.Evaluation;
-import org.snapscript.core.Identity;
+import org.snapscript.core.Substitute;
 import org.snapscript.core.InternalStateException;
 import org.snapscript.core.constraint.Constraint;
 import org.snapscript.core.module.Module;
@@ -32,7 +32,7 @@ public class GenericReferenceIndex implements Compilation {
    @Override
    public Evaluation compile(Module module, Path path, int line) throws Exception {
       Constraint constraint = new IndexConstraint(evaluation);
-      return new Identity(constraint, constraint);
+      return new Substitute(constraint, constraint);
    }   
    
    private static class IndexConstraint extends Constraint {
