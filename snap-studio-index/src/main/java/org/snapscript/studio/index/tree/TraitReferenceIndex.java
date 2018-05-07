@@ -9,14 +9,14 @@ import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
 import org.snapscript.core.variable.Value;
 import org.snapscript.studio.index.IndexResult;
-import org.snapscript.tree.reference.TraitReference;
+import org.snapscript.tree.reference.TypeReference;
 
 public class TraitReferenceIndex implements Compilation {
    
-   private final TraitReference reference;
+   private final TypeReference reference;
 
    public TraitReferenceIndex(Evaluation... list) {
-      this.reference = new TraitReference(list);
+      this.reference = new TypeReference(list);
    }
 
    @Override
