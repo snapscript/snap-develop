@@ -147,31 +147,37 @@ public class CommandListener {
       
       try {
          if(!command.isDirectory()) {
-            Problem problem = finder.parse(projectName, resource, source);
-            File file = new File(root, "/" + resource);
-            boolean exists = file.exists();
+            File file = new File(root, "/" + resource);            
+            String name = file.getName();            
             
-            if(exists) {
-               backupManager.backupFile(file, projectName);
-            }
-            if(command.isCreate() && exists) {
-               commandClient.sendAlert(resource, "Resource " + resource + " already exists");
+            if(!name.contains(".")) {
+               commandClient.sendAlert(resource, "Resource " + resource + " has no file extension");
             } else {
-               backupManager.saveFile(file, source);
+               Problem problem = finder.parse(projectName, resource, source);
+               boolean exists = file.exists();
                
-               if(problem == null) {
-                  commandClient.sendScriptError(resource, "", 0, -1); // clear problem
+               if(exists) {
+                  backupManager.backupFile(file, projectName);
+               }
+               if(command.isCreate() && exists) {
+                  commandClient.sendAlert(resource, "Resource " + resource + " already exists");
                } else {
-                  String description = problem.getDescription();
-                  int line = problem.getLine();
-                  long time = System.currentTimeMillis();
+                  backupManager.saveFile(file, source);
                   
-                  commandClient.sendScriptError(resource, description, time, line);
-               }
-               if(!exists) {
-                  onReload();
-               }
-            } 
+                  if(problem == null) {
+                     commandClient.sendScriptError(resource, "", 0, -1); // clear problem
+                  } else {
+                     String description = problem.getDescription();
+                     int line = problem.getLine();
+                     long time = System.currentTimeMillis();
+                     
+                     commandClient.sendScriptError(resource, description, time, line);
+                  }
+                  if(!exists) {
+                     onReload();
+                  }
+               } 
+            }
          } else {
             File file = new File(root, "/"+resource);
             
