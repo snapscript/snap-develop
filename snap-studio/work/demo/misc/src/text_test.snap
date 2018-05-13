@@ -1,5 +1,4 @@
-func(1,2, Math::max); // method handles
-function func(x, y, func: (a,b)) {
-   var result = func(x, y);
-   println(result); 
+class Foo<A: String>{
+}
+class Bar<A: Integer> extends Foo<A>{
 }
