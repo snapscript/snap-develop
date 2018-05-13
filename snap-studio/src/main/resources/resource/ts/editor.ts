@@ -656,6 +656,8 @@ export module FileEditor {
                 data: message,
                 dataType: 'json',
                 success: function(response){
+                   var expression = response.expression;
+                   var dotIndex = Math.max(0, expression.lastIndexOf('.') + 1);                   
                    var tokens = response.tokens;
                    var length = tokens.length;
                    var suggestions = [];
@@ -663,7 +665,11 @@ export module FileEditor {
                    for(var token in tokens) {
                       if (tokens.hasOwnProperty(token)) {
                          var type = tokens[token];
-                         suggestions.push({className: 'autocomplete_' + type, name: token, value: token, score: 300, meta: type });
+                         
+                         if(Common.stringStartsWith(token, expression)) {
+                            token = token.substring(dotIndex);
+                         }
+                         suggestions.push({className: 'autocomplete_' + type, token: token, value: token, score: 300, meta: type });
                       }
                    }
                    callback(null, suggestions);

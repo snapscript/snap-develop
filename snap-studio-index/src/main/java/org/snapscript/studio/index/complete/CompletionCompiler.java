@@ -1,6 +1,8 @@
 package org.snapscript.studio.index.complete;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -11,6 +13,7 @@ import org.snapscript.core.link.ImportPathResolver;
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexDumper;
 import org.snapscript.studio.index.IndexNode;
+import org.snapscript.studio.index.IndexNodeSorter;
 import org.snapscript.studio.index.IndexType;
 import org.snapscript.studio.index.SourceFile;
 
@@ -70,8 +73,9 @@ public class CompletionCompiler {
          
          if(text != null) {
             Set<IndexNode> matches = finder.findMatches(database, node, text);
+            List<IndexNode> sortedMatches = IndexNodeSorter.sort(matches, resource);
             Map<String, IndexNode> nodes = database.getTypeNodes();
-            Map<String, String> tokens = completeExpressionTokens(matches, nodes);
+            Map<String, String> tokens = completeExpressionTokens(sortedMatches, nodes);
             String expression = input.getExpression();
             
             return new CompletionResponse(tokens, expression, details);
@@ -128,8 +132,8 @@ public class CompletionCompiler {
       return Collections.emptyMap();
    }
 
-   private Map<String, String> completeExpressionTokens(Set<IndexNode> matches, Map<String, IndexNode> nodes) {
-      Map<String, String> tokens = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+   private Map<String, String> completeExpressionTokens(List<IndexNode> matches, Map<String, IndexNode> nodes) {
+      Map<String, String> tokens = new LinkedHashMap<String, String>();
       
       for(IndexNode match : matches) {
          String name = match.getName();
