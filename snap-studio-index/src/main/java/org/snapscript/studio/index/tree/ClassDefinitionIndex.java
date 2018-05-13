@@ -1,8 +1,7 @@
 package org.snapscript.studio.index.tree;
 
-import static org.snapscript.studio.index.IndexType.CLASS;
-
 import org.snapscript.core.Compilation;
+import org.snapscript.core.Statement;
 import org.snapscript.core.module.Module;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
@@ -13,6 +12,8 @@ import org.snapscript.tree.define.ClassDefinition;
 import org.snapscript.tree.define.ClassName;
 import org.snapscript.tree.define.TypeHierarchy;
 import org.snapscript.tree.define.TypeName;
+
+import static org.snapscript.studio.index.IndexType.CLASS;
 
 public class ClassDefinitionIndex implements Compilation {
    
@@ -26,10 +27,11 @@ public class ClassDefinitionIndex implements Compilation {
 
    @Override
    public Object compile(Module module, Path path, int line) throws Exception {
+      Statement statement = definition.compile(module, path, line);
       Scope scope = module.getScope();
       String name = identifier.getName(scope);
       String prefix = module.getName();
       
-      return new IndexResult(CLASS, definition, null, prefix, name, path, line);
+      return new IndexResult(CLASS, statement, null, prefix, name, path, line);
    }
 }

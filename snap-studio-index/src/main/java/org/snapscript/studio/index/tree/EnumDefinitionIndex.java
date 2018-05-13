@@ -3,6 +3,7 @@ package org.snapscript.studio.index.tree;
 import static org.snapscript.studio.index.IndexType.ENUM;
 
 import org.snapscript.core.Compilation;
+import org.snapscript.core.Statement;
 import org.snapscript.core.module.Module;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
@@ -27,10 +28,11 @@ public class EnumDefinitionIndex implements Compilation {
 
    @Override
    public Object compile(Module module, Path path, int line) throws Exception {
+      Statement statement = definition.compile(module, path, line);
       Scope scope = module.getScope();
       String name = identifier.getName(scope);
       String prefix = module.getName();
       
-      return new IndexResult(ENUM, definition, null, prefix, name, path, line);
+      return new IndexResult(ENUM, statement, null, prefix, name, path, line);
    }
 }

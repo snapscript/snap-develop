@@ -1,6 +1,7 @@
 package org.snapscript.studio.index.tree;
 
 import org.snapscript.core.Compilation;
+import org.snapscript.core.Statement;
 import org.snapscript.core.module.Module;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
@@ -24,10 +25,11 @@ public class TraitDefinitionIndex implements Compilation {
 
    @Override
    public Object compile(Module module, Path path, int line) throws Exception {
+      Statement statement = definition.compile(module, path, line);
       Scope scope = module.getScope();
       String name = identifier.getName(scope);
       String prefix = module.getName();
       
-      return new IndexResult(IndexType.TRAIT, definition, null, prefix, name, path, line);
+      return new IndexResult(IndexType.TRAIT, statement, null, prefix, name, path, line);
    }
 }
