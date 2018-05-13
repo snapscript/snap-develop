@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.snapscript</groupId>
     <artifactId>snap-studio-parent</artifactId>
-    <version>1.3.1</version>
+    <version>1.3.2</version>
   </parent>
   <dependencies>
     <dependency>
@@ -17,17 +17,17 @@
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-compile</artifactId>
-      <version>1.3.1</version>
+      <version>1.3.2</version>
     </dependency>
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-tree</artifactId>
-      <version>1.3.1</version>
+      <version>1.3.2</version>
     </dependency>
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-studio-agent</artifactId>
-      <version>1.3.1</version>
+      <version>1.3.2</version>
     </dependency>
     <dependency>
       <groupId>org.simpleframework</groupId>
