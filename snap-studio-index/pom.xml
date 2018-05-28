@@ -6,23 +6,23 @@
   <parent>
     <groupId>org.snapscript</groupId>
     <artifactId>snap-studio-parent</artifactId>
-    <version>1.3.3</version>
+    <version>1.3.4</version>
   </parent>
   <dependencies>
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-compile</artifactId>
-      <version>1.3.3</version>
+      <version>1.3.4</version>
     </dependency>
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-tree</artifactId>
-      <version>1.3.3</version>
+      <version>1.3.4</version>
     </dependency>
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-studio-common</artifactId>
-      <version>1.3.3</version>
+      <version>1.3.4</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
