@@ -460,7 +460,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                     };
                     console_1.ProcessConsole.clearConsole();
                     socket_1.EventBus.sendEvent("SAVE", message);
-                    editor_1.FileEditor.updateEditor("", resourceDetails.projectPath);
+                    editor_1.FileEditor.updateEditor("", resourceDetails.projectPath, -1);
                 }
             });
         }
@@ -520,7 +520,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                 console_1.ProcessConsole.clearConsole();
                 socket_1.EventBus.sendEvent("SAVE", message);
                 if (update) {
-                    editor_1.FileEditor.updateEditor(editorData.source, editorPath.projectPath);
+                    editor_1.FileEditor.updateEditor(editorData.source, editorPath.projectPath, -1);
                 }
             }
         }

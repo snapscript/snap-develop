@@ -243,7 +243,7 @@ define(["require", "exports", "jquery"], function (require, exports, $) {
                 .replace(/&quot;/g, "\"")
                 .replace(/&lt;/g, "<")
                 .replace(/&gt;/g, ">")
-                .replace(/&nbsp;/g, "")
+                .replace(/&nbsp;/g, " ")
                 .replace(/&amp;/g, "&");
         }
         Common.clearHtml = clearHtml;

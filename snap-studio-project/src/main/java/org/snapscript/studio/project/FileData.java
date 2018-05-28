@@ -50,4 +50,11 @@ public class FileData {
       }
       return true;
    }
+   
+   public long getLastModified(){
+      if(file != null) {
+         return file.lastModified();
+      }
+      return -1;
+   }
 }

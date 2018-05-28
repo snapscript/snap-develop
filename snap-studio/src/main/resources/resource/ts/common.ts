@@ -267,7 +267,7 @@ export module Common {
          .replace(/&quot;/g, "\"")
          .replace(/&lt;/g, "<")
          .replace(/&gt;/g, ">")
-         .replace(/&nbsp;/g, "")
+         .replace(/&nbsp;/g, " ")
          .replace(/&amp;/g, "&");        
    }
    

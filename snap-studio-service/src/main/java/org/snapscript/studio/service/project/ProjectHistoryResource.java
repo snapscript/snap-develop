@@ -1,5 +1,7 @@
 package org.snapscript.studio.service.project;
 
+import static org.simpleframework.http.Protocol.LAST_MODIFIED;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -9,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.simpleframework.http.Path;
+import org.simpleframework.http.Protocol;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
@@ -77,10 +80,14 @@ public class ProjectHistoryResource implements Resource {
       String timeStamp = request.getParameter("time"); // do we load file
       
       if(timeStamp != null) {
-         response.setContentType("text/plain");
-         InputStream source = findBackupFile(request, response);
+         File backupFile = findBackupFile(request, response);
          OutputStream output = response.getOutputStream();
+         long lastModified = backupFile.lastModified();
          
+         response.setContentType("text/plain");
+         response.setDate(LAST_MODIFIED, lastModified);
+         
+         InputStream source = new FileInputStream(backupFile);
          byte[] chunk = new byte[1024];
          int count = 0;
          
@@ -94,7 +101,7 @@ public class ProjectHistoryResource implements Resource {
       return false;
    }
    
-   private InputStream findBackupFile(Request request, Response response) throws Throwable {
+   private File findBackupFile(Request request, Response response) throws Throwable {
       String timeStamp = request.getParameter("time"); // do we load file
       Path path = request.getPath(); 
       Project project = workspace.createProject(path);
@@ -105,11 +112,10 @@ public class ProjectHistoryResource implements Resource {
       
       for(BackupFile entry : files) {
          if(entry.getTimeStamp().equals(timeStamp)) {
-            File backupFile = entry.getFile();
-            return new FileInputStream(backupFile);
+            return entry.getFile();
          }
       }
-      return new FileInputStream(file);
+      return file;
    }
    
    private void handleNotFound(Request request, Response response) throws Throwable {

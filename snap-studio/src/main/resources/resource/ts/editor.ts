@@ -26,6 +26,7 @@ export class FileEditorView {
    editorMarkers = {};
    editorResource: string = null;
    editorText: string = null;
+   editorLastModified = null;
    editorTheme: string = null;
    editorCurrentTokens = {}; // current editor hyperlinks
    editorFocusToken = null; // token to focus on editor load
@@ -33,6 +34,7 @@ export class FileEditorView {
    editorPanel = null; // this actual editor
    
    constructor(editorPanel: any, editorTheme: string) {
+      this.editorLastModified = new Date().getTime();
       this.editorPanel = editorPanel;
       this.editorTheme = editorTheme;
    }
@@ -299,6 +301,7 @@ export module FileEditor {
       var editorText = loadEditorText();
       
       return {
+         lastModified: editorView.editorLastModified,
          breakpoints : editorView.editorBreakpoints,
          resource : editorView.editorResource,
          history : editorHistory,
@@ -426,9 +429,11 @@ export module FileEditor {
          var md5Hash = md5(editorData.source);
          var currentText = editorView.editorPanel.getValue();
          var saveText = isEditorChanged() ? currentText : null; // keep text if changed
+         var lastModified = editorData.lastModified;
          
          editorView.editorHistory[editorData.resource.resourcePath] = {
             hash: md5Hash,
+            lastModified: lastModified,
             history: editorData.history,
             position: editorData.position,
             buffer: saveText // save the buffer if it has changed
@@ -475,6 +480,7 @@ export module FileEditor {
       var history = editorView.editorHistory[editorResource.resourcePath];
       
       if(history) {
+         history.lastModified = -1;
          history.buffer = null; // clear the buffer
          updateEditorTabMarkForResource(editorResource.resourcePath); // remove the *
       }
@@ -485,27 +491,35 @@ export module FileEditor {
       
       if(isEditorResourcePath(editorResource.resourcePath)) {
          var editorData = loadEditor();
-         return editorData.source; // if its the current buffer then return it
+         return {
+            text: editorData.source, // if its the current buffer then return it
+           lastModified: editorData.lastModified
+         };
       }
       var history = editorView.editorHistory[editorResource.resourcePath];
       
       if(history) {
-         return history.buffer;
-      }
-      
+         return {
+            text: history.buffer, // if its the current buffer then return it
+           lastModified: history.lastModified
+         };     
+      }      
       return null;
    }
    
-   export function updateEditor(text, resource) {
+   export function updateEditor(text, resource, lastModified) {
+      console.log(resource + " was modified on " + new Date(lastModified) + " " + ((text) ? text.length : "NULL"));
+      
       var session = editorView.editorPanel.getSession();
       var currentMode = session.getMode();
       var actualMode = resolveEditorMode(resource);
       var encodedText = text; // encodeEditorText(text, resource); // change JSON conversion
       var savedHistoryBuffer = loadSavedEditorBuffer(resource); // load saved buffer
-      var textToDisplay = encodedText;
-      
-      if(savedHistoryBuffer) {
-         textToDisplay = savedHistoryBuffer;
+      var textToDisplay = encodedText;      
+
+      if(savedHistoryBuffer && savedHistoryBuffer.text && savedHistoryBuffer.lastModified > lastModified) {
+         console.log("buffer is newer, difference is " + savedHistoryBuffer.lastModified - lastModified)
+         textToDisplay = savedHistoryBuffer.text;
       }
       saveEditorHistory(); // save any existing history
       
@@ -518,7 +532,6 @@ export module FileEditor {
       editorView.editorPanel.setReadOnly(false);
       editorView.editorPanel.setValue(textToDisplay, 1);
       createEditorUndoManager(session, textToDisplay, resource); // restore any existing history
-      
       clearEditor();
       editorView.editorResource = FileTree.createResourcePath(resource);
       editorView.editorText = encodedText; // save the real text NOT the text to display
@@ -621,6 +634,7 @@ export module FileEditor {
    
    export function updateProjectTabOnChange() {
       editorView.editorPanel.on("input", function() {
+         editorView.editorLastModified = new Date().getTime();
          updateEditorTabMark(); // on input then you update star
      });
    }
@@ -723,6 +737,7 @@ export module FileEditor {
       
       editor.getSession().setMode("ace/mode/snapscript");
       editor.getSession().setTabSize(3);
+      
       editor.setReadOnly(false);
       editor.setAutoScrollEditorIntoView(true);
       editor.getSession().setUseSoftTabs(true);

@@ -42,11 +42,13 @@ export module FileExplorer {
             dataType: 'text',
             success: function(response, status, header) {
                var contentType = header.getResponseHeader("content-type");
-               handleOpenTreeFile(resourcePath, afterLoad, response, contentType, resourcePath);
+               var lastModified = header.getResponseHeader("last-modified");
+               var lastModifiedTime = new Date(lastModified).getTime();
+               
+               handleOpenTreeFile(resourcePath, afterLoad, response, contentType, resourcePath, lastModifiedTime);
             },
             error: function(response) {
-               var type = header.getResponseHeader("content-type");
-               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", resourcePath);
+               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", resourcePath, -1);
             },
             async: false
          });
@@ -56,10 +58,13 @@ export module FileExplorer {
             type: "get",
             success: function(response, status, header) {
                var contentType = header.getResponseHeader("content-type");
-               handleOpenTreeFile(resourcePath, afterLoad, response, contentType, resourcePath);
+               var lastModified = header.getResponseHeader("last-modified");
+               var lastModifiedTime = new Date(lastModified).getTime();
+               
+               handleOpenTreeFile(resourcePath, afterLoad, response, contentType, resourcePath, lastModifiedTime);
             },
             error: function(response) {
-               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", resourcePath);
+               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", resourcePath, -1);
             },
             async: false
          });
@@ -79,10 +84,13 @@ export module FileExplorer {
             dataType: 'text',
             success: function (response, status, header) {
                var contentType = header.getResponseHeader("content-type");
-               handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL);
+               var lastModified = header.getResponseHeader("last-modified");
+               var lastModifiedTime = new Date(lastModified).getTime();
+               
+               handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL, lastModifiedTime);
             },
             error: function (response) {
-               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", downloadURL);
+               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", downloadURL, -1);
             },
             async: false
          });
@@ -93,17 +101,20 @@ export module FileExplorer {
             type: "get",            
             success: function (response, status, header) {
                var contentType = header.getResponseHeader("content-type");
-               handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL);
+               var lastModified = header.getResponseHeader("last-modified");
+               var lastModifiedTime = new Date(lastModified).getTime();
+               
+               handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL, lastModifiedTime);
             },
             error: function (response) {
-               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", downloadURL);
+               handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", downloadURL, -1);
             },
             async: false
          });
       }
    }
    
-   function handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL) {
+   function handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL, lastModified) {
       if(isImageFileType(contentType)) {
          handleOpenFileInNewTab(downloadURL);
       } else if(isBinaryFileType(contentType)) {
@@ -126,7 +137,7 @@ export module FileExplorer {
 //         } else {
 //            FileEditor.updateEditor(response, resourcePath);
 //         }
-         FileEditor.updateEditor(response, resourcePath);
+         FileEditor.updateEditor(response, resourcePath, lastModified);
          console.log("OPEN: " + resourcePath)
       }
       afterLoad();

@@ -510,7 +510,7 @@ export module Command {
             };
             ProcessConsole.clearConsole();
             EventBus.sendEvent("SAVE", message);
-            FileEditor.updateEditor("", resourceDetails.projectPath);
+            FileEditor.updateEditor("", resourceDetails.projectPath, -1);
          }
       });
    }
@@ -571,7 +571,7 @@ export module Command {
          EventBus.sendEvent("SAVE", message);
          
          if(update) { // should the editor be updated?
-            FileEditor.updateEditor(editorData.source, editorPath.projectPath);
+            FileEditor.updateEditor(editorData.source, editorPath.projectPath, -1);
          }
       }
    }

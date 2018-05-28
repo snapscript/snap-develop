@@ -10,11 +10,13 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             this.editorMarkers = {};
             this.editorResource = null;
             this.editorText = null;
+            this.editorLastModified = null;
             this.editorTheme = null;
             this.editorCurrentTokens = {}; // current editor hyperlinks
             this.editorFocusToken = null; // token to focus on editor load
             this.editorHistory = {}; // store all editor context
             this.editorPanel = null; // this actual editor
+            this.editorLastModified = new Date().getTime();
             this.editorPanel = editorPanel;
             this.editorTheme = editorTheme;
         }
@@ -256,6 +258,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             var editorPosition = loadEditorPosition();
             var editorText = loadEditorText();
             return {
+                lastModified: editorView.editorLastModified,
                 breakpoints: editorView.editorBreakpoints,
                 resource: editorView.editorResource,
                 history: editorHistory,
@@ -375,8 +378,10 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                 var md5Hash = md5_1.md5(editorData.source);
                 var currentText = editorView.editorPanel.getValue();
                 var saveText = isEditorChanged() ? currentText : null; // keep text if changed
+                var lastModified = editorData.lastModified;
                 editorView.editorHistory[editorData.resource.resourcePath] = {
                     hash: md5Hash,
+                    lastModified: lastModified,
                     history: editorData.history,
                     position: editorData.position,
                     buffer: saveText // save the buffer if it has changed
@@ -417,6 +422,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             var editorResource = tree_1.FileTree.createResourcePath(resource);
             var history = editorView.editorHistory[editorResource.resourcePath];
             if (history) {
+                history.lastModified = -1;
                 history.buffer = null; // clear the buffer
                 updateEditorTabMarkForResource(editorResource.resourcePath); // remove the *
             }
@@ -426,24 +432,32 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             var editorResource = tree_1.FileTree.createResourcePath(resource);
             if (isEditorResourcePath(editorResource.resourcePath)) {
                 var editorData = loadEditor();
-                return editorData.source; // if its the current buffer then return it
+                return {
+                    text: editorData.source,
+                    lastModified: editorData.lastModified
+                };
             }
             var history = editorView.editorHistory[editorResource.resourcePath];
             if (history) {
-                return history.buffer;
+                return {
+                    text: history.buffer,
+                    lastModified: history.lastModified
+                };
             }
             return null;
         }
         FileEditor.loadSavedEditorBuffer = loadSavedEditorBuffer;
-        function updateEditor(text, resource) {
+        function updateEditor(text, resource, lastModified) {
+            console.log(resource + " was modified on " + new Date(lastModified) + " " + ((text) ? text.length : "NULL"));
             var session = editorView.editorPanel.getSession();
             var currentMode = session.getMode();
             var actualMode = resolveEditorMode(resource);
             var encodedText = text; // encodeEditorText(text, resource); // change JSON conversion
             var savedHistoryBuffer = loadSavedEditorBuffer(resource); // load saved buffer
             var textToDisplay = encodedText;
-            if (savedHistoryBuffer) {
-                textToDisplay = savedHistoryBuffer;
+            if (savedHistoryBuffer && savedHistoryBuffer.text && savedHistoryBuffer.lastModified > lastModified) {
+                console.log("buffer is newer, difference is " + savedHistoryBuffer.lastModified - lastModified);
+                textToDisplay = savedHistoryBuffer.text;
             }
             saveEditorHistory(); // save any existing history
             if (actualMode != currentMode) {
@@ -551,6 +565,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         FileEditor.scrollEditorToPosition = scrollEditorToPosition;
         function updateProjectTabOnChange() {
             editorView.editorPanel.on("input", function () {
+                editorView.editorLastModified = new Date().getTime();
                 updateEditorTabMark(); // on input then you update star
             });
         }
