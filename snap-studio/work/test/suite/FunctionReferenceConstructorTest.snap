@@ -54,12 +54,12 @@ class FunctionReferenceConstructorTest with TestCase {
    }
    
    testFunctionalNativeCreation() {
-      var func = String::new;
+      var f = String::new;
       var compare = Double::compare;
       var set = TreeSet::new;
       
-      assert func() == '';
-      assert func('hello') == 'hello';
+      assert f() == '';
+      assert f('hello') == 'hello';
       
       var s = set(compare);
       var l = [];
@@ -88,8 +88,8 @@ class FunctionReferenceConstructorTest with TestCase {
    }
    
    testFunctionCreationInMethod() {
-      const dump = (func, value) -> {
-         const foo = func(value);
+      const dump = (f, value) -> {
+         const foo = f(value);
          const a = foo.getA();
          
          assert a == value;

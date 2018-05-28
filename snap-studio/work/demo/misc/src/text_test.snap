@@ -9,5 +9,5 @@ function list(x: Map<String, ?>){
       .get()
       .substring(1);
 }
-
+var x = 1;
 println(list({'xxx':1}));

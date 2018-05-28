@@ -9,15 +9,15 @@ class Foo {
       this.y=y;
    }
 
-   func(a){
+   f(a){
       return "func(${a}):${x},${y}";
    }
    
-   func(a,b){
+   f(a,b){
       return "func(${a},${b}):${x},${y}";
    }
    
-   func(a,b,c){
+   f(a,b,c){
       return "func(${a},${b},${c}):${x},${y}";
    }
 }
@@ -157,15 +157,15 @@ class FunctionReferenceTest with TestCase {
    
    testFunctionReference(){
       const foo = new Foo(22,3);
-      const func = foo::func;
+      const f = foo::f;
       
-      println(func(1));
-      println(func(1,2));
-      println(func(1,2,3));
+      println(f(1));
+      println(f(1,2));
+      println(f(1,2,3));
       
-      assert func(1) == "func(1):22,3";
-      assert func(1,2) == "func(1,2):22,3";
-      assert func(1,2,3) == "func(1,2,3):22,3";   
+      assert f(1) == "func(1):22,3";
+      assert f(1,2) == "func(1,2):22,3";
+      assert f(1,2,3) == "func(1,2,3):22,3";   
    }
    
 }

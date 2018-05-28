@@ -17,7 +17,7 @@ module Module{
    }  
 
    @Func
-   func(){
+   f(){
       return "func";
    }
 }
@@ -36,9 +36,9 @@ class ReflectionTest with TestCase {
          });
       Module.getFunctions()
          .stream()
-         .forEach(func -> {
-            println(func);
-            func.getAnnotations()
+         .forEach(f -> {
+            println(f);
+            f.getAnnotations()
                .stream()
                .forEach(annotation -> {
                   println(annotation);
