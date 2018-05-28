@@ -7,7 +7,7 @@ function start(scale) {
    
    try {
       g.start();
-      sleep(Integer.MAX_VALUE);
+      sleep(MAX_VALUE);
    } catch(e) {
       e.printStackTrace();
    }

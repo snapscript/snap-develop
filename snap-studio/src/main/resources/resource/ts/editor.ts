@@ -726,6 +726,7 @@ export module FileEditor {
       editor.setReadOnly(false);
       editor.setAutoScrollEditorIntoView(true);
       editor.getSession().setUseSoftTabs(true);
+      //editor.setKeyboardHandler("ace/keyboard/vim");
       
       editor.commands.removeCommand("replace"); // Ctrl-H
       editor.commands.removeCommand("find");    // Ctrl-F

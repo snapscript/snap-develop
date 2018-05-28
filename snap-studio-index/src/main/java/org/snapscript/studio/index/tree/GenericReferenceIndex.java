@@ -1,6 +1,6 @@
 package org.snapscript.studio.index.tree;
 
-import static org.snapscript.core.type.Category.CLASS;
+import static org.snapscript.core.ModifierType.CLASS;
 
 import org.snapscript.core.Compilation;
 import org.snapscript.core.Evaluation;
@@ -60,7 +60,7 @@ public class GenericReferenceIndex implements Compilation {
    private static class IndexType extends ScopeType {
 
       public IndexType(Module module, String name) {
-         super(module,null, CLASS, name, 0);
+         super(module,null, name, CLASS.mask, 0);
       }
       
       @Override

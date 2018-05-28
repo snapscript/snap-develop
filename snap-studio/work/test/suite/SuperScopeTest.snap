@@ -9,7 +9,7 @@ class Base with Runnable {
       this.a="a="+x;
       this.x=x;
    }
-   
+   run(){}
    dump(){
       println("Base.dump(): x=${x} a=${a}");
       // XXX TypeExtractor should not consider getHandle() it should be getType()

@@ -648,6 +648,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             editor.setReadOnly(false);
             editor.setAutoScrollEditorIntoView(true);
             editor.getSession().setUseSoftTabs(true);
+            //editor.setKeyboardHandler("ace/keyboard/vim");
             editor.commands.removeCommand("replace"); // Ctrl-H
             editor.commands.removeCommand("find"); // Ctrl-F
             editor.commands.removeCommand("expandToMatching"); // Ctrl-Shift-M

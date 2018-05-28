@@ -15,7 +15,7 @@ var ActionScriptHighlightRules = function() {
          //{ token: 'support.constant.snapscript.2',
          //  regex: '\\b(?:__proto__|__resolve|_accProps|_alpha|_changed|_currentframe|_droptarget|_flash|_focusrect|_framesloaded|_global|_height|_highquality|_level|_listeners|_lockroot|_name|_parent|_quality|_root|_rotation|_soundbuftime|_target|_totalframes|_url|_visible|_width|_x|_xmouse|_xscale|_y|_ymouse|_yscale)\\b' },        
        	{ token: 'keyword.control.snapscript.2',
-           regex: '\\b(?:trait|this|try|catch|finally|match|function|synchronized|debug|enum|module|with|throw|yield|async|override|abstract|loop|assert|extends|as|import|implements|interface|const|public|private|new|static|super|var|for|in|break|continue|while|return|if|else|case|default|switch)\\b' },
+           regex: '\\b(?:trait|this|try|catch|finally|match|function|synchronized|debug|enum|module|with|throw|yield|async|override|abstract|loop|assert|extends|as|import|implements|interface|const|public|private|new|static|super|var|let|for|in|break|continue|while|return|if|else|case|default|switch)\\b' },
          { token: 'constant.language.snapscript.2',
            regex: '\\b(?:null|undefined|true|false)\\b' },
          { token: 'constant.numeric.snapscript.2',

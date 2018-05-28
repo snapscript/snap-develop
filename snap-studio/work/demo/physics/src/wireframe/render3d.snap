@@ -12,21 +12,21 @@ import swing.JPanel;
 
 /**
  * A fairly conventional 3D matrix object that can transform sets of 3D points
- * and perform a variety of manipulations on the transform
+ * and perform a letiety of manipulations on the transform
  */
 class Matrix3D {
-   var xx = 0.0f;
-   var xy = 0.0f;
-   var xz = 0.0f;
-   var xo = 0.0f;
-   var yx = 0.0f;
-   var yy = 0.0f;
-   var yz = 0.0f;
-   var yo = 0.0f;
-   var zx = 0.0f;
-   var zy = 0.0f;
-   var zz = 0.0f;
-   var zo = 0.0f;
+   let xx = 0.0f;
+   let xy = 0.0f;
+   let xz = 0.0f;
+   let xo = 0.0f;
+   let yx = 0.0f;
+   let yy = 0.0f;
+   let yz = 0.0f;
+   let yo = 0.0f;
+   let zx = 0.0f;
+   let zy = 0.0f;
+   let zz = 0.0f;
+   let zo = 0.0f;
    static const PI = 3.14159265;
 
    /** Create a new unit matrix */
@@ -79,18 +79,18 @@ class Matrix3D {
    /** rotate theta degrees about the y axis */
    yrot(theta) {
       theta *= (PI / 180);
-      var ct = Math.cos(theta);
-      var st = Math.sin(theta);
+      let ct = Math.cos(theta);
+      let st = Math.sin(theta);
 
-      var Nxx = (xx * ct + zx * st);
-      var Nxy = (xy * ct + zy * st);
-      var Nxz = (xz * ct + zz * st);
-      var Nxo = (xo * ct + zo * st);
+      let Nxx = (xx * ct + zx * st);
+      let Nxy = (xy * ct + zy * st);
+      let Nxz = (xz * ct + zz * st);
+      let Nxo = (xo * ct + zo * st);
 
-      var Nzx = (zx * ct - xx * st);
-      var Nzy = (zy * ct - xy * st);
-      var Nzz = (zz * ct - xz * st);
-      var Nzo = (zo * ct - xo * st);
+      let Nzx = (zx * ct - xx * st);
+      let Nzy = (zy * ct - xy * st);
+      let Nzz = (zz * ct - xz * st);
+      let Nzo = (zo * ct - xo * st);
 
       xo = Nxo;
       xx = Nxx;
@@ -105,18 +105,18 @@ class Matrix3D {
    /** rotate theta degrees about the x axis */
    xrot(theta) {
       theta *= (PI / 180);
-      var ct = Math.cos(theta);
-      var st = Math.sin(theta);
+      let ct = Math.cos(theta);
+      let st = Math.sin(theta);
 
-      var Nyx = (yx * ct + zx * st);
-      var Nyy = (yy * ct + zy * st);
-      var Nyz = (yz * ct + zz * st);
-      var Nyo = (yo * ct + zo * st);
+      let Nyx = (yx * ct + zx * st);
+      let Nyy = (yy * ct + zy * st);
+      let Nyz = (yz * ct + zz * st);
+      let Nyo = (yo * ct + zo * st);
 
-      var Nzx = (zx * ct - yx * st);
-      var Nzy = (zy * ct - yy * st);
-      var Nzz = (zz * ct - yz * st);
-      var Nzo = (zo * ct - yo * st);
+      let Nzx = (zx * ct - yx * st);
+      let Nzy = (zy * ct - yy * st);
+      let Nzz = (zz * ct - yz * st);
+      let Nzo = (zo * ct - yo * st);
 
       yo = Nyo;
       yx = Nyx;
@@ -131,18 +131,18 @@ class Matrix3D {
    /** rotate theta degrees about the z axis */
    zrot(theta) {
       theta *= (PI / 180);
-      var ct = Math.cos(theta);
-      var st = Math.sin(theta);
+      let ct = Math.cos(theta);
+      let st = Math.sin(theta);
 
-      var Nyx = (yx * ct + xx * st);
-      var Nyy = (yy * ct + xy * st);
-      var Nyz = (yz * ct + xz * st);
-      var Nyo = (yo * ct + xo * st);
+      let Nyx = (yx * ct + xx * st);
+      let Nyy = (yy * ct + xy * st);
+      let Nyz = (yz * ct + xz * st);
+      let Nyo = (yo * ct + xo * st);
 
-      var Nxx = (xx * ct - yx * st);
-      var Nxy = (xy * ct - yy * st);
-      var Nxz = (xz * ct - yz * st);
-      var Nxo = (xo * ct - yo * st);
+      let Nxx = (xx * ct - yx * st);
+      let Nxy = (xy * ct - yy * st);
+      let Nxz = (xz * ct - yz * st);
+      let Nxo = (xo * ct - yo * st);
 
       yo = Nyo;
       yx = Nyx;
@@ -156,20 +156,20 @@ class Matrix3D {
 
    /** Multiply this matrix by a second: M = M*R */
    mult(rhs) {
-      var lxx = xx * rhs.xx + yx * rhs.xy + zx * rhs.xz;
-      var lxy = xy * rhs.xx + yy * rhs.xy + zy * rhs.xz;
-      var lxz = xz * rhs.xx + yz * rhs.xy + zz * rhs.xz;
-      var lxo = xo * rhs.xx + yo * rhs.xy + zo * rhs.xz + rhs.xo;
+      let lxx = xx * rhs.xx + yx * rhs.xy + zx * rhs.xz;
+      let lxy = xy * rhs.xx + yy * rhs.xy + zy * rhs.xz;
+      let lxz = xz * rhs.xx + yz * rhs.xy + zz * rhs.xz;
+      let lxo = xo * rhs.xx + yo * rhs.xy + zo * rhs.xz + rhs.xo;
 
-      var lyx = xx * rhs.yx + yx * rhs.yy + zx * rhs.yz;
-      var lyy = xy * rhs.yx + yy * rhs.yy + zy * rhs.yz;
-      var lyz = xz * rhs.yx + yz * rhs.yy + zz * rhs.yz;
-      var lyo = xo * rhs.yx + yo * rhs.yy + zo * rhs.yz + rhs.yo;
+      let lyx = xx * rhs.yx + yx * rhs.yy + zx * rhs.yz;
+      let lyy = xy * rhs.yx + yy * rhs.yy + zy * rhs.yz;
+      let lyz = xz * rhs.yx + yz * rhs.yy + zz * rhs.yz;
+      let lyo = xo * rhs.yx + yo * rhs.yy + zo * rhs.yz + rhs.yo;
 
-      var lzx = xx * rhs.zx + yx * rhs.zy + zx * rhs.zz;
-      var lzy = xy * rhs.zx + yy * rhs.zy + zy * rhs.zz;
-      var lzz = xz * rhs.zx + yz * rhs.zy + zz * rhs.zz;
-      var lzo = xo * rhs.zx + yo * rhs.zy + zo * rhs.zz + rhs.zo;
+      let lzx = xx * rhs.zx + yx * rhs.zy + zx * rhs.zz;
+      let lzy = xy * rhs.zx + yy * rhs.zy + zy * rhs.zz;
+      let lzz = xz * rhs.zx + yz * rhs.zy + zz * rhs.zz;
+      let lzo = xo * rhs.zx + yo * rhs.zy + zo * rhs.zz + rhs.zo;
 
       xx = lxx;
       xy = lxy;
@@ -209,24 +209,24 @@ class Matrix3D {
     * entries per point
     */
    transform(v, tv, nvert) {
-      var lxx = xx;
-      var lxy = xy;
-      var lxz = xz;
-      var lxo = xo;
-      var lyx = yx;
-      var lyy = yy;
-      var lyz = yz;
-      var lyo = yo;
-      var lzx = zx;
-      var lzy = zy;
-      var lzz = zz;
-      var lzo = zo;
-      var i = nvert * 3;
+      let lxx = xx;
+      let lxy = xy;
+      let lxz = xz;
+      let lxo = xo;
+      let lyx = yx;
+      let lyy = yy;
+      let lyz = yz;
+      let lyo = yo;
+      let lzx = zx;
+      let lzy = zy;
+      let lzz = zz;
+      let lzo = zo;
+      let i = nvert * 3;
       i -= 3; 
       while(i >= 0) {
-         var x = v[i];
-        var y = v[i + 1];
-        var z = v[i + 2];
+         let x = v[i];
+        let y = v[i + 1];
+        let z = v[i + 2];
          tv[i] = Math.round(x * lxx + y * lxy + z * lxz + lxo);
          tv[i + 1] = Math.round(x * lyx + y * lyy + z * lyz + lyo);
          tv[i + 2] = Math.round(x * lzx + y * lzy + z * lzz + lzo);
@@ -241,22 +241,22 @@ class Matrix3D {
 
 /** The representation of a 3D model */
 class Model3D {
-   var vert;
-   var tvert;
-   var nvert=0;
-   var maxvert=0;
-   var con;
-   var ncon=0;
-   var maxcon=0;
-   var transformed;
-   var mat;
+   let vert;
+   let tvert;
+   let nvert=0;
+   let maxvert=0;
+   let con;
+   let ncon=0;
+   let maxcon=0;
+   let transformed;
+   let mat;
 
-   var xmin=0.0f;
-   var xmax=0.0f;
-   var ymin=0.0f;
-   var ymax=0.0f;
-   var zmin=0.0f;
-   var zmax=0.0f;
+   let xmin=0.0f;
+   let xmax=0.0f;
+   let ymin=0.0f;
+   let ymax=0.0f;
+   let zmin=0.0f;
+   let zmax=0.0f;
 
    new() {
       mat = new Matrix3D();
@@ -272,20 +272,20 @@ class Model3D {
       parse(is);
    }
    parse(is) {
-         var st = new StreamTokenizer(is);
+         let st = new StreamTokenizer(is);
          st.eolIsSignificant(true);
          st.commentChar(35);
          try {
             while (true) {
-               var token = st.nextToken();
+               let token = st.nextToken();
 
                if (token == StreamTokenizer.TT_EOL) {
                   continue;
                } else if (token == StreamTokenizer.TT_WORD) {
                   if ("v".equals(st.sval)) {
-                     var x = 0.0;
-                     var y = 0.0;
-                     var z = 0.0;
+                     let x = 0.0;
+                     let y = 0.0;
+                     let z = 0.0;
                      if (st.nextToken() == StreamTokenizer.TT_NUMBER) {
                         x = st.nval;
                         if (st.nextToken() == StreamTokenizer.TT_NUMBER) {
@@ -298,9 +298,9 @@ class Model3D {
                      while (st.ttype != StreamTokenizer.TT_EOL && st.ttype != StreamTokenizer.TT_EOF)
                         st.nextToken();
                   } else if ("f".equals(st.sval) || "fo".equals(st.sval) || "l".equals(st.sval)) {
-                     var start = -1;
-                     var prev = -1;
-                     var n = -1;
+                     let start = -1;
+                     let prev = -1;
+                     let n = -1;
                      while (true)
                         if (st.nextToken() == StreamTokenizer.TT_NUMBER) {
                            n = st.nval;
@@ -335,14 +335,14 @@ class Model3D {
 
    /** Add a vertex to this model */
    addVert(x, y, z) {
-      var i = nvert;
+      let i = nvert;
       if (i >= maxvert)
          if (vert == null) {
             maxvert = 100;
             vert = new Float[maxvert * 3];
          } else {
             maxvert *= 2;
-            var nv = new Float[maxvert * 3];
+            let nv = new Float[maxvert * 3];
             System.arraycopy(vert, 0, nv, 0, vert.size());
             vert = nv;
          }
@@ -355,7 +355,7 @@ class Model3D {
 
    /** Add a line from vertex p1 to vertex p2 */
    add(p1, p2) {
-      var i = ncon;
+      let i = ncon;
       if (p1 >= nvert || p2 >= nvert)
          return;
       if (i >= maxcon)
@@ -364,12 +364,12 @@ class Model3D {
             con = new Integer[maxcon];
          } else {
             maxcon *= 2;
-            var nv = new Integer[maxcon];
+            let nv = new Integer[maxcon];
             System.arraycopy(con, 0, nv, 0, con.size());
             con = nv;
          }
       if (p1 > p2) {
-         var t = p1;
+         let t = p1;
          p1 = p2;
          p2 = t;
       }
@@ -391,9 +391,9 @@ class Model3D {
     * Quick Sort implementation
     */
    quickSort(a, left, right) {
-      var leftIndex = left;
-      var rightIndex = right;
-      var partionElement;
+      let leftIndex = left;
+      let rightIndex = right;
+      let partionElement;
       if (right > left) {
 
          /*
@@ -444,7 +444,7 @@ class Model3D {
    }
 
    swap(a, i, j) {
-      var t;
+      let t;
       t = a[i];
       a[i] = a[j];
       a[j] = t;
@@ -452,13 +452,13 @@ class Model3D {
 
    /** eliminate duplicate lines */
    compress() {
-      var limit = ncon;
-      var c = con;
+      let limit = ncon;
+      let c = con;
       quickSort(con, 0, ncon - 1);
-      var d = 0;
-      var pp1 = -1;
-      for (var i = 0; i < limit; i++) {
-         var p1 = c[i];
+      let d = 0;
+      let pp1 = -1;
+      for (let i = 0; i < limit; i++) {
+         let p1 = c[i];
          if (pp1 != p1) {
             c[d] = p1;
             d++;
@@ -468,7 +468,7 @@ class Model3D {
       ncon = d;
    }
 
-   static var gr;
+   static let gr;
 
    /**
     * Paint this model to a graphics context. It uses the matrix associated with
@@ -482,22 +482,22 @@ class Model3D {
       transform();
       if (gr == null) {
          gr = new Color[16];
-         for (var i = 0; i < 16; i++) {
-            var grey = Math.round(170 * (1 - Math.pow(i / 15.0, 2.3)));
+         for (let i = 0; i < 16; i++) {
+            let grey = Math.round(170 * (1 - Math.pow(i / 15.0, 2.3)));
             gr[i] = new Color(grey, grey, grey);
          }
       }
-      var lg = 0;
-      var lim = ncon;
-      var c = con;
-      var v = tvert;
+      let lg = 0;
+      let lim = ncon;
+      let c = con;
+      let v = tvert;
       if (lim <= 0 || nvert <= 0)
          return;
-      for (var i = 0; i < lim; i++) {
-         var t = c[i];
-         var p1 = ((t >> 16) & 0xFFFF) * 3;
-         var p2 = (t & 0xFFFF) * 3;
-         var grey = v[p1 + 2] + v[p2 + 2];
+      for (let i = 0; i < lim; i++) {
+         let t = c[i];
+         let p1 = ((t >> 16) & 0xFFFF) * 3;
+         let p2 = (t & 0xFFFF) * 3;
+         let grey = v[p1 + 2] + v[p2 + 2];
          if (grey < 0)
             grey = 0;
          if (grey > 15)
@@ -514,27 +514,27 @@ class Model3D {
    findBB() {
       if (nvert <= 0)
          return;
-      var v = vert;
-      var xmin = v[0];
-      var xmax = xmin;
-      var ymin = v[1];
-      var ymax = ymin;
-      var zmin = v[2];
-      var zmax = zmin;
-      var i = nvert * 3;
+      let v = vert;
+      let xmin = v[0];
+      let xmax = xmin;
+      let ymin = v[1];
+      let ymax = ymin;
+      let zmin = v[2];
+      let zmax = zmin;
+      let i = nvert * 3;
       i -= 3; 
       while(i >= 0) {
-         var x = v[i];
+         let x = v[i];
          if (x < xmin)
             xmin = x;
          if (x > xmax)
             xmax = x;
-         var y = v[i + 1];
+         let y = v[i + 1];
          if (y < ymin)
             ymin = y;
          if (y > ymax)
             ymax = y;
-         var z = v[i + 2];
+         let z = v[i + 2];
          if (z < zmin)
             zmin = z;
          if (z > zmax)
@@ -553,18 +553,18 @@ class Model3D {
 
 /** An applet to put a 3D model into a page */
 class ThreeD extends JPanel with MouseMotionListener {
-   var md;
-   var painted = true;
-   var xfac;
-   var prevx;
-   var prevy;
-   var xtheta;
-   var ytheta;
-   var scalefudge = 1;
-   var amat = new Matrix3D();
-   var tmat = new Matrix3D();
-   var message = null;
-   var panel;
+   let md;
+   let painted = true;
+   let xfac;
+   let prevx;
+   let prevy;
+   let xtheta;
+   let ytheta;
+   let scalefudge = 1;
+   let amat = new Matrix3D();
+   let tmat = new Matrix3D();
+   let message = null;
+   let panel;
 
    init(panel) {
       try {
@@ -577,24 +577,24 @@ class ThreeD extends JPanel with MouseMotionListener {
       this.panel = panel;
       panel.setVisible(true);
       panel.setSize(new Dimension(600, 600));
-      var is = null;
+      let is = null;
       try {
          Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
          is = ThreeD.class.getModule().getResource("/wireframe/hughes_500.spec");
-         var m = new Model3D(is);
+         let m = new Model3D(is);
          md = m;
          m.findBB();
          m.compress();
-         var xw = m.xmax - m.xmin;
-         var yw = m.ymax - m.ymin;
-         var zw = m.zmax - m.zmin;
+         let xw = m.xmax - m.xmin;
+         let yw = m.ymax - m.ymin;
+         let zw = m.zmax - m.zmin;
          if (yw > xw)
             xw = yw;
          if (zw > xw)
             xw = zw;
-         var f1 = panel.getSize().width / xw;
-         var f2 = panel.getSize().height / xw;
-         var min = (f1 < f2) ? f1 : f2;
+         let f1 = panel.getSize().width / xw;
+         let f2 = panel.getSize().height / xw;
+         let min = (f1 < f2) ? f1 : f2;
          xfac = 0.7f * min * scalefudge;
       } catch (e) {
          e.printStackTrace();
@@ -616,11 +616,11 @@ class ThreeD extends JPanel with MouseMotionListener {
    }
 
    mouseDragged(e) {
-      var x = e.getX();
-      var y = e.getY();
+      let x = e.getX();
+      let y = e.getY();
       tmat.unit();
-      var xtheta = (prevy - y) * 360.0f / panel.getSize().width;
-      var ytheta = (x - prevx) * 360.0f / panel.getSize().height;
+      let xtheta = (prevy - y) * 360.0f / panel.getSize().width;
+      let ytheta = (x - prevx) * 360.0f / panel.getSize().height;
       tmat.xrot(xtheta);
       tmat.yrot(ytheta);
       amat.mult(tmat);
@@ -657,8 +657,8 @@ class ThreeD extends JPanel with MouseMotionListener {
 }
 
 function start()  {
-    var d = new ThreeD();
-    var f = new JFrame();
+    let d = new ThreeD();
+    let f = new JFrame();
     d.init(d);
     f.add(d);
     f.getContentPane().addMouseMotionListener(d);

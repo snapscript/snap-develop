@@ -5,7 +5,7 @@ enum Color{
    GREEN,
    BLUE;
 }
-class Shape{
+abstract class Shape{
    const id;
    new(id){
       this.id=id;

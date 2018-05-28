@@ -11,7 +11,6 @@ import org.snapscript.studio.index.IndexResult;
 import org.snapscript.tree.constraint.ClassConstraint;
 import org.snapscript.tree.constraint.TraitConstraint;
 import org.snapscript.tree.define.ClassHierarchy;
-import org.snapscript.tree.define.TypeHierarchy;
 
 public class TypeHierarchyIndex implements Compilation {
    
@@ -29,16 +28,14 @@ public class TypeHierarchyIndex implements Compilation {
 
    @Override
    public Object compile(Module module, Path path, int line) throws Exception {
-      TypeHierarchy result = hierarchy.compile(module, path, line);
-      
       if(name != null) {
          Scope scope = module.getScope();
          Type constraint = name.getType(scope);
          String type = String.valueOf(constraint);
          String prefix = module.getName();
          
-         return new IndexResult(SUPER, result, null, prefix, type, path, line);
+         return new IndexResult(SUPER, hierarchy, null, prefix, type, path, line);
       }
-      return result;
+      return hierarchy;
    }
 }

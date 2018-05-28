@@ -5,7 +5,7 @@ import awt.Graphics;
  * an Animation. 
  */
 
-class Animatible {
+abstract class Animatible {
    
    private var currAnim: Animation;
    private var offsetX: Integer = 0;

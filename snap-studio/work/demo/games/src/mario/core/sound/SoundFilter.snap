@@ -8,7 +8,7 @@
     format.
     @see FilteredSoundStream
 */
-class SoundFilter{
+abstract class SoundFilter{
 
     /**
         Resets this SoundFilter. Does nothing by default.

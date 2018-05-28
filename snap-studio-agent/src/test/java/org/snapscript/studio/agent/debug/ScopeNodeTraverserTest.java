@@ -1,5 +1,6 @@
 package org.snapscript.studio.agent.debug;
 
+import static org.snapscript.core.ModifierType.CLASS;
 import static org.snapscript.studio.agent.debug.ValueData.DEPTH_KEY;
 import static org.snapscript.studio.agent.debug.ValueData.EXPANDABLE_KEY;
 import static org.snapscript.studio.agent.debug.ValueData.NAME_KEY;
@@ -19,6 +20,9 @@ import junit.framework.TestCase;
 import org.snapscript.common.store.ClassPathStore;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
+import org.snapscript.core.ModifierType;
+import org.snapscript.core.function.AccessorProperty;
+import org.snapscript.core.property.Property;
 import org.snapscript.core.scope.MapModel;
 import org.snapscript.core.scope.Model;
 import org.snapscript.core.scope.ModelScope;
@@ -27,11 +31,8 @@ import org.snapscript.core.scope.State;
 import org.snapscript.core.scope.instance.Instance;
 import org.snapscript.core.scope.instance.PrimitiveInstance;
 import org.snapscript.core.type.Type;
-import org.snapscript.core.function.AccessorProperty;
-import org.snapscript.core.property.Property;
 import org.snapscript.core.type.index.ScopeType;
 import org.snapscript.core.variable.Reference;
-import org.snapscript.studio.agent.debug.ScopeNodeTraverser;
 
 public class ScopeNodeTraverserTest extends TestCase {
    
@@ -145,7 +146,7 @@ public class ScopeNodeTraverserTest extends TestCase {
    private static Instance createInstanceScope(Map<String, Object> values, String name) {
       Model model = new MapModel(Collections.EMPTY_MAP);
       Scope scope = new ModelScope(model, null);
-      Type type = new ScopeType(null, null,  null, name, 0);
+      Type type = new ScopeType(null, null, name, CLASS.mask, 0);
       Instance instance = new PrimitiveInstance(null, scope, type);
       List<Property> properties = type.getProperties();
       State state = instance.getState();

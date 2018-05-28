@@ -1,4 +1,13 @@
-class Foo<A: String>{
+// class Foo<X: Integer>{}
+// class Bar<T: String> extends Foo<T>{}
+
+
+function list(x: Map<String, ?>){
+   return x.keySet()
+      .stream()
+      .findFirst()
+      .get()
+      .substring(1);
 }
-class Bar<A: Integer> extends Foo<A>{
-}
+
+println(list({'xxx':1}));
