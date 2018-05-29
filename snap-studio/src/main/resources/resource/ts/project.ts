@@ -583,7 +583,7 @@ export module Project {
           var currentBuffer = FileEditor.loadSavedEditorBuffer(resourcePathToClose);
           var editorResource = FileTree.createResourcePath(resourcePathToClose);
 
-          Command.saveEditorOnClose(currentBuffer, editorResource); // save the file;
+          Command.saveEditorOnClose(currentBuffer.buffer, editorResource); // save the file;
           console.log("CLOSE: " + resourcePathToClose);
        } else {
           console.log("CLOSE: " + resourcePathToClose);

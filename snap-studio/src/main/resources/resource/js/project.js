@@ -500,7 +500,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
             if (editor_1.FileEditor.isEditorChangedForPath(resourcePathToClose)) {
                 var currentBuffer = editor_1.FileEditor.loadSavedEditorBuffer(resourcePathToClose);
                 var editorResource = tree_1.FileTree.createResourcePath(resourcePathToClose);
-                commands_1.Command.saveEditorOnClose(currentBuffer, editorResource); // save the file;
+                commands_1.Command.saveEditorOnClose(currentBuffer.buffer, editorResource); // save the file;
                 console.log("CLOSE: " + resourcePathToClose);
             }
             else {

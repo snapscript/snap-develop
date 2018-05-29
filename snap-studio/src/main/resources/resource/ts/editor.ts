@@ -492,16 +492,16 @@ export module FileEditor {
       if(isEditorResourcePath(editorResource.resourcePath)) {
          var editorData = loadEditor();
          return {
-            text: editorData.source, // if its the current buffer then return it
-           lastModified: editorData.lastModified
+            buffer: editorData.source, // if its the current buffer then return it
+            lastModified: editorData.lastModified
          };
       }
       var history = editorView.editorHistory[editorResource.resourcePath];
       
       if(history) {
          return {
-            text: history.buffer, // if its the current buffer then return it
-           lastModified: history.lastModified
+            buffer: history.buffer, // if its the current buffer then return it
+            lastModified: history.lastModified
          };     
       }      
       return null;
@@ -517,11 +517,11 @@ export module FileEditor {
       var savedHistoryBuffer = loadSavedEditorBuffer(resource); // load saved buffer
       var textToDisplay = encodedText;      
 
-      if(savedHistoryBuffer && savedHistoryBuffer.text && savedHistoryBuffer.lastModified > lastModified) {
+      if(savedHistoryBuffer && savedHistoryBuffer.buffer && savedHistoryBuffer.lastModified > lastModified) {
          console.log("LOAD FROM HISTORY diff=[" + (savedHistoryBuffer.lastModified - lastModified) + "]");
-         textToDisplay = savedHistoryBuffer.text;
+         textToDisplay = savedHistoryBuffer.buffer;
       } else {
-         console.log("IGNORE HISTORY");
+         console.log("IGNORE HISTORY: ", savedHistoryBuffer);
       }
       saveEditorHistory(); // save any existing history
       
@@ -591,7 +591,7 @@ export module FileEditor {
       }
       var savedHistoryBuffer = loadSavedEditorBuffer(resource); // load saved buffer
       
-      if(savedHistoryBuffer) {
+      if(savedHistoryBuffer.buffer) {
          return true;
       }
       return false;

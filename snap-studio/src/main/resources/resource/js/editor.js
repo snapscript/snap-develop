@@ -433,14 +433,14 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             if (isEditorResourcePath(editorResource.resourcePath)) {
                 var editorData = loadEditor();
                 return {
-                    text: editorData.source,
+                    buffer: editorData.source,
                     lastModified: editorData.lastModified
                 };
             }
             var history = editorView.editorHistory[editorResource.resourcePath];
             if (history) {
                 return {
-                    text: history.buffer,
+                    buffer: history.buffer,
                     lastModified: history.lastModified
                 };
             }
@@ -455,12 +455,12 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             var encodedText = encodeEditorText(text, resource); // change JSON conversion
             var savedHistoryBuffer = loadSavedEditorBuffer(resource); // load saved buffer
             var textToDisplay = encodedText;
-            if (savedHistoryBuffer && savedHistoryBuffer.text && savedHistoryBuffer.lastModified > lastModified) {
+            if (savedHistoryBuffer && savedHistoryBuffer.buffer && savedHistoryBuffer.lastModified > lastModified) {
                 console.log("LOAD FROM HISTORY diff=[" + (savedHistoryBuffer.lastModified - lastModified) + "]");
-                textToDisplay = savedHistoryBuffer.text;
+                textToDisplay = savedHistoryBuffer.buffer;
             }
             else {
-                console.log("IGNORE HISTORY");
+                console.log("IGNORE HISTORY: ", savedHistoryBuffer);
             }
             saveEditorHistory(); // save any existing history
             if (actualMode != currentMode) {
@@ -524,7 +524,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                 return isEditorChanged();
             }
             var savedHistoryBuffer = loadSavedEditorBuffer(resource); // load saved buffer
-            if (savedHistoryBuffer) {
+            if (savedHistoryBuffer.buffer) {
                 return true;
             }
             return false;
