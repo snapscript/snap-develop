@@ -1,13 +1,13 @@
 // class Foo<X: Integer>{}
 // class Bar<T: String> extends Foo<T>{}
 
-
-function list(x: Map<String, ?>){
+func list(x: Map<String, ?>){
    return x.keySet()
       .stream()
       .findFirst()
       .get()
       .substring(1);
 }
-var x = 1;
+
+let x = 1;
 println(list({'xxx':1}));

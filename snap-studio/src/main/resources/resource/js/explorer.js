@@ -27,13 +27,12 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                     type: "get",
                     dataType: 'text',
                     success: function (response, status, header) {
-                        var contentType = header.getResponseHeader("content-type");
-                        var lastModified = header.getResponseHeader("last-modified");
-                        var lastModifiedTime = new Date(lastModified).getTime();
-                        handleOpenTreeFile(resourcePath, afterLoad, response, contentType, resourcePath, lastModifiedTime);
+                        var responseObject = parseResponseMessage(resourcePath, resourcePath, header, response);
+                        handleOpenTreeFile(responseObject, afterLoad);
                     },
                     error: function (response) {
-                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", resourcePath, -1);
+                        var responseObject = parseResponseMessage(resourcePath, resourcePath, null, response);
+                        handleOpenTreeFile(responseObject, afterLoad);
                     },
                     async: false
                 });
@@ -43,13 +42,12 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                     url: resourcePath,
                     type: "get",
                     success: function (response, status, header) {
-                        var contentType = header.getResponseHeader("content-type");
-                        var lastModified = header.getResponseHeader("last-modified");
-                        var lastModifiedTime = new Date(lastModified).getTime();
-                        handleOpenTreeFile(resourcePath, afterLoad, response, contentType, resourcePath, lastModifiedTime);
+                        var responseObject = parseResponseMessage(resourcePath, resourcePath, header, response);
+                        handleOpenTreeFile(responseObject, afterLoad);
                     },
                     error: function (response) {
-                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", resourcePath, -1);
+                        var responseObject = parseResponseMessage(resourcePath, resourcePath, null, response);
+                        handleOpenTreeFile(responseObject, afterLoad);
                     },
                     async: false
                 });
@@ -67,13 +65,12 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                     type: "get",
                     dataType: 'text',
                     success: function (response, status, header) {
-                        var contentType = header.getResponseHeader("content-type");
-                        var lastModified = header.getResponseHeader("last-modified");
-                        var lastModifiedTime = new Date(lastModified).getTime();
-                        handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL, lastModifiedTime);
+                        var responseObject = parseResponseMessage(resourcePath, downloadURL, header, response);
+                        handleOpenTreeFile(responseObject, afterLoad);
                     },
                     error: function (response) {
-                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", downloadURL, -1);
+                        var responseObject = parseResponseMessage(resourcePath, downloadURL, null, response);
+                        handleOpenTreeFile(responseObject, afterLoad);
                     },
                     async: false
                 });
@@ -84,28 +81,56 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                     url: downloadURL,
                     type: "get",
                     success: function (response, status, header) {
-                        var contentType = header.getResponseHeader("content-type");
-                        var lastModified = header.getResponseHeader("last-modified");
-                        var lastModifiedTime = new Date(lastModified).getTime();
-                        handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL, lastModifiedTime);
+                        var responseObject = parseResponseMessage(resourcePath, downloadURL, header, response);
+                        handleOpenTreeFile(responseObject, afterLoad);
                     },
                     error: function (response) {
-                        handleOpenTreeFile(resourcePath, afterLoad, "// Could not find " + resourcePath, "text/plain", downloadURL, -1);
+                        var responseObject = parseResponseMessage(resourcePath, downloadURL, null, response);
+                        handleOpenTreeFile(responseObject, afterLoad);
                     },
                     async: false
                 });
             }
         }
         FileExplorer.openTreeHistoryFile = openTreeHistoryFile;
-        function handleOpenTreeFile(resourcePath, afterLoad, response, contentType, downloadURL, lastModified) {
-            if (isImageFileType(contentType)) {
-                handleOpenFileInNewTab(downloadURL);
+        function parseResponseMessage(resourcePath, downloadURL, responseHeader, responseEntity) {
+            var lastModified = new Date().getTime();
+            var contentType = "application/octet-stream";
+            if (responseHeader && responseEntity) {
+                var contentTypeHeader = responseHeader.getResponseHeader("content-type");
+                var lastModifiedHeader = responseHeader.getResponseHeader("last-modified");
+                if (lastModifiedHeader) {
+                    lastModified = new Date(lastModifiedHeader).getTime();
+                }
+                if (contentTypeHeader) {
+                    contentType = contentTypeHeader;
+                }
+                return {
+                    resourcePath: resourcePath,
+                    contentType: contentType,
+                    lastModified: lastModified,
+                    responseEntity: responseEntity,
+                    downloadURL: downloadURL
+                };
             }
-            else if (isBinaryFileType(contentType)) {
-                handleDownloadFile(downloadURL);
+            return {
+                resourcePath: resourcePath,
+                contentType: "text/plain",
+                lastModified: lastModified,
+                responseEntity: "// Count not find " + path,
+                downloadURL: downloadURL
+            };
+        }
+        function handleOpenTreeFile(responseObject, afterLoad) {
+            //console.log(responseObject);
+            if (isImageFileType(responseObject.contentType)) {
+                handleOpenFileInNewTab(responseObject.downloadURL);
+            }
+            else if (isBinaryFileType(responseObject.contentType)) {
+                handleDownloadFile(responseObject.downloadURL);
             }
             else {
-                var mode = editor_1.FileEditor.resolveEditorMode(resourcePath);
+                var mode = editor_1.FileEditor.resolveEditorMode(responseObject.resourcePath);
                 //         if(FileEditor.isEditorChanged()) {
                 //            var editorData = FileEditor.loadEditor();
                 //            var editorResource = editorData.resource;
@@ -121,8 +146,8 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                 //         } else {
                 //            FileEditor.updateEditor(response, resourcePath);
                 //         }
-                editor_1.FileEditor.updateEditor(response, resourcePath, lastModified);
-                console.log("OPEN: " + resourcePath);
+                editor_1.FileEditor.updateEditor(responseObject.responseEntity, responseObject.resourcePath, responseObject.lastModified);
+                console.log("OPEN: " + responseObject.resourcePath);
             }
             afterLoad();
         }

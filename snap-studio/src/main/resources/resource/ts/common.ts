@@ -215,6 +215,14 @@ export module Common {
       return 0;
    }
    
+   export function formatTimeMillis(timeInMillis) {
+      var isoDate = new Date(timeInMillis).toISOString();
+      var millisIndex = isoDate.indexOf(".");
+      var dateAndTime = isoDate.substring(0, millisIndex);
+      
+      return stringReplaceText(dateAndTime, "T", " ");
+   }
+   
    export function stringReplaceText(text, from, to) {
       if(text && from && to) {
          return text.split(from).join(to);

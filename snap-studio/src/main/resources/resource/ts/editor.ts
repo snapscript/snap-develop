@@ -508,18 +508,20 @@ export module FileEditor {
    }
    
    export function updateEditor(text, resource, lastModified) {
-      console.log(resource + " was modified on " + new Date(lastModified) + " " + ((text) ? text.length : "NULL"));
+      console.log("resource=[" + resource + "] modified=[" + Common.formatTimeMillis(lastModified) + "] length=[" + ((text) ? text.length : "NULL") + "]");
       
       var session = editorView.editorPanel.getSession();
       var currentMode = session.getMode();
       var actualMode = resolveEditorMode(resource);
-      var encodedText = text; // encodeEditorText(text, resource); // change JSON conversion
+      var encodedText = encodeEditorText(text, resource); // change JSON conversion
       var savedHistoryBuffer = loadSavedEditorBuffer(resource); // load saved buffer
       var textToDisplay = encodedText;      
 
       if(savedHistoryBuffer && savedHistoryBuffer.text && savedHistoryBuffer.lastModified > lastModified) {
-         console.log("buffer is newer, difference is " + savedHistoryBuffer.lastModified - lastModified)
+         console.log("LOAD FROM HISTORY diff=[" + (savedHistoryBuffer.lastModified - lastModified) + "]");
          textToDisplay = savedHistoryBuffer.text;
+      } else {
+         console.log("IGNORE HISTORY");
       }
       saveEditorHistory(); // save any existing history
       

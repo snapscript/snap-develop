@@ -90,14 +90,14 @@ class Intersection {
     }
 }
 
-class Surface {
+abstract class Surface {
     var roughness: Number;
     abstract diffuse(pos: Vec){}
     abstract specular(pos: Vec){}
     abstract reflect(pos: Vec){}
 }
 
-class Thing {
+abstract class Thing {
     var surface: Surface;
     abstract intersect(ray: Ray){}
     abstract normal(pos: Vec){}

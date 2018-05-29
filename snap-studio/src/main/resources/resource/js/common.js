@@ -192,6 +192,13 @@ define(["require", "exports", "jquery"], function (require, exports, $) {
             return 0;
         }
         Common.calculateScrollOffset = calculateScrollOffset;
+        function formatTimeMillis(timeInMillis) {
+            var isoDate = new Date(timeInMillis).toISOString();
+            var millisIndex = isoDate.indexOf(".");
+            var dateAndTime = isoDate.substring(0, millisIndex);
+            return stringReplaceText(dateAndTime, "T", " ");
+        }
+        Common.formatTimeMillis = formatTimeMillis;
         function stringReplaceText(text, from, to) {
             if (text && from && to) {
                 return text.split(from).join(to);
