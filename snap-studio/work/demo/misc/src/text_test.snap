@@ -1,13 +1,9 @@
-// class Foo<X: Integer>{}
-// class Bar<T: String> extends Foo<T>{}
+const blah = 'x';
+const foo = 'y';
 
-func list(x: Map<String, ?>){
-   return x.keySet()
-      .stream()
-      .findFirst()
-      .get()
-      .substring(1);
-}
+[1,2,3,4,5].stream().forEach(item -> {
+   ['a', 'b', 'c', 'd'].stream().forEach(char -> {
+      println("${char}.${item}.${blah}.${foo}");
+   });
 
-let x = 1;
-println(list({'xxx':1}));
+});

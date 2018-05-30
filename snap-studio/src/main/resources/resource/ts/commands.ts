@@ -13,7 +13,7 @@ import {ThreadManager} from "threads"
 import {History} from "history"
 import {VariableManager} from "variables"
 import {DialogBuilder} from "dialog"
-import {FileExplorer} from "explorer"
+import {FileExplorer, FileResource} from "explorer"
 import {DebugManager} from "debug"
   
 export module Command {
@@ -510,8 +510,11 @@ export module Command {
             };
             ProcessConsole.clearConsole();
             EventBus.sendEvent("SAVE", message);
+            
             var modificationTime = new Date().getTime();
-            FileEditor.updateEditor("", resourceDetails.projectPath, modificationTime);
+            var fileResource = new FileResource(resourceDetails.projectPath, null, modificationTime, "", null);
+            
+            FileEditor.updateEditor(fileResource);
          }
       });
    }
@@ -559,7 +562,7 @@ export module Command {
    export function saveEditor(update) {
       var editorData = FileEditor.loadEditor();
       var editorPath = editorData.resource;
-      
+        
       if(editorPath != null) {
          var message = {
             project : document.title,
@@ -573,7 +576,9 @@ export module Command {
          
          if(update) { // should the editor be updated?
             var modificationTime = new Date().getTime();
-            FileEditor.updateEditor(editorData.source, editorPath.projectPath, modificationTime);
+            var fileResource = new FileResource(editorPath.projectPath, null, modificationTime, editorData.source, null);
+            
+            FileEditor.updateEditor(fileResource);
          }
       }
    }

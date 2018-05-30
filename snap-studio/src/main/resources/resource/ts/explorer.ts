@@ -8,6 +8,31 @@ import {FileTree} from "tree"
 import {FileEditor} from "editor"
 import {Command} from "commands"
 import {Alerts} from "alert"
+
+export class FileResource {
+   
+   resourcePath: string;
+   contentType: string;
+   lastModified: number;
+   fileContent: string;
+   downloadURL: string;
+   
+   constructor(resourcePath: string, contentType: string, lastModified: number, fileContent: string, downloadURL: string) {
+      this.resourcePath = resourcePath;
+      this.contentType = contentType;
+      this.lastModified = lastModified;
+      this.fileContent = fileContent;
+      this.downloadURL = downloadURL;
+   }
+   
+   getTimeStamp() {
+      return Common.formatTimeMillis(this.lastModified);
+   }
+   
+   getFileLength(){
+      return this.fileContent ? this.fileContent.length : -1;
+   }
+}
  
 export module FileExplorer {
    
@@ -41,11 +66,11 @@ export module FileExplorer {
             type: "get",
             dataType: 'text',
             success: function(response, status, header) {
-               var responseObject = parseResponseMessage(resourcePath, resourcePath, header, response);
+               var responseObject: FileResource = parseResponseMessage(resourcePath, resourcePath, header, response);
                handleOpenTreeFile(responseObject, afterLoad);
             },
             error: function(response) {
-               var responseObject = parseResponseMessage(resourcePath, resourcePath, null, response);
+               var responseObject: FileResource = parseResponseMessage(resourcePath, resourcePath, null, response);
                handleOpenTreeFile(responseObject, afterLoad);
             },
             async: false
@@ -55,11 +80,11 @@ export module FileExplorer {
             url: resourcePath,
             type: "get",
             success: function(response, status, header) {
-               var responseObject = parseResponseMessage(resourcePath, resourcePath, header, response);
+               var responseObject: FileResource = parseResponseMessage(resourcePath, resourcePath, header, response);
                handleOpenTreeFile(responseObject, afterLoad);
             },
             error: function(response) {
-               var responseObject = parseResponseMessage(resourcePath, resourcePath, null, response);
+               var responseObject: FileResource = parseResponseMessage(resourcePath, resourcePath, null, response);
                handleOpenTreeFile(responseObject, afterLoad);
             },
             async: false
@@ -79,11 +104,11 @@ export module FileExplorer {
             type: "get",
             dataType: 'text',
             success: function (response, status, header) {
-               var responseObject = parseResponseMessage(resourcePath, downloadURL, header, response);
+               var responseObject: FileResource = parseResponseMessage(resourcePath, downloadURL, header, response);
                handleOpenTreeFile(responseObject, afterLoad);
             },
             error: function (response) {
-               var responseObject = parseResponseMessage(resourcePath, downloadURL, null, response);
+               var responseObject: FileResource = parseResponseMessage(resourcePath, downloadURL, null, response);
                handleOpenTreeFile(responseObject, afterLoad);
             },
             async: false
@@ -94,11 +119,11 @@ export module FileExplorer {
             url: downloadURL,
             type: "get",            
             success: function (response, status, header) {
-               var responseObject = parseResponseMessage(resourcePath, downloadURL, header, response);
+               var responseObject: FileResource = parseResponseMessage(resourcePath, downloadURL, header, response);
                handleOpenTreeFile(responseObject, afterLoad);
             },
             error: function (response) {
-               var responseObject = parseResponseMessage(resourcePath, downloadURL, null, response);
+               var responseObject: FileResource = parseResponseMessage(resourcePath, downloadURL, null, response);
                handleOpenTreeFile(responseObject, afterLoad);
             },
             async: false
@@ -106,9 +131,9 @@ export module FileExplorer {
       }
    }
    
-   function parseResponseMessage(resourcePath, downloadURL, responseHeader, responseEntity) {
-      var lastModified = new Date().getTime();
-      var contentType = "application/octet-stream";
+   function parseResponseMessage(resourcePath, downloadURL, responseHeader, responseEntity): FileResource {
+      var lastModified: number = new Date().getTime();
+      var contentType: string = "application/octet-stream";
       
       if(responseHeader && responseEntity) {
          var contentTypeHeader = responseHeader.getResponseHeader("content-type");
@@ -120,24 +145,12 @@ export module FileExplorer {
          if(contentTypeHeader) {
             contentType = contentTypeHeader;
          }
-         return {
-            resourcePath: resourcePath,
-            contentType: contentType,
-            lastModified: lastModified,
-            responseEntity: responseEntity,
-            downloadURL: downloadURL
-         };
+         return new FileResource(resourcePath, contentType, lastModified, responseEntity, downloadURL);
       }
-      return {
-         resourcePath: resourcePath,
-         contentType: "text/plain",
-         lastModified: lastModified,
-         responseEntity: "// Count not find " + path,
-         downloadURL: downloadURL
-      };
+      return new FileResource(resourcePath, contentType, lastModified, "// Count not find " + resourcePath, downloadURL);
    }
    
-   function handleOpenTreeFile(responseObject, afterLoad) {
+   function handleOpenTreeFile(responseObject: FileResource, afterLoad) {
       //console.log(responseObject);
       
       if(isImageFileType(responseObject.contentType)) {
@@ -162,7 +175,7 @@ export module FileExplorer {
 //         } else {
 //            FileEditor.updateEditor(response, resourcePath);
 //         }
-         FileEditor.updateEditor(responseObject.responseEntity, responseObject.resourcePath, responseObject.lastModified);
+         FileEditor.updateEditor(responseObject);
          console.log("OPEN: " + responseObject.resourcePath)
       }
       afterLoad();

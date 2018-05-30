@@ -15,6 +15,7 @@ import {Project} from "project"
 import {StatusPanel} from "status"
 import {KeyBinder} from "keys"
 import {Command} from "commands"
+import {FileResource} from "explorer"
 
 /**
  * Contains the state for the Ace editor and is a singleton instance
@@ -507,22 +508,28 @@ export module FileEditor {
       return null;
    }
    
-   export function updateEditor(text, resource, lastModified) {
-      console.log("resource=[" + resource + "] modified=[" + Common.formatTimeMillis(lastModified) + "] length=[" + ((text) ? text.length : "NULL") + "]");
+   function resolveEditorTextToUse(fileResource: FileResource) {
+      console.log("resource=[" + fileResource.resourcePath + "] modified=[" + fileResource.getTimeStamp() + "] length=[" + fileResource.getFileLength() + "]");
       
+      var encodedText = encodeEditorText(fileResource.fileContent, fileResource.resourcePath); // change JSON conversion
+      var savedHistoryBuffer = loadSavedEditorBuffer(fileResource.resourcePath); // load saved buffer
+
+      if(savedHistoryBuffer && savedHistoryBuffer.buffer && savedHistoryBuffer.lastModified > fileResource.lastModified) {
+         console.log("LOAD FROM HISTORY diff=[" + (savedHistoryBuffer.lastModified - fileResource.lastModified) + "]");
+         return savedHistoryBuffer.buffer;
+      }
+      console.log("IGNORE HISTORY: ", savedHistoryBuffer);
+      return encodedText;
+   }
+   
+   export function updateEditor(fileResource: FileResource) {
+      var resource = fileResource.resourcePath;
+      var realText = fileResource.fileContent;
+      var textToDisplay = resolveEditorTextToUse(fileResource);
       var session = editorView.editorPanel.getSession();
       var currentMode = session.getMode();
       var actualMode = resolveEditorMode(resource);
-      var encodedText = encodeEditorText(text, resource); // change JSON conversion
-      var savedHistoryBuffer = loadSavedEditorBuffer(resource); // load saved buffer
-      var textToDisplay = encodedText;      
 
-      if(savedHistoryBuffer && savedHistoryBuffer.buffer && savedHistoryBuffer.lastModified > lastModified) {
-         console.log("LOAD FROM HISTORY diff=[" + (savedHistoryBuffer.lastModified - lastModified) + "]");
-         textToDisplay = savedHistoryBuffer.buffer;
-      } else {
-         console.log("IGNORE HISTORY: ", savedHistoryBuffer);
-      }
       saveEditorHistory(); // save any existing history
       
       if(actualMode != currentMode) {
@@ -536,7 +543,7 @@ export module FileEditor {
       createEditorUndoManager(session, textToDisplay, resource); // restore any existing history
       clearEditor();
       editorView.editorResource = FileTree.createResourcePath(resource);
-      editorView.editorText = encodedText; // save the real text NOT the text to display
+      editorView.editorText = realText; // save the real text NOT the text to display
       window.location.hash = editorView.editorResource.projectPath; // update # anchor
       ProblemManager.highlightProblems(); // higlight problems on this resource
       

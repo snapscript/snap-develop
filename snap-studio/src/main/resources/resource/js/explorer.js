@@ -1,5 +1,22 @@
 define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "commands"], function (require, exports, $, common_1, socket_1, tree_1, editor_1, commands_1) {
     "use strict";
+    var FileResource = (function () {
+        function FileResource(resourcePath, contentType, lastModified, fileContent, downloadURL) {
+            this.resourcePath = resourcePath;
+            this.contentType = contentType;
+            this.lastModified = lastModified;
+            this.fileContent = fileContent;
+            this.downloadURL = downloadURL;
+        }
+        FileResource.prototype.getTimeStamp = function () {
+            return common_1.Common.formatTimeMillis(this.lastModified);
+        };
+        FileResource.prototype.getFileLength = function () {
+            return this.fileContent ? this.fileContent.length : -1;
+        };
+        return FileResource;
+    }());
+    exports.FileResource = FileResource;
     var FileExplorer;
     (function (FileExplorer) {
         var treeVisible = false;
@@ -105,21 +122,9 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                 if (contentTypeHeader) {
                     contentType = contentTypeHeader;
                 }
-                return {
-                    resourcePath: resourcePath,
-                    contentType: contentType,
-                    lastModified: lastModified,
-                    responseEntity: responseEntity,
-                    downloadURL: downloadURL
-                };
+                return new FileResource(resourcePath, contentType, lastModified, responseEntity, downloadURL);
             }
-            return {
-                resourcePath: resourcePath,
-                contentType: "text/plain",
-                lastModified: lastModified,
-                responseEntity: "// Count not find " + path,
-                downloadURL: downloadURL
-            };
+            return new FileResource(resourcePath, contentType, lastModified, "// Count not find " + resourcePath, downloadURL);
         }
         function handleOpenTreeFile(responseObject, afterLoad) {
             //console.log(responseObject);
@@ -146,7 +151,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                 //         } else {
                 //            FileEditor.updateEditor(response, resourcePath);
                 //         }
-                editor_1.FileEditor.updateEditor(responseObject.responseEntity, responseObject.resourcePath, responseObject.lastModified);
+                editor_1.FileEditor.updateEditor(responseObject);
                 console.log("OPEN: " + responseObject.resourcePath);
             }
             afterLoad();

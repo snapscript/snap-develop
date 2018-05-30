@@ -1,4 +1,1 @@
 import text_test.Foo;
-
-
-new Foo().func();

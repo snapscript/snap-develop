@@ -461,7 +461,8 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                     console_1.ProcessConsole.clearConsole();
                     socket_1.EventBus.sendEvent("SAVE", message);
                     var modificationTime = new Date().getTime();
-                    editor_1.FileEditor.updateEditor("", resourceDetails.projectPath, modificationTime);
+                    var fileResource = new explorer_1.FileResource(resourceDetails.projectPath, null, modificationTime, "", null);
+                    editor_1.FileEditor.updateEditor(fileResource);
                 }
             });
         }
@@ -522,7 +523,8 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                 socket_1.EventBus.sendEvent("SAVE", message);
                 if (update) {
                     var modificationTime = new Date().getTime();
-                    editor_1.FileEditor.updateEditor(editorData.source, editorPath.projectPath, modificationTime);
+                    var fileResource = new explorer_1.FileResource(editorPath.projectPath, null, modificationTime, editorData.source, null);
+                    editor_1.FileEditor.updateEditor(fileResource);
                 }
             }
         }
