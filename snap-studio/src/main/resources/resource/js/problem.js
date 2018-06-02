@@ -2,6 +2,37 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor", "pro
     "use strict";
     var ProblemManager;
     (function (ProblemManager) {
+        var ProblemItem = (function () {
+            function ProblemItem(resource, line, message, project, time) {
+                this._resource = resource;
+                this._line = line;
+                this._message = message;
+                this._project = project;
+                this._time = time;
+            }
+            ProblemItem.prototype.isExpired = function () {
+                return this._time + 100000 > common_1.Common.currentTime();
+            };
+            ProblemItem.prototype.getKey = function () {
+                return this._resource + ":" + this._line;
+            };
+            ProblemItem.prototype.getResource = function () {
+                return this._resource;
+            };
+            ProblemItem.prototype.getLine = function () {
+                return this._line;
+            };
+            ProblemItem.prototype.getMessage = function () {
+                return this._message;
+            };
+            ProblemItem.prototype.getProject = function () {
+                return this._project;
+            };
+            ProblemItem.prototype.getTime = function () {
+                return this._time;
+            };
+            return ProblemItem;
+        }());
         var currentProblems = {};
         function registerProblems() {
             socket_1.EventBus.createRoute('PROBLEM', updateProblems);
@@ -12,12 +43,12 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor", "pro
             var timeMillis = common_1.Common.currentTime();
             var activeProblems = {};
             var expiryCount = 0;
-            for (var currentProblem in currentProblems) {
-                if (currentProblems.hasOwnProperty(currentProblem)) {
-                    var problemInfo = currentProblems[currentProblem];
-                    if (problemInfo != null) {
-                        if (problemInfo.time + 100000 > timeMillis) {
-                            activeProblems[currentProblem] = problemInfo;
+            for (var problemKey in currentProblems) {
+                if (currentProblems.hasOwnProperty(problemKey)) {
+                    var problemItem = currentProblems[problemKey];
+                    if (problemItem != null) {
+                        if (problemItem.isExpired()) {
+                            activeProblems[problemKey] = problemItem;
                         }
                         else {
                             expiryCount++;
@@ -33,18 +64,18 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor", "pro
         function showProblems() {
             var problemRecords = [];
             var problemIndex = 1;
-            for (var currentProblem in currentProblems) {
-                if (currentProblems.hasOwnProperty(currentProblem)) {
-                    var problemInfo = currentProblems[currentProblem];
-                    if (problemInfo != null) {
+            for (var problemKey in currentProblems) {
+                if (currentProblems.hasOwnProperty(problemKey)) {
+                    var problemItem = currentProblems[problemKey];
+                    if (problemItem != null) {
                         problemRecords.push({
                             recid: problemIndex++,
-                            line: problemInfo.line,
-                            location: "Line " + problemInfo.line,
-                            resource: problemInfo.resource.filePath,
-                            description: problemInfo.message,
-                            project: problemInfo.project,
-                            script: problemInfo.resource.resourcePath // /resource/<project>/blah/file.snap
+                            line: problemItem.getLine(),
+                            location: "Line " + problemItem.getLine(),
+                            resource: problemItem.getResource().getFilePath(),
+                            description: problemItem.getMessage(),
+                            project: problemItem.getProject(),
+                            script: problemItem.getResource().getResourcePath() // /resource/<project>/blah/file.snap
                         });
                     }
                 }
@@ -64,18 +95,18 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor", "pro
             }
         }
         function highlightProblems() {
-            var editorData = editor_1.FileEditor.loadEditor();
-            var editorResource = editorData.resource;
+            var editorState = editor_1.FileEditor.currentEditorState();
+            var editorResource = editorState.getResource();
             if (editorResource != null) {
                 var highlightUpdates = [];
                 //FileEditor.clearEditorHighlights(); this makes breakpoints jitter
-                for (var currentProblem in currentProblems) {
-                    if (currentProblems.hasOwnProperty(currentProblem)) {
-                        if (common_1.Common.stringStartsWith(currentProblem, editorResource.resourcePath)) {
-                            var problemInfo = currentProblems[currentProblem];
-                            if (problemInfo != null) {
+                for (var problemKey in currentProblems) {
+                    if (currentProblems.hasOwnProperty(problemKey)) {
+                        if (common_1.Common.stringStartsWith(problemKey, editorResource.getResourcePath())) {
+                            var problemItem = currentProblems[problemKey];
+                            if (problemItem != null) {
                                 editor_1.FileEditor.clearEditorHighlights(); // clear if the resource is focused
-                                highlightUpdates.push(problemInfo.line);
+                                highlightUpdates.push(problemItem.getLine());
                             }
                             else {
                                 editor_1.FileEditor.clearEditorHighlights(); // clear if the resource is focused
@@ -97,21 +128,15 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor", "pro
             var problems = w2ui_1.w2ui['problems'];
             var message = JSON.parse(text);
             var resourcePath = tree_1.FileTree.createResourcePath(message.resource);
-            var problemInfo = {
-                line: message.line,
-                message: "<div class='errorDescription'>" + message.description + "</div>",
-                resource: resourcePath,
-                project: message.project,
-                time: message.time
-            };
-            if (problemInfo.line >= 0) {
-                currentProblems[resourcePath.resourcePath + ":" + problemInfo.line] = problemInfo;
+            var problemItem = new ProblemItem(resourcePath, message.line, "<div class='errorDescription'>" + message.description + "</div>", message.project, message.time);
+            if (problemItem.getLine() >= 0) {
+                currentProblems[problemItem.getKey()] = problemItem;
             }
             else {
-                for (var currentProblem in currentProblems) {
-                    if (currentProblems.hasOwnProperty(currentProblem)) {
-                        if (common_1.Common.stringStartsWith(currentProblem, resourcePath.resourcePath)) {
-                            currentProblems[currentProblem] = null;
+                for (var problemKey in currentProblems) {
+                    if (currentProblems.hasOwnProperty(problemKey)) {
+                        if (common_1.Common.stringStartsWith(problemKey, resourcePath.getResourcePath())) {
+                            currentProblems[problemKey] = null;
                         }
                     }
                 }

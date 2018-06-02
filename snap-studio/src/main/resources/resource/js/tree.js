@@ -2,14 +2,35 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
     "use strict";
     var FilePath = (function () {
         function FilePath(resourcePath, projectPath, projectDirectory, filePath, fileName, fileDirectory, originalPath) {
-            this.resourcePath = resourcePath;
-            this.projectPath = projectPath;
-            this.projectDirectory = projectDirectory;
-            this.filePath = filePath;
-            this.fileName = fileName;
-            this.fileDirectory = fileDirectory;
-            this.originalPath = originalPath;
+            this._resourcePath = resourcePath;
+            this._projectPath = projectPath;
+            this._projectDirectory = projectDirectory;
+            this._filePath = filePath;
+            this._fileName = fileName;
+            this._fileDirectory = fileDirectory;
+            this._originalPath = originalPath;
         }
+        FilePath.prototype.getResourcePath = function () {
+            return this._resourcePath;
+        };
+        FilePath.prototype.getProjectPath = function () {
+            return this._projectPath;
+        };
+        FilePath.prototype.getProjectDirectory = function () {
+            return this._projectDirectory;
+        };
+        FilePath.prototype.getFilePath = function () {
+            return this._filePath;
+        };
+        FilePath.prototype.getFileName = function () {
+            return this._fileName;
+        };
+        FilePath.prototype.getFileDirectory = function () {
+            return this._fileDirectory;
+        };
+        FilePath.prototype.getOriginalPath = function () {
+            return this._originalPath;
+        };
         return FilePath;
     }());
     exports.FilePath = FilePath;
@@ -262,24 +283,30 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
                 path = path.replace("//", "/"); // remove double slashes like /x/y//z.snap
             }
             if (path == resourcePathRoot || path == resourcePathPrefix) {
-                var currentPathDetails = {
-                    resourcePath: resourcePathPrefix,
-                    projectPath: "/",
-                    projectDirectory: "/",
-                    filePath: "/",
-                    fileName: null,
-                    fileDirectory: "/",
-                    originalPath: path
-                };
-                var currentPathText = JSON.stringify(currentPathDetails);
+                //         var currentPathDetails = {
+                //            resourcePath: resourcePathPrefix, // /resource/<project>/blah/script.snap
+                //            projectPath: "/", // /blah/script.snap
+                //            projectDirectory: "/", // /blah
+                //            filePath: "/", // /blah/script.snap
+                //            fileName: null, // script.snap
+                //            fileDirectory: "/", // /blah
+                //            originalPath: path
+                //         };
+                //var currentPathText = JSON.stringify(currentPathDetails);
                 //console.log("FileTree.createResourcePath(" + path + "): " + currentPathText);
-                return currentPathDetails;
+                return new FilePath(cleanResourcePath(resourcePathPrefix), // /resource/<project>/blah/script.snap
+                "/", // /blah/script.snap
+                "/", // /blah
+                "/", // /blah/script.snap
+                null, // script.snap
+                "/", // /blah
+                path);
             }
             //console.log("FileTree.createResourcePath(" + path + ")");
-            if (!path.indexOf("/") == 0) {
+            if (path.indexOf("/") != 0) {
                 path = "/" + path; // /snap.script
             }
-            if (!path.indexOf(resourcePathPrefix) == 0) {
+            if (path.indexOf(resourcePathPrefix) != 0) {
                 path = "/resource/" + document.title + path;
             }
             var isFolder = isResourceFolder(path); // /resource/<project>/blah/

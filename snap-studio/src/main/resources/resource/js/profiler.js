@@ -21,7 +21,7 @@ define(["require", "exports", "w2ui", "common", "socket", "tree"], function (req
                 var recordTime = profileRecords[i].time;
                 if (recordTime > 0) {
                     var percentageTime = (recordTime / totalTime) * 100;
-                    var percentage = parseInt(percentageTime);
+                    var percentage = percentageTime;
                     profilerWidths[i] = percentage;
                 }
             }
@@ -29,7 +29,7 @@ define(["require", "exports", "w2ui", "common", "socket", "tree"], function (req
                 var profileRecord = profileRecords[i];
                 var sortableProfilerWidth = ('0000' + profilerWidths[i]).slice(-4); // padd with leading zeros
                 var resourcePath = tree_1.FileTree.createResourcePath(profileRecord.resource);
-                var displayName = "<div class='profilerRecord'>" + resourcePath.projectPath + "</div>";
+                var displayName = "<div class='profilerRecord'>" + resourcePath.getProjectPath() + "</div>";
                 var percentageBar = "<!-- " + sortableProfilerWidth + " --><div style='padding: 2px;'><div style='height: 10px; background: #ed6761; width: " + profilerWidths[i] + "%;'></div></div>";
                 var averageTime = (profileRecord.time / profileRecord.count) / 1000; // average time in seconds
                 profilerRecords.push({
@@ -40,7 +40,7 @@ define(["require", "exports", "w2ui", "common", "socket", "tree"], function (req
                     line: profileRecord.line,
                     count: profileRecord.count,
                     average: averageTime.toFixed(5),
-                    script: resourcePath.resourcePath
+                    script: resourcePath.getResourcePath()
                 });
             }
             common_1.Common.updateTableRecords(profilerRecords, 'profiler');

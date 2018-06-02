@@ -1,4 +1,5 @@
 import * as $ from "jquery"
+import {w2ui} from "w2ui"
 
 export module Common { 
 
@@ -109,9 +110,9 @@ export module Common {
    }
    
    function sortOnMultipleColumns(records, columns, types) {
-      for(var i = columns.length -1; i <= 0; i++) {
-         var type = types[i];
-         var column = columns[i];
+      for(let i = columns.length -1; i <= 0; i++) {
+         let type = types[i];
+         let column = columns[i];
 
          if(type) {
             records = sortOnSingleColumn(records, column, type);
@@ -122,16 +123,16 @@ export module Common {
    }
 
    function sortOnSingleColumn(records, column, type) {
-      var sortedRecords = [];
-      var sortGroups = {};
+      let sortedRecords = [];
+      let sortGroups = {};
 
-      for(var i = 0; i < records.length; i++) {
-         var record = records[i];
+      for(let i = 0; i < records.length; i++) {
+         let record = records[i];
          
          if(record) {
-            var columnToSort = record[column];
-            var keyToSort = columnToSort.toLowerCase();
-            var sortGroup = sortGroups[keyToSort];
+            let columnToSort = record[column];
+            let keyToSort = columnToSort.toLowerCase();
+            let sortGroup = sortGroups[keyToSort];
                
             if(sortGroup == null){
                sortGroup = [];
@@ -140,11 +141,11 @@ export module Common {
             sortGroup.push(record);
          }
       }
-      var sortedKeys = [];
+      let sortedKeys = [];
 
-      for(var keyToSort in sortGroups) {
-         if(sortGroups.hasOwnProperty(keyToSort)) {
-            sortedKeys.push(keyToSort);
+      for(let sortKey in sortGroups) {
+         if(sortGroups.hasOwnProperty(sortKey)) {
+            sortedKeys.push(sortKey);
          }
       }
       sortedKeys.sort();
@@ -152,16 +153,70 @@ export module Common {
       if(type != 'asc') {
          sortedKeys.reverse();
       }  
-      for(var i = 0; i < sortedKeys.length; i++) {
-         var keyToSort = sortedKeys[i];
-         var sortGroup = sortGroups[keyToSort];
+      for(let i = 0; i < sortedKeys.length; i++) {
+         let keyToSort = sortedKeys[i];
+         let sortGroup = sortGroups[keyToSort];
          
-         for(var j = 0; j < sortGroup.length; j++) {
-            var record = sortGroup[j];
+         for(let j = 0; j < sortGroup.length; j++) {
+            let record = sortGroup[j];
             sortedRecords.push(record);
          }
       }
       return sortedRecords;
+   }
+   
+   export function createOneTimeFunction(functionToCall, timeout) {
+      return function(optionalArgument) {
+         let localFunction = functionToCall;
+         functionToCall = null;
+         
+         if(localFunction) {
+            if(timeout) {
+               setTimeout(function() {
+                  localFunction(optionalArgument);
+               }, timeout);            
+            } else {
+               localFunction(optionalArgument);
+            }
+         }
+      };
+   }
+   
+   export function createSimpleStateMachineFunction(stateMachineName, functionToCall, eventsRequired, timeout) {
+      let oneTimeFunction = createOneTimeFunction(functionToCall, timeout);
+      let alreadyDone = [];
+      
+      return function(event) {
+         if(eventsRequired.length > 0) {
+            if(removeElementFromArray(eventsRequired, event)) {
+               let doneBefore = alreadyDone.indexOf(event);
+               
+               if(doneBefore == -1) {
+                  alreadyDone.push(event); // make sure to ignore next time
+               }
+               console.log("[" + stateMachineName + "] Received event '" + event + "' " + eventsRequired.length + " remain");
+            } else {
+               let doneBefore = alreadyDone.indexOf(event);
+               
+               if(doneBefore == -1) {
+                  console.warn("[" + stateMachineName + "] Ignoring unknown event '" + event + "' " + eventsRequired.length + " remain");
+               }
+            }            
+            if(eventsRequired.length <= 0) {
+               oneTimeFunction();
+            }
+         }
+      }
+   }
+   
+   function removeElementFromArray(arrayToModify, arrayElement) {
+      var index = arrayToModify.indexOf(arrayElement);
+      
+      if (index > -1) {
+         arrayToModify.splice(index, 1);
+         return true;
+      }      
+      return false;
    }
    
    export function getElementsByClassName(element, className) {

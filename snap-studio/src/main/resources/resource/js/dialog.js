@@ -44,7 +44,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             var dialogBody = createFileSelectionDialogLayout(dialogExpandPath, '');
             var focusInput = function () {
                 var element = document.getElementById('dialogPath');
-                element.contentEditable = true;
+                element.contentEditable = "true";
                 element.focus();
             };
             var createFinalPath = function () {
@@ -119,11 +119,11 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             tree_1.FileTree.createTree(treePath, "dialog", "dialogTree", dialogExpandPath, foldersOnly, null, function (event, data) {
                 var selectedFileDetails = tree_1.FileTree.createResourcePath(data.node.tooltip);
                 if (data.node.isFolder()) {
-                    $('#dialogFolder').html(tree_1.FileTree.cleanResourcePath(selectedFileDetails.projectDirectory));
+                    $('#dialogFolder').html(tree_1.FileTree.cleanResourcePath(selectedFileDetails.getProjectDirectory()));
                 }
                 else {
-                    $('#dialogFolder').html(tree_1.FileTree.cleanResourcePath(selectedFileDetails.projectDirectory)); // /src/blah
-                    $('#dialogPath').html(tree_1.FileTree.cleanResourcePath(selectedFileDetails.fileName)); // file.snap
+                    $('#dialogFolder').html(tree_1.FileTree.cleanResourcePath(selectedFileDetails.getProjectDirectory())); // /src/blah
+                    $('#dialogPath').html(tree_1.FileTree.cleanResourcePath(selectedFileDetails.getFileName())); // file.snap
                 }
             });
         }
@@ -134,7 +134,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 var originalDialogFolder = $('#dialogPath').html();
                 var dialogFolder = tree_1.FileTree.cleanResourcePath(originalDialogFolder); // clean up path
                 var dialogPathDetails = tree_1.FileTree.createResourcePath(dialogFolder);
-                var selectedDirectory = dialogPathDetails.projectDirectory;
+                var selectedDirectory = dialogPathDetails.getProjectDirectory();
                 if (selectedDirectory.indexOf("/") == 0) {
                     selectedDirectory = selectedDirectory.substring(1);
                 }
@@ -143,7 +143,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             var dialogBody = createFileFolderSelectionDialogLayout();
             var focusInput = function () {
                 var element = document.getElementById('dialogPath');
-                element.contentEditable = true;
+                element.contentEditable = "true";
                 element.focus();
             };
             w2ui_1.w2popup.open({
@@ -192,7 +192,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             });
             tree_1.FileTree.createTreeOfDepth(treePath, "dialog", "dialogTree", "/" + document.title, true, null, function (event, data) {
                 var selectedFileDetails = tree_1.FileTree.createResourcePath(data.node.tooltip);
-                var selectedDirectory = selectedFileDetails.projectDirectory;
+                var selectedDirectory = selectedFileDetails.getProjectDirectory();
                 if (selectedDirectory.indexOf("/") == 0) {
                     selectedDirectory = selectedDirectory.substring(1);
                 }
@@ -206,7 +206,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             var dialogBody = createListDialogLayout();
             var focusInput = function () {
                 var element = document.getElementById('dialogPath');
-                element.contentEditable = true;
+                element.contentEditable = "true";
                 element.focus();
             };
             w2ui_1.w2popup.open({
@@ -286,7 +286,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             var windowWidth = $(window).width(); // returns width of browser viewport
             var focusInput = function () {
                 var element = document.getElementById('searchText');
-                element.contentEditable = true;
+                element.contentEditable = "true";
                 element.focus();
             };
             var executeSearch = function () {
@@ -376,7 +376,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             var windowWidth = $(window).width(); // returns width of browser viewport
             var focusInput = function () {
                 var element = document.getElementById('searchText');
-                element.contentEditable = true;
+                element.contentEditable = "true";
                 element.focus();
             };
             var executeSearch = function () {
@@ -478,7 +478,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             var dialogBody = createGridDialogLayout(inputText ? common_1.Common.escapeHtml(inputText) : '');
             var focusInput = function () {
                 var element = document.getElementById('dialogPath');
-                element.contentEditable = true;
+                element.contentEditable = "true";
                 element.focus();
             };
             var executeEvaluation = function () {
@@ -887,7 +887,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                         return focusDialogInput('fileFilterPatterns');
                     });
                     $('#fileFilterPatterns').on('paste', function (e) {
-                        return pasteInPlainText('fileFilterPatterns'.e);
+                        return pasteInPlainText('fileFilterPatterns', e);
                     });
                     $('#searchText').on('click', function (e) {
                         return focusDialogInput('searchText');
@@ -936,7 +936,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             return false;
         }
         function focusDialogInput(name) {
-            document.getElementById(name).contentEditable = true;
+            document.getElementById(name).contentEditable = "true";
             document.getElementById(name).focus();
             document.getElementById(name).focus();
             return true;

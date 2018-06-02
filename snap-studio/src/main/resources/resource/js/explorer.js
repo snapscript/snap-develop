@@ -1,34 +1,56 @@
 define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "commands"], function (require, exports, $, common_1, socket_1, tree_1, editor_1, commands_1) {
     "use strict";
     var FileResource = (function () {
-        function FileResource(resourcePath, contentType, lastModified, fileContent, downloadURL) {
-            this.resourcePath = resourcePath;
-            this.contentType = contentType;
-            this.lastModified = lastModified;
-            this.fileContent = fileContent;
-            this.downloadURL = downloadURL;
+        function FileResource(resourcePath, contentType, lastModified, fileContent, downloadURL, isHistorical, isError) {
+            this._resourcePath = resourcePath;
+            this._contentType = contentType;
+            this._lastModified = lastModified;
+            this._fileContent = fileContent;
+            this._downloadURL = downloadURL;
+            this._isHistorical = isHistorical;
+            this._isError = isError;
         }
+        FileResource.prototype.getResourcePath = function () {
+            return this._resourcePath;
+        };
+        FileResource.prototype.getContentType = function () {
+            return this._contentType;
+        };
+        FileResource.prototype.getFileContent = function () {
+            return this._fileContent;
+        };
+        FileResource.prototype.getDownloadURL = function () {
+            return this._downloadURL;
+        };
         FileResource.prototype.getTimeStamp = function () {
-            return common_1.Common.formatTimeMillis(this.lastModified);
+            return common_1.Common.formatTimeMillis(this._lastModified);
+        };
+        FileResource.prototype.getLastModified = function () {
+            return this._lastModified;
         };
         FileResource.prototype.getFileLength = function () {
-            return this.fileContent ? this.fileContent.length : -1;
+            return this._fileContent ? this._fileContent.length : -1;
+        };
+        FileResource.prototype.isHistorical = function () {
+            return this._isHistorical;
+        };
+        FileResource.prototype.isError = function () {
+            return this._isError;
         };
         return FileResource;
     }());
     exports.FileResource = FileResource;
     var FileExplorer;
     (function (FileExplorer) {
-        var treeVisible = false;
         function showTree() {
-            if (treeVisible == false) {
-                window.setTimeout(reloadTree, 500);
-                treeVisible = true;
-            }
+            reloadTreeAtRoot();
             socket_1.EventBus.createRoute("RELOAD_TREE", reloadTree);
         }
         FileExplorer.showTree = showTree;
         function reloadTree(socket, type, text) {
+            reloadTreeAtRoot();
+        }
+        function reloadTreeAtRoot() {
             tree_1.FileTree.createTree("/" + document.title, "explorer", "explorerTree", "/.", false, handleTreeMenu, function (event, data) {
                 if (!data.node.isFolder()) {
                     openTreeFile(data.node.tooltip, function () { });
@@ -37,18 +59,18 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
         }
         function openTreeFile(resourcePath, afterLoad) {
             var filePath = resourcePath.toLowerCase();
-            if (isTextFile(filePath)) {
+            if (isJsonXmlOrJavascript(filePath)) {
                 //var type = header.getResponseHeader("content-type");
                 $.ajax({
                     url: resourcePath,
                     type: "get",
                     dataType: 'text',
                     success: function (response, status, header) {
-                        var responseObject = parseResponseMessage(resourcePath, resourcePath, header, response);
+                        var responseObject = parseResponseMessage(resourcePath, resourcePath, header, response, false, false);
                         handleOpenTreeFile(responseObject, afterLoad);
                     },
                     error: function (response) {
-                        var responseObject = parseResponseMessage(resourcePath, resourcePath, null, response);
+                        var responseObject = parseResponseMessage(resourcePath, resourcePath, null, response, false, true);
                         handleOpenTreeFile(responseObject, afterLoad);
                     },
                     async: false
@@ -59,11 +81,11 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                     url: resourcePath,
                     type: "get",
                     success: function (response, status, header) {
-                        var responseObject = parseResponseMessage(resourcePath, resourcePath, header, response);
+                        var responseObject = parseResponseMessage(resourcePath, resourcePath, header, response, false, false);
                         handleOpenTreeFile(responseObject, afterLoad);
                     },
                     error: function (response) {
-                        var responseObject = parseResponseMessage(resourcePath, resourcePath, null, response);
+                        var responseObject = parseResponseMessage(resourcePath, resourcePath, null, response, false, true);
                         handleOpenTreeFile(responseObject, afterLoad);
                     },
                     async: false
@@ -75,18 +97,18 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
             var filePath = resourcePath.toLowerCase();
             var backupResourcePath = resourcePath.replace(/^\/resource/i, "/history");
             //var backupUrl = backupResourcePath + "?time=" + timeStamp;
-            if (isTextFile(filePath)) {
+            if (isJsonXmlOrJavascript(filePath)) {
                 var downloadURL = backupResourcePath + "?time=" + timeStamp;
                 $.ajax({
                     url: downloadURL,
                     type: "get",
                     dataType: 'text',
                     success: function (response, status, header) {
-                        var responseObject = parseResponseMessage(resourcePath, downloadURL, header, response);
+                        var responseObject = parseResponseMessage(resourcePath, downloadURL, header, response, true, false);
                         handleOpenTreeFile(responseObject, afterLoad);
                     },
                     error: function (response) {
-                        var responseObject = parseResponseMessage(resourcePath, downloadURL, null, response);
+                        var responseObject = parseResponseMessage(resourcePath, downloadURL, null, response, true, true);
                         handleOpenTreeFile(responseObject, afterLoad);
                     },
                     async: false
@@ -98,11 +120,11 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                     url: downloadURL,
                     type: "get",
                     success: function (response, status, header) {
-                        var responseObject = parseResponseMessage(resourcePath, downloadURL, header, response);
+                        var responseObject = parseResponseMessage(resourcePath, downloadURL, header, response, true, false);
                         handleOpenTreeFile(responseObject, afterLoad);
                     },
                     error: function (response) {
-                        var responseObject = parseResponseMessage(resourcePath, downloadURL, null, response);
+                        var responseObject = parseResponseMessage(resourcePath, downloadURL, null, response, true, true);
                         handleOpenTreeFile(responseObject, afterLoad);
                     },
                     async: false
@@ -110,7 +132,8 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
             }
         }
         FileExplorer.openTreeHistoryFile = openTreeHistoryFile;
-        function parseResponseMessage(resourcePath, downloadURL, responseHeader, responseEntity) {
+        function parseResponseMessage(resourcePath, downloadURL, responseHeader, responseEntity, isHistory, isError) {
+            var filePath = tree_1.FileTree.createResourcePath(resourcePath);
             var lastModified = new Date().getTime();
             var contentType = "application/octet-stream";
             if (responseHeader && responseEntity) {
@@ -122,23 +145,23 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                 if (contentTypeHeader) {
                     contentType = contentTypeHeader;
                 }
-                return new FileResource(resourcePath, contentType, lastModified, responseEntity, downloadURL);
+                return new FileResource(filePath, contentType, lastModified, responseEntity, downloadURL, isHistory, isError);
             }
-            return new FileResource(resourcePath, contentType, lastModified, "// Count not find " + resourcePath, downloadURL);
+            return new FileResource(filePath, contentType, lastModified, "// Count not find " + resourcePath, downloadURL, isHistory, isError);
         }
         function handleOpenTreeFile(responseObject, afterLoad) {
             //console.log(responseObject);
-            if (isImageFileType(responseObject.contentType)) {
-                handleOpenFileInNewTab(responseObject.downloadURL);
+            if (isImageFileType(responseObject.getContentType())) {
+                handleOpenFileInNewTab(responseObject.getDownloadURL());
             }
-            else if (isBinaryFileType(responseObject.contentType)) {
-                handleDownloadFile(responseObject.downloadURL);
+            else if (isBinaryFileType(responseObject.getContentType())) {
+                handleDownloadFile(responseObject.getDownloadURL());
             }
             else {
-                var mode = editor_1.FileEditor.resolveEditorMode(responseObject.resourcePath);
+                var mode = editor_1.FileEditor.resolveEditorMode(responseObject.getResourcePath().getResourcePath());
                 //         if(FileEditor.isEditorChanged()) {
-                //            var editorData = FileEditor.loadEditor();
-                //            var editorResource = editorData.resource;
+                //            var editorState = FileEditor.currentEditorState();
+                //            var editorResource = editorState.resource;
                 //            var message = "Save resource " + editorResource.filePath;
                 //            
                 //            Alerts.createConfirmAlert("File Changed", message, "Save", "Ignore", 
@@ -152,7 +175,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                 //            FileEditor.updateEditor(response, resourcePath);
                 //         }
                 editor_1.FileEditor.updateEditor(responseObject);
-                console.log("OPEN: " + responseObject.resourcePath);
+                console.log("OPEN: " + responseObject.getResourcePath().getResourcePath());
             }
             afterLoad();
         }
@@ -163,7 +186,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
         function handleDownloadFile(downloadURL) {
             window.location.href = downloadURL;
         }
-        function isTextFile(filePath) {
+        function isJsonXmlOrJavascript(filePath) {
             return common_1.Common.stringEndsWith(filePath, ".json") ||
                 common_1.Common.stringEndsWith(filePath, ".js") ||
                 common_1.Common.stringEndsWith(filePath, ".xml") ||

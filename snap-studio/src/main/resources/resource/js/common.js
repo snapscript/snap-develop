@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery"], function (require, exports, $) {
+define(["require", "exports", "jquery", "w2ui"], function (require, exports, $, w2ui_1) {
     "use strict";
     var Common;
     (function (Common) {
@@ -45,7 +45,7 @@ define(["require", "exports", "jquery"], function (require, exports, $) {
         }
         Common.decodeValue = decodeValue;
         function updateTableRecords(update, name) {
-            var grid = w2ui[name];
+            var grid = w2ui_1.w2ui[name];
             if (grid) {
                 var scrollTop = $('#grid_' + name + '_records').prop('scrollTop');
                 var current = grid.records; // find the table
@@ -128,9 +128,9 @@ define(["require", "exports", "jquery"], function (require, exports, $) {
                 }
             }
             var sortedKeys = [];
-            for (var keyToSort in sortGroups) {
-                if (sortGroups.hasOwnProperty(keyToSort)) {
-                    sortedKeys.push(keyToSort);
+            for (var sortKey in sortGroups) {
+                if (sortGroups.hasOwnProperty(sortKey)) {
+                    sortedKeys.push(sortKey);
                 }
             }
             sortedKeys.sort();
@@ -146,6 +146,56 @@ define(["require", "exports", "jquery"], function (require, exports, $) {
                 }
             }
             return sortedRecords;
+        }
+        function createOneTimeFunction(functionToCall, timeout) {
+            return function (optionalArgument) {
+                var localFunction = functionToCall;
+                functionToCall = null;
+                if (localFunction) {
+                    if (timeout) {
+                        setTimeout(function () {
+                            localFunction(optionalArgument);
+                        }, timeout);
+                    }
+                    else {
+                        localFunction(optionalArgument);
+                    }
+                }
+            };
+        }
+        Common.createOneTimeFunction = createOneTimeFunction;
+        function createSimpleStateMachineFunction(stateMachineName, functionToCall, eventsRequired, timeout) {
+            var oneTimeFunction = createOneTimeFunction(functionToCall, timeout);
+            var alreadyDone = [];
+            return function (event) {
+                if (eventsRequired.length > 0) {
+                    if (removeElementFromArray(eventsRequired, event)) {
+                        var doneBefore = alreadyDone.indexOf(event);
+                        if (doneBefore == -1) {
+                            alreadyDone.push(event); // make sure to ignore next time
+                        }
+                        console.log("[" + stateMachineName + "] Received event '" + event + "' " + eventsRequired.length + " remain");
+                    }
+                    else {
+                        var doneBefore = alreadyDone.indexOf(event);
+                        if (doneBefore == -1) {
+                            console.warn("[" + stateMachineName + "] Ignoring unknown event '" + event + "' " + eventsRequired.length + " remain");
+                        }
+                    }
+                    if (eventsRequired.length <= 0) {
+                        oneTimeFunction();
+                    }
+                }
+            };
+        }
+        Common.createSimpleStateMachineFunction = createSimpleStateMachineFunction;
+        function removeElementFromArray(arrayToModify, arrayElement) {
+            var index = arrayToModify.indexOf(arrayElement);
+            if (index > -1) {
+                arrayToModify.splice(index, 1);
+                return true;
+            }
+            return false;
         }
         function getElementsByClassName(element, className) {
             var matches = [];

@@ -6,8 +6,8 @@ define(["require", "exports", "socket"], function (require, exports, socket_1) {
             socket_1.EventBus.createRoute('ALERT', createAlert);
         }
         Alerts.registerAlerts = registerAlerts;
-        function createAlert(socket, type, text) {
-            var message = JSON.parse(text);
+        function createAlert(socket, type, object) {
+            var message = JSON.parse(object);
             var text = message.message;
             w2alert('<table border="0" width="100%">' +
                 '  <tr>' +

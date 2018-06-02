@@ -4,22 +4,51 @@ import {Common} from "common"
 import {Command} from "commands"
 
 export class FilePath {
-   resourcePath: string; // /resource/<project>/blah/script.snap
-   projectPath: string; // /blah/script.snap
-   projectDirectory: string; // /blah
-   filePath: string; // /blah/script.snap
-   fileName: string; // script.snap
-   fileDirectory: string; // /blah
-   originalPath: string;
+   
+   private _resourcePath: string; // /resource/<project>/blah/script.snap
+   private _projectPath: string; // /blah/script.snap
+   private _projectDirectory: string; // /blah
+   private _filePath: string; // /blah/script.snap
+   private _fileName: string; // script.snap
+   private _fileDirectory: string; // /blah
+   private _originalPath: string;
    
    constructor(resourcePath: string, projectPath: string, projectDirectory: string, filePath: string, fileName: string, fileDirectory: string, originalPath: string) {
-      this.resourcePath = resourcePath;
-      this.projectPath = projectPath;
-      this.projectDirectory = projectDirectory;
-      this.filePath = filePath;
-      this.fileName = fileName;
-      this.fileDirectory = fileDirectory;
-      this.originalPath = originalPath;
+      this._resourcePath = resourcePath;
+      this._projectPath = projectPath;
+      this._projectDirectory = projectDirectory;
+      this._filePath = filePath;
+      this._fileName = fileName;
+      this._fileDirectory = fileDirectory;
+      this._originalPath = originalPath;
+   }
+   
+   public getResourcePath(): string {
+      return this._resourcePath;
+   }
+   
+   public getProjectPath(): string {
+      return this._projectPath;
+   }
+   
+   public getProjectDirectory(): string {
+      return this._projectDirectory;
+   }
+   
+   public getFilePath(): string {
+      return this._filePath;
+   }
+   
+   public getFileName(): string {
+      return this._fileName;
+   }
+   
+   public getFileDirectory(): string {
+      return this._fileDirectory;
+   }
+   
+   public getOriginalPath(): string {
+      return this._originalPath;
    }
 }
 
@@ -295,7 +324,7 @@ export module FileTree {
       return null;
    }
    
-   export function createResourcePath(path: string) { 
+   export function createResourcePath(path: string): FilePath { 
       var resourcePathPrefix = "/resource/" + document.title + "/";
       var resourcePathRoot = "/resource/" + document.title;
       
@@ -303,35 +332,43 @@ export module FileTree {
          path = path.replace("//", "/"); // remove double slashes like /x/y//z.snap
       }
       if(path == resourcePathRoot || path == resourcePathPrefix) { // its the root /
-         var currentPathDetails = {
-            resourcePath: resourcePathPrefix, // /resource/<project>/blah/script.snap
-            projectPath: "/", // /blah/script.snap
-            projectDirectory: "/", // /blah
-            filePath: "/", // /blah/script.snap
-            fileName: null, // script.snap
-            fileDirectory: "/", // /blah
-            originalPath: path
-         };
-         var currentPathText = JSON.stringify(currentPathDetails);
+//         var currentPathDetails = {
+//            resourcePath: resourcePathPrefix, // /resource/<project>/blah/script.snap
+//            projectPath: "/", // /blah/script.snap
+//            projectDirectory: "/", // /blah
+//            filePath: "/", // /blah/script.snap
+//            fileName: null, // script.snap
+//            fileDirectory: "/", // /blah
+//            originalPath: path
+//         };
+         //var currentPathText = JSON.stringify(currentPathDetails);
          //console.log("FileTree.createResourcePath(" + path + "): " + currentPathText);
-         return currentPathDetails;
+         return new FilePath(
+               cleanResourcePath(resourcePathPrefix), // /resource/<project>/blah/script.snap
+               "/", // /blah/script.snap
+               "/", // /blah
+               "/", // /blah/script.snap
+               null, // script.snap
+               "/", // /blah
+               path
+            );
       }
       //console.log("FileTree.createResourcePath(" + path + ")");
       
-      if(!path.indexOf("/") == 0) {  // script.snap
+      if(path.indexOf("/") != 0) {  // script.snap
          path = "/" + path; // /snap.script
       }
-      if(!path.indexOf(resourcePathPrefix) == 0) { // /resource/<project>/(<file-path>)
+      if(path.indexOf(resourcePathPrefix) != 0) { // /resource/<project>/(<file-path>)
          path = "/resource/" + document.title + path;
       }
       var isFolder = isResourceFolder(path); // /resource/<project>/blah/
-      var pathSegments = path.split("/"); // [0="", 1="resource", 2="<project>", 3="blah", 4="script.snap"]
-      var currentResourcePath = "/resource/" + document.title;
-      var currentProjectPath = "";
-      var currentProjectDirectory = "";   
-      var currentFileName = null;
-      var currentFilePath = "";
-      var currentFileDirectory = "";
+      var pathSegments: string[] = path.split("/"); // [0="", 1="resource", 2="<project>", 3="blah", 4="script.snap"]
+      var currentResourcePath: string = "/resource/" + document.title;
+      var currentProjectPath: string = "";
+      var currentProjectDirectory: string = "";   
+      var currentFileName: string = null;
+      var currentFilePath: string = "";
+      var currentFileDirectory: string = "";
       
       for(var i = 3; i < pathSegments.length; i++) { 
          currentResourcePath += "/" + pathSegments[i];
@@ -339,7 +376,7 @@ export module FileTree {
          currentFilePath += "/" + pathSegments[i];
       }
       if(isFolder) { // /resource/<project>/blah/
-         var currentFileName = pathSegments[pathSegments.length - 1];
+         var currentFileName: string = pathSegments[pathSegments.length - 1];
          
          if(pathSegments.length > 3) {
             for(var i = 3; i < pathSegments.length; i++) { 
@@ -350,7 +387,7 @@ export module FileTree {
             currentFileDirectory = "/";
          }
       } else { // /resource/<project>/blah/script.snap
-         var currentFileName = pathSegments[pathSegments.length - 1];
+         var currentFileName: string = pathSegments[pathSegments.length - 1];
          
          if(pathSegments.length > 4) {
             for(var i = 3; i < pathSegments.length - 1; i++) { 

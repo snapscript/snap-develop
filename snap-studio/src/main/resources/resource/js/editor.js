@@ -1,11 +1,11 @@
-define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket", "problem", "spinner", "tree", "history", "project", "status", "keys", "commands"], function (require, exports, $, md5_1, ace_1, w2ui_1, common_1, socket_1, problem_1, spinner_1, tree_1, history_1, project_1, status_1, keys_1, commands_1) {
+define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket", "problem", "tree", "history", "project", "status", "keys", "commands"], function (require, exports, $, md5_1, ace_1, w2ui_1, common_1, socket_1, problem_1, tree_1, history_1, project_1, status_1, keys_1, commands_1) {
     "use strict";
     /**
      * Contains the state for the Ace editor and is a singleton instance
      * that exists as soon as the editor is created.
      */
     var FileEditorView = (function () {
-        function FileEditorView(editorPanel, editorTheme) {
+        function FileEditorView(editorPanel) {
             this.editorBreakpoints = {}; // spans multiple resources
             this.editorMarkers = {};
             this.editorResource = null;
@@ -18,18 +18,111 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             this.editorPanel = null; // this actual editor
             this.editorLastModified = new Date().getTime();
             this.editorPanel = editorPanel;
-            this.editorTheme = editorTheme;
         }
         FileEditorView.prototype.init = function () {
             keys_1.KeyBinder.bindKeys(); // register key bindings
             project_1.Project.changeProjectFont(); // project.js update font
             FileEditor.scrollEditorToPosition();
             FileEditor.updateProjectTabOnChange(); // listen to change
-            spinner_1.LoadSpinner.finish();
         };
         return FileEditorView;
     }());
     exports.FileEditorView = FileEditorView;
+    var FileEditorHistory = (function () {
+        function FileEditorHistory(lastModified, undoState, position, buffer, hash) {
+            this._lastModified = lastModified;
+            this._undoState = undoState;
+            this._position = position;
+            this._buffer = buffer;
+            this._hash = hash;
+        }
+        FileEditorHistory.prototype.getPosition = function () {
+            return this._position;
+        };
+        FileEditorHistory.prototype.getUndoState = function () {
+            return this._undoState;
+        };
+        FileEditorHistory.prototype.getLastModified = function () {
+            return this._lastModified;
+        };
+        FileEditorHistory.prototype.getBuffer = function () {
+            return this._buffer;
+        };
+        FileEditorHistory.prototype.getHash = function () {
+            return this._hash;
+        };
+        return FileEditorHistory;
+    }());
+    exports.FileEditorHistory = FileEditorHistory;
+    var FileEditorUndoState = (function () {
+        function FileEditorUndoState(undoStack, redoStack, dirtyCounter) {
+            this._undoStack = undoStack;
+            this._redoStack = redoStack;
+            this._dirtyCounter = dirtyCounter;
+        }
+        FileEditorUndoState.prototype.getUndoStack = function () {
+            return this._undoStack;
+        };
+        FileEditorUndoState.prototype.getRedoStack = function () {
+            return this._redoStack;
+        };
+        FileEditorUndoState.prototype.getDirtyCounter = function () {
+            return this._dirtyCounter;
+        };
+        return FileEditorUndoState;
+    }());
+    exports.FileEditorUndoState = FileEditorUndoState;
+    var FileEditorState = (function () {
+        function FileEditorState(lastModified, breakpoints, resource, undoState, position, source) {
+            this._lastModified = lastModified;
+            this._breakpoints = breakpoints;
+            this._resource = resource;
+            this._undoState = undoState;
+            this._position = position;
+            this._source = source;
+        }
+        FileEditorState.prototype.isStateValid = function () {
+            return this._resource && (this._source != null && this._source != "");
+        };
+        FileEditorState.prototype.getResource = function () {
+            return this._resource;
+        };
+        FileEditorState.prototype.getPosition = function () {
+            return this._position;
+        };
+        FileEditorState.prototype.getUndoState = function () {
+            return this._undoState;
+        };
+        FileEditorState.prototype.getLastModified = function () {
+            return this._lastModified;
+        };
+        FileEditorState.prototype.getBreakpoints = function () {
+            return this._breakpoints;
+        };
+        FileEditorState.prototype.getSource = function () {
+            return this._source;
+        };
+        return FileEditorState;
+    }());
+    exports.FileEditorState = FileEditorState;
+    var FileEditorPosition = (function () {
+        function FileEditorPosition(row, column, scroll) {
+            this._row = row;
+            this._column = column;
+            this._scroll = scroll;
+        }
+        FileEditorPosition.prototype.getRow = function () {
+            return this._row;
+        };
+        FileEditorPosition.prototype.getColumn = function () {
+            return this._column;
+        };
+        FileEditorPosition.prototype.getScroll = function () {
+            return this._scroll;
+        };
+        return FileEditorPosition;
+    }());
+    exports.FileEditorPosition = FileEditorPosition;
     /**
      * Groups all the editor functions and creates the FileEditorView that
      * contains the state of the editor session.
@@ -98,13 +191,15 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         FileEditor.createMultipleEditorHighlights = createMultipleEditorHighlights;
         function findAndReplaceTextInEditor() {
-            var editorData = loadEditor();
-            commands_1.Command.searchAndReplaceFiles(editorData.resource.projectPath);
+            var state = currentEditorState();
+            var resource = state.getResource();
+            commands_1.Command.searchAndReplaceFiles(resource.getProjectPath());
         }
         FileEditor.findAndReplaceTextInEditor = findAndReplaceTextInEditor;
         function findTextInEditor() {
-            var editorData = loadEditor();
-            commands_1.Command.searchFiles(editorData.resource.projectPath);
+            var state = currentEditorState();
+            var resource = state.getResource();
+            commands_1.Command.searchFiles(resource.getProjectPath());
         }
         FileEditor.findTextInEditor = findTextInEditor;
         function addEditorKeyBinding(keyBinding, actionFunction) {
@@ -136,7 +231,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             var breakpoints = session.getBreakpoints();
             var remove = false;
             for (var breakpoint in breakpoints) {
-                session.clearBreakpoint(row);
+                session.clearBreakpoint(breakpoint); // XXX is this correct
             }
         }
         function showEditorBreakpoints() {
@@ -149,14 +244,14 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                         if (breakpoints.hasOwnProperty(lineNumber)) {
                             if (breakpoints[lineNumber] == true) {
                                 var resourcePathDetails = tree_1.FileTree.createResourcePath(filePath);
-                                var displayName = "<div class='breakpointEnabled'>" + resourcePathDetails.projectPath + "</div>";
+                                var displayName = "<div class='breakpointEnabled'>" + resourcePathDetails.getProjectPath() + "</div>";
                                 breakpointRecords.push({
                                     recid: breakpointIndex++,
                                     name: displayName,
                                     location: "Line " + lineNumber,
-                                    resource: resourcePathDetails.projectPath,
+                                    resource: resourcePathDetails.getProjectPath(),
                                     line: parseInt(lineNumber),
-                                    script: resourcePathDetails.resourcePath
+                                    script: resourcePathDetails.getResourcePath()
                                 });
                             }
                         }
@@ -171,7 +266,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         function setEditorBreakpoint(row, value) {
             if (editorView.editorResource != null) {
                 var session = editorView.editorPanel.getSession();
-                var resourceBreakpoints = editorView.editorBreakpoints[editorView.editorResource.filePath];
+                var resourceBreakpoints = editorView.editorBreakpoints[editorView.editorResource.getFilePath()];
                 var line = parseInt(row);
                 if (value) {
                     session.setBreakpoint(line);
@@ -181,7 +276,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                 }
                 if (resourceBreakpoints == null) {
                     resourceBreakpoints = {};
-                    editorView.editorBreakpoints[editorView.editorResource.filePath] = resourceBreakpoints;
+                    editorView.editorBreakpoints[editorView.editorResource.getFilePath()] = resourceBreakpoints;
                 }
                 resourceBreakpoints[line + 1] = value;
             }
@@ -190,7 +285,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         function toggleEditorBreakpoint(row) {
             if (editorView.editorResource != null) {
                 var session = editorView.editorPanel.getSession();
-                var resourceBreakpoints = editorView.editorBreakpoints[editorView.editorResource.filePath];
+                var resourceBreakpoints = editorView.editorBreakpoints[editorView.editorResource.getFilePath()];
                 var breakpoints = session.getBreakpoints();
                 var remove = false;
                 for (var breakpoint in breakpoints) {
@@ -209,7 +304,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                 if (resourceBreakpoints == null) {
                     resourceBreakpoints = {};
                     resourceBreakpoints[line + 1] = true;
-                    editorView.editorBreakpoints[editorView.editorResource.filePath] = resourceBreakpoints;
+                    editorView.editorBreakpoints[editorView.editorResource.getFilePath()] = resourceBreakpoints;
                 }
                 else {
                     if (resourceBreakpoints[line + 1] == true) {
@@ -243,7 +338,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         function clearEditor() {
             var session = editorView.editorPanel.getSession();
             for (var editorMarker in session.$backMarkers) {
-                session.removeMarker(editorView.editorMarker);
+                session.removeMarker(editorMarker);
             }
             clearEditorHighlights(); // clear highlighting
             var breakpoints = session.getBreakpoints();
@@ -253,49 +348,30 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             }
             $("#currentFile").html("");
         }
-        function loadEditor() {
-            var editorHistory = loadEditorHistory();
-            var editorPosition = loadEditorPosition();
-            var editorText = loadEditorText();
-            return {
-                lastModified: editorView.editorLastModified,
-                breakpoints: editorView.editorBreakpoints,
-                resource: editorView.editorResource,
-                history: editorHistory,
-                position: editorPosition,
-                source: editorText
-            };
+        function currentEditorState() {
+            var editorHistory = currentEditorUndoState();
+            var editorPosition = currentEditorPosition();
+            var editorText = currentEditorText();
+            return new FileEditorState(editorView.editorLastModified, editorView.editorBreakpoints, editorView.editorResource, editorHistory, editorPosition, editorText);
         }
-        FileEditor.loadEditor = loadEditor;
-        function loadEditorText() {
+        FileEditor.currentEditorState = currentEditorState;
+        function currentEditorText() {
             return editorView.editorPanel.getValue();
         }
-        function loadEditorPosition() {
+        function currentEditorPosition() {
             var scrollTop = editorView.editorPanel.getSession().getScrollTop();
             var editorCursor = editorView.editorPanel.selection.getCursor();
             if (editorCursor) {
-                return {
-                    row: editorCursor.row,
-                    column: editorCursor.column,
-                    scroll: scrollTop
-                };
+                return new FileEditorPosition(editorCursor.row, editorCursor.column, scrollTop);
             }
-            return {
-                scroll: scrollTop,
-                row: null,
-                column: null
-            };
+            return new FileEditorPosition(null, null, scrollTop);
         }
-        function loadEditorHistory() {
+        function currentEditorUndoState() {
             var session = editorView.editorPanel.getSession();
             var manager = session.getUndoManager();
             var undoStack = $.extend(true, {}, manager.$undoStack);
             var redoStack = $.extend(true, {}, manager.$redoStack);
-            return {
-                undoStack: undoStack,
-                redoStack: redoStack,
-                dirtyCounter: manager.dirtyCounter
-            };
+            return new FileEditorUndoState(undoStack, redoStack, manager.dirtyCounter);
         }
         function encodeEditorText(text, resource) {
             if (text) {
@@ -373,31 +449,27 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         FileEditor.resolveEditorMode = resolveEditorMode;
         function saveEditorHistory() {
-            var editorData = loadEditor();
-            if (editorData.resource && editorData.source) {
-                var md5Hash = md5_1.md5(editorData.source);
+            var editorState = currentEditorState();
+            if (editorState.isStateValid()) {
+                var source = editorState.getSource();
+                var md5Hash = md5_1.md5(source);
                 var currentText = editorView.editorPanel.getValue();
                 var saveText = isEditorChanged() ? currentText : null; // keep text if changed
-                var lastModified = editorData.lastModified;
-                editorView.editorHistory[editorData.resource.resourcePath] = {
-                    hash: md5Hash,
-                    lastModified: lastModified,
-                    history: editorData.history,
-                    position: editorData.position,
-                    buffer: saveText // save the buffer if it has changed
-                };
+                editorView.editorHistory[editorState.getResource().getResourcePath()] = new FileEditorHistory(editorState.getLastModified(), editorState.getUndoState(), editorState.getPosition(), saveText, // save the buffer if it has changed
+                md5Hash);
             }
         }
         function createEditorUndoManager(session, text, resource) {
             var manager = new ace_1.ace.UndoManager();
             if (text && resource) {
                 var editorResource = tree_1.FileTree.createResourcePath(resource);
-                var history = editorView.editorHistory[editorResource.resourcePath];
+                var history = editorView.editorHistory[editorResource.getResourcePath()];
                 if (history) {
                     var md5Hash = md5_1.md5(text);
                     if (history.hash == md5Hash) {
-                        var undoStack = history.history.undoStack;
-                        var redoStack = history.history.redoStack;
+                        var undoState = history.getUndoState();
+                        var undoStack = undoState.getUndoStack();
+                        var redoStack = undoState.getRedoStack();
                         for (var undoEntry in undoStack) {
                             if (undoStack.hasOwnProperty(undoEntry)) {
                                 manager.$undoStack[undoEntry] = undoStack[undoEntry];
@@ -409,10 +481,10 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                             }
                         }
                         manager.$doc = session;
-                        manager.dirtyCounter = history.history.dirtyCounter;
+                        manager.dirtyCounter = undoState.getDirtyCounter();
                     }
                     else {
-                        editorView.editorHistory[editorResource.resourcePath] = null;
+                        editorView.editorHistory[editorResource.getResourcePath()] = null;
                     }
                 }
             }
@@ -420,51 +492,79 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         function clearSavedEditorBuffer(resource) {
             var editorResource = tree_1.FileTree.createResourcePath(resource);
-            var history = editorView.editorHistory[editorResource.resourcePath];
+            var history = editorView.editorHistory[editorResource.getResourcePath()];
             if (history) {
                 history.lastModified = -1;
                 history.buffer = null; // clear the buffer
-                updateEditorTabMarkForResource(editorResource.resourcePath); // remove the *
+                updateEditorTabMarkForResource(editorResource.getResourcePath()); // remove the *
             }
         }
         FileEditor.clearSavedEditorBuffer = clearSavedEditorBuffer;
         function loadSavedEditorBuffer(resource) {
             var editorResource = tree_1.FileTree.createResourcePath(resource);
-            if (isEditorResourcePath(editorResource.resourcePath)) {
-                var editorData = loadEditor();
+            if (isEditorResourcePath(editorResource.getResourcePath())) {
+                var editorState = currentEditorState();
                 return {
-                    buffer: editorData.source,
-                    lastModified: editorData.lastModified
+                    buffer: editorState.getSource(),
+                    lastModified: editorState.getLastModified()
                 };
             }
-            var history = editorView.editorHistory[editorResource.resourcePath];
+            var history = editorView.editorHistory[editorResource.getResourcePath()];
             if (history) {
                 return {
-                    buffer: history.buffer,
-                    lastModified: history.lastModified
+                    buffer: history.getBuffer(),
+                    lastModified: history.getLastModified()
                 };
             }
             return null;
         }
         FileEditor.loadSavedEditorBuffer = loadSavedEditorBuffer;
         function resolveEditorTextToUse(fileResource) {
-            console.log("resource=[" + fileResource.resourcePath + "] modified=[" + fileResource.getTimeStamp() + "] length=[" + fileResource.getFileLength() + "]");
-            var encodedText = encodeEditorText(fileResource.fileContent, fileResource.resourcePath); // change JSON conversion
-            var savedHistoryBuffer = loadSavedEditorBuffer(fileResource.resourcePath); // load saved buffer
-            if (savedHistoryBuffer && savedHistoryBuffer.buffer && savedHistoryBuffer.lastModified > fileResource.lastModified) {
-                console.log("LOAD FROM HISTORY diff=[" + (savedHistoryBuffer.lastModified - fileResource.lastModified) + "]");
+            console.log("resource=[" + fileResource.getResourcePath().getResourcePath() + "] modified=[" + fileResource.getTimeStamp() + "] length=[" + fileResource.getFileLength() + "]");
+            var encodedText = encodeEditorText(fileResource.getFileContent(), fileResource.getResourcePath().getResourcePath()); // change JSON conversion
+            var savedHistoryBuffer = loadSavedEditorBuffer(fileResource.getResourcePath().getResourcePath()); // load saved buffer
+            if (savedHistoryBuffer && savedHistoryBuffer.buffer && savedHistoryBuffer.lastModified > fileResource.getLastModified()) {
+                console.log("LOAD FROM HISTORY diff=[" + (savedHistoryBuffer.lastModified - fileResource.getLastModified()) + "]");
                 return savedHistoryBuffer.buffer;
             }
             console.log("IGNORE HISTORY: ", savedHistoryBuffer);
             return encodedText;
         }
+        /**
+         * When a file is loaded from disk in to the editor it will check
+         * whether this file is a historical file or an actual file. If
+         * the file is the actual file a new history item is created. This
+         * will allow the editor to store history from the point of load
+         * up to the point it is saved. The followingrules are observed.
+         *
+         * a) If a loaded buffer is the same as the one in the buffer then
+         *    the history can be maintained and the update is ignored. Two
+         *    files are the same if they have the same content.
+         *
+         * b) If the loaded buffer is the same as when the history started
+         *    and also has the same timestamp as when the history started
+         *    then the update can be ignored.
+         *
+         * c) If there are no modifications to the current buffer and the
+         *    incoming file is different then the history is discarded.
+         *
+         * d) If there are modifications to the current buffer and the
+         *    incoming buffer is different then the user is prompted to
+         *    determine if they want to overwrite the buffer. If the accept
+         *    the incoming file the history is discarded.
+         *
+         * Finally all breakpoints and errors are applied to the editor
+         * that relate to the current file.
+         *
+         * @param fileResource this is the incoming file
+         */
         function updateEditor(fileResource) {
-            var resource = fileResource.resourcePath;
-            var realText = fileResource.fileContent;
+            var resourcePath = fileResource.getResourcePath();
+            var realText = fileResource.getFileContent();
             var textToDisplay = resolveEditorTextToUse(fileResource);
             var session = editorView.editorPanel.getSession();
             var currentMode = session.getMode();
-            var actualMode = resolveEditorMode(resource);
+            var actualMode = resolveEditorMode(resourcePath.getResourcePath());
             saveEditorHistory(); // save any existing history
             if (actualMode != currentMode) {
                 session.setMode({
@@ -474,19 +574,19 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             }
             editorView.editorPanel.setReadOnly(false);
             editorView.editorPanel.setValue(textToDisplay, 1);
-            createEditorUndoManager(session, textToDisplay, resource); // restore any existing history
+            createEditorUndoManager(session, textToDisplay, resourcePath.getResourcePath()); // restore any existing history
             clearEditor();
-            editorView.editorResource = tree_1.FileTree.createResourcePath(resource);
+            editorView.editorResource = resourcePath;
             editorView.editorText = realText; // save the real text NOT the text to display
-            window.location.hash = editorView.editorResource.projectPath; // update # anchor
+            window.location.hash = editorView.editorResource.getProjectPath(); // update # anchor
             problem_1.ProblemManager.highlightProblems(); // higlight problems on this resource
-            if (resource != null && editorView.editorResource) {
-                var breakpoints = editorView.editorBreakpoints[editorView.editorResource.filePath];
+            if (resourcePath != null && editorView.editorResource) {
+                var breakpoints = editorView.editorBreakpoints[editorView.editorResource.getFilePath()];
                 if (breakpoints != null) {
                     for (var lineNumber in breakpoints) {
                         if (breakpoints.hasOwnProperty(lineNumber)) {
                             if (breakpoints[lineNumber] == true) {
-                                setEditorBreakpoint(lineNumber - 1, true);
+                                setEditorBreakpoint(parseInt(lineNumber) - 1, true);
                             }
                         }
                     }
@@ -494,15 +594,15 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             }
             project_1.Project.createEditorTab(); // update the tab name
             history_1.History.showFileHistory(); // update the history
-            status_1.StatusPanel.showActiveFile(editorView.editorResource.projectPath);
+            status_1.StatusPanel.showActiveFile(editorView.editorResource.getProjectPath());
             FileEditor.showEditorFileInTree();
             scrollEditorToPosition();
             updateEditorTabMark(); // add a * to the name if its not in sync
         }
         FileEditor.updateEditor = updateEditor;
         function showEditorFileInTree() {
-            var editorData = loadEditor();
-            var resourcePath = editorData.resource;
+            var editorState = currentEditorState();
+            var resourcePath = editorState.getResource();
             tree_1.FileTree.showTreeNode('explorerTree', resourcePath);
         }
         FileEditor.showEditorFileInTree = showEditorFileInTree;
@@ -535,7 +635,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         FileEditor.isEditorChangedForPath = isEditorChangedForPath;
         function isEditorResourcePath(resource) {
             if (editorView.editorResource != null) {
-                if (editorView.editorResource.resourcePath == resource) {
+                if (editorView.editorResource.getResourcePath() == resource) {
                     return true;
                 }
             }
@@ -543,19 +643,20 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         function scrollEditorToPosition() {
             var session = editorView.editorPanel.getSession();
-            if (editorView.editorResource && editorView.editorResource.resourcePath) {
-                var editorHistory = editorView.editorHistory[editorView.editorResource.resourcePath];
-                if (editorHistory && editorHistory.position) {
-                    var editorScroll = editorHistory.position.scroll;
-                    var editorRow = editorHistory.position.row;
-                    var editorColumn = editorHistory.position.column;
-                    if (editorRow >= 0 && editorColumn >= 0) {
-                        editorView.editorPanel.selection.moveTo(editorRow, editorColumn);
+            if (editorView.editorResource && editorView.editorResource.getResourcePath()) {
+                var editorHistory = editorView.editorHistory[editorView.editorResource.getResourcePath()];
+                if (editorHistory && editorHistory.getPosition()) {
+                    var position = editorHistory.getPosition();
+                    var scroll_1 = position.getScroll();
+                    var row = position.getRow();
+                    var column = position.getColumn();
+                    if (row >= 0 && column >= 0) {
+                        editorView.editorPanel.selection.moveTo(row, column);
                     }
                     else {
                         editorView.editorPanel.gotoLine(1);
                     }
-                    session.setScrollTop(editorScroll);
+                    session.setScrollTop(scroll_1);
                 }
                 else {
                     editorView.editorPanel.gotoLine(1);
@@ -577,7 +678,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
         }
         FileEditor.updateProjectTabOnChange = updateProjectTabOnChange;
         function updateEditorTabMark() {
-            updateEditorTabMarkForResource(editorView.editorResource.resourcePath);
+            updateEditorTabMarkForResource(editorView.editorResource.getResourcePath());
         }
         function updateEditorTabMarkForResource(resource) {
             project_1.Project.markEditorTab(resource, isEditorChangedForPath(resource));
@@ -591,7 +692,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                     //             }
                     var text = editor.getValue();
                     var line = editor.session.getLine(pos.row);
-                    var resource = editorView.editorResource.projectPath;
+                    var resource = editorView.editorResource.getProjectPath();
                     var complete = line.substring(0, pos.column);
                     var message = JSON.stringify({
                         resource: resource,
@@ -631,9 +732,10 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                 }
             };
         }
+        // XXX this should be in commands
         function formatEditorSource() {
             var text = editorView.editorPanel.getValue();
-            var path = editorView.editorResource.filePath;
+            var path = editorView.editorResource.getFilePath();
             $.ajax({
                 contentType: 'text/plain',
                 data: text,
@@ -705,7 +807,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
             if (typeof java !== 'undefined') {
                 editor.setScrollSpeed(0.05); // slow down if its Java FX
             }
-            return new FileEditorView(editor, editorTheme);
+            return new FileEditorView(editor);
         }
         function validEditorLink(string, col) {
             if (keys_1.KeyBinder.isControlPressed()) {
@@ -733,7 +835,7 @@ define(["require", "exports", "jquery", "md5", "ace", "w2ui", "common", "socket"
                         var offset = arguments[arguments.length - 2];
                         var length = str.length;
                         if (offset <= col && offset + length >= col) {
-                            var indexToken = editorCurrentTokens[str];
+                            var indexToken = editorView.editorCurrentTokens[str];
                             if (indexToken != null) {
                                 matchFound = {
                                     start: offset,

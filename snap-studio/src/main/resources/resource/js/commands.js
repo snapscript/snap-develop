@@ -76,8 +76,8 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                         sortedMatches.sort();
                         var response = [];
                         for (var i = 0; i < sortedMatches.length; i++) {
-                            var typeMatch = sortedMatches[i];
-                            var typeReference = typeMatches[typeMatch];
+                            var sortedMatch = sortedMatches[i];
+                            var typeReference = typeMatches[sortedMatch];
                             var typeEntry = {
                                 name: typeReference.name,
                                 resource: typeReference.resource,
@@ -144,12 +144,12 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             var originalExpression = text; // keep track of the requested expression
             if (text || text == "") {
                 var line = editor_1.FileEditor.getCurrentLineForEditor();
-                var editorData = editor_1.FileEditor.loadEditor();
+                var editorState = editor_1.FileEditor.currentEditorState();
                 var message_1 = JSON.stringify({
-                    resource: editorData.resource.projectPath,
+                    resource: editorState.getResource().getProjectPath(),
                     line: line,
                     complete: originalExpression.trim(),
-                    source: editorData.source
+                    source: editorState.getSource()
                 });
                 $.ajax({
                     contentType: 'application/json',
@@ -190,12 +190,12 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         }
         function replaceTokenInFiles(matchText, searchCriteria, filePatterns) {
             findFilesWithText(matchText, filePatterns, searchCriteria, function (filesReplaced) {
-                var editorData = editor_1.FileEditor.loadEditor();
+                var editorState = editor_1.FileEditor.currentEditorState();
                 for (var i = 0; i < filesReplaced.length; i++) {
                     var fileReplaced = filesReplaced[i];
                     var fileReplacedResource = tree_1.FileTree.createResourcePath("/resource/" + fileReplaced.project + "/" + fileReplaced.resource);
-                    if (editorData.resource.resourcePath == fileReplacedResource.resourcePath) {
-                        explorer_1.FileExplorer.openTreeFile(fileReplacedResource.resourcePath, function () {
+                    if (editorState.getResource().getResourcePath() == fileReplacedResource.getResourcePath()) {
+                        explorer_1.FileExplorer.openTreeFile(fileReplacedResource.getResourcePath(), function () {
                             //FileEditor.showEditorLine(record.line);  
                         });
                     }
@@ -386,7 +386,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         Command.pingProcess = pingProcess;
         function uploadFileTo(fileName, uploadToPath, encodedFile) {
             var destinationPath = tree_1.FileTree.createResourcePath(uploadToPath);
-            var toPath = tree_1.FileTree.cleanResourcePath(destinationPath.filePath + "/" + fileName);
+            var toPath = tree_1.FileTree.cleanResourcePath(destinationPath.getFilePath() + "/" + fileName);
             console.log("source: " + fileName + " destination: " + toPath);
             var message = {
                 project: document.title,
@@ -407,8 +407,8 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             if (isDragAndDropFilePossible(fileToMove, moveTo)) {
                 var originalPath = tree_1.FileTree.createResourcePath(fileToMove.resource);
                 var destinationPath = tree_1.FileTree.createResourcePath(moveTo.resource);
-                var fromPath = tree_1.FileTree.cleanResourcePath(originalPath.filePath);
-                var toPath = tree_1.FileTree.cleanResourcePath(destinationPath.filePath + "/" + originalPath.fileName);
+                var fromPath = tree_1.FileTree.cleanResourcePath(originalPath.getFilePath());
+                var toPath = tree_1.FileTree.cleanResourcePath(destinationPath.getFilePath() + "/" + originalPath.getFileName());
                 console.log("source: " + fromPath + " destination: " + toPath);
                 var message = {
                     project: document.title,
@@ -422,27 +422,27 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         }
         Command.dragAndDropFile = dragAndDropFile;
         function renameFile(resourcePath) {
-            var originalFile = resourcePath.filePath;
+            var originalFile = resourcePath.getFilePath();
             dialog_1.DialogBuilder.renameFileTreeDialog(resourcePath, true, function (resourceDetails) {
                 var message = {
                     project: document.title,
                     from: originalFile,
-                    to: resourceDetails.filePath,
+                    to: resourceDetails.getFilePath(),
                     dragAndDrop: false
                 };
                 socket_1.EventBus.sendEvent("RENAME", message);
-                project_1.Project.renameEditorTab(resourcePath.resourcePath, resourceDetails.resourcePath); // rename tabs if open
+                project_1.Project.renameEditorTab(resourcePath.getResourcePath(), resourceDetails.getResourcePath()); // rename tabs if open
             });
         }
         Command.renameFile = renameFile;
         function renameDirectory(resourcePath) {
-            var originalPath = resourcePath.filePath;
+            var originalPath = resourcePath.getFilePath();
             var directoryPath = tree_1.FileTree.createResourcePath(originalPath + ".#"); // put a # in to trick in to thinking its a file
             dialog_1.DialogBuilder.renameDirectoryTreeDialog(directoryPath, true, function (resourceDetails) {
                 var message = {
                     project: document.title,
                     from: originalPath,
-                    to: resourceDetails.filePath
+                    to: resourceDetails.getFilePath()
                 };
                 socket_1.EventBus.sendEvent("RENAME", message);
             });
@@ -450,10 +450,10 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         Command.renameDirectory = renameDirectory;
         function newFile(resourcePath) {
             dialog_1.DialogBuilder.newFileTreeDialog(resourcePath, true, function (resourceDetails) {
-                if (!tree_1.FileTree.isResourceFolder(resourceDetails.filePath)) {
+                if (!tree_1.FileTree.isResourceFolder(resourceDetails.getFilePath())) {
                     var message = {
                         project: document.title,
-                        resource: resourceDetails.filePath,
+                        resource: resourceDetails.getFilePath(),
                         source: "",
                         directory: false,
                         create: true
@@ -461,7 +461,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                     console_1.ProcessConsole.clearConsole();
                     socket_1.EventBus.sendEvent("SAVE", message);
                     var modificationTime = new Date().getTime();
-                    var fileResource = new explorer_1.FileResource(resourceDetails.projectPath, null, modificationTime, "", null);
+                    var fileResource = new explorer_1.FileResource(resourceDetails.getProjectPath(), null, modificationTime, "", null);
                     editor_1.FileEditor.updateEditor(fileResource);
                 }
             });
@@ -469,10 +469,10 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         Command.newFile = newFile;
         function newDirectory(resourcePath) {
             dialog_1.DialogBuilder.newDirectoryTreeDialog(resourcePath, true, function (resourceDetails) {
-                if (tree_1.FileTree.isResourceFolder(resourceDetails.filePath)) {
+                if (tree_1.FileTree.isResourceFolder(resourceDetails.getFilePath())) {
                     var message = {
                         project: document.title,
-                        resource: resourceDetails.filePath,
+                        resource: resourceDetails.getFilePath(),
                         source: "",
                         directory: true,
                         create: true
@@ -488,8 +488,8 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         }
         Command.saveFile = saveFile;
         function saveFileWithAction(saveCallback, update) {
-            var editorData = editor_1.FileEditor.loadEditor();
-            if (editorData.resource == null) {
+            var editorState = editor_1.FileEditor.currentEditorState();
+            if (editorState.getResource() == null) {
                 dialog_1.DialogBuilder.openTreeDialog(null, false, function (resourceDetails) {
                     saveEditor(update);
                     saveCallback();
@@ -497,7 +497,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             }
             else {
                 if (editor_1.FileEditor.isEditorChanged()) {
-                    dialog_1.DialogBuilder.openTreeDialog(editorData.resource, true, function (resourceDetails) {
+                    dialog_1.DialogBuilder.openTreeDialog(editorState.getResource(), true, function (resourceDetails) {
                         saveEditor(update);
                         saveCallback();
                     });
@@ -509,13 +509,13 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             }
         }
         function saveEditor(update) {
-            var editorData = editor_1.FileEditor.loadEditor();
-            var editorPath = editorData.resource;
+            var editorState = editor_1.FileEditor.currentEditorState();
+            var editorPath = editorState.getResource();
             if (editorPath != null) {
                 var message = {
                     project: document.title,
-                    resource: editorPath.filePath,
-                    source: editorData.source,
+                    resource: editorPath.getFilePath(),
+                    source: editorState.getSource(),
                     directory: false,
                     create: false
                 };
@@ -523,54 +523,51 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                 socket_1.EventBus.sendEvent("SAVE", message);
                 if (update) {
                     var modificationTime = new Date().getTime();
-                    var fileResource = new explorer_1.FileResource(editorPath.projectPath, null, modificationTime, editorData.source, null);
+                    var fileResource = new explorer_1.FileResource(editorPath.getProjectPath(), null, modificationTime, editorState.getSource(), null);
                     editor_1.FileEditor.updateEditor(fileResource);
                 }
             }
         }
         Command.saveEditor = saveEditor;
         function saveEditorOnClose(editorText, editorResource) {
-            if (editorResource != null && editorResource.resourcePath)
-                ;
-            {
+            if (editorResource != null && editorResource.getResourcePath()) {
                 dialog_1.DialogBuilder.openTreeDialog(editorResource, true, function (resourceDetails) {
                     var message = {
                         project: document.title,
-                        resource: editorResource.filePath,
+                        resource: editorResource.getFilePath(),
                         source: editorText,
                         directory: false,
                         create: false
                     };
                     //ProcessConsole.clearConsole();
                     socket_1.EventBus.sendEvent("SAVE", message);
-                    editor_1.FileEditor.clearSavedEditorBuffer(editorResource.resourcePath); // make sure its synced
+                    editor_1.FileEditor.clearSavedEditorBuffer(editorResource.getResourcePath()); // make sure its synced
                 }, function (resourceDetails) {
                     // file was not saved
-                    editor_1.FileEditor.clearSavedEditorBuffer(editorResource.resourcePath);
+                    editor_1.FileEditor.clearSavedEditorBuffer(editorResource.getResourcePath());
                 });
             }
         }
         Command.saveEditorOnClose = saveEditorOnClose;
         function deleteFile(resourceDetails) {
-            var editorData = editor_1.FileEditor.loadEditor();
-            if (resourceDetails == null && editorData.resource != null) {
-                resourceDetails = editorData.resource;
+            var editorState = editor_1.FileEditor.currentEditorState();
+            if (resourceDetails == null && editorState.getResource() != null) {
+                resourceDetails = editorState.getResource();
             }
             if (resourceDetails != null) {
-                var editorData = editor_1.FileEditor.loadEditor();
-                var editorResource = editorData.resource;
-                var message = "Delete resource " + editorResource.filePath;
+                var editorResource = editorState.getResource();
+                var message = "Delete resource " + editorResource.getFilePath();
                 alert_1.Alerts.createConfirmAlert("Delete File", message, "Delete", "Cancel", function () {
                     var message = {
                         project: document.title,
-                        resource: resourceDetails.filePath
+                        resource: resourceDetails.getFilePath()
                     };
                     console_1.ProcessConsole.clearConsole();
                     socket_1.EventBus.sendEvent("DELETE", message);
-                    if (editorData.resource != null && editorData.resource.resourcePath == resourceDetails.resourcePath) {
+                    if (editorState.getResource() != null && editorState.getResource().getResourcePath() == resourceDetails.getResourcePath()) {
                         editor_1.FileEditor.resetEditor();
                     }
-                    project_1.Project.deleteEditorTab(resourceDetails.resourcePath); // rename tabs if open
+                    project_1.Project.deleteEditorTab(resourceDetails.getResourcePath()); // rename tabs if open
                 }, function () { });
             }
         }
@@ -579,7 +576,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             if (resourceDetails != null) {
                 var message = {
                     project: document.title,
-                    resource: resourceDetails.filePath
+                    resource: resourceDetails.getFilePath()
                 };
                 console_1.ProcessConsole.clearConsole();
                 socket_1.EventBus.sendEvent("DELETE", message);
@@ -596,21 +593,21 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         Command.debugScript = debugScript;
         function executeScript(debug) {
             saveFileWithAction(function () {
-                var editorData = editor_1.FileEditor.loadEditor();
+                var editorState = editor_1.FileEditor.currentEditorState();
                 var message = {
-                    breakpoints: editorData.breakpoints,
+                    breakpoints: editorState.getBreakpoints(),
                     project: document.title,
-                    resource: editorData.resource.filePath,
-                    source: editorData.source,
+                    resource: editorState.getResource().getFilePath(),
+                    source: editorState.getSource(),
                     debug: debug ? true : false
                 };
                 socket_1.EventBus.sendEvent("EXECUTE", message);
             }, true); // save editor
         }
         function updateScriptBreakpoints() {
-            var editorData = editor_1.FileEditor.loadEditor();
+            var editorState = editor_1.FileEditor.currentEditorState();
             var message = {
-                breakpoints: editorData.breakpoints,
+                breakpoints: editorState.getBreakpoints(),
                 project: document.title
             };
             socket_1.EventBus.sendEvent("BREAKPOINTS", message);
@@ -694,10 +691,10 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         Command.browseScriptEvaluation = browseScriptEvaluation;
         function attachProcess(process) {
             var statusFocus = debug_1.DebugManager.currentStatusFocus(); // what is the current focus
-            var editorData = editor_1.FileEditor.loadEditor();
+            var editorState = editor_1.FileEditor.currentEditorState();
             var message = {
                 process: process,
-                breakpoints: editorData.breakpoints,
+                breakpoints: editorState.getBreakpoints(),
                 project: document.title,
                 focus: statusFocus != process // toggle the focus
             };

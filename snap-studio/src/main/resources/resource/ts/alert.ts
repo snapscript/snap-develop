@@ -8,9 +8,9 @@ export module Alerts {
       EventBus.createRoute('ALERT', createAlert);
    }
    
-   function createAlert(socket, type, text) {
-      var message = JSON.parse(text);
-      var text = message.message;
+   function createAlert(socket, type, object) {
+      let message = JSON.parse(object);
+      let text = message.message;
       
       w2alert('<table border="0" width="100%">'+
               '  <tr>'+
@@ -23,14 +23,14 @@ export module Alerts {
    }
    
    export function createConfirmAlert(title, message, yesButton, noButton, yesCallback, noCallback) {
-      var text = '<table border="0" width="100%">'+
+      let text = '<table border="0" width="100%">'+
                   '  <tr>'+
                   '    <td>&nbsp;&nbsp</td>'+
                   '    <td align="right"><img src="${IMAGE_FOLDER}/warning.png" height="20px"></td>'+
                   '    <td align="left"><div class="alertText">'+message+'</div></td>'+
                   '  </tr>'+
                   '</table>';
-      var options = {
+      let options = {
             msg          : text,
             title        : title,
             width        : 450,       // width of the dialog
@@ -49,7 +49,7 @@ export module Alerts {
    }
    
    export function createPromptAlert(title, yesButton, noButton, yesCallback) {
-      var text = '<table border="0" width="100%">'+
+      let text = '<table border="0" width="100%">'+
       '  <tr>'+
       '    <td>&nbsp;&nbsp</td>'+
       '    <td align="right"><img src="${IMAGE_FOLDER}/search_glass.png" height="20px"></td>'+
@@ -58,23 +58,23 @@ export module Alerts {
       '  </tr>'+
       '</table>';
       
-      var findCallback = function() {
-         var element = document.getElementById("textToSearchFor");
+      let findCallback = function() {
+         let element: HTMLElement = document.getElementById("textToSearchFor");
          
          if(element && yesCallback) {
             yesCallback(element.value);
             yesCallback = null;
          }
       };
-      var cancelCallback = function(){};
-      var focusCallback = function(){
-         var element = document.getElementById("textToSearchFor");
+      let cancelCallback = function(){};
+      let focusCallback = function(){
+         let element: HTMLElement = document.getElementById("textToSearchFor");
          
          if(element) {
             element.focus();
          }
       };
-      var options = {
+      let options = {
          msg          : text,
          title        : title,
          width        : 450,       // width of the dialog

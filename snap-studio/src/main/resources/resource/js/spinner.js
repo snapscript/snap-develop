@@ -4,15 +4,6 @@ define(["require", "exports", "spin"], function (require, exports, Spinner) {
     (function (LoadSpinner) {
         var spinnerHiding = false;
         var spinner = null;
-        function finish() {
-            if (spinnerHiding == false) {
-                var func = function () {
-                    LoadSpinner.hide();
-                };
-                window.setTimeout(func, 1000);
-            }
-        }
-        LoadSpinner.finish = finish;
         function show() {
             if (spinnerHiding == true) {
                 spinnerHiding = false;

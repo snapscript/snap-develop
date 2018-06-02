@@ -2,11 +2,57 @@ import * as $ from "jquery"
 import {w2ui, w2popup} from "w2ui"
 import {Common} from "common"
 import {EventBus} from "socket"
-import {FileTree} from "tree"
-import {FileEditor} from "editor"
+import {FileTree, FilePath} from "tree"
+import {FileEditor, FileEditorState} from "editor"
 import {Project} from "project"
 
 export module ProblemManager {
+   
+   class ProblemItem {
+   
+      private _resource: FilePath;
+      private _line: number;
+      private _message: string;
+      private _project: string;
+      private _time: number;
+   
+      constructor(resource: FilePath, line: number, message: string, project: string, time: number) {
+         this._resource = resource;
+         this._line = line;
+         this._message = message;
+         this._project = project;
+         this._time = time;
+      }
+      
+      public isExpired(): boolean {
+         return this._time + 100000 > Common.currentTime()
+      }
+      
+      public getKey(): string {
+         return this._resource + ":" + this._line;
+      }
+      
+      public getResource(): FilePath {
+         return this._resource;
+      }
+      
+      public getLine(): number {
+         return this._line;
+      }
+      
+      public getMessage(): string {
+         return this._message;
+      }
+      
+      public getProject(): string {
+         return this._project;
+      }
+      
+      public getTime(): number {
+         return this._time;
+      }
+   }
+   
    
    var currentProblems = {};
    
@@ -20,13 +66,13 @@ export module ProblemManager {
       var activeProblems = {};
       var expiryCount = 0;
       
-      for (var currentProblem in currentProblems) {
-         if (currentProblems.hasOwnProperty(currentProblem)) {
-            var problemInfo = currentProblems[currentProblem];
+      for (var problemKey in currentProblems) {
+         if (currentProblems.hasOwnProperty(problemKey)) {
+            var problemItem: ProblemItem = currentProblems[problemKey];
             
-            if(problemInfo != null) {
-               if(problemInfo.time + 100000 > timeMillis) {
-                  activeProblems[currentProblem] = problemInfo;
+            if(problemItem != null) {
+               if(problemItem.isExpired()) {
+                  activeProblems[problemKey] = problemItem;
                } else {
                   expiryCount++;
                }
@@ -44,19 +90,19 @@ export module ProblemManager {
       var problemRecords = [];
       var problemIndex = 1;
       
-      for (var currentProblem in currentProblems) {
-         if (currentProblems.hasOwnProperty(currentProblem)) {
-            var problemInfo = currentProblems[currentProblem];
+      for (var problemKey in currentProblems) {
+         if (currentProblems.hasOwnProperty(problemKey)) {
+            var problemItem: ProblemItem = currentProblems[problemKey];
             
-         	if(problemInfo != null) {
+         	if(problemItem != null) {
          	   problemRecords.push({ 
          	      recid: problemIndex++,
-         		   line: problemInfo.line,
-         		   location: "Line " + problemInfo.line, 
-                  resource: problemInfo.resource.filePath, // /blah/file.snap 
-                  description: problemInfo.message, 
-                  project: problemInfo.project, 
-                  script: problemInfo.resource.resourcePath // /resource/<project>/blah/file.snap
+         		   line: problemItem.getLine(),
+         		   location: "Line " + problemItem.getLine(), 
+                  resource: problemItem.getResource().getFilePath(), // /blah/file.snap 
+                  description: problemItem.getMessage(), 
+                  project: problemItem.getProject(), 
+                  script: problemItem.getResource().getResourcePath() // /resource/<project>/blah/file.snap
                });
          	}
          }
@@ -79,21 +125,21 @@ export module ProblemManager {
    }
    
    export function highlightProblems(){
-      var editorData = FileEditor.loadEditor();
-      var editorResource = editorData.resource;
+      var editorState: FileEditorState = FileEditor.currentEditorState();
+      var editorResource: FilePath = editorState.getResource();
       
       if(editorResource != null) {
          var highlightUpdates = [];
          
          //FileEditor.clearEditorHighlights(); this makes breakpoints jitter
-         for (var currentProblem in currentProblems) {
-            if (currentProblems.hasOwnProperty(currentProblem)) {
-               if(Common.stringStartsWith(currentProblem, editorResource.resourcePath)) {
-                  var problemInfo = currentProblems[currentProblem];
+         for (var problemKey in currentProblems) {
+            if (currentProblems.hasOwnProperty(problemKey)) {
+               if(Common.stringStartsWith(problemKey, editorResource.getResourcePath())) {
+                  var problemItem: ProblemItem = currentProblems[problemKey];
                   
-                  if(problemInfo != null) {
+                  if(problemItem != null) {
                      FileEditor.clearEditorHighlights(); // clear if the resource is focused
-                     highlightUpdates.push(problemInfo.line);
+                     highlightUpdates.push(problemItem.getLine());
                   } else {
                      FileEditor.clearEditorHighlights(); // clear if the resource is focused
                   }
@@ -112,21 +158,21 @@ export module ProblemManager {
    function updateProblems(socket, type, text) {
    	var problems = w2ui['problems'];
    	var message = JSON.parse(text);
-   	var resourcePath = FileTree.createResourcePath(message.resource);
-   	var problemInfo = {
-   	      line: message.line,
-   	      message: "<div class='errorDescription'>"+message.description+"</div>",
-   	      resource: resourcePath,
-   	      project: message.project,
-   	      time: message.time
-   	};
-   	if(problemInfo.line >= 0) {
-   	   currentProblems[resourcePath.resourcePath + ":" + problemInfo.line] = problemInfo;
+   	var resourcePath: FilePath = FileTree.createResourcePath(message.resource);   	
+   	var problemItem: ProblemItem = new ProblemItem(
+            resourcePath,
+   	      message.line,
+   	      "<div class='errorDescription'>"+message.description+"</div>",
+   	      message.project,
+   	      message.time
+   	);
+   	if(problemItem.getLine() >= 0) {
+   	   currentProblems[problemItem.getKey()] = problemItem;
    	} else {
-         for (var currentProblem in currentProblems) {
-            if (currentProblems.hasOwnProperty(currentProblem)) {
-               if(Common.stringStartsWith(currentProblem, resourcePath.resourcePath)) {
-                  currentProblems[currentProblem] = null;
+         for (var problemKey in currentProblems) {
+            if (currentProblems.hasOwnProperty(problemKey)) {
+               if(Common.stringStartsWith(problemKey, resourcePath.getResourcePath())) {
+                  currentProblems[problemKey] = null;
                }
             }
          }

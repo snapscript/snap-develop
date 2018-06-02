@@ -2,8 +2,8 @@ import * as $ from "jquery"
 import {w2ui} from "w2ui"
 import {EventBus} from "socket"
 import {Common} from "common"
-import {FileTree} from "tree"
-import {FileEditor} from "editor"
+import {FileTree, FilePath} from "tree"
+import {FileEditor, FileEditorState} from "editor"
 import {VariableManager} from "variables"
 import {FileExplorer} from "explorer"
 import {Profiler} from "profiler"
@@ -58,7 +58,6 @@ export module ThreadManager {
    
    function updateThreads(socket, type, text) {
       var threadScope = JSON.parse(text);
-      var editorData = FileEditor.loadEditor();
      
       if(isThreadFocusResumed(threadScope)) {
          clearFocusThread(); // clear focus as it is a resume
@@ -105,10 +104,10 @@ export module ThreadManager {
    }
    
    function showThreadBreakpointLine(threadScope) { // show breakpoint if focused
-      var editorData = FileEditor.loadEditor();
+      var editorState: FileEditorState = FileEditor.currentEditorState();
       
       if(threadEditorFocus.thread == threadScope.thread) {
-         if(editorData.resource.filePath == threadScope.resource && threadScope.status == 'SUSPENDED') {
+         if(editorState.getResource().getFilePath() == threadScope.resource && threadScope.status == 'SUSPENDED') {
             FileEditor.createEditorHighlight(threadScope.line, "threadHighlight");
          }
       }
@@ -123,9 +122,9 @@ export module ThreadManager {
    function updateFocusedThread(threadScope) {
       if(isThreadFocusLineChange(threadScope)) { // has the update resulted in a new line or resource
          if(isThreadFocusResourceChange(threadScope)) { // do we need to update the editor with a new resource
-            var resourcePathDetails = FileTree.createResourcePath(threadScope.resource);
+            var resourcePathDetails: FilePath = FileTree.createResourcePath(threadScope.resource);
          
-            FileExplorer.openTreeFile(resourcePathDetails.resourcePath, function(){
+            FileExplorer.openTreeFile(resourcePathDetails.getResourcePath(), function(){
                updateThreadFocus(threadScope);
                FileEditor.showEditorLine(threadScope.line);
             });
@@ -139,12 +138,12 @@ export module ThreadManager {
    }
    
    function focusThread(threadScope) {
-      var editorData = FileEditor.loadEditor();
+      var editorState: FileEditorState = FileEditor.currentEditorState();
       
-      if(editorData.resource.filePath != threadScope.resource) { // do we need to change resource on hit of breakpoint
-         var resourcePathDetails = FileTree.createResourcePath(threadScope.resource);
+      if(editorState.getResource().getFilePath() != threadScope.resource) { // do we need to change resource on hit of breakpoint
+         var resourcePathDetails: FilePath = FileTree.createResourcePath(threadScope.resource);
       
-         FileExplorer.openTreeFile(resourcePathDetails.resourcePath, function(){
+         FileExplorer.openTreeFile(resourcePathDetails.getResourcePath(), function(){
             updateThreadFocus(threadScope);
             FileEditor.showEditorLine(threadScope.line);
          });
@@ -188,8 +187,8 @@ export module ThreadManager {
    
    function isThreadFocusResourceChange(threadScope) {
       if(threadEditorFocus.thread == threadScope.thread) {
-         var editorData = FileEditor.loadEditor();
-         return editorData.resource.filePath != threadScope.resource; // is there a need to update the editor
+         var editorState: FileEditorState = FileEditor.currentEditorState();
+         return editorState.getResource().getFilePath() != threadScope.resource; // is there a need to update the editor
       }
       return false;
    }
@@ -253,7 +252,6 @@ export module ThreadManager {
    }
    
    export function showThreads() {
-      var editorData = FileEditor.loadEditor();
       var threadRecords = [];
       var threadIndex = 1;
       
@@ -273,7 +271,7 @@ export module ThreadManager {
                }
             }
             var displayName = "<div title='"+threadScope.stack+"' class='"+displayStyle+"'>"+threadName+"</div>";
-            var resourcePathDetails = FileTree.createResourcePath(threadScope.resource);
+            var resourcePathDetails: FilePath = FileTree.createResourcePath(threadScope.resource);
             
             threadRecords.push({
                recid: threadIndex++,
@@ -286,7 +284,7 @@ export module ThreadManager {
                resource: threadScope.resource,
                key: threadScope.key,
                line: threadScope.line,
-               script: resourcePathDetails.resourcePath
+               script: resourcePathDetails.getResourcePath()
             });
          }
       }

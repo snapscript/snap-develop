@@ -10,8 +10,12 @@ define(["require", "exports", "jquery", "w2ui", "tree", "editor", "explorer"], f
         }
         History.trackHistory = trackHistory;
         function showFileHistory() {
-            var editorData = editor_1.FileEditor.loadEditor();
-            var resource = editorData.resource.projectPath;
+            var editorState = editor_1.FileEditor.currentEditorState();
+            var editorPath = editorState.getResource();
+            if (!editorPath) {
+                console.log("Editor path does not exist: ", editorState);
+            }
+            var resource = editorPath.getProjectPath();
             $.ajax({
                 url: '/history/' + document.title + '/' + resource,
                 success: function (currentRecords) {
@@ -22,10 +26,10 @@ define(["require", "exports", "jquery", "w2ui", "tree", "editor", "explorer"], f
                         var recordResource = tree_1.FileTree.createResourcePath(currentRecord.path);
                         historyRecords.push({
                             recid: historyIndex++,
-                            resource: "<div class='historyPath'>" + recordResource.filePath + "</div>",
+                            resource: "<div class='historyPath'>" + recordResource.getFilePath() + "</div>",
                             date: currentRecord.date,
                             time: currentRecord.timeStamp,
-                            script: recordResource.resourcePath // /resource/<project>/blah/file.snap
+                            script: recordResource.getResourcePath() // /resource/<project>/blah/file.snap
                         });
                     }
                     w2ui_1.w2ui['history'].records = historyRecords;
@@ -53,10 +57,10 @@ define(["require", "exports", "jquery", "w2ui", "tree", "editor", "explorer"], f
             if (hashIndex != -1) {
                 var resource = location.substring(hashIndex + 1);
                 var resourceData = tree_1.FileTree.createResourcePath(resource);
-                var editorData = editor_1.FileEditor.loadEditor();
-                var editorResource = editorData.resource;
-                if (editorResource == null || editorResource.resourcePath != resourceData.resourcePath) {
-                    explorer_1.FileExplorer.openTreeFile(resourceData.resourcePath, function () { });
+                var editorState = editor_1.FileEditor.currentEditorState();
+                var editorResource = editorState.getResource();
+                if (editorResource == null || editorResource.getResourcePath() != resourceData.getResourcePath()) {
+                    explorer_1.FileExplorer.openTreeFile(resourceData.getResourcePath(), function () { });
                 }
             }
         }

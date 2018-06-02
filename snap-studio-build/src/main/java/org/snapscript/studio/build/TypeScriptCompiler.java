@@ -97,12 +97,20 @@ public class TypeScriptCompiler {
                }
             }
          }
-         if(sourceTime > outputTime || outputCount == 0) {
+         if(sourceTime > outputTime || outputCount == 0) {            
             ScriptCompiler compiler = new ScriptCompiler(CompilationLevel.SIMPLE_OPTIMIZATIONS);
             ScriptProcessor processor = new ScriptProcessor(compiler);
             ProcessBuilder builder = new ProcessBuilder(command);
             CompilerListener listener = new CompilerListener();
             ConsoleManager manager = new ConsoleManager(listener);
+            StringBuilder buffer = new StringBuilder();
+            
+            buffer.append("\n----------------------------------------------------------------\n");
+            buffer.append(command);
+            buffer.append("\n----------------------------------------------------------------\n");
+            
+            log.info("{}", buffer);
+            System.err.println(buffer);
             
             manager.start();
             builder.directory(work);
@@ -142,6 +150,16 @@ public class TypeScriptCompiler {
       public void onUpdate(String process, String text) {
          try {
             String line = text.trim();
+            
+            if(line.contains("error")) {
+               StringBuilder builder = new StringBuilder();
+               
+               builder.append("\n------------------------------------------------------------------------------\n");
+               builder.append(line);
+               builder.append("\n------------------------------------------------------------------------------\n");
+               
+               System.err.println(builder);
+            }
             logger.info(process + ": " + line);
          }catch(Exception e) {
             e.printStackTrace();
@@ -152,6 +170,16 @@ public class TypeScriptCompiler {
       public void onUpdate(String process, String text, Throwable cause) {
          try {
             String line = text.trim();
+            
+            if(line.contains("error")) {
+               StringBuilder builder = new StringBuilder();
+               
+               builder.append("\n------------------------------------------------------------------------------\n");
+               builder.append(line);
+               builder.append("\n------------------------------------------------------------------------------\n");
+               
+               System.err.println(builder);
+            }
             logger.info(process + ": " + line, cause);
          }catch(Exception e) {
             e.printStackTrace();

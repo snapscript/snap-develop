@@ -4,7 +4,7 @@ define(["require", "exports", "jquery", "tree"], function (require, exports, $, 
     (function (StatusPanel) {
         function showProcessStatus(resource, agent, debug) {
             var resourcePath = tree_1.FileTree.createResourcePath(resource);
-            var processFile = resourcePath.fileName;
+            var processFile = resourcePath.getFileName();
             var statusClass = "statusPanelRunning";
             var processDetail = "";
             if (debug) {
@@ -21,7 +21,7 @@ define(["require", "exports", "jquery", "tree"], function (require, exports, $, 
         StatusPanel.showProcessStatus = showProcessStatus;
         function showActiveFile(resource) {
             var resourcePath = tree_1.FileTree.createResourcePath(resource);
-            var pathSegments = resourcePath.projectPath.split("/");
+            var pathSegments = resourcePath.getProjectPath().split("/");
             var pathBreadcrumb = "";
             pathBreadcrumb += "<table border='0'>\n";
             pathBreadcrumb += "<tr>\n";

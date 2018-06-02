@@ -43,7 +43,6 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
         ThreadManager.clearThreads = clearThreads;
         function updateThreads(socket, type, text) {
             var threadScope = JSON.parse(text);
-            var editorData = editor_1.FileEditor.loadEditor();
             if (isThreadFocusResumed(threadScope)) {
                 clearFocusThread(); // clear focus as it is a resume
                 updateThreadPanels(threadScope);
@@ -89,9 +88,9 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
             return leftScope != rightScope;
         }
         function showThreadBreakpointLine(threadScope) {
-            var editorData = editor_1.FileEditor.loadEditor();
+            var editorState = editor_1.FileEditor.currentEditorState();
             if (threadEditorFocus.thread == threadScope.thread) {
-                if (editorData.resource.filePath == threadScope.resource && threadScope.status == 'SUSPENDED') {
+                if (editorState.getResource().getFilePath() == threadScope.resource && threadScope.status == 'SUSPENDED') {
                     editor_1.FileEditor.createEditorHighlight(threadScope.line, "threadHighlight");
                 }
             }
@@ -105,7 +104,7 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
             if (isThreadFocusLineChange(threadScope)) {
                 if (isThreadFocusResourceChange(threadScope)) {
                     var resourcePathDetails = tree_1.FileTree.createResourcePath(threadScope.resource);
-                    explorer_1.FileExplorer.openTreeFile(resourcePathDetails.resourcePath, function () {
+                    explorer_1.FileExplorer.openTreeFile(resourcePathDetails.getResourcePath(), function () {
                         updateThreadFocus(threadScope);
                         editor_1.FileEditor.showEditorLine(threadScope.line);
                     });
@@ -120,10 +119,10 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
             }
         }
         function focusThread(threadScope) {
-            var editorData = editor_1.FileEditor.loadEditor();
-            if (editorData.resource.filePath != threadScope.resource) {
+            var editorState = editor_1.FileEditor.currentEditorState();
+            if (editorState.getResource().getFilePath() != threadScope.resource) {
                 var resourcePathDetails = tree_1.FileTree.createResourcePath(threadScope.resource);
-                explorer_1.FileExplorer.openTreeFile(resourcePathDetails.resourcePath, function () {
+                explorer_1.FileExplorer.openTreeFile(resourcePathDetails.getResourcePath(), function () {
                     updateThreadFocus(threadScope);
                     editor_1.FileEditor.showEditorLine(threadScope.line);
                 });
@@ -163,8 +162,8 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
         }
         function isThreadFocusResourceChange(threadScope) {
             if (threadEditorFocus.thread == threadScope.thread) {
-                var editorData = editor_1.FileEditor.loadEditor();
-                return editorData.resource.filePath != threadScope.resource; // is there a need to update the editor
+                var editorState = editor_1.FileEditor.currentEditorState();
+                return editorState.getResource().getFilePath() != threadScope.resource; // is there a need to update the editor
             }
             return false;
         }
@@ -223,7 +222,6 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
         }
         ThreadManager.focusedThreadEvaluation = focusedThreadEvaluation;
         function showThreads() {
-            var editorData = editor_1.FileEditor.loadEditor();
             var threadRecords = [];
             var threadIndex = 1;
             for (var threadName in suspendedThreads) {
@@ -253,7 +251,7 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
                         resource: threadScope.resource,
                         key: threadScope.key,
                         line: threadScope.line,
-                        script: resourcePathDetails.resourcePath
+                        script: resourcePathDetails.getResourcePath()
                     });
                 }
             }

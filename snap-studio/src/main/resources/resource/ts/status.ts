@@ -1,11 +1,11 @@
 import * as $ from "jquery"
-import {FileTree} from "tree"
+import {FileTree, FilePath} from "tree"
 
 export module StatusPanel {
    
-   export function showProcessStatus(resource, agent, debug) {
-      var resourcePath = FileTree.createResourcePath(resource);
-      var processFile = resourcePath.fileName;
+   export function showProcessStatus(resource: string, agent, debug) {
+      var resourcePath: FilePath = FileTree.createResourcePath(resource);
+      var processFile = resourcePath.getFileName();
       var statusClass = "statusPanelRunning";
       var processDetail = "";
       
@@ -22,9 +22,9 @@ export module StatusPanel {
       $("#process").html(processDetail); // ("+message.process+") "+message.duration+" milliseconds</i>");
    }
    
-   export function showActiveFile(resource) {
-      var resourcePath = FileTree.createResourcePath(resource);
-      var pathSegments = resourcePath.projectPath.split("/");
+   export function showActiveFile(resource: string) {
+      var resourcePath: FilePath = FileTree.createResourcePath(resource);
+      var pathSegments = resourcePath.getProjectPath().split("/");
       var pathBreadcrumb = "";
       
       pathBreadcrumb += "<table border='0'>\n";

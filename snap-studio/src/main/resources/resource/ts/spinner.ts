@@ -5,17 +5,7 @@ export module LoadSpinner {
    var spinnerHiding = false;
    var spinner = null;
    
-   export function finish() {
-      if(spinnerHiding == false) {     
-         var func = function(){
-            LoadSpinner.hide();
-         }
-         window.setTimeout(func, 1000);
-      }
-   
-   }
-   
-   export  function show(){
+   export function show(){
       if(spinnerHiding == true) {  
          spinnerHiding = false;
          document.getElementById("overlay").style.visibility = 'visible';      

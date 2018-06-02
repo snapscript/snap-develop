@@ -1,9 +1,3 @@
-const blah = 'x';
-const foo = 'y';
+const x = 11;
 
-[1,2,3,4,5].stream().forEach(item -> {
-   ['a', 'b', 'c', 'd'].stream().forEach(char -> {
-      println("${char}.${item}.${blah}.${foo}");
-   });
-
-});
+x=12;

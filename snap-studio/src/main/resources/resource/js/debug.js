@@ -6,8 +6,8 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
         var statusFocus = null;
         function createStatus() {
             socket_1.EventBus.createRoute("STATUS", createStatusProcess, clearStatus); // status of processes
-            socket_1.EventBus.createRoute("TERMINATE", terminateStatusProcess); // clear focus
-            socket_1.EventBus.createRoute("EXIT", terminateStatusProcess);
+            socket_1.EventBus.createRoute("TERMINATE", terminateStatusProcess, null); // clear focus
+            socket_1.EventBus.createRoute("EXIT", terminateStatusProcess, null);
             setInterval(refreshStatusProcesses, 1000); // refresh the status systems every 1 second
         }
         DebugManager.createStatus = createStatus;
@@ -81,7 +81,7 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
         }
         function isCurrentStatusFocusRunning() {
             if (statusFocus) {
-                var statusProcessInfo = statusProcesses[statusProcess];
+                var statusProcessInfo = statusProcesses[statusFocus];
                 if (statusProcessInfo) {
                     return statusProcessInfo.resource != null;
                 }
@@ -161,7 +161,7 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
                                     displayName = "<div class='debugRecord'>" + statusProcess + "</div>";
                                     status = "RUNNING";
                                 }
-                                resourcePath = resourcePathDetails.resourcePath;
+                                resourcePath = resourcePathDetails.getResourcePath();
                                 running = true;
                             }
                             statusRecords.push({

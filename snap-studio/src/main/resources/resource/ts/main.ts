@@ -148,23 +148,24 @@ define(["require",
       
       if(path == "/") {
          select.ProjectSelector.showProjectDialog();
-      } else {
-         spinner.LoadSpinner.create();
-         socket.EventBus.startSocket();
-         project.Project.createMainLayout();
-         
-         setTimeout(function() { // wait until the paint has finished
+      } else {         
+         let setupFunction = function() {
             alert.Alerts.registerAlerts();
             console.ProcessConsole.registerConsole();
             explorer.FileExplorer.showTree();
             editor.FileEditor.createEditor();
-            project.Project.startMainLayout();
+         };
+         
+         let startFunction = function() {
             history.History.trackHistory();
             threads.ThreadManager.createThreads();
             debug.DebugManager.createStatus();
             profiler.Profiler.startProfiler();
             problem.ProblemManager.registerProblems();
-         }, 200);
+            socket.EventBus.startSocket();
+         }
+         spinner.LoadSpinner.create();
+         project.Project.createMainLayout(setupFunction, startFunction);
       }
    }
 );

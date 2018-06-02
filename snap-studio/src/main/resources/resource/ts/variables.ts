@@ -83,8 +83,8 @@ export module VariableManager {
       sortedNames.sort();
       
       for(var i = 0; i < sortedNames.length; i++) {
-         var variableName = sortedNames[i];
-         var variable = threadVariables[variableName];
+         var sortedName = sortedNames[i];
+         var variable = threadVariables[sortedName];
          var variableExpandable = "" + variable.expandable;
          var variableRoot = variable.depth == 0; // style the root differently
          var variableProperty = ""+variable.property;
@@ -117,7 +117,7 @@ export module VariableManager {
          
          variableRecords.push({
             recid: variableIndex++,
-            path: variableName,
+            path: sortedName,
             name: displayName,
             value: displayValue,
             type: variable.type,

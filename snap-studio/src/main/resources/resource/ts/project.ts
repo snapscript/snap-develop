@@ -4,9 +4,9 @@ import {Common} from "common"
 import {EventBus} from "socket"
 import {ProcessConsole} from "console"
 import {ProblemManager} from "problem"
-import {FileEditor} from "editor"
+import {FileEditor, FileEditorState} from "editor"
 import {LoadSpinner} from "spinner"
-import {FileTree} from "tree"
+import {FileTree, FilePath} from "tree"
 import {ThreadManager} from "threads"
 import {History} from "history"
 import {VariableManager} from "variables"
@@ -21,28 +21,30 @@ export module Project {
    var currentDisplayInfo: any = {};
    var doubleClickTimes: any = {};
 
-   export function createMainLayout() {
-      var perspective = determineProjectLayout();
+   export function createMainLayout(setupFunction, startFunction) {
+      let perspective = determineProjectLayout();
       
       if (perspective == "debug") {
-         createDebugLayout(); // show debug layout
+         createDebugLayout(function() {   
+            console.log("Performing setup for debug layout");
+            setupFunction(); // setup stuff
+            activateDebugLayout();
+            startResizePoller(); // dynamically resize the editor
+            attachClickEvents();
+            startFunction(); // start everything
+         });
       } else {
-         createExploreLayout();
+         createExploreLayout(function() {
+            console.log("Performing setup for explore layout");
+            setupFunction(); // setup stuff
+            activateExploreLayout();
+            startResizePoller(); // dynamically resize the editor
+            attachClickEvents();
+            startFunction(); // start everything
+         });
       }
       $(window).trigger('resize'); // force a redraw after w2ui
 
-   }
-   
-   export function startMainLayout() {
-      var perspective = determineProjectLayout();
-      
-      if (perspective == "debug") {
-         startDebugLayout(); // show debug layout
-      } else {
-         startExploreLayout();
-      }
-      startResizePoller(); // dynamically resize the editor
-      attachClickEvents();
    }
    
    export function showProblemsTab() {
@@ -337,6 +339,10 @@ export module Project {
    function showEditorFileContent(containsEditor) {
       var newParent = document.getElementById('editParent');
       var oldParent = document.getElementById('editParentHidden');
+      var newParentInfo = "editParent=" + (newParent == null);
+      var oldParentInfo = "editParentHidden=" + (oldParent == null);
+      
+      console.log("Project.showEditorFileContent(" + containsEditor + "): '" + newParentInfo +  "' '" + oldParentInfo + "'")
    
       if(oldParent != null && newParent != null){
          $("#help").remove();
@@ -351,6 +357,11 @@ export module Project {
    function showEditorHelpContent(containsEditor) { // hack to render editor
       var newParent = document.getElementById('editParent');
       var editorFileName = document.getElementById("editFileName");
+      var newParentInfo = "editParent=" + (newParent == null);
+      var editorFileNameInfo = "editFileName=" + (editorFileName == null);
+      
+      console.log("Project.showEditorHelpContent(" + containsEditor + "): '" + newParentInfo +  "' '" + editorFileNameInfo + "'")
+      
       
       if(newParent != null && editorFileName != null) {
          var keyBindings = KeyBinder.getKeyBindings();
@@ -393,14 +404,13 @@ export module Project {
    }
    
    function updateEditorTabName() {
-      var editorData = FileEditor.loadEditor();
       var editorFileName = document.getElementById("editFileName");
       
       if(editorFileName != null){
-         var editorData = FileEditor.loadEditor();
+         var editorState: FileEditorState = FileEditor.currentEditorState();
          
-         if(editorData != null && editorData.resource != null) {
-            editorFileName.innerHTML = "<span title='" + editorData.resource.resourcePath +"'>&nbsp;" + editorData.resource.fileName + "&nbsp;</span>";
+         if(editorState != null && editorState.getResource() != null) {
+            editorFileName.innerHTML = "<span title='" + editorState.getResource().getResourcePath() +"'>&nbsp;" + editorState.getResource().getFileName() + "&nbsp;</span>";
          }
       }
    }
@@ -424,14 +434,14 @@ export module Project {
    }
    
    export function closeEditorTab() {
-      var data = FileEditor.loadEditor();
+      var data: FileEditorState = FileEditor.currentEditorState();
       
-      if(data.resource) {      
+      if(data.getResource()) {      
          var tabs = findActiveEditorTabLayout();
          
          if(tabs.tabs.length > 1) {
-            closeEditorTabForPath(data.resource.resourcePath);
-            deleteEditorTab(data.resource.resourcePath);
+            closeEditorTabForPath(data.getResource().getResourcePath());
+            deleteEditorTab(data.getResource().getResourcePath());
          }
       }
    }
@@ -456,7 +466,6 @@ export module Project {
    export function renameEditorTab(from, to) {
       var layout = findActiveEditorLayout();
       var tabs = findActiveEditorTabLayout();
-      var editorData = FileEditor.loadEditor();
       
       if(tabs != null && from != null && to != null) {
          var tabList = tabs.tabs;
@@ -467,20 +476,20 @@ export module Project {
             
             if(nextTab != null && nextTab.id == from) {
                var newTab = JSON.parse(JSON.stringify(nextTab)); // clone the tab
-               var toPath = FileTree.createResourcePath(to);
-               var fromPath = FileTree.createResourcePath(from);
+               var toPath: FilePath = FileTree.createResourcePath(to);
+               var fromPath: FilePath = FileTree.createResourcePath(from);
    
                tabs.remove(nextTab.id); // remove the tab
    
                if(nextTab.active) {
-                  FileExplorer.openTreeFile(toPath.resourcePath, function(){}); // browse style makes no difference here
+                  FileExplorer.openTreeFile(toPath.getResourcePath(), function(){}); // browse style makes no difference here
                } else {
-                  var fileNameReplace = new RegExp(fromPath.fileName, "g");
-                  var filePathReplace = new RegExp(fromPath.resourcePath, "g");
+                  var fileNameReplace = new RegExp(fromPath.getFileName(), "g");
+                  var filePathReplace = new RegExp(fromPath.getResourcePath(), "g");
                   
-                  newTab.caption = newTab.caption.replace(fileNameReplace, toPath.fileName).replace(filePathReplace, toPath.resourcePath); // rename the tab
-                  newTab.text = newTab.text.replace(fileNameReplace, toPath.fileName).replace(filePathReplace, toPath.resourcePath); // rename the tab
-                  newTab.id = toPath.resourcePath;
+                  newTab.caption = newTab.caption.replace(fileNameReplace, toPath.getFileName()).replace(filePathReplace, toPath.getResourcePath()); // rename the tab
+                  newTab.text = newTab.text.replace(fileNameReplace, toPath.getFileName()).replace(filePathReplace, toPath.getResourcePath()); // rename the tab
+                  newTab.id = toPath.getResourcePath();
                   tabs.add(newTab);
                }
                break;
@@ -492,7 +501,6 @@ export module Project {
    export function markEditorTab(name, isModified) {
       var layout = findActiveEditorLayout();
       var tabs = findActiveEditorTabLayout();
-      var editorData = FileEditor.loadEditor();
       
       if(tabs != null && name != null) {
          var tabList = tabs.tabs;
@@ -502,10 +510,10 @@ export module Project {
             var nextTab = tabList[i];
             
             if(nextTab != null && nextTab.id == name) {
-               var tabPath = FileTree.createResourcePath(name);
-               var tabFromName = (isModified ? "" : "*") + tabPath.fileName; 
-               var tabToName =  (isModified ? "*" : "") + tabPath.fileName; 
-               var isAlreadyModified = Common.stringContains(nextTab.text, "*" + tabPath.fileName);
+               var tabPath: FilePath = FileTree.createResourcePath(name);
+               var tabFromName = (isModified ? "" : "*") + tabPath.getFileName(); 
+               var tabToName =  (isModified ? "*" : "") + tabPath.getFileName(); 
+               var isAlreadyModified = Common.stringContains(nextTab.text, "*" + tabPath.getFileName());
                
                if(isModified != isAlreadyModified) {
                   nextTab.caption = Common.stringReplaceText(nextTab.caption, tabFromName, tabToName);
@@ -521,9 +529,9 @@ export module Project {
    export function createEditorTab() {
       var layout = findActiveEditorLayout();
       var tabs = findActiveEditorTabLayout();
-      var editorData = FileEditor.loadEditor();
+      var editorState: FileEditorState = FileEditor.currentEditorState();
       
-      if(tabs != null && editorData != null && editorData.resource != null) {
+      if(tabs != null && editorState != null && editorState.getResource() != null) {
          var tabList = tabs.tabs;
          var tabResources = {};
          
@@ -540,9 +548,9 @@ export module Project {
                }
             }
          }
-         tabResources[editorData.resource.resourcePath] = { 
-            id : editorData.resource.resourcePath,
-            caption : "<div class='editTab' id='editFileName'><span title='" + editorData.resource.resourcePath +"'>&nbsp;" + editorData.resource.fileName + "&nbsp;</span></div>",
+         tabResources[editorState.getResource().getResourcePath()] = { 
+            id : editorState.getResource().getResourcePath(),
+            caption : "<div class='editTab' id='editFileName'><span title='" + editorState.getResource().getResourcePath() +"'>&nbsp;" + editorState.getResource().getFileName() + "&nbsp;</span></div>",
             content : "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
             closable: true,
             active: true
@@ -565,13 +573,13 @@ export module Project {
             sortedTabs[i] = nextTab;
          }
          tabs.tabs = sortedTabs;
-         tabs.active = editorData.resource.resourcePath;
-         activateTab(editorData.resource.resourcePath, layout.name, false, true, ""); // browse style makes no difference here
+         tabs.active = editorState.getResource().getResourcePath();
+         activateTab(editorState.getResource().getResourcePath(), layout.name, false, true, ""); // browse style makes no difference here
          
          // this is pretty rubbish, it would be good if there was a promise after redraw/repaint
          setTimeout(function() { // wait for the paint to finish
             $('#editFileName').on('click', function(e) {
-               clickOnTab(editorData.resource.resourcePath, toggleFullScreen);
+               clickOnTab(editorState.getResource().getResourcePath(), toggleFullScreen);
                e.preventDefault();
             });  
          }, 100);
@@ -581,7 +589,7 @@ export module Project {
    function closeEditorTabForPath(resourcePathToClose) {
        if(FileEditor.isEditorChangedForPath(resourcePathToClose)) {
           var currentBuffer = FileEditor.loadSavedEditorBuffer(resourcePathToClose);
-          var editorResource = FileTree.createResourcePath(resourcePathToClose);
+          var editorResource: FilePath = FileTree.createResourcePath(resourcePathToClose);
 
           Command.saveEditorOnClose(currentBuffer.buffer, editorResource); // save the file;
           console.log("CLOSE: " + resourcePathToClose);
@@ -629,7 +637,11 @@ export module Project {
       if(containsEditor) {
          // move the editor
          var newParent = document.getElementById('editParentHidden');
-         var oldParent = document.getElementById('editParent');
+         var oldParent = document.getElementById('editParent');         
+         var newParentInfo = "editParentHidden=" + (newParent == null);
+         var oldParentInfo = "editParent=" + (oldParent == null);
+         
+         console.log("Project.hideEditorContent(" + containsEditor + "): '" + newParentInfo +  "' '" + oldParentInfo + "'")
       
          if(oldParent != null && newParent != null){
             while (oldParent.childNodes.length > 0) {
@@ -637,15 +649,51 @@ export module Project {
             }
          }
       }
-   }
+   }   
    
-   function createExploreLayout() {
+   function createExploreLayout(startFunction) {      
+      var layoutEvents = ["createExploreLayout"];       
+      var layoutEventListener = Common.createSimpleStateMachineFunction("createExploreLayout", function() {
+         console.log("Explore layout fully rendered");
+         startFunction();
+      }, layoutEvents, 200);
    
-      // $('#topLayer').spin({ lines: 10, length: 30, width: 20, radius: 40 });
-   
-      // -- LAYOUT
       var pstyle = 'background-color: ${PROJECT_BACKGROUND_COLOR}; overflow: hidden;';
       var leftStyle = pstyle + " margin-top: 32px; border-top: 1px solid ${PROJECT_BORDER_COLOR};";
+      
+      createExploreMainLayout(pstyle, layoutEventListener, layoutEvents);
+      createExploreEditorLayout(pstyle, layoutEventListener, layoutEvents);
+      createExploreEditorTabLayout(pstyle, layoutEventListener, layoutEvents);
+      createExploreLeftTabLayout(pstyle, layoutEventListener, layoutEvents);
+      createExploreBottomTabLayout(pstyle, layoutEventListener, layoutEvents);
+      
+      validateLayout(layoutEvents, ["createExploreLayout"]);
+      
+      createTopMenuBar(); // menu bar at top
+      createProblemsTab();
+      createVariablesTab();
+      createProfilerTab();
+      createBreakpointsTab();
+      createDebugTab();
+      createThreadsTab();
+      createHistoryTab();
+      
+      w2ui['exploreMainLayout'].content('top', w2ui['topLayout']);
+      //w2ui['exploreMainLayout'].content('left', '<table cellpadding="2"><tr><td><span id="leftProjectRoot"></span></td><tr><tr><td><span id="leftDirectory"></span></td><tr><tr><td></td><tr></table>');
+      //w2ui['exploreMainLayout'].content('left', '<div style="border: dotted 1px ${PROJECT_BORDER_COLOR}; padding: 1px; margin-top: 10px; margin-left: 5px;"><table cellpadding="2"><tr><td>&nbsp;</td><tr><tr><td><!--span id="leftProjectRoot"></span--></td></tr></table></div>');      
+      w2ui['exploreMainLayout'].content('left', w2ui['exploreLeftTabLayout']);
+      w2ui['exploreMainLayout'].content('main', w2ui['exploreEditorLayout']);
+      w2ui['exploreEditorLayout'].content('main', w2ui['exploreEditorTabLayout']);
+      w2ui['exploreEditorLayout'].content('bottom', w2ui['exploreBottomTabLayout']);
+      w2ui['exploreEditorTabLayout'].refresh();
+      w2ui['exploreBottomTabLayout'].refresh();
+      w2ui['exploreLeftTabLayout'].refresh();
+      
+      layoutEventListener("createExploreLayout"); // this allows the whole thing to initiate
+   }
+   
+   function createExploreMainLayout(layoutStyle, layoutEventListener, layoutEvents) {
+      layoutEvents.push("exploreMainLayout");
       
       $('#mainLayout').w2layout({
          name : 'exploreMainLayout',
@@ -654,32 +702,39 @@ export module Project {
             type : 'top',
             size : '40px',
             resizable : false,
-            style : pstyle
+            style : layoutStyle
          }, {
             type : 'left',
             size : '25%',
             resizable : true,
-            style : pstyle      
+            style : layoutStyle      
          },{
             type : 'right',
             size : '0%',
             resizable : true,
             hidden: true,
-            style : pstyle
+            style : layoutStyle
          },{
             type : 'main',
             size : '75%',
             resizable : true,
-            style : pstyle
+            style : layoutStyle
          } , {
             type : 'bottom',
             size : '25px',
             resizable : false,
-            style : pstyle,
+            style : layoutStyle,
             content : createBottomStatusContent()
-         } ]
+         } ],
+         onRender: function(event) {
+            layoutEventListener("exploreMainLayout");
+         }         
       });
+   }
    
+   function createExploreEditorLayout(layoutStyle, layoutEventListener, layoutEvents){ 
+      layoutEvents.push("exploreEditorLayout");
+      
       $('').w2layout({
          name : 'exploreEditorLayout',
          padding : 0,
@@ -688,15 +743,23 @@ export module Project {
             size : '60%',
             resizable : true,
             overflow: 'auto',
-            style : pstyle + 'border-bottom: 0px;'
+            style : layoutStyle + 'border-bottom: 0px;'
          }, {
             type : 'bottom',
             size : '40%',
             overflow: 'auto',         
             resizable : true,
-            style : pstyle + 'border-top: 0px;'
-         } ]
+            style : layoutStyle + 'border-top: 0px;'
+         } ],
+         onRender: function(event) {
+            layoutEventListener("exploreEditorLayout");
+         }
       });
+   }
+   
+   function createExploreEditorTabLayout(layoutStyle, layoutEventListener, layoutEvents) {
+      layoutEvents.push("exploreEditorTabLayout");
+      layoutEvents.push("exploreEditorTabLayout#tabs");
       
       $('').w2layout({
          name : 'exploreEditorTabLayout',
@@ -704,7 +767,7 @@ export module Project {
          panels : [ {
             type : 'main',
             size : '100%',
-            style : pstyle + 'border-top: 0px;',
+            style : layoutStyle + 'border-top: 0px;',
             resizable : false,
             name : 'editTabs',
             tabs : {
@@ -722,18 +785,29 @@ export module Project {
                },
                onClose : function(event) {
                   closeEditorTabForPath(event.target);
+               },
+               onRender: function(event) {
+                  layoutEventListener("exploreEditorTabLayout#tabs");              
                }
             }
-         } ]
+         } ],
+         onRender: function(event) {
+            layoutEventListener("exploreEditorTabLayout");
+         }
       });
+   }
    
+   function createExploreLeftTabLayout(layoutStyle, layoutEventListener, layoutEvents) {     
+      layoutEvents.push("exploreLeftTabLayout");
+      layoutEvents.push("exploreLeftTabLayout#tabs");
+      
       $('').w2layout({
          name : 'exploreLeftTabLayout',
          padding : 0,
          panels : [ {
             type : 'main',
             size : '100%',
-            style : pstyle + 'border-top: 0px;',
+            style : layoutStyle + 'border-top: 0px;',
             resizable : false,
             name : 'tabs',
             tabs : {
@@ -747,10 +821,21 @@ export module Project {
                } ],
                onClick : function(event) {
                   activateTab(event.target, "exploreLeftTabLayout", true, false, "style='right: 0px;'");
-               }
+               },
+               onRender: function(event) {
+                  layoutEventListener("exploreLeftTabLayout#tabs");
+               }                
             }
-         } ]
+         } ],
+         onRender: function(event) {
+            layoutEventListener("exploreLeftTabLayout");
+         }         
       });
+   }
+   
+   function createExploreBottomTabLayout(layoutStyle, layoutEventListener, layoutEvents) {
+      layoutEvents.push("exploreBottomTabLayout");
+      layoutEvents.push("exploreBottomTabLayout#tabs");
       
       $('').w2layout({
          name : 'exploreBottomTabLayout',
@@ -758,7 +843,7 @@ export module Project {
          panels : [ {
             type : 'main',
             size : '100%',
-            style : pstyle + 'border-top: 0px;',
+            style : layoutStyle + 'border-top: 0px;',
             resizable : false,
             name : 'tabs',
             tabs : {
@@ -801,11 +886,45 @@ export module Project {
                },
                onClick : function(event) {
                   activateTab(event.target, "exploreBottomTabLayout", false, false, "style='right: 0px;'");
+               },
+               onRender: function(event) {
+                  layoutEventListener("exploreBottomTabLayout#tabs");
                }
             }
-         } ]
+         } ],
+         onRender: function(event) {
+            layoutEventListener("exploreBottomTabLayout");
+         }
       });
+   }
    
+   function activateExploreLayout() {
+      applyProjectTheme();
+      activateTab("consoleTab", "exploreBottomTabLayout", false, false, "style='right: 0px;'"); 
+      activateTab("browseTab", "exploreLeftTabLayout", true, false, "style='right: 0px;'"); 
+      activateTab("editTab", "exploreEditorTabLayout", false, true, "style='right: 0px;'"); 
+   }
+    
+   
+   function createDebugLayout(startFunction) {
+      var layoutEvents = ["createDebugLayout"];      
+      var layoutEventListener = Common.createSimpleStateMachineFunction("createDebugLayout", function() {
+         console.log("Debug layout fully rendered");
+         startFunction();
+      }, layoutEvents, 200);
+      
+      var pstyle = 'background-color: ${PROJECT_BACKGROUND_COLOR}; overflow: hidden;';      
+      
+      createDebugMainLayout(pstyle, layoutEventListener, layoutEvents);
+      createEebugEditorLayout(pstyle, layoutEventListener, layoutEvents);
+      createDebugEditorTabLayout(pstyle, layoutEventListener, layoutEvents);
+      createDebugTopTabSplit(pstyle, layoutEventListener, layoutEvents);
+      createDebugLeftTabLayout(pstyle, layoutEventListener, layoutEvents);
+      createDebugRightTabLayout(pstyle, layoutEventListener, layoutEvents);
+      createDebugBottomTabLayout(pstyle, layoutEventListener, layoutEvents);
+      
+      validateLayout(layoutEvents, ["createExploreLayout"]);
+            
       createTopMenuBar(); // menu bar at top
       createProblemsTab();
       createVariablesTab();
@@ -815,32 +934,24 @@ export module Project {
       createThreadsTab();
       createHistoryTab();
       
-      w2ui['exploreMainLayout'].content('top', w2ui['topLayout']);
-      //w2ui['exploreMainLayout'].content('left', '<table cellpadding="2"><tr><td><span id="leftProjectRoot"></span></td><tr><tr><td><span id="leftDirectory"></span></td><tr><tr><td></td><tr></table>');
-      //w2ui['exploreMainLayout'].content('left', '<div style="border: dotted 1px ${PROJECT_BORDER_COLOR}; padding: 1px; margin-top: 10px; margin-left: 5px;"><table cellpadding="2"><tr><td>&nbsp;</td><tr><tr><td><!--span id="leftProjectRoot"></span--></td></tr></table></div>');      
-      w2ui['exploreMainLayout'].content('left', w2ui['exploreLeftTabLayout']);
-      w2ui['exploreMainLayout'].content('main', w2ui['exploreEditorLayout']);
-      w2ui['exploreEditorLayout'].content('main', w2ui['exploreEditorTabLayout']);
-      w2ui['exploreEditorLayout'].content('bottom', w2ui['exploreBottomTabLayout']);
-      w2ui['exploreEditorTabLayout'].refresh();
-      w2ui['exploreBottomTabLayout'].refresh();
-      w2ui['exploreLeftTabLayout'].refresh();
+      w2ui['debugMainLayout'].content('top', w2ui['topLayout']);
+      w2ui['debugMainLayout'].content('main', w2ui['debugEditorLayout']);
+      w2ui['debugEditorLayout'].content('top', w2ui['debugTopTabSplit']);
+      w2ui['debugTopTabSplit'].content('left', w2ui['debugLeftTabLayout']);
+      w2ui['debugTopTabSplit'].content('main', w2ui['debugRightTabLayout']);
+      w2ui['debugEditorLayout'].content('bottom', w2ui['debugBottomTabLayout']);  
+      w2ui['debugEditorLayout'].content('main', w2ui['debugEditorTabLayout']);
+      w2ui['debugEditorTabLayout'].refresh();
+      w2ui['debugTopTabSplit'].refresh();
+      w2ui['debugLeftTabLayout'].refresh();
+      w2ui['debugRightTabLayout'].refresh();   
+      w2ui['debugBottomTabLayout'].refresh();
+      
+      layoutEventListener("createDebugLayout"); // this allows the whole thing to initiate
    }
    
-   function startExploreLayout() {
-      applyProjectTheme();
-      activateTab("consoleTab", "exploreBottomTabLayout", false, false, "style='right: 0px;'"); 
-      activateTab("browseTab", "exploreLeftTabLayout", true, false, "style='right: 0px;'"); 
-      activateTab("editTab", "exploreEditorTabLayout", false, true, "style='right: 0px;'"); 
-   }
-   
-   
-   function createDebugLayout() {
-   
-      // $('#topLayer').spin({ lines: 10, length: 30, width: 20, radius: 40 });
-   
-      // -- LAYOUT
-      var pstyle = 'background-color: ${PROJECT_BACKGROUND_COLOR}; overflow: hidden;';
+   function createDebugMainLayout(layoutStyle, layoutEventListener, layoutEvents) {
+      layoutEvents.push("debugMainLayout");
       
       $('#mainLayout').w2layout({
          name : 'debugMainLayout',
@@ -849,21 +960,28 @@ export module Project {
             type : 'top',
             size : '40px',
             resizable : false,
-            style : pstyle
+            style : layoutStyle
          }, {
             type : 'main',
             size : '80%',
             resizable : true,
-            style : pstyle
+            style : layoutStyle
          } , {
             type : 'bottom',
             size : '25px',
             resizable : false,
-            style : pstyle,
+            style : layoutStyle,
             content : createBottomStatusContent()
-         } ]
+         } ],
+         onRender: function(event) {
+            layoutEventListener("debugMainLayout");
+         } 
       });
+   }
    
+   function createEebugEditorLayout(layoutStyle, layoutEventListener, layoutEvents) {
+      layoutEvents.push("debugEditorLayout");
+      
       $('').w2layout({
          name : 'debugEditorLayout',
          padding : 0,
@@ -872,21 +990,29 @@ export module Project {
             size : '25%',
             overflow: 'auto',         
             resizable : true,
-            style : pstyle + 'border-top: 0px;'
+            style : layoutStyle + 'border-top: 0px;'
          }, {
             type : 'main',
             size : '50%',
             resizable : true,
             overflow: 'auto',
-            style : pstyle + 'border-bottom: 0px;'      
+            style : layoutStyle + 'border-bottom: 0px;'      
          }, {
             type : 'bottom',
             size : '25%',
             overflow: 'auto',         
             resizable : true,
-            style : pstyle + 'border-top: 0px;'
-         } ]
+            style : layoutStyle + 'border-top: 0px;'
+         } ],
+         onRender: function(event) {
+            layoutEventListener("debugEditorLayout");
+         } 
       });
+   }
+   
+   function createDebugEditorTabLayout(layoutStyle, layoutEventListener, layoutEvents) {
+      layoutEvents.push("debugEditorTabLayout");
+      layoutEvents.push("debugEditorTabLayout#tabs");
       
       $('').w2layout({
          name : 'debugEditorTabLayout',
@@ -894,7 +1020,7 @@ export module Project {
          panels : [ {
             type : 'main',
             size : '100%',
-            style : pstyle + 'border-top: 0px;',
+            style : layoutStyle + 'border-top: 0px;',
             resizable : false,
             name : 'editTabs',
             tabs : {
@@ -912,10 +1038,20 @@ export module Project {
                },
                onClose : function(event) {
                   closeEditorTabForPath(event.target);
-               }
+               },
+               onRender: function(event) {
+                  layoutEventListener("debugEditorTabLayout#tabs");                 
+               }                             
             }
-         } ]
+         } ],
+         onRender: function(event) {
+            layoutEventListener("debugEditorTabLayout"); 
+         } 
       });
+   }
+   
+   function createDebugTopTabSplit(layoutStyle, layoutEventListener, layoutEvents) {
+      layoutEvents.push("debugTopTabSplit");
       
       $('').w2layout({
          name : 'debugTopTabSplit',
@@ -925,23 +1061,31 @@ export module Project {
             size : '50%',
             overflow: 'auto',         
             resizable : true,
-            style : pstyle + 'border-top: 0px;'
+            style : layoutStyle + 'border-top: 0px;'
          }, {
             type : 'main',
             size : '50%',
             resizable : true,
             overflow: 'auto',
-            style : pstyle + 'border-bottom: 0px;'
-         } ]
+            style : layoutStyle + 'border-bottom: 0px;'
+         } ],
+         onRender: function(event) {
+            layoutEventListener("debugTopTabSplit"); 
+         } 
       });
+   }
    
+   function createDebugLeftTabLayout(layoutStyle, layoutEventListener, layoutEvents) {
+      layoutEvents.push("debugLeftTabLayout");
+      layoutEvents.push("debugLeftTabLayout#tabs");
+      
       $('').w2layout({
          name : 'debugLeftTabLayout',
          padding : 0,
          panels : [ {
             type : 'main',
             size : '100%',
-            style : pstyle + 'border-top: 0px;',
+            style : layoutStyle + 'border-top: 0px;',
             resizable : false,
             name : 'tabs',
             tabs : {
@@ -962,10 +1106,21 @@ export module Project {
                } ],
                onClick : function(event) {
                   activateTab(event.target, "debugLeftTabLayout", true, false, "");
-               }
+               },
+               onRender: function(event) {
+                  layoutEventListener("debugLeftTabLayout#tabs"); 
+               } 
             }
-         } ]
+         } ],
+         onRender: function(event) {
+            layoutEventListener("debugLeftTabLayout"); 
+         } 
       });
+   }
+   
+   function createDebugRightTabLayout(layoutStyle, layoutEventListener, layoutEvents) {
+      layoutEvents.push("debugRightTabLayout");
+      layoutEvents.push("debugRightTabLayout#tabs");
       
       $('').w2layout({
          name : 'debugRightTabLayout',
@@ -973,7 +1128,7 @@ export module Project {
          panels : [ {
             type : 'main',
             size : '100%',
-            style : pstyle + 'border-top: 0px;',
+            style : layoutStyle + 'border-top: 0px;',
             resizable : false,
             name : 'tabs',
             tabs : {
@@ -989,10 +1144,21 @@ export module Project {
                } ],
                onClick : function(event) {
                   activateTab(event.target, "debugRightTabLayout", false, false, "");
+               },
+               onRender: function(event) {
+                  layoutEventListener("debugRightTabLayout#tabs"); 
                }
             }
-         } ]
+         } ],
+         onRender: function(event) {
+            layoutEventListener("debugRightTabLayout"); 
+         }
       });
+   }
+   
+   function createDebugBottomTabLayout(layoutStyle, layoutEventListener, layoutEvents) {
+      layoutEvents.push("debugBottomTabLayout");
+      layoutEvents.push("debugBottomTabLayout#tabs");
       
       $('').w2layout({
          name : 'debugBottomTabLayout',
@@ -1000,7 +1166,7 @@ export module Project {
          panels : [ {
             type : 'main',
             size : '100%',
-            style : pstyle + 'border-top: 0px;',
+            style : layoutStyle + 'border-top: 0px;',
             resizable : false,
             name : 'tabs',
             tabs : {
@@ -1021,35 +1187,19 @@ export module Project {
                } ],
                onClick : function(event) {
                   activateTab(event.target, "debugBottomTabLayout", false, false, "");
+               },
+               onRender: function(event) {
+                  layoutEventListener("debugBottomTabLayout#tabs"); 
                }
             }
-         } ]
+         } ],
+         onRender: function(event) {
+            layoutEventListener("debugBottomTabLayout"); 
+         }
       });
-      
-      createTopMenuBar(); // menu bar at top
-      createProblemsTab();
-      createVariablesTab();
-      createProfilerTab();
-      createBreakpointsTab();
-      createDebugTab();
-      createThreadsTab();
-      createHistoryTab();
-      
-      w2ui['debugMainLayout'].content('top', w2ui['topLayout']);
-      w2ui['debugMainLayout'].content('main', w2ui['debugEditorLayout']);
-      w2ui['debugEditorLayout'].content('main', w2ui['debugEditorTabLayout']);
-      w2ui['debugEditorLayout'].content('top', w2ui['debugTopTabSplit']);
-      w2ui['debugTopTabSplit'].content('left', w2ui['debugLeftTabLayout']);
-      w2ui['debugTopTabSplit'].content('main', w2ui['debugRightTabLayout']);
-      w2ui['debugEditorLayout'].content('bottom', w2ui['debugBottomTabLayout']);  
-      w2ui['debugEditorTabLayout'].refresh();
-      w2ui['debugTopTabSplit'].refresh();
-      w2ui['debugLeftTabLayout'].refresh();
-      w2ui['debugRightTabLayout'].refresh();   
-      w2ui['debugBottomTabLayout'].refresh();
-   }
+   }    
    
-   function startDebugLayout() {
+   function activateDebugLayout() {
       applyProjectTheme();
       activateTab("debugTab", "debugLeftTabLayout", true, false, "");
       activateTab("variablesTab", "debugRightTabLayout", false, false, "");   
@@ -1066,6 +1216,41 @@ export module Project {
          "  </tr>"+
          "  </table>"+
          "</div>"
+   }   
+   
+   function validateLayout(layoutEvents, ignoreEvents) {
+      for(var i = 0; i < layoutEvents.length; i++) {
+         var layoutEvent = layoutEvents[i];
+         var ignoreIndex = ignoreEvents.indexOf(layoutEvent);
+         
+         if(ignoreIndex == -1) {         
+            var tabIndex = layoutEvent.indexOf("#tab");
+            
+            if(tabIndex == -1) {
+               var layout = w2ui[layoutEvent];
+               
+               if(!layout || !layout.panels) {
+                  console.warn("Layout '" + layoutEvent + "' was not registered");
+               }
+            } else {
+               var parentLayoutEvent = layoutEvent.substring(0, tabIndex);
+               var layout = w2ui[parentLayoutEvent];
+               
+               if(!layout || !layout.panels) {
+                  console.warn("Layout '" + parentLayoutEvent + "' was not registered");
+               } else {
+                  var layoutTabName = parentLayoutEvent + "_main_tabs";
+                  var mainPanel = layout.panels.filter(function(layoutPanel) {
+                     return layoutPanel && layoutPanel.type == 'main'; // its always on main
+                  });
+               
+                  if(mainPanel.length == 0 || mainPanel[0].tabs.name != layoutTabName) {
+                     console.warn("Layout '" + parentLayoutEvent + "' does not have any tabs");
+                  }
+               }            
+            }         
+         }
+      }
    }
    
    function createTopMenuBar(){

@@ -5,7 +5,7 @@ import {Command} from "commands"
 import {VariableManager} from "variables"
 import {FileExplorer} from "explorer"
 import {FileEditor} from "editor"
-import {FileTree} from "tree"
+import {FileTree, FilePath} from "tree"
  
 export module DialogBuilder {
    
@@ -52,7 +52,7 @@ export module DialogBuilder {
       var dialogBody = createFileSelectionDialogLayout(dialogExpandPath, '');
       var focusInput = function() {
          var element = document.getElementById('dialogPath');
-         element.contentEditable = true;
+         element.contentEditable = "true";
          element.focus();
       };
       var createFinalPath = function() {
@@ -61,7 +61,7 @@ export module DialogBuilder {
          var dialogPathName = FileTree.cleanResourcePath(originalDialogFileName);
          var dialogFolder = FileTree.cleanResourcePath(originalDialogFolder);
          var dialogProjectPath = dialogFolder + "/" + dialogPathName; // /src/blah/script.snap
-         var dialogPathDetails = FileTree.createResourcePath(dialogProjectPath); 
+         var dialogPathDetails: FilePath = FileTree.createResourcePath(dialogProjectPath); 
          
          return dialogPathDetails;
       }
@@ -127,14 +127,14 @@ export module DialogBuilder {
          }
       }
       FileTree.createTree(treePath, "dialog", "dialogTree", dialogExpandPath, foldersOnly, null, function(event, data) {
-         var selectedFileDetails = FileTree.createResourcePath(data.node.tooltip);
+         var selectedFileDetails: FilePath = FileTree.createResourcePath(data.node.tooltip);
    
          if (data.node.isFolder()) {
-            $('#dialogFolder').html(FileTree.cleanResourcePath(selectedFileDetails.projectDirectory));
+            $('#dialogFolder').html(FileTree.cleanResourcePath(selectedFileDetails.getProjectDirectory()));
             //$('#dialogPath').html(""); // DO NOT CLEAR THE PATH INPUT
          } else {
-            $('#dialogFolder').html(FileTree.cleanResourcePath(selectedFileDetails.projectDirectory)); // /src/blah
-            $('#dialogPath').html(FileTree.cleanResourcePath(selectedFileDetails.fileName)); // file.snap
+            $('#dialogFolder').html(FileTree.cleanResourcePath(selectedFileDetails.getProjectDirectory())); // /src/blah
+            $('#dialogPath').html(FileTree.cleanResourcePath(selectedFileDetails.getFileName())); // file.snap
          }
       });
    }
@@ -143,10 +143,10 @@ export module DialogBuilder {
       var windowHeight = $(window).height();   // returns height of browser viewport
       var windowWidth = $(window).width();   // returns width of browser viewport
       var completeFunction = function() {
-         var originalDialogFolder = $('#dialogPath').html();
-         var dialogFolder = FileTree.cleanResourcePath(originalDialogFolder); // clean up path
-         var dialogPathDetails = FileTree.createResourcePath(dialogFolder); 
-         var selectedDirectory = dialogPathDetails.projectDirectory;
+         var originalDialogFolder: string = $('#dialogPath').html();
+         var dialogFolder: string = FileTree.cleanResourcePath(originalDialogFolder); // clean up path
+         var dialogPathDetails: FilePath = FileTree.createResourcePath(dialogFolder); 
+         var selectedDirectory: string = dialogPathDetails.getProjectDirectory();
          
          if(selectedDirectory.indexOf("/") == 0) {
             selectedDirectory = selectedDirectory.substring(1);
@@ -156,7 +156,7 @@ export module DialogBuilder {
       var dialogBody = createFileFolderSelectionDialogLayout();
       var focusInput = function() {
          var element = document.getElementById('dialogPath');
-         element.contentEditable = true;
+         element.contentEditable = "true";
          element.focus();
       };
       w2popup.open({
@@ -204,8 +204,8 @@ export module DialogBuilder {
          w2popup.close();
       });
       FileTree.createTreeOfDepth(treePath, "dialog", "dialogTree", "/" + document.title, true, null, function(event, data) {
-         var selectedFileDetails = FileTree.createResourcePath(data.node.tooltip);
-         var selectedDirectory = selectedFileDetails.projectDirectory;
+         var selectedFileDetails: FilePath = FileTree.createResourcePath(data.node.tooltip);
+         var selectedDirectory = selectedFileDetails.getProjectDirectory();
          
          if(selectedDirectory.indexOf("/") == 0) {
             selectedDirectory = selectedDirectory.substring(1);
@@ -220,7 +220,7 @@ export module DialogBuilder {
       var dialogBody = createListDialogLayout();
       var focusInput = function() {
          var element = document.getElementById('dialogPath');
-         element.contentEditable = true;
+         element.contentEditable = "true";
          element.focus();
       };
       w2popup.open({
@@ -303,7 +303,7 @@ export module DialogBuilder {
       var windowWidth = $(window).width();   // returns width of browser viewport
       var focusInput = function() {
          var element = document.getElementById('searchText');
-         element.contentEditable = true;
+         element.contentEditable = "true";
          element.focus();
       };
       var executeSearch = function() {
@@ -396,7 +396,7 @@ export module DialogBuilder {
       var windowWidth = $(window).width();   // returns width of browser viewport
       var focusInput = function() {
          var element = document.getElementById('searchText');
-         element.contentEditable = true;
+         element.contentEditable = "true";
          element.focus();
       };
       var executeSearch = function() {
@@ -502,7 +502,7 @@ export module DialogBuilder {
       var dialogBody = createGridDialogLayout(inputText ? Common.escapeHtml(inputText) : '');
       var focusInput = function() {
          var element = document.getElementById('dialogPath');
-         element.contentEditable = true;
+         element.contentEditable = "true";
          element.focus();
       };
       var executeEvaluation = function() {
@@ -726,7 +726,7 @@ export module DialogBuilder {
    }
    
    function selectedIndexOfDialogListTable() {
-      var table = document.getElementById("dialogListTable");
+      var table: HTMLTableElement = document.getElementById("dialogListTable");
       
       if(table) {
          var dialogRows = table.rows;
@@ -937,7 +937,7 @@ export module DialogBuilder {
                return focusDialogInput('fileFilterPatterns');
             });
             $('#fileFilterPatterns').on('paste', function(e) {
-               return pasteInPlainText('fileFilterPatterns'. e);
+               return pasteInPlainText('fileFilterPatterns', e);
             });
             $('#searchText').on('click', function(e) {
                return focusDialogInput('searchText');
@@ -988,7 +988,7 @@ export module DialogBuilder {
    }
    
    function focusDialogInput(name) {
-      document.getElementById(name).contentEditable = true;
+      document.getElementById(name).contentEditable = "true";
       document.getElementById(name).focus();
       document.getElementById(name).focus();
       return true;

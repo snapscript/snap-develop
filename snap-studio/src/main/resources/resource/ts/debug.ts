@@ -9,7 +9,7 @@ import {ProcessConsole} from "./console"
 import {ThreadManager} from "./threads"
 import {StatusPanel} from "status"
 import {Command} from "commands"
-import {FileTree} from "tree"
+import {FileTree, FilePath} from "tree"
 
 export module DebugManager {
    
@@ -18,8 +18,8 @@ export module DebugManager {
    
    export function createStatus() {
       EventBus.createRoute("STATUS", createStatusProcess, clearStatus); // status of processes
-      EventBus.createRoute("TERMINATE", terminateStatusProcess); // clear focus
-      EventBus.createRoute("EXIT", terminateStatusProcess);
+      EventBus.createRoute("TERMINATE", terminateStatusProcess, null); // clear focus
+      EventBus.createRoute("EXIT", terminateStatusProcess, null);
       setInterval(refreshStatusProcesses, 1000); // refresh the status systems every 1 second
    }
    
@@ -98,7 +98,7 @@ export module DebugManager {
    
    export function isCurrentStatusFocusRunning() {
       if(statusFocus) {
-         var statusProcessInfo = statusProcesses[statusProcess];
+         var statusProcessInfo = statusProcesses[statusFocus];
       
          if(statusProcessInfo) {
             return statusProcessInfo.resource != null;
@@ -115,7 +115,7 @@ export module DebugManager {
       var statusInfo = statusProcesses[process];
       
       if(statusInfo != null && statusInfo.resource != null){
-         var statusResourcePath = FileTree.createResourcePath(statusInfo.resource);
+         var statusResourcePath: FilePath = FileTree.createResourcePath(statusInfo.resource);
          
          $("#toolbarDebug").css('opacity', '1.0');
          $("#toolbarDebug").css('filter', 'alpha(opacity=100)'); // msie
@@ -181,7 +181,7 @@ export module DebugManager {
                      active = "&nbsp;<input type='radio' checked><label></label>";
                   }
                   if(statusProcessInfo.resource != null) {
-                     var resourcePathDetails = FileTree.createResourcePath(statusProcessInfo.resource);
+                     var resourcePathDetails: FilePath = FileTree.createResourcePath(statusProcessInfo.resource);
                      
                      if(statusFocus == statusProcess && debugging) {
                         displayName = "<div class='debugFocusRecord'>"+statusProcess+"</div>";
@@ -190,7 +190,7 @@ export module DebugManager {
                         displayName = "<div class='debugRecord'>"+statusProcess+"</div>";
                         status = "RUNNING";               
                      }
-                     resourcePath = resourcePathDetails.resourcePath;
+                     resourcePath = resourcePathDetails.getResourcePath();
                      running = true;
                   } 
                   statusRecords.push({

@@ -4,50 +4,81 @@ import {ace} from "ace"
 //import {saveAs} from "filesaver"
 import {Common} from "common"
 import {EventBus} from "socket"
-import {FileTree} from "tree"
+import {FileTree, FilePath} from "tree"
 import {FileEditor} from "editor"
 import {Command} from "commands"
 import {Alerts} from "alert"
 
 export class FileResource {
    
-   resourcePath: string;
-   contentType: string;
-   lastModified: number;
-   fileContent: string;
-   downloadURL: string;
+   private _resourcePath: FilePath;
+   private _contentType: string;
+   private _lastModified: number;
+   private _fileContent: string;
+   private _downloadURL: string;
+   private _isHistorical: boolean;
+   private _isError: boolean;
    
-   constructor(resourcePath: string, contentType: string, lastModified: number, fileContent: string, downloadURL: string) {
-      this.resourcePath = resourcePath;
-      this.contentType = contentType;
-      this.lastModified = lastModified;
-      this.fileContent = fileContent;
-      this.downloadURL = downloadURL;
+   constructor(resourcePath: FilePath, contentType: string, lastModified: number, fileContent: string, downloadURL: string, isHistorical: boolean, isError: boolean) {
+      this._resourcePath = resourcePath;
+      this._contentType = contentType;
+      this._lastModified = lastModified;
+      this._fileContent = fileContent;
+      this._downloadURL = downloadURL;
+      this._isHistorical = isHistorical;
+      this._isError = isError;
    }
    
-   getTimeStamp() {
-      return Common.formatTimeMillis(this.lastModified);
+   public getResourcePath(): FilePath {
+      return this._resourcePath;
    }
    
-   getFileLength(){
-      return this.fileContent ? this.fileContent.length : -1;
+   public getContentType(): string {
+      return this._contentType;
+   }
+   
+   public getFileContent(): string {
+      return this._fileContent;
+   }
+   
+   public getDownloadURL(): string {
+      return this._downloadURL;
+   }     
+   
+   public getTimeStamp(): string {
+      return Common.formatTimeMillis(this._lastModified);
+   }
+   
+   public getLastModified(): number {
+      return this._lastModified;
+   }
+   
+   public getFileLength(): number{
+      return this._fileContent ? this._fileContent.length : -1;
+   }
+   
+   public isHistorical(): boolean {
+      return this._isHistorical;
+   }
+   
+   public isError(): boolean {
+      return this._isError;
    }
 }
  
 export module FileExplorer {
    
-   var treeVisible = false;
-   
    export function showTree() {
-      if (treeVisible == false) {
-         window.setTimeout(reloadTree, 500);
-         treeVisible = true;
-      }
+      reloadTreeAtRoot();
       EventBus.createRoute("RELOAD_TREE", reloadTree);
    
    }
    
    function reloadTree(socket, type, text) {
+      reloadTreeAtRoot();
+   }
+   
+   function reloadTreeAtRoot() {
       FileTree.createTree("/" + document.title, "explorer", "explorerTree", "/.", false, handleTreeMenu, function(event, data) {
          if (!data.node.isFolder()) {
             openTreeFile(data.node.tooltip, function(){});
@@ -58,7 +89,7 @@ export module FileExplorer {
    export function openTreeFile(resourcePath, afterLoad) {
       var filePath = resourcePath.toLowerCase();
       
-      if(isTextFile(filePath)) { // is it json or javascript
+      if(isJsonXmlOrJavascript(filePath)) { // is it json or javascript
          //var type = header.getResponseHeader("content-type");
          
          $.ajax({
@@ -66,11 +97,11 @@ export module FileExplorer {
             type: "get",
             dataType: 'text',
             success: function(response, status, header) {
-               var responseObject: FileResource = parseResponseMessage(resourcePath, resourcePath, header, response);
+               var responseObject: FileResource = parseResponseMessage(resourcePath, resourcePath, header, response, false, false);
                handleOpenTreeFile(responseObject, afterLoad);
             },
             error: function(response) {
-               var responseObject: FileResource = parseResponseMessage(resourcePath, resourcePath, null, response);
+               var responseObject: FileResource = parseResponseMessage(resourcePath, resourcePath, null, response, false, true);
                handleOpenTreeFile(responseObject, afterLoad);
             },
             async: false
@@ -80,11 +111,11 @@ export module FileExplorer {
             url: resourcePath,
             type: "get",
             success: function(response, status, header) {
-               var responseObject: FileResource = parseResponseMessage(resourcePath, resourcePath, header, response);
+               var responseObject: FileResource = parseResponseMessage(resourcePath, resourcePath, header, response, false, false);
                handleOpenTreeFile(responseObject, afterLoad);
             },
             error: function(response) {
-               var responseObject: FileResource = parseResponseMessage(resourcePath, resourcePath, null, response);
+               var responseObject: FileResource = parseResponseMessage(resourcePath, resourcePath, null, response, false, true);
                handleOpenTreeFile(responseObject, afterLoad);
             },
             async: false
@@ -97,18 +128,18 @@ export module FileExplorer {
       var backupResourcePath = resourcePath.replace(/^\/resource/i, "/history");
       //var backupUrl = backupResourcePath + "?time=" + timeStamp;
       
-      if(isTextFile(filePath)) { // is it json or javascript
+      if(isJsonXmlOrJavascript(filePath)) { // is it json or javascript
          var downloadURL = backupResourcePath + "?time=" + timeStamp;
          $.ajax({
             url: downloadURL,
             type: "get",
             dataType: 'text',
             success: function (response, status, header) {
-               var responseObject: FileResource = parseResponseMessage(resourcePath, downloadURL, header, response);
+               var responseObject: FileResource = parseResponseMessage(resourcePath, downloadURL, header, response, true, false);
                handleOpenTreeFile(responseObject, afterLoad);
             },
             error: function (response) {
-               var responseObject: FileResource = parseResponseMessage(resourcePath, downloadURL, null, response);
+               var responseObject: FileResource = parseResponseMessage(resourcePath, downloadURL, null, response, true, true);
                handleOpenTreeFile(responseObject, afterLoad);
             },
             async: false
@@ -119,11 +150,11 @@ export module FileExplorer {
             url: downloadURL,
             type: "get",            
             success: function (response, status, header) {
-               var responseObject: FileResource = parseResponseMessage(resourcePath, downloadURL, header, response);
+               var responseObject: FileResource = parseResponseMessage(resourcePath, downloadURL, header, response, true, false);
                handleOpenTreeFile(responseObject, afterLoad);
             },
             error: function (response) {
-               var responseObject: FileResource = parseResponseMessage(resourcePath, downloadURL, null, response);
+               var responseObject: FileResource = parseResponseMessage(resourcePath, downloadURL, null, response, true, true);
                handleOpenTreeFile(responseObject, afterLoad);
             },
             async: false
@@ -131,7 +162,8 @@ export module FileExplorer {
       }
    }
    
-   function parseResponseMessage(resourcePath, downloadURL, responseHeader, responseEntity): FileResource {
+   function parseResponseMessage(resourcePath: string, downloadURL: string, responseHeader: any, responseEntity: any, isHistory: boolean, isError: boolean): FileResource {
+      var filePath: FilePath = FileTree.createResourcePath(resourcePath);
       var lastModified: number = new Date().getTime();
       var contentType: string = "application/octet-stream";
       
@@ -145,24 +177,24 @@ export module FileExplorer {
          if(contentTypeHeader) {
             contentType = contentTypeHeader;
          }
-         return new FileResource(resourcePath, contentType, lastModified, responseEntity, downloadURL);
+         return new FileResource(filePath, contentType, lastModified, responseEntity, downloadURL, isHistory, isError);
       }
-      return new FileResource(resourcePath, contentType, lastModified, "// Count not find " + resourcePath, downloadURL);
+      return new FileResource(filePath, contentType, lastModified, "// Count not find " + resourcePath, downloadURL, isHistory, isError);
    }
    
    function handleOpenTreeFile(responseObject: FileResource, afterLoad) {
       //console.log(responseObject);
       
-      if(isImageFileType(responseObject.contentType)) {
-         handleOpenFileInNewTab(responseObject.downloadURL);
-      } else if(isBinaryFileType(responseObject.contentType)) {
-         handleDownloadFile(responseObject.downloadURL);
+      if(isImageFileType(responseObject.getContentType())) {
+         handleOpenFileInNewTab(responseObject.getDownloadURL());
+      } else if(isBinaryFileType(responseObject.getContentType())) {
+         handleDownloadFile(responseObject.getDownloadURL());
       } else {
-         var mode = FileEditor.resolveEditorMode(responseObject.resourcePath);
+         var mode = FileEditor.resolveEditorMode(responseObject.getResourcePath().getResourcePath());
          
 //         if(FileEditor.isEditorChanged()) {
-//            var editorData = FileEditor.loadEditor();
-//            var editorResource = editorData.resource;
+//            var editorState = FileEditor.currentEditorState();
+//            var editorResource = editorState.resource;
 //            var message = "Save resource " + editorResource.filePath;
 //            
 //            Alerts.createConfirmAlert("File Changed", message, "Save", "Ignore", 
@@ -176,7 +208,7 @@ export module FileExplorer {
 //            FileEditor.updateEditor(response, resourcePath);
 //         }
          FileEditor.updateEditor(responseObject);
-         console.log("OPEN: " + responseObject.resourcePath)
+         console.log("OPEN: " + responseObject.getResourcePath().getResourcePath())
       }
       afterLoad();
    }
@@ -190,7 +222,7 @@ export module FileExplorer {
       window.location.href = downloadURL;
     }
    
-   function isTextFile(filePath) {
+   function isJsonXmlOrJavascript(filePath) {
       return Common.stringEndsWith(filePath, ".json") || 
               Common.stringEndsWith(filePath, ".js") || 
               Common.stringEndsWith(filePath, ".xml") ||

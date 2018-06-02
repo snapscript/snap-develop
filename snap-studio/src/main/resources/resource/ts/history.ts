@@ -1,7 +1,7 @@
 import * as $ from "jquery"
 import {w2ui} from "w2ui"
-import {FileTree} from "tree"
-import {FileEditor} from "editor"
+import {FileTree, FilePath} from "tree"
+import {FileEditor, FileEditorState} from "editor"
 import {FileExplorer} from "explorer"
 
 export module History {
@@ -14,8 +14,14 @@ export module History {
    } 
    
    export function showFileHistory() {
-      var editorData = FileEditor.loadEditor();
-      var resource = editorData.resource.projectPath;
+      var editorState: FileEditorState = FileEditor.currentEditorState();
+      var editorPath: FilePath = editorState.getResource();
+   
+      if(!editorPath) {
+         console.log("Editor path does not exist: ", editorState);
+      }
+      var resource = editorPath.getProjectPath();
+      
       $.ajax({
          url: '/history/' + document.title + '/' + resource,
          success: function (currentRecords) {
@@ -24,14 +30,14 @@ export module History {
             
             for (var i = 0; i < currentRecords.length; i++) {
                var currentRecord = currentRecords[i];
-               var recordResource = FileTree.createResourcePath(currentRecord.path);
+               var recordResource: FilePath = FileTree.createResourcePath(currentRecord.path);
                
                historyRecords.push({ 
                   recid: historyIndex++,
-                  resource: "<div class='historyPath'>" + recordResource.filePath + "</div>", // /blah/file.snap 
+                  resource: "<div class='historyPath'>" + recordResource.getFilePath() + "</div>", // /blah/file.snap 
                   date: currentRecord.date,
                   time: currentRecord.timeStamp,
-                  script: recordResource.resourcePath // /resource/<project>/blah/file.snap
+                  script: recordResource.getResourcePath() // /resource/<project>/blah/file.snap
                });
             }
             w2ui['history'].records = historyRecords;
@@ -60,12 +66,12 @@ export module History {
       
       if(hashIndex != -1) {
          var resource = location.substring(hashIndex + 1);
-         var resourceData = FileTree.createResourcePath(resource);
-         var editorData = FileEditor.loadEditor();
-         var editorResource = editorData.resource;
+         var resourceData: FilePath = FileTree.createResourcePath(resource);
+         var editorState: FileEditorState = FileEditor.currentEditorState();
+         var editorResource: FilePath = editorState.getResource();
          
-         if(editorResource == null || editorResource.resourcePath != resourceData.resourcePath) { // only if changed
-            FileExplorer.openTreeFile(resourceData.resourcePath, function() {});
+         if(editorResource == null || editorResource.getResourcePath() != resourceData.getResourcePath()) { // only if changed
+            FileExplorer.openTreeFile(resourceData.getResourcePath(), function() {});
          }
       }
    }
