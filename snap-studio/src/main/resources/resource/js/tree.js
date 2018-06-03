@@ -60,9 +60,9 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
         FileTree.createTreeOfDepth = createTreeOfDepth;
         function showTreeNode(id, treePath) {
             if (id && treePath) {
-                if (treePath.resourcePath) {
-                    showNodeAndScroll(id, treePath.resourcePath);
-                    showNodeAndScroll(id, treePath.resourcePath); // do it twice
+                if (treePath.getResourcePath()) {
+                    showNodeAndScroll(id, treePath.getResourcePath());
+                    showNodeAndScroll(id, treePath.getResourcePath()); // do it twice
                 }
             }
         }

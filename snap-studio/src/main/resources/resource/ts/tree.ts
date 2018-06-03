@@ -78,11 +78,11 @@ export module FileTree {
       });
    }
    
-   export function showTreeNode(id, treePath) {
+   export function showTreeNode(id, treePath: FilePath) {
       if(id && treePath) {
-         if(treePath.resourcePath) {
-            showNodeAndScroll(id, treePath.resourcePath);
-            showNodeAndScroll(id, treePath.resourcePath); // do it twice
+         if(treePath.getResourcePath()) {
+            showNodeAndScroll(id, treePath.getResourcePath());
+            showNodeAndScroll(id, treePath.getResourcePath()); // do it twice
          }
       }
    }
