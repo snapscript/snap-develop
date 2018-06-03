@@ -583,7 +583,7 @@ export module Command {
       }
    }
    
-   export function saveEditorOnClose(editorText, editorResource: FilePath, closeFunction: any) {
+   export function saveEditorOnClose(editorText, editorResource: FilePath) {
       if (editorResource != null && editorResource.getResourcePath()) {
          DialogBuilder.openTreeDialog(editorResource, true, function(resourceDetails: FilePath) {
             var message = {
@@ -595,12 +595,10 @@ export module Command {
             };
             //ProcessConsole.clearConsole();
             EventBus.sendEvent("SAVE", message);
-            closeFunction();
             FileEditor.clearSavedEditorBuffer(editorResource.getResourcePath()); // make sure its synce
          }, 
          function(resourceDetails) {
             // file was not saved
-            closeFunction();
             FileEditor.clearSavedEditorBuffer(editorResource.getResourcePath()); 
          });
       } 

@@ -433,7 +433,6 @@ export module Project {
          
          if(tabs.tabs.length > 1) {
             closeEditorTabForPath(data.getResource().getResourcePath());
-            deleteEditorTab(data.getResource().getResourcePath());
          }
       }
    }
@@ -449,8 +448,19 @@ export module Project {
             tabs.remove(resource); // remove the tab
             
             if(removeTab.active) {
-               activateAnyEditorTab(resource); // if it was active then activate another
+               activateAnyEditorTab(); // if it was active then activate another 
             }  
+         }
+      }
+      if(tabs.tabs.length == 1) {
+         var tabList = tabs.tabs;
+         
+         for(var i = 0; i < tabList.length; i++) {
+            var nextTab = tabList[i];
+            
+            if(nextTab) {
+               nextTab.closable = false;
+            }
          }
       }
    }
@@ -579,44 +589,34 @@ export module Project {
    }
    
    function closeEditorTabForPath(resourcePathToClose) {
+      deleteEditorTab(resourcePathToClose); // activate some other tab
+      
        if(FileEditor.isEditorChangedForPath(resourcePathToClose)) {
           var currentBuffer: FileEditorBuffer = FileEditor.getEditorBufferForResource(resourcePathToClose);
           var editorResource: FilePath = FileTree.createResourcePath(resourcePathToClose);
 
-          Command.saveEditorOnClose(currentBuffer.getSource(), editorResource, function() {
-             activateAnyEditorTab(resourcePathToClose); // activate some other tab
-          }); // save the file;
+          Command.saveEditorOnClose(currentBuffer.getSource(), editorResource);
           console.log("CLOSE: " + resourcePathToClose);
        } else {
           FileEditor.clearSavedEditorBuffer(resourcePathToClose); // remove history anyway as its been closed 
-          activateAnyEditorTab(resourcePathToClose); // activate some other tab
           console.log("CLOSE: " + resourcePathToClose);
        }
    }
    
    
-   function activateAnyEditorTab(resourcePathDeleted) {
+   function activateAnyEditorTab() {
       var layout = findActiveEditorLayout();
       var tabs = findActiveEditorTabLayout();
       
       if(tabs != null) {
          var tabList = tabs.tabs;
-   
-         for(var i = 0; i < tabList.length; i++) {
-            var nextTab = tabList[i];
-            
-            if(nextTab != null && nextTab.id == resourcePathDeleted) {
-               nextTab.id = 'editTab'; // make sure not to enable, bit of a hack
-               nextTab.closable = true;
-               nextTab.active = false;
-            }
-         }
+
          for(var i = 0; i < tabList.length; i++) {
             var nextTab = tabList[i];
             
             if(nextTab != null && nextTab.id != 'editTab') {
                tabs.active = nextTab.id;
-               tabs.closable = false;
+               //tabs.closable = false;
                FileExplorer.openTreeFile(nextTab.id, function(){}); // browse style makes no difference here
                break;
             }

@@ -159,9 +159,7 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor", "pro
                     }
                 }
             }
-            showProblems();
-            {
-            }
+            showProblems(); // if it has changed then highlight
         }
     })(ProblemManager = exports.ProblemManager || (exports.ProblemManager = {}));
 });

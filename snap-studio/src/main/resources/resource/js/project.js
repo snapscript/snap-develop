@@ -369,7 +369,6 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
                 var tabs = findActiveEditorTabLayout();
                 if (tabs.tabs.length > 1) {
                     closeEditorTabForPath(data.getResource().getResourcePath());
-                    deleteEditorTab(data.getResource().getResourcePath());
                 }
             }
         }
@@ -382,7 +381,16 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
                 if (removeTab && removeTab.closable) {
                     tabs.remove(resource); // remove the tab
                     if (removeTab.active) {
-                        activateAnyEditorTab(resource); // if it was active then activate another
+                        activateAnyEditorTab(); // if it was active then activate another 
+                    }
+                }
+            }
+            if (tabs.tabs.length == 1) {
+                var tabList = tabs.tabs;
+                for (var i = 0; i < tabList.length; i++) {
+                    var nextTab = tabList[i];
+                    if (nextTab) {
+                        nextTab.closable = false;
                     }
                 }
             }
@@ -496,38 +504,28 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
         }
         Project.createEditorTab = createEditorTab;
         function closeEditorTabForPath(resourcePathToClose) {
+            deleteEditorTab(resourcePathToClose); // activate some other tab
             if (editor_1.FileEditor.isEditorChangedForPath(resourcePathToClose)) {
                 var currentBuffer = editor_1.FileEditor.getEditorBufferForResource(resourcePathToClose);
                 var editorResource = tree_1.FileTree.createResourcePath(resourcePathToClose);
-                commands_1.Command.saveEditorOnClose(currentBuffer.getSource(), editorResource, function () {
-                    activateAnyEditorTab(resourcePathToClose); // activate some other tab
-                }); // save the file;
+                commands_1.Command.saveEditorOnClose(currentBuffer.getSource(), editorResource);
                 console.log("CLOSE: " + resourcePathToClose);
             }
             else {
                 editor_1.FileEditor.clearSavedEditorBuffer(resourcePathToClose); // remove history anyway as its been closed 
-                activateAnyEditorTab(resourcePathToClose); // activate some other tab
                 console.log("CLOSE: " + resourcePathToClose);
             }
         }
-        function activateAnyEditorTab(resourcePathDeleted) {
+        function activateAnyEditorTab() {
             var layout = findActiveEditorLayout();
             var tabs = findActiveEditorTabLayout();
             if (tabs != null) {
                 var tabList = tabs.tabs;
                 for (var i = 0; i < tabList.length; i++) {
                     var nextTab = tabList[i];
-                    if (nextTab != null && nextTab.id == resourcePathDeleted) {
-                        nextTab.id = 'editTab'; // make sure not to enable, bit of a hack
-                        nextTab.closable = true;
-                        nextTab.active = false;
-                    }
-                }
-                for (var i = 0; i < tabList.length; i++) {
-                    var nextTab = tabList[i];
                     if (nextTab != null && nextTab.id != 'editTab') {
                         tabs.active = nextTab.id;
-                        tabs.closable = false;
+                        //tabs.closable = false;
                         explorer_1.FileExplorer.openTreeFile(nextTab.id, function () { }); // browse style makes no difference here
                         break;
                     }

@@ -181,7 +181,7 @@ export module FileExplorer {
       var lastModified: number = new Date().getTime();
       var contentType: string = "application/octet-stream";
       
-      if(responseHeader && responseEntity) {
+      if(responseHeader && responseEntity != null) {
          var contentTypeHeader = responseHeader.getResponseHeader("content-type");
          var lastModifiedHeader = responseHeader.getResponseHeader("last-modified");
          

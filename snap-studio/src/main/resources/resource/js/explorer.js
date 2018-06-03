@@ -150,7 +150,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
             var filePath = tree_1.FileTree.createResourcePath(resourcePath);
             var lastModified = new Date().getTime();
             var contentType = "application/octet-stream";
-            if (responseHeader && responseEntity) {
+            if (responseHeader && responseEntity != null) {
                 var contentTypeHeader = responseHeader.getResponseHeader("content-type");
                 var lastModifiedHeader = responseHeader.getResponseHeader("last-modified");
                 if (lastModifiedHeader) {

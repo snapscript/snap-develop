@@ -28,19 +28,60 @@ public class ProblemFinder {
             node.getNodes();
          }
       }catch(Exception cause) {
-         String message = cause.getMessage();
-         Pattern pattern = Pattern.compile("(.*)\\s+in\\s+(.*)\\s+at\\s+line\\s+(\\d+)");
-         Matcher matcher = pattern.matcher(message);
+         ProblemType[] types = ProblemType.values();
          
-         if(matcher.matches()) {
-            String description = matcher.group(1);
-            String match = matcher.group(3);
-            int line = Integer.parseInt(match);
+         for(ProblemType type : types) {
+            Problem problem = type.extract(project, resource, cause);
             
-            return new Problem(project, resource, description, line);
+            if(problem != null) {
+               return problem;
+            }
          }
-         return new Problem(project, resource, message, 1);
       }
       return null;
+   }
+   
+   private static enum ProblemType {
+      NORMAL_ERROR {
+         @Override
+         public Problem extract(String project, String resource, Exception cause) {
+            String message = cause.getMessage();
+            Pattern pattern = Pattern.compile("(.*)\\s+in\\s+(.*)\\s+at\\s+line\\s+(\\d+)", Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(message);
+            
+            if(matcher.matches()) {
+               String description = matcher.group(1);
+               String match = matcher.group(3);
+               int line = Integer.parseInt(match);
+               
+               return new Problem(project, resource, description, line);
+            }
+            return null;
+         }
+      },
+      SOURCE_EMPTY_ERROR {
+         @Override
+         public Problem extract(String project, String resource, Exception cause) {
+            String message = cause.getMessage();
+            Pattern pattern = Pattern.compile("(Source\\s+text\\s+is\\s+empty).*", Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(message);
+            
+            if(matcher.matches()) {
+               String description = matcher.group(1);               
+               return new Problem(project, resource, description, 1);
+            }
+            return null;
+         }
+      },
+      UNKNOWN_ERROR {
+         @Override
+         public Problem extract(String project, String resource, Exception cause) {
+            String message = cause.getMessage();
+            return new Problem(project, resource, message, 1);
+         }
+      };
+      
+      abstract Problem extract(String project, String resource, Exception cause);      
+
    }
 }

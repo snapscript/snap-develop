@@ -529,7 +529,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             }
         }
         Command.saveEditor = saveEditor;
-        function saveEditorOnClose(editorText, editorResource, closeFunction) {
+        function saveEditorOnClose(editorText, editorResource) {
             if (editorResource != null && editorResource.getResourcePath()) {
                 dialog_1.DialogBuilder.openTreeDialog(editorResource, true, function (resourceDetails) {
                     var message = {
@@ -541,11 +541,9 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                     };
                     //ProcessConsole.clearConsole();
                     socket_1.EventBus.sendEvent("SAVE", message);
-                    closeFunction();
                     editor_1.FileEditor.clearSavedEditorBuffer(editorResource.getResourcePath()); // make sure its synce
                 }, function (resourceDetails) {
                     // file was not saved
-                    closeFunction();
                     editor_1.FileEditor.clearSavedEditorBuffer(editorResource.getResourcePath());
                 });
             }

@@ -203,7 +203,7 @@ export module ProblemManager {
             }
          }
    	}
-   	showProblems() { // if it has changed then highlight
+   	showProblems(); // if it has changed then highlight
    }
 }
 
