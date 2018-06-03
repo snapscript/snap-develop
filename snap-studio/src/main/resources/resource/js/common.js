@@ -111,14 +111,27 @@ define(["require", "exports", "jquery", "w2ui"], function (require, exports, $, 
                 }
             }
         }
+        function isObjectString(object) {
+            return (typeof object) == 'string';
+        }
+        function isObjectNumeric(object) {
+            return (typeof object) == 'number';
+        }
         function sortOnSingleColumn(records, column, type) {
             var sortedRecords = [];
             var sortGroups = {};
+            var sortNumeric = true;
             for (var i = 0; i < records.length; i++) {
                 var record = records[i];
                 if (record) {
                     var columnToSort = record[column];
-                    var keyToSort = columnToSort.toLowerCase();
+                    var keyToSort = columnToSort;
+                    if (isObjectString(keyToSort)) {
+                        keyToSort = keyToSort.toLowerCase();
+                    }
+                    if (!isObjectNumeric(keyToSort)) {
+                        sortNumeric = false;
+                    }
                     var sortGroup = sortGroups[keyToSort];
                     if (sortGroup == null) {
                         sortGroup = [];
@@ -130,10 +143,22 @@ define(["require", "exports", "jquery", "w2ui"], function (require, exports, $, 
             var sortedKeys = [];
             for (var sortKey in sortGroups) {
                 if (sortGroups.hasOwnProperty(sortKey)) {
-                    sortedKeys.push(sortKey);
+                    if (sortNumeric) {
+                        sortedKeys.push(parseFloat(sortKey));
+                    }
+                    else {
+                        sortedKeys.push(sortKey);
+                    }
                 }
             }
-            sortedKeys.sort();
+            if (sortNumeric) {
+                sortedKeys.sort(function (a, b) {
+                    return a - b;
+                });
+            }
+            else {
+                sortedKeys.sort();
+            }
             if (type != 'asc') {
                 sortedKeys.reverse();
             }

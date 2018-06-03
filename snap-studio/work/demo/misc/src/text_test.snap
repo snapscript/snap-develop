@@ -1,3 +1,4 @@
-const x = 11;
+URL("http://www.bbc.co.uk").get().success(r -> println(r.status)).failure(r -> println("err="+r.status));
 
-x=12;
+let x = URL("http://www.bbc.co.uk").get().status;
+println(x);
