@@ -461,7 +461,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                     console_1.ProcessConsole.clearConsole();
                     socket_1.EventBus.sendEvent("SAVE", message);
                     var modificationTime = new Date().getTime();
-                    var fileResource = new explorer_1.FileResource(resourceDetails.getProjectPath(), null, modificationTime, "", null);
+                    var fileResource = new explorer_1.FileResource(resourceDetails, null, modificationTime, "", null, false, false);
                     editor_1.FileEditor.updateEditor(fileResource);
                 }
             });
@@ -523,13 +523,13 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                 socket_1.EventBus.sendEvent("SAVE", message);
                 if (update) {
                     var modificationTime = new Date().getTime();
-                    var fileResource = new explorer_1.FileResource(editorPath.getProjectPath(), null, modificationTime, editorState.getSource(), null);
+                    var fileResource = new explorer_1.FileResource(editorPath, null, modificationTime, editorState.getSource(), null, false, false);
                     editor_1.FileEditor.updateEditor(fileResource);
                 }
             }
         }
         Command.saveEditor = saveEditor;
-        function saveEditorOnClose(editorText, editorResource) {
+        function saveEditorOnClose(editorText, editorResource, closeFunction) {
             if (editorResource != null && editorResource.getResourcePath()) {
                 dialog_1.DialogBuilder.openTreeDialog(editorResource, true, function (resourceDetails) {
                     var message = {
@@ -541,9 +541,11 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                     };
                     //ProcessConsole.clearConsole();
                     socket_1.EventBus.sendEvent("SAVE", message);
-                    editor_1.FileEditor.clearSavedEditorBuffer(editorResource.getResourcePath()); // make sure its synced
+                    closeFunction();
+                    editor_1.FileEditor.clearSavedEditorBuffer(editorResource.getResourcePath()); // make sure its synce
                 }, function (resourceDetails) {
                     // file was not saved
+                    closeFunction();
                     editor_1.FileEditor.clearSavedEditorBuffer(editorResource.getResourcePath());
                 });
             }
@@ -564,9 +566,6 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                     };
                     console_1.ProcessConsole.clearConsole();
                     socket_1.EventBus.sendEvent("DELETE", message);
-                    if (editorState.getResource() != null && editorState.getResource().getResourcePath() == resourceDetails.getResourcePath()) {
-                        editor_1.FileEditor.resetEditor();
-                    }
                     project_1.Project.deleteEditorTab(resourceDetails.getResourcePath()); // rename tabs if open
                 }, function () { });
             }

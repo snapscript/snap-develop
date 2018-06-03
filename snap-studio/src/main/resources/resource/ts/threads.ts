@@ -8,6 +8,7 @@ import {VariableManager} from "variables"
 import {FileExplorer} from "explorer"
 import {Profiler} from "profiler"
 import {StatusPanel} from "status"
+import {ProblemManager} from "problem"
 
 export module ThreadManager {
    
@@ -45,6 +46,7 @@ export module ThreadManager {
       suspendedThreads = {};
       clearFocusThread();
       FileEditor.clearEditorHighlights(); // this should be done in editor.js, i.e EventBus.createRoute("EXIT" ... )
+      ProblemManager.highlightProblems(); // don't hide the errors
       VariableManager.clearVariables();
       clearThreads();
    }

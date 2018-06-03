@@ -27,7 +27,7 @@ module DependencyInjection{
          if(def != null) {
             var type = def['class'];
             var args = def['constructor-args'];
-            var func = def['init-method'];
+            var fn = def['init-method'];
             var list = [];
             
             for(var i = 0; i < args.length; i++){
@@ -35,8 +35,8 @@ module DependencyInjection{
             }
             registry[name] = load(type, name, list);
             
-            if(func != null) {
-               eval("registry[name].${func}()");
+            if(fn != null) {
+               eval("registry[name].${fn}()");
             }
             return registry[name];
          }

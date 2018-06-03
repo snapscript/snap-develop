@@ -9,10 +9,10 @@ class TestCase {
    runTests(){
       println(this.class);
       println(this.class.getFunctions());
-      for(var func in this.class.functions){
-         if(func.name.startsWith("test")){   
+      for(var fn in this.class.functions){
+         if(fn.name.startsWith("test")){   
             System.out.println("Running.. "+func.name+"()");
-            func();
+            fn();
          }
       }
    }

@@ -11,12 +11,14 @@ export module ProblemManager {
    class ProblemItem {
    
       private _resource: FilePath;
+      private _description: string;
       private _line: number;
       private _message: string;
       private _project: string;
       private _time: number;
    
-      constructor(resource: FilePath, line: number, message: string, project: string, time: number) {
+      constructor(resource: FilePath, line: number, description: string, message: string, project: string, time: number) {
+         this._description = description;
          this._resource = resource;
          this._line = line;
          this._message = message;
@@ -25,19 +27,23 @@ export module ProblemManager {
       }
       
       public isExpired(): boolean {
-         return this._time + 100000 > Common.currentTime()
+         return this._time + 120000 < Common.currentTime(); // expire after 2 minutes
       }
       
       public getKey(): string {
-         return this._resource + ":" + this._line;
+         return this._resource.getResourcePath() + ":" + this._line;
       }
       
-      public getResource(): FilePath {
+      public getResourcePath(): FilePath {
          return this._resource;
       }
       
       public getLine(): number {
          return this._line;
+      }
+      
+      public getDescription(): string {
+         return this._description;
       }
       
       public getMessage(): string {
@@ -62,31 +68,57 @@ export module ProblemManager {
    }
    
    function refreshProblems() {
-      var timeMillis = Common.currentTime();
       var activeProblems = {};
-      var expiryCount = 0;
       
       for (var problemKey in currentProblems) {
          if (currentProblems.hasOwnProperty(problemKey)) {
             var problemItem: ProblemItem = currentProblems[problemKey];
             
             if(problemItem != null) {
-               if(problemItem.isExpired()) {
+               var problemResource: FilePath = problemItem.getResourcePath();
+               var editorBuffer: FileEditorBuffer = FileEditor.getEditorBufferForResource(problemResource.getResourcePath());
+            
+               if(!isProblemInactive(editorBuffer, problemItem)) { // if its not inactive keep it
                   activeProblems[problemKey] = problemItem;
-               } else {
-                  expiryCount++;
                }
             }
          }
       }
-      currentProblems = activeProblems; // reset refreshed statuses
+      updateActiveProblems(activeProblems);
+   }
+   
+   function updateActiveProblems(activeProblems) {
+      var missingProblems: number = 0
       
-      if(expiryCount > 0) {
-         showProblems(); // something expired!
+      for (var problemKey in currentProblems) {
+         if (!activeProblems.hasOwnProperty(problemKey)) {
+            missingProblems++; // something changed
+         }
+      }
+      if(missingProblems > 0) {
+         currentProblems = activeProblems;
+         showProblems();
       }
    }
    
-   export function showProblems() {
+   function isProblemInactive(editorBuffer: FileEditorBuffer, problemItem: ProblemItem) {
+      var editorResource: FilePath = editorBuffer.getResource();
+      var problemTime = problemItem.getTime();
+      var lastEditTime = editorBuffer.getLastModified();
+      
+      if(problemTime < lastEditTime) { // buffer was edited after problem
+         return true;
+      }
+      if(!problemItem.isExpired()) {
+         return false;
+      }
+      if(editorBuffer.isBufferCurrent()) { // never expires if focused                     
+         return false;
+      } 
+      return true; // not current or problem newer than edit
+   }
+   
+   export function showProblems(): boolean {
       var problemRecords = [];
       var problemIndex = 1;
       
@@ -99,29 +131,20 @@ export module ProblemManager {
          	      recid: problemIndex++,
          		   line: problemItem.getLine(),
          		   location: "Line " + problemItem.getLine(), 
-                  resource: problemItem.getResource().getFilePath(), // /blah/file.snap 
+                  resource: problemItem.getResourcePath().getFilePath(), // /blah/file.snap 
                   description: problemItem.getMessage(), 
                   project: problemItem.getProject(), 
-                  script: problemItem.getResource().getResourcePath() // /resource/<project>/blah/file.snap
+                  script: problemItem.getResourcePath().getResourcePath() // /resource/<project>/blah/file.snap
                });
          	}
          }
       }
       if(Common.updateTableRecords(problemRecords, 'problems')) {
+         highlightProblems(); // highlight them also      
          Project.showProblemsTab(); // focus the problems tab
+         return true;
       }
-   }
-   
-   function clearProblems() {
-   	var problems = w2ui['problems'];
-   	
-   	currentProblems = {};
-      FileEditor.clearEditorHighlights();
-       
-   	if(problems != null) {
-   	    problems.records = [];
-   	    problems.refresh();
-   	}
+      return false;
    }
    
    export function highlightProblems(){
@@ -137,18 +160,14 @@ export module ProblemManager {
                if(Common.stringStartsWith(problemKey, editorResource.getResourcePath())) {
                   var problemItem: ProblemItem = currentProblems[problemKey];
                   
-                  if(problemItem != null) {
-                     FileEditor.clearEditorHighlights(); // clear if the resource is focused
-                     highlightUpdates.push(problemItem.getLine());
-                  } else {
-                     FileEditor.clearEditorHighlights(); // clear if the resource is focused
+                  if(problemItem != null) {                     
+                     highlightUpdates.push(problemItem.getLine()); 
                   }
-               } else {
-                  console.log("Clear highlights in " + editorResource);
-                  FileEditor.clearEditorHighlights(); // clear if the resource is focused
-               }
+               } 
             }
          }
+         FileEditor.clearEditorHighlights(); 
+         
          if(highlightUpdates.length > 0) {
             FileEditor.createMultipleEditorHighlights(highlightUpdates, "problemHighlight");
          }
@@ -162,10 +181,17 @@ export module ProblemManager {
    	var problemItem: ProblemItem = new ProblemItem(
             resourcePath,
    	      message.line,
+   	      message.description,
    	      "<div class='errorDescription'>"+message.description+"</div>",
    	      message.project,
    	      message.time
    	);
+   	if(message.line >= 0) {
+   	   console.log("Add problem '" + problemItem.getDescription() + "' at line '" + problemItem.getLine() + "'");
+   	} else {
+   	   console.log("Clear all problems for " + problemItem.getResourcePath() + "");
+   	}  	
+   	
    	if(problemItem.getLine() >= 0) {
    	   currentProblems[problemItem.getKey()] = problemItem;
    	} else {
@@ -177,8 +203,7 @@ export module ProblemManager {
             }
          }
    	}
-   	showProblems();
-   	highlightProblems(); // highlight the problems
+   	showProblems() { // if it has changed then highlight
    }
 }
 

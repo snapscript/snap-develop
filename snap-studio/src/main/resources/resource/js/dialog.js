@@ -2,6 +2,10 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
     "use strict";
     var DialogBuilder;
     (function (DialogBuilder) {
+        function evaluateExpressionDialog(expressionToEvaluate) {
+            createEvaluateDialog(expressionToEvaluate, "Evaluate Expression");
+        }
+        DialogBuilder.evaluateExpressionDialog = evaluateExpressionDialog;
         function openTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback) {
             if (resourceDetails != null) {
                 createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, false, "Save Changes");
@@ -27,10 +31,6 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, true, "New Directory");
         }
         DialogBuilder.newDirectoryTreeDialog = newDirectoryTreeDialog;
-        function evaluateExpressionDialog(expressionToEvaluate) {
-            createEvaluateDialog(expressionToEvaluate, "Evaluate Expression");
-        }
-        DialogBuilder.evaluateExpressionDialog = evaluateExpressionDialog;
         function createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle) {
             createTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle, "/" + document.title);
         }
@@ -39,7 +39,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             var windowWidth = $(window).width(); // returns width of browser viewport
             var dialogExpandPath = "/";
             if (resourceDetails != null) {
-                dialogExpandPath = resourceDetails.projectDirectory; // /src/blah
+                dialogExpandPath = resourceDetails.getProjectDirectory(); // /src/blah
             }
             var dialogBody = createFileSelectionDialogLayout(dialogExpandPath, '');
             var focusInput = function () {
@@ -111,9 +111,9 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 w2ui_1.w2popup.close();
             });
             if (resourceDetails != null) {
-                $('#dialogFolder').html(tree_1.FileTree.cleanResourcePath(resourceDetails.projectDirectory)); // /src/blah
+                $('#dialogFolder').html(tree_1.FileTree.cleanResourcePath(resourceDetails.getProjectDirectory())); // /src/blah
                 if (!nameIsBlank) {
-                    $('#dialogPath').html(tree_1.FileTree.cleanResourcePath(resourceDetails.fileName)); // script.snap
+                    $('#dialogPath').html(tree_1.FileTree.cleanResourcePath(resourceDetails.getFileName())); // script.snap
                 }
             }
             tree_1.FileTree.createTree(treePath, "dialog", "dialogTree", dialogExpandPath, foldersOnly, null, function (event, data) {

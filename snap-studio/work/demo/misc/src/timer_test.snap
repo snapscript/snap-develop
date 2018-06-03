@@ -1,6 +1,6 @@
-function time(name, func: ()){
+function time(name, fn: ()){
    var s = System.currentTimeMillis();
-   func();
+   fn();
    var f = System.currentTimeMillis();
    println(name +": "+(f-s));
 }

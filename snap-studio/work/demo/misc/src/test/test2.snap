@@ -3,13 +3,13 @@ import text.DecimalFormat;
 
 class TestTimer{
    timeTests(){
-      for(var func in this.class.functions){
-         if(func.name.startsWith("test")){
+      for(var fn in this.class.functions){
+         if(fn.name.startsWith("test")){
             var start=currentTimeMillis();            
-            func();
+            fn();
             var finish=currentTimeMillis();
             var duration=finish-start;
-            System.out.println("Time for "+func.name+"() was "+duration+" ms");
+            System.out.println("Time for "+fn.name+"() was "+duration+" ms");
          }
       }
    }

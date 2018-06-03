@@ -4,7 +4,7 @@ import {Common} from "common"
 import {EventBus} from "socket"
 import {ProcessConsole} from "console"
 import {ProblemManager} from "problem"
-import {FileEditor, FileEditorState} from "editor"
+import {FileEditor, FileEditorState, FileEditorBuffer} from "editor"
 import {LoadSpinner} from "spinner"
 import {FileTree, FilePath} from "tree"
 import {ThreadManager} from "threads"
@@ -339,10 +339,6 @@ export module Project {
    function showEditorFileContent(containsEditor) {
       var newParent = document.getElementById('editParent');
       var oldParent = document.getElementById('editParentHidden');
-      var newParentInfo = "editParent=" + (newParent == null);
-      var oldParentInfo = "editParentHidden=" + (oldParent == null);
-      
-      console.log("Project.showEditorFileContent(" + containsEditor + "): '" + newParentInfo +  "' '" + oldParentInfo + "'")
    
       if(oldParent != null && newParent != null){
          $("#help").remove();
@@ -357,10 +353,6 @@ export module Project {
    function showEditorHelpContent(containsEditor) { // hack to render editor
       var newParent = document.getElementById('editParent');
       var editorFileName = document.getElementById("editFileName");
-      var newParentInfo = "editParent=" + (newParent == null);
-      var editorFileNameInfo = "editFileName=" + (editorFileName == null);
-      
-      console.log("Project.showEditorHelpContent(" + containsEditor + "): '" + newParentInfo +  "' '" + editorFileNameInfo + "'")
       
       
       if(newParent != null && editorFileName != null) {
@@ -458,7 +450,7 @@ export module Project {
             
             if(removeTab.active) {
                activateAnyEditorTab(resource); // if it was active then activate another
-            }
+            }  
          }
       }
    }
@@ -588,15 +580,18 @@ export module Project {
    
    function closeEditorTabForPath(resourcePathToClose) {
        if(FileEditor.isEditorChangedForPath(resourcePathToClose)) {
-          var currentBuffer = FileEditor.loadSavedEditorBuffer(resourcePathToClose);
+          var currentBuffer: FileEditorBuffer = FileEditor.getEditorBufferForResource(resourcePathToClose);
           var editorResource: FilePath = FileTree.createResourcePath(resourcePathToClose);
 
-          Command.saveEditorOnClose(currentBuffer.buffer, editorResource); // save the file;
+          Command.saveEditorOnClose(currentBuffer.getSource(), editorResource, function() {
+             activateAnyEditorTab(resourcePathToClose); // activate some other tab
+          }); // save the file;
           console.log("CLOSE: " + resourcePathToClose);
        } else {
+          FileEditor.clearSavedEditorBuffer(resourcePathToClose); // remove history anyway as its been closed 
+          activateAnyEditorTab(resourcePathToClose); // activate some other tab
           console.log("CLOSE: " + resourcePathToClose);
        }
-       activateAnyEditorTab(resourcePathToClose); // activate some other tab
    }
    
    
@@ -606,7 +601,6 @@ export module Project {
       
       if(tabs != null) {
          var tabList = tabs.tabs;
-         var wasDeleted = false;
    
          for(var i = 0; i < tabList.length; i++) {
             var nextTab = tabList[i];
@@ -615,19 +609,16 @@ export module Project {
                nextTab.id = 'editTab'; // make sure not to enable, bit of a hack
                nextTab.closable = true;
                nextTab.active = false;
-               wasDeleted = true;
             }
          }
-         if(wasDeleted) {
-            for(var i = 0; i < tabList.length; i++) {
-               var nextTab = tabList[i];
-               
-               if(nextTab != null && nextTab.id != 'editTab') {
-                  tabs.active = nextTab.id;
-                  tabs.closable = false;
-                  FileExplorer.openTreeFile(nextTab.id, function(){}); // browse style makes no difference here
-                  break;
-               }
+         for(var i = 0; i < tabList.length; i++) {
+            var nextTab = tabList[i];
+            
+            if(nextTab != null && nextTab.id != 'editTab') {
+               tabs.active = nextTab.id;
+               tabs.closable = false;
+               FileExplorer.openTreeFile(nextTab.id, function(){}); // browse style makes no difference here
+               break;
             }
          }
       }
@@ -638,10 +629,6 @@ export module Project {
          // move the editor
          var newParent = document.getElementById('editParentHidden');
          var oldParent = document.getElementById('editParent');         
-         var newParentInfo = "editParentHidden=" + (newParent == null);
-         var oldParentInfo = "editParent=" + (oldParent == null);
-         
-         console.log("Project.hideEditorContent(" + containsEditor + "): '" + newParentInfo +  "' '" + oldParentInfo + "'")
       
          if(oldParent != null && newParent != null){
             while (oldParent.childNodes.length > 0) {

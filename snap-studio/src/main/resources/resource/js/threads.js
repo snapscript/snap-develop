@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "editor", "variables", "explorer", "profiler", "status"], function (require, exports, $, w2ui_1, socket_1, common_1, tree_1, editor_1, variables_1, explorer_1, profiler_1, status_1) {
+define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "editor", "variables", "explorer", "profiler", "status", "problem"], function (require, exports, $, w2ui_1, socket_1, common_1, tree_1, editor_1, variables_1, explorer_1, profiler_1, status_1, problem_1) {
     "use strict";
     var ThreadManager;
     (function (ThreadManager) {
@@ -30,6 +30,7 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
             suspendedThreads = {};
             clearFocusThread();
             editor_1.FileEditor.clearEditorHighlights(); // this should be done in editor.js, i.e EventBus.createRoute("EXIT" ... )
+            problem_1.ProblemManager.highlightProblems(); // don't hide the errors
             variables_1.VariableManager.clearVariables();
             clearThreads();
         }

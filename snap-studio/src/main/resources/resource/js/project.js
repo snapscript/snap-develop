@@ -295,9 +295,6 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
         function showEditorFileContent(containsEditor) {
             var newParent = document.getElementById('editParent');
             var oldParent = document.getElementById('editParentHidden');
-            var newParentInfo = "editParent=" + (newParent == null);
-            var oldParentInfo = "editParentHidden=" + (oldParent == null);
-            console.log("Project.showEditorFileContent(" + containsEditor + "): '" + newParentInfo + "' '" + oldParentInfo + "'");
             if (oldParent != null && newParent != null) {
                 $("#help").remove();
                 while (oldParent.childNodes.length > 0) {
@@ -309,9 +306,6 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
         function showEditorHelpContent(containsEditor) {
             var newParent = document.getElementById('editParent');
             var editorFileName = document.getElementById("editFileName");
-            var newParentInfo = "editParent=" + (newParent == null);
-            var editorFileNameInfo = "editFileName=" + (editorFileName == null);
-            console.log("Project.showEditorHelpContent(" + containsEditor + "): '" + newParentInfo + "' '" + editorFileNameInfo + "'");
             if (newParent != null && editorFileName != null) {
                 var keyBindings = keys_1.KeyBinder.getKeyBindings();
                 var content = "";
@@ -503,40 +497,39 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
         Project.createEditorTab = createEditorTab;
         function closeEditorTabForPath(resourcePathToClose) {
             if (editor_1.FileEditor.isEditorChangedForPath(resourcePathToClose)) {
-                var currentBuffer = editor_1.FileEditor.loadSavedEditorBuffer(resourcePathToClose);
+                var currentBuffer = editor_1.FileEditor.getEditorBufferForResource(resourcePathToClose);
                 var editorResource = tree_1.FileTree.createResourcePath(resourcePathToClose);
-                commands_1.Command.saveEditorOnClose(currentBuffer.buffer, editorResource); // save the file;
+                commands_1.Command.saveEditorOnClose(currentBuffer.getSource(), editorResource, function () {
+                    activateAnyEditorTab(resourcePathToClose); // activate some other tab
+                }); // save the file;
                 console.log("CLOSE: " + resourcePathToClose);
             }
             else {
+                editor_1.FileEditor.clearSavedEditorBuffer(resourcePathToClose); // remove history anyway as its been closed 
+                activateAnyEditorTab(resourcePathToClose); // activate some other tab
                 console.log("CLOSE: " + resourcePathToClose);
             }
-            activateAnyEditorTab(resourcePathToClose); // activate some other tab
         }
         function activateAnyEditorTab(resourcePathDeleted) {
             var layout = findActiveEditorLayout();
             var tabs = findActiveEditorTabLayout();
             if (tabs != null) {
                 var tabList = tabs.tabs;
-                var wasDeleted = false;
                 for (var i = 0; i < tabList.length; i++) {
                     var nextTab = tabList[i];
                     if (nextTab != null && nextTab.id == resourcePathDeleted) {
                         nextTab.id = 'editTab'; // make sure not to enable, bit of a hack
                         nextTab.closable = true;
                         nextTab.active = false;
-                        wasDeleted = true;
                     }
                 }
-                if (wasDeleted) {
-                    for (var i = 0; i < tabList.length; i++) {
-                        var nextTab = tabList[i];
-                        if (nextTab != null && nextTab.id != 'editTab') {
-                            tabs.active = nextTab.id;
-                            tabs.closable = false;
-                            explorer_1.FileExplorer.openTreeFile(nextTab.id, function () { }); // browse style makes no difference here
-                            break;
-                        }
+                for (var i = 0; i < tabList.length; i++) {
+                    var nextTab = tabList[i];
+                    if (nextTab != null && nextTab.id != 'editTab') {
+                        tabs.active = nextTab.id;
+                        tabs.closable = false;
+                        explorer_1.FileExplorer.openTreeFile(nextTab.id, function () { }); // browse style makes no difference here
+                        break;
                     }
                 }
             }
@@ -546,9 +539,6 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
                 // move the editor
                 var newParent = document.getElementById('editParentHidden');
                 var oldParent = document.getElementById('editParent');
-                var newParentInfo = "editParentHidden=" + (newParent == null);
-                var oldParentInfo = "editParent=" + (oldParent == null);
-                console.log("Project.hideEditorContent(" + containsEditor + "): '" + newParentInfo + "' '" + oldParentInfo + "'");
                 if (oldParent != null && newParent != null) {
                     while (oldParent.childNodes.length > 0) {
                         newParent.appendChild(oldParent.childNodes[0]);

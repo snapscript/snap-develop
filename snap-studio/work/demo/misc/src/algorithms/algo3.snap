@@ -1,6 +1,6 @@
 import static lang.Math.*;
 import security.SecureRandom;
-
+// foo
 function gcd(a,b) {
   a = abs(a);
   b = abs(b);

@@ -29,6 +29,24 @@ export class FileResource {
       this._isError = isError;
    }
    
+   public getFileContent(): string {
+      if(this._fileContent) {
+         var filePath = this._resourcePath.getResourcePath();
+         var filePathToken = filePath.toLowerCase();
+         
+         if(Common.stringEndsWith(filePathToken, ".json")) {
+            try {
+                var jsonObject = JSON.parse(this._fileContent);
+                return JSON.stringify(jsonObject, null, 3);
+            }catch(e) {
+              return this._fileContent;
+            }
+         }
+         return this._fileContent;
+      }
+      return "";
+   }
+   
    public getResourcePath(): FilePath {
       return this._resourcePath;
    }
@@ -36,11 +54,7 @@ export class FileResource {
    public getContentType(): string {
       return this._contentType;
    }
-   
-   public getFileContent(): string {
-      return this._fileContent;
-   }
-   
+
    public getDownloadURL(): string {
       return this._downloadURL;
    }     
@@ -86,7 +100,7 @@ export module FileExplorer {
       });
    }
    
-   export function openTreeFile(resourcePath, afterLoad) {
+   export function openTreeFile(resourcePath: string, afterLoad) {
       var filePath = resourcePath.toLowerCase();
       
       if(isJsonXmlOrJavascript(filePath)) { // is it json or javascript
@@ -190,25 +204,7 @@ export module FileExplorer {
       } else if(isBinaryFileType(responseObject.getContentType())) {
          handleDownloadFile(responseObject.getDownloadURL());
       } else {
-         var mode = FileEditor.resolveEditorMode(responseObject.getResourcePath().getResourcePath());
-         
-//         if(FileEditor.isEditorChanged()) {
-//            var editorState = FileEditor.currentEditorState();
-//            var editorResource = editorState.resource;
-//            var message = "Save resource " + editorResource.filePath;
-//            
-//            Alerts.createConfirmAlert("File Changed", message, "Save", "Ignore", 
-//                  function(){
-//                     Command.saveEditor(true); // save the file
-//                  },
-//                  function(){
-//                     FileEditor.updateEditor(response, resourcePath);
-//                  });
-//         } else {
-//            FileEditor.updateEditor(response, resourcePath);
-//         }
          FileEditor.updateEditor(responseObject);
-         console.log("OPEN: " + responseObject.getResourcePath().getResourcePath())
       }
       afterLoad();
    }
@@ -262,13 +258,13 @@ export module FileExplorer {
       return false;
    }
    
-   function handleTreeMenu(resourcePath, commandName, elementId, isDirectory) {
+   function handleTreeMenu(resourcePath: FilePath, commandName, elementId, isDirectory) {
       if(commandName == "runScript") {
-         openTreeFile(resourcePath.resourcePath, function(){
+         openTreeFile(resourcePath.getResourcePath(), function(){
             Command.runScript();
          });
       } else if(commandName == "debugScript") {
-         openTreeFile(resourcePath.resourcePath, function(){
+         openTreeFile(resourcePath.getResourcePath(), function(){
             Command.debugScript();
          });
       }else if(commandName == "newFile") {
@@ -286,11 +282,11 @@ export module FileExplorer {
             Command.renameFile(resourcePath);
          }
       }else if(commandName == "saveFile") {
-         openTreeFile(resourcePath.resourcePath, function(){
+         openTreeFile(resourcePath.getResourcePath(), function(){
             Command.saveFile();
          });
       }else if(commandName == "deleteFile") {
-         if(FileTree.isResourceFolder(resourcePath.resourcePath)) {
+         if(FileTree.isResourceFolder(resourcePath.getResourcePath())) {
             Command.deleteDirectory(resourcePath);
          } else {
             Command.deleteFile(resourcePath);

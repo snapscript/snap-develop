@@ -10,14 +10,28 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
             this._isHistorical = isHistorical;
             this._isError = isError;
         }
+        FileResource.prototype.getFileContent = function () {
+            if (this._fileContent) {
+                var filePath = this._resourcePath.getResourcePath();
+                var filePathToken = filePath.toLowerCase();
+                if (common_1.Common.stringEndsWith(filePathToken, ".json")) {
+                    try {
+                        var jsonObject = JSON.parse(this._fileContent);
+                        return JSON.stringify(jsonObject, null, 3);
+                    }
+                    catch (e) {
+                        return this._fileContent;
+                    }
+                }
+                return this._fileContent;
+            }
+            return "";
+        };
         FileResource.prototype.getResourcePath = function () {
             return this._resourcePath;
         };
         FileResource.prototype.getContentType = function () {
             return this._contentType;
-        };
-        FileResource.prototype.getFileContent = function () {
-            return this._fileContent;
         };
         FileResource.prototype.getDownloadURL = function () {
             return this._downloadURL;
@@ -158,24 +172,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                 handleDownloadFile(responseObject.getDownloadURL());
             }
             else {
-                var mode = editor_1.FileEditor.resolveEditorMode(responseObject.getResourcePath().getResourcePath());
-                //         if(FileEditor.isEditorChanged()) {
-                //            var editorState = FileEditor.currentEditorState();
-                //            var editorResource = editorState.resource;
-                //            var message = "Save resource " + editorResource.filePath;
-                //            
-                //            Alerts.createConfirmAlert("File Changed", message, "Save", "Ignore", 
-                //                  function(){
-                //                     Command.saveEditor(true); // save the file
-                //                  },
-                //                  function(){
-                //                     FileEditor.updateEditor(response, resourcePath);
-                //                  });
-                //         } else {
-                //            FileEditor.updateEditor(response, resourcePath);
-                //         }
                 editor_1.FileEditor.updateEditor(responseObject);
-                console.log("OPEN: " + responseObject.getResourcePath().getResourcePath());
             }
             afterLoad();
         }
@@ -225,12 +222,12 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
         }
         function handleTreeMenu(resourcePath, commandName, elementId, isDirectory) {
             if (commandName == "runScript") {
-                openTreeFile(resourcePath.resourcePath, function () {
+                openTreeFile(resourcePath.getResourcePath(), function () {
                     commands_1.Command.runScript();
                 });
             }
             else if (commandName == "debugScript") {
-                openTreeFile(resourcePath.resourcePath, function () {
+                openTreeFile(resourcePath.getResourcePath(), function () {
                     commands_1.Command.debugScript();
                 });
             }
@@ -255,12 +252,12 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                 }
             }
             else if (commandName == "saveFile") {
-                openTreeFile(resourcePath.resourcePath, function () {
+                openTreeFile(resourcePath.getResourcePath(), function () {
                     commands_1.Command.saveFile();
                 });
             }
             else if (commandName == "deleteFile") {
-                if (tree_1.FileTree.isResourceFolder(resourcePath.resourcePath)) {
+                if (tree_1.FileTree.isResourceFolder(resourcePath.getResourcePath())) {
                     commands_1.Command.deleteDirectory(resourcePath);
                 }
                 else {

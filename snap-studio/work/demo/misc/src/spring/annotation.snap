@@ -1,8 +1,9 @@
+// foo 
 
 @Component
 class Mod{
-
-
+  
+ 
 
    @Inject
    fun(@Inject x: Foo){
@@ -26,13 +27,13 @@ module Injection{
    var factories = {:};
    
    class Factory{
-      const func;
+      const fn;
       const args;
       const name;
       
-      new(name, func, args){
+      new(name, fn, args){
          this.name = name;
-         this.func = func;
+         this.fn = fn;
          this.args = args;
       }
       
@@ -43,14 +44,14 @@ module Injection{
    
    process(type){
       var funcs = type.getFunctions();
-      for(var func in funcs){
-         var annotations = func.getAnnotations()
+      for(var fn in funcs){
+         var annotations = fn.getAnnotations()
             .stream()
             .filter(annotation -> annotation.name == 'Bean')
             .collect(Collectors.toString());
          
          if(!annotations.isEmpty()){
-            var func = eval("${type}::${func.name}");
+            var fn = eval("${type}::${func.name}");
          }
          
       }

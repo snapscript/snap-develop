@@ -3,7 +3,8 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor", "pro
     var ProblemManager;
     (function (ProblemManager) {
         var ProblemItem = (function () {
-            function ProblemItem(resource, line, message, project, time) {
+            function ProblemItem(resource, line, description, message, project, time) {
+                this._description = description;
                 this._resource = resource;
                 this._line = line;
                 this._message = message;
@@ -11,16 +12,19 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor", "pro
                 this._time = time;
             }
             ProblemItem.prototype.isExpired = function () {
-                return this._time + 100000 > common_1.Common.currentTime();
+                return this._time + 120000 < common_1.Common.currentTime(); // expire after 2 minutes
             };
             ProblemItem.prototype.getKey = function () {
-                return this._resource + ":" + this._line;
+                return this._resource.getResourcePath() + ":" + this._line;
             };
-            ProblemItem.prototype.getResource = function () {
+            ProblemItem.prototype.getResourcePath = function () {
                 return this._resource;
             };
             ProblemItem.prototype.getLine = function () {
                 return this._line;
+            };
+            ProblemItem.prototype.getDescription = function () {
+                return this._description;
             };
             ProblemItem.prototype.getMessage = function () {
                 return this._message;
@@ -40,26 +44,47 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor", "pro
         }
         ProblemManager.registerProblems = registerProblems;
         function refreshProblems() {
-            var timeMillis = common_1.Common.currentTime();
             var activeProblems = {};
-            var expiryCount = 0;
             for (var problemKey in currentProblems) {
                 if (currentProblems.hasOwnProperty(problemKey)) {
                     var problemItem = currentProblems[problemKey];
                     if (problemItem != null) {
-                        if (problemItem.isExpired()) {
+                        var problemResource = problemItem.getResourcePath();
+                        var editorBuffer = editor_1.FileEditor.getEditorBufferForResource(problemResource.getResourcePath());
+                        if (!isProblemInactive(editorBuffer, problemItem)) {
                             activeProblems[problemKey] = problemItem;
-                        }
-                        else {
-                            expiryCount++;
                         }
                     }
                 }
             }
-            currentProblems = activeProblems; // reset refreshed statuses
-            if (expiryCount > 0) {
-                showProblems(); // something expired!
+            updateActiveProblems(activeProblems);
+        }
+        function updateActiveProblems(activeProblems) {
+            var missingProblems = 0;
+            for (var problemKey in currentProblems) {
+                if (!activeProblems.hasOwnProperty(problemKey)) {
+                    missingProblems++; // something changed
+                }
             }
+            if (missingProblems > 0) {
+                currentProblems = activeProblems;
+                showProblems();
+            }
+        }
+        function isProblemInactive(editorBuffer, problemItem) {
+            var editorResource = editorBuffer.getResource();
+            var problemTime = problemItem.getTime();
+            var lastEditTime = editorBuffer.getLastModified();
+            if (problemTime < lastEditTime) {
+                return true;
+            }
+            if (!problemItem.isExpired()) {
+                return false;
+            }
+            if (editorBuffer.isBufferCurrent()) {
+                return false;
+            }
+            return true; // not current or problem newer than edit
         }
         function showProblems() {
             var problemRecords = [];
@@ -72,28 +97,22 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor", "pro
                             recid: problemIndex++,
                             line: problemItem.getLine(),
                             location: "Line " + problemItem.getLine(),
-                            resource: problemItem.getResource().getFilePath(),
+                            resource: problemItem.getResourcePath().getFilePath(),
                             description: problemItem.getMessage(),
                             project: problemItem.getProject(),
-                            script: problemItem.getResource().getResourcePath() // /resource/<project>/blah/file.snap
+                            script: problemItem.getResourcePath().getResourcePath() // /resource/<project>/blah/file.snap
                         });
                     }
                 }
             }
             if (common_1.Common.updateTableRecords(problemRecords, 'problems')) {
+                highlightProblems(); // highlight them also      
                 project_1.Project.showProblemsTab(); // focus the problems tab
+                return true;
             }
+            return false;
         }
         ProblemManager.showProblems = showProblems;
-        function clearProblems() {
-            var problems = w2ui_1.w2ui['problems'];
-            currentProblems = {};
-            editor_1.FileEditor.clearEditorHighlights();
-            if (problems != null) {
-                problems.records = [];
-                problems.refresh();
-            }
-        }
         function highlightProblems() {
             var editorState = editor_1.FileEditor.currentEditorState();
             var editorResource = editorState.getResource();
@@ -105,19 +124,12 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor", "pro
                         if (common_1.Common.stringStartsWith(problemKey, editorResource.getResourcePath())) {
                             var problemItem = currentProblems[problemKey];
                             if (problemItem != null) {
-                                editor_1.FileEditor.clearEditorHighlights(); // clear if the resource is focused
                                 highlightUpdates.push(problemItem.getLine());
                             }
-                            else {
-                                editor_1.FileEditor.clearEditorHighlights(); // clear if the resource is focused
-                            }
-                        }
-                        else {
-                            console.log("Clear highlights in " + editorResource);
-                            editor_1.FileEditor.clearEditorHighlights(); // clear if the resource is focused
                         }
                     }
                 }
+                editor_1.FileEditor.clearEditorHighlights();
                 if (highlightUpdates.length > 0) {
                     editor_1.FileEditor.createMultipleEditorHighlights(highlightUpdates, "problemHighlight");
                 }
@@ -128,7 +140,13 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor", "pro
             var problems = w2ui_1.w2ui['problems'];
             var message = JSON.parse(text);
             var resourcePath = tree_1.FileTree.createResourcePath(message.resource);
-            var problemItem = new ProblemItem(resourcePath, message.line, "<div class='errorDescription'>" + message.description + "</div>", message.project, message.time);
+            var problemItem = new ProblemItem(resourcePath, message.line, message.description, "<div class='errorDescription'>" + message.description + "</div>", message.project, message.time);
+            if (message.line >= 0) {
+                console.log("Add problem '" + problemItem.getDescription() + "' at line '" + problemItem.getLine() + "'");
+            }
+            else {
+                console.log("Clear all problems for " + problemItem.getResourcePath() + "");
+            }
             if (problemItem.getLine() >= 0) {
                 currentProblems[problemItem.getKey()] = problemItem;
             }
@@ -142,7 +160,8 @@ define(["require", "exports", "w2ui", "common", "socket", "tree", "editor", "pro
                 }
             }
             showProblems();
-            highlightProblems(); // highlight the problems
+            {
+            }
         }
     })(ProblemManager = exports.ProblemManager || (exports.ProblemManager = {}));
 });

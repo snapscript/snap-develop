@@ -21,29 +21,72 @@ import {FileResource} from "explorer"
  * Contains the state for the Ace editor and is a singleton instance
  * that exists as soon as the editor is created.
  */
-export class FileEditorView {
-   
-   editorBreakpoints = {}; // spans multiple resources
-   editorMarkers = {};
-   editorResource: FilePath = null;
-   editorText: string = null;
-   editorLastModified = null;
-   editorTheme: string = null;
-   editorCurrentTokens = {}; // current editor hyperlinks
-   editorFocusToken = null; // token to focus on editor load
-   editorHistory = {}; // store all editor context
-   editorPanel = null; // this actual editor
+export class FileEditorView {   
+
+   private _editorResource: FilePath;
+   private _editorHistory: any; // store all editor context
+   private _editorMarkers: any;   
+   private _editorBreakpoints: any; // spans multiple resources      
+   private _editorPanel: any; // this actual editor
    
    constructor(editorPanel: any) {
-      this.editorLastModified = new Date().getTime();
-      this.editorPanel = editorPanel;
-   }
+      this._editorPanel = editorPanel;     
+      this._editorHistory = {}; // store all editor context
+      this._editorMarkers = {};   
+      this._editorBreakpoints = {}; // spans multiple resources   
+   } 
    
-   init() {
+   public activateEditor() {
       KeyBinder.bindKeys(); // register key bindings
       Project.changeProjectFont(); // project.js update font
       FileEditor.scrollEditorToPosition();
       FileEditor.updateProjectTabOnChange(); // listen to change
+   }
+   
+   public updateResourcePath(resourcePath: FilePath) {
+      window.location.hash = resourcePath.getProjectPath(); // update # anchor
+      this._editorResource = resourcePath;
+   }  
+   
+   public getHistoryForResource(resource: FilePath): FileEditorHistory {
+      if(resource) {
+         var editorPath = resource.getResourcePath();
+         var editorHistory: FileEditorHistory = this._editorHistory[editorPath];
+      
+         if(!editorHistory) {
+            editorHistory = this._editorHistory[editorPath] = new FileEditorHistory(
+                  -1,
+                  null,
+                  null,
+                  null,
+                  null // let the original be the same
+            );                    
+         }
+         return editorHistory;
+      }
+      return new FileEditorHistory(
+            -1,
+            null,
+            null,
+            null,
+            null // let the original be the same
+         );
+   }
+   
+   public getEditorResource(): FilePath {
+      return this._editorResource;
+   }
+   
+   public getEditorPanel() {
+      return this._editorPanel;
+   }
+   
+   public getEditorMarkers() {
+      return this._editorMarkers;
+   } 
+   
+   public getEditorBreakpoints() {
+      return this._editorBreakpoints;
    }
 }
 
@@ -52,35 +95,108 @@ export class FileEditorHistory {
    private _undoState: FileEditorUndoState;
    private _position: FileEditorPosition;
    private _lastModified: number;
-   private _buffer: string; // save the buffer if it has changed
-   private _hash: string;
+   private _savedText: string; // save the buffer if it has changed
+   private _originalText: string; // this is the original file contents
+   private _changeMade: boolean; 
    
-   constructor(lastModified: number, undoState: FileEditorUndoState, position: FileEditorPosition, buffer: string, hash: string) {
+   constructor(lastModified: number, undoState: FileEditorUndoState, position: FileEditorPosition, savedText: string, originalText: string) {
       this._lastModified = lastModified;
       this._undoState = undoState;
       this._position = position;
-      this._buffer = buffer;
-      this._hash = hash;
+      this._originalText = originalText;
+      this._savedText = savedText;
+      this._changeMade = false;
    }
    
-   public getPosition(): FileEditorPosition {
-      return this._position;
+   public restoreUndoManager(session: any, text: string) {
+      var manager = new ace.UndoManager();
+      
+      if(text == this._savedText) { // text is the same text
+         if(this._undoState) {
+            var undoStack = this._undoState.getUndoStack();
+            var redoStack = this._undoState.getRedoStack();
+            
+            for (var undoEntry in undoStack) {
+               if (undoStack.hasOwnProperty(undoEntry)) {
+                  manager.$undoStack[undoEntry] = undoStack[undoEntry];
+               }
+            } 
+            for (var redoEntry in redoStack) {
+               if (redoStack.hasOwnProperty(redoEntry)) {
+                  manager.$redoStack[redoEntry] = undoStack[redoEntry];
+               }
+            }
+            manager.$doc = session;
+            manager.dirtyCounter = this._undoState.getDirtyCounter();
+         }
+      }
+      session.setUndoManager(manager);
    }
    
-   public getUndoState(): FileEditorUndoState {
-      return this._undoState;
+   public restoreScrollPosition(session: any, panel: any) {
+      if(this._position) {
+         const scroll: number = this._position.getScroll();
+         const row: number = this._position.getRow();
+         const column: number = this._position.getColumn();
+         
+         if(row >= 0 && column >= 0) {
+            panel.selection.moveTo(row, column);
+         } else {
+            panel.gotoLine(1);
+         }
+         session.setScrollTop(scroll); 
+      } else {
+         panel.gotoLine(1); 
+         session.setScrollTop(0);
+      }
+      panel.focus();
    }
    
+   public saveHistory(editorState: FileEditorState){ 
+      var source = editorState.getSource();
+      var currentText = editorState.getSource();
+      
+      this._savedText = currentText;
+      this._lastModified = editorState.getLastModified();
+      this._undoState = editorState.getUndoState();
+      this._position = editorState.getPosition();
+   }   
+   
+   public updateHistory(currentText: string, originalText: string) {
+      if(currentText != this._savedText) { 
+         this._undoState = null;
+         this._position = null;
+      }
+      this._savedText = currentText;
+      this._originalText = originalText;
+      this._changeMade = false;
+   }
+   
+   public invalidateHistory() {
+      this._changeMade = false;
+      this._undoState = null;
+      this._lastModified = -1;
+      this._originalText = null;
+      this._savedText = null; // clear the buffer
+   }
+   
+   public touchHistory(currentText: string) {
+      if(currentText != this._savedText) {
+         this._lastModified = Common.currentTime();
+      }
+      this._savedText = currentText;
+   }
+
    public getLastModified(): number {
       return this._lastModified;
    }
    
-   public getBuffer(): string {
-      return this._buffer;
+   public getOriginalText(): string {
+      return this._originalText;
    }
    
-   public getHash(): string {
-      return this._hash;
+   public getSavedText(): string {
+      return this._savedText;
    }
 }
 
@@ -182,6 +298,41 @@ export class FileEditorPosition {
    }
 }
 
+export class FileEditorBuffer {
+   
+   private _resource : FilePath;
+   private _lastModified: number;
+   private _source : string;
+   private _isCurrent: boolean;
+
+   constructor(lastModified: number, resource: FilePath, source: string, isCurrent: boolean) {
+      this._lastModified = lastModified;
+      this._isCurrent = isCurrent;
+      this._resource = resource;
+      this._source = source;
+   }
+   
+   public isBufferValid(): boolean {
+      return this._resource && this._source != null;   
+   }
+   
+   public isBufferCurrent(): boolean {
+      return this._isCurrent;
+   }
+   
+   public getResource(): FilePath {
+      return this._resource;
+   }
+   
+   public getLastModified(): number {
+      return this._lastModified;
+   } 
+   
+   public getSource(): string {
+      return this._source;
+   }
+}
+
 
 /**
  * Groups all the editor functions and creates the FileEditorView that
@@ -193,42 +344,48 @@ export module FileEditor {
    
    export function createEditor() {
       editorView = showEditor();
-      editorView.init();
+      editorView.activateEditor();
       EventBus.createTermination(clearEditorHighlights); // create callback
    }
    
    export function clearEditorHighlights() {
-      var session = editorView.editorPanel.getSession();
-       
-      for (var editorLine in editorView.editorMarkers) {
-         if (editorView.editorMarkers.hasOwnProperty(editorLine)) {
-            var marker = editorView.editorMarkers[editorLine];
+      var session = editorView.getEditorPanel().getSession();
+      var editorMarkers = editorView.getEditorMarkers();
+      var editorResource: FilePath = editorView.getEditorResource()
+      
+      if(editorResource) {
+         console.log("Clear highlights in " + editorResource.getResourcePath());
+      }
+      for (var editorLine in editorMarkers) {
+         if (editorMarkers.hasOwnProperty(editorLine)) {
+            var marker = editorMarkers[editorLine];
             
             if(marker != null) {
                session.removeMarker(marker);
+               delete editorMarkers[editorLine];
             }
          }
       }
-      editorView.editorMarkers = {};
    }
    
    export function showEditorLine(line) {
-      var editor = editorView.editorPanel;
+      var editor = editorView.getEditorPanel();
       
-      editorView.editorPanel.resize(true);
+      editorView.getEditorPanel().resize(true);
       
       if(line > 1) {
-         editorView.editorPanel.scrollToLine(line - 1, true, true, function () {})
-         editorView.editorPanel.gotoLine(line); // move the cursor
+         editorView.getEditorPanel().scrollToLine(line - 1, true, true, function () {})
+         editorView.getEditorPanel().gotoLine(line); // move the cursor
       } else {
-         editorView.editorPanel.scrollToLine(0, true, true, function () {})
+         editorView.getEditorPanel().scrollToLine(0, true, true, function () {})
       }
-      editorView.editorPanel.focus();
+      editorView.getEditorPanel().focus();
    }
    
    function clearEditorHighlight(line) {
-      var session = editorView.editorPanel.getSession();
-      var marker = editorView.editorMarkers[line];
+      var session = editorView.getEditorPanel().getSession();
+      var editorMarkers = editorView.getEditorMarkers();
+      var marker = editorMarkers[line];
       
       if(marker != null) {
          session.removeMarker(marker);
@@ -237,26 +394,28 @@ export module FileEditor {
    
    export function createEditorHighlight(line, css) {
       var Range = ace.require('ace/range').Range;
-      var session = editorView.editorPanel.getSession();
-   
+      var session = editorView.getEditorPanel().getSession();
+      var editorMarkers = editorView.getEditorMarkers();
+      
       // clearEditorHighlight(line);
       clearEditorHighlights(); // clear all highlights in editor
 
       var marker = session.addMarker(new Range(line - 1, 0, line - 1, 1), css, "fullLine");
-      editorView.editorMarkers[line] = marker;
+      editorMarkers[line] = marker;
    }
    
    export function createMultipleEditorHighlights(lines, css) {
       var Range = ace.require('ace/range').Range;
-      var session = editorView.editorPanel.getSession();
-   
+      var session = editorView.getEditorPanel().getSession();
+      var editorMarkers = editorView.getEditorMarkers();
+      
       // clearEditorHighlight(line);
       clearEditorHighlights(); // clear all highlights in editor
 
       for(var i = 0; i < lines.length; i++) {
          var line = lines[i];
          var marker = session.addMarker(new Range(line - 1, 0, line - 1, 1), css, "fullLine");
-         editorView.editorMarkers[line] = marker;
+         editorMarkers[line] = marker;
       }
    }
    
@@ -275,7 +434,7 @@ export module FileEditor {
    }
    
    export function addEditorKeyBinding(keyBinding, actionFunction) {
-      editorView.editorPanel.commands.addCommand({
+      editorView.getEditorPanel().commands.addCommand({
            name : keyBinding.editor,
            bindKey : {
               win : keyBinding.editor,
@@ -290,7 +449,7 @@ export module FileEditor {
    }
    
    function clearEditorBreakpoint(row) {
-      var session = editorView.editorPanel.getSession();
+      var session = editorView.getEditorPanel().getSession();
       var breakpoints = session.getBreakpoints();
       var remove = false;
    
@@ -301,7 +460,7 @@ export module FileEditor {
    }
    
    function clearEditorBreakpoints() {
-      var session = editorView.editorPanel.getSession();
+      var session = editorView.getEditorPanel().getSession();
       var breakpoints = session.getBreakpoints();
       var remove = false;
    
@@ -311,12 +470,13 @@ export module FileEditor {
    }
    
    export function showEditorBreakpoints() {
+      var allBreakpoints = editorView.getEditorBreakpoints();
       var breakpointRecords = [];
       var breakpointIndex = 1;
    
-      for(var filePath in editorView.editorBreakpoints) {
-         if(editorView.editorBreakpoints.hasOwnProperty(filePath)) {
-            var breakpoints = editorView.editorBreakpoints[filePath];
+      for(var filePath in allBreakpoints) {
+         if(allBreakpoints.hasOwnProperty(filePath)) {
+            var breakpoints = allBreakpoints[filePath];
    
             for(var lineNumber in breakpoints) {
                if (breakpoints.hasOwnProperty(lineNumber)) {
@@ -343,9 +503,11 @@ export module FileEditor {
    }
    
    function setEditorBreakpoint(row, value) {
-      if (editorView.editorResource != null) {
-         var session = editorView.editorPanel.getSession();
-         var resourceBreakpoints = editorView.editorBreakpoints[editorView.editorResource.getFilePath()];
+      var allBreakpoints = editorView.getEditorBreakpoints();
+      
+      if (editorView.getEditorResource() != null) {
+         var session = editorView.getEditorPanel().getSession();
+         var resourceBreakpoints = allBreakpoints[editorView.getEditorResource().getFilePath()];
          var line = parseInt(row);
    
          if (value) {
@@ -355,7 +517,7 @@ export module FileEditor {
          }
          if (resourceBreakpoints == null) {
             resourceBreakpoints = {};
-            editorView.editorBreakpoints[editorView.editorResource.getFilePath()] = resourceBreakpoints;
+            allBreakpoints[editorView.getEditorResource().getFilePath()] = resourceBreakpoints;
          }
          resourceBreakpoints[line + 1] = value;
       }
@@ -363,9 +525,11 @@ export module FileEditor {
    }
    
    function toggleEditorBreakpoint(row) {
-      if (editorView.editorResource != null) {
-         var session = editorView.editorPanel.getSession();
-         var resourceBreakpoints = editorView.editorBreakpoints[editorView.editorResource.getFilePath()];
+      var allBreakpoints = editorView.getEditorBreakpoints();
+      
+      if (editorView.getEditorResource() != null) {
+         var session = editorView.getEditorPanel().getSession();
+         var resourceBreakpoints = allBreakpoints[editorView.getEditorResource().getFilePath()];
          var breakpoints = session.getBreakpoints();
          var remove = false;
    
@@ -385,7 +549,7 @@ export module FileEditor {
          if (resourceBreakpoints == null) {
             resourceBreakpoints = {};
             resourceBreakpoints[line + 1] = true;
-            editorView.editorBreakpoints[editorView.editorResource.getFilePath()] = resourceBreakpoints;
+            allBreakpoints[editorView.getEditorResource().getFilePath()] = resourceBreakpoints;
          } else {
             if (resourceBreakpoints[line + 1] == true) {
                resourceBreakpoints[line + 1] = false;
@@ -402,23 +566,30 @@ export module FileEditor {
       var height = document.getElementById('editor').offsetHeight;
       
       console.log("Resize editor " + width + "x" + height);
-      editorView.editorPanel.setAutoScrollEditorIntoView(true);
-      editorView.editorPanel.resize(true);
+      editorView.getEditorPanel().setAutoScrollEditorIntoView(true);
+      editorView.getEditorPanel().resize(true);
       // editor.focus();
    }
    
-   export function resetEditor() {
-      var session = editorView.editorPanel.getSession();
-   
-      clearEditorHighlights();
-      editorView.editorResource = null;
-      editorView.editorPanel.setReadOnly(false);
-      session.setValue(editorView.editorText, 1);
-      $("#currentFile").html("");
-   }
+//   export function resetEditor() {
+//      var session = editorView.getEditorPanel().getSession();
+//      var editorHistory: FileEditorHistory = editorView.getHistoryForResource(editorView.getEditorResource());      
+//      var originalText: string =  editorHistory.getOriginalText();
+//         
+//      clearEditorHighlights();
+//      //editorView.getEditorResource() = null;
+//      editorView.getEditorPanel().setReadOnly(false);
+//
+//      if(originalText) {
+//         session.setValue(originalText, 1);
+//      } else {
+//         session.setValue("", 1);
+//      }
+//      $("#currentFile").html("");
+//   }
    
    function clearEditor() {
-      var session = editorView.editorPanel.getSession();
+      var session = editorView.getEditorPanel().getSession();
    
       for(var editorMarker in session.$backMarkers) { // what is this???
          session.removeMarker(editorMarker);
@@ -435,27 +606,33 @@ export module FileEditor {
    }
    
    export function currentEditorState(): FileEditorState {
-      var editorHistory: FileEditorUndoState = currentEditorUndoState();
+      var editorUndoState: FileEditorUndoState = currentEditorUndoState();
       var editorPosition: FileEditorPosition = currentEditorPosition();
-      var editorText = currentEditorText();
+      var editorBuffer: FileEditorBuffer = currrentEditorBuffer();
+      var editorLastModified = -1;
+      var editorText = null;      
       
+      if(editorBuffer) {
+         editorText = editorBuffer.getSource();
+         editorLastModified = editorBuffer.getLastModified();
+      }
       return new FileEditorState(
-         editorView.editorLastModified,
-         editorView.editorBreakpoints,
-         editorView.editorResource,
-         editorHistory,
+         editorLastModified,
+         editorView.getEditorBreakpoints(),
+         editorView.getEditorResource(),
+         editorUndoState,
          editorPosition,
-         editorText
+         editorText         
       );
    }
    
    function currentEditorText(): string{
-      return editorView.editorPanel.getValue();
+      return editorView.getEditorPanel().getValue();
    }
    
    function currentEditorPosition(): FileEditorPosition {
-      var scrollTop = editorView.editorPanel.getSession().getScrollTop();
-      var editorCursor = editorView.editorPanel.selection.getCursor();
+      var scrollTop = editorView.getEditorPanel().getSession().getScrollTop();
+      var editorCursor = editorView.getEditorPanel().selection.getCursor();
 
       if(editorCursor) {
          return new FileEditorPosition(
@@ -472,7 +649,7 @@ export module FileEditor {
    }
    
    function currentEditorUndoState(): FileEditorUndoState {
-      var session = editorView.editorPanel.getSession();
+      var session = editorView.getEditorPanel().getSession();
       var manager = session.getUndoManager();
       var undoStack = $.extend(true, {}, manager.$undoStack);
       var redoStack = $.extend(true, {}, manager.$redoStack);
@@ -482,23 +659,6 @@ export module FileEditor {
          redoStack,
          manager.dirtyCounter
       );
-   }
-   
-   function encodeEditorText(text, resource) {
-      if(text) {
-         var token = resource.toLowerCase();
-         
-         if(Common.stringEndsWith(token, ".json")) {
-            try {
-                var object = JSON.parse(text);
-                return JSON.stringify(object, null, 3);
-            }catch(e) {
-              return text;
-            }
-         }
-         return text;
-      }
-      return "";
    }
    
    export function resolveEditorMode(resource) {
@@ -563,137 +723,83 @@ export module FileEditor {
    
    function saveEditorHistory() {
       var editorState: FileEditorState = currentEditorState();
-      
-      if(editorState.isStateValid()) {
-         var source = editorState.getSource();
-         var md5Hash = md5(source);
-         var currentText = editorView.editorPanel.getValue();
-         var saveText = isEditorChanged() ? currentText : null; // keep text if changed
-         
-         editorView.editorHistory[editorState.getResource().getResourcePath()] = new FileEditorHistory(
-            editorState.getLastModified(),
-            editorState.getUndoState(),
-            editorState.getPosition(),
-            saveText, // save the buffer if it has changed
-            md5Hash
-         );
+      var editorPath: FilePath = editorState.getResource();
+      var editorHistory: FileEditorHistory = editorView.getHistoryForResource(editorPath);
+   
+      if(editorState.isStateValid()) {      
+         editorHistory.saveHistory(editorState);         
+      } else {
+         editorHistory.invalidateHistory();
       }
    }
    
-   function createEditorUndoManager(session, text: string, resource: string) {
-      var manager = new ace.UndoManager();
-      
-      if(text && resource) {
-         var editorResource: FilePath = FileTree.createResourcePath(resource);
-         var history = editorView.editorHistory[editorResource.getResourcePath()];
-         
-         if(history) {
-            var md5Hash = md5(text);
-            
-            if(history.hash == md5Hash) {
-               var undoState: FileEditorUndoState = history.getUndoState();
-               var undoStack = undoState.getUndoStack();
-               var redoStack = undoState.getRedoStack();
-               
-               for (var undoEntry in undoStack) {
-                  if (undoStack.hasOwnProperty(undoEntry)) {
-                     manager.$undoStack[undoEntry] = undoStack[undoEntry];
-                  }
-               }
-               for (var redoEntry in redoStack) {
-                  if (redoStack.hasOwnProperty(redoEntry)) {
-                     manager.$redoStack[redoEntry] = undoStack[redoEntry];
-                  }
-               }
-               manager.$doc = session;
-               manager.dirtyCounter = undoState.getDirtyCounter();
-            } else {
-               editorView.editorHistory[editorResource.getResourcePath()] = null;
-            }
-         }  
-      }
-      session.setUndoManager(manager); // reset undo history
-   }
+   function createEditorUndoManager(session: any, textToDisplay: string, originalText: string, resource: FilePath) {
+      var editorHistory: FileEditorHistory = editorView.getHistoryForResource(resource);         
+   
+      editorView.getEditorPanel().setReadOnly(false);
+      editorView.getEditorPanel().setValue(textToDisplay, 1); // this causes a callback resulting in FileEditorHistory.touchHistory
+      editorHistory.updateHistory(textToDisplay, originalText);
+      editorHistory.restoreUndoManager(session, textToDisplay);     
+   } 
    
    export function clearSavedEditorBuffer(resource: string) {
       var editorResource: FilePath = FileTree.createResourcePath(resource);
-      var history = editorView.editorHistory[editorResource.getResourcePath()];
+      var editorHistory: FileEditorHistory = editorView.getHistoryForResource(editorResource);
       
-      if(history) {
-         history.lastModified = -1;
-         history.buffer = null; // clear the buffer
-         updateEditorTabMarkForResource(editorResource.getResourcePath()); // remove the *
-      }
+      editorHistory.invalidateHistory();
+      updateEditorTabMarkForResource(resource); // remove the *      
    } 
    
-   export function loadSavedEditorBuffer(resource: string) {
+   export function currrentEditorBuffer(): FileEditorBuffer {
+      if(editorView.getEditorResource()) {
+         var editorPath: string = editorView.getEditorResource().getResourcePath();
+         return getEditorBufferForResource(editorPath);
+      }
+      return null;
+   }
+   
+   export function getEditorBufferForResource(resource: string): FileEditorBuffer {
       var editorResource: FilePath = FileTree.createResourcePath(resource);
+      var editorHistory: FileEditorHistory = editorView.getHistoryForResource(editorResource);
+      var lastModifiedTime: number = editorHistory.getLastModified();
       
       if(isEditorResourcePath(editorResource.getResourcePath())) {
-         var editorState: FileEditorState = currentEditorState();
-         return {
-            buffer: editorState.getSource(), // if its the current buffer then return it
-            lastModified: editorState.getLastModified()
-         };
-      }
-      var history = editorView.editorHistory[editorResource.getResourcePath()];
-      
-      if(history) {
-         return {
-            buffer: history.getBuffer(), // if its the current buffer then return it
-            lastModified: history.getLastModified()
-         };     
+         var editorText: string = currentEditorText();
+         
+         return new FileEditorBuffer(
+            lastModifiedTime,
+            editorResource,
+            editorText, // if its the current buffer then return it
+            true
+         );
       }      
-      return null;
+      return new FileEditorBuffer(
+            lastModifiedTime,
+            editorResource,
+            editorHistory.getSavedText(), // if its the current buffer then return it
+            false
+         );             
    }
    
    function resolveEditorTextToUse(fileResource: FileResource) {
       console.log("resource=[" + fileResource.getResourcePath().getResourcePath() + "] modified=[" + fileResource.getTimeStamp() + "] length=[" + fileResource.getFileLength() + "]");
       
-      var encodedText = encodeEditorText(fileResource.getFileContent(), fileResource.getResourcePath().getResourcePath()); // change JSON conversion
-      var savedHistoryBuffer = loadSavedEditorBuffer(fileResource.getResourcePath().getResourcePath()); // load saved buffer
+      var encodedText: string = fileResource.getFileContent();
+      var savedHistoryBuffer: FileEditorBuffer = getEditorBufferForResource(fileResource.getResourcePath().getResourcePath()); // load saved buffer
 
-      if(savedHistoryBuffer && savedHistoryBuffer.buffer && savedHistoryBuffer.lastModified > fileResource.getLastModified()) {
-         console.log("LOAD FROM HISTORY diff=[" + (savedHistoryBuffer.lastModified - fileResource.getLastModified()) + "]");
-         return savedHistoryBuffer.buffer;
+      if(savedHistoryBuffer.getSource() && savedHistoryBuffer.getLastModified() > fileResource.getLastModified()) {
+         console.log("LOAD FROM HISTORY diff=[" + (savedHistoryBuffer.getLastModified() - fileResource.getLastModified()) + "]");
+         return savedHistoryBuffer.getSource();
       }
       console.log("IGNORE HISTORY: ", savedHistoryBuffer);
       return encodedText;
    }
    
-   /**
-    * When a file is loaded from disk in to the editor it will check 
-    * whether this file is a historical file or an actual file. If
-    * the file is the actual file a new history item is created. This
-    * will allow the editor to store history from the point of load
-    * up to the point it is saved. The followingrules are observed.
-    * 
-    * a) If a loaded buffer is the same as the one in the buffer then
-    *    the history can be maintained and the update is ignored. Two
-    *    files are the same if they have the same content.
-    *    
-    * b) If the loaded buffer is the same as when the history started
-    *    and also has the same timestamp as when the history started
-    *    then the update can be ignored.
-    *    
-    * c) If there are no modifications to the current buffer and the
-    *    incoming file is different then the history is discarded.
-    *    
-    * d) If there are modifications to the current buffer and the 
-    *    incoming buffer is different then the user is prompted to 
-    *    determine if they want to overwrite the buffer. If the accept
-    *    the incoming file the history is discarded.         
-    * 
-    * Finally all breakpoints and errors are applied to the editor
-    * that relate to the current file.
-    * 
-    * @param fileResource this is the incoming file    
-    */
    export function updateEditor(fileResource: FileResource) { // why would you ever ignore an update here?
       var resourcePath: FilePath = fileResource.getResourcePath();
       var realText: string = fileResource.getFileContent();
       var textToDisplay = resolveEditorTextToUse(fileResource);
-      var session = editorView.editorPanel.getSession();
+      var session = editorView.getEditorPanel().getSession();
       var currentMode = session.getMode();
       var actualMode = resolveEditorMode(resourcePath.getResourcePath());
 
@@ -705,17 +811,16 @@ export module FileEditor {
             v: Date.now() 
          })
       }
-      editorView.editorPanel.setReadOnly(false);
-      editorView.editorPanel.setValue(textToDisplay, 1);
-      createEditorUndoManager(session, textToDisplay, resourcePath.getResourcePath()); // restore any existing history
+      createEditorUndoManager(session, textToDisplay, realText, resourcePath); // restore any existing history      
       clearEditor();
-      editorView.editorResource = resourcePath;
-      editorView.editorText = realText; // save the real text NOT the text to display
-      window.location.hash = editorView.editorResource.getProjectPath(); // update # anchor
+      
+      editorView.updateResourcePath(resourcePath)
       ProblemManager.highlightProblems(); // higlight problems on this resource
       
-      if (resourcePath != null && editorView.editorResource) {
-         var breakpoints = editorView.editorBreakpoints[editorView.editorResource.getFilePath()];
+      if (resourcePath != null && editorView.getEditorResource()) {
+         var filePath: string = editorView.getEditorResource().getFilePath();
+         var allBreakpoints = editorView.getEditorBreakpoints();
+         var breakpoints = allBreakpoints[filePath];
    
          if (breakpoints != null) {
             for(var lineNumber in breakpoints) {
@@ -729,7 +834,7 @@ export module FileEditor {
       }
       Project.createEditorTab(); // update the tab name
       History.showFileHistory(); // update the history
-      StatusPanel.showActiveFile(editorView.editorResource.getProjectPath());  
+      StatusPanel.showActiveFile(editorView.getEditorResource().getProjectPath());  
       FileEditor.showEditorFileInTree();
       scrollEditorToPosition();
       updateEditorTabMark(); // add a * to the name if its not in sync
@@ -743,37 +848,38 @@ export module FileEditor {
    }
    
    export function getCurrentLineForEditor() {
-      return editorView.editorPanel.getSelectionRange().start.row;
+      return editorView.getEditorPanel().getSelectionRange().start.row;
    }
    
    export function getSelectedText() {
-      return editorView.editorPanel.getSelectedText();
+      return editorView.getEditorPanel().getSelectedText();
    }
    
    export function isEditorChanged() {
-      if(editorView.editorResource != null) {
-         var text = editorView.editorPanel.getValue();
-      
-         return text != editorView.editorText;
+      if(editorView.getEditorResource() != null) {
+         var editorHistory: FileEditorHistory = editorView.getHistoryForResource(editorView.getEditorResource());
+         var currentText = editorView.getEditorPanel().getValue(); 
+         
+         return currentText != editorHistory.getOriginalText();
       }
       return false;
    }
    
-   export function isEditorChangedForPath(resource) {
+   export function isEditorChangedForPath(resource: string) {      
       if(isEditorResourcePath(resource)) {
          return isEditorChanged();
       }
-      var savedHistoryBuffer = loadSavedEditorBuffer(resource); // load saved buffer
+      var resourcePath: FilePath = FileTree.createResourcePath(resource);
+      var editorHistory: FileEditorHistory = editorView.getHistoryForResource(resourcePath);
+      var originalText: string = editorHistory.getOriginalText();
+      var lastSavedText: string = editorHistory.getSavedText();
       
-      if(savedHistoryBuffer.buffer) {
-         return true;
-      }
-      return false;
+      return originalText != lastSavedText;
    }
    
-   function isEditorResourcePath(resource) {
-      if(editorView.editorResource != null) {
-         if(editorView.editorResource.getResourcePath() == resource) {
+   function isEditorResourcePath(resource: string) {
+      if(editorView.getEditorResource() != null) {
+         if(editorView.getEditorResource().getResourcePath() == resource) {
             return true;
          }
       }
@@ -781,46 +887,28 @@ export module FileEditor {
    }
    
    export function scrollEditorToPosition() {
-      var session = editorView.editorPanel.getSession();
+      var session = editorView.getEditorPanel().getSession();
+      var editorHistory: FileEditorHistory = editorView.getHistoryForResource(editorView.getEditorResource());
       
-      if(editorView.editorResource && editorView.editorResource.getResourcePath()) {
-         var editorHistory: FileEditorHistory = editorView.editorHistory[editorView.editorResource.getResourcePath()];
-         
-         if(editorHistory && editorHistory.getPosition()) {
-            const position: FileEditorPosition = editorHistory.getPosition();
-            const scroll: number = position.getScroll();
-            const row: number = position.getRow();
-            const column: number = position.getColumn();
-            
-            if(row >= 0 && column >= 0) {
-               editorView.editorPanel.selection.moveTo(row, column);
-            } else {
-               editorView.editorPanel.gotoLine(1);
-            }
-            session.setScrollTop(scroll); 
-         } else {
-            editorView.editorPanel.gotoLine(1); 
-            session.setScrollTop(0);
-         }
-      }else {
-         editorView.editorPanel.gotoLine(1);// required for focus
-         session.setScrollTop(0); 
-      }
-      editorView.editorPanel.focus();
+      editorHistory.restoreScrollPosition(session, editorView.getEditorPanel());
    }
    
    export function updateProjectTabOnChange() {
-      editorView.editorPanel.on("input", function() {
-         editorView.editorLastModified = new Date().getTime();
+      editorView.getEditorPanel().on("input", function() {
+         var editorResource: FilePath = editorView.getEditorResource();
+         var editorHistory: FileEditorHistory = editorView.getHistoryForResource(editorResource);
+         var editorText = currentEditorText();
+         
+         editorHistory.touchHistory(editorText);         
          updateEditorTabMark(); // on input then you update star
      });
    }
    
    function updateEditorTabMark() {
-      updateEditorTabMarkForResource(editorView.editorResource.getResourcePath());
+      updateEditorTabMarkForResource(editorView.getEditorResource().getResourcePath());
    }
    
-   function updateEditorTabMarkForResource(resource) {
+   function updateEditorTabMarkForResource(resource: string) {
       Project.markEditorTab(resource, isEditorChangedForPath(resource));
    }
    
@@ -833,7 +921,7 @@ export module FileEditor {
 //             }
              var text = editor.getValue();
              var line = editor.session.getLine(pos.row);
-             var resource = editorView.editorResource.getProjectPath();
+             var resource = editorView.getEditorResource().getProjectPath();
              var complete = line.substring(0, pos.column);
              var message = JSON.stringify({
                 resource: resource,
@@ -878,15 +966,15 @@ export module FileEditor {
    
    // XXX this should be in commands
    export function formatEditorSource() {
-      var text: string = editorView.editorPanel.getValue();
-      var path: string = editorView.editorResource.getFilePath();
+      var text: string = editorView.getEditorPanel().getValue();
+      var path: string = editorView.getEditorResource().getFilePath();
       
       $.ajax({
          contentType: 'text/plain',
          data: text,
          success: function(result){
-            editorView.editorPanel.setReadOnly(false);
-            editorView.editorPanel.setValue(result, 1);
+            editorView.getEditorPanel().setReadOnly(false);
+            editorView.getEditorPanel().setValue(result, 1);
          },
          error: function(){
              console.log("Format failed");
@@ -899,10 +987,10 @@ export module FileEditor {
    
    export function setEditorTheme(theme) {
       if(theme != null){
-         if(editorView.editorPanel != null) {
-            editorView.editorPanel.setTheme(theme);
+         if(editorView.getEditorPanel() != null) {
+            editorView.getEditorPanel().setTheme(theme);
          }
-         editorView.editorTheme = theme;
+         //editorView.editorTheme = theme;
       }
    }
    
@@ -963,72 +1051,72 @@ export module FileEditor {
       return new FileEditorView(editor);
    }
    
-   function validEditorLink(string, col) { // see link.js (http://jsbin.com/jehopaja/4/edit?html,output)
-      if(KeyBinder.isControlPressed()) {
-         var tokenPatterns = [
-            "\\.[A-Z][a-zA-Z0-9]*;", // import type
-            "\\sas\\s+[A-Z][a-zA-Z0-9]*;", // import alias
-            "[a-zA-Z][a-zA-Z0-9]*\\s*\\.", // variable or type reference
-            "[a-z][a-zA-Z0-9]*\\s*[=|<|>|!|\-|\+|\*|\\/|%]", // variable
-                                                               // operation
-            "new\\s+[A-Z][a-zA-Z0-9]*\\s*\\(", // constructor call
-            "[a-zA-Z][a-zA-Z0-9]*\\s*\\(", // function or constructor call
-            "[A-Z][a-zA-Z0-9]*\\s*\\[", // type array reference
-            ":\\s*[A-Z][a-zA-Z0-9]*", // type constraint
-            "extends\\s+[A-Z][a-zA-Z0-9]*", // super class
-            "with\\s+[A-Z][a-zA-Z0-9]*" // implements trait
-         ];
-         for(var i = 0; i < tokenPatterns.length; i++) { 
-            var regExp = new RegExp(tokenPatterns[i], 'g'); // WE SHOULD CACHE
-                                                            // THE REGEX FOR
-                                                            // PERFORMANCE
-            var matchFound = null;
-            regExp.lastIndex = 0; // you have to reset regex to its start
-                                    // position
-            
-            string.replace(regExp, function(str) {
-                var offset = arguments[arguments.length - 2];
-                var length = str.length;
-                if (offset <= col && offset + length >= col) {
-                   var indexToken = editorView.editorCurrentTokens[str];
-                   
-                   if(indexToken != null) {
-                      matchFound = {
-                         start: offset,
-                         value: str
-                      };
-                   }
-                }
-            });
-            if(matchFound != null) {
-               return matchFound;
-            }
-         }
-      }
-      return null;
-   }
+//   function validEditorLink(string, col) { // see link.js (http://jsbin.com/jehopaja/4/edit?html,output)
+//      if(KeyBinder.isControlPressed()) {
+//         var tokenPatterns = [
+//            "\\.[A-Z][a-zA-Z0-9]*;", // import type
+//            "\\sas\\s+[A-Z][a-zA-Z0-9]*;", // import alias
+//            "[a-zA-Z][a-zA-Z0-9]*\\s*\\.", // variable or type reference
+//            "[a-z][a-zA-Z0-9]*\\s*[=|<|>|!|\-|\+|\*|\\/|%]", // variable
+//                                                               // operation
+//            "new\\s+[A-Z][a-zA-Z0-9]*\\s*\\(", // constructor call
+//            "[a-zA-Z][a-zA-Z0-9]*\\s*\\(", // function or constructor call
+//            "[A-Z][a-zA-Z0-9]*\\s*\\[", // type array reference
+//            ":\\s*[A-Z][a-zA-Z0-9]*", // type constraint
+//            "extends\\s+[A-Z][a-zA-Z0-9]*", // super class
+//            "with\\s+[A-Z][a-zA-Z0-9]*" // implements trait
+//         ];
+//         for(var i = 0; i < tokenPatterns.length; i++) { 
+//            var regExp = new RegExp(tokenPatterns[i], 'g'); // WE SHOULD CACHE
+//                                                            // THE REGEX FOR
+//                                                            // PERFORMANCE
+//            var matchFound = null;
+//            regExp.lastIndex = 0; // you have to reset regex to its start
+//                                    // position
+//            
+//            string.replace(regExp, function(str) {
+//                var offset = arguments[arguments.length - 2];
+//                var length = str.length;
+//                if (offset <= col && offset + length >= col) {
+//                   var indexToken = editorView.editorCurrentTokens[str];
+//                   
+//                   if(indexToken != null) {
+//                      matchFound = {
+//                         start: offset,
+//                         value: str
+//                      };
+//                   }
+//                }
+//            });
+//            if(matchFound != null) {
+//               return matchFound;
+//            }
+//         }
+//      }
+//      return null;
+//   }
    
-   function openEditorLink(event) {
-      if(KeyBinder.isControlPressed()) {
-         var indexToken = editorView.editorCurrentTokens[event.value];
-         
-         if(indexToken != null) {
-            if(indexToken.resource != null) {
-               editorView.editorFocusToken = event.value;
-               window.location.hash = indexToken.resource;
-            }else {
-               showEditorLine(indexToken.line); 
-            }
-            // alert("Editor open ["+event.value+"] @ "+line);
-         }
-      }
-   }
+//   function openEditorLink(event) {
+//      if(KeyBinder.isControlPressed()) {
+//         var indexToken = editorView.editorCurrentTokens[event.value];
+//         
+//         if(indexToken != null) {
+//            if(indexToken.resource != null) {
+//               editorView.editorFocusToken = event.value;
+//               window.location.hash = indexToken.resource;
+//            }else {
+//               showEditorLine(indexToken.line); 
+//            }
+//            // alert("Editor open ["+event.value+"] @ "+line);
+//         }
+//      }
+//   }
    
    export function updateEditorFont(fontFamily, fontSize) {
       var autoComplete = createEditorAutoComplete();
       
-      editorView.editorPanel.completers = [autoComplete];
-      editorView.editorPanel.setOptions({
+      editorView.getEditorPanel().completers = [autoComplete];
+      editorView.getEditorPanel().setOptions({
          enableBasicAutocompletion: true,
          fontFamily: "'"+fontFamily+"',monospace",
          fontSize: fontSize

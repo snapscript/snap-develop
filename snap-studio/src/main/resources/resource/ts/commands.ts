@@ -511,8 +511,8 @@ export module Command {
             ProcessConsole.clearConsole();
             EventBus.sendEvent("SAVE", message);
             
-            var modificationTime = new Date().getTime();
-            var fileResource = new FileResource(resourceDetails.getProjectPath(), null, modificationTime, "", null);
+            var modificationTime: number = new Date().getTime();
+            var fileResource: FileResource  = new FileResource(resourceDetails, null, modificationTime, "", null, false, false);
             
             FileEditor.updateEditor(fileResource);
          }
@@ -575,15 +575,15 @@ export module Command {
          EventBus.sendEvent("SAVE", message);
          
          if(update) { // should the editor be updated?
-            var modificationTime = new Date().getTime();
-            var fileResource = new FileResource(editorPath.getProjectPath(), null, modificationTime, editorState.getSource(), null);
+            var modificationTime: number = new Date().getTime();
+            var fileResource: FileResource = new FileResource(editorPath, null, modificationTime, editorState.getSource(), null, false, false);
             
             FileEditor.updateEditor(fileResource);
          }
       }
    }
    
-   export function saveEditorOnClose(editorText, editorResource: FilePath) {
+   export function saveEditorOnClose(editorText, editorResource: FilePath, closeFunction: any) {
       if (editorResource != null && editorResource.getResourcePath()) {
          DialogBuilder.openTreeDialog(editorResource, true, function(resourceDetails: FilePath) {
             var message = {
@@ -595,10 +595,12 @@ export module Command {
             };
             //ProcessConsole.clearConsole();
             EventBus.sendEvent("SAVE", message);
-            FileEditor.clearSavedEditorBuffer(editorResource.getResourcePath()); // make sure its synced
+            closeFunction();
+            FileEditor.clearSavedEditorBuffer(editorResource.getResourcePath()); // make sure its synce
          }, 
          function(resourceDetails) {
             // file was not saved
+            closeFunction();
             FileEditor.clearSavedEditorBuffer(editorResource.getResourcePath()); 
          });
       } 
@@ -622,10 +624,6 @@ export module Command {
                   };
                   ProcessConsole.clearConsole();
                   EventBus.sendEvent("DELETE", message);
-                  
-                  if(editorState.getResource() != null && editorState.getResource().getResourcePath() == resourceDetails.getResourcePath()) { // delete focused file
-                     FileEditor.resetEditor();
-                  }
                   Project.deleteEditorTab(resourceDetails.getResourcePath()); // rename tabs if open
                },
                function(){});

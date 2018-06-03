@@ -29,14 +29,15 @@ public class ProblemFinder {
          }
       }catch(Exception cause) {
          String message = cause.getMessage();
-         Pattern pattern = Pattern.compile(".*line\\s+(\\d+)");
+         Pattern pattern = Pattern.compile("(.*)\\s+in\\s+(.*)\\s+at\\s+line\\s+(\\d+)");
          Matcher matcher = pattern.matcher(message);
          
          if(matcher.matches()) {
-            String match = matcher.group(1);
+            String description = matcher.group(1);
+            String match = matcher.group(3);
             int line = Integer.parseInt(match);
             
-            return new Problem(project, resource, message, line);
+            return new Problem(project, resource, description, line);
          }
          return new Problem(project, resource, message, 1);
       }
