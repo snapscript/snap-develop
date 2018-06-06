@@ -73,10 +73,10 @@ public class TreeEntryBuilder {
          builder.append("data-icon=\"");
          builder.append(imageFolder);
          builder.append("/file_image.png\"");
-      } else if (name.endsWith(".jar")) {
-         builder.append("data-icon=\"");
-         builder.append(imageFolder);
-         builder.append("/jar_src_obj.gif\"");
+//      } else if (name.endsWith(".jar")) {
+//         builder.append("data-icon=\"");
+//         builder.append(imageFolder);
+//         builder.append("/jar_src_obj.gif\"");
       } else if (!name.endsWith(".snap")) {
          builder.append("data-icon=\"");
          builder.append(imageFolder);

@@ -23,7 +23,7 @@ class StringTemplateTest with TestCase {
       assert "${a}" == '1';
       assert "${a+b}" == '3';
       assert "${a+b" == '${a+b';
-      assert "${a}${x}" == '1${x}';
+      assert "${a}${c}" == '1x';
       assert '${a}' == '${a}';
       assert '${a+b}' == '${a+b}';
    }

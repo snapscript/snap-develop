@@ -180,7 +180,7 @@ class CannonLogic {
         if (time > 3600) {
             return 3;
         }
-        println("Position Projectile : " + s + " time=" + time);
+        println("Position Projectile : ${s} time=${time}");
         return 0;
     } // End of the method, do simulation //
 

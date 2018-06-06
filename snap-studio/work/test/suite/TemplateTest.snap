@@ -12,6 +12,6 @@ class TemplateTest with TestCase {
       assert "value ${x}" == `value 1`;
       assert `"${x}"` == '"1"';
       
-      println("foo=${foo} x=${x} y=${y}");
+      println("foo=${z} x=${x} y=${y}");
    }
 }
