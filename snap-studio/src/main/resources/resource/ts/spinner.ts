@@ -17,7 +17,7 @@ export module LoadSpinner {
          window.setTimeout(function(){
             spinnerHiding = true;
             document.getElementById("overlay").style.visibility = 'hidden'; 
-         }, 1000);      
+         }, 500);      
       }
    }
    

@@ -16,7 +16,7 @@ define(["require", "exports", "spin"], function (require, exports, Spinner) {
                 window.setTimeout(function () {
                     spinnerHiding = true;
                     document.getElementById("overlay").style.visibility = 'hidden';
-                }, 1000);
+                }, 500);
             }
         }
         LoadSpinner.hide = hide;
