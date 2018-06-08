@@ -11,9 +11,21 @@ public class CommandLineLauncher {
 //            "--script=mario.MarioGame",
 //            "--verbose"});
       
+//      CommandLineInterpreter.main(
+//            new String[] {
+//            "--e=println(x)",
+//            "--x=10"});
+      
+//      CommandLineInterpreter.main(
+//            new String[] {
+//            "--cp=c:/Work/development/snapscript/snap-release/../snap-develop/snap-studio/work/demo/physics/src;c:/Work/development/snapscript/snap-release/../snap-develop/snap-studio/work/demo/physics/assets/",      
+//            "--s=wireframe/render3d.snap",
+//            "--v=true"});     
+      
       CommandLineInterpreter.main(
             new String[] {
-            "--e=println(x)",
-            "--x=10"});
+            "--cp=../snap-studio/work/demo/physics/src;../snap-studio/work/demo/physics/assets/",      
+            "--s=wireframe/render3d.snap",
+            "--v=true"});         
    }
 }

@@ -27,10 +27,11 @@ public class CommandLineInterpreter {
    public static void main(String[] options) throws Exception {
       CommandLineParser parser = new CommandLineParser();
       CommandLine line = parser.parse(options);
-      File classpath = line.getClasspath();
+      List<File> classpath = line.getClasspath();
+      boolean debug = line.isDebug();
       
       try {
-         FileClassLoader.update(classpath);
+         FileClassLoader.update(classpath, debug);
          line.validate();
       }catch(Exception cause) {
          String message = cause.getMessage();

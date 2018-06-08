@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
 
+import org.snapscript.common.store.ClassPathStore;
 import org.snapscript.common.store.NotFoundException;
 import org.snapscript.common.store.Store;
 import org.snapscript.core.module.FilePathConverter;
@@ -21,6 +22,7 @@ public class FileCacheStore implements Store {
    private static final long EXPIRY = TimeUnit.DAYS.toMillis(1);
    
    private final PathConverter converter;
+   private final Store classpath;
    private final Store store;
    private final Path script;
    private final String url;
@@ -29,6 +31,7 @@ public class FileCacheStore implements Store {
    
    public FileCacheStore(Store store, Path script, String url, boolean debug) throws IOException {
       this.converter = new FilePathConverter();
+      this.classpath = new ClassPathStore();
       this.store = store;
       this.script = script;
       this.url = url;
@@ -63,6 +66,8 @@ public class FileCacheStore implements Store {
                      remote.close();
                   }
                   return getTempInputStream(path);
+               } else {
+                  return classpath.getInputStream(path);
                }
             }catch(Exception e) {
                throw new IllegalStateException("Could not process '" + path + "' from '" + url + "'", e);

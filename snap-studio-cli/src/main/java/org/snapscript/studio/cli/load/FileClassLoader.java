@@ -14,48 +14,78 @@ import org.snapscript.studio.cli.CommandLineUsage;
 
 public class FileClassLoader {
    
-   private static final String WARNING = "Could not find classpath file %s";
+   private static final String WARNING = "Could not find classpath entry %s";
+   private static final String INCLUDE_MESSAGE = "Including %s in classpath";
    private static final String ADD_URL_METHOD = "addURL";
+   private static final String JAR_EXTENSION = ".jar";
    
-   public static void update(File dependencies) throws Exception {
-      if(!dependencies.exists()) {
-         String warning = String.format(WARNING, dependencies);
-         CommandLineUsage.usage(warning);
+   public static void update(List<File> dependencies, boolean debug) throws Exception {
+      for(File dependency : dependencies) {
+         if(!dependency.exists()) {
+            String warning = String.format(WARNING, dependency);
+            CommandLineUsage.usage(warning);
+         }
       }
-      if(dependencies.isFile()) {
-         FileReader source = new FileReader(dependencies);
-         LineNumberReader reader = new LineNumberReader(source);
-         List<File> files = new ArrayList<File>();
+      URLClassLoader loader = (URLClassLoader)ClassLoader.getSystemClassLoader();
+      Method method = URLClassLoader.class.getDeclaredMethod(ADD_URL_METHOD, URL.class);
+      
+      for(File dependency : dependencies) {
+         String resource = dependency.getAbsolutePath();
          
-         try {
-            URLClassLoader loader = (URLClassLoader)ClassLoader.getSystemClassLoader();
-            Method method = URLClassLoader.class.getDeclaredMethod(ADD_URL_METHOD, URL.class);
-            String line = reader.readLine();
+         if(dependency.isFile() && !resource.endsWith(JAR_EXTENSION)) {
+            FileReader source = new FileReader(dependency);
+            LineNumberReader reader = new LineNumberReader(source);
+            List<File> files = new ArrayList<File>();
             
-            while(line != null) {
-               String token = line.trim();
-               int length = token.length();
+            try {
+               String line = reader.readLine();
                
-               if(length > 0) {
-                  File file = new File(token);
-                  files.add(file);
-               }
-               line = reader.readLine();
-            }
-            int size = files.size();
-            
-            if(size > 0) {
-               for(int i = 0; i < size; i++){
-                  File file = files.get(i);
-                  URI location = file.toURI();
-                  URL path = location.toURL();
+               while(line != null) {
+                  String token = line.trim();
+                  int length = token.length();
                   
-                  method.setAccessible(true);
-                  method.invoke(loader, path);
-               } 
+                  if(length > 0) {
+                     File file = new File(token);
+                     files.add(file);
+                  }
+                  line = reader.readLine();
+               }
+               int size = files.size();
+               
+               if(size > 0) {
+                  for(int i = 0; i < size; i++){
+                     File file = files.get(i).getCanonicalFile();
+                     URI location = file.toURI();
+                     URL path = location.toURL();
+                     
+                     if(debug) {
+                        String message = String.format(INCLUDE_MESSAGE , path);
+                        System.err.println(message);
+                     }
+                     if(!file.exists()) {
+                        throw new IllegalArgumentException("Could not find " + path);
+                     }
+                     method.setAccessible(true);
+                     method.invoke(loader, path);
+                  } 
+               }
+            } finally {
+               reader.close();
             }
-         } finally {
-            reader.close();
+         } else {
+            File file = dependency.getCanonicalFile();
+            URI location = file.toURI();
+            URL path = location.toURL();
+            
+            if(debug) {
+               String message = String.format(INCLUDE_MESSAGE , path);
+               System.err.println(message);
+            }
+            if(!file.exists()) {
+               throw new IllegalArgumentException("Could not find " + path);
+            }
+            method.setAccessible(true);
+            method.invoke(loader, path);
          }
       }
    }

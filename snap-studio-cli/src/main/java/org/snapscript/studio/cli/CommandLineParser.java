@@ -1,8 +1,12 @@
 package org.snapscript.studio.cli;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.snapscript.core.module.FilePathConverter;
 import org.snapscript.core.module.Path;
@@ -25,12 +29,14 @@ public class CommandLineParser {
    }
    
    public CommandLine parse(String[] options) throws Exception {
-      File classpath = new File(".");
+      List<File> classpath = new ArrayList<File>();
       File directory = new File(".");
       String url = null;
       Path script = null;
       String evaluate = null;
       boolean debug = false;
+      
+      classpath.add(directory);
       
       for(String option : options) {
          if(!option.startsWith("--")) {
@@ -60,7 +66,19 @@ public class CommandLineParser {
             } else if(argument.isDirectory()) {
                directory = new File(value);
             } else if(argument.isClassPath()) {
-               classpath = new File(value);
+               StringTokenizer tokenizer = new StringTokenizer(value, File.pathSeparator);
+               List<File> files = new ArrayList<File>();
+               
+               while(tokenizer.hasMoreTokens()) {
+                  String token = tokenizer.nextToken();
+                  int length = token.length();
+                  
+                  if(length > 0) {
+                     File file = new File(token);
+                     files.add(file);
+                  }
+               }
+               classpath = Collections.unmodifiableList(files);
             } else if(argument.isScript()) {
                script = converter.createPath(value);
             } else if(argument.isExpression()) {

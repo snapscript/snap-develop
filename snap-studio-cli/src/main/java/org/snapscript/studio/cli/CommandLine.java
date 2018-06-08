@@ -1,6 +1,7 @@
 package org.snapscript.studio.cli;
 
 import java.io.File;
+import java.util.List;
 
 import org.snapscript.common.store.Store;
 import org.snapscript.core.module.Path;
@@ -11,28 +12,31 @@ public class CommandLine {
 
    private final StoreBuilder builder;
    private final String evaluation;
-   private final File classpath;
+   private final List<File> classpath;
    private final Path script;
    private final Model model;
+   private final boolean debug;
    
-   public CommandLine(Model model, String url, File root, File classpath, Path script, String evaluation, boolean debug) {
+   public CommandLine(Model model, String url, File root, List<File> classpath, Path script, String evaluation, boolean debug) {
       this.builder = new StoreBuilder(url, root, script, debug);
       this.evaluation = evaluation;
       this.classpath = classpath;
       this.script = script;
       this.model = model;
+      this.debug = debug;
    }
    
    public void validate() {
-      if(!classpath.exists()) {
-         CommandLineUsage.usage("Could not find classpath " + classpath);
-      }
       if(script != null) {
          String resource = script.getPath();
          Store store = builder.create();
          
          store.getInputStream(resource);
       }
+   }
+   
+   public boolean isDebug() {
+      return debug;
    }
    
    public Model getModel() {
@@ -43,7 +47,7 @@ public class CommandLine {
       return builder.create();
    }
    
-   public File getClasspath() {
+   public List<File> getClasspath() {
       return classpath;
    }
    
