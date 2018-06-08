@@ -16,14 +16,16 @@ public class CommandLine {
    private final Path script;
    private final Model model;
    private final boolean debug;
+   private final boolean check;
    
-   public CommandLine(Model model, String url, File root, List<File> classpath, Path script, String evaluation, boolean debug) {
+   public CommandLine(Model model, String url, File root, List<File> classpath, Path script, String evaluation, boolean debug, boolean check) {
       this.builder = new StoreBuilder(url, root, script, debug);
       this.evaluation = evaluation;
       this.classpath = classpath;
       this.script = script;
       this.model = model;
       this.debug = debug;
+      this.check = check;
    }
    
    public void validate() {
@@ -37,6 +39,10 @@ public class CommandLine {
    
    public boolean isDebug() {
       return debug;
+   }
+   
+   public boolean isCheck() {
+      return check;
    }
    
    public Model getModel() {

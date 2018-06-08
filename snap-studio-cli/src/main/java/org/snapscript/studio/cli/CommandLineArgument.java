@@ -6,7 +6,8 @@ public enum CommandLineArgument {
    SCRIPT("s", "script", "script to execute"),
    EXPRESSION("e", "expression", "expression to evaluate"),
    CLASSPATH("cp", "classpath", "optional classpath file"),
-   VERBOSE("v", "verbose", "enable verbose logging", "true");
+   VERBOSE("v", "verbose", "enable verbose logging", "true"),
+   CHECK("c", "check", "compile script only", "false");
 
    public final String description;
    public final String value;
@@ -44,6 +45,10 @@ public enum CommandLineArgument {
       return this == VERBOSE;
    }
 
+   public boolean isCheck(){
+      return this == CHECK;
+   }
+   
    public boolean isURL(){
       return this == URL;
    }

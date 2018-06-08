@@ -67,7 +67,11 @@ public class CommandLineInterpreter {
             ExpressionEvaluator evaluator = context.getEvaluator();
             evaluator.evaluate(model, evaluate, module);
          } else {
-            executable.execute(model);
+            if(line.isCheck()) {
+               executable.execute(model, true); // do not execute
+            } else {
+               executable.execute(model);
+            }
          }
       } catch(VerifyException cause){
          List<VerifyError> errors = cause.getErrors();
