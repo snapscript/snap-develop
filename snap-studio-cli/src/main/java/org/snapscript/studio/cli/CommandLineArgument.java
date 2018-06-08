@@ -6,7 +6,7 @@ public enum CommandLineArgument {
    SCRIPT("s", "script", "script to execute"),
    EXPRESSION("e", "expression", "expression to evaluate"),
    CLASSPATH("cp", "classpath", "optional classpath file"),
-   VERBOSE("v", "verbose", "enable verbose logging", "true"),
+   VERBOSE("v", "verbose", "enable verbose logging", "false"),
    CHECK("c", "check", "compile script only", "false");
 
    public final String description;
