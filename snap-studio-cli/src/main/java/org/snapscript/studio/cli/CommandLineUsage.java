@@ -21,18 +21,29 @@ public class CommandLineUsage {
       writer.println();
       
       CommandLineArgument[] arguments = CommandLineArgument.values();
+      int name = 0;
+      int code = 0;
+      int pad = 3;
       
+      for(CommandLineArgument argument : arguments) {
+         if(argument.code.length() > code) {
+            code = argument.code.length();
+         }
+         if(argument.name.length() > name) {
+            name = argument.name.length();
+         }
+      }
       for(CommandLineArgument argument : arguments) {
          writer.print("--");
          writer.print(argument.code);
          
-         for(int i = argument.code.length(); i < 4; i++){
+         for(int i = argument.code.length(); i < code + pad; i++){
             writer.print(" ");
          }
          writer.print("--");
          writer.print(argument.name);
          
-         for(int i = argument.name.length(); i < 15; i++){
+         for(int i = argument.name.length(); i < name + pad; i++){
             writer.print(" ");
          }
          writer.print(argument.description);

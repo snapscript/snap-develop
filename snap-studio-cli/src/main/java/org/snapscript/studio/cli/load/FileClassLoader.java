@@ -1,4 +1,4 @@
-package org.snapscript.studio.cli;
+package org.snapscript.studio.cli.load;
 
 import java.io.File;
 import java.io.FileReader;
@@ -10,7 +10,9 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScriptClassLoader {
+import org.snapscript.studio.cli.CommandLineUsage;
+
+public class FileClassLoader {
    
    private static final String WARNING = "Could not find classpath file %s";
    private static final String ADD_URL_METHOD = "addURL";

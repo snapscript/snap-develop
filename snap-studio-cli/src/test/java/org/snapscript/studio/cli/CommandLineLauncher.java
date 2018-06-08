@@ -1,8 +1,8 @@
-package org.snapscript.studio.service;
+package org.snapscript.studio.cli;
 
-import org.snapscript.studio.cli.ScriptService;
+import org.snapscript.studio.cli.CommandLineInterpreter;
 
-public class ScriptLauncher {
+public class CommandLineLauncher {
 
    public static void main(String[] list) throws Exception {
 //      ScriptService.main(
@@ -11,7 +11,7 @@ public class ScriptLauncher {
 //            "--script=mario.MarioGame",
 //            "--verbose"});
       
-      ScriptService.main(
+      CommandLineInterpreter.main(
             new String[] {
             "--e=println(x)",
             "--x=10"});

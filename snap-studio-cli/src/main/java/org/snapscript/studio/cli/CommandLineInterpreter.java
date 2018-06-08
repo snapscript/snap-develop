@@ -2,6 +2,7 @@ package org.snapscript.studio.cli;
 
 import static org.snapscript.core.Reserved.DEFAULT_PACKAGE;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -11,24 +12,34 @@ import org.snapscript.compile.Compiler;
 import org.snapscript.compile.Executable;
 import org.snapscript.compile.ResourceCompiler;
 import org.snapscript.compile.StoreContext;
-import org.snapscript.compile.verify.VerifyException;
 import org.snapscript.compile.verify.VerifyError;
+import org.snapscript.compile.verify.VerifyException;
 import org.snapscript.core.Context;
 import org.snapscript.core.ExpressionEvaluator;
 import org.snapscript.core.module.FilePathConverter;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.module.PathConverter;
 import org.snapscript.core.scope.Model;
+import org.snapscript.studio.cli.load.FileClassLoader;
 
-public class ScriptExecutor {
+public class CommandLineInterpreter {
 
-   private final CommandLine line;
-   
-   public ScriptExecutor(CommandLine line) {
-      this.line = line;
+   public static void main(String[] options) throws Exception {
+      CommandLineParser parser = new CommandLineParser();
+      CommandLine line = parser.parse(options);
+      File classpath = line.getClasspath();
+      
+      try {
+         FileClassLoader.update(classpath);
+         line.validate();
+      }catch(Exception cause) {
+         String message = cause.getMessage();
+         CommandLineUsage.usage(message);
+      }
+      execute(line);
    }
-  
-   public void execute() throws Exception {
+   
+   public static void execute(CommandLine line) throws Exception {
       Store store = line.getStore();
       String evaluate = line.getEvaluation();
       Path script = line.getScript();

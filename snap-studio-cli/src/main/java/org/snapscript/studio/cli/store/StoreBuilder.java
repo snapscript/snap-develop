@@ -1,4 +1,4 @@
-package org.snapscript.studio.cli;
+package org.snapscript.studio.cli.store;
 
 import java.io.File;
 import java.net.URI;

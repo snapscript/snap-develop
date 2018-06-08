@@ -5,7 +5,7 @@ import java.util.Set;
 
 import javax.swing.UIManager;
 
-import org.snapscript.studio.cli.ScriptService;
+import org.snapscript.studio.cli.CommandLineInterpreter;
 import org.snapscript.studio.project.ProjectMode;
 
 //--mode=develop --directory=work --port=4457 --agent-pool=4 --agent-port=4456 --log-level=DEBUG
@@ -52,7 +52,7 @@ public class ApplicationLauncher {
          }
          service.start();
       } else {
-         ScriptService.main(list);
+         CommandLineInterpreter.main(list);
       }
    }
 }

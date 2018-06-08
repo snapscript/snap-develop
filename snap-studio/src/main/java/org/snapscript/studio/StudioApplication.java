@@ -5,7 +5,7 @@ import java.util.Set;
 
 import javax.swing.UIManager;
 
-import org.snapscript.studio.cli.ScriptService;
+import org.snapscript.studio.cli.CommandLineInterpreter;
 import org.snapscript.studio.project.ProjectMode;
 import org.snapscript.studio.service.core.CommandLineArgument;
 import org.snapscript.studio.service.core.CommandLineParser;
@@ -54,7 +54,7 @@ public class StudioApplication {
          }
          SpringApplication.run(StudioApplication.class, list);
       } else {
-         ScriptService.main(list);
+         CommandLineInterpreter.main(list);
       }
    }
 }
