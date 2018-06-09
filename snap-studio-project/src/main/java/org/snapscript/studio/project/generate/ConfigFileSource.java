@@ -84,4 +84,33 @@ public class ConfigFileSource {
       }
       return null;
    }
+
+   public synchronized boolean deleteConfigFile(Project project, String name) {
+      if(generators.isPresent() && cache.isEmpty()) {
+         List<ConfigFileGenerator> list = generators.get();
+
+         for(ConfigFileGenerator generator : list) {
+            String configPath = generator.getConfigName(project);
+            cache.put(configPath, generator);
+         }
+      }
+      ConfigFileGenerator generator = cache.get(name);
+      FileSystem fileSystem = project.getFileSystem();
+
+      if(generator != null) {
+         File configFile = generator.getConfigFilePath(project);
+
+         try {
+            String configKey = configFile.getCanonicalPath();
+
+            if (configFile.exists()) {
+               files.remove(configKey); // clear from cache
+               return configFile.delete();
+            }
+         } catch (Exception e) {
+            log.info("Could not delete configuration file " + configFile, e);
+         }
+      }
+      return false;
+   }
 }

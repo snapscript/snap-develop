@@ -111,6 +111,11 @@ public class Project implements FileDirectory {
    public ClassPathFile getClassPath() {
       return context.getClassPath();
    }
+
+   @Override
+   public String toString(){
+      return projectName;
+   }
    
    private class ProjectStore implements Store {
    

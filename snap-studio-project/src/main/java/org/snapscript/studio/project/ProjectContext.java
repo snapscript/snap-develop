@@ -1,6 +1,7 @@
 package org.snapscript.studio.project;
 
 import static org.snapscript.studio.project.config.ProjectConfiguration.CLASSPATH_FILE;
+import static org.snapscript.studio.project.config.ProjectConfiguration.PROJECT_FILE;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class ProjectContext {
       try {
          return reader.loadProjectConfiguration(projectName);
       } catch (Exception e) {
-         log.info("Could not read .project file for '" + projectName + "'", e);
+         log.info("Could not read " + PROJECT_FILE + " file for '" + projectName + "'", e);
       }
       return null;
    }
@@ -53,7 +54,7 @@ public class ProjectContext {
       try {
          return getConfiguration().getProjectLayout();
       } catch (Exception e) {
-         log.info("Could not read .project file for '" + projectName + "'", e);
+         log.info("Could not read " + PROJECT_FILE + " file for '" + projectName + "'", e);
       }
       return new ProjectLayout();
    }
@@ -94,6 +95,12 @@ public class ProjectContext {
          
          for(File file : files) {
             if(!file.exists()) {
+               if(source.deleteConfigFile(project, CLASSPATH_FILE)) { // make sure we rewrite the file
+                  String projectName = project.getProjectName();
+                  String filePath = file.getAbsolutePath();
+
+                  log.info("Deleting " + CLASSPATH_FILE + " from project " + projectName + " as " + filePath + " not found");
+               }
                return getDeclaredDependencies(); // force a maven lookup
             }
             DependencyFile entry = new DependencyFile(file);
