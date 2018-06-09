@@ -5,7 +5,7 @@
  * loop.
  */
 function start() {
-   var p = new GamePanel(context);
+   var game = new GamePanel(context);
 
    // Start the game at 20 frames per second
    try {
