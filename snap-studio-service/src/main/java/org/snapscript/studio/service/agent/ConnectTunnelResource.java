@@ -52,9 +52,9 @@ public class ConnectTunnelResource implements Resource {
          String header = String.format(TUNNEL_RESPONSE, date);
          byte[] data = header.getBytes("UTF-8");         
          
-         System.err.println("#######################################################################");
-         System.err.println(request);
-         System.err.println("#######################################################################");
+//         System.err.println("#######################################################################");
+//         System.err.println(request);
+//         System.err.println("#######################################################################");
          
          writer.write(data);
          writer.flush();
