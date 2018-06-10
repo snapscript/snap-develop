@@ -56,6 +56,23 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
     exports.FileResource = FileResource;
     var FileExplorer;
     (function (FileExplorer) {
+        var MockResponseHeader = (function () {
+            function MockResponseHeader(contentType, lastModified) {
+                this._contentType = contentType;
+                this._lastModified = lastModified;
+            }
+            MockResponseHeader.prototype.getResponseHeader = function (name) {
+                var key = name.toLowerCase();
+                if (key == "content-type") {
+                    return this._contentType;
+                }
+                if (key == "last-modified") {
+                    return this._lastModified;
+                }
+                return null;
+            };
+            return MockResponseHeader;
+        }());
         function showTree() {
             reloadTreeAtRoot();
             socket_1.EventBus.createRoute("RELOAD_TREE", reloadTree);
@@ -71,6 +88,13 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                 }
             });
         }
+        function showAsTreeFile(resourcePath, source, afterLoad) {
+            var filePath = resourcePath.toLowerCase();
+            var header = new MockResponseHeader("text/plain", new Date().getTime());
+            var responseObject = parseResponseMessage(resourcePath, resourcePath, header, source, false, false);
+            handleOpenTreeFile(responseObject, afterLoad);
+        }
+        FileExplorer.showAsTreeFile = showAsTreeFile;
         function openTreeFile(resourcePath, afterLoad) {
             var filePath = resourcePath.toLowerCase();
             if (isJsonXmlOrJavascript(filePath)) {

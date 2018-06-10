@@ -35,9 +35,18 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    
    @Override
    public void onScope(ProcessEventChannel channel, ScopeEvent event) throws Exception {
+      String source = event.getSource();
+      String process = event.getProcess();
+      
       if(filter.isFocused(event)) {
          ScopeCommand command = converter.convert(event);
          client.sendCommand(command);
+      } else {
+         if(source != null) {
+            ScopeCommand command = converter.convert(event);
+            filter.setFocus(process);
+            client.sendCommand(command);            
+         }
       }
    }
    

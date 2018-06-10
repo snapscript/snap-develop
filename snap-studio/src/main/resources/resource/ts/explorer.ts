@@ -82,6 +82,29 @@ export class FileResource {
  
 export module FileExplorer {
    
+   class MockResponseHeader {
+      
+      private _contentType: string;
+      private _lastModified: number;
+   
+      constructor(contentType: string, lastModified: number) {
+         this._contentType = contentType;
+         this._lastModified = lastModified;
+      }
+      
+      public getResponseHeader(name: string) {
+         var key: string = name.toLowerCase();
+      
+         if(key == "content-type") {
+            return this._contentType;
+         }
+         if(key == "last-modified") {
+            return this._lastModified;
+         }
+         return null;
+      }
+   }
+   
    export function showTree() {
       reloadTreeAtRoot();
       EventBus.createRoute("RELOAD_TREE", reloadTree);
@@ -98,6 +121,14 @@ export module FileExplorer {
             openTreeFile(data.node.tooltip, function(){});
          }
       });
+   }
+   
+   export function showAsTreeFile(resourcePath: string, source: string, afterLoad) {
+      var filePath = resourcePath.toLowerCase();
+      var header = new MockResponseHeader("text/plain", new Date().getTime());
+      var responseObject: FileResource = parseResponseMessage(resourcePath, resourcePath, header, source, false, false);
+      
+      handleOpenTreeFile(responseObject, afterLoad);
    }
    
    export function openTreeFile(resourcePath: string, afterLoad) {

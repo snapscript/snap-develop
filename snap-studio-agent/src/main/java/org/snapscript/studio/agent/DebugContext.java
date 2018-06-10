@@ -1,12 +1,12 @@
 package org.snapscript.studio.agent;
 
-import java.net.URI;
 import java.util.concurrent.Executor;
 
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.compile.ResourceCompiler;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
+import org.snapscript.core.ExpressionEvaluator;
 import org.snapscript.core.ResourceManager;
 import org.snapscript.core.link.PackageLinker;
 import org.snapscript.core.scope.EmptyModel;
@@ -27,20 +27,20 @@ public class DebugContext {
    private final RunMode mode;
    private final Executor executor;
    private final Context context;
-   private final Model model;
+   private final Model model;   
    private final String process;
+   private final String system;
 
-   public DebugContext(RunMode mode, URI root, String process, String system) {
-      this(mode, root, process, system, 10);
+   public DebugContext(RunMode mode, ProjectStore store, String process, String system) {
+      this(mode, store, process, system, 10);
    }
    
-   public DebugContext(RunMode mode, URI root, String process, String system, int threads) {
-      this(mode, root, process, system, threads, 0);
+   public DebugContext(RunMode mode, ProjectStore store, String process, String system, int threads) {
+      this(mode, store, process, system, threads, 0);
    }
    
-   public DebugContext(RunMode mode, URI root, String process, String system, int threads, int stack) {
+   public DebugContext(RunMode mode, ProjectStore store, String process, String system, int threads, int stack) {
       this.executor = new ThreadPool(threads < 5 ? 5 : threads, stack);
-      this.store = new ProjectStore(root);
       this.latch = new ExecuteLatch(process, system);
       this.context = new StoreContext(store, executor);
       this.compiler = new ResourceCompiler(context);
@@ -49,6 +49,8 @@ public class DebugContext {
       this.profiler = new TraceProfiler();
       this.model = new EmptyModel();
       this.process = process;
+      this.system = system;
+      this.store = store;
       this.mode = mode;
    }
    
@@ -76,6 +78,10 @@ public class DebugContext {
       return compiler;
    }
    
+   public ExpressionEvaluator getEvaluator(){
+      return context.getEvaluator();
+   }
+   
    public TraceProfiler getProfiler() {
       return profiler;
    }
@@ -94,6 +100,10 @@ public class DebugContext {
    
    public Model getModel() {
       return model;
+   }
+   
+   public String getSystem() {
+      return system;
    }
    
    public String getProcess() {

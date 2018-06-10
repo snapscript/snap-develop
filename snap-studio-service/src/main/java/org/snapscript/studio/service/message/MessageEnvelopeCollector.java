@@ -19,8 +19,8 @@ public class MessageEnvelopeCollector implements Operation {
    private final Reactor reactor;
    private final Channel channel;
    
-   public MessageEnvelopeCollector(AsyncEventExchanger router, Reactor reactor, Executor executor, Channel channel) {
-      this.consumer = new MessageEnvelopeConsumer(router, executor, channel);
+   public MessageEnvelopeCollector(AsyncEventExchanger router, Reactor reactor, Executor executor, Channel channel, String process) {
+      this.consumer = new MessageEnvelopeConsumer(router, executor, channel, process);
       this.reactor = reactor;
       this.channel = channel;
    }
@@ -47,6 +47,7 @@ public class MessageEnvelopeCollector implements Operation {
             reactor.process(this, SelectionKey.OP_READ);
          }
       }catch(Exception e) {
+         e.printStackTrace();
          log.debug("Could not consume message", e);
          cancel(); // close the transport
       }

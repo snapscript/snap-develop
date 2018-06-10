@@ -1,6 +1,7 @@
 package org.snapscript.studio.agent;
 
 public enum RunMode {
+    REMOTE(false, false), // background long running
     SERVICE(false, false), // background long running
     SCRIPT(true, false), // terminates when script ends
     TASK(false, true); // stops ping when script ends
@@ -11,6 +12,10 @@ public enum RunMode {
     private RunMode(boolean terminate, boolean detach) {
        this.terminate = terminate;
        this.detach = detach;
+    }
+    
+    public boolean isRemoteAttachment(){
+       return this == REMOTE;
     }
 
     public boolean isDetachRequired() {

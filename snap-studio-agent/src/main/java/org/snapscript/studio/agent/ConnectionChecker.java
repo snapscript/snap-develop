@@ -19,8 +19,8 @@ public class ConnectionChecker {
    private final String process;
    private final String system;
    
-   public ConnectionChecker(DebugContext context, String process, String system) {
-      this.checker = new HealthChecker(10000);
+   public ConnectionChecker(DebugContext context, Runnable task, String process, String system) {
+      this.checker = new HealthChecker(task, 10000);
       this.factory = new ThreadBuilder();
       this.active = new AtomicBoolean();
       this.update = new AtomicLong();
@@ -81,16 +81,16 @@ public class ConnectionChecker {
    
    private class HealthChecker implements Runnable {
       
+      private final Runnable task;
       private final long frequency;
       
-      public HealthChecker(long frequency) {
+      public HealthChecker(Runnable task, long frequency) {
          this.frequency = frequency;
+         this.task = task;
       }
       
       @Override
       public void run() {
-         RunMode mode = context.getMode();
-
          try {
             while(true) {
                Thread.sleep(frequency);
@@ -105,9 +105,7 @@ public class ConnectionChecker {
          } catch(Exception e) {
             e.printStackTrace();
          } finally {
-            if(mode.isTerminateRequired()) {
-               TerminateHandler.terminate("Connection checker timeout elapsed");
-            }
+            task.run();
          }
       }
    }

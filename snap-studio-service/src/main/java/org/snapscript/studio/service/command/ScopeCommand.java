@@ -18,6 +18,7 @@ public class ScopeCommand implements Command {
    private String process;
    private String instruction;
    private String resource;
+   private String source;
    private String status;
    private String thread;
    private String stack;

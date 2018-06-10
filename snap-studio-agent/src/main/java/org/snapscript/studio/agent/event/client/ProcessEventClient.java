@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -26,13 +28,15 @@ import org.snapscript.studio.agent.event.ProcessEventProducer;
 import org.snapscript.studio.agent.event.ProfileEvent;
 import org.snapscript.studio.agent.event.RegisterEvent;
 import org.snapscript.studio.agent.event.ScopeEvent;
-import org.snapscript.studio.agent.event.StepEvent;
 import org.snapscript.studio.agent.event.ScriptErrorEvent;
+import org.snapscript.studio.agent.event.StepEvent;
 import org.snapscript.studio.agent.event.WriteErrorEvent;
 import org.snapscript.studio.agent.event.WriteOutputEvent;
 import org.snapscript.studio.agent.log.TraceLogger;
 
 public class ProcessEventClient {
+   
+   private static final String THREAD_NAME = "%s: %s@%s:%s";
    
    private final ProcessEventListener listener;
    private final SingleThreadExecutor executor;
@@ -44,13 +48,14 @@ public class ProcessEventClient {
       this.logger = logger;
    }
    
-   public ProcessEventChannel connect(String host, int port) throws Exception {
+   public ProcessEventChannel connect(String process, String host, int port) throws Exception {
       try {
          Socket socket = new Socket(host, port);
-         ConnectTunnelHandler tunnel = new ConnectTunnelHandler(logger, port);
+         ConnectTunnelHandler tunnel = new ConnectTunnelHandler(logger, process, port);
          InputStream input = socket.getInputStream();
          OutputStream output = socket.getOutputStream();
-         SocketConnection connection = new SocketConnection(socket, input, output);
+         String threadName = String.format(THREAD_NAME, SocketConnection.class.getSimpleName(), process, host, port);
+         SocketConnection connection = new SocketConnection(socket, input, output, threadName);
       
          tunnel.tunnel(socket); // do the tunnel handshake
          socket.setSoTimeout(10000);
@@ -65,11 +70,14 @@ public class ProcessEventClient {
       
       private final ProcessEventConnection connection;
       private final AtomicBoolean open;
+      private final Set<Class> events;
       private final Socket socket;
       
-      public SocketConnection(Socket socket, InputStream input, OutputStream output) throws IOException {
+      public SocketConnection(Socket socket, InputStream input, OutputStream output, String threadName) throws IOException {
          this.connection = new ProcessEventConnection(logger, executor, input, output, socket);
+         this.events = new CopyOnWriteArraySet<Class>();
          this.open = new AtomicBoolean(true);
+         this.setName(threadName);
          this.socket = socket;
       }
       
@@ -110,6 +118,9 @@ public class ProcessEventClient {
             
             while(true) {
                ProcessEvent event = consumer.consume();
+               Class type = event.getClass();
+               
+               events.add(type);
                
                if(event instanceof ExitEvent) {
                   listener.onExit(this, (ExitEvent)event);
@@ -146,7 +157,7 @@ public class ProcessEventClient {
                }
             }
          }catch(Exception e) {
-            logger.info("Error processing events", e);
+            logger.info("Error processing events ["+ events + "]", e);
             close("Error in event loop: " + e);
          } finally {
             close("Event loop has finished");

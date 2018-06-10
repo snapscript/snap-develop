@@ -1,6 +1,6 @@
 import * as $ from "jquery"
 import {w2ui} from "w2ui"
-import {ThreadManager} from "threads"
+import {ThreadManager, ThreadVariables, ThreadScope} from "threads"
 import {Common} from "common"
 import {Command} from "commands"
 
@@ -26,16 +26,16 @@ export module VariableManager {
    }
    
    function expandVariableTree(name, variableHistory) {
-      var threadScope = ThreadManager.focusedThread();
+      var threadScope: ThreadScope = ThreadManager.focusedThread();
       var expandPath = name + ".*"; // this ensures they sort in sequence with '.' notation, e.g blah.foo.*
       var removePrefix = name + ".";
       
       if(threadScope != null) {
-         var variablePaths = variableHistory[threadScope.thread];
+         var variablePaths = variableHistory[threadScope.getThread()];
          
          if(variablePaths == null) {
             variablePaths = [];
-            variableHistory[threadScope.thread] = variablePaths;
+            variableHistory[threadScope.getThread()] = variablePaths;
          }
          var removePaths = [];
          
@@ -63,20 +63,21 @@ export module VariableManager {
    }
    
    export function showVariables() {
-      var localVariables = ThreadManager.focusedThreadVariables();
-      var evaluationVariables = ThreadManager.focusedThreadEvaluation();
+      var localVariables: ThreadVariables = ThreadManager.focusedThreadVariables();
+      var evaluationVariables: ThreadVariables = ThreadManager.focusedThreadEvaluation();
       
       showVariablesGrid(localVariables, 'variables', false);
       showVariablesGrid(evaluationVariables, 'evaluation', true);
    }
    
-   function showVariablesGrid(threadVariables, gridName, expressions) {
+   function showVariablesGrid(threadVariables: ThreadVariables, gridName: string, expressions: boolean) {
+      var variables = threadVariables.getVariables();
       var sortedNames = [];
       var variableRecords = [];
       var variableIndex = 1;
       
-      for (var variableName in threadVariables) {
-         if (threadVariables.hasOwnProperty(variableName)) {
+      for (var variableName in variables) {
+         if (variables.hasOwnProperty(variableName)) {
             sortedNames.push(variableName); // add a '.' to ensure dot notation sorts e.g x.y.z
          }
       }
@@ -84,7 +85,7 @@ export module VariableManager {
       
       for(var i = 0; i < sortedNames.length; i++) {
          var sortedName = sortedNames[i];
-         var variable = threadVariables[sortedName];
+         var variable = variables[sortedName];
          var variableExpandable = "" + variable.expandable;
          var variableRoot = variable.depth == 0; // style the root differently
          var variableProperty = ""+variable.property;

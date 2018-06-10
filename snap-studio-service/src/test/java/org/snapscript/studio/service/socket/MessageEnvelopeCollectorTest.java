@@ -54,7 +54,7 @@ public class MessageEnvelopeCollectorTest extends TestCase {
       InputStream input = new ByteArrayInputStream(data);
       Channel channel = new StreamChannel(input, System.out);
       Reactor reactor = new ExecutorReactor(pool);
-      MessageEnvelopeCollector collector = new MessageEnvelopeCollector(router, reactor, pool, channel);
+      MessageEnvelopeCollector collector = new MessageEnvelopeCollector(router, reactor, pool, channel, "xx");
       
       collector.run();
    }

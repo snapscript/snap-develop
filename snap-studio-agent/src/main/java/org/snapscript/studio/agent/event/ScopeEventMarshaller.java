@@ -33,6 +33,11 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       String instruction = input.readUTF();
       String status = input.readUTF();
       String resource = input.readUTF();
+      String source = null;
+      
+      if(input.readBoolean()) {
+         source = input.readUTF();
+      }
       int line = input.readInt();
       int depth = input.readInt();
       int sequence = input.readInt();
@@ -52,6 +57,7 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
          .withInstruction(instruction)
          .withStatus(ThreadStatus.valueOf(status))
          .withResource(resource)
+         .withSource(source)
          .withLine(line)
          .withDepth(depth)
          .withKey(sequence)
@@ -72,6 +78,7 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       String instruction = event.getInstruction();
       ThreadStatus status = event.getStatus();
       String resource = event.getResource();
+      String source = event.getSource();
       int change = tree.getChange();
       int sequence = event.getKey();
       int line = event.getLine();
@@ -83,6 +90,13 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       output.writeUTF(instruction);
       output.writeUTF(status.name());
       output.writeUTF(resource);
+      
+      if(source != null) {
+         output.writeBoolean(true);
+         output.writeUTF(source);
+      } else {
+         output.writeBoolean(false);
+      }
       output.writeInt(line);
       output.writeInt(depth);
       output.writeInt(sequence);

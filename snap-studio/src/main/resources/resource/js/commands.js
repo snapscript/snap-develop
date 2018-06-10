@@ -614,7 +614,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             var threadScope = threads_1.ThreadManager.focusedThread();
             if (threadScope != null) {
                 var message = {
-                    thread: threadScope.thread,
+                    thread: threadScope.getThread(),
                     type: "STEP_OVER"
                 };
                 editor_1.FileEditor.clearEditorHighlights();
@@ -626,7 +626,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             var threadScope = threads_1.ThreadManager.focusedThread();
             if (threadScope != null) {
                 var message = {
-                    thread: threadScope.thread,
+                    thread: threadScope.getThread(),
                     type: "STEP_IN"
                 };
                 editor_1.FileEditor.clearEditorHighlights();
@@ -638,7 +638,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             var threadScope = threads_1.ThreadManager.focusedThread();
             if (threadScope != null) {
                 var message = {
-                    thread: threadScope.thread,
+                    thread: threadScope.getThread(),
                     type: "STEP_OUT"
                 };
                 editor_1.FileEditor.clearEditorHighlights();
@@ -650,7 +650,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             var threadScope = threads_1.ThreadManager.focusedThread();
             if (threadScope != null) {
                 var message = {
-                    thread: threadScope.thread,
+                    thread: threadScope.getThread(),
                     type: "RUN"
                 };
                 editor_1.FileEditor.clearEditorHighlights();
@@ -666,7 +666,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             var threadScope = threads_1.ThreadManager.focusedThread();
             if (threadScope != null) {
                 var message = {
-                    thread: threadScope.thread,
+                    thread: threadScope.getThread(),
                     expand: variables
                 };
                 socket_1.EventBus.sendEvent("BROWSE", message);
@@ -677,7 +677,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             var threadScope = threads_1.ThreadManager.focusedThread();
             if (threadScope != null) {
                 var message = {
-                    thread: threadScope.thread,
+                    thread: threadScope.getThread(),
                     expression: expression,
                     expand: variables,
                     refresh: refresh

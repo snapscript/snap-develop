@@ -24,8 +24,9 @@ public class CommandLineLauncher {
       
       CommandLineInterpreter.main(
             new String[] {
-            "--cp=../snap-studio/work/demo/physics/src;../snap-studio/work/demo/physics/assets/",      
-            "--s=wireframe/render3d.snap",
+            "--cp=../snap-studio/work/demo/games/src;../snap-studio/work/demo/games/assets/",      
+            "--s=mario/MarioGame.snap",
+            "--p=7799",
             "--v=true"});         
    }
 }

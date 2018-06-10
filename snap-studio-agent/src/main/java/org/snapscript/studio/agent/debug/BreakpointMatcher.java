@@ -3,15 +3,20 @@ package org.snapscript.studio.agent.debug;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.snapscript.studio.agent.debug.ResourceExtractor;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BreakpointMatcher {
 
+   private volatile AtomicBoolean suspend;
    private volatile Set[] matches;
    
    public BreakpointMatcher() {
+      this.suspend = new AtomicBoolean();
       this.matches = new Set[0];
+   }   
+   
+   public void suspend() {
+      suspend.set(true);
    }
    
    public void update(Map<String, Map<Integer, Boolean>> breakpoints) {
@@ -58,11 +63,11 @@ public class BreakpointMatcher {
             Set set = matches[line];
          
             if(set != null) {
-               return set.contains(resource);
+               return set.contains(resource) || suspend.getAndSet(false);
             }
          }
       }
-      return false;
+      return suspend.getAndSet(false);
    }
    
    private Set[] copyOf(Set[] array, int newSize) {

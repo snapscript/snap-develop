@@ -24,14 +24,16 @@ public class AsyncEventClient implements ProcessEventChannel {
    private final TraceLogger adapter;
    private final OutputStream stream;
    private final AtomicBoolean open;
+   private final String process;
    private final Log logger;
    
-   public AsyncEventClient(Executor executor, Channel channel) {
+   public AsyncEventClient(Executor executor, Channel channel, String process) {
       this.logger = new LoggerLog(log);
       this.adapter = new LogLogger(logger);
       this.stream = new ChannelOutputStream(channel);
       this.producer = new ProcessEventProducer(adapter, stream, stream, executor);
       this.open = new AtomicBoolean(true);
+      this.process = process;
    }
    
    @Override

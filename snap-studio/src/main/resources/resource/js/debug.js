@@ -30,7 +30,7 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
             }
             ProcessInfo.prototype.getDescription = function () {
                 if (this._resource) {
-                    return this._process + " is " + ProcessStatus[this._status] + " with " + this._resource;
+                    return this._process + " is " + ProcessStatus[this._status] + " with " + this._resource + " focus is " + this.isFocus();
                 }
                 return this._process + " is " + ProcessStatus[this._status];
             };
@@ -109,8 +109,10 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
                 var processInfo = statusProcesses[process];
                 var duration = message.duration;
                 statusProcesses[process] = null;
+                console.log(process + " is TERMINATED");
                 if (duration && processInfo) {
                     console.log("Process took " + duration + " ms");
+                    SEm;
                 }
             }
             if (statusFocus == process) {
@@ -135,9 +137,7 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
             message.debug, message.focus, processMemory, message.threads);
             var description = processInfo.getDescription();
             var resource = processInfo.getResource();
-            if (resource != null) {
-                // console.log(message);
-                console.log(description);
+            if (resource != null || message.status == 'REGISTERING' || processInfo.isFocus()) {
             }
             if (processInfo.isFocus()) {
                 updateStatusFocus(process);

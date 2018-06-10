@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 import org.snapscript.core.scope.MapModel;
 import org.snapscript.studio.agent.DebugAgent;
 import org.snapscript.studio.agent.DebugClient;
+import org.snapscript.studio.agent.DebugContext;
+import org.snapscript.studio.agent.RemoteProjectStore;
 import org.snapscript.studio.agent.RunMode;
 
 public class CamundaScriptTask {
@@ -28,20 +30,27 @@ public class CamundaScriptTask {
    
    public void onScriptTask(DelegateExecution execution) throws Exception {
       String address = InetAddress.getLocalHost().getHostAddress();
-      Map<String, Object> state = new HashMap<String, Object>();
+      URI location = URI.create(String.format(URL, address));
+      Map<String, Object> state = new HashMap<String, Object>();      
       MapModel model = new MapModel(state);
-      DebugAgent agent = new DebugAgent(
+      RemoteProjectStore store = new RemoteProjectStore(location);
+      DebugContext context = new DebugContext(
             RunMode.TASK,
-            URI.create(String.format(URL, address)),
+            store,
             "Camunda 2.0", 
-            execution.getProcessInstanceId(),
-            "DEBUG");
-      
+            execution.getProcessInstanceId());
+      DebugAgent agent = new DebugAgent(context,"DEBUG");
+      Runnable task = new Runnable() {
+         @Override
+         public void run() {
+            System.err.println("Disconnected");
+         }         
+      };
       state.put("execution", execution);
-      DebugClient service = agent.start(model);
+      DebugClient service = agent.start(location, task, model);
 
       createBreakpoints(service);
-      service.execute(PROJECT, RESOURCE, System.getProperty("java.class.path"), true);
+      service.beginExecute(PROJECT, RESOURCE, System.getProperty("java.class.path"), true);
       service.join(6000000); // wait for script to finish
    }
 

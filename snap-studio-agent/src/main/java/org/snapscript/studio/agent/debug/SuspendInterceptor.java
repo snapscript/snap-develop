@@ -10,23 +10,28 @@ import org.snapscript.core.scope.Scope;
 import org.snapscript.core.stack.ThreadStack;
 import org.snapscript.core.trace.Trace;
 import org.snapscript.core.trace.TraceType;
+import org.snapscript.studio.agent.RunMode;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
 import org.snapscript.studio.agent.event.ScopeEvent;
 
 public class SuspendInterceptor extends TraceAdapter {
+   
+   private static final String THREAD_NAME = "%s: %s@%s";
 
    private final ProcessEventChannel channel;
    private final ThreadProgressLocal monitor;
    private final AtomicInteger counter;
    private final SuspendController latch;
+   private final RunMode mode;
    private final String process;
    
-   public SuspendInterceptor(ProcessEventChannel channel, BreakpointMatcher matcher, SuspendController latch, String process) {
+   public SuspendInterceptor(ProcessEventChannel channel, BreakpointMatcher matcher, SuspendController latch, RunMode mode, String process) {
       this.monitor = new ThreadProgressLocal(matcher);
       this.counter = new AtomicInteger();
       this.channel = channel;
       this.process = process;
       this.latch = latch;
+      this.mode = mode;
    }
 
    @Override
@@ -48,11 +53,12 @@ public class SuspendInterceptor extends TraceAdapter {
             String path = ResourceExtractor.extractResource(resource);
             ThreadStackGenerator generator = new ThreadStackGenerator(stack);
             String threads = generator.generate();
-            ScopeExtractor extractor = new ScopeExtractor(context, scope);
+            String threadName = String.format(THREAD_NAME, ScopeNotifier.class.getSimpleName(), path, line);
+            ScopeExtractor extractor = new ScopeExtractor(context, scope, path);
             ScopeEventBuilder builder = new ScopeEventBuilder(extractor, type, process, thread, threads, path, line, depth, count);
-            ScopeNotifier notifier = new ScopeNotifier(builder);
-            ScopeEvent suspend = builder.suspendEvent();
-            ScopeEvent resume = builder.resumeEvent();
+            ScopeNotifier notifier = new ScopeNotifier(builder, mode, threadName);
+            ScopeEvent suspend = builder.suspendEvent(mode);
+            ScopeEvent resume = builder.resumeEvent(mode);
             
             progress.clear(); // clear config
             channel.send(suspend);
@@ -85,11 +91,12 @@ public class SuspendInterceptor extends TraceAdapter {
             String path = ResourceExtractor.extractResource(resource);
             ThreadStackGenerator generator = new ThreadStackGenerator(stack);
             String threads = generator.generate();
-            ScopeExtractor extractor = new ScopeExtractor(context, scope);
+            String threadName = String.format(THREAD_NAME, ScopeNotifier.class.getSimpleName(), path, line);
+            ScopeExtractor extractor = new ScopeExtractor(context, scope, path);
             ScopeEventBuilder builder = new ScopeEventBuilder(extractor, type, process, thread, threads, path, line, depth, count);
-            ScopeNotifier notifier = new ScopeNotifier(builder);
-            ScopeEvent suspend = builder.suspendEvent();
-            ScopeEvent resume = builder.resumeEvent();
+            ScopeNotifier notifier = new ScopeNotifier(builder, mode, threadName);
+            ScopeEvent suspend = builder.suspendEvent(mode);
+            ScopeEvent resume = builder.resumeEvent(mode);
             
             progress.clear(); // clear config
             channel.send(suspend);
@@ -114,10 +121,13 @@ public class SuspendInterceptor extends TraceAdapter {
       
       private final ScopeEventBuilder builder;
       private final AtomicBoolean active;
+      private final RunMode mode;
       
-      public ScopeNotifier(ScopeEventBuilder builder) {
+      public ScopeNotifier(ScopeEventBuilder builder, RunMode mode, String name) {
          this.active = new AtomicBoolean(true);
          this.builder = builder;
+         this.setName(name);
+         this.mode = mode;
       }
 
       @Override
@@ -127,7 +137,7 @@ public class SuspendInterceptor extends TraceAdapter {
                Thread.sleep(400);
                
                if(active.get()) {
-                  ScopeEvent event = builder.suspendEvent();
+                  ScopeEvent event = builder.suspendEvent(mode);
                   channel.send(event);
                }
             }

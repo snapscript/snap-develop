@@ -52,7 +52,7 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
       }
       matcher.update(breakpoints);
       store.update(project); 
-      executor.execute(channel, project, resource, dependencies, debug);
+      executor.beginExecute(channel, project, resource, dependencies, debug);
    }
    
    @Override

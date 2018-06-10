@@ -37,8 +37,8 @@ public class AsyncEventExchanger implements MessageEnvelopeProcessor {
       this.reactor = new ExecutorReactor(executor);
    }
    
-   public void connect(Channel channel) throws Exception {
-      MessageEnvelopeCollector collector = new MessageEnvelopeCollector(this, reactor, executor, channel);
+   public void connect(Channel channel, String process) throws Exception {
+      MessageEnvelopeCollector collector = new MessageEnvelopeCollector(this, reactor, executor, channel, process);
       reactor.process(collector);
    }
    

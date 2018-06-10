@@ -67,7 +67,7 @@ public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> 
       output.writeUTF(mode.name());
       output.writeLong(totalMemory);
       output.writeLong(usedMemory);
-      output.writeLong(threads);
+      output.writeInt(threads);
       output.writeLong(duration);
       output.flush();
       

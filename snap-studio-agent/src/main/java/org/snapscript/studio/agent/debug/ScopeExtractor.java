@@ -1,5 +1,6 @@
 package org.snapscript.studio.agent.debug;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -8,11 +9,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.snapscript.core.Context;
+import org.snapscript.core.ResourceManager;
 import org.snapscript.core.scope.Scope;
-import org.snapscript.studio.agent.debug.ScopeBrowser;
-import org.snapscript.studio.agent.debug.ScopeNodeEvaluator;
-import org.snapscript.studio.agent.debug.ScopeNodeTraverser;
-import org.snapscript.studio.agent.debug.ScopeVariableTree;
+import org.snapscript.studio.agent.RunMode;
 
 public class ScopeExtractor implements ScopeBrowser {
 
@@ -23,8 +22,10 @@ public class ScopeExtractor implements ScopeBrowser {
    private final AtomicInteger counter;
    private final Set<String> watch;
    private final Set<String> local;
+   private final Context context;
+   private final String path;
    
-   public ScopeExtractor(Context context, Scope scope) {
+   public ScopeExtractor(Context context, Scope scope, String path) {
       this.traverser = new ScopeNodeTraverser(context, scope);
       this.evaluator = new ScopeNodeEvaluator(context, scope);
       this.evaluate = new AtomicReference<String>();
@@ -32,19 +33,37 @@ public class ScopeExtractor implements ScopeBrowser {
       this.local = new CopyOnWriteArraySet<String>();
       this.execute = new AtomicBoolean();
       this.counter = new AtomicInteger();
+      this.context = context;
+      this.path = path;
    }
    
-   public ScopeVariableTree build() {
+   public ScopeContext build(boolean grabSource, boolean expandVariables) {
+      int change = counter.get();   
       boolean refresh = execute.getAndSet(false);
       String expression = evaluate.get();
-      Map<String, Map<String, String>> variables = traverser.expand(local);
-      Map<String, Map<String, String>> evaluation = evaluator.expand(watch, expression, refresh);
-      int change = counter.get(); 
+      ResourceManager manager = context.getManager();  
+      String source = null;
       
-      return new ScopeVariableTree.Builder(change)
-         .withLocal(variables)
-         .withEvaluation(evaluation)
+      if(grabSource) {
+         source = manager.getString(path);
+      }
+      if(expandVariables){
+         Map<String, Map<String, String>> variables = traverser.expand(local);
+         Map<String, Map<String, String>> evaluation = evaluator.expand(watch, expression, refresh);
+        
+         ScopeVariableTree tree = new ScopeVariableTree.Builder(change)
+            .withLocal(variables)
+            .withEvaluation(evaluation)
+            .build();
+         
+         return new ScopeContext(tree, source);
+      }
+      ScopeVariableTree tree = new ScopeVariableTree.Builder(change)
+         .withLocal(Collections.EMPTY_MAP)
+         .withEvaluation(Collections.EMPTY_MAP)
          .build();
+   
+      return new ScopeContext(tree, source);
    }
    
    @Override

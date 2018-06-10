@@ -10,10 +10,127 @@ import {Profiler} from "profiler"
 import {StatusPanel} from "status"
 import {ProblemManager} from "problem"
 
-export module ThreadManager {
+export enum ThreadStatus {
+   RUNNING,
+   SUSPENDED,
+   UNKNOWN
+}
+
+export class ThreadScope {
+   
+   private _variables: ThreadVariables;
+   private _evaluation: ThreadVariables;
+   private _status: ThreadStatus;
+   private _instruction: string;
+   private _process: string;
+   private _resource: string;
+   private _source: string;
+   private _thread: string;
+   private _stack: string;
+   private _line: number;
+   private _depth: number;
+   private _key: number;
+   
+   constructor(variables: ThreadVariables,
+               evaluation: ThreadVariables,
+               status: ThreadStatus,
+               instruction: string,
+               process: string,
+               resource: string,
+               source: string,
+               thread: string,
+               stack: string,
+               line: number,
+               depth: number,
+               key: number) 
+   {
+      
+      this._variables = variables;
+      this._evaluation= evaluation;
+      this._status = status;
+      this._instruction= instruction;
+      this._process= process;
+      this._resource= resource;
+      this._source= source;
+      this._thread= thread;
+      this._stack=stack;
+      this._line= line;
+      this._depth= depth;
+      this._key= key;
+   }
+   
+   public getVariables(): ThreadVariables {
+      return this._variables;
+   }
+   
+   public getEvaluation(): ThreadVariables {
+      return this._evaluation;
+   }
+   
+   public getStatus(): ThreadStatus{
+      return this._status;
+   }
+   
+   public getInstruction(): string{
+      return this._instruction;
+   }
+   
+   public getProcess(): string{
+      return this._process;
+   }
+   
+   public getResource(): string{
+      return this._resource;
+   }
+   
+   public getSource(): string{
+      return this._source;
+   }
+   
+   public getThread(): string{
+      return this._thread;
+   }
+   
+   public getStack(): string{
+      return this._stack;
+   }
+   
+   public getLine(): number{
+      return this._line;
+   }
+   
+   public getDepth(): number{
+      return this._depth;
+   }
+   
+   public getKey(): number{
+      return this._key;
+   }
+   
+   public isChange(): boolean{
+      return false; // XXX what ist his???
+   }
+   
+}
+
+export class ThreadVariables {
+   
+   private _variables;
+   
+   constructor(variables) {
+      this._variables = variables;
+   }
+   
+   public getVariables(){
+      return this._variables;
+   }
+   
+}
+
+export module ThreadManager {   
    
    var suspendedThreads: any = {};
-   var threadEditorFocus: any = {};
+   var threadEditorFocus: ThreadScope = null;
    
    export function createThreads() {
       EventBus.createRoute("BEGIN", startThreads, clearThreads);
@@ -38,7 +155,7 @@ export module ThreadManager {
       var message = JSON.parse(text);
       var process: string = message.process;
       
-      if(threadEditorFocus != null && threadEditorFocus.process == process) { // clear if it dies
+      if(threadEditorFocus != null && threadEditorFocus.getProcess() == process) { // clear if it dies
          terminateThreads();
       }
    }
@@ -60,45 +177,67 @@ export module ThreadManager {
    }
    
    function updateThreads(socket, type, text) {
-      var threadScope = JSON.parse(text);
-     
+      var message = JSON.parse(text);
+      var status: string = message.status;
+      var threadVariables: ThreadVariables = new ThreadVariables(message.variables),
+      var threadEvaluation: ThreadVariables = new ThreadVariables(message.evaluation),
+      var threadStatus: ThreadStatus = ThreadStatus[status];
+      
+      if(!status || !ThreadStatus.hasOwnProperty(status)) {
+         threadStatus = ThreadStatus.UNKNOWN; // when we have an error
+         console.warn("No such thread status " + status + " setting to " + ThreadStatus[threadStatus]);      
+      }   
+      var threadScope: ThreadScope = new ThreadScope(
+            threadVariables,
+            threadEvaluation,
+            threadStatus,         
+            message.instruction,
+            message.process,
+            message.resource,
+            message.source,
+            message.thread,
+            message.stack,
+            message.line,
+            message.depth,
+            message.key
+      );
       if(isThreadFocusResumed(threadScope)) {
          clearFocusThread(); // clear focus as it is a resume
          updateThreadPanels(threadScope);
          FileEditor.clearEditorHighlights(); // the thread has resumed so clear highlights
       } else {
-         if(threadEditorFocus.thread == threadScope.thread) { // has the thread been suspended
+         if(threadEditorFocus.getThread() == threadScope.getThread()) { // has the thread been suspended
             if(isThreadFocusUpdateNew(threadScope)) {
                updateFocusedThread(threadScope); // something new happened so focus editor
                updateThreadPanels(threadScope);
             }
-         } else if(threadEditorFocus.thread == null) {  // we have to focus the thread
-            focusThread(threadScope);
+         } else if(threadEditorFocus.getThread() == null) {  // we have to focus the thread
+            focusThread(threadScope);            
             updateThreadPanels(threadScope);
          } else {
-            var currentScope = suspendedThreads[threadScope.thread];
+            var currentScope = suspendedThreads[threadScope.getThread()];
             
             if(isThreadScopeDifferent(currentScope, threadScope)) {
                updateThreadPanels(threadScope);
             }
          }
       }
-      suspendedThreads[threadScope.thread] = threadScope;
+      suspendedThreads[threadScope.getThread()] = threadScope;
       showThreadBreakpointLine(threadScope); // show breakpoint on editor
    } 
    
-   function isThreadScopeDifferent(leftScope, rightScope) {
+   function isThreadScopeDifferent(leftScope: ThreadScope, rightScope: ThreadScope) {
       if(leftScope != null && rightScope != null) {
-         if(leftScope.thread != rightScope.thread) {
+         if(leftScope.getThread() != rightScope.getThread()) {
             return true;
          }
-         if(leftScope.status != rightScope.status) {
+         if(leftScope.getStatus() != rightScope.getStatus()) {
             return true;
          }
-         if(leftScope.resource != rightScope.resource) {
+         if(leftScope.getResource() != rightScope.getResource()) {
             return true;
          }
-         if(leftScope.line != rightScope.line) {
+         if(leftScope.getLine() != rightScope.getLine()) {
             return true;
          }
          return false;
@@ -106,70 +245,78 @@ export module ThreadManager {
       return leftScope != rightScope;
    }
    
-   function showThreadBreakpointLine(threadScope) { // show breakpoint if focused
+   function showThreadBreakpointLine(threadScope: ThreadScope) { // show breakpoint if focused
       var editorState: FileEditorState = FileEditor.currentEditorState();
       
-      if(threadEditorFocus.thread == threadScope.thread) {
-         if(editorState.getResource().getFilePath() == threadScope.resource && threadScope.status == 'SUSPENDED') {
-            FileEditor.createEditorHighlight(threadScope.line, "threadHighlight");
+      if(threadEditorFocus.getThread() == threadScope.getThread()) {
+         if(editorState.getResource().getFilePath() == threadScope.getResource() && threadScope.getStatus() == ThreadStatus.SUSPENDED) {
+            FileEditor.createEditorHighlight(threadScope.getLine(), "threadHighlight");
+            FileEditor.showEditorLine(threadScope.getLine());
          }
       }
    }
    
-   function updateThreadPanels(threadScope){
-      suspendedThreads[threadScope.thread] = threadScope; // N.B update suspended threads before rendering
+   function updateThreadPanels(threadScope: ThreadScope){
+      suspendedThreads[threadScope.getThread()] = threadScope; // N.B update suspended threads before rendering
       showThreads();
       VariableManager.showVariables();
    }
    
-   function updateFocusedThread(threadScope) {
+   function updateFocusedThread(threadScope: ThreadScope) {
       if(isThreadFocusLineChange(threadScope)) { // has the update resulted in a new line or resource
          if(isThreadFocusResourceChange(threadScope)) { // do we need to update the editor with a new resource
-            var resourcePathDetails: FilePath = FileTree.createResourcePath(threadScope.resource);
-         
-            FileExplorer.openTreeFile(resourcePathDetails.getResourcePath(), function(){
-               updateThreadFocus(threadScope);
-               FileEditor.showEditorLine(threadScope.line);
-            });
+            openAndShowThreadResource(threadScope);
          } else {
             updateThreadFocus(threadScope);
-            FileEditor.showEditorLine(threadScope.line);
+            FileEditor.showEditorLine(threadScope.getLine());
          }
       } else {
          updateThreadFocus(threadScope); // record focus thread
       }
    }
    
-   function focusThread(threadScope) {
-      var editorState: FileEditorState = FileEditor.currentEditorState();
+   function focusThread(threadScope: ThreadScope) {
+      var editorState: FileEditorState = FileEditor.currentEditorState();      
       
-      if(editorState.getResource().getFilePath() != threadScope.resource) { // do we need to change resource on hit of breakpoint
-         var resourcePathDetails: FilePath = FileTree.createResourcePath(threadScope.resource);
-      
-         FileExplorer.openTreeFile(resourcePathDetails.getResourcePath(), function(){
-            updateThreadFocus(threadScope);
-            FileEditor.showEditorLine(threadScope.line);
-         });
+      if(!editorState ||  !editorState.getResource() || editorState.getResource().getFilePath() != threadScope.getResource()) { // do we need to change resource on hit of breakpoint
+         openAndShowThreadResource(threadScope);
       } else {
          updateThreadFocus(threadScope);
-         FileEditor.showEditorLine(threadScope.line);
+         FileEditor.showEditorLine(threadScope.getLine());
       }
    }
    
-   function isThreadFocusResumed(threadScope) {
-      if(threadScope.thread == threadScope.thread) {
-         return threadScope.status != 'SUSPENDED'; // the thread has resumed
+   function openAndShowThreadResource(threadScope: ThreadScope) {
+      var resourcePathDetails: FilePath = FileTree.createResourcePath(threadScope.getResource());
+      var scopeSource: string = threadScope.getSource();
+   
+      if(scopeSource) {
+         FileExplorer.showAsTreeFile(resourcePathDetails.getResourcePath(), scopeSource, function(){
+            updateThreadFocus(threadScope);
+            FileEditor.showEditorLine(threadScope.getLine());
+         });
+      } else {
+         FileExplorer.openTreeFile(resourcePathDetails.getResourcePath(), function(){
+            updateThreadFocus(threadScope);
+            FileEditor.showEditorLine(threadScope.getLine());
+         });
+      }
+   }
+   
+   function isThreadFocusResumed(threadScope: ThreadScope) {
+      if(threadEditorFocus && threadEditorFocus.getThread() == threadScope.getThread()) {
+         return threadScope.getStatus() != ThreadStatus.SUSPENDED; // the thread has resumed
       }
       return false;
    }
    
-   function isThreadFocusUpdateNew(threadScope) { // have we got a new update
-      if(threadEditorFocus.thread == threadScope.thread) { // is this a new update
-         if(threadScope.status == 'SUSPENDED') {
-            if(threadEditorFocus.key != threadScope.key) { // thread position change
+   function isThreadFocusUpdateNew(threadScope: ThreadScope) { // have we got a new update
+      if(threadEditorFocus && threadEditorFocus.getThread() == threadScope.getThread()) { // is this a new update
+         if(threadScope.getStatus() == ThreadStatus.SUSPENDED) {
+            if(threadEditorFocus.getKey() != threadScope.getKey()) { // thread position change
                return true;
             }
-            if(threadEditorFocus.change != threadScope.change) { // thread variables change, e.g browse
+            if(threadEditorFocus.isChange() != threadScope.isChange()) { // thread variables change, e.g browse
                return true;
             }
          }
@@ -177,81 +324,95 @@ export module ThreadManager {
       return false;
    }
    
-   function isThreadFocusPositionChange(threadScope) {
+   function isThreadFocusPositionChange(threadScope: ThreadScope) {
       return isThreadFocusLineChange(threadScope) || isThreadFocusResourceChange(threadScope);
    }
    
-   function isThreadFocusLineChange(threadScope) {
-      if(threadEditorFocus.thread == threadScope.thread) {
-         return threadEditorFocus.line != threadScope.line; // hash the thread or focus line changed
+   function isThreadFocusLineChange(threadScope: ThreadScope) {
+      if(threadEditorFocus && threadEditorFocus.getThread() == threadScope.getThread()) {
+         return threadEditorFocus.getLine() != threadScope.getLine(); // hash the thread or focus line changed
       }
       return false;
    }
    
-   function isThreadFocusResourceChange(threadScope) {
-      if(threadEditorFocus.thread == threadScope.thread) {
+   function isThreadFocusResourceChange(threadScope: ThreadScope) {
+      if(threadEditorFocus && threadEditorFocus.getThread()  == threadScope.getThread() ) {
          var editorState: FileEditorState = FileEditor.currentEditorState();
-         return editorState.getResource().getFilePath() != threadScope.resource; // is there a need to update the editor
+         return editorState.getResource().getFilePath() != threadScope.getResource(); // is there a need to update the editor
       }
       return false;
    }
    
-   export function focusedThread() {
-      if(threadEditorFocus.thread != null) {
-         return suspendedThreads[threadEditorFocus.thread];
+   export function focusedThread(): ThreadScope {
+      if(threadEditorFocus && threadEditorFocus.getThread() != null) {
+         return suspendedThreads[threadEditorFocus.getThread()];
       }
       return null;
    }
    
    function clearFocusThread() {
       VariableManager.clearVariables(); // clear the browse tree
-      threadEditorFocus = {
-         thread: null, 
-         process: null,
-         resource: null, 
-         change: -1,
-         line: -1, 
-         key: -1
-      }; 
+      var threadCopy: ThreadScope = new ThreadScope(
+            new ThreadVariables({}),
+            new ThreadVariables({}),            
+            ThreadStatus.RUNNING,         
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            -1,
+            -1,
+            -1,
+      );
+      threadEditorFocus = threadCopy; 
    }
    
-   function updateThreadFocus(threadScope) {
-      threadEditorFocus = {
-            thread: threadScope.thread,
-            process: threadScope.process,
-            resource: threadScope.resource, 
-            line: threadScope.line, 
-            change: threadScope.change,
-            key: threadScope.key
-         }; 
-      updateThreadPanels(threadScope); // update the thread variables etc..
+   function updateThreadFocus(threadScope: ThreadScope) {
+      var threadCopy: ThreadScope = new ThreadScope(
+            threadScope.getVariables(),
+            threadScope.getEvaluation(),
+            threadScope.getStatus(),   
+            threadScope.getInstruction(),
+            threadScope.getProcess(),
+            threadScope.getResource(),
+            threadScope.getSource(),
+            threadScope.getThread(),
+            threadScope.getStack(),
+            threadScope.getLine(),
+            threadScope.getDepth(),
+            threadScope.getKey()
+      );
+      threadEditorFocus = threadCopy; 
+      updateThreadPanels(threadCopy); // update the thread variables etc..
    } 
    
-   export function updateThreadFocusByName(threadName) {
-      var threadScope = suspendedThreads[threadName];
+   export function updateThreadFocusByName(threadName: string) {
+      var threadScope: ThreadScope = suspendedThreads[threadName];
       updateThreadFocus(threadScope);
    } 
    
-   export function focusedThreadVariables() {
-      if(threadEditorFocus.thread != null) {
-         var threadScope = suspendedThreads[threadEditorFocus.thread];
+   export function focusedThreadVariables(): ThreadVariables {
+      if(threadEditorFocus && threadEditorFocus.getThread() != null) {
+         var threadScope: ThreadScope = suspendedThreads[threadEditorFocus.getThread()];
          
          if(threadScope != null) {
-            return threadScope.variables;
+            return threadScope.getVariables();
          }
       }
-      return {};
+      return new ThreadVariables({});
    }
    
-   export function focusedThreadEvaluation() {
-      if(threadEditorFocus.thread != null) {
-         var threadScope = suspendedThreads[threadEditorFocus.thread];
+   export function focusedThreadEvaluation(): ThreadVariables {
+      if(threadEditorFocus && threadEditorFocus.getThread() != null) {
+         var threadScope = suspendedThreads[threadEditorFocus.getThread()];
          
          if(threadScope != null) {
-            return threadScope.evaluation;
+            return threadScope.getEvaluation();
          }
       }
-      return {};
+      return new ThreadVariables({});
    }
    
    export function showThreads() {
@@ -260,33 +421,33 @@ export module ThreadManager {
       
       for (var threadName in suspendedThreads) {
          if (suspendedThreads.hasOwnProperty(threadName)) {
-            var threadScope = suspendedThreads[threadName];
+            var threadScope: ThreadScope = suspendedThreads[threadName];
             var displayStyle = 'threadSuspended';
             var active = "&nbsp;<input type='radio'>";
             
             showThreadBreakpointLine(threadScope);
             
-            if(threadScope.status != 'SUSPENDED') {
+            if(threadScope.getStatus() != ThreadStatus.SUSPENDED) {
                displayStyle = 'threadRunning';
             } else {
-               if(threadEditorFocus.thread == threadScope.thread) {
+               if(threadEditorFocus.getThread() == threadScope.getThread()) {
                   active = "&nbsp;<input type='radio' checked>";
                }
             }
-            var displayName = "<div title='"+threadScope.stack+"' class='"+displayStyle+"'>"+threadName+"</div>";
-            var resourcePathDetails: FilePath = FileTree.createResourcePath(threadScope.resource);
+            var displayName = "<div title='"+threadScope.getStack()+"' class='"+displayStyle+"'>"+threadName+"</div>";
+            var resourcePathDetails: FilePath = FileTree.createResourcePath(threadScope.getResource());
             
             threadRecords.push({
                recid: threadIndex++,
                name: displayName,
                thread: threadName,
-               status: threadScope.status,
+               status: ThreadStatus[threadScope.getStatus()],
                active: active,
-               instruction: threadScope.instruction,
-               variables: threadScope.variables,
-               resource: threadScope.resource,
-               key: threadScope.key,
-               line: threadScope.line,
+               instruction: threadScope.getInstruction(),
+               variables: threadScope.getVariables(),
+               resource: threadScope.getResource(),
+               key: threadScope.getKey(),
+               line: threadScope.getLine(),
                script: resourcePathDetails.getResourcePath()
             });
          }

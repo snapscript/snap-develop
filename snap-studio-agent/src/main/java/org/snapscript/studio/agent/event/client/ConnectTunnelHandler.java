@@ -18,7 +18,7 @@ public class ConnectTunnelHandler {
    private static final String FORMAT = "EEE, dd MMM yyyy HH:mm:ss z";
    private static final String TIME_ZONE = "GMT";
    private static final String REQUEST = 
-   "CONNECT %s:%s HTTP/1.1\r\n" +
+   "CONNECT %s:%s/connect/%s HTTP/1.1\r\n" +
    "Host: %s:%s\r\n" +
    "Date: %s\r\n"+
    "\r\n";
@@ -27,12 +27,14 @@ public class ConnectTunnelHandler {
    private final TraceLogger logger;
    private final DateFormat format;
    private final TimeZone zone;
+   private final String process;
    private final int connect;
    
-   public ConnectTunnelHandler(TraceLogger logger, int connect) {
+   public ConnectTunnelHandler(TraceLogger logger, String process, int connect) {
       this.buffer = new ByteArrayOutputStream();
       this.format = new SimpleDateFormat(FORMAT);
       this.zone = TimeZone.getTimeZone(TIME_ZONE);
+      this.process = process;
       this.logger = logger;
       this.connect = connect;
    }
@@ -50,7 +52,7 @@ public class ConnectTunnelHandler {
       int port = socket.getPort();
       long time = System.currentTimeMillis();
       String date = format.format(time);
-      String request = String.format(REQUEST, host, connect, host, port, date);
+      String request = String.format(REQUEST, host, connect, process, host, port, date);
       byte[] header = request.getBytes(CHARSET);
       
       output.write(header);
@@ -74,6 +76,10 @@ public class ConnectTunnelHandler {
          }
       }
       String header = buffer.toString("UTF-8");
+      
+      System.err.println("#######################################################################");
+      System.err.println(header);
+      System.err.println("#######################################################################");
       
       buffer.reset();
       logger.trace(header);

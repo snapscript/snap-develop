@@ -8,29 +8,29 @@ import org.snapscript.common.store.RemoteStore;
 import org.snapscript.common.store.Store;
 import org.snapscript.core.module.Path;
 
-public class StoreBuilder {
+public class ProcessStoreBuilder {
 
    private final File path;
    private final String url;
    private final boolean debug;
    private final Path script;
-   private Store store;
+   private ProcessStore store;
    
-   public StoreBuilder(String url, File path, Path script, boolean debug) {
+   public ProcessStoreBuilder(String url, File path, Path script, boolean debug) {
       this.debug = debug;
       this.script = script;
       this.path = path;
       this.url = url;
    }
    
-   public Store create() {
+   public ProcessStore create() {
       if(store == null) {
          return createStore();
       }
       return store;
    }
    
-   private Store createStore() {
+   private ProcessStore createStore() {
       try {
          if(url != null) {
             return createRemoteStore(); 
@@ -42,7 +42,7 @@ public class StoreBuilder {
       }
    }
    
-   private Store createRemoteStore() {
+   private ProcessStore createRemoteStore() {
       try {
          String location = url.toLowerCase();
          
@@ -51,16 +51,18 @@ public class StoreBuilder {
          }
          URI file = new URI(url);
          Store delegate = new RemoteStore(file);
-         return new FileCacheStore(delegate, script, url, debug);
+         Store store = new FileCacheStore(delegate, script, url, debug);
+         return new ProcessStore(store);
       } catch(Exception e) {
          throw new IllegalStateException("Could not create store from " + url);
       }
    }
    
-   private Store createFileStore() {
+   private ProcessStore createFileStore() {
       if(!path.exists()) {
          throw new IllegalStateException("Could not create store from " + path);
       }
-      return new FileStore(path);
+      Store store = new FileStore(path);
+      return new ProcessStore(store);
    }
 }

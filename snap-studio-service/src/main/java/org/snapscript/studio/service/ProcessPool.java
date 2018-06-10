@@ -30,20 +30,19 @@ import org.snapscript.studio.agent.event.WriteOutputEvent;
 import org.snapscript.studio.common.console.ConsoleManager;
 import org.snapscript.studio.project.Workspace;
 import org.snapscript.studio.project.config.ProcessConfiguration;
-import org.snapscript.studio.service.agent.DebugAgentFilter;
 import org.snapscript.studio.service.message.AsyncEventExchanger;
 
 @Slf4j
 public class ProcessPool {
    
    private static final long DEFAULT_WAIT_TIME = 10000;
-   private static final long DEFAULT_PING_FREQUENCY = 5000;
+   private static final long DEFAULT_PING_FREQUENCY = 4000;
    
    private final BlockingQueue<ProcessConnection> running;
    private final Set<ProcessEventListener> listeners;
    private final ProcessConfiguration configuration;
    private final ProcessEventInterceptor interceptor;
-   private final ProcessConnectionPool connections;
+   private final ProcessConnectionPool waiting;
    private final ProcessAgentStarter starter;
    private final AsyncEventExchanger router;
    private final ProcessLauncher launcher;
@@ -60,7 +59,7 @@ public class ProcessPool {
    }
    
    public ProcessPool(ProcessConfiguration configuration, ProcessLauncher launcher, ProcessNameFilter filter, Workspace workspace, int capacity, long frequency) throws IOException {
-      this.connections = new ProcessConnectionPool();
+      this.waiting = new ProcessConnectionPool();
       this.listeners = new CopyOnWriteArraySet<ProcessEventListener>();
       this.running = new LinkedBlockingQueue<ProcessConnection>();
       this.interceptor = new ProcessEventInterceptor(listeners);
@@ -79,7 +78,7 @@ public class ProcessPool {
    
    public ProcessConnection acquire(String process) {
       try {
-         ProcessConnection connection = connections.acquire(DEFAULT_WAIT_TIME, process); // take a process from the pool
+         ProcessConnection connection = waiting.acquire(DEFAULT_WAIT_TIME, process); // take a process from the pool
          
          if(connection == null) {
             if(process == null) {
@@ -114,11 +113,11 @@ public class ProcessPool {
    
    public boolean ping(String process, long time) {
       try {
-         ProcessConnection connection = connections.acquire(0, process); // take a process from the pool
+         ProcessConnection connection = waiting.acquire(0, process); // take a process from the pool
          
          if(connection != null) {
             if(connection.ping(time)) {
-               connections.register(connection); // add back if ping succeeded
+               waiting.register(connection); // add back if ping succeeded
                return true;
             }
             connection.close(process + " Ping did not succeed");
@@ -129,9 +128,9 @@ public class ProcessPool {
       return false;
    }
    
-   public void connect(Channel channel) {
+   public void connect(Channel channel, String process) {
       try {
-         router.connect(channel);
+         router.connect(channel, process);
       } catch(Exception e) {
          log.info("Could not connect channel", e);
       }
@@ -169,7 +168,10 @@ public class ProcessPool {
       public void onRegister(ProcessEventChannel channel, RegisterEvent event) throws Exception {
          String process = event.getProcess();
          ProcessConnection connection = new ProcessConnection(channel, workspace, process);
-         connections.register(connection);
+         
+         log.info("Registered new connection " + process);
+         waiting.register(connection);
+         pinger.ping(); // force ping quickly
 
          for(ProcessEventListener listener : listeners) {
             try {
@@ -381,7 +383,7 @@ public class ProcessPool {
             int port = listen.get();
 
             if(port != 0) {
-               ProcessConnection connection = connections.acquire(filter);
+               ProcessConnection connection = waiting.acquire(filter);
 
                if(connection != null) {
                   String name = connection.toString();
@@ -402,26 +404,46 @@ public class ProcessPool {
       }
       
       private void ping() {
+         try {
+            pingWaiting();
+            pingRunning();
+         }catch(Exception e){
+            log.info("Error pinging agents", e);
+         }
+      }
+      
+      private void pingWaiting() {
          long time = System.currentTimeMillis();
          
          try {
-            List<ProcessConnection> active = new ArrayList<ProcessConnection>();
-            int require = capacity;
+            List<ProcessConnection> notDead = new ArrayList<ProcessConnection>();
 
-            while(!connections.isEmpty()) {
-               ProcessConnection connection = connections.acquire(0);
+            while(!waiting.isEmpty()) {
+               ProcessConnection connection = waiting.acquire(0);
                
                if(connection == null) {
                   break;
                }
                if(connection.ping(time)) {
-                  active.add(connection);
+                  notDead.add(connection);
                }
             }
-            connections.register(active);
-
-            int pool = connections.size();
-            int remaining = require - pool; 
+            waiting.register(notDead);
+         }catch(Exception e){
+            log.info("Error pinging agents", e);
+         }
+      }
+      
+      private void pingRunning() {
+         long time = System.currentTimeMillis();         
+         int require = capacity;
+         int runningPool = running.size();
+         int waitingPool = waiting.size();
+         int remaining = require - waitingPool; 
+         
+         try {
+            List<ProcessConnection> notDead = new ArrayList<ProcessConnection>();
+            List<String> activeNames = new ArrayList<String>();
             
             if(remaining > 0) {
                launch(); // launch a new process at a time
@@ -429,20 +451,25 @@ public class ProcessPool {
             if(remaining < 0 && require > 0) {
                kill(); // kill if pool grows too large
             }
-            log.debug("Ping has " + pool + " active from " + require);
-            active.clear();
+            log.debug("Ping has " + waitingPool + " idle and " + runningPool+ " active from " + require) ;
             
-            while(!connections.isEmpty()) {
+            while(!running.isEmpty()) {
                ProcessConnection connection = running.poll();
                
                if(connection == null) {
                   break;
                }
                if(connection.ping(time)) {
-                  active.add(connection);
+                  String process = connection.getProcess();
+                  activeNames.add(process);
+                  notDead.add(connection);
+               } else {
+                  String process = connection.getProcess();
+                  log.info("Dead connection " + process);
                }
             }
-            running.addAll(active);
+            running.addAll(notDead);
+            log.info("Active processes are " + activeNames);;
          }catch(Exception e){
             log.info("Error pinging agents", e);
          }

@@ -25,7 +25,7 @@ public class DebugClient {
 
    public String loadScript(String project, String resource) {
       ResourceManager manager = context.getManager();
-      String path = ProjectStore.getPath(project, resource);
+      String path = RemoteProjectStore.getPath(project, resource);
 
       return manager.getString(path);
    }
@@ -54,13 +54,23 @@ public class DebugClient {
       matcher.update(breakpoints);
    }
    
-   public void execute(String project, String resource, String dependencies, boolean debug) {
+   public void beginExecute(String project, String resource, String dependencies, boolean debug) {
       BreakpointMatcher matcher = context.getMatcher();
       ProjectStore store = context.getStore();
 
       matcher.update(breakpoints);
       store.update(project); 
-      executor.execute(channel, project, resource, dependencies, debug);
+      executor.beginExecute(channel, project, resource, dependencies, debug);
+   }
+   
+   public void attachProcess(String project, String resource) {
+      BreakpointMatcher matcher = context.getMatcher();
+      ProjectStore store = context.getStore();
+
+      matcher.update(breakpoints);
+      store.update(project); 
+      executor.attachProcess(channel, project, resource);
+      matcher.suspend();
    }
 
    public boolean join(long time) {

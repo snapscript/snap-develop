@@ -55,7 +55,7 @@ export module DebugManager {
       
       public getDescription(): string {
          if(this._resource) {
-            return this._process + " is " + ProcessStatus[this._status] + " with " + this._resource;
+            return this._process + " is " + ProcessStatus[this._status] + " with " + this._resource + " focus is " + this.isFocus();
          }
          return this._process + " is " + ProcessStatus[this._status];
       }      
@@ -152,6 +152,7 @@ export module DebugManager {
          var duration: number = message.duration;
       
          statusProcesses[process] = null;
+         console.log(process + " is TERMINATED");
          
          if(duration && processInfo) {
             console.log("Process took " + duration + " ms");
@@ -193,9 +194,9 @@ export module DebugManager {
       var description: string = processInfo.getDescription();
       var resource: string = processInfo.getResource();
       
-      if(resource != null) {
+      if(resource != null || message.status == 'REGISTERING' || processInfo.isFocus()) {
       // console.log(message);
-         console.log(description);
+      //   console.log(description);
       }      
       if(processInfo.isFocus()) {
          updateStatusFocus(process);

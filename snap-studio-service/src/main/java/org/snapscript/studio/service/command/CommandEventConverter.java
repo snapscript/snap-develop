@@ -36,6 +36,7 @@ public class CommandEventConverter {
             .stack(event.getStack())
             .instruction(event.getInstruction())
             .status(event.getStatus().name())
+            .source(event.getSource())
             .line(event.getLine())
             .depth(event.getDepth())
             .key(event.getKey())

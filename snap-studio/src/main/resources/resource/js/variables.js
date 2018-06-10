@@ -23,10 +23,10 @@ define(["require", "exports", "w2ui", "threads", "common", "commands"], function
             var expandPath = name + ".*"; // this ensures they sort in sequence with '.' notation, e.g blah.foo.*
             var removePrefix = name + ".";
             if (threadScope != null) {
-                var variablePaths = variableHistory[threadScope.thread];
+                var variablePaths = variableHistory[threadScope.getThread()];
                 if (variablePaths == null) {
                     variablePaths = [];
-                    variableHistory[threadScope.thread] = variablePaths;
+                    variableHistory[threadScope.getThread()] = variablePaths;
                 }
                 var removePaths = [];
                 for (var i = 0; i < variablePaths.length; i++) {
@@ -57,18 +57,19 @@ define(["require", "exports", "w2ui", "threads", "common", "commands"], function
         }
         VariableManager.showVariables = showVariables;
         function showVariablesGrid(threadVariables, gridName, expressions) {
+            var variables = threadVariables.getVariables();
             var sortedNames = [];
             var variableRecords = [];
             var variableIndex = 1;
-            for (var variableName in threadVariables) {
-                if (threadVariables.hasOwnProperty(variableName)) {
+            for (var variableName in variables) {
+                if (variables.hasOwnProperty(variableName)) {
                     sortedNames.push(variableName); // add a '.' to ensure dot notation sorts e.g x.y.z
                 }
             }
             sortedNames.sort();
             for (var i = 0; i < sortedNames.length; i++) {
                 var sortedName = sortedNames[i];
-                var variable = threadVariables[sortedName];
+                var variable = variables[sortedName];
                 var variableExpandable = "" + variable.expandable;
                 var variableRoot = variable.depth == 0; // style the root differently
                 var variableProperty = "" + variable.property;

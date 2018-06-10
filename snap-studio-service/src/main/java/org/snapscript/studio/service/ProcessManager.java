@@ -35,17 +35,17 @@ public class ProcessManager implements ProcessRemoteController {
    private final ProcessPool pool;
    private final Workspace workspace;
 
-   public ProcessManager(ProcessConfigurationLoader loader, ProcessLauncher launcher, ProcessNameFilter filter, Workspace workspace, @Value("${agent-pool}") int capacity) throws Exception {
+   public ProcessManager(ProcessConfigurationLoader loader, ProcessConfiguration configuration, ProcessLauncher launcher, ProcessNameFilter filter, Workspace workspace, @Value("${agent-pool}") int capacity) throws Exception {
       this.connections = new ConcurrentHashMap<String, ProcessConnection>();
-      this.configuration = new ProcessConfiguration();
       this.pool = new ProcessPool(configuration, launcher, filter, workspace, capacity);
+      this.configuration = configuration;
       this.workspace = workspace;
       this.loader = loader;
    }
    
-   public void connect(ProcessEventListener listener, Channel channel) {
+   public void connect(ProcessEventListener listener, Channel channel, String process) {
       pool.register(listener);
-      pool.connect(channel);
+      pool.connect(channel, process);
    }
    
    public void register(ProcessEventListener listener) {

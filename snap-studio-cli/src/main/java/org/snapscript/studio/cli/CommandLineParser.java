@@ -34,6 +34,7 @@ public class CommandLineParser {
       String url = null;
       Path script = null;
       String evaluate = null;
+      Integer port = null;
       boolean debug = Boolean.parseBoolean(CommandLineArgument.VERBOSE.value);
       boolean check = Boolean.parseBoolean(CommandLineArgument.CHECK.value);
       
@@ -64,6 +65,8 @@ public class CommandLineParser {
                debug = Boolean.parseBoolean(value);
             } else if(argument.isCheck()) {
                check = Boolean.parseBoolean(value);
+            } else if(argument.isPort()) {
+               port = Integer.parseInt(value);               
             } else if(argument.isURL()) {
                url = value;
             } else if(argument.isDirectory()) {
@@ -91,6 +94,6 @@ public class CommandLineParser {
             values.put(name, value);
          }
       }
-      return new CommandLine(model, url, directory, classpath, script, evaluate, debug, check);
+      return new CommandLine(model, url, directory, classpath, script, evaluate, port, debug, check);
    }
 }

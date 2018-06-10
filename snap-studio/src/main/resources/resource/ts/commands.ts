@@ -9,7 +9,7 @@ import {ProblemManager} from "problem"
 import {FileEditor, FileEditorState} from "editor"
 import {LoadSpinner} from "spinner"
 import {FileTree, FilePath} from "tree"
-import {ThreadManager} from "threads"
+import {ThreadManager, ThreadScope, ThreadStatus} from "threads"
 import {History} from "history"
 import {VariableManager} from "variables"
 import {DialogBuilder} from "dialog"
@@ -671,10 +671,10 @@ export module Command {
    }
    
    export function stepOverScript() {
-      var threadScope = ThreadManager.focusedThread();
+      var threadScope: ThreadScope = ThreadManager.focusedThread();
       if(threadScope != null) {
          var message = {
-            thread: threadScope.thread,
+            thread: threadScope.getThread(),
             type: "STEP_OVER"
          };
          FileEditor.clearEditorHighlights();
@@ -683,10 +683,10 @@ export module Command {
    }
    
    export function stepInScript() {
-      var threadScope = ThreadManager.focusedThread();
+      var threadScope: ThreadScope = ThreadManager.focusedThread();
       if(threadScope != null) {
          var message = {
-            thread: threadScope.thread,
+            thread: threadScope.getThread(),
             type: "STEP_IN"
          };
          FileEditor.clearEditorHighlights();
@@ -695,10 +695,10 @@ export module Command {
    }
    
    export function stepOutScript() {
-      var threadScope = ThreadManager.focusedThread();
+      var threadScope: ThreadScope = ThreadManager.focusedThread();
       if(threadScope != null) {
          var message = {
-            thread: threadScope.thread,
+            thread: threadScope.getThread(),
             type: "STEP_OUT"
          };
          FileEditor.clearEditorHighlights(); 
@@ -707,10 +707,10 @@ export module Command {
    }
    
    export function resumeScript() {
-      var threadScope = ThreadManager.focusedThread();
+      var threadScope: ThreadScope = ThreadManager.focusedThread();
       if(threadScope != null) {
          var message = {
-            thread: threadScope.thread,
+            thread: threadScope.getThread(),
             type: "RUN"
          };
          FileEditor.clearEditorHighlights(); 
@@ -723,10 +723,10 @@ export module Command {
    }
    
    export function browseScriptVariables(variables) {
-      var threadScope = ThreadManager.focusedThread();
+      var threadScope: ThreadScope = ThreadManager.focusedThread();
       if(threadScope != null) {
          var message = {
-            thread: threadScope.thread,
+            thread: threadScope.getThread(),
             expand: variables
          };
          EventBus.sendEvent("BROWSE", message);
@@ -734,10 +734,10 @@ export module Command {
    }
    
    export function browseScriptEvaluation(variables, expression, refresh) {
-      var threadScope = ThreadManager.focusedThread();
+      var threadScope: ThreadScope = ThreadManager.focusedThread();
       if (threadScope != null) {
           var message = {
-              thread: threadScope.thread,
+              thread: threadScope.getThread(),
               expression: expression,
               expand: variables,
               refresh: refresh

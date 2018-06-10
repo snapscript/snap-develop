@@ -1,12 +1,18 @@
 package org.snapscript.studio.agent.debug;
 
+import static org.snapscript.studio.agent.debug.ScopeVariableTree.EMPTY;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.snapscript.core.trace.TraceType;
+import org.snapscript.studio.agent.RunMode;
 import org.snapscript.studio.agent.event.ScopeEvent;
 
 public class ScopeEventBuilder {
 
    private final ScopeVariableTree blank;
    private final ScopeExtractor extractor;
+   private final AtomicInteger counter;
    private final TraceType type;
    private final String process;
    private final String resource;
@@ -17,7 +23,8 @@ public class ScopeEventBuilder {
    private final int count;
    
    public ScopeEventBuilder(ScopeExtractor extractor, TraceType type, String process, String thread, String stack, String resource, int line, int depth, int count) {
-      this.blank = ScopeVariableTree.EMPTY;
+      this.counter = new AtomicInteger();
+      this.blank = EMPTY;
       this.extractor = extractor;
       this.process = process;
       this.thread = thread;
@@ -29,9 +36,13 @@ public class ScopeEventBuilder {
       this.type = type;
    }
    
-   public ScopeEvent suspendEvent() {
-      ScopeVariableTree variables = extractor.build();
-      String name = type.name();
+   public ScopeEvent suspendEvent(RunMode mode) {  
+      boolean remote = mode.isRemoteAttachment();
+      int count = counter.getAndIncrement();
+      ScopeContext context = extractor.build(remote, count > 0 || !remote); // this is totally rubbish
+      ScopeVariableTree variables = context.getTree();
+      String source = context.getSource();
+      String name = type.name();      
  
       return new ScopeEvent.Builder(process)
          .withVariables(variables)
@@ -40,13 +51,14 @@ public class ScopeEventBuilder {
          .withInstruction(name)
          .withStatus(ThreadStatus.SUSPENDED)
          .withResource(resource)
+         .withSource(source)
          .withLine(line)
          .withDepth(depth)
          .withKey(count)
          .build();
    }
    
-   public ScopeEvent resumeEvent() {
+   public ScopeEvent resumeEvent(RunMode mode) {      
       String name = type.name();
 
       return new ScopeEvent.Builder(process)

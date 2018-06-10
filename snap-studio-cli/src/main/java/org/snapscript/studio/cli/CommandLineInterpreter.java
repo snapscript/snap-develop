@@ -4,23 +4,21 @@ import static org.snapscript.core.Reserved.DEFAULT_PACKAGE;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.Executor;
 
-import org.snapscript.common.store.Store;
-import org.snapscript.common.thread.ThreadPool;
-import org.snapscript.compile.Compiler;
 import org.snapscript.compile.Executable;
 import org.snapscript.compile.ResourceCompiler;
-import org.snapscript.compile.StoreContext;
 import org.snapscript.compile.verify.VerifyError;
 import org.snapscript.compile.verify.VerifyException;
-import org.snapscript.core.Context;
 import org.snapscript.core.ExpressionEvaluator;
 import org.snapscript.core.module.FilePathConverter;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.module.PathConverter;
 import org.snapscript.core.scope.Model;
+import org.snapscript.studio.agent.DebugContext;
+import org.snapscript.studio.agent.RunMode;
+import org.snapscript.studio.cli.debug.DebugRequestListener;
 import org.snapscript.studio.cli.load.FileClassLoader;
+import org.snapscript.studio.cli.store.ProcessStore;
 
 public class CommandLineInterpreter {
 
@@ -41,24 +39,30 @@ public class CommandLineInterpreter {
    }
    
    public static void execute(CommandLine line) throws Exception {
-      Store store = line.getStore();
+      ProcessStore store = line.getStore();
       String evaluate = line.getEvaluation();
       Path script = line.getScript();
       Model model = line.getModel();
+      String system = line.getSystem();
+      Integer port = line.getPort();
+      String process = line.getProcess();
       String module = DEFAULT_PACKAGE;
       
       if(evaluate == null && script == null) {
          CommandLineUsage.usage();
       }
+      DebugContext context = new DebugContext(RunMode.REMOTE, store, process, system);
       PathConverter converter = new FilePathConverter();
-      Executor executor = new ThreadPool(8);
-      Context context = new StoreContext(store, executor);
-      Compiler compiler = new ResourceCompiler(context);
       Executable executable = null;
       
-      try {
+      try {         
+         if(port != null && script != null) {
+            DebugRequestListener connector = new DebugRequestListener(context, script, port);
+            connector.start();
+         }
          if(script != null) {
             String file = script.getPath();
+            ResourceCompiler compiler = context.getCompiler();
             
             module = converter.createModule(file);
             executable = compiler.compile(file);

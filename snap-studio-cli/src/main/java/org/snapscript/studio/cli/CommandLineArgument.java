@@ -7,7 +7,8 @@ public enum CommandLineArgument {
    EXPRESSION("e", "expression", "expression to evaluate"),
    CLASSPATH("cp", "classpath", "optional classpath file"),
    VERBOSE("v", "verbose", "enable verbose logging", "false"),
-   CHECK("c", "check", "compile script only", "false");
+   CHECK("c", "check", "compile script only", "false"),
+   PORT("p", "port", "debug port");
 
    public final String description;
    public final String value;
@@ -47,6 +48,10 @@ public enum CommandLineArgument {
 
    public boolean isCheck(){
       return this == CHECK;
+   }
+   
+   public boolean isPort(){
+      return this == PORT;
    }
    
    public boolean isURL(){

@@ -16,6 +16,7 @@ import org.snapscript.common.store.Store;
 import org.snapscript.core.module.FilePathConverter;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.module.PathConverter;
+import org.snapscript.studio.agent.ProjectStore;
 
 public class FileCacheStore implements Store {
 
@@ -37,7 +38,7 @@ public class FileCacheStore implements Store {
       this.url = url;
       this.debug = debug;
    }
-
+   
    @Override
    public InputStream getInputStream(String path) {
       CacheInputStream stream = getTempInputStream(path);
@@ -191,7 +192,6 @@ public class FileCacheStore implements Store {
       public boolean isFailure(){
          return file.length() <= 0;
       }
-   }
-   
+   }   
    
 }

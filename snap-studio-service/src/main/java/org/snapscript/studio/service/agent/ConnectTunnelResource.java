@@ -6,6 +6,7 @@ import static org.simpleframework.http.Status.METHOD_NOT_ALLOWED;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import org.simpleframework.http.Path;
 import org.simpleframework.http.Protocol;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
@@ -18,7 +19,7 @@ import org.snapscript.studio.service.ProcessManager;
 import org.springframework.stereotype.Component;
 
 @Component
-@ResourcePath(".*:\\d+")
+@ResourcePath(".*:\\d+/connect/.+")
 public class ConnectTunnelResource implements Resource {
    
    private static final String CONTENT_TYPE = "text/plain";
@@ -43,14 +44,21 @@ public class ConnectTunnelResource implements Resource {
       Channel channel = request.getChannel();
       
       if(method.equalsIgnoreCase(CONNECT)) {
+         Path path = request.getPath();
+         String[] segments = path.getSegments();
+         String source = segments[1];
          ByteWriter writer = channel.getWriter();
          String date = request.getValue(Protocol.DATE);
          String header = String.format(TUNNEL_RESPONSE, date);
-         byte[] data = header.getBytes("UTF-8");
+         byte[] data = header.getBytes("UTF-8");         
+         
+         System.err.println("#######################################################################");
+         System.err.println(request);
+         System.err.println("#######################################################################");
          
          writer.write(data);
          writer.flush();
-         manager.connect(listener, channel); // establish the connection
+         manager.connect(listener, channel, source); // establish the connection
       } else {
          PrintStream stream = response.getPrintStream();
          

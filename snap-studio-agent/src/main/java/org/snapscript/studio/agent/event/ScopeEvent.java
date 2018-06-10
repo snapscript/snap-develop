@@ -10,6 +10,7 @@ public class ScopeEvent implements ProcessEvent {
    private final String instruction;
    private final String process;
    private final String resource;
+   private final String source;
    private final String thread;
    private final String stack;
    private final int line;
@@ -22,6 +23,7 @@ public class ScopeEvent implements ProcessEvent {
       this.resource = builder.resource;
       this.process = builder.process;
       this.thread = builder.thread;
+      this.source = builder.source;
       this.status = builder.status;
       this.depth = builder.depth;
       this.stack = builder.stack;
@@ -53,6 +55,10 @@ public class ScopeEvent implements ProcessEvent {
    public String getResource() {
       return resource;
    }
+   
+   public String getSource() {
+      return source;
+   }
 
    public String getThread() {
       return thread;
@@ -77,6 +83,7 @@ public class ScopeEvent implements ProcessEvent {
       private String instruction;
       private String process;
       private String resource;
+      private String source;
       private String thread;
       private String stack;
       private int line;
@@ -112,6 +119,11 @@ public class ScopeEvent implements ProcessEvent {
          return this;
       }
 
+      public Builder withSource(String source) {
+         this.source = source;
+         return this;
+      }
+      
       public Builder withThread(String thread) {
          this.thread = thread;
          return this;
