@@ -1,79 +1,144 @@
 package org.snapscript.studio.agent.event;
 
-import org.snapscript.studio.agent.ProcessMode;
+import org.snapscript.studio.agent.ExecuteStatus;
+import org.snapscript.studio.agent.RunMode;
+import org.snapscript.studio.agent.event.PongEvent.Builder;
 
-public class BeginEvent implements ProcessEvent {
+public class BeginEvent implements StatusEvent {
 
-   private final ProcessMode mode;
+   private final ExecuteStatus status;
+   private final RunMode mode;
    private final String resource;
    private final String process;
    private final String project;
+   private final String system;
+   private final long totalMemory;
+   private final long usedMemory;
+   private final int threads;
    private final long duration;
-   private final boolean debug;
    
    private BeginEvent(Builder builder) {
+      this.totalMemory = builder.totalMemory;
+      this.usedMemory = builder.usedMemory;
+      this.threads = builder.threads;
+      this.resource = builder.resource;
       this.process = builder.process;
       this.project = builder.project;
-      this.resource = builder.resource;
+      this.status = builder.status;
+      this.system = builder.system;
       this.duration = builder.duration;
       this.mode = builder.mode;
-      this.debug = builder.debug;
-   }
-   
-   public ProcessMode getMode() {
-      return mode;
-   }
+   }   
 
-   public String getResource() {
-      return resource;
-   }
-
+   @Override
    public String getProcess() {
       return process;
    }
-
+   
+   public RunMode getMode() {
+      return mode;
+   }
+   
+   @Override
+   public ExecuteStatus getStatus() {
+      return status;
+   }
+   
+   @Override
    public String getProject() {
       return project;
    }
 
+   @Override
+   public String getSystem() {
+      return system;
+   }
+   
+   @Override
+   public String getResource() {
+      return resource;
+   }
+   
+   @Override
+   public long getUsedMemory() {
+      return usedMemory;
+   }
+
+   @Override
+   public long getTotalMemory() {
+      return totalMemory;
+   }
+
+   @Override
+   public int getThreads() {
+      return threads;
+   }
+   
    public long getDuration() {
       return duration;
    }
-   
-   public boolean isDebug(){
-      return debug;
-   }
 
-   public static class Builder {
+   public static class Builder implements StatusEvent.Builder<BeginEvent> {
       
-      private ProcessMode mode;
+      private ExecuteStatus status;
+      private RunMode mode;
       private String resource;
       private String process;
       private String project;
+      private String system;
+      private long totalMemory;
+      private long usedMemory;
+      private int threads;
       private long duration;
-      private boolean debug;
       
       public Builder(String process){
          this.process = process;
       }
       
-      public Builder withMode(ProcessMode mode) {
-         this.mode = mode;
+      @Override
+      public Builder withProject(String project) {
+         this.project = project;
+         return this;
+      }
+      
+      @Override
+      public Builder withStatus(ExecuteStatus status) {
+         this.status = status;
          return this;
       }
 
+      @Override
       public Builder withResource(String resource) {
          this.resource = resource;
          return this;
       }
 
-      public Builder withProcess(String process) {
-         this.process = process;
+      @Override
+      public Builder withSystem(String system) {
+         this.system = system;
          return this;
       }
-
-      public Builder withProject(String project) {
-         this.project = project;
+      
+      @Override
+      public Builder withThreads(int threads){
+         this.threads = threads;
+         return this;
+      }
+      
+      @Override
+      public Builder withTotalMemory(long totalMemory){
+         this.totalMemory = totalMemory;
+         return this;
+      }
+      
+      @Override
+      public Builder withUsedMemory(long usedMemory){
+         this.usedMemory = usedMemory;
+         return this;
+      }
+      
+      public Builder withMode(RunMode mode) {
+         this.mode = mode;
          return this;
       }
 
@@ -81,16 +146,9 @@ public class BeginEvent implements ProcessEvent {
          this.duration = duration;
          return this;
       }
-      
-      public Builder withDebug(boolean debug) {
-         this.debug = debug;
-         return this;
-      }
-      
+
       public BeginEvent build(){
          return new BeginEvent(this);
-      }
-      
-      
+      }            
    }
 }

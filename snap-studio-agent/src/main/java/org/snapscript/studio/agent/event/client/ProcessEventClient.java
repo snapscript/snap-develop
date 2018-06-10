@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.snapscript.studio.agent.SingleThreadExecutor;
 import org.snapscript.studio.agent.event.BeginEvent;
 import org.snapscript.studio.agent.event.BreakpointsEvent;
 import org.snapscript.studio.agent.event.BrowseEvent;
@@ -20,7 +21,6 @@ import org.snapscript.studio.agent.event.ProcessEvent;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
 import org.snapscript.studio.agent.event.ProcessEventConnection;
 import org.snapscript.studio.agent.event.ProcessEventConsumer;
-import org.snapscript.studio.agent.event.ProcessEventExecutor;
 import org.snapscript.studio.agent.event.ProcessEventListener;
 import org.snapscript.studio.agent.event.ProcessEventProducer;
 import org.snapscript.studio.agent.event.ProfileEvent;
@@ -30,16 +30,16 @@ import org.snapscript.studio.agent.event.StepEvent;
 import org.snapscript.studio.agent.event.ScriptErrorEvent;
 import org.snapscript.studio.agent.event.WriteErrorEvent;
 import org.snapscript.studio.agent.event.WriteOutputEvent;
-import org.snapscript.studio.agent.log.ProcessLogger;
+import org.snapscript.studio.agent.log.TraceLogger;
 
 public class ProcessEventClient {
    
    private final ProcessEventListener listener;
-   private final ProcessEventExecutor executor;
-   private final ProcessLogger logger;
+   private final SingleThreadExecutor executor;
+   private final TraceLogger logger;
    
-   public ProcessEventClient(ProcessEventListener listener, ProcessLogger logger) throws IOException {
-      this.executor = new ProcessEventExecutor();
+   public ProcessEventClient(ProcessEventListener listener, TraceLogger logger) throws IOException {
+      this.executor = new SingleThreadExecutor();
       this.listener = listener;
       this.logger = logger;
    }
@@ -47,7 +47,7 @@ public class ProcessEventClient {
    public ProcessEventChannel connect(String host, int port) throws Exception {
       try {
          Socket socket = new Socket(host, port);
-         ProcessEventTunnel tunnel = new ProcessEventTunnel(logger, port);
+         ConnectTunnelHandler tunnel = new ConnectTunnelHandler(logger, port);
          InputStream input = socket.getInputStream();
          OutputStream output = socket.getOutputStream();
          SocketConnection connection = new SocketConnection(socket, input, output);

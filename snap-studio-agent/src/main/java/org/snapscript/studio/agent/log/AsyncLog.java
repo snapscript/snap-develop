@@ -1,5 +1,7 @@
 package org.snapscript.studio.agent.log;
 
+import static org.snapscript.studio.agent.log.LogLevel.INFO;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -17,26 +19,32 @@ public class AsyncLog implements Log {
    
    private final LogDispatcher dispatcher;
    private final DateFormatter formatter;
+   private final LogLevel enabled;
    private final Log logger;
    
    public AsyncLog(Log logger) {
       this(logger, null);
    }
    
-   public AsyncLog(Log logger, String level) {
+   public AsyncLog(Log logger, String enabled) {
       this.dispatcher = new LogDispatcher(EVENT_LIMIT);
       this.formatter = new DateFormatter(TIME_FORMAT);
+      this.enabled = LogLevel.resolveLevel(enabled);
       this.logger = logger;
    }
    
    public void log(LogLevel level, Object message) {
-      LogEvent event = new LogEvent(level, message, null);
-      dispatcher.log(event);
+      if(enabled.isLevelEnabled(level)) {
+         LogEvent event = new LogEvent(level, message, null);
+         dispatcher.log(event);
+      }
    }
    
    public void log(LogLevel level, Object message, Throwable cause) {
-      LogEvent event = new LogEvent(level, message, cause);
-      dispatcher.log(event);
+      if(enabled.isLevelEnabled(level)) {
+         LogEvent event = new LogEvent(level, message, cause);
+         dispatcher.log(event);
+      }
    }
    
    private class DateFormatter extends ThreadLocal<DateFormat> {
@@ -129,13 +137,7 @@ public class AsyncLog implements Log {
             builder.append(message);
             
             if(cause != null) {
-               if(level.isTraceEnabled()) {
-                  logger.log(level, builder, cause);
-               } else {
-                  builder.append(": ");
-                  builder.append(cause);
-                  logger.log(level, builder);
-               }
+               logger.log(level, builder, cause);
             } else {
                logger.log(level, builder);
             }

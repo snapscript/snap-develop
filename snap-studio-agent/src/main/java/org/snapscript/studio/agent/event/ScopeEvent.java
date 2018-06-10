@@ -1,15 +1,13 @@
 package org.snapscript.studio.agent.event;
 
 import org.snapscript.studio.agent.debug.ScopeVariableTree;
+import org.snapscript.studio.agent.debug.ThreadStatus;
 
 public class ScopeEvent implements ProcessEvent {
-   
-   public static final String SUSPENDED = "SUSPENDED";
-   public static final String RUNNING = "RUNNING";
 
    private final ScopeVariableTree variables;
+   private final ThreadStatus status;
    private final String instruction;
-   private final String status;
    private final String process;
    private final String resource;
    private final String thread;
@@ -38,6 +36,10 @@ public class ScopeEvent implements ProcessEvent {
 
    public ScopeVariableTree getVariables() {
       return variables;
+   }   
+
+   public ThreadStatus getStatus() {
+      return status;
    }
 
    public String getInstruction() {
@@ -50,10 +52,6 @@ public class ScopeEvent implements ProcessEvent {
    
    public String getResource() {
       return resource;
-   }
-
-   public String getStatus() {
-      return status;
    }
 
    public String getThread() {
@@ -75,8 +73,8 @@ public class ScopeEvent implements ProcessEvent {
    public static class Builder {
       
       private ScopeVariableTree variables;
+      private ThreadStatus status;
       private String instruction;
-      private String status;
       private String process;
       private String resource;
       private String thread;
@@ -99,7 +97,7 @@ public class ScopeEvent implements ProcessEvent {
          return this;
       }
 
-      public Builder withStatus(String status) {
+      public Builder withStatus(ThreadStatus status) {
          this.status = status;
          return this;
       }

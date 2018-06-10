@@ -22,7 +22,7 @@ import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.config.DependencyFile;
 import org.snapscript.studio.project.config.OperatingSystem;
 import org.snapscript.studio.project.config.ProjectConfiguration;
-import org.snapscript.studio.service.core.ProcessManager;
+import org.snapscript.studio.service.ProcessManager;
 import org.snapscript.studio.service.project.ProjectProblemFinder;
 import org.snapscript.studio.service.tree.TreeContext;
 import org.snapscript.studio.service.tree.TreeContextManager;

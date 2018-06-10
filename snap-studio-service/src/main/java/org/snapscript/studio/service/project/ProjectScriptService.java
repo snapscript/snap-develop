@@ -14,10 +14,10 @@ import org.snapscript.studio.common.resource.display.DisplayPersister;
 import org.snapscript.studio.project.BackupManager;
 import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.Workspace;
+import org.snapscript.studio.service.ConnectListener;
+import org.snapscript.studio.service.ProcessManager;
 import org.snapscript.studio.service.command.CommandController;
 import org.snapscript.studio.service.command.CommandListener;
-import org.snapscript.studio.service.core.ConnectListener;
-import org.snapscript.studio.service.core.ProcessManager;
 import org.snapscript.studio.service.tree.TreeContextManager;
 import org.springframework.stereotype.Component;
 

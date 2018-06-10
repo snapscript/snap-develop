@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class ExitCommand implements Command {
    
    private String process; 
+   private long duration;
 }

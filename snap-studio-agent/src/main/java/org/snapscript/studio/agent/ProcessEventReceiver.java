@@ -11,20 +11,20 @@ import org.snapscript.studio.agent.debug.SuspendController;
 import org.snapscript.studio.agent.event.BreakpointsEvent;
 import org.snapscript.studio.agent.event.BrowseEvent;
 import org.snapscript.studio.agent.event.EvaluateEvent;
-import org.snapscript.studio.agent.event.ExecuteData;
 import org.snapscript.studio.agent.event.ExecuteEvent;
 import org.snapscript.studio.agent.event.PingEvent;
 import org.snapscript.studio.agent.event.ProcessEventAdapter;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
 import org.snapscript.studio.agent.event.StepEvent;
+import org.snapscript.studio.agent.task.ProcessExecutor;
 
 public class ProcessEventReceiver extends ProcessEventAdapter {
    
+   private final ProcessExecutor executor;
    private final ConnectionChecker checker;
-   private final ProcessResourceExecutor executor;
-   private final ProcessContext context;
+   private final DebugContext context;
    
-   public ProcessEventReceiver(ProcessContext context, ProcessMode mode, ConnectionChecker checker, ProcessResourceExecutor executor, Model model) throws Exception {
+   public ProcessEventReceiver(DebugContext context, RunMode mode, ConnectionChecker checker, ProcessExecutor executor, Model model) throws Exception {
       this.executor = executor;
       this.checker = checker;
       this.context = context;
@@ -36,7 +36,7 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
       Map<String, Map<Integer, Boolean>> breakpoints = event.getBreakpoints();
       BreakpointMatcher matcher = context.getMatcher();
       TraceInterceptor interceptor = context.getInterceptor();
-      ProcessStore store = context.getStore();
+      ClientStore store = context.getStore();
       String actual = context.getProcess();
       String dependencies = data.getDependencies();
       String target = data.getProcess();
@@ -52,7 +52,7 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
       }
       matcher.update(breakpoints);
       store.update(project); 
-      executor.execute(channel, actual, project, resource, dependencies, debug);
+      executor.execute(channel, project, resource, dependencies, debug);
    }
    
    @Override
@@ -101,21 +101,11 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
 
    @Override
    public void onPing(ProcessEventChannel channel, PingEvent event) throws Exception {
-      ExecuteData data = executor.get();
-      
-      if(data != null) {
-         String project = data.getProject();
-         String resource = data.getResource();
-         boolean debug = data.isDebug();
-         
-         checker.update(channel, event, project, resource, debug);
-      } else {
-         checker.update(channel, event, null, null, false); 
-      }
+      checker.update(channel, event);
    }
 
    @Override
    public void onClose(ProcessEventChannel channel) throws Exception {
-      ProcessTerminator.terminate("Close event received");
+      TerminateHandler.terminate("Close event received");
    }
 }

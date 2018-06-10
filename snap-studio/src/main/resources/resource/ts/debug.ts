@@ -13,8 +13,100 @@ import {FileTree, FilePath} from "tree"
 
 export module DebugManager {
    
+   enum ProcessStatus {
+      REGISTERING,
+      WAITING,
+      STARTING,
+      COMPILING,
+      DEBUGGING,
+      RUNNING,
+      TERMINATING,
+      FINISHED,
+      UNKNOWN
+   }
+   
+   class ProcessInfo {
+      
+      private _status : ProcessStatus;
+      private _process: string;
+      private _resource: string;
+      private _project: string;
+      private _system: string;
+      private _time: number;
+      private _running: boolean; // is anything running
+      private _debug: boolean;
+      private _focus: boolean;
+      private _memory: number;
+      private _threads: number;
+      
+      constructor(process: string, project: string, resource: string, system: string, status: ProcessStatus, time: number, running: boolean, debug: boolean, focus: boolean, memory: number, threads: number) {
+         this._process = process;
+         this._resource = resource;
+         this._system = system;
+         this._time = time;
+         this._running = running;
+         this._focus = focus;
+         this._project = project;
+         this._memory = memory;
+         this._threads = threads;
+         this._debug = debug;
+         this._status = status;
+      }
+      
+      public getDescription(): string {
+         if(this._resource) {
+            return this._process + " is " + ProcessStatus[this._status] + " with " + this._resource;
+         }
+         return this._process + " is " + ProcessStatus[this._status];
+      }      
+      
+      public getStatus(): ProcessStatus {
+         return this._status;
+      }  
+      
+      public getProcess(): string {
+         return this._process;
+      }
+   
+      public getProject(): string {
+         return this._project;
+      }
+      
+      public getResource(): string{
+         return this._resource;
+      }    
+      
+      public getSystem(): string {
+         return this._system;
+      }
+      
+      public getMemory(): number {
+         return this._memory;
+      }
+      
+      public getThreads(): number {
+         return this._threads;
+      }
+      
+      public getTime(): number {
+         return this._time;
+      }
+      
+      public isFocus(): boolean {
+         return "" + this._focus == "true";
+      }
+      
+      public isRunning(): boolean {
+         return "" + this._running == "true";
+      }
+      
+      public isDebug(): boolean {
+         return "" + this._debug == "true";
+      }
+   }   
+   
    var statusProcesses = {};
-   var statusFocus = null;
+   var statusFocus: string = null;
    
    export function createStatus() {
       EventBus.createRoute("STATUS", createStatusProcess, clearStatus); // status of processes
@@ -30,10 +122,12 @@ export module DebugManager {
       
       for (var statusProcess in statusProcesses) {
          if (statusProcesses.hasOwnProperty(statusProcess)) {
-            var statusProcessInfo = statusProcesses[statusProcess];
+            var statusProcessInfo: ProcessInfo = statusProcesses[statusProcess];
             
             if(statusProcessInfo != null) {
-               if(statusProcessInfo.time + 10000 > timeMillis) {
+               var statusTime = statusProcessInfo.getTime();
+               
+               if(statusTime + 10000 > timeMillis) {
                   activeProcesses[statusProcess] = statusProcessInfo;
                } else {
                   expiryCount++;
@@ -50,10 +144,20 @@ export module DebugManager {
    }
    
    function terminateStatusProcess(socket, type, text) {
-      if(text != null) {
-         statusProcesses[text] = null;
+      var message = JSON.parse(text);
+      var process: string = message.process;
+      
+      if(process) {
+         var processInfo: ProcessInfo = statusProcesses[process];
+         var duration: number = message.duration;
+      
+         statusProcesses[process] = null;
+         
+         if(duration && processInfo) {
+            console.log("Process took " + duration + " ms");
+         }
       }
-      if(statusFocus == text) {
+      if(statusFocus == process) {
          //suspendedThreads = {};
          //currentFocusThread = null;
          ThreadManager.terminateThreads();
@@ -64,29 +168,36 @@ export module DebugManager {
    
    function createStatusProcess(socket, type, text) { // process is running
       var message = JSON.parse(text);
-      var process = message.process;
-      var processResource = message.resource;
-      var processFocus = "" + message.focus;
-      var processSystem = message.system;
-      var processSystemTime = message.time;
-      var processProject = message.project;
-      var processRunning = "" + message.running == "true";
-      var processDebug = "" + message.debug == "true";
-      var processThreads = message.threads;
-      var processMemory = Math.round((message.usedMemory / message.totalMemory) * 100);
+      var process: string = message.process;
+      var status: string = message.status;
+      var processMemory: number = Math.round((message.usedMemory / message.totalMemory) * 100);
+      var processStatus: ProcessStatus = ProcessStatus[status];
       
-      statusProcesses[process] = {
-         resource: processResource,
-         system: processSystem,
-         time: processSystemTime,
-         running: processRunning, // is anything running
-         focus: processFocus,
-         project: processProject,
-         memory: processMemory,
-         threads: processThreads,
-         debug: processDebug
-      };
-      if(processFocus == "true") {
+      if(!status || !ProcessStatus.hasOwnProperty(status)) {
+         processStatus = ProcessStatus.UNKNOWN; // when we have an error
+         console.warn("No such status " + status + " setting to " + ProcessStatus[processStatus]);      
+      }
+      var processInfo: ProcessInfo = statusProcesses[process] = new ProcessInfo(
+         process,    
+         message.project,         
+         message.resource,         
+         message.system,
+         processStatus,
+         message.time,                  
+         message.running, // is anything running
+         message.debug,
+         message.focus,
+         processMemory,
+         message.threads
+      );
+      var description: string = processInfo.getDescription();
+      var resource: string = processInfo.getResource();
+      
+      if(resource != null) {
+      // console.log(message);
+         console.log(description);
+      }      
+      if(processInfo.isFocus()) {
          updateStatusFocus(process);
       } else {
          if(statusFocus == process) {
@@ -98,32 +209,32 @@ export module DebugManager {
    
    export function isCurrentStatusFocusRunning() {
       if(statusFocus) {
-         var statusProcessInfo = statusProcesses[statusFocus];
+         var statusProcessInfo: ProcessInfo = statusProcesses[statusFocus];
       
          if(statusProcessInfo) {
-            return statusProcessInfo.resource != null;
+            return statusProcessInfo.getResource() != null;
          }
       }
       return false;
    }
    
-   export function currentStatusFocus() {
+   export function currentStatusFocus(): string {
       return statusFocus;
    }
    
    function updateStatusFocus(process) {
-      var statusInfo = statusProcesses[process];
+      var statusInfo: ProcessInfo = statusProcesses[process];
       
-      if(statusInfo != null && statusInfo.resource != null){
-         var statusResourcePath: FilePath = FileTree.createResourcePath(statusInfo.resource);
+      if(statusInfo != null && statusInfo.getResource() != null){
+         var statusResourcePath: FilePath = FileTree.createResourcePath(statusInfo.getResource());
          
          $("#toolbarDebug").css('opacity', '1.0');
          $("#toolbarDebug").css('filter', 'alpha(opacity=100)'); // msie
          
          // debug the status info
-         console.log(statusInfo);
+         //console.log(statusInfo);
          
-         StatusPanel.showProcessStatus(statusInfo.resource, process, statusInfo.debug);
+         StatusPanel.showProcessStatus(statusInfo.getResource(), process, statusInfo.isDebug());
          //$("#process").html("<i>&nbsp;RUNNING: " + statusInfo.resource + " ("+process+")</i>");
       } else {
          $("#toolbarDebug").css('opacity', '0.4');
@@ -164,31 +275,29 @@ export module DebugManager {
       
       for (var statusProcess in statusProcesses) {
          if (statusProcesses.hasOwnProperty(statusProcess)) {
-            var statusProcessInfo = statusProcesses[statusProcess];
+            var statusProcessInfo: ProcessInfo = statusProcesses[statusProcess];
             
             if(statusProcessInfo != null) {
-               var statusProject = statusProcessInfo.project;
+               var statusProject: string = statusProcessInfo.getProject();
                
                if(statusProject == document.title || statusProject == null) {
                   var displayName = "<div class='debugIdleRecord'>"+statusProcess+"</div>";
-                  var status = "WAITING";
                   var active = "&nbsp;<input type='radio'><label></label>";
                   var resourcePath = "";
-                  var debugging = statusProcessInfo.debug;
-                  var running = false;
+                  var debugging: boolean = statusProcessInfo.isDebug();
+                  var status: ProcessStatus = statusProcessInfo.getStatus();
+                  var running: boolean = false;
                   
                   if(statusFocus == statusProcess) {
                      active = "&nbsp;<input type='radio' checked><label></label>";
                   }
-                  if(statusProcessInfo.resource != null) {
-                     var resourcePathDetails: FilePath = FileTree.createResourcePath(statusProcessInfo.resource);
+                  if(statusProcessInfo.getResource() != null) {
+                     var resourcePathDetails: FilePath = FileTree.createResourcePath(statusProcessInfo.getResource());
                      
                      if(statusFocus == statusProcess && debugging) {
                         displayName = "<div class='debugFocusRecord'>"+statusProcess+"</div>";
-                        status = "DEBUGGING";
                      } else {
-                        displayName = "<div class='debugRecord'>"+statusProcess+"</div>";
-                        status = "RUNNING";               
+                        displayName = "<div class='debugRecord'>"+statusProcess+"</div>";               
                      }
                      resourcePath = resourcePathDetails.getResourcePath();
                      running = true;
@@ -198,10 +307,10 @@ export module DebugManager {
                      name: displayName,
                      active: active,
                      process: statusProcess,
-                     status: status,
+                     status: ProcessStatus[status],
                      running: running,
-                     system: statusProcessInfo.system,
-                     resource: statusProcessInfo.resource,
+                     system: statusProcessInfo.getSystem(),
+                     resource: statusProcessInfo.getResource(),
                      focus: statusFocus == statusProcess,
                      script: resourcePath
                   });

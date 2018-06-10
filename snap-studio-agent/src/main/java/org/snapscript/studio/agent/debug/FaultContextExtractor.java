@@ -20,16 +20,16 @@ import org.snapscript.core.stack.ThreadStack;
 import org.snapscript.core.trace.Trace;
 import org.snapscript.studio.agent.event.FaultEvent;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
-import org.snapscript.studio.agent.log.ProcessLogger;
+import org.snapscript.studio.agent.log.TraceLogger;
 
 public class FaultContextExtractor extends TraceAdapter {
 
    private final ProcessEventChannel channel;
    private final AtomicInteger counter;
-   private final ProcessLogger logger;
+   private final TraceLogger logger;
    private final String process;
    
-   public FaultContextExtractor(ProcessEventChannel channel, ProcessLogger logger, String process) {
+   public FaultContextExtractor(ProcessEventChannel channel, TraceLogger logger, String process) {
       this.counter = new AtomicInteger();
       this.channel = channel;
       this.logger = logger;

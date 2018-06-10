@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.glassfish.jersey.simple.SimpleServer;
 import org.snapscript.studio.common.server.RestServer;
+import org.snapscript.studio.service.CommandLineArgument;
+import org.snapscript.studio.service.ProcessManager;
 import org.snapscript.studio.service.browser.BrowserLauncher;
-import org.snapscript.studio.service.core.CommandLineArgument;
-import org.snapscript.studio.service.core.ProcessManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;

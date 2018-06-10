@@ -353,9 +353,9 @@ export module FileEditor {
       var editorMarkers = editorView.getEditorMarkers();
       var editorResource: FilePath = editorView.getEditorResource()
       
-      if(editorResource) {
-         console.log("Clear highlights in " + editorResource.getResourcePath());
-      }
+//      if(editorResource) {
+//         console.log("Clear highlights in " + editorResource.getResourcePath());
+//      }
       for (var editorLine in editorMarkers) {
          if (editorMarkers.hasOwnProperty(editorLine)) {
             var marker = editorMarkers[editorLine];

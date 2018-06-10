@@ -31,11 +31,12 @@ define(["require", "exports", "socket"], function (require, exports, socket_1) {
         }
         ProcessConsole.updateConsoleCapacity = updateConsoleCapacity;
         function terminateConsole(socket, type, text) {
-            var terminateProcess = text;
-            if (consoleProcess == terminateProcess) {
+            var message = JSON.parse(text);
+            var process = message.process;
+            if (consoleProcess == process) {
                 showConsole();
             }
-            var consoleData = consoleTable[terminateProcess];
+            var consoleData = consoleTable[process];
             if (consoleData != null) {
                 consoleData.valid = false; // means it should be terminated when unfocused
             }

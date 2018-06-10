@@ -13,10 +13,11 @@ import org.snapscript.studio.agent.event.ProfileEvent;
 import org.snapscript.studio.agent.event.RegisterEvent;
 import org.snapscript.studio.agent.event.ScopeEvent;
 import org.snapscript.studio.agent.event.ScriptErrorEvent;
+import org.snapscript.studio.agent.event.StatusEvent;
 import org.snapscript.studio.agent.event.WriteErrorEvent;
 import org.snapscript.studio.agent.event.WriteOutputEvent;
 import org.snapscript.studio.project.Project;
-import org.snapscript.studio.service.core.FaultLogger;
+import org.snapscript.studio.service.FaultLogger;
 
 public class CommandEventForwarder extends ProcessEventAdapter {
    
@@ -56,64 +57,67 @@ public class CommandEventForwarder extends ProcessEventAdapter {
    
    @Override
    public void onWriteError(ProcessEventChannel channel, WriteErrorEvent event) throws Exception {   
-      PrintErrorCommand command = converter.convert(event);
-      client.sendCommand(command);
+      PrintErrorCommand printcommand = converter.convert(event);
+      client.sendCommand(printcommand);
    }
    
    @Override
    public void onWriteOutput(ProcessEventChannel channel, WriteOutputEvent event) throws Exception {  
-      PrintOutputCommand command = converter.convert(event);
-      client.sendCommand(command);
+      PrintOutputCommand printCommand = converter.convert(event);
+      client.sendCommand(printCommand);
    }
    
    @Override
    public void onScriptError(ProcessEventChannel channel, ScriptErrorEvent event) throws Exception {
-      ProblemCommand command = converter.convert(event);
-      client.sendCommand(command);
+      ProblemCommand problemCommand = converter.convert(event);
+      client.sendCommand(problemCommand);
    }
    
    @Override
    public void onBegin(ProcessEventChannel channel, BeginEvent event) throws Exception {
       if(filter.isFocused(event)) {
-         BeginCommand command = converter.convert(event);
-         client.sendCommand(command);
+         BeginCommand beginCommand = converter.convert(event);
+         StatusCommand statusCommand = converter.convert((StatusEvent)event);
+
+         client.sendCommand(statusCommand);
+         client.sendCommand(beginCommand);
       }
    }
    
    @Override
    public void onProfile(ProcessEventChannel channel, ProfileEvent event) throws Exception {
       if(filter.isFocused(event)) {
-         ProfileCommand command = converter.convert(event);
-         client.sendCommand(command);
+         ProfileCommand profileCommand = converter.convert(event);
+         client.sendCommand(profileCommand);
       }
    }
    
    @Override
    public void onRegister(ProcessEventChannel channel, RegisterEvent event) throws Exception {  
-      StatusCommand command = converter.convert(event);
-      client.sendCommand(command);
+      StatusCommand statusCommand = converter.convert(event);
+      client.sendCommand(statusCommand);
    }
    
    @Override
    public void onPong(ProcessEventChannel channel, PongEvent event) throws Exception {  
-      StatusCommand command = converter.convert(event);
-      client.sendCommand(command);
+      StatusCommand statusCommand = converter.convert(event);
+      client.sendCommand(statusCommand);
    }
    
    @Override
    public void onExit(ProcessEventChannel channel, ExitEvent event) throws Exception {  
-      ExitCommand command = converter.convert(event);
-      client.sendCommand(command);
+      ExitCommand exitCommand = converter.convert(event);
+      client.sendCommand(exitCommand);
    }
    
    @Override
    public void onClose(ProcessEventChannel channel) throws Exception { 
       String focus = filter.getFocus();
       if(focus != null) {
-         TerminateCommand command = TerminateCommand.builder()
+         TerminateCommand terminateCommand = TerminateCommand.builder()
                .process(focus)
                .build();
-         client.sendCommand(command); 
+         client.sendCommand(terminateCommand); 
       }
    }
 }

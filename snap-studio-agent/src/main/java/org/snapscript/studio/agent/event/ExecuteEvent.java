@@ -2,6 +2,8 @@ package org.snapscript.studio.agent.event;
 
 import java.util.Map;
 
+import org.snapscript.studio.agent.ExecuteData;
+
 public class ExecuteEvent implements ProcessEvent {
 
    private final Map<String, Map<Integer, Boolean>> breakpoints;

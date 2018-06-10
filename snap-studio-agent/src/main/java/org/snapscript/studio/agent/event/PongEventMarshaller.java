@@ -8,10 +8,22 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class PongEventMarshaller implements ProcessEventMarshaller<PongEvent> {
+import org.snapscript.studio.agent.ExecuteStatus;
+
+public class PongEventMarshaller<T extends PongEvent> implements ProcessEventMarshaller<T> {
+   
+   private final int code;
+   
+   public PongEventMarshaller() {
+      this(PONG.code);
+   }
+   
+   public PongEventMarshaller(int code) {
+      this.code = code;
+   }   
 
    @Override
-   public PongEvent fromMessage(MessageEnvelope message) throws IOException {
+   public T fromMessage(MessageEnvelope message) throws IOException {
       byte[] array = message.getData();
       int length = message.getLength();
       int offset = message.getOffset();
@@ -19,6 +31,7 @@ public class PongEventMarshaller implements ProcessEventMarshaller<PongEvent> {
       DataInputStream input = new DataInputStream(buffer);
       String process = input.readUTF();
       String system = input.readUTF();
+      String status = input.readUTF();
       
       if(input.readBoolean()) {
          String project = input.readUTF();
@@ -26,55 +39,57 @@ public class PongEventMarshaller implements ProcessEventMarshaller<PongEvent> {
          long totalMemory = input.readLong();
          long usedMemory = input.readLong();
          int threads = input.readInt();
-         boolean debug = input.readBoolean();
          
-         return new PongEvent.Builder(process)
+         return (T)getBuilder(process)
             .withSystem(system)
             .withProject(project)
             .withResource(resource)
-            .withRunning(true)
+            .withStatus(ExecuteStatus.resolveStatus(status))
             .withTotalMemory(totalMemory)
             .withUsedMemory(usedMemory)
             .withThreads(threads)
-            .withDebug(debug)
             .build();
       }
-      return new PongEvent.Builder(process)
+      return (T)getBuilder(process)
          .withSystem(system)
-         .withRunning(false)
+         .withStatus(ExecuteStatus.resolveStatus(status))
          .build();
-   }
+   }   
 
    @Override
-   public MessageEnvelope toMessage(PongEvent event) throws IOException {
+   public MessageEnvelope toMessage(T event) throws IOException {
       ByteArrayOutputStream buffer = new ByteArrayOutputStream();
       DataOutputStream output = new DataOutputStream(buffer);
       String process = event.getProcess();
+      ExecuteStatus status = event.getStatus();
       String resource = event.getResource();
       String project = event.getProject();
       String system = event.getSystem();
-      boolean debug = event.isDebug();
       long totalMemory = event.getTotalMemory();
       long usedMemory = event.getUsedMemory();
       int threads = event.getThreads();
       
       output.writeUTF(process);
       output.writeUTF(system);
+      output.writeUTF(status.name());
       
-      if(event.isRunning()) {
+      if(status.isStarted()) {
          output.writeBoolean(true);
          output.writeUTF(project);
          output.writeUTF(resource);
          output.writeLong(totalMemory);
          output.writeLong(usedMemory);
          output.writeInt(threads);
-         output.writeBoolean(debug);
       } else {
          output.writeBoolean(false);
       }
       output.flush();
       
       byte[] array = buffer.toByteArray();
-      return new MessageEnvelope(PONG.code, array, 0, array.length);
+      return new MessageEnvelope(code, array, 0, array.length);
+   }
+   
+   protected PongEvent.Builder getBuilder(String process) {
+      return new PongEvent.Builder(process);
    }
 }

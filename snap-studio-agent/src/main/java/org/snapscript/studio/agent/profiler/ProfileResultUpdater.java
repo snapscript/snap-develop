@@ -12,10 +12,10 @@ public class ProfileResultUpdater implements Runnable {
 
    private final AtomicReference<String> reference;
    private final ProcessEventChannel channel;
-   private final ProcessProfiler profiler;
+   private final TraceProfiler profiler;
    private final ThreadFactory factory;
 
-   public ProfileResultUpdater(ProcessProfiler profiler, ProcessEventChannel channel) {
+   public ProfileResultUpdater(TraceProfiler profiler, ProcessEventChannel channel) {
       this.reference = new AtomicReference<String>();
       this.factory = new ThreadBuilder();
       this.profiler = profiler;

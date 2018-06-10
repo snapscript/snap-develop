@@ -11,6 +11,10 @@ public enum LogLevel {
       this.level = level;
    }
    
+   public boolean isLevelEnabled(LogLevel level) {
+      return this.level <= level.level;
+   }
+   
    public boolean isTraceEnabled(){
       return level <= TRACE.level;
    }

@@ -252,9 +252,9 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
             var session = editorView.getEditorPanel().getSession();
             var editorMarkers = editorView.getEditorMarkers();
             var editorResource = editorView.getEditorResource();
-            if (editorResource) {
-                console.log("Clear highlights in " + editorResource.getResourcePath());
-            }
+            //      if(editorResource) {
+            //         console.log("Clear highlights in " + editorResource.getResourcePath());
+            //      }
             for (var editorLine in editorMarkers) {
                 if (editorMarkers.hasOwnProperty(editorLine)) {
                     var marker = editorMarkers[editorLine];

@@ -10,7 +10,7 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.snapscript.studio.agent.ClassPathUpdater;
+import org.snapscript.studio.agent.task.ClassPathUpdater;
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexScanner;
 import org.snapscript.studio.index.config.IndexConfigFile;

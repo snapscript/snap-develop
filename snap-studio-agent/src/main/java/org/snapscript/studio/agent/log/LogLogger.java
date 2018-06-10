@@ -1,6 +1,6 @@
 package org.snapscript.studio.agent.log;
 
-public class LogLogger implements ProcessLogger {
+public class LogLogger implements TraceLogger {
    
    private final LogLevel level;
    private final Log logger;

@@ -36,12 +36,13 @@ export module ProcessConsole {
    }
    
    function terminateConsole(socket, type, text) {
-      var terminateProcess = text;
+      var message = JSON.parse(text);
+      var process: string = message.process;
       
-      if(consoleProcess == terminateProcess) {
+      if(consoleProcess == process) {
          showConsole();
       }
-      var consoleData = consoleTable[terminateProcess];
+      var consoleData = consoleTable[process];
       
       if(consoleData != null) {
          consoleData.valid = false; // means it should be terminated when unfocused

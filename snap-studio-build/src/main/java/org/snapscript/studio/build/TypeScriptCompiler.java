@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.snapscript.studio.agent.log.ConsoleLog;
 import org.snapscript.studio.agent.log.Log;
 import org.snapscript.studio.agent.log.LogLogger;
-import org.snapscript.studio.agent.log.ProcessLogger;
+import org.snapscript.studio.agent.log.TraceLogger;
 import org.snapscript.studio.build.console.ConsoleListener;
 import org.snapscript.studio.build.console.ConsoleManager;
 import org.springframework.stereotype.Component;
@@ -138,7 +138,7 @@ public class TypeScriptCompiler {
    
    private static class CompilerListener implements ConsoleListener {
       
-      private final ProcessLogger logger;
+      private final TraceLogger logger;
       private final Log log;
       
       public CompilerListener() {

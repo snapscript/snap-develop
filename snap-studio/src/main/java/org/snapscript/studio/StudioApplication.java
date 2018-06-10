@@ -7,8 +7,8 @@ import javax.swing.UIManager;
 
 import org.snapscript.studio.cli.CommandLineInterpreter;
 import org.snapscript.studio.project.ProjectMode;
-import org.snapscript.studio.service.core.CommandLineArgument;
-import org.snapscript.studio.service.core.CommandLineParser;
+import org.snapscript.studio.service.CommandLineArgument;
+import org.snapscript.studio.service.CommandLineParser;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

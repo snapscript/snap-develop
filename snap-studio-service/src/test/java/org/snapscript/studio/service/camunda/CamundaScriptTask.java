@@ -8,9 +8,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.snapscript.core.scope.MapModel;
-import org.snapscript.studio.agent.ProcessAgent;
-import org.snapscript.studio.agent.ProcessAgentService;
-import org.snapscript.studio.agent.ProcessMode;
+import org.snapscript.studio.agent.DebugAgent;
+import org.snapscript.studio.agent.DebugClient;
+import org.snapscript.studio.agent.RunMode;
 
 public class CamundaScriptTask {
    
@@ -30,22 +30,22 @@ public class CamundaScriptTask {
       String address = InetAddress.getLocalHost().getHostAddress();
       Map<String, Object> state = new HashMap<String, Object>();
       MapModel model = new MapModel(state);
-      ProcessAgent agent = new ProcessAgent(
-            ProcessMode.TASK,
+      DebugAgent agent = new DebugAgent(
+            RunMode.TASK,
             URI.create(String.format(URL, address)),
             "Camunda 2.0", 
             execution.getProcessInstanceId(),
             "DEBUG");
       
       state.put("execution", execution);
-      ProcessAgentService service = agent.start(model);
+      DebugClient service = agent.start(model);
 
       createBreakpoints(service);
       service.execute(PROJECT, RESOURCE, System.getProperty("java.class.path"), true);
       service.join(6000000); // wait for script to finish
    }
 
-   public void createBreakpoints(ProcessAgentService service) {
+   public void createBreakpoints(DebugClient service) {
       String source = service.loadScript(PROJECT, RESOURCE);
       Pattern pattern = Pattern.compile(".*\\/\\/\\s*suspend.*");
       String[] list = source.split("\\r?\\n");

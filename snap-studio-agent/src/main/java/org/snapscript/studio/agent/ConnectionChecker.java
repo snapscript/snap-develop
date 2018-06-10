@@ -1,6 +1,5 @@
 package org.snapscript.studio.agent;
 
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -12,7 +11,7 @@ import org.snapscript.studio.agent.event.ProcessEventChannel;
 
 public class ConnectionChecker {
 
-   private final ProcessContext context;
+   private final DebugContext context;
    private final ThreadFactory factory;
    private final HealthChecker checker;
    private final AtomicBoolean active;
@@ -20,7 +19,7 @@ public class ConnectionChecker {
    private final String process;
    private final String system;
    
-   public ConnectionChecker(ProcessContext context, String process, String system) {
+   public ConnectionChecker(DebugContext context, String process, String system) {
       this.checker = new HealthChecker(10000);
       this.factory = new ThreadBuilder();
       this.active = new AtomicBoolean();
@@ -30,43 +29,46 @@ public class ConnectionChecker {
       this.system = system;
    }
    
-   public void update(ProcessEventChannel channel, PingEvent event, String project, String resource, boolean debug) {
-      PongEvent pong = new PongEvent.Builder(process)
-         .withSystem(system)
-         .withProject(project)
-         .withResource(resource)
-         .withRunning(resource != null)
-         .withTotalMemory(Runtime.getRuntime().totalMemory())
-         .withUsedMemory(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())
-         .withThreads(Thread.getAllStackTraces().size()) // this might be expensive
-         .withDebug(debug)
-         .build();
+   public void update(ProcessEventChannel channel, PingEvent event) {
+      RunMode mode = context.getMode();
+      ExecuteLatch latch = context.getLatch();
+      ExecuteState state = latch.getState();
+      ExecuteStatus status = state.getStatus();
+      ExecuteData data = state.getData();
+      String project = data.getProject();
+      String resource = data.getResource();
+      
+      long time = System.currentTimeMillis();
       
       try {
-         CountDownLatch latch = context.getLatch();
-         ProcessMode mode = context.getMode();
-         long time = System.currentTimeMillis();
-
+         PongEvent pong = new PongEvent.Builder(process)
+            .withSystem(system)
+            .withProject(project)
+            .withResource(resource)
+            .withStatus(status)
+            .withTotalMemory(Runtime.getRuntime().totalMemory())
+            .withUsedMemory(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())
+            .withThreads(Thread.getAllStackTraces().size()) // this might be expensive
+            .build();
+         
          if(mode.isDetachRequired()) {
-            long count = latch.getCount();
-
-            if(count > 0) { // send pong only if still running
+            if(!status.isFinished()) { // send pong only if still running
                if(!channel.send(pong)) {
-                  ProcessTerminator.terminate("Ping failed for " + process);
+                  TerminateHandler.terminate("Ping failed for " + process);
                } else {
                   update.set(time);
                }
             }
          } else {
             if(!channel.send(pong)) {
-               ProcessTerminator.terminate("Ping failed for " + process);
+               TerminateHandler.terminate("Ping failed for " + process);
             } else {
                update.set(time);
             }
          }
       } catch(Exception e) {
          e.printStackTrace();
-         ProcessTerminator.terminate("Ping failed for " + process + " with " + e);
+         TerminateHandler.terminate("Ping failed for " + process + " with " + e);
       }
    }
    
@@ -87,7 +89,7 @@ public class ConnectionChecker {
       
       @Override
       public void run() {
-         ProcessMode mode = context.getMode();
+         RunMode mode = context.getMode();
 
          try {
             while(true) {
@@ -104,7 +106,7 @@ public class ConnectionChecker {
             e.printStackTrace();
          } finally {
             if(mode.isTerminateRequired()) {
-               ProcessTerminator.terminate("Connection checker timeout elapsed");
+               TerminateHandler.terminate("Connection checker timeout elapsed");
             }
          }
       }

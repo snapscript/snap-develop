@@ -6,14 +6,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.Executor;
 
-import org.snapscript.studio.agent.log.ProcessLogger;
+import org.snapscript.studio.agent.log.TraceLogger;
 
 public class ProcessEventConnection {
 
    private final ProcessEventConsumer consumer;
    private final ProcessEventProducer producer;
 
-   public ProcessEventConnection(ProcessLogger logger, Executor executor, InputStream input, OutputStream output, Closeable closeable) {
+   public ProcessEventConnection(TraceLogger logger, Executor executor, InputStream input, OutputStream output, Closeable closeable) {
       this.consumer = new ProcessEventConsumer(input, closeable);
       this.producer = new ProcessEventProducer(logger, output, closeable, executor);
    }

@@ -8,7 +8,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.snapscript.studio.agent.ProcessMode;
+import org.snapscript.studio.agent.ExecuteStatus;
+import org.snapscript.studio.agent.RunMode;
 
 public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> {
 
@@ -20,40 +21,54 @@ public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> 
       ByteArrayInputStream buffer = new ByteArrayInputStream(array, offset, length);
       DataInputStream input = new DataInputStream(buffer);
       String process = input.readUTF();
-      String project = input.readUTF();
-      String resource = input.readUTF();
-      String type = input.readUTF();
-      ProcessMode mode = ProcessMode.resolveMode(type);
+      String system = input.readUTF();  
+      String project = input.readUTF(); 
+      String resource = input.readUTF();      
+      String status = input.readUTF();
+      String mode = input.readUTF();
+      long totalMemory = input.readLong();
+      long usedMemory = input.readLong();
+      int threads = input.readInt();
       long duration = input.readLong();
-      boolean debug = input.readBoolean();
       
       return new BeginEvent.Builder(process)
+         .withMode(RunMode.resolveMode(mode))
+         .withDuration(duration)
+         .withSystem(system)
          .withProject(project)
          .withResource(resource)
-         .withDuration(duration)
-         .withDebug(debug)
-         .withMode(mode)
+         .withStatus(ExecuteStatus.resolveStatus(status))
+         .withTotalMemory(totalMemory)
+         .withUsedMemory(usedMemory)
+         .withThreads(threads)
          .build();
    }
 
    @Override
    public MessageEnvelope toMessage(BeginEvent event) throws IOException {
       ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-      DataOutputStream output = new DataOutputStream(buffer);
-      ProcessMode mode = event.getMode();
+      DataOutputStream output = new DataOutputStream(buffer);      
       String process = event.getProcess();
+      String system = event.getSystem();
       String project = event.getProject();
       String resource = event.getResource();
-      String type = mode.name();
-      boolean debug = event.isDebug();
+      ExecuteStatus status = event.getStatus();
+      RunMode mode = event.getMode();
+      long totalMemory = event.getTotalMemory();
+      long usedMemory = event.getUsedMemory();
+      int threads = event.getThreads();
       long duration = event.getDuration();
       
       output.writeUTF(process);
+      output.writeUTF(system);
       output.writeUTF(project);
       output.writeUTF(resource);
-      output.writeUTF(type);
+      output.writeUTF(status.name());
+      output.writeUTF(mode.name());
+      output.writeLong(totalMemory);
+      output.writeLong(usedMemory);
+      output.writeLong(threads);
       output.writeLong(duration);
-      output.writeBoolean(debug);
       output.flush();
       
       byte[] array = buffer.toByteArray();

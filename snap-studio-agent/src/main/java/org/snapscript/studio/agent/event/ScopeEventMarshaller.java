@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.snapscript.studio.agent.debug.ScopeVariableTree;
+import org.snapscript.studio.agent.debug.ThreadStatus;
 
 public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> {
    
@@ -49,7 +50,7 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
          .withThread(thread)
          .withStack(stack)
          .withInstruction(instruction)
-         .withStatus(status)
+         .withStatus(ThreadStatus.valueOf(status))
          .withResource(resource)
          .withLine(line)
          .withDepth(depth)
@@ -69,7 +70,7 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       String thread = event.getThread();
       String stack = event.getStack();
       String instruction = event.getInstruction();
-      String status = event.getStatus();
+      ThreadStatus status = event.getStatus();
       String resource = event.getResource();
       int change = tree.getChange();
       int sequence = event.getKey();
@@ -80,7 +81,7 @@ public class ScopeEventMarshaller implements ProcessEventMarshaller<ScopeEvent> 
       output.writeUTF(thread);
       output.writeUTF(stack);
       output.writeUTF(instruction);
-      output.writeUTF(status);
+      output.writeUTF(status.name());
       output.writeUTF(resource);
       output.writeInt(line);
       output.writeInt(depth);

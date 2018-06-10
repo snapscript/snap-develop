@@ -9,16 +9,16 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
-import org.snapscript.studio.agent.log.ProcessLogger;
+import org.snapscript.studio.agent.log.TraceLogger;
 
 public class ProcessEventProducer {
    
    private final Map<Class, ProcessEventMarshaller> marshallers;
    private final MessageEnvelopeWriter writer;
-   private final ProcessLogger logger;
+   private final TraceLogger logger;
    private final Executor executor;
    
-   public ProcessEventProducer(ProcessLogger logger, OutputStream stream, Closeable closeable, Executor executor) {
+   public ProcessEventProducer(TraceLogger logger, OutputStream stream, Closeable closeable, Executor executor) {
       this.marshallers = new ConcurrentHashMap<Class, ProcessEventMarshaller>();
       this.writer = new MessageEnvelopeWriter(stream, closeable);
       this.executor = executor;

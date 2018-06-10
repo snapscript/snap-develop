@@ -8,7 +8,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.snapscript.studio.agent.ProcessMode;
+import org.snapscript.studio.agent.RunMode;
 
 public class ExitEventMarshaller implements ProcessEventMarshaller<ExitEvent> {
 
@@ -21,7 +21,7 @@ public class ExitEventMarshaller implements ProcessEventMarshaller<ExitEvent> {
       DataInputStream input = new DataInputStream(buffer);
       String process = input.readUTF();
       String type = input.readUTF();
-      ProcessMode mode = ProcessMode.resolveMode(type);
+      RunMode mode = RunMode.resolveMode(type);
       long duration = input.readLong();
       
       return new ExitEvent.Builder(process)
@@ -35,7 +35,7 @@ public class ExitEventMarshaller implements ProcessEventMarshaller<ExitEvent> {
    public MessageEnvelope toMessage(ExitEvent value) throws IOException {
       ByteArrayOutputStream buffer = new ByteArrayOutputStream();
       DataOutputStream output = new DataOutputStream(buffer);
-      ProcessMode mode = value.getMode();
+      RunMode mode = value.getMode();
       String process = value.getProcess();
       String type = mode.name();
       long duration = value.getDuration();

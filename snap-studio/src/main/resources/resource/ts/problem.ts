@@ -3,7 +3,7 @@ import {w2ui, w2popup} from "w2ui"
 import {Common} from "common"
 import {EventBus} from "socket"
 import {FileTree, FilePath} from "tree"
-import {FileEditor, FileEditorState} from "editor"
+import {FileEditor, FileEditorBuffer, FileEditorState} from "editor"
 import {Project} from "project"
 
 export module ProblemManager {

@@ -1,11 +1,6 @@
 package org.snapscript.studio.agent.debug;
 
-import static org.snapscript.studio.agent.event.ScopeEvent.RUNNING;
-import static org.snapscript.studio.agent.event.ScopeEvent.SUSPENDED;
-
 import org.snapscript.core.trace.TraceType;
-import org.snapscript.studio.agent.debug.ScopeExtractor;
-import org.snapscript.studio.agent.debug.ScopeVariableTree;
 import org.snapscript.studio.agent.event.ScopeEvent;
 
 public class ScopeEventBuilder {
@@ -43,7 +38,7 @@ public class ScopeEventBuilder {
          .withThread(thread)
          .withStack(stack)
          .withInstruction(name)
-         .withStatus(SUSPENDED)
+         .withStatus(ThreadStatus.SUSPENDED)
          .withResource(resource)
          .withLine(line)
          .withDepth(depth)
@@ -59,7 +54,7 @@ public class ScopeEventBuilder {
          .withThread(thread)
          .withStack(stack)
          .withInstruction(name)
-         .withStatus(RUNNING)
+         .withStatus(ThreadStatus.RUNNING)
          .withResource(resource)
          .withLine(line)
          .withDepth(depth)

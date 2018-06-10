@@ -35,9 +35,10 @@ export module ThreadManager {
    }
    
    function deleteThreads(socket, type, text) {
-      var terminateProcess = text;
+      var message = JSON.parse(text);
+      var process: string = message.process;
       
-      if(threadEditorFocus != null && threadEditorFocus.process == terminateProcess) { // clear if it dies
+      if(threadEditorFocus != null && threadEditorFocus.process == process) { // clear if it dies
          terminateThreads();
       }
    }

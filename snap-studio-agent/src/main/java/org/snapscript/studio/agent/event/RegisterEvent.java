@@ -1,5 +1,9 @@
 package org.snapscript.studio.agent.event;
 
+import static org.snapscript.studio.agent.ExecuteStatus.REGISTERING;
+
+import org.snapscript.studio.agent.ExecuteStatus;
+
 public class RegisterEvent implements ProcessEvent {
 
    private final String process;
@@ -17,6 +21,10 @@ public class RegisterEvent implements ProcessEvent {
    
    public String getSystem() {
       return system;
+   }
+   
+   public ExecuteStatus getStatus() {
+      return REGISTERING;
    }
    
    public static class Builder {

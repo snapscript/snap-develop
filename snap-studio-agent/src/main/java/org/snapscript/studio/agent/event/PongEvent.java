@@ -1,27 +1,27 @@
 package org.snapscript.studio.agent.event;
 
-public class PongEvent implements ProcessEvent {
+import org.snapscript.studio.agent.ExecuteStatus;
 
+public class PongEvent implements StatusEvent {
+
+   private final ExecuteStatus status;
    private final String project;
    private final String process;
    private final String resource;
    private final String system;
-   private final boolean running;
-   private final boolean debug;
    private final long totalMemory;
    private final long usedMemory;
    private final int threads;
 
-   public PongEvent(Builder builder) {
+   protected PongEvent(Builder<? extends PongEvent> builder) {
       this.totalMemory = builder.totalMemory;
       this.usedMemory = builder.usedMemory;
       this.threads = builder.threads;
       this.resource = builder.resource;
       this.process = builder.process;
-      this.running = builder.running;
       this.project = builder.project;
+      this.status = builder.status;
       this.system = builder.system;
-      this.debug = builder.debug;
    }
    
    @Override
@@ -29,46 +29,48 @@ public class PongEvent implements ProcessEvent {
       return process;
    }
    
+   @Override
+   public ExecuteStatus getStatus() {
+      return status;
+   }
+   
+   @Override
    public String getProject() {
       return project;
    }
 
+   @Override
    public String getSystem() {
       return system;
    }
    
+   @Override
    public String getResource() {
       return resource;
    }
    
+   @Override
    public long getUsedMemory() {
       return usedMemory;
    }
 
+   @Override
    public long getTotalMemory() {
       return totalMemory;
    }
 
+   @Override
    public int getThreads() {
       return threads;
    }
    
-   public boolean isRunning() {
-      return running;
-   }
-   
-   public boolean isDebug() {
-      return debug;
-   }
-   
-   public static class Builder {
+   public static class Builder<T extends PongEvent> implements StatusEvent.Builder<T> {
       
+      private ExecuteStatus status;
       private String project;
       private String process;
       private String resource;
       private String system;
-      private boolean running;
-      private boolean debug;
       private long totalMemory;
       private long usedMemory;
       private int threads;
@@ -77,53 +79,51 @@ public class PongEvent implements ProcessEvent {
          this.process = process;
       }
 
-      public Builder withProject(String project) {
+      @Override
+      public Builder<T> withProject(String project) {
          this.project = project;
          return this;
       }
-
-      public Builder withProcess(String process) {
-         this.process = process;
+      
+      @Override
+      public Builder<T> withStatus(ExecuteStatus status) {
+         this.status = status;
          return this;
       }
 
-      public Builder withResource(String resource) {
+      @Override
+      public Builder<T> withResource(String resource) {
          this.resource = resource;
          return this;
       }
 
-      public Builder withSystem(String system) {
+      @Override
+      public Builder<T> withSystem(String system) {
          this.system = system;
          return this;
       }
-
-      public Builder withRunning(boolean running) {
-         this.running = running;
-         return this;
-      }
       
-      public Builder withThreads(int threads){
+      @Override
+      public Builder<T> withThreads(int threads){
          this.threads = threads;
          return this;
       }
       
-      public Builder withTotalMemory(long totalMemory){
+      @Override
+      public Builder<T> withTotalMemory(long totalMemory){
          this.totalMemory = totalMemory;
          return this;
       }
       
-      public Builder withUsedMemory(long usedMemory){
+      @Override
+      public Builder<T> withUsedMemory(long usedMemory){
          this.usedMemory = usedMemory;
          return this;
       }
       
-      public Builder withDebug(boolean debug) {
-         this.debug = debug;
-         return this;
-      }
-      
-      public PongEvent build() {
-         return new PongEvent(this);
+      @Override
+      public T build() {
+         return (T)new PongEvent(this);
       }
    }
 }

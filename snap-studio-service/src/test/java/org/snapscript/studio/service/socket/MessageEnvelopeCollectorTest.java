@@ -25,10 +25,10 @@ import org.snapscript.studio.agent.event.ProcessEventTimer;
 import org.snapscript.studio.agent.event.ProcessEventType;
 import org.snapscript.studio.agent.log.Log;
 import org.snapscript.studio.agent.log.LogLogger;
-import org.snapscript.studio.agent.log.ProcessLogger;
+import org.snapscript.studio.agent.log.TraceLogger;
 import org.snapscript.studio.common.log.LoggerLog;
-import org.snapscript.studio.service.tunnel.MessageEnvelopeCollector;
-import org.snapscript.studio.service.tunnel.ProcessEventService;
+import org.snapscript.studio.service.message.MessageEnvelopeCollector;
+import org.snapscript.studio.service.message.AsyncEventExchanger;
 
 public class MessageEnvelopeCollectorTest extends TestCase {
    
@@ -37,10 +37,10 @@ public class MessageEnvelopeCollectorTest extends TestCase {
    public void testCollector() throws Exception {
       ThreadPool pool = new ThreadPool(5);
       Log log = new LoggerLog(LOG);
-      ProcessLogger logger = new LogLogger(log, "TRACE");
+      TraceLogger logger = new LogLogger(log, "TRACE");
       ProcessEventAdapter adapter = new ProcessEventAdapter();
       ProcessEventTimer timer = new ProcessEventTimer(adapter, logger);
-      ProcessEventService router = new ProcessEventService(timer, 7878);
+      AsyncEventExchanger router = new AsyncEventExchanger(timer, 7878);
       ByteArrayOutputStream stream = new ByteArrayOutputStream();
       StreamEventWriter writer = new StreamEventWriter(stream);
       PingEvent event = new PingEvent.Builder("agent-123456789")

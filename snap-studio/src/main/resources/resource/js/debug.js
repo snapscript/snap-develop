@@ -2,6 +2,73 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
     "use strict";
     var DebugManager;
     (function (DebugManager) {
+        var ProcessStatus;
+        (function (ProcessStatus) {
+            ProcessStatus[ProcessStatus["REGISTERING"] = 0] = "REGISTERING";
+            ProcessStatus[ProcessStatus["WAITING"] = 1] = "WAITING";
+            ProcessStatus[ProcessStatus["STARTING"] = 2] = "STARTING";
+            ProcessStatus[ProcessStatus["COMPILING"] = 3] = "COMPILING";
+            ProcessStatus[ProcessStatus["DEBUGGING"] = 4] = "DEBUGGING";
+            ProcessStatus[ProcessStatus["RUNNING"] = 5] = "RUNNING";
+            ProcessStatus[ProcessStatus["TERMINATING"] = 6] = "TERMINATING";
+            ProcessStatus[ProcessStatus["FINISHED"] = 7] = "FINISHED";
+            ProcessStatus[ProcessStatus["UNKNOWN"] = 8] = "UNKNOWN";
+        })(ProcessStatus || (ProcessStatus = {}));
+        var ProcessInfo = (function () {
+            function ProcessInfo(process, project, resource, system, status, time, running, debug, focus, memory, threads) {
+                this._process = process;
+                this._resource = resource;
+                this._system = system;
+                this._time = time;
+                this._running = running;
+                this._focus = focus;
+                this._project = project;
+                this._memory = memory;
+                this._threads = threads;
+                this._debug = debug;
+                this._status = status;
+            }
+            ProcessInfo.prototype.getDescription = function () {
+                if (this._resource) {
+                    return this._process + " is " + ProcessStatus[this._status] + " with " + this._resource;
+                }
+                return this._process + " is " + ProcessStatus[this._status];
+            };
+            ProcessInfo.prototype.getStatus = function () {
+                return this._status;
+            };
+            ProcessInfo.prototype.getProcess = function () {
+                return this._process;
+            };
+            ProcessInfo.prototype.getProject = function () {
+                return this._project;
+            };
+            ProcessInfo.prototype.getResource = function () {
+                return this._resource;
+            };
+            ProcessInfo.prototype.getSystem = function () {
+                return this._system;
+            };
+            ProcessInfo.prototype.getMemory = function () {
+                return this._memory;
+            };
+            ProcessInfo.prototype.getThreads = function () {
+                return this._threads;
+            };
+            ProcessInfo.prototype.getTime = function () {
+                return this._time;
+            };
+            ProcessInfo.prototype.isFocus = function () {
+                return "" + this._focus == "true";
+            };
+            ProcessInfo.prototype.isRunning = function () {
+                return "" + this._running == "true";
+            };
+            ProcessInfo.prototype.isDebug = function () {
+                return "" + this._debug == "true";
+            };
+            return ProcessInfo;
+        }());
         var statusProcesses = {};
         var statusFocus = null;
         function createStatus() {
@@ -19,7 +86,8 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
                 if (statusProcesses.hasOwnProperty(statusProcess)) {
                     var statusProcessInfo = statusProcesses[statusProcess];
                     if (statusProcessInfo != null) {
-                        if (statusProcessInfo.time + 10000 > timeMillis) {
+                        var statusTime = statusProcessInfo.getTime();
+                        if (statusTime + 10000 > timeMillis) {
                             activeProcesses[statusProcess] = statusProcessInfo;
                         }
                         else {
@@ -35,10 +103,17 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
             commands_1.Command.pingProcess(); // this will force a STATUS event
         }
         function terminateStatusProcess(socket, type, text) {
-            if (text != null) {
-                statusProcesses[text] = null;
+            var message = JSON.parse(text);
+            var process = message.process;
+            if (process) {
+                var processInfo = statusProcesses[process];
+                var duration = message.duration;
+                statusProcesses[process] = null;
+                if (duration && processInfo) {
+                    console.log("Process took " + duration + " ms");
+                }
             }
-            if (statusFocus == text) {
+            if (statusFocus == process) {
                 //suspendedThreads = {};
                 //currentFocusThread = null;
                 threads_1.ThreadManager.terminateThreads();
@@ -49,27 +124,22 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
         function createStatusProcess(socket, type, text) {
             var message = JSON.parse(text);
             var process = message.process;
-            var processResource = message.resource;
-            var processFocus = "" + message.focus;
-            var processSystem = message.system;
-            var processSystemTime = message.time;
-            var processProject = message.project;
-            var processRunning = "" + message.running == "true";
-            var processDebug = "" + message.debug == "true";
-            var processThreads = message.threads;
+            var status = message.status;
             var processMemory = Math.round((message.usedMemory / message.totalMemory) * 100);
-            statusProcesses[process] = {
-                resource: processResource,
-                system: processSystem,
-                time: processSystemTime,
-                running: processRunning,
-                focus: processFocus,
-                project: processProject,
-                memory: processMemory,
-                threads: processThreads,
-                debug: processDebug
-            };
-            if (processFocus == "true") {
+            var processStatus = ProcessStatus[status];
+            if (!status || !ProcessStatus.hasOwnProperty(status)) {
+                processStatus = ProcessStatus.UNKNOWN; // when we have an error
+                console.warn("No such status " + status + " setting to " + ProcessStatus[processStatus]);
+            }
+            var processInfo = statusProcesses[process] = new ProcessInfo(process, message.project, message.resource, message.system, processStatus, message.time, message.running, // is anything running
+            message.debug, message.focus, processMemory, message.threads);
+            var description = processInfo.getDescription();
+            var resource = processInfo.getResource();
+            if (resource != null) {
+                // console.log(message);
+                console.log(description);
+            }
+            if (processInfo.isFocus()) {
                 updateStatusFocus(process);
             }
             else {
@@ -83,7 +153,7 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
             if (statusFocus) {
                 var statusProcessInfo = statusProcesses[statusFocus];
                 if (statusProcessInfo) {
-                    return statusProcessInfo.resource != null;
+                    return statusProcessInfo.getResource() != null;
                 }
             }
             return false;
@@ -95,13 +165,13 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
         DebugManager.currentStatusFocus = currentStatusFocus;
         function updateStatusFocus(process) {
             var statusInfo = statusProcesses[process];
-            if (statusInfo != null && statusInfo.resource != null) {
-                var statusResourcePath = tree_1.FileTree.createResourcePath(statusInfo.resource);
+            if (statusInfo != null && statusInfo.getResource() != null) {
+                var statusResourcePath = tree_1.FileTree.createResourcePath(statusInfo.getResource());
                 $("#toolbarDebug").css('opacity', '1.0');
                 $("#toolbarDebug").css('filter', 'alpha(opacity=100)'); // msie
                 // debug the status info
-                console.log(statusInfo);
-                status_1.StatusPanel.showProcessStatus(statusInfo.resource, process, statusInfo.debug);
+                //console.log(statusInfo);
+                status_1.StatusPanel.showProcessStatus(statusInfo.getResource(), process, statusInfo.isDebug());
             }
             else {
                 $("#toolbarDebug").css('opacity', '0.4');
@@ -140,26 +210,24 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
                 if (statusProcesses.hasOwnProperty(statusProcess)) {
                     var statusProcessInfo = statusProcesses[statusProcess];
                     if (statusProcessInfo != null) {
-                        var statusProject = statusProcessInfo.project;
+                        var statusProject = statusProcessInfo.getProject();
                         if (statusProject == document.title || statusProject == null) {
                             var displayName = "<div class='debugIdleRecord'>" + statusProcess + "</div>";
-                            var status = "WAITING";
                             var active = "&nbsp;<input type='radio'><label></label>";
                             var resourcePath = "";
-                            var debugging = statusProcessInfo.debug;
+                            var debugging = statusProcessInfo.isDebug();
+                            var status = statusProcessInfo.getStatus();
                             var running = false;
                             if (statusFocus == statusProcess) {
                                 active = "&nbsp;<input type='radio' checked><label></label>";
                             }
-                            if (statusProcessInfo.resource != null) {
-                                var resourcePathDetails = tree_1.FileTree.createResourcePath(statusProcessInfo.resource);
+                            if (statusProcessInfo.getResource() != null) {
+                                var resourcePathDetails = tree_1.FileTree.createResourcePath(statusProcessInfo.getResource());
                                 if (statusFocus == statusProcess && debugging) {
                                     displayName = "<div class='debugFocusRecord'>" + statusProcess + "</div>";
-                                    status = "DEBUGGING";
                                 }
                                 else {
                                     displayName = "<div class='debugRecord'>" + statusProcess + "</div>";
-                                    status = "RUNNING";
                                 }
                                 resourcePath = resourcePathDetails.getResourcePath();
                                 running = true;
@@ -169,10 +237,10 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
                                 name: displayName,
                                 active: active,
                                 process: statusProcess,
-                                status: status,
+                                status: ProcessStatus[status],
                                 running: running,
-                                system: statusProcessInfo.system,
-                                resource: statusProcessInfo.resource,
+                                system: statusProcessInfo.getSystem(),
+                                resource: statusProcessInfo.getResource(),
                                 focus: statusFocus == statusProcess,
                                 script: resourcePath
                             });

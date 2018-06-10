@@ -6,11 +6,11 @@ import lombok.AllArgsConstructor;
 
 import org.snapscript.studio.agent.event.BeginEvent;
 import org.snapscript.studio.agent.event.ExitEvent;
-import org.snapscript.studio.agent.event.PongEvent;
 import org.snapscript.studio.agent.event.ProfileEvent;
 import org.snapscript.studio.agent.event.RegisterEvent;
 import org.snapscript.studio.agent.event.ScopeEvent;
 import org.snapscript.studio.agent.event.ScriptErrorEvent;
+import org.snapscript.studio.agent.event.StatusEvent;
 import org.snapscript.studio.agent.event.WriteErrorEvent;
 import org.snapscript.studio.agent.event.WriteOutputEvent;
 import org.snapscript.studio.agent.profiler.ProfileResult;
@@ -35,7 +35,7 @@ public class CommandEventConverter {
             .thread(event.getThread())
             .stack(event.getStack())
             .instruction(event.getInstruction())
-            .status(event.getStatus())
+            .status(event.getStatus().name())
             .line(event.getLine())
             .depth(event.getDepth())
             .key(event.getKey())
@@ -86,9 +86,11 @@ public class CommandEventConverter {
       return BeginCommand.builder()
             .process(event.getProcess())
             .duration(event.getDuration())
-            .debug(event.isDebug())
+            .status(event.getStatus())
+            .debug(event.getStatus().isDebug())
             .resource(path)
-            .build();
+            .build()
+            .validate();
    }
    
    public ProfileCommand convert(ProfileEvent event) throws Exception {
@@ -116,13 +118,15 @@ public class CommandEventConverter {
             .project(null)
             .resource(null)
             .time(System.currentTimeMillis())
-            .debug(false)
-            .running(false)
+            .status(event.getStatus())
+            .running(event.getStatus().isRunning())
+            .debug(event.getStatus().isDebug())
             .focus(process.equals(focus))
-            .build();
+            .build()
+            .validate();
    }
    
-   public StatusCommand convert(PongEvent event) throws Exception { 
+   public StatusCommand convert(StatusEvent event) throws Exception { 
       String focus = filter.getFocus();
       String process = event.getProcess();
       String resource = event.getResource();
@@ -133,19 +137,22 @@ public class CommandEventConverter {
             .system(event.getSystem())
             .project(event.getProject())
             .time(System.currentTimeMillis())
-            .debug(event.isDebug())
             .totalMemory(event.getTotalMemory())
             .usedMemory(event.getUsedMemory())
             .threads(event.getThreads())
-            .running(event.isRunning())
+            .status(event.getStatus())
+            .running(event.getStatus().isRunning())
+            .debug(event.getStatus().isDebug())
             .focus(process.equals(focus))
             .resource(path)
-            .build();
+            .build()
+            .validate();
    }
    
    public ExitCommand convert(ExitEvent event) throws Exception {  
       return ExitCommand.builder()
             .process(event.getProcess())
+            .duration(event.getDuration())
             .build();
    }
    

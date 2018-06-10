@@ -21,8 +21,9 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
             status_1.StatusPanel.showProcessStatus(message.resource, message.process, message.debug);
         }
         function deleteThreads(socket, type, text) {
-            var terminateProcess = text;
-            if (threadEditorFocus != null && threadEditorFocus.process == terminateProcess) {
+            var message = JSON.parse(text);
+            var process = message.process;
+            if (threadEditorFocus != null && threadEditorFocus.process == process) {
                 terminateThreads();
             }
         }
