@@ -6,6 +6,7 @@ import java.util.concurrent.Executor;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.compile.ResourceCompiler;
 import org.snapscript.compile.StoreContext;
+import org.snapscript.core.Context;
 import org.snapscript.core.ResourceManager;
 import org.snapscript.core.link.PackageLinker;
 import org.snapscript.core.scope.EmptyModel;
@@ -21,11 +22,11 @@ public class DebugContext {
    private final ResourceCompiler compiler;
    private final TraceProfiler profiler;
    private final BreakpointMatcher matcher;
-   private final StoreContext context;
    private final ExecuteLatch latch;
    private final ProjectStore store;
    private final RunMode mode;
    private final Executor executor;
+   private final Context context;
    private final Model model;
    private final String process;
 
