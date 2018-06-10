@@ -194,9 +194,9 @@ export module DebugManager {
       var description: string = processInfo.getDescription();
       var resource: string = processInfo.getResource();
       
-      if(resource != null || message.status == 'REGISTERING' || processInfo.isFocus()) {
+      if(resource != null) {
       // console.log(message);
-      //   console.log(description);
+         console.log(description);
       }      
       if(processInfo.isFocus()) {
          updateStatusFocus(process);

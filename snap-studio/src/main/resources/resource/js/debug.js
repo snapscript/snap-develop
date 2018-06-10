@@ -136,7 +136,9 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
             message.debug, message.focus, processMemory, message.threads);
             var description = processInfo.getDescription();
             var resource = processInfo.getResource();
-            if (resource != null || message.status == 'REGISTERING' || processInfo.isFocus()) {
+            if (resource != null) {
+                // console.log(message);
+                console.log(description);
             }
             if (processInfo.isFocus()) {
                 updateStatusFocus(process);
