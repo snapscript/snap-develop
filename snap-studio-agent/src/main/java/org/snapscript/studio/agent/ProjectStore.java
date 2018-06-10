@@ -7,12 +7,12 @@ import java.net.URI;
 import org.snapscript.common.store.RemoteStore;
 import org.snapscript.common.store.Store;
 
-public class ClientStore implements Store {
+public class ProjectStore implements Store {
 
    private String project;
    private Store store;
    
-   public ClientStore(URI root) {
+   public ProjectStore(URI root) {
       this.store = new RemoteStore(root);
    }
    

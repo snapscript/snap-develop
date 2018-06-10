@@ -25,7 +25,7 @@ public class DebugClient {
 
    public String loadScript(String project, String resource) {
       ResourceManager manager = context.getManager();
-      String path = ClientStore.getPath(project, resource);
+      String path = ProjectStore.getPath(project, resource);
 
       return manager.getString(path);
    }
@@ -56,7 +56,7 @@ public class DebugClient {
    
    public void execute(String project, String resource, String dependencies, boolean debug) {
       BreakpointMatcher matcher = context.getMatcher();
-      ClientStore store = context.getStore();
+      ProjectStore store = context.getStore();
 
       matcher.update(breakpoints);
       store.update(project); 

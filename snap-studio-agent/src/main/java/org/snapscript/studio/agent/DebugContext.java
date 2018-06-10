@@ -23,7 +23,7 @@ public class DebugContext {
    private final BreakpointMatcher matcher;
    private final StoreContext context;
    private final ExecuteLatch latch;
-   private final ClientStore store;
+   private final ProjectStore store;
    private final RunMode mode;
    private final Executor executor;
    private final Model model;
@@ -39,7 +39,7 @@ public class DebugContext {
    
    public DebugContext(RunMode mode, URI root, String process, String system, int threads, int stack) {
       this.executor = new ThreadPool(threads < 5 ? 5 : threads, stack);
-      this.store = new ClientStore(root);
+      this.store = new ProjectStore(root);
       this.latch = new ExecuteLatch(process, system);
       this.context = new StoreContext(store, executor);
       this.compiler = new ResourceCompiler(context);
@@ -87,7 +87,7 @@ public class DebugContext {
       return controller;
    }
    
-   public ClientStore getStore() {
+   public ProjectStore getStore() {
       return store;
    }
    

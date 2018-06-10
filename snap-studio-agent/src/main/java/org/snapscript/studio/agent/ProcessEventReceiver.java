@@ -36,7 +36,7 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
       Map<String, Map<Integer, Boolean>> breakpoints = event.getBreakpoints();
       BreakpointMatcher matcher = context.getMatcher();
       TraceInterceptor interceptor = context.getInterceptor();
-      ClientStore store = context.getStore();
+      ProjectStore store = context.getStore();
       String actual = context.getProcess();
       String dependencies = data.getDependencies();
       String target = data.getProcess();
