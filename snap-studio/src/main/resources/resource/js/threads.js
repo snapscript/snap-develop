@@ -133,13 +133,13 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
                 editor_1.FileEditor.clearEditorHighlights(); // the thread has resumed so clear highlights
             }
             else {
-                if (threadEditorFocus.getThread() == threadScope.getThread()) {
+                if (threadEditorFocus && threadEditorFocus.getThread() == threadScope.getThread()) {
                     if (isThreadFocusUpdateNew(threadScope)) {
                         updateFocusedThread(threadScope); // something new happened so focus editor
                         updateThreadPanels(threadScope);
                     }
                 }
-                else if (threadEditorFocus.getThread() == null) {
+                else if (!threadEditorFocus || threadEditorFocus.getThread() == null) {
                     focusThread(threadScope);
                     updateThreadPanels(threadScope);
                 }

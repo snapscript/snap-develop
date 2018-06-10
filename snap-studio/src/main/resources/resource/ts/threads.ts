@@ -206,12 +206,12 @@ export module ThreadManager {
          updateThreadPanels(threadScope);
          FileEditor.clearEditorHighlights(); // the thread has resumed so clear highlights
       } else {
-         if(threadEditorFocus.getThread() == threadScope.getThread()) { // has the thread been suspended
+         if(threadEditorFocus && threadEditorFocus.getThread() == threadScope.getThread()) { // has the thread been suspended
             if(isThreadFocusUpdateNew(threadScope)) {
                updateFocusedThread(threadScope); // something new happened so focus editor
                updateThreadPanels(threadScope);
             }
-         } else if(threadEditorFocus.getThread() == null) {  // we have to focus the thread
+         } else if(!threadEditorFocus || threadEditorFocus.getThread() == null) {  // we have to focus the thread
             focusThread(threadScope);            
             updateThreadPanels(threadScope);
          } else {

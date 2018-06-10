@@ -112,7 +112,6 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
                 console.log(process + " is TERMINATED");
                 if (duration && processInfo) {
                     console.log("Process took " + duration + " ms");
-                    SEm;
                 }
             }
             if (statusFocus == process) {
