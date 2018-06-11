@@ -21,25 +21,17 @@ public class SuspendController {
       this.types = new ConcurrentHashMap<String, ResumeType>();
       this.locks = new ConcurrentHashMap<String, Object>();
    }
-
-   public ResumeType suspend(ResumeListener listener, ScopeBrowser browser) {
-      String name = Thread.currentThread().getName();
-      Object lock = locks.get(name);
+   
+   public void resume(ResumeType type) {
+      Set<String> threads = listeners.keySet();
       
-      if(lock == null) {
-         lock = new Object();
-         locks.put(name, lock);
-      }
-      synchronized(lock) {
+      for(String thread : threads) {
          try {
-            browsers.put(name, browser);
-            listeners.put(name, listener);
-            lock.wait();
-         }catch(Exception e) {
-            throw new IllegalStateException("Could not suspend thread '" + name + "'", e);
+            resume(type, thread);
+         } catch(Exception e) {
+            e.printStackTrace();
          }
       }
-      return types.remove(name); // resume in a specific way
    }
    
    public void resume(ResumeType type, String thread) {
@@ -59,6 +51,26 @@ public class SuspendController {
             throw new IllegalStateException("Could not resume thread '" + thread + "'", e);
          }
       }
+   }
+
+   public ResumeType suspend(ResumeListener listener, ScopeBrowser browser) {
+      String name = Thread.currentThread().getName();
+      Object lock = locks.get(name);
+      
+      if(lock == null) {
+         lock = new Object();
+         locks.put(name, lock);
+      }
+      synchronized(lock) {
+         try {
+            browsers.put(name, browser);
+            listeners.put(name, listener);
+            lock.wait();
+         }catch(Exception e) {
+            throw new IllegalStateException("Could not suspend thread '" + name + "'", e);
+         }
+      }
+      return types.remove(name); // resume in a specific way
    }
    
    public void browse(Set<String> expand, String thread) {

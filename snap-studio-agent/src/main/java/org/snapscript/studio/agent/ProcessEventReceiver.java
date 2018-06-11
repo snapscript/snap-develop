@@ -24,7 +24,7 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
    private final ConnectionChecker checker;
    private final DebugContext context;
    
-   public ProcessEventReceiver(DebugContext context, RunMode mode, ConnectionChecker checker, ProcessExecutor executor, Model model) throws Exception {
+   public ProcessEventReceiver(DebugContext context, ConnectionChecker checker, ProcessExecutor executor) throws Exception {
       this.executor = executor;
       this.checker = checker;
       this.context = context;
@@ -106,6 +106,10 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
 
    @Override
    public void onClose(ProcessEventChannel channel) throws Exception {
-      TerminateHandler.terminate("Close event received");
+      RunMode mode = context.getMode();
+      
+      if(mode.isTerminateRequired()) {
+         TerminateHandler.terminate("Close event received");
+      }
    }
 }

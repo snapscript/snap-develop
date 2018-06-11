@@ -7,6 +7,7 @@ import org.snapscript.core.scope.Model;
 import org.snapscript.core.trace.TraceInterceptor;
 import org.snapscript.studio.agent.debug.BreakpointMatcher;
 import org.snapscript.studio.agent.debug.FaultContextExtractor;
+import org.snapscript.studio.agent.debug.ResumeType;
 import org.snapscript.studio.agent.debug.SuspendController;
 import org.snapscript.studio.agent.debug.SuspendInterceptor;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
@@ -44,29 +45,29 @@ public class DebugAgent {
    }
    
    public DebugClient start(URI root, Runnable task, Model model, Log log) throws Exception {
-      BreakpointMatcher matcher = context.getMatcher();
-      SuspendController controller = context.getController();
-      TraceInterceptor interceptor = context.getInterceptor();
-      TraceProfiler profiler = context.getProfiler();
-      String process = context.getProcess();
-      String system = context.getSystem();
-      RunMode mode = context.getMode();
-      String host = root.getHost();
-      int port = root.getPort();
+      final BreakpointMatcher matcher = context.getMatcher();
+      final SuspendController controller = context.getController();
+      final TraceInterceptor interceptor = context.getInterceptor();
+      final TraceProfiler profiler = context.getProfiler();
+      final String process = context.getProcess();
+      final String system = context.getSystem();
+      final RunMode mode = context.getMode();
+      final String host = root.getHost();
+      final int port = root.getPort();
       
       try {
-         Log adapter = new AsyncLog(log, level);
-         TraceLogger logger = new LogLogger(adapter, level);
-         CompileValidator validator = new CompileValidator(context);
-         ConnectionChecker checker = new ConnectionChecker(context, task, process, system);
-         ProcessExecutor executor = new ProcessExecutor(context, logger, mode, model);
-         ProcessEventReceiver listener = new ProcessEventReceiver(context, mode, checker, executor, model);
-         ProcessEventTimer timer = new ProcessEventTimer(listener, logger);
-         ProcessEventClient client = new ProcessEventClient(timer, logger);
-         ProcessEventChannel channel = client.connect(process, host, port);
-         SuspendInterceptor suspender = new SuspendInterceptor(channel, matcher, controller, mode, process);
-         FaultContextExtractor extractor = new FaultContextExtractor(channel, logger, process);
-         RegisterEvent register = new RegisterEvent.Builder(process)
+         final Log adapter = new AsyncLog(log, level);
+         final TraceLogger logger = new LogLogger(adapter, level);
+         final CompileValidator validator = new CompileValidator(context);
+         final ConnectionChecker checker = new ConnectionChecker(context, task, process, system);
+         final ProcessExecutor executor = new ProcessExecutor(context, logger, mode, model);
+         final ProcessEventReceiver listener = new ProcessEventReceiver(context, checker, executor);
+         final ProcessEventTimer timer = new ProcessEventTimer(listener, logger);
+         final ProcessEventClient client = new ProcessEventClient(timer, logger);
+         final ProcessEventChannel channel = client.connect(process, host, port);
+         final SuspendInterceptor suspender = new SuspendInterceptor(channel, matcher, controller, mode, process);
+         final FaultContextExtractor extractor = new FaultContextExtractor(channel, logger, process);
+         final RegisterEvent register = new RegisterEvent.Builder(process)
             .withSystem(system)
             .build();
          
@@ -77,7 +78,23 @@ public class DebugAgent {
          validator.validate();
          checker.start();
          
-         return new DebugClient(context, channel, executor, mode, model);
+         final Runnable detach = new Runnable() {
+           
+            @Override
+            public void run(){
+               try {
+                  interceptor.remove(profiler);
+                  interceptor.remove(suspender);
+                  interceptor.remove(extractor);
+                  checker.stop();
+                  controller.resume(ResumeType.RUN);
+                  channel.close("Stop requested");
+               }catch(Exception e) {
+                  logger.info("Error stopping client", e);
+               }
+            }
+         };
+         return new DebugClient(context, channel, executor, detach);
       } catch (Exception e) {
          throw new IllegalStateException("Could not start process '" + process+ "'", e);
       }

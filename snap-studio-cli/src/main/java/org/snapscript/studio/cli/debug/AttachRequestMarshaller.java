@@ -8,19 +8,19 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.URI;
 
-public class DebugRequestMarshaller {
+public class AttachRequestMarshaller {
 
-   public DebugRequest readRequest(Socket socket) throws IOException {
+   public AttachRequest readRequest(Socket socket) throws IOException {
       InputStream stream = socket.getInputStream();
       DataInputStream input = new DataInputStream(stream);
       String project = input.readUTF();
       String host = input.readUTF();  
       int port = input.readInt();
       
-      return new DebugRequest(project, host, port);
+      return new AttachRequest(project, host, port);
    }
    
-   public void writeRequest(Socket socket, DebugRequest request) throws IOException {
+   public void writeRequest(Socket socket, AttachRequest request) throws IOException {
       OutputStream stream = socket.getOutputStream();
       DataOutputStream output = new DataOutputStream(stream);     
       String project = request.getProject();

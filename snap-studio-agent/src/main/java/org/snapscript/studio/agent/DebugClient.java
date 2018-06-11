@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.snapscript.core.ResourceManager;
-import org.snapscript.core.scope.Model;
 import org.snapscript.studio.agent.debug.BreakpointMatcher;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
 import org.snapscript.studio.agent.task.ProcessExecutor;
@@ -15,12 +14,14 @@ public class DebugClient {
    private final ProcessEventChannel channel;
    private final ProcessExecutor executor;
    private final DebugContext context;
+   private final Runnable detach;
    
-   public DebugClient(DebugContext context, ProcessEventChannel channel, ProcessExecutor executor, RunMode mode, Model model) {
+   public DebugClient(DebugContext context, ProcessEventChannel channel, ProcessExecutor executor, Runnable detach) {
       this.breakpoints = new HashMap<String, Map<Integer, Boolean>>();
       this.executor = executor;
       this.channel = channel;
       this.context = context;
+      this.detach = detach;
    }
 
    public String loadScript(String project, String resource) {
@@ -73,11 +74,20 @@ public class DebugClient {
       matcher.suspend();
    }
 
-   public boolean join(long time) {
+   public boolean waitUntilFinish(long time) {
       ExecuteLatch latch = context.getLatch();
 
       try {
          latch.wait(ExecuteStatus.FINISHED, time);
+      }catch(Exception e) {
+         return false;
+      }
+      return true;
+   }
+   
+   public boolean detachClient() {
+      try {
+         detach.run();
       }catch(Exception e) {
          return false;
       }

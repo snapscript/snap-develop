@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.net.URI;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.snapscript.common.thread.ThreadBuilder;
 import org.snapscript.core.module.Path;
@@ -15,7 +16,7 @@ import org.snapscript.studio.agent.log.LogLevel;
 
 public class DebugRequestListener {
 
-   private final DebugRequestMarshaller marshaller;
+   private final AtomicReference<DebugClient> reference;
    private final ConnectLauncher launcher;
    private final DebugContext context;
    private final AtomicBoolean active;
@@ -23,22 +24,35 @@ public class DebugRequestListener {
    
    public DebugRequestListener(DebugContext context, Path script, int port) {
       this.launcher = new ConnectLauncher(context, this, port);
-      this.marshaller = new DebugRequestMarshaller();
+      this.reference = new AtomicReference<DebugClient>();
       this.active = new AtomicBoolean();
       this.context = context;
       this.script = script;
    }
    
-   public void debug(DebugRequest request) {
+   public void onAttachRequest(AttachRequest request) {
       DebugAgent agent = new DebugAgent(context, LogLevel.INFO.name());
       
       try {
          String project = request.getProject();
          URI root = request.getTarget();
-         DebugClient client = agent.start(root, launcher);
          String path = script.getPath();
+         DebugClient client = agent.start(root, launcher);
          
          client.attachProcess(project, path);
+         reference.set(client);
+      }catch(Exception e){
+         e.printStackTrace();
+      }
+   }
+   
+   public void onDetachRequest(DetachRequest request) {
+      DebugClient client = reference.get();
+      
+      try {
+         if(client != null) {
+            client.detachClient();
+         }
       }catch(Exception e){
          e.printStackTrace();
       }
@@ -69,26 +83,32 @@ public class DebugRequestListener {
    
    private class ConnectListener implements Runnable {
       
-      private final DebugRequestListener acceptor;
+      private final DebugRequestConsumer consumer;
       private final int port;
       
-      public ConnectListener(DebugRequestListener acceptor, int port) {
-         this.acceptor = acceptor;
+      public ConnectListener(DebugRequestListener listener, int port) {
+         this.consumer = new DebugRequestConsumer(listener);
          this.port = port;
       }
       
       public void run() {
          try {
             ServerSocket listener = new ServerSocket(port);
-            Socket socket = listener.accept();
-            DebugRequest target = marshaller.readRequest(socket);
             
-            active.set(false);
-            listener.close();
-            acceptor.debug(target);
+            try {
+               while(active.get()) {
+                  Socket socket = listener.accept();
+      
+                  consumer.read(socket);
+                  socket.close();
+               }
+            } finally {
+               listener.close();
+            }
          } catch(Exception e){
-            active.set(false);
             e.printStackTrace();
+         } finally {
+            active.set(false);
          }
          
       }

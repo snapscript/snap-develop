@@ -54,21 +54,28 @@ public class ConnectionChecker {
          if(mode.isDetachRequired()) {
             if(!status.isFinished()) { // send pong only if still running
                if(!channel.send(pong)) {
-                  TerminateHandler.terminate("Ping failed for " + process);
+                  if(mode.isTerminateRequired()) {
+                     TerminateHandler.terminate("Ping failed for " + process);
+                  }
                } else {
                   update.set(time);
                }
             }
          } else {
             if(!channel.send(pong)) {
-               TerminateHandler.terminate("Ping failed for " + process);
+               if(mode.isTerminateRequired()) {
+                  TerminateHandler.terminate("Ping failed for " + process);
+               }
             } else {
                update.set(time);
             }
          }
       } catch(Exception e) {
          e.printStackTrace();
-         TerminateHandler.terminate("Ping failed for " + process + " with " + e);
+         
+         if(mode.isTerminateRequired()) {
+            TerminateHandler.terminate("Ping failed for " + process + " with " + e);
+         }
       }
    }
    
@@ -77,6 +84,10 @@ public class ConnectionChecker {
          Thread thread = factory.newThread(checker);
          thread.start();
       }
+   }
+   
+   public void stop() {
+      active.set(false);
    }
    
    private class HealthChecker implements Runnable {

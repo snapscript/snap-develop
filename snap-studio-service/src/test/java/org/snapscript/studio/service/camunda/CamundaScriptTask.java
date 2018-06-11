@@ -51,7 +51,7 @@ public class CamundaScriptTask {
 
       createBreakpoints(service);
       service.beginExecute(PROJECT, RESOURCE, System.getProperty("java.class.path"), true);
-      service.join(6000000); // wait for script to finish
+      service.waitUntilFinish(6000000); // wait for script to finish
    }
 
    public void createBreakpoints(DebugClient service) {
