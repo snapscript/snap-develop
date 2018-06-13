@@ -102,7 +102,7 @@ public class DebugAgent {
          });
          checker.start();
          
-         return new DebugClient(context, channel, executor);
+         return new DebugClient(context, channel, executor, process);
       } catch (Exception e) {
          throw new IllegalStateException("Could not start process '" + process+ "'", e);
       }
