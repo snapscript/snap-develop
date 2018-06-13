@@ -1,7 +1,5 @@
 package org.snapscript.studio.agent.log;
 
-import static org.snapscript.studio.agent.log.LogLevel.INFO;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -47,6 +45,10 @@ public class AsyncLog implements Log {
       }
    }
    
+   public void stop() {
+      dispatcher.stop();
+   }
+   
    private class DateFormatter extends ThreadLocal<DateFormat> {
       
       private final String format;
@@ -66,11 +68,13 @@ public class AsyncLog implements Log {
       private final BlockingQueue<LogEvent> queue;
       private final ThreadFactory factory;
       private final AtomicBoolean active;
-      
+      private final AtomicBoolean stopped;
+
       public LogDispatcher(int capacity) {
          this.factory = new ThreadBuilder();
          this.queue = new ArrayBlockingQueue<LogEvent>(capacity);
-         this.active = new AtomicBoolean(false);
+         this.active = new AtomicBoolean();
+         this.stopped = new AtomicBoolean();
       }
       
       public void log(LogEvent event) {
@@ -88,7 +92,7 @@ public class AsyncLog implements Log {
       @Override
       public void run() {
          try {
-            while(active.get()) {
+            while(!stopped.get()) {
                try {
                   LogEvent event = queue.poll(1000, TimeUnit.MILLISECONDS);
                   
@@ -100,8 +104,12 @@ public class AsyncLog implements Log {
                }
             }
          } finally {
-            active.set(false);
+            stopped.set(true);
          }
+      }
+      
+      public void stop(){
+         stopped.set(true); // can never start again
       }
    }
    

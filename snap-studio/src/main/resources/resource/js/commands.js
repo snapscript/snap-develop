@@ -384,6 +384,18 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             }
         }
         Command.pingProcess = pingProcess;
+        function attachRemoteDebugger() {
+            if (socket_1.EventBus.isSocketOpen()) {
+                alert_1.Alerts.createPromptAlert("Remote Debug", "Attach", "Cancel", function (hostAndPort) {
+                    var message = {
+                        project: document.title,
+                        address: hostAndPort
+                    };
+                    socket_1.EventBus.sendEvent("REMOTE_DEBUG", message);
+                });
+            }
+        }
+        Command.attachRemoteDebugger = attachRemoteDebugger;
         function uploadFileTo(fileName, uploadToPath, encodedFile) {
             var destinationPath = tree_1.FileTree.createResourcePath(uploadToPath);
             var toPath = tree_1.FileTree.cleanResourcePath(destinationPath.getFilePath() + "/" + fileName);

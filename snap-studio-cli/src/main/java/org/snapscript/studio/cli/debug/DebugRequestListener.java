@@ -29,25 +29,42 @@ public class DebugRequestListener {
       this.context = context;
       this.script = script;
    }
+
+   public String attachRequest(AttachRequest request) {
+      String level = LogLevel.INFO.name();
+      String project = request.getProject();
+      URI root = request.getTarget();
+      String path = script.getPath();
+      
+      if(!isAttached()) {
+         try {
+            DebugAgent agent = new DebugAgent(context, level);
+            DebugClient client = agent.start(root, launcher);
+            
+            reference.set(client);
+            client.attachProcess(project, path);
+         }catch(Exception e){
+            e.printStackTrace();
+         }
+      }
+      return context.getProcess();
+   }
    
-   public void onAttachRequest(AttachRequest request) {
-      DebugAgent agent = new DebugAgent(context, LogLevel.INFO.name());
+   public String detachRequest(DetachRequest request) {
+      DebugClient client = reference.getAndSet(null);
       
       try {
-         String project = request.getProject();
-         URI root = request.getTarget();
-         String path = script.getPath();
-         DebugClient client = agent.start(root, launcher);
-         
-         client.attachProcess(project, path);
-         reference.set(client);
+         if(client != null) {
+            client.detachClient();
+         }
       }catch(Exception e){
          e.printStackTrace();
       }
+      return context.getProcess(); 
    }
    
-   public void onDetachRequest(DetachRequest request) {
-      DebugClient client = reference.get();
+   public void onReset() {
+      DebugClient client = reference.getAndSet(null);
       
       try {
          if(client != null) {
@@ -58,35 +75,43 @@ public class DebugRequestListener {
       }
    }
    
+   public boolean isAttached(){
+      return reference.get() != null;
+   }
+   
    public void start() {
       launcher.run();
    }
    
    private class ConnectLauncher implements Runnable {
       
-      private final ConnectListener listener;
+      private final DebugRequestListener listener;
+      private final ConnectAcceptor acceptor;
       private final ThreadFactory factory;
       
-      public ConnectLauncher(DebugContext context, DebugRequestListener connector, int port) {
-         this.listener = new ConnectListener(connector, port);
+      public ConnectLauncher(DebugContext context, DebugRequestListener listener, int port) {
+         this.acceptor = new ConnectAcceptor(listener, port);
          this.factory = new ThreadBuilder();
+         this.listener = listener;
       }
 
       @Override
       public void run() {
+         listener.onReset();
+         
          if(active.compareAndSet(false, true)) {
-            Thread thread = factory.newThread(listener);
+            Thread thread = factory.newThread(acceptor);
             thread.start();
          }
       }      
    }
    
-   private class ConnectListener implements Runnable {
+   private class ConnectAcceptor implements Runnable {
       
       private final DebugRequestConsumer consumer;
       private final int port;
       
-      public ConnectListener(DebugRequestListener listener, int port) {
+      public ConnectAcceptor(DebugRequestListener listener, int port) {
          this.consumer = new DebugRequestConsumer(listener);
          this.port = port;
       }
@@ -99,8 +124,13 @@ public class DebugRequestListener {
                while(active.get()) {
                   Socket socket = listener.accept();
       
-                  consumer.read(socket);
-                  socket.close();
+                  try {
+                     consumer.consume(socket);
+                  }catch(Exception e) {
+                     e.printStackTrace();
+                  }finally {
+                     socket.close();
+                  }
                }
             } finally {
                listener.close();

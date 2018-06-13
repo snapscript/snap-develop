@@ -428,6 +428,20 @@ export module Command {
       }
    }
    
+   export function attachRemoteDebugger() {
+      if(EventBus.isSocketOpen()) {
+         Alerts.createPromptAlert("Remote Debug", "Attach", "Cancel", 
+            function(hostAndPort) {
+               var message = {
+                  project: document.title,
+                  address: hostAndPort
+               };
+               EventBus.sendEvent("REMOTE_DEBUG", message);
+            }
+         );
+      }
+   }
+   
    export function uploadFileTo(fileName, uploadToPath, encodedFile) {
       var destinationPath: FilePath = FileTree.createResourcePath(uploadToPath);
       var toPath = FileTree.cleanResourcePath(destinationPath.getFilePath() + "/" + fileName);

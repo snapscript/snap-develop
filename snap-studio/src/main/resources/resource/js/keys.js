@@ -108,6 +108,9 @@ define(["require", "exports", "jquery", "mousetrap", "common", "editor", "comman
             createKeyBinding("ctrl b", "Debug Script", true, function () {
                 commands_1.Command.debugScript();
             });
+            createKeyBinding("ctrl shift b", "Debug Remote Script", true, function () {
+                commands_1.Command.attachRemoteDebugger();
+            });
             createKeyBinding("f8", "Resume Script", true, function () {
                 console.log("F8");
                 commands_1.Command.resumeScript();

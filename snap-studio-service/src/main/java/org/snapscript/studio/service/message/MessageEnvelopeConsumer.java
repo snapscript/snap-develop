@@ -18,7 +18,7 @@ public class MessageEnvelopeConsumer {
    private int count;
    
    public MessageEnvelopeConsumer(AsyncEventExchanger router, Executor executor, Channel channel, String process) {
-      this.channel = new AsyncEventClient(executor, channel, process);
+      this.channel = new AsyncEventClient(executor, channel);
       this.buffer = new byte[1024];
       this.router = router;
       

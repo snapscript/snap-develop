@@ -5,13 +5,12 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import lombok.AllArgsConstructor;
 
-import org.snapscript.studio.cli.debug.AttachRequest;
-import org.snapscript.studio.cli.debug.DetachRequest;
+import org.snapscript.studio.cli.debug.AttachResponse;
+import org.snapscript.studio.cli.debug.DetachResponse;
 
 // /debug/<project>/<host>/<port>/attach
 @Path("/debug")
@@ -28,8 +27,8 @@ public class RemoteDebugResource {
          @PathParam("host") String host, 
          @PathParam("port") int port) throws Exception
    {
-      AttachRequest request = service.attach(project, host, port);
-      return Response.ok(request).build();
+      AttachResponse response = service.attach(project, host, port);
+      return Response.ok(response).build();
    }
    
    @GET
@@ -40,7 +39,7 @@ public class RemoteDebugResource {
          @PathParam("host") String host, 
          @PathParam("port") int port) throws Exception
    {
-      DetachRequest request = service.detach(project, host, port);
-      return Response.ok(request).build();
+      DetachResponse response = service.detach(project, host, port);
+      return Response.ok(response).build();
    }
 }

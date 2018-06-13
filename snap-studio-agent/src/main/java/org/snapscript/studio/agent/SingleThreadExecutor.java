@@ -10,54 +10,66 @@ import org.snapscript.common.thread.ThreadBuilder;
 
 public class SingleThreadExecutor implements Executor {
 
-    private final BlockingQueue<Runnable> tasks;
-    private final TaskExecutor executor;
-    private final ThreadBuilder builder;
-    private final AtomicBoolean active;
+   private final BlockingQueue<Runnable> tasks;
+   private final TaskExecutor executor;
+   private final ThreadBuilder builder;
+   private final AtomicBoolean active;
 
-    public SingleThreadExecutor() {
-        this.tasks = new LinkedBlockingQueue<Runnable>();
-        this.executor = new TaskExecutor(1000);
-        this.builder = new ThreadBuilder();
-        this.active = new AtomicBoolean();
-    }
+   public SingleThreadExecutor() {
+      this.tasks = new LinkedBlockingQueue<Runnable>();
+      this.executor = new TaskExecutor(1000);
+      this.builder = new ThreadBuilder();
+      this.active = new AtomicBoolean();
+   }
 
-    @Override
-    public void execute(Runnable runnable) {
-        if(active.compareAndSet(false, true)) {
-            Thread thread = builder.newThread(executor);
-            thread.start();
-        }
-        tasks.offer(runnable);
-    }
+   @Override
+   public void execute(Runnable runnable) {
+      if(!active.get()) {
+         throw new IllegalStateException("Executor is not running");
+      }
+      tasks.offer(runnable);
+   }
 
-    private class TaskExecutor implements Runnable {
+   public void start() {
+      if (active.compareAndSet(false, true)) {
+         Thread thread = builder.newThread(executor);
+         thread.start();
+      }
+   }
 
-        private final long wait;
+   public void stop() {
+      if (active.compareAndSet(true, false)) {
+         tasks.clear();
+      }
+   }
 
-        public TaskExecutor(long wait) {
-            this.wait = wait;
-        }
+   private class TaskExecutor implements Runnable {
 
-        @Override
-        public void run() {
-            try {
-                while (active.get()) {
-                    Runnable task = tasks.poll(wait, TimeUnit.MILLISECONDS);
+      private final long wait;
 
-                    if (task != null) {
-                        try {
-                            task.run();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                active.set(false);
+      public TaskExecutor(long wait) {
+         this.wait = wait;
+      }
+
+      @Override
+      public void run() {
+         try {
+            while (active.get()) {
+               Runnable task = tasks.poll(wait, TimeUnit.MILLISECONDS);
+
+               if (task != null) {
+                  try {
+                     task.run();
+                  } catch (Exception e) {
+                     e.printStackTrace();
+                  }
+               }
             }
-        }
-    }
+         } catch (Exception e) {
+            e.printStackTrace();
+         } finally {
+            active.set(false);
+         }
+      }
+   }
 }

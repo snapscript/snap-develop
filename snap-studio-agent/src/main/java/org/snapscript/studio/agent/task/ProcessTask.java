@@ -22,8 +22,8 @@ public class ProcessTask implements Runnable {
    private final String resource;
    private final Model model;
    
-   public ProcessTask(ProcessEventChannel client, DebugContext context, RunMode mode, Model model, String project, String resource, boolean debug) {
-      this.reporter = new ProgressReporter(client, context, project, resource, debug);
+   public ProcessTask(DebugContext context, ProcessEventChannel client, RunMode mode, Model model, String project, String resource, boolean debug) {
+      this.reporter = new ProgressReporter(context, client, project, resource, debug);
       this.client = client;
       this.resource = resource;
       this.context = context;

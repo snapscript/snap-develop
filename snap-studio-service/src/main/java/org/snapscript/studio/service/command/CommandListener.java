@@ -13,6 +13,7 @@ import org.simpleframework.http.Path;
 import org.simpleframework.http.socket.FrameChannel;
 import org.snapscript.common.command.CommandBuilder;
 import org.snapscript.common.command.Console;
+import org.snapscript.studio.cli.debug.AttachResponse;
 import org.snapscript.studio.common.Problem;
 import org.snapscript.studio.common.ProblemFinder;
 import org.snapscript.studio.common.resource.display.DisplayDefinition;
@@ -23,6 +24,7 @@ import org.snapscript.studio.project.config.DependencyFile;
 import org.snapscript.studio.project.config.OperatingSystem;
 import org.snapscript.studio.project.config.ProjectConfiguration;
 import org.snapscript.studio.service.ProcessManager;
+import org.snapscript.studio.service.agent.remote.RemoteDebugService;
 import org.snapscript.studio.service.project.ProjectProblemFinder;
 import org.snapscript.studio.service.tree.TreeContext;
 import org.snapscript.studio.service.tree.TreeContextManager;
@@ -33,6 +35,7 @@ public class CommandListener {
    private final DisplayPersister displayPersister;
    private final CommandEventForwarder forwarder;
    private final ProjectProblemFinder problemFinder;
+   private final RemoteDebugService debugService;
    private final TreeContextManager treeManager;
    private final CommandFilter commandFilter;
    private final CommandClient commandClient;
@@ -50,6 +53,7 @@ public class CommandListener {
          ProcessManager processManager, 
          ProjectProblemFinder problemFinder, 
          DisplayPersister displayPersister,
+         RemoteDebugService debugService,
          FrameChannel frameChannel, 
          BackupManager backupManager, 
          TreeContextManager treeManager, 
@@ -69,6 +73,7 @@ public class CommandListener {
       this.problemFinder = problemFinder;
       this.backupManager = backupManager;
       this.processManager = processManager;
+      this.debugService = debugService;
       this.project = project;
       this.cookie = cookie;
       this.path = path;
@@ -256,6 +261,32 @@ public class CommandListener {
       }
    }
    
+   public void onRemoteDebug(RemoteDebugCommand command) {
+      String project = command.getProject();
+      String address = command.getAddress();
+      
+      try {
+         String[] addressParts = address.trim().split(":");
+         
+         if(addressParts.length > 1) {
+            String remoteHost = addressParts[0];
+            int remotePort = Integer.parseInt(addressParts[1]);
+            AttachResponse response = debugService.attach(project, remoteHost, remotePort);
+            String process = response.getProcess();
+            
+            if(processManager.debug(command, process)) {
+               log.info("Successfully attached to " + process + "@" + address);
+            } else {
+               log.info("Could not find process " + process);
+            }
+         } else {
+            log.info("Invalid remote debug address " + address);
+         }
+      } catch(Exception e) {
+         log.info("Error attaching to remote debugger " + address, e);
+      }
+   }
+   
    public void onAttach(AttachCommand command) {
       String process = command.getProcess();
       
@@ -421,7 +452,11 @@ public class CommandListener {
       
       try {
          if(focus != null) {
-            processManager.stop(focus);
+            try {
+               processManager.stop(focus);
+            } catch(Exception e) {
+               log.info("Could not stop process", e);
+            }
             commandClient.sendProcessTerminate(focus);
             commandFilter.clearFocus();
          }

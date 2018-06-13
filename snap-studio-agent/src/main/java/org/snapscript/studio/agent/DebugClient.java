@@ -5,23 +5,24 @@ import java.util.Map;
 
 import org.snapscript.core.ResourceManager;
 import org.snapscript.studio.agent.debug.BreakpointMatcher;
+import org.snapscript.studio.agent.event.ExitEvent;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
 import org.snapscript.studio.agent.task.ProcessExecutor;
 
 public class DebugClient {
    
    private final Map<String, Map<Integer, Boolean>> breakpoints;
-   private final ProcessEventChannel channel;
+   private final ProcessEventChannel client;
    private final ProcessExecutor executor;
    private final DebugContext context;
-   private final Runnable detach;
+   private final String process;
    
-   public DebugClient(DebugContext context, ProcessEventChannel channel, ProcessExecutor executor, Runnable detach) {
+   public DebugClient(DebugContext context, ProcessEventChannel client, ProcessExecutor executor, String process) {
       this.breakpoints = new HashMap<String, Map<Integer, Boolean>>();
       this.executor = executor;
-      this.channel = channel;
+      this.client = client;
       this.context = context;
-      this.detach = detach;
+      this.process = process;
    }
 
    public String loadScript(String project, String resource) {
@@ -61,7 +62,7 @@ public class DebugClient {
 
       matcher.update(breakpoints);
       store.update(project); 
-      executor.beginExecute(channel, project, resource, dependencies, debug);
+      executor.beginExecute(client, project, resource, dependencies, debug);
    }
    
    public void attachProcess(String project, String resource) {
@@ -70,7 +71,7 @@ public class DebugClient {
 
       matcher.update(breakpoints);
       store.update(project); 
-      executor.attachProcess(channel, project, resource);
+      executor.attachProcess(client, project, resource);
       matcher.suspend();
    }
 
@@ -86,11 +87,21 @@ public class DebugClient {
    }
    
    public boolean detachClient() {
-      try {
-         detach.run();
+      ExitEvent event = new ExitEvent.Builder(process)
+         .withDuration(0)
+         .withMode(context.getMode())
+         .build();   
+      
+      try {      
+         client.send(event);
       }catch(Exception e) {
          return false;
-      }
+      }         
+      try {      
+         client.close("Client detach");
+      }catch(Exception e) {
+         return false;
+      } 
       return true;
    }
 }

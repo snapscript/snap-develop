@@ -51,11 +51,7 @@ public class ConnectTunnelResource implements Resource {
          String date = request.getValue(Protocol.DATE);
          String header = String.format(TUNNEL_RESPONSE, date);
          byte[] data = header.getBytes("UTF-8");         
-         
-//         System.err.println("#######################################################################");
-//         System.err.println(request);
-//         System.err.println("#######################################################################");
-         
+
          writer.write(data);
          writer.flush();
          manager.connect(listener, channel, source); // establish the connection

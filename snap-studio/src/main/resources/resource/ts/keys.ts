@@ -119,6 +119,9 @@ export module KeyBinder {
       createKeyBinding("ctrl b", "Debug Script", true, function() {
          Command.debugScript();
       });
+      createKeyBinding("ctrl shift b", "Debug Remote Script", true, function() {
+         Command.attachRemoteDebugger();
+      });
       createKeyBinding("f8", "Resume Script", true, function() {
          console.log("F8");
          Command.resumeScript();

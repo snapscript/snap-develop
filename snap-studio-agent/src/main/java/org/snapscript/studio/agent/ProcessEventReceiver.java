@@ -3,7 +3,6 @@ package org.snapscript.studio.agent;
 import java.util.Map;
 import java.util.Set;
 
-import org.snapscript.core.scope.Model;
 import org.snapscript.core.trace.TraceInterceptor;
 import org.snapscript.studio.agent.debug.BreakpointMatcher;
 import org.snapscript.studio.agent.debug.ResumeType;
@@ -110,6 +109,8 @@ public class ProcessEventReceiver extends ProcessEventAdapter {
       
       if(mode.isTerminateRequired()) {
          TerminateHandler.terminate("Close event received");
+      } else {
+         checker.close(); // disconnect straight away
       }
    }
 }

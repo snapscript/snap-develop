@@ -16,11 +16,13 @@ public class ProcessEventProducer {
    private final Map<Class, ProcessEventMarshaller> marshallers;
    private final MessageEnvelopeWriter writer;
    private final TraceLogger logger;
+   private final Closeable closeable;
    private final Executor executor;
    
    public ProcessEventProducer(TraceLogger logger, OutputStream stream, Closeable closeable, Executor executor) {
       this.marshallers = new ConcurrentHashMap<Class, ProcessEventMarshaller>();
       this.writer = new MessageEnvelopeWriter(stream, closeable);
+      this.closeable = closeable;
       this.executor = executor;
       this.logger = logger;
    }
@@ -62,6 +64,7 @@ public class ProcessEventProducer {
          try {
             logger.info("Closing connection: " + reason);
             //cause.printStackTrace();
+            closeable.close();
             writer.close();
          }catch(Exception e) {
             throw new IllegalStateException("Could not close writer: " + reason);
@@ -81,21 +84,26 @@ public class ProcessEventProducer {
       @Override
       public Boolean call() throws Exception {
          Class type = event.getClass();
-   
-         if (!marshallers.containsKey(type)) {
-            ProcessEventType[] events = ProcessEventType.values();
-   
-            for (ProcessEventType event : events) {
-               ProcessEventMarshaller marshaller = event.marshaller.newInstance();
-               marshallers.put(event.event, marshaller);
-            }
-         }
-         ProcessEventMarshaller marshaller = marshallers.get(type);
-         MessageEnvelope message = marshaller.toMessage(event);
-   
-         writer.write(message);
-         return true;
+         
+         try {
+            if (!marshallers.containsKey(type)) {
+               ProcessEventType[] events = ProcessEventType.values();
       
+               for (ProcessEventType event : events) {
+                  ProcessEventMarshaller marshaller = event.marshaller.newInstance();
+                  marshallers.put(event.event, marshaller);
+               }
+            }
+            ProcessEventMarshaller marshaller = marshallers.get(type);
+            MessageEnvelope message = marshaller.toMessage(event);
+      
+            writer.write(message);
+            return true;
+         }catch(Exception e){
+            logger.info("Error sending event", e);
+            closeable.close();
+            throw new IllegalStateException("Error writing message", e);
+         }
       }
    }
 

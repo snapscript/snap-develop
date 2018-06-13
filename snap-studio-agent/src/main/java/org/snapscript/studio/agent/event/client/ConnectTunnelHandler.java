@@ -76,11 +76,7 @@ public class ConnectTunnelHandler {
          }
       }
       String header = buffer.toString("UTF-8");
-      
-//      System.err.println("#######################################################################");
-//      System.err.println(header);
-//      System.err.println("#######################################################################");
-      
+
       buffer.reset();
       logger.trace(header);
    }

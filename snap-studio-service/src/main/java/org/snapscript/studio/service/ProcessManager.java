@@ -20,6 +20,7 @@ import org.snapscript.studio.service.command.BreakpointsCommand;
 import org.snapscript.studio.service.command.BrowseCommand;
 import org.snapscript.studio.service.command.EvaluateCommand;
 import org.snapscript.studio.service.command.ExecuteCommand;
+import org.snapscript.studio.service.command.RemoteDebugCommand;
 import org.snapscript.studio.service.command.StepCommand;
 import org.snapscript.studio.service.command.StepCommand.StepType;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,6 +79,16 @@ public class ProcessManager implements ProcessRemoteController {
          return connection.execute(projectName, resource, dependencies, breakpoints, debug);
       }
       return true;
+   }
+   
+   public boolean debug(RemoteDebugCommand command, String process) {
+      ProcessConnection connection = pool.acquire(process);
+      
+      if(connection != null) {
+         connections.put(process, connection);
+         return true;
+      }
+      return false;
    }
    
    public boolean breakpoints(BreakpointsCommand command, String process) {

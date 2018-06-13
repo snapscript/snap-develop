@@ -34,7 +34,7 @@ public class ProgressReporter {
    private final String resource;
    private final boolean debug;
    
-   public ProgressReporter(ProcessEventChannel client, DebugContext context, String project, String resource, boolean debug) {
+   public ProgressReporter(DebugContext context, ProcessEventChannel client, String project, String resource, boolean debug) {
       this.context = context;   
       this.client = client;
       this.project = project;

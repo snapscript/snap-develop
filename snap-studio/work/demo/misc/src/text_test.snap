@@ -6,3 +6,7 @@ URL("http://www.bbc.co.uk")
 
 let x = URL("http://www.bbc.co.uk").get().status;
 println(x);
+
+for(var i in 0..1000){
+   sleep(1000);
+}

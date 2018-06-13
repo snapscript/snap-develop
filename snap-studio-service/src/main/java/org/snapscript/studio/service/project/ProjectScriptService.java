@@ -16,6 +16,7 @@ import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.Workspace;
 import org.snapscript.studio.service.ConnectListener;
 import org.snapscript.studio.service.ProcessManager;
+import org.snapscript.studio.service.agent.remote.RemoteDebugService;
 import org.snapscript.studio.service.command.CommandController;
 import org.snapscript.studio.service.command.CommandListener;
 import org.snapscript.studio.service.tree.TreeContextManager;
@@ -29,6 +30,7 @@ public class ProjectScriptService implements Service {
    private final TreeContextManager treeManager;
    private final ProjectProblemFinder problemFinder;
    private final ConnectListener connectListener;
+   private final RemoteDebugService debugService;
    private final ProcessManager processManager;
    private final BackupManager backupManager;
    private final Workspace workspace;
@@ -40,6 +42,7 @@ public class ProjectScriptService implements Service {
          BackupManager backupManager, 
          TreeContextManager treeManager, 
          DisplayPersister displayPersister,
+         RemoteDebugService debugService,
          ThreadPool pool) 
    {
       this.problemFinder = new ProjectProblemFinder(workspace, pool);
@@ -49,6 +52,7 @@ public class ProjectScriptService implements Service {
       this.connectListener = connectListener;
       this.workspace = workspace;
       this.processManager = processManager;
+      this.debugService = debugService;
    }  
   
    @Override
@@ -70,6 +74,7 @@ public class ProjectScriptService implements Service {
                   processManager, 
                   problemFinder, 
                   displayPersister,
+                  debugService,
                   channel, 
                   backupManager, 
                   treeManager,

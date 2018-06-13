@@ -1,5 +1,6 @@
 package org.snapscript.studio.agent.event.client;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.snapscript.studio.agent.ConnectionChecker;
 import org.snapscript.studio.agent.SingleThreadExecutor;
 import org.snapscript.studio.agent.event.BeginEvent;
 import org.snapscript.studio.agent.event.BreakpointsEvent;
@@ -34,29 +36,36 @@ import org.snapscript.studio.agent.event.WriteErrorEvent;
 import org.snapscript.studio.agent.event.WriteOutputEvent;
 import org.snapscript.studio.agent.log.TraceLogger;
 
-public class ProcessEventClient {
+public class ConnectTunnelClient {
    
    private static final String THREAD_NAME = "%s: %s@%s:%s";
    
    private final ProcessEventListener listener;
    private final SingleThreadExecutor executor;
+   private final ConnectionChecker checker;
    private final TraceLogger logger;
    
-   public ProcessEventClient(ProcessEventListener listener, TraceLogger logger) throws IOException {
+   public ConnectTunnelClient(ProcessEventListener listener, ConnectionChecker checker, TraceLogger logger) throws IOException {
       this.executor = new SingleThreadExecutor();
       this.listener = listener;
+      this.checker = checker;
       this.logger = logger;
    }
    
    public ProcessEventChannel connect(String process, String host, int port) throws Exception {
+      String type = SocketConnection.class.getSimpleName();
+      String name = String.format(THREAD_NAME, type, process, host, port);
+      
       try {
          Socket socket = new Socket(host, port);
          ConnectTunnelHandler tunnel = new ConnectTunnelHandler(logger, process, port);
          InputStream input = socket.getInputStream();
          OutputStream output = socket.getOutputStream();
-         String threadName = String.format(THREAD_NAME, SocketConnection.class.getSimpleName(), process, host, port);
-         SocketConnection connection = new SocketConnection(socket, input, output, threadName);
+         SocketClientSession session = new SocketClientSession(checker, socket);
+         SocketConnection connection = new SocketConnection(session, input, output);
       
+         executor.start();
+         connection.setName(name);
          tunnel.tunnel(socket); // do the tunnel handshake
          socket.setSoTimeout(10000);
          connection.start();
@@ -65,20 +74,55 @@ public class ProcessEventClient {
          throw new IllegalStateException("Could not connect to " + host + ":" + port, e);
       }
    }
+   
+   private class SocketClientSession implements Closeable {
+      
+      private final ConnectionChecker checker;
+      private final Socket socket;
+      
+      public SocketClientSession(ConnectionChecker checker, Socket socket) {
+         this.checker = checker;
+         this.socket = socket;
+      }
+
+      @Override
+      public void close() {
+         try {
+            checker.close();
+         } catch(Exception e) {
+            e.printStackTrace();
+         }
+         try {
+            socket.shutdownInput();
+         } catch(Exception e) {
+            //e.printStackTrace();
+         }
+         try {
+            socket.shutdownOutput();
+         } catch(Exception e) {
+            //e.printStackTrace();
+         }
+         try {
+            executor.stop();
+            socket.close();
+         } catch(Exception e) {
+            //e.printStackTrace();
+         }
+      }
+   }
 
    private class SocketConnection extends Thread implements ProcessEventChannel {
       
       private final ProcessEventConnection connection;
-      private final AtomicBoolean open;
+      private final SocketClientSession session;
+      private final AtomicBoolean closed;
       private final Set<Class> events;
-      private final Socket socket;
       
-      public SocketConnection(Socket socket, InputStream input, OutputStream output, String threadName) throws IOException {
-         this.connection = new ProcessEventConnection(logger, executor, input, output, socket);
+      public SocketConnection(SocketClientSession session, InputStream input, OutputStream output) throws IOException {
+         this.connection = new ProcessEventConnection(logger, executor, input, output, session);
          this.events = new CopyOnWriteArraySet<Class>();
-         this.open = new AtomicBoolean(true);
-         this.setName(threadName);
-         this.socket = socket;
+         this.closed = new AtomicBoolean();
+         this.session = session;
       }
       
       @Override
@@ -169,11 +213,11 @@ public class ProcessEventClient {
          try {
             ProcessEventProducer producer = connection.getProducer();
             
-            if(open.compareAndSet(true, false)) {
+            if(closed.compareAndSet(false, true)) {
                listener.onClose(this);
                producer.close(reason);
             }
-            socket.close();
+            session.close();
          } catch(Exception e) {
             logger.info("Error closing client connection", e);
          }
