@@ -1,5 +1,10 @@
-func main(args) {
+
+func main(const args: List<String>) {
    for(arg in args){
       println(arg);
    }
 }
+
+
+let a: String[] = [1,2,3];
+main(a);

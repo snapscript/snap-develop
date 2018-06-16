@@ -185,25 +185,33 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
             if (perspective == "debug") {
                 var topPanel = w2ui_1.w2ui['debugEditorLayout'].get("top");
                 var bottomPanel = w2ui_1.w2ui['debugEditorLayout'].get("bottom");
-                if (topPanel.hidden || bottomPanel.hidden) {
-                    w2ui_1.w2ui['debugEditorLayout'].show("top");
-                    w2ui_1.w2ui['debugEditorLayout'].show("bottom");
+                if (topPanel.hidden && bottomPanel.hidden) {
+                    w2ui_1.w2ui['debugEditorLayout'].show("top", true);
+                    w2ui_1.w2ui['debugEditorLayout'].show("bottom", true);
+                }
+                else if (topPanel.hidden && !bottomPanel.hidden) {
+                    w2ui_1.w2ui['debugEditorLayout'].hide("top", true);
+                    w2ui_1.w2ui['debugEditorLayout'].hide("bottom", true);
                 }
                 else {
-                    w2ui_1.w2ui['debugEditorLayout'].hide("top");
-                    w2ui_1.w2ui['debugEditorLayout'].hide("bottom");
+                    w2ui_1.w2ui['debugEditorLayout'].hide("top", true);
+                    w2ui_1.w2ui['debugEditorLayout'].show("bottom", true);
                 }
             }
             else {
                 var leftPanel = w2ui_1.w2ui['exploreMainLayout'].get("left");
                 var bottomPanel = w2ui_1.w2ui['exploreEditorLayout'].get("bottom");
-                if (leftPanel.hidden || bottomPanel.hidden) {
+                if (leftPanel.hidden && bottomPanel.hidden) {
                     w2ui_1.w2ui['exploreMainLayout'].show("left", true);
-                    w2ui_1.w2ui['exploreEditorLayout'].show("bottom");
+                    w2ui_1.w2ui['exploreEditorLayout'].show("bottom", true);
+                }
+                else if (leftPanel.hidden && !bottomPanel.hidden) {
+                    w2ui_1.w2ui['exploreMainLayout'].hide("left", true);
+                    w2ui_1.w2ui['exploreEditorLayout'].hide("bottom", true);
                 }
                 else {
                     w2ui_1.w2ui['exploreMainLayout'].hide("left", true);
-                    w2ui_1.w2ui['exploreEditorLayout'].hide("bottom");
+                    w2ui_1.w2ui['exploreEditorLayout'].show("bottom", true);
                 }
             }
         }
