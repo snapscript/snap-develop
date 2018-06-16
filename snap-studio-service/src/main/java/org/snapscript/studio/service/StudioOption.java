@@ -17,7 +17,7 @@ public enum StudioOption implements CommandOption {
    PORT("p", "port", "Port for HTTP connections", "\\d+", Integer.class, "0"),
    MODE("m", "mode", "Mode to start on", "(DEVELOP|DEBUG)", ProjectMode.class, "DEVELOP"),
    DIRECTORY("d", "directory", "Directory used for sources", ".*", File.class, "work"),
-   VERBOSE("l", "log-level", "Level of logging", "(TRACE|DEBUG|INFO)", String.class, "INFO"),
+   LOG_LEVEL("l", "log-level", "Level of logging", "(TRACE|DEBUG|INFO)", String.class, "INFO"),
    LOG("f", "log-file", "Log file to use", ".+", File.class, "log/snapd.log"),
    SCRIPT("s", "script", "Script to launch", ".*.snap", Path.class),
    SERVER_ONLY("o", "server-only", "Launch server only", "(true|false)", Boolean.class, "false"),
