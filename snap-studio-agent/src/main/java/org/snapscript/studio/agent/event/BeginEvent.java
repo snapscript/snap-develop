@@ -2,7 +2,6 @@ package org.snapscript.studio.agent.event;
 
 import org.snapscript.studio.agent.ProcessMode;
 import org.snapscript.studio.agent.core.ExecuteStatus;
-import org.snapscript.studio.agent.event.PongEvent.Builder;
 
 public class BeginEvent implements StatusEvent {
 

@@ -5,10 +5,6 @@ import java.io.StringWriter;
 import java.util.List;
 
 public class CommandLineUsage {
-
-   public static void usage(List<? extends CommandOption> options) {
-      usage(options, null);
-   }
    
    public static void usage(List<? extends CommandOption> options, String warning) {
       StringWriter builder = new StringWriter();

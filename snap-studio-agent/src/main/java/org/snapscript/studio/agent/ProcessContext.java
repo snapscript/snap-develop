@@ -8,7 +8,6 @@ import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
 import org.snapscript.core.ExpressionEvaluator;
 import org.snapscript.core.ResourceManager;
-import org.snapscript.core.function.resolve.FunctionResolver;
 import org.snapscript.core.link.PackageLinker;
 import org.snapscript.core.scope.EmptyModel;
 import org.snapscript.core.scope.Model;

@@ -46,7 +46,8 @@ public class LocalProcessExecutor {
       String module = DEFAULT_PACKAGE;
       
       if(evaluate == null && script == null) {
-         CommandLineUsage.usage(options);
+         String message = String.format("--%s or --%s required", LocalOption.SCRIPT.name, LocalOption.SCRIPT.name);
+         CommandLineUsage.usage(options, message);
       }
       try {
          String path = script.getPath();

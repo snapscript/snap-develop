@@ -23,13 +23,15 @@ public class LocalProcess {
       boolean debug = local.isDebug();
       
       try {
-         for(File dependency : classpath) {
-            if(!dependency.exists()) {
-               String warning = String.format(WARNING, dependency);
-               CommandLineUsage.usage(options, warning);
+         if(classpath != null) {
+            for(File dependency : classpath) {
+               if(!dependency.exists()) {
+                  String warning = String.format(WARNING, dependency);
+                  CommandLineUsage.usage(options, warning);
+               }
             }
+            ClassPathUpdater.updateClassPath(classpath, debug);
          }
-         ClassPathUpdater.updateClassPath(classpath, debug);
       }catch(Exception cause) {
          String message = cause.getMessage();
          CommandLineUsage.usage(options, message);

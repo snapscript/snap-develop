@@ -31,14 +31,21 @@ public class LocalProcessLauncher {
 //            "foo", 
 //            "blah"});     
       
+//      LocalProcess.main(
+//            new String[] {
+//            "--cp=../snap-studio/work/demo/misc/src",      
+//            "--s=text_test.snap",
+//            "--e=main(args)",
+//            "--p=7799",
+//            "--v=true", 
+//            "foo", 
+//            "blah"});  
+      
       LocalProcess.main(
             new String[] {
-            "--cp=../snap-studio/work/demo/misc/src",      
-            "--s=text_test.snap",
-            "--e=main(args)",
-            "--p=7799",
-            "--v=true", 
+            "--script=foo.snap",
+            "--verbose=true", 
             "foo", 
-            "blah"});   
+            "blah"});        
    }
 }
