@@ -3,7 +3,7 @@ function printIt(a){
    println(a);
 }
 
-function func(a: String) {
+function fn(a: String) {
    println("string=${a} type=${a.class}");
 }
  
@@ -11,12 +11,12 @@ function printAll(a...) {
    a.stream().forEach(x -> println(x));
 }
 
-function func(a, b){
+function fn(a, b){
    println("${a}, ${b}");
 }
 
-function func(x, y, func: (a,b)) {
-   var result = func(x, y);
+function fn(x, y, f: (a,b)) {
+   var result = f(x, y);
    println(result); 
 }
 
@@ -37,11 +37,11 @@ function runIt(a: Runnable) { // coerce parameter
 }
 
 printIt(1);
-func(1); // coerce int to string
-func("hello");
+fn(1); // coerce int to string
+fn("hello");
 printAll(1,2,3,4,5); // var args
-func(1,2);
-func(1,2, Math::max); // method handles
+fn(1,2);
+fn(1,2, Math::max); // method handles
 
 var x1 = returnFunc1()(12,22);
 println(x1);
