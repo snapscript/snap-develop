@@ -4,14 +4,10 @@ public class LogLogger implements TraceLogger {
    
    private final LogLevel level;
    private final Log logger;
-   
-   public LogLogger(Log logger) {
-      this(logger, null);
-   }
-   
-   public LogLogger(Log logger, String level) {
-      this.level = LogLevel.resolveLevel(level);
+
+   public LogLogger(Log logger, LogLevel level) {
       this.logger = logger;
+      this.level = level;
    }
    
    @Override

@@ -5,7 +5,7 @@ import java.util.Set;
 
 import javax.swing.UIManager;
 
-import org.snapscript.studio.cli.CommandLineInterpreter;
+import org.snapscript.studio.agent.local.LocalProcess;
 import org.snapscript.studio.project.ProjectMode;
 import org.snapscript.studio.service.CommandLineArgument;
 import org.snapscript.studio.service.CommandLineParser;
@@ -54,7 +54,7 @@ public class StudioApplication {
          }
          SpringApplication.run(StudioApplication.class, list);
       } else {
-         CommandLineInterpreter.main(list);
+         LocalProcess.main(list);
       }
    }
 }

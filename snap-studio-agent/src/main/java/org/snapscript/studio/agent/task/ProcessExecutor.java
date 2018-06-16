@@ -4,11 +4,12 @@ import java.util.concurrent.ThreadFactory;
 
 import org.snapscript.common.thread.ThreadBuilder;
 import org.snapscript.core.scope.Model;
-import org.snapscript.studio.agent.ConnectionChecker;
-import org.snapscript.studio.agent.DebugContext;
-import org.snapscript.studio.agent.ExecuteData;
-import org.snapscript.studio.agent.ExecuteLatch;
-import org.snapscript.studio.agent.RunMode;
+import org.snapscript.studio.agent.ProcessContext;
+import org.snapscript.studio.agent.ProcessMode;
+import org.snapscript.studio.agent.client.ConnectionChecker;
+import org.snapscript.studio.agent.core.ClassPathUpdater;
+import org.snapscript.studio.agent.core.ExecuteData;
+import org.snapscript.studio.agent.core.ExecuteLatch;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
 import org.snapscript.studio.agent.log.TraceLogger;
 
@@ -16,12 +17,12 @@ public class ProcessExecutor {
 
    private final ConnectionChecker checker;
    private final ThreadFactory factory;
-   private final DebugContext context;
+   private final ProcessContext context;
    private final TraceLogger logger;
-   private final RunMode mode;
+   private final ProcessMode mode;
    private final Model model;
    
-   public ProcessExecutor(DebugContext context, ConnectionChecker checker, TraceLogger logger, RunMode mode, Model model) {
+   public ProcessExecutor(ProcessContext context, ConnectionChecker checker, TraceLogger logger, ProcessMode mode, Model model) {
       this.factory = new ThreadBuilder();
       this.checker = checker;
       this.logger = logger;

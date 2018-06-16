@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.snapscript.studio.agent.log.ConsoleLog;
 import org.snapscript.studio.agent.log.Log;
+import org.snapscript.studio.agent.log.LogLevel;
 import org.snapscript.studio.agent.log.LogLogger;
 import org.snapscript.studio.agent.log.TraceLogger;
 import org.snapscript.studio.build.console.ConsoleListener;
@@ -143,7 +144,7 @@ public class TypeScriptCompiler {
       
       public CompilerListener() {
          this.log = new ConsoleLog();
-         this.logger = new LogLogger(log);
+         this.logger = new LogLogger(log, LogLevel.DEBUG);
       }
 
       @Override

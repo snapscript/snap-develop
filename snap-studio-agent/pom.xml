@@ -43,6 +43,11 @@
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
+          <archive>
+            <manifest>
+              <mainClass>org.snapscript.studio.agent.cli.CommandLineInterpreter</mainClass>
+            </manifest>
+          </archive>
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
@@ -56,7 +61,7 @@
             </goals>
           </execution>
         </executions>
-      </plugin>      
+      </plugin>
     </plugins>
   </build>
 </project>

@@ -12,13 +12,12 @@
    </exec>
    <delete file="../snap-release/snapd.jar" />
    <copy file="snap-studio/target/snapd.jar" tofile="../snap-release/snapd.jar" overwrite="true" />
-   <copy file="snap-studio-agent/target/snap-studio-agent-${build.version}-jar-with-dependencies.jar" tofile="../snap-release/snapa.jar" overwrite="true" />
    <exec executable="${ant.home}\bin\ant.bat">
       <arg value="-f" />
-      <arg value="snap-studio-cli\build.xml" />
+      <arg value="snap-studio-agent\build.xml" />
    </exec>
    <delete file="../snap-release/snap.jar" />
-   <copy file="snap-studio-cli/target/snap-studio-cli-${build.version}-jar-with-dependencies.jar" tofile="../snap-release/snap.jar" overwrite="true" />
+   <copy file="snap-studio-agent/target/snap-studio-agent-${build.version}-jar-with-dependencies.jar" tofile="../snap-release/snap.jar" overwrite="true" />
    <exec executable="${java.home}\bin\java.exe">
       <arg value="-agentlib:jdwp=transport=dt_socket,server=y,address=8111,suspend=n"/>
       <arg value="-jar" />

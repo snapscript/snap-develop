@@ -20,14 +20,10 @@ public class AsyncLog implements Log {
    private final LogLevel enabled;
    private final Log logger;
    
-   public AsyncLog(Log logger) {
-      this(logger, null);
-   }
-   
-   public AsyncLog(Log logger, String enabled) {
+   public AsyncLog(Log logger, LogLevel enabled) {
       this.dispatcher = new LogDispatcher(EVENT_LIMIT);
       this.formatter = new DateFormatter(TIME_FORMAT);
-      this.enabled = LogLevel.resolveLevel(enabled);
+      this.enabled = enabled;
       this.logger = logger;
    }
    

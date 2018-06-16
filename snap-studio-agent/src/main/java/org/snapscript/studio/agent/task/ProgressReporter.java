@@ -1,22 +1,22 @@
 package org.snapscript.studio.agent.task;
 
-import static org.snapscript.studio.agent.ExecuteStatus.COMPILING;
-import static org.snapscript.studio.agent.ExecuteStatus.DEBUGGING;
-import static org.snapscript.studio.agent.ExecuteStatus.FINISHED;
-import static org.snapscript.studio.agent.ExecuteStatus.RUNNING;
-import static org.snapscript.studio.agent.ExecuteStatus.TERMINATING;
+import static org.snapscript.studio.agent.core.ExecuteStatus.COMPILING;
+import static org.snapscript.studio.agent.core.ExecuteStatus.DEBUGGING;
+import static org.snapscript.studio.agent.core.ExecuteStatus.FINISHED;
+import static org.snapscript.studio.agent.core.ExecuteStatus.RUNNING;
+import static org.snapscript.studio.agent.core.ExecuteStatus.TERMINATING;
 
 import java.util.List;
 import java.util.SortedSet;
 
 import org.snapscript.compile.verify.VerifyError;
 import org.snapscript.core.trace.Trace;
-import org.snapscript.studio.agent.ExecuteData;
-import org.snapscript.studio.agent.ExecuteLatch;
-import org.snapscript.studio.agent.ExecuteState;
-import org.snapscript.studio.agent.DebugContext;
-import org.snapscript.studio.agent.RunMode;
-import org.snapscript.studio.agent.TerminateHandler;
+import org.snapscript.studio.agent.ProcessContext;
+import org.snapscript.studio.agent.ProcessMode;
+import org.snapscript.studio.agent.core.ExecuteData;
+import org.snapscript.studio.agent.core.ExecuteLatch;
+import org.snapscript.studio.agent.core.ExecuteState;
+import org.snapscript.studio.agent.core.TerminateHandler;
 import org.snapscript.studio.agent.event.BeginEvent;
 import org.snapscript.studio.agent.event.ExitEvent;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
@@ -29,12 +29,12 @@ import org.snapscript.studio.agent.profiler.ProfileResult;
 public class ProgressReporter {
    
    private final ProcessEventChannel client;
-   private final DebugContext context;
+   private final ProcessContext context;
    private final String project;
    private final String resource;
    private final boolean debug;
    
-   public ProgressReporter(DebugContext context, ProcessEventChannel client, String project, String resource, boolean debug) {
+   public ProgressReporter(ProcessContext context, ProcessEventChannel client, String project, String resource, boolean debug) {
       this.context = context;   
       this.client = client;
       this.project = project;
@@ -170,7 +170,7 @@ public class ProgressReporter {
    }
    
    public void reportFinished(long totalTime) {
-      RunMode mode = context.getMode();
+      ProcessMode mode = context.getMode();
       ExecuteLatch latch = context.getLatch();  
       String process = context.getProcess();  
       long duration = latch.update(FINISHED);

@@ -8,7 +8,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.snapscript.studio.agent.ExecuteStatus;
+import org.snapscript.studio.agent.core.ExecuteStatus;
 
 public class PongEventMarshaller<T extends PongEvent> implements ProcessEventMarshaller<T> {
    

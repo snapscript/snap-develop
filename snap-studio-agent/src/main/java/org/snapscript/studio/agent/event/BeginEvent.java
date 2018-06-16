@@ -1,13 +1,13 @@
 package org.snapscript.studio.agent.event;
 
-import org.snapscript.studio.agent.ExecuteStatus;
-import org.snapscript.studio.agent.RunMode;
+import org.snapscript.studio.agent.ProcessMode;
+import org.snapscript.studio.agent.core.ExecuteStatus;
 import org.snapscript.studio.agent.event.PongEvent.Builder;
 
 public class BeginEvent implements StatusEvent {
 
    private final ExecuteStatus status;
-   private final RunMode mode;
+   private final ProcessMode mode;
    private final String resource;
    private final String process;
    private final String project;
@@ -35,7 +35,7 @@ public class BeginEvent implements StatusEvent {
       return process;
    }
    
-   public RunMode getMode() {
+   public ProcessMode getMode() {
       return mode;
    }
    
@@ -81,7 +81,7 @@ public class BeginEvent implements StatusEvent {
    public static class Builder implements StatusEvent.Builder<BeginEvent> {
       
       private ExecuteStatus status;
-      private RunMode mode;
+      private ProcessMode mode;
       private String resource;
       private String process;
       private String project;
@@ -137,7 +137,7 @@ public class BeginEvent implements StatusEvent {
          return this;
       }
       
-      public Builder withMode(RunMode mode) {
+      public Builder withMode(ProcessMode mode) {
          this.mode = mode;
          return this;
       }

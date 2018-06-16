@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 import org.snapscript.common.store.ClassPathStore;
 import org.snapscript.compile.StoreContext;
 import org.snapscript.core.Context;
-import org.snapscript.core.ModifierType;
 import org.snapscript.core.function.AccessorProperty;
 import org.snapscript.core.property.Property;
 import org.snapscript.core.scope.MapModel;

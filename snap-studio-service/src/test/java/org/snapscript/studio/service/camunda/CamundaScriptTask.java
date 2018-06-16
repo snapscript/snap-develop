@@ -8,11 +8,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.snapscript.core.scope.MapModel;
-import org.snapscript.studio.agent.DebugAgent;
-import org.snapscript.studio.agent.DebugClient;
-import org.snapscript.studio.agent.DebugContext;
-import org.snapscript.studio.agent.RemoteProjectStore;
-import org.snapscript.studio.agent.RunMode;
+import org.snapscript.studio.agent.ProcessAgent;
+import org.snapscript.studio.agent.ProcessClient;
+import org.snapscript.studio.agent.ProcessContext;
+import org.snapscript.studio.agent.ProcessMode;
+import org.snapscript.studio.agent.log.LogLevel;
+import org.snapscript.studio.agent.worker.store.WorkerStore;
 
 public class CamundaScriptTask {
    
@@ -33,13 +34,13 @@ public class CamundaScriptTask {
       URI location = URI.create(String.format(URL, address));
       Map<String, Object> state = new HashMap<String, Object>();      
       MapModel model = new MapModel(state);
-      RemoteProjectStore store = new RemoteProjectStore(location);
-      DebugContext context = new DebugContext(
-            RunMode.TASK,
+      WorkerStore store = new WorkerStore(location);
+      ProcessContext context = new ProcessContext(
+            ProcessMode.TASK,
             store,
             "Camunda 2.0", 
             execution.getProcessInstanceId());
-      DebugAgent agent = new DebugAgent(context,"DEBUG");
+      ProcessAgent agent = new ProcessAgent(context, LogLevel.DEBUG);
       Runnable task = new Runnable() {
          @Override
          public void run() {
@@ -47,14 +48,14 @@ public class CamundaScriptTask {
          }         
       };
       state.put("execution", execution);
-      DebugClient service = agent.start(location, task, model);
+      ProcessClient service = agent.start(location, task, model);
 
       createBreakpoints(service);
       service.beginExecute(PROJECT, RESOURCE, System.getProperty("java.class.path"), true);
       service.waitUntilFinish(6000000); // wait for script to finish
    }
 
-   public void createBreakpoints(DebugClient service) {
+   public void createBreakpoints(ProcessClient service) {
       String source = service.loadScript(PROJECT, RESOURCE);
       Pattern pattern = Pattern.compile(".*\\/\\/\\s*suspend.*");
       String[] list = source.split("\\r?\\n");

@@ -39,7 +39,6 @@
     <module>snap-studio-index</module>
     <module>snap-studio-project</module>  
     <module>snap-studio-build</module>  
-    <module>snap-studio-cli</module>            
   </modules>
 
 </project>

@@ -7,22 +7,21 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
-import org.snapscript.studio.agent.ConnectionListener;
-import org.snapscript.studio.agent.ProcessEventStream;
+import org.snapscript.studio.agent.client.ConnectionListener;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
 
 public class ConsoleConnector implements ConnectionListener{
    
-   private final ProcessEventStream errorAdapter;
-   private final ProcessEventStream outputAdapter;
+   private final ProcessOutputStream errorAdapter;
+   private final ProcessOutputStream outputAdapter;
    private final PrintStream originalOutput;
    private final PrintStream originalError;
    private final PrintStream output;
    private final PrintStream error;
    
    public ConsoleConnector(ProcessEventChannel channel, String process) throws Exception {
-      this.errorAdapter = new ProcessEventStream(WRITE_ERROR, channel, System.err, process);
-      this.outputAdapter = new ProcessEventStream(WRITE_OUTPUT, channel, System.out, process);
+      this.errorAdapter = new ProcessOutputStream(WRITE_ERROR, channel, System.err, process);
+      this.outputAdapter = new ProcessOutputStream(WRITE_OUTPUT, channel, System.out, process);
       this.output = new ConsoleStream(outputAdapter, System.out, true, "UTF-8");
       this.error = new ConsoleStream(errorAdapter, System.err, true, "UTF-8");
       this.originalError = System.err;

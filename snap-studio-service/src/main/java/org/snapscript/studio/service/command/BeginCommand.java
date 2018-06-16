@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import org.snapscript.studio.agent.ExecuteStatus;
+import org.snapscript.studio.agent.core.ExecuteStatus;
 
 import com.google.common.base.Preconditions;
 

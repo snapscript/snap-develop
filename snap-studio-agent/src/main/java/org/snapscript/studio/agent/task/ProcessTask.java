@@ -8,8 +8,8 @@ import org.snapscript.compile.ResourceCompiler;
 import org.snapscript.compile.verify.VerifyError;
 import org.snapscript.compile.verify.VerifyException;
 import org.snapscript.core.scope.Model;
-import org.snapscript.studio.agent.DebugContext;
-import org.snapscript.studio.agent.RunMode;
+import org.snapscript.studio.agent.ProcessContext;
+import org.snapscript.studio.agent.ProcessMode;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
 import org.snapscript.studio.agent.profiler.TraceProfiler;
 import org.snapscript.studio.agent.profiler.ProfileResultUpdater;
@@ -18,11 +18,11 @@ public class ProcessTask implements Runnable {
    
    private final ProgressReporter reporter;
    private final ProcessEventChannel client;
-   private final DebugContext context;
+   private final ProcessContext context;
    private final String resource;
    private final Model model;
    
-   public ProcessTask(DebugContext context, ProcessEventChannel client, RunMode mode, Model model, String project, String resource, boolean debug) {
+   public ProcessTask(ProcessContext context, ProcessEventChannel client, ProcessMode mode, Model model, String project, String resource, boolean debug) {
       this.reporter = new ProgressReporter(context, client, project, resource, debug);
       this.client = client;
       this.resource = resource;

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.snapscript.studio.agent.task.ClassPathUpdater;
+import org.snapscript.studio.agent.core.ClassPathUpdater;
 import org.snapscript.studio.project.ClassPathFile;
 import org.snapscript.studio.project.FileSystem;
 import org.snapscript.studio.project.HomeDirectory;

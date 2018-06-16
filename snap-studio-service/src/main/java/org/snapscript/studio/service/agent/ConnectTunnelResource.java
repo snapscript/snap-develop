@@ -16,6 +16,7 @@ import org.snapscript.studio.agent.event.ProcessEventListener;
 import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.common.resource.ResourcePath;
 import org.snapscript.studio.service.ProcessManager;
+import org.snapscript.studio.service.agent.worker.WorkerProcessBeginListener;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -34,7 +35,7 @@ public class ConnectTunnelResource implements Resource {
    private final ProcessManager manager;
    
    public ConnectTunnelResource(ProcessManager manager) throws IOException {
-      this.listener = new DebugAgentBeginListener(manager);
+      this.listener = new WorkerProcessBeginListener(manager);
       this.manager = manager;
    }
 

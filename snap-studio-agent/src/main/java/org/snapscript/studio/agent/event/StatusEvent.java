@@ -1,6 +1,6 @@
 package org.snapscript.studio.agent.event;
 
-import org.snapscript.studio.agent.ExecuteStatus;
+import org.snapscript.studio.agent.core.ExecuteStatus;
 
 public interface StatusEvent extends ProcessEvent {
    ExecuteStatus getStatus();

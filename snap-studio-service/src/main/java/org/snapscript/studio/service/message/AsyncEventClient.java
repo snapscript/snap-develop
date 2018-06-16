@@ -28,7 +28,7 @@ public class AsyncEventClient implements ProcessEventChannel {
    
    public AsyncEventClient(Executor executor, Channel channel) {
       this.logger = new LoggerLog(log);
-      this.adapter = new LogLogger(logger);
+      this.adapter = new LogLogger(logger, LogLevel.DEBUG);
       this.stream = new ChannelOutputStream(channel);
       this.producer = new ProcessEventProducer(adapter, stream, stream, executor);
       this.open = new AtomicBoolean(true);

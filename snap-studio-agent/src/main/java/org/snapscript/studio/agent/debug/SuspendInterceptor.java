@@ -10,7 +10,7 @@ import org.snapscript.core.scope.Scope;
 import org.snapscript.core.stack.ThreadStack;
 import org.snapscript.core.trace.Trace;
 import org.snapscript.core.trace.TraceType;
-import org.snapscript.studio.agent.RunMode;
+import org.snapscript.studio.agent.ProcessMode;
 import org.snapscript.studio.agent.event.ProcessEventChannel;
 import org.snapscript.studio.agent.event.ScopeEvent;
 
@@ -22,10 +22,10 @@ public class SuspendInterceptor extends TraceAdapter {
    private final ThreadProgressLocal monitor;
    private final AtomicInteger counter;
    private final SuspendController latch;
-   private final RunMode mode;
+   private final ProcessMode mode;
    private final String process;
    
-   public SuspendInterceptor(ProcessEventChannel channel, BreakpointMatcher matcher, SuspendController latch, RunMode mode, String process) {
+   public SuspendInterceptor(ProcessEventChannel channel, BreakpointMatcher matcher, SuspendController latch, ProcessMode mode, String process) {
       this.monitor = new ThreadProgressLocal(matcher);
       this.counter = new AtomicInteger();
       this.channel = channel;
@@ -121,9 +121,9 @@ public class SuspendInterceptor extends TraceAdapter {
       
       private final ScopeEventBuilder builder;
       private final AtomicBoolean active;
-      private final RunMode mode;
+      private final ProcessMode mode;
       
-      public ScopeNotifier(ScopeEventBuilder builder, RunMode mode, String name) {
+      public ScopeNotifier(ScopeEventBuilder builder, ProcessMode mode, String name) {
          this.active = new AtomicBoolean(true);
          this.builder = builder;
          this.setName(name);

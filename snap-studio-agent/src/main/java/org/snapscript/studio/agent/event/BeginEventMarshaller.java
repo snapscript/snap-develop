@@ -8,8 +8,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.snapscript.studio.agent.ExecuteStatus;
-import org.snapscript.studio.agent.RunMode;
+import org.snapscript.studio.agent.ProcessMode;
+import org.snapscript.studio.agent.core.ExecuteStatus;
 
 public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> {
 
@@ -32,7 +32,7 @@ public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> 
       long duration = input.readLong();
       
       return new BeginEvent.Builder(process)
-         .withMode(RunMode.resolveMode(mode))
+         .withMode(ProcessMode.resolveMode(mode))
          .withDuration(duration)
          .withSystem(system)
          .withProject(project)
@@ -53,7 +53,7 @@ public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> 
       String project = event.getProject();
       String resource = event.getResource();
       ExecuteStatus status = event.getStatus();
-      RunMode mode = event.getMode();
+      ProcessMode mode = event.getMode();
       long totalMemory = event.getTotalMemory();
       long usedMemory = event.getUsedMemory();
       int threads = event.getThreads();

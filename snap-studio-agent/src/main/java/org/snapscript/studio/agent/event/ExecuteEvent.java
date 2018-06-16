@@ -2,7 +2,7 @@ package org.snapscript.studio.agent.event;
 
 import java.util.Map;
 
-import org.snapscript.studio.agent.ExecuteData;
+import org.snapscript.studio.agent.core.ExecuteData;
 
 public class ExecuteEvent implements ProcessEvent {
 

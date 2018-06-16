@@ -1,8 +1,8 @@
 package org.snapscript.studio.agent.event;
 
-import static org.snapscript.studio.agent.ExecuteStatus.REGISTERING;
+import static org.snapscript.studio.agent.core.ExecuteStatus.REGISTERING;
 
-import org.snapscript.studio.agent.ExecuteStatus;
+import org.snapscript.studio.agent.core.ExecuteStatus;
 
 public class RegisterEvent implements ProcessEvent {
 

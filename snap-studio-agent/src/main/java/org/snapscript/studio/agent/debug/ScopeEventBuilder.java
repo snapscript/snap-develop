@@ -5,7 +5,7 @@ import static org.snapscript.studio.agent.debug.ScopeVariableTree.EMPTY;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.snapscript.core.trace.TraceType;
-import org.snapscript.studio.agent.RunMode;
+import org.snapscript.studio.agent.ProcessMode;
 import org.snapscript.studio.agent.event.ScopeEvent;
 
 public class ScopeEventBuilder {
@@ -36,7 +36,7 @@ public class ScopeEventBuilder {
       this.type = type;
    }
    
-   public ScopeEvent suspendEvent(RunMode mode) {  
+   public ScopeEvent suspendEvent(ProcessMode mode) {  
       boolean remote = mode.isRemoteAttachment();
       int count = counter.getAndIncrement();
       ScopeContext context = extractor.build(remote, count > 0 || !remote); // this is totally rubbish
@@ -58,7 +58,7 @@ public class ScopeEventBuilder {
          .build();
    }
    
-   public ScopeEvent resumeEvent(RunMode mode) {      
+   public ScopeEvent resumeEvent(ProcessMode mode) {      
       String name = type.name();
 
       return new ScopeEvent.Builder(process)

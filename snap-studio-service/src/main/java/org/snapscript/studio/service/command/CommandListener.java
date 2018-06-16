@@ -13,7 +13,7 @@ import org.simpleframework.http.Path;
 import org.simpleframework.http.socket.FrameChannel;
 import org.snapscript.common.command.CommandBuilder;
 import org.snapscript.common.command.Console;
-import org.snapscript.studio.cli.debug.AttachResponse;
+import org.snapscript.studio.agent.local.message.AttachResponse;
 import org.snapscript.studio.common.Problem;
 import org.snapscript.studio.common.ProblemFinder;
 import org.snapscript.studio.common.resource.display.DisplayDefinition;
@@ -24,7 +24,7 @@ import org.snapscript.studio.project.config.DependencyFile;
 import org.snapscript.studio.project.config.OperatingSystem;
 import org.snapscript.studio.project.config.ProjectConfiguration;
 import org.snapscript.studio.service.ProcessManager;
-import org.snapscript.studio.service.agent.remote.RemoteDebugService;
+import org.snapscript.studio.service.agent.local.LocalProcessClient;
 import org.snapscript.studio.service.project.ProjectProblemFinder;
 import org.snapscript.studio.service.tree.TreeContext;
 import org.snapscript.studio.service.tree.TreeContextManager;
@@ -35,7 +35,7 @@ public class CommandListener {
    private final DisplayPersister displayPersister;
    private final CommandEventForwarder forwarder;
    private final ProjectProblemFinder problemFinder;
-   private final RemoteDebugService debugService;
+   private final LocalProcessClient debugService;
    private final TreeContextManager treeManager;
    private final CommandFilter commandFilter;
    private final CommandClient commandClient;
@@ -53,7 +53,7 @@ public class CommandListener {
          ProcessManager processManager, 
          ProjectProblemFinder problemFinder, 
          DisplayPersister displayPersister,
-         RemoteDebugService debugService,
+         LocalProcessClient debugService,
          FrameChannel frameChannel, 
          BackupManager backupManager, 
          TreeContextManager treeManager, 

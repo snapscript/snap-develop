@@ -1,10 +1,10 @@
 package org.snapscript.studio.agent.event;
 
-import org.snapscript.studio.agent.RunMode;
+import org.snapscript.studio.agent.ProcessMode;
 
 public class ExitEvent implements ProcessEvent {
 
-   private final RunMode mode;
+   private final ProcessMode mode;
    private final String process;
    private final long duration;
 
@@ -14,7 +14,7 @@ public class ExitEvent implements ProcessEvent {
       this.mode = builder.mode;
    }
    
-   public RunMode getMode() {
+   public ProcessMode getMode() {
       return mode;
    }
    
@@ -29,7 +29,7 @@ public class ExitEvent implements ProcessEvent {
 
    public static class Builder {
       
-      private RunMode mode;
+      private ProcessMode mode;
       private String process;
       private long duration;
       
@@ -37,7 +37,7 @@ public class ExitEvent implements ProcessEvent {
          this.process = process;
       }
       
-      public Builder withMode(RunMode mode) {
+      public Builder withMode(ProcessMode mode) {
          this.mode = mode;
          return this;
       }
