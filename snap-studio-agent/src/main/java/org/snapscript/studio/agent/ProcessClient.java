@@ -95,7 +95,10 @@ public class ProcessClient {
          .withMode(context.getMode())
          .build();   
       
-      try {      
+      try {     
+         ExecuteLatch latch = context.getLatch();
+         
+         latch.disconnect();
          client.send(event);
       }catch(Exception e) {
          return false;

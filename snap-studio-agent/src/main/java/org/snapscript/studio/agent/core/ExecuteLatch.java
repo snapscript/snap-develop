@@ -89,7 +89,12 @@ public class ExecuteLatch {
             progress.wait(status, duration);
          }
       }
-   }   
+   }  
+   
+   public void disconnect() {
+      statusReference.getAndSet(WAITING);
+      executeReference.set(waitData);     
+   }
    
    private static class StateReference implements ExecuteState {
    

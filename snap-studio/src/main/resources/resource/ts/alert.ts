@@ -48,13 +48,15 @@ export module Alerts {
       w2confirm(options);
    }
    
-   export function createPromptAlert(title, yesButton, noButton, yesCallback) {
+   export function createDebugPromptAlert(title, placeholder, yesButton, noButton, yesCallback) {
       let text = '<table border="0" width="100%">'+
       '  <tr>'+
       '    <td>&nbsp;&nbsp</td>'+
-      '    <td align="right"><img src="${IMAGE_FOLDER}/search_glass.png" height="20px"></td>'+
-      '    <td>&nbsp;&nbsp</td>'+
-      '    <td align="left"><input id="textToSearchFor" type="text" name="token" width="180"></td>'+
+      '    <td align="right"><img src="${IMAGE_FOLDER}/debug.png" height="20px"></td>'+
+      '    <td>&nbsp;</td>'+
+      '    <td align="left">Address</td>'+      
+      '    <td>&nbsp;</td>'+
+      '    <td align="left"><input id="textToSearchFor" type="text" placeholder="' + placeholder + '" name="token" width="180"></td>'+
       '  </tr>'+
       '</table>';
       

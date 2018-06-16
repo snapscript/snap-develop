@@ -386,7 +386,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         Command.pingProcess = pingProcess;
         function attachRemoteDebugger() {
             if (socket_1.EventBus.isSocketOpen()) {
-                alert_1.Alerts.createPromptAlert("Remote Debug", "Attach", "Cancel", function (hostAndPort) {
+                alert_1.Alerts.createDebugPromptAlert("Remote Debug", "<host>:<port>", "Attach", "Cancel", function (hostAndPort) {
                     var message = {
                         project: document.title,
                         address: hostAndPort

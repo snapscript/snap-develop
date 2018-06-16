@@ -430,7 +430,7 @@ export module Command {
    
    export function attachRemoteDebugger() {
       if(EventBus.isSocketOpen()) {
-         Alerts.createPromptAlert("Remote Debug", "Attach", "Cancel", 
+         Alerts.createDebugPromptAlert("Remote Debug", "<host>:<port>", "Attach", "Cancel", 
             function(hostAndPort) {
                var message = {
                   project: document.title,
