@@ -22,11 +22,23 @@ public class LocalProcessLauncher {
 //            "--s=wireframe/render3d.snap",
 //            "--v=true"});     
       
+//      LocalProcess.main(
+//            new String[] {
+//            "--cp=../snap-studio/work/demo/games/src;../snap-studio/work/demo/games/assets/",      
+//            "--s=mario/MarioGame.snap",
+//            "--p=7799",
+//            "--v=true", 
+//            "foo", 
+//            "blah"});     
+      
       LocalProcess.main(
             new String[] {
-            "--cp=../snap-studio/work/demo/games/src;../snap-studio/work/demo/games/assets/",      
-            "--s=mario/MarioGame.snap",
+            "--cp=../snap-studio/work/demo/misc/src",      
+            "--s=text_test.snap",
+            "--e=main(args)",
             "--p=7799",
-            "--v=true"});         
+            "--v=true", 
+            "foo", 
+            "blah"});   
    }
 }

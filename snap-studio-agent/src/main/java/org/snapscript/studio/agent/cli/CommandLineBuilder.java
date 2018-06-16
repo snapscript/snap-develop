@@ -34,14 +34,14 @@ public class CommandLineBuilder {
          }
       }
       for(String argument: arguments) {
-         CommandValue value = parser.parse(argument);
-         Object object = value.getValue();
-         String name = value.getName();
-         
-         if(name != null) {
+         if(argument.startsWith("--")) {
+            CommandValue value = parser.parse(argument);
+            Object object = value.getValue();
+            String name = value.getName();
+            
             map.put(name, object);
          } else {
-            values.add((String)object);
+            values.add(argument);
          }
       }
       for(CommandOption option : options){

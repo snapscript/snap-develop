@@ -1,12 +1,5 @@
-
-URL("http://www.bbc.co.uk")
-   .get()
-   .success(r -> println(r.status))
-   .failure(r -> println("err="+r.status));
-
-let x = URL("http://www.bbc.co.uk").get().status;
-println(x);
-
-for(var i in 0..1000){
-   sleep(1000);
+func main(args) {
+   for(arg in args){
+      println(arg);
+   }
 }

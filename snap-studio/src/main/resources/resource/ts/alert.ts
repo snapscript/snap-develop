@@ -48,7 +48,7 @@ export module Alerts {
       w2confirm(options);
    }
    
-   export function createDebugPromptAlert(title, placeholder, yesButton, noButton, yesCallback) {
+   export function createRemoteDebugPromptAlert(title, placeholder, yesButton, noButton, yesCallback) {
       let text = '<table border="0" width="100%">'+
       '  <tr>'+
       '    <td>&nbsp;&nbsp</td>'+

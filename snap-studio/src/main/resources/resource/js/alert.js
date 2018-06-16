@@ -43,7 +43,7 @@ define(["require", "exports", "socket"], function (require, exports, socket_1) {
             w2confirm(options);
         }
         Alerts.createConfirmAlert = createConfirmAlert;
-        function createDebugPromptAlert(title, placeholder, yesButton, noButton, yesCallback) {
+        function createRemoteDebugPromptAlert(title, placeholder, yesButton, noButton, yesCallback) {
             var text = '<table border="0" width="100%">' +
                 '  <tr>' +
                 '    <td>&nbsp;&nbsp</td>' +
@@ -86,7 +86,7 @@ define(["require", "exports", "socket"], function (require, exports, socket_1) {
             w2confirm(options);
             focusCallback();
         }
-        Alerts.createDebugPromptAlert = createDebugPromptAlert;
+        Alerts.createRemoteDebugPromptAlert = createRemoteDebugPromptAlert;
     })(Alerts = exports.Alerts || (exports.Alerts = {}));
 });
 //ModuleSystem.registerModule("alert", "Alert module: alert.js", null, Alerts.registerAlerts, ["common", "socket"]); 

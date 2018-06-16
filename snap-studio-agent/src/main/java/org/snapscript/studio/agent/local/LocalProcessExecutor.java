@@ -2,7 +2,9 @@ package org.snapscript.studio.agent.local;
 
 import static org.snapscript.core.Reserved.DEFAULT_PACKAGE;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.snapscript.compile.Executable;
 import org.snapscript.compile.ResourceCompiler;
@@ -12,7 +14,7 @@ import org.snapscript.core.ExpressionEvaluator;
 import org.snapscript.core.module.FilePathConverter;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.module.PathConverter;
-import org.snapscript.core.scope.EmptyModel;
+import org.snapscript.core.scope.MapModel;
 import org.snapscript.core.scope.Model;
 import org.snapscript.studio.agent.ProcessContext;
 import org.snapscript.studio.agent.ProcessMode;
@@ -23,14 +25,14 @@ import org.snapscript.studio.agent.local.store.LocalStoreBuilder;
 
 public class LocalProcessExecutor {
    
+   private static final String ARGUMENTS = "args";
+   
    private final LocalStoreBuilder builder;
    private final PathConverter converter;
-   private final Model model;
    
    public LocalProcessExecutor() {
       this.builder = new LocalStoreBuilder();
       this.converter = new FilePathConverter();
-      this.model = new EmptyModel();
    }
    
    public void execute(LocalCommandLine line) throws Exception {
@@ -54,9 +56,15 @@ public class LocalProcessExecutor {
          CommandLineUsage.usage(options, message);
       }
       ProcessContext context = new ProcessContext(ProcessMode.REMOTE, store, process, system);
+      Map<String, Object> values = new LinkedHashMap<String, Object>();
+      Model model = new MapModel(values);
       Executable executable = null;
       
-      try {         
+      try {      
+         String[] arguments = line.getArguments();
+         
+         values.put(ARGUMENTS, arguments);
+         
          if(port != null && script != null) {
             LocalProcessController connector = new LocalProcessController(context, script, port);
             connector.start();
@@ -70,6 +78,8 @@ public class LocalProcessExecutor {
          }
          if(evaluate != null) {
             ExpressionEvaluator evaluator = context.getEvaluator();
+            
+            executable.execute(model, true); // do not execute
             evaluator.evaluate(model, evaluate, module);
          } else {
             if(line.isCheck()) {
