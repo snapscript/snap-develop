@@ -2,7 +2,7 @@ import static lang.Integer.*; // static import
 import mario.core.GameFrame;
 import mario.core.GamePanel;
 
-function start(scale) {
+func start(scale) {
    var g = new GameFrame(scale);
    
    try {

@@ -93,6 +93,7 @@ public class ValueDataBuilder {
       Instance instance = (Instance)value;
       Type type = instance.getType();
       String name = type.getName();
+      
       return new ValueData(key, name, "", "", true, modifiers, depth);
    }
 }
