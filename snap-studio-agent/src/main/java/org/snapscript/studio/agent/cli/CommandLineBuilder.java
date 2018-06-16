@@ -1,9 +1,11 @@
 package org.snapscript.studio.agent.cli;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class CommandLineBuilder {
    
@@ -18,7 +20,19 @@ public class CommandLineBuilder {
    public CommandLine build(String[] arguments) {
       Map<String, Object> map = new LinkedHashMap<String, Object>();
       List<String> values = new ArrayList<String>();
+      Set<String> done = new HashSet<String>();
       
+      for(CommandOption option : options){
+         String name = option.getName();
+         String code = option.getCode();
+         
+         if(!done.add(name)) {
+            throw new IllegalStateException("Option '" + name + "' declared twice");
+         }
+         if(!done.add(code)) {
+            throw new IllegalStateException("Option '" + code + "' declared twice");
+         }
+      }
       for(String argument: arguments) {
          CommandValue value = parser.parse(argument);
          Object object = value.getValue();

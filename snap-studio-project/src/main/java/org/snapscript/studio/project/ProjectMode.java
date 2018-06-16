@@ -1,25 +1,28 @@
 package org.snapscript.studio.project;
 
-public class ProjectMode {
-
-   public static final String SINGLE_MODE = "debug";
-   public static final String DEVELOP_MODE = "develop";
-   
-   private final String mode;
-   
-   public ProjectMode(String mode) {
-      this.mode = mode;
-   }
+public enum ProjectMode {
+   DEBUG,
+   DEVELOP,
+   RUN;
    
    public boolean isSingleMode() {
-      return mode.equals(SINGLE_MODE);
+      return this == DEBUG;
    }
    
    public boolean isMultipleMode() {
-      return mode.equals(DEVELOP_MODE);
+      return this == DEVELOP;
    }
    
-   public String getMode() {
-      return mode;
+   public static ProjectMode resolveMode(String token) {
+      if(token != null) {
+         ProjectMode[] modes = ProjectMode.values();
+         
+         for(ProjectMode mode : modes) {
+            if(mode.name().equalsIgnoreCase(token)) {
+               return mode;
+            }
+         }
+      }
+      return DEVELOP;
    }
 }

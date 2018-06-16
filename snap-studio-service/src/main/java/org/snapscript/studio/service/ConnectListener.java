@@ -21,7 +21,7 @@ public class ConnectListener {
    private final Workspace workspace;
    
    public void connect(CommandListener listener, Path path) {
-      String script = CommandLineArgument.SCRIPT.getValue();
+      String script = StudioOption.SCRIPT.getValue();
       
       if(script != null) {
          try {

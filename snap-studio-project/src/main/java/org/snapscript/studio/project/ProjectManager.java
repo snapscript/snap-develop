@@ -24,13 +24,13 @@ public class ProjectManager {
    private final ProjectMode mode;
    private final Project single;
    
-   public ProjectManager(ConfigurationReader reader, ConfigFileSource source, Workspace workspace, String mode){
+   public ProjectManager(ConfigurationReader reader, ConfigFileSource source, Workspace workspace, ProjectMode mode){
       this.projects = new ConcurrentHashMap<String, Project>();
       this.single = new Project(reader, source, workspace, ".", DEFAULT_PROJECT);
-      this.mode = new ProjectMode(mode);
       this.workspace = workspace;
       this.source = source;
       this.reader = reader;
+      this.mode = mode;
    }
    
    public File getRoot() {

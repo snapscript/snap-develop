@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.snapscript.core.module.FilePathConverter;
 import org.snapscript.core.module.Path;
@@ -15,6 +17,7 @@ public class CommandOptionParser {
    
    private static final String ILLEGAL_OPTION = "Illegal option '%s', options take the format --<option>=<value>";
    private static final String UNKNOWN_OPTION = "Unknown option '%s', options take the format --<option>=<value>";
+   private static final String INVALID_VALUE = "Invalid value '%s' for '%s' should match pattern '%s'";
    
    private final List<? extends CommandOption> options;
    private final PathConverter converter;
@@ -35,7 +38,7 @@ public class CommandOptionParser {
       CommandOption option = resolve(key);
       
       if(option == null) {
-         String warning = String.format(UNKNOWN_OPTION, option);
+         String warning = String.format(UNKNOWN_OPTION, key);
          CommandLineUsage.usage(options, warning);
       }
       Class type = option.getType();
@@ -49,6 +52,24 @@ public class CommandOptionParser {
       } 
       if(value == null) {
          String warning = String.format(ILLEGAL_OPTION, option);
+         CommandLineUsage.usage(options, warning);
+      }
+      int length = value.length();
+      
+      if(length > 1) {
+         String start = value.substring(0, 1);
+         
+         if(start.equals("\"") || start.equals("\'")) {
+            if(value.endsWith(start)) {
+               value = value.substring(1, length - 1);
+            }
+         }
+      }
+      Pattern pattern = option.getPattern();
+      Matcher matcher = pattern.matcher(value);
+      
+      if(!matcher.matches()) {
+         String warning = String.format(INVALID_VALUE, value, name, pattern);
          CommandLineUsage.usage(options, warning);
       }
       Object object = convert(value, type);
@@ -89,6 +110,9 @@ public class CommandOptionParser {
          }
          if(type == Path.class) {
             return converter.createPath(value);
+         }
+         if(type.isEnum()) {
+            return Enum.valueOf(type, value);
          }
          return value;
       } catch(Exception e) {

@@ -6,32 +6,35 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.snapscript.core.module.Path;
 import org.snapscript.studio.agent.cli.CommandLineBuilder;
 import org.snapscript.studio.agent.cli.CommandOption;
 
 public enum LocalOption implements CommandOption {
-   DIRECTORY("d", "directory", "specify directory to execute in", File.class, "."),
-   URL("u", "url", "specify a URL to download sources from", URI.class),
-   SCRIPT("s", "script", "script to execute", Path.class),
-   EXPRESSION("e", "expression", "expression to evaluate", String.class),
-   CLASSPATH("cp", "classpath", "optional classpath file", File[].class),
-   VERBOSE("v", "verbose", "enable verbose logging", Boolean.class, "false"),
-   CHECK("c", "check", "compile script only", Boolean.class, "false"),
-   PORT("p", "port", "debug port", Integer.class);
+   DIRECTORY("d", "directory", "specify directory to execute in", ".+", File.class, "."),
+   URL("u", "url", "specify a URL to download sources from", ".+", URI.class),
+   SCRIPT("s", "script", "script to execute", ".+", Path.class),
+   EXPRESSION("e", "expression", "expression to evaluate", ".+", String.class),
+   CLASSPATH("cp", "classpath", "optional classpath file", ".+", File[].class),
+   VERBOSE("v", "verbose", "enable verbose logging", "(true|false)", Boolean.class, "false"),
+   CHECK("c", "check", "compile script only", "(true|false)", Boolean.class, "false"),
+   PORT("p", "port", "debug port", "\\d+", Integer.class);
 
+   public final Pattern pattern;
    public final String description;
    public final String value;
    public final String name;
    public final String code;
    public final Class type;
 
-   private LocalOption(String code, String name, String description, Class type) {
-      this(code, name, description, type, null);
+   private LocalOption(String code, String name, String description, String pattern, Class type) {
+      this(code, name, description, pattern, type, null);
    }
    
-   private LocalOption(String code, String name, String description, Class type, String value) {
+   private LocalOption(String code, String name, String description, String pattern, Class type, String value) {
+      this.pattern = Pattern.compile(pattern);
       this.description = description;
       this.value = value;
       this.name = name;
@@ -57,6 +60,11 @@ public enum LocalOption implements CommandOption {
    @Override
    public String getDefault() {
       return value;
+   }
+   
+   @Override
+   public Pattern getPattern() {
+      return pattern;
    }
 
    @Override

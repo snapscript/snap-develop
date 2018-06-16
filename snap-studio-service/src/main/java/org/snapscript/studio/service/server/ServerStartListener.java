@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.glassfish.jersey.simple.SimpleServer;
 import org.snapscript.studio.common.server.RestServer;
-import org.snapscript.studio.service.CommandLineArgument;
 import org.snapscript.studio.service.ProcessManager;
+import org.snapscript.studio.service.StudioOption;
 import org.snapscript.studio.service.browser.BrowserLauncher;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -29,8 +29,8 @@ public class ServerStartListener implements ApplicationListener<ContextRefreshed
           int port = server.getPort();
           String host = "localhost"; //InetAddress.getLocalHost().getHostName();
           String project = String.format("http://%s:%s/", host, port);
-          String script = CommandLineArgument.SCRIPT.getValue();
-          String browser = CommandLineArgument.BROWSER_ENGINE.getValue();
+          String script = StudioOption.SCRIPT.getValue();
+          String browser = StudioOption.BROWSER_ENGINE.getValue();
           
           log.info("Listening to " + project);
              

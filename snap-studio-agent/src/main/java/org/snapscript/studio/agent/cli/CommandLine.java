@@ -19,6 +19,10 @@ public class CommandLine {
    public List<? extends CommandOption> getOptions(){
       return options;
    }
+
+   public Map<String, Object> getValues() {
+      return values;
+   }
    
    public Object getValue(String name) {
       return values.get(name);

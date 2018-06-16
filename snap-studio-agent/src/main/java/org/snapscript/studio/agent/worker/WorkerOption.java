@@ -4,30 +4,31 @@ import static java.util.Collections.EMPTY_LIST;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.snapscript.studio.agent.cli.CommandLineBuilder;
 import org.snapscript.studio.agent.cli.CommandOption;
-import org.snapscript.studio.agent.cli.CommandOptionParser;
-import org.snapscript.studio.agent.local.LocalOption;
 
 public enum WorkerOption implements CommandOption {
-   HOST("h", "host", "download host", String.class),
-   PORT("p", "port", "download port", Integer.class),
-   NAME("n", "name", "name of the process", String.class),
-   LEVEL("l", "level", "log level", String.class, "INFO"),
-   MODE("m", "mode", "run mode to use", String.class, "SCRIPT");
+   HOST("h", "host", "download host", ".+", String.class),
+   PORT("p", "port", "download port", "\\d+", Integer.class),
+   NAME("n", "name", "name of the process", ".+", String.class),
+   LEVEL("l", "level", "log level", "(TRACE|DEBUG|INFO)", String.class, "INFO"),
+   MODE("m", "mode", "run mode to use", "(SCRIPT|SERVICE)", String.class, "SCRIPT");
 
+   public final Pattern pattern;
    public final String description;
    public final String value;
    public final String name;
    public final String code;
    public final Class type;
 
-   private WorkerOption(String code, String name, String description, Class type) {
-      this(code, name, description, type, null);
+   private WorkerOption(String code, String name, String description, String pattern, Class type) {
+      this(code, name, description, pattern, type, null);
    }
    
-   private WorkerOption(String code, String name, String description, Class type, String value) {
+   private WorkerOption(String code, String name, String description, String pattern, Class type, String value) {
+      this.pattern = Pattern.compile(pattern);
       this.description = description;
       this.value = value;
       this.name = name;
@@ -53,6 +54,11 @@ public enum WorkerOption implements CommandOption {
    @Override
    public String getDefault() {
       return value;
+   }
+   
+   @Override
+   public Pattern getPattern() {
+      return pattern;
    }
 
    @Override

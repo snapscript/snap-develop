@@ -50,7 +50,7 @@ public class Workspace implements FileDirectorySource {
          @Value("${directory}") File root, 
          @Value("${log-file}") File logFile, 
          @Value("${log-level}") String level, 
-         @Value("${mode}") String mode) 
+         @Value("${mode}") ProjectMode mode) 
    {
       this.reader = new ConfigurationReader(this);
       this.pool = new ThreadPool(10);
