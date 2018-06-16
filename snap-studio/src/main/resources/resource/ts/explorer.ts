@@ -224,7 +224,7 @@ export module FileExplorer {
          }
          return new FileResource(filePath, contentType, lastModified, responseEntity, downloadURL, isHistory, isError);
       }
-      return new FileResource(filePath, contentType, lastModified, "// Count not find " + resourcePath, downloadURL, isHistory, isError);
+      return new FileResource(filePath, "text/plain", lastModified, "// Count not find " + resourcePath, downloadURL, isHistory, isError);
    }
    
    function handleOpenTreeFile(responseObject: FileResource, afterLoad) {

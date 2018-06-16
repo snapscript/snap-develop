@@ -27,26 +27,27 @@ public class ProcessConnectionPool {
    
    public ProcessConnection acquire(long wait, String process) {
       try {
-         if(process != null) {
-            int count = 10 * pool.size();
+         if(process == null) {
+            return acquire(wait);
+         }
+         int count = 10 * pool.size();
+         
+         while(count-- > 0) {
+            ProcessConnection connection = pool.poll(5, TimeUnit.MILLISECONDS); // take a process from the pool
             
-            while(count-- > 0) {
-               ProcessConnection connection = pool.poll(5, TimeUnit.MILLISECONDS); // take a process from the pool
+            if(connection != null) {
+               String name = connection.getProcess();
                
-               if(connection != null) {
-                  String name = connection.getProcess();
-                  
-                  if(name.equals(process)) { 
-                     return connection; // if there is a match then return it
-                  }
-                  pool.offer(connection);
+               if(name.equals(process)) { 
+                  return connection; // if there is a match then return it
                }
+               pool.offer(connection);
             }
          }
       }catch(Exception e){
          log.info("Could not acquire process '" +process+ "'", e);
       }
-      return acquire(wait);
+      return null;
    }
    
    public ProcessConnection acquire(ProcessNameFilter filter) {
