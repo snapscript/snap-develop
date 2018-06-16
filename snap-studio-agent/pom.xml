@@ -45,7 +45,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>org.snapscript.studio.agent.cli.CommandLineInterpreter</mainClass>
+              <mainClass>org.snapscript.studio.agent.local.LocalProcess</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>
@@ -65,3 +65,4 @@
     </plugins>
   </build>
 </project>
+
