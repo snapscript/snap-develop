@@ -42,6 +42,7 @@ public class LocalProcessController {
             ProcessAgent agent = new ProcessAgent(context, LogLevel.INFO);
             ProcessClient client = agent.start(root, launcher);
             
+            System.err.println("Debug agent attached to " + root);
             reference.set(client);
             client.attachProcess(project, path);
          }catch(Exception e){
@@ -56,6 +57,7 @@ public class LocalProcessController {
       
       try {
          if(client != null) {
+            System.err.println("Debug agent detached");
             client.detachClient();
          }
       }catch(Exception e){
@@ -69,6 +71,7 @@ public class LocalProcessController {
       
       try {
          if(client != null) {
+            System.err.println("Debug agent detached");
             client.detachClient();
          }
       }catch(Exception e){
@@ -122,6 +125,10 @@ public class LocalProcessController {
             ServerSocket listener = new ServerSocket(port);
             
             try {
+               int local = listener.getLocalPort();
+               
+               System.err.println("Debug agent listening on " + local);
+               
                while(active.get()) {
                   Socket socket = listener.accept();
       

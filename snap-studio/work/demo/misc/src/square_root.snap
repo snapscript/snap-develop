@@ -19,4 +19,4 @@ func sqrt(n, g) {
     return sqrt(n, ng);
 }
 
-System.err.println(sqrt(42,null)); // 6.48074069840786
+println(sqrt(42,null)); // 6.48074069840786

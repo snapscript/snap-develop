@@ -17,6 +17,7 @@ public class CommandOptionParser {
    
    private static final String ILLEGAL_OPTION = "Illegal option '%s', options take the format --<option>=<value>";
    private static final String UNKNOWN_OPTION = "Unknown option '%s', options take the format --<option>=<value>";
+   private static final String MISSING_VALUE = "Missing value for option '%s', options take the format --<option>=<value>";
    private static final String INVALID_VALUE = "Invalid value '%s' for '%s' should match pattern '%s'";
    
    private final List<? extends CommandOption> options;
@@ -51,7 +52,7 @@ public class CommandOptionParser {
          value = option.getDefault();
       } 
       if(value == null) {
-         String warning = String.format(ILLEGAL_OPTION, option);
+         String warning = String.format(MISSING_VALUE, key);
          CommandLineUsage.usage(options, warning);
       }
       int length = value.length();
