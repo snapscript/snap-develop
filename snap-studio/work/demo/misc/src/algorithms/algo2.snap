@@ -14,6 +14,7 @@ for(var x in 0..4){
    println(r);
 }
 
+time(() -> fib(30));
 
 // for(var x in 0..3){
 //    time(->fib(30));
@@ -29,9 +30,9 @@ for(var x in 0..4){
 // }
 
 
-// function time(func: ()) {
-//    var start = new Date().getTime();
-//    func();
-//    var stop =new Date().getTime();
-//    System.out.println("${func.name} time="+ (stop-start));
-// }
+func time(f: ()) {
+   var start = new Date().getTime();
+   f();
+   var stop =new Date().getTime();
+   System.out.println("${f.name} time="+ (stop-start));
+}

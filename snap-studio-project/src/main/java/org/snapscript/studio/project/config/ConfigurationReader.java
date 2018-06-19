@@ -15,7 +15,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import org.simpleframework.xml.Attribute;
@@ -226,43 +228,71 @@ public class ConfigurationReader {
                RepositoryClient client = repository.getClient(factory);
    
                if(dependencies != null) {
+                  Map<String, DependencyResult> latestVersions = new LinkedHashMap<String, DependencyResult>();
+                  List<DependencyResult> matchedResults = new ArrayList<DependencyResult>();
+                  DependencyComparator comparator = new DependencyComparator();
+                  
                   for (Dependency dependency : dependencies) {
+                     Set<String> exclusions = dependency.getExclusions();
                      String groupId = dependency.getGroupId();
                      String artifactId = dependency.getArtifactId();
                      String version = dependency.getVersion();
-                     String key = String.format("%s:%s:%s", groupId, artifactId, version);
+                     String key = dependency.getDependencyFullName();
                      
                      if(done.add(key)) { // has this already been resolved
-                        DependencyFileSet set = client.resolve(groupId, artifactId, version);
-                        List<File> matches = set.getFiles();
+                        DependencyResultSet set = client.resolve(groupId, artifactId, version);
+                        List<DependencyResult> matches = set.getResults();
                         String message = set.getMessage();
    
                         if(matches.isEmpty()) {
                            DependencyFile file = new DependencyFile(null, message);
                            files.add(file);
                         } else {
-                           for (File match : matches) {
-                              String path = match.getCanonicalPath();
+                           for (DependencyResult match : matches) {
+                              String matchKey = match.getDependencyKey();
                               
-                              if(done.add(path)) { // has file already been added
-                                 if(match.exists()) {
-                                    DependencyFile file = new DependencyFile(match);
-                                    files.add(file);
-                                 } else {
-                                    DependencyFile file = new DependencyFile(match, "Could not resolve " + key);
-                                    files.add(file);
+                              if(!exclusions.contains(matchKey)) { // if its not excluded
+                                 String matchName = match.getDependencyFullName();
+                                 File matchFile = match.getFile();
+                                 String matchPath = matchFile.getPath();
+                                 
+                                 if(!matchFile.exists()) {
+                                    log.info("Could not resolve " + matchPath + " from " + key);
+                                    match.setMessage("Could not resolve " + matchPath);
                                  }
+                                 done.add(matchName);
+                                 matchedResults.add(match);
+                              } else {
+                                 log.info("Excluding " + matchKey + " from " + key);
                               }
                            }
                         }
                      }
                   }
+                  Collections.sort(matchedResults, comparator);
+                  
+                  for(DependencyResult result : matchedResults) {
+                     String resultKey = result.getDependencyKey();
+                     String resultName = result.getDependencyFullName();
+                     DependencyResult existing = latestVersions.get(resultKey);
+                     
+                     if(existing == null) {
+                        latestVersions.put(resultKey, result);
+                     } else {
+                        String existingName = existing.getDependencyFullName();
+                        log.info("Evicting " + resultName + " in favour of " + existingName);
+                     }
+                  }
+                  latestVersions.values().iterator().forEachRemaining(result -> {
+                     DependencyFile file = result.getDependencyFile();
+                     files.add(file);
+                  });
                }
             }
          } catch(Exception e) {
             throw new IllegalStateException(e.getMessage(), e);
          }
-         return files;
+         return Collections.unmodifiableList(files);
       }
       
       public Map<String, String> getRepositoryLocations() {
@@ -318,6 +348,7 @@ public class ConfigurationReader {
    }
    
    @Root
+   @Data
    private static class LocationDefinition implements Entry {
       
       @Text
@@ -325,18 +356,10 @@ public class ConfigurationReader {
       
       @Attribute
       private String name;
-      
-      public LocationDefinition() {
-         super();
-      }
-
-      @Override
-      public String getName() {
-         return name;
-      }
    }
    
    @Root
+   @Data
    private static class DependencyDefinition implements Dependency {
 
       @Element
@@ -348,23 +371,34 @@ public class ConfigurationReader {
       @Element
       private String version;
       
-      public DependencyDefinition() {
-         super();
-      }
-
+      @ElementList(required=false)
+      private List<ExclusionDefinition> exclusions;
+      
       @Override
-      public String getGroupId() {
-         return groupId;
+      public Set<String> getExclusions() {
+         if(exclusions != null) {
+            return exclusions.stream()
+                  .filter(exclusion -> exclusion != null)
+                  .map(exclusion -> exclusion.getDependencyKey())
+                  .collect(Collectors.toSet());
+         }
+         return Collections.emptySet();
       }
+   }
+   
+   @Root
+   @Data
+   private static class ExclusionDefinition implements Dependency {
 
-      @Override
-      public String getArtifactId() {
-         return artifactId;
-      }
-
+      @Element
+      private String groupId;
+      
+      @Element
+      private String artifactId;
+      
       @Override
       public String getVersion() {
-         return version;
+         return null;
       }
    }
    

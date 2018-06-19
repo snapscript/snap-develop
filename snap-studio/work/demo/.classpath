@@ -1,4 +1,15 @@
 .
+C:\tmp\test-repo\org\apache\kafka\kafka-streams\1.1.0\kafka-streams-1.1.0.jar
+C:\tmp\test-repo\org\apache\kafka\kafka-clients\1.1.0\kafka-clients-1.1.0.jar
+C:\tmp\test-repo\org\lz4\lz4-java\1.4\lz4-java-1.4.jar
+C:\tmp\test-repo\org\xerial\snappy\snappy-java\1.1.7.1\snappy-java-1.1.7.1.jar
+C:\tmp\test-repo\org\apache\kafka\connect-json\1.1.0\connect-json-1.1.0.jar
+C:\tmp\test-repo\org\apache\kafka\connect-api\1.1.0\connect-api-1.1.0.jar
+C:\tmp\test-repo\com\fasterxml\jackson\core\jackson-databind\2.9.4\jackson-databind-2.9.4.jar
+C:\tmp\test-repo\com\fasterxml\jackson\core\jackson-annotations\2.9.0\jackson-annotations-2.9.0.jar
+C:\tmp\test-repo\com\fasterxml\jackson\core\jackson-core\2.9.4\jackson-core-2.9.4.jar
+C:\tmp\test-repo\org\slf4j\slf4j-api\1.7.25\slf4j-api-1.7.25.jar
+C:\tmp\test-repo\org\rocksdb\rocksdbjni\5.7.3\rocksdbjni-5.7.3.jar
 C:\tmp\test-repo\commons-net\commons-net\3.6\commons-net-3.6.jar
 C:\tmp\test-repo\org\simpleframework\simple-http\6.0.1\simple-http-6.0.1.jar
 C:\tmp\test-repo\org\simpleframework\simple-common\6.0.1\simple-common-6.0.1.jar
