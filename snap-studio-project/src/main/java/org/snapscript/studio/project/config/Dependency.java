@@ -3,23 +3,23 @@ package org.snapscript.studio.project.config;
 import java.util.Collections;
 import java.util.Set;
 
-public interface Dependency {
-   String getGroupId();
-   String getArtifactId();
-   String getVersion(); 
+public abstract class Dependency {
+   public abstract String getGroupId();
+   public abstract String getArtifactId();
+   public abstract String getVersion(); 
    
-   default Set<String> getExclusions() {
+   public Set<String> getExclusions() {
       return Collections.emptySet();
    }
 
-   default String getDependencyKey(){
+   public String getDependencyKey(){
       String groupId = getGroupId();
       String artifactId = getArtifactId();
       
       return String.format("%s:%s", groupId, artifactId);
    }
    
-   default String getDependencyFullName(){
+   public String getDependencyFullName(){
       String groupId = getGroupId();
       String artifactId = getArtifactId();
       String version = getVersion();

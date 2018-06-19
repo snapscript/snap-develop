@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class DependencyResult implements Dependency {
+public class DependencyResult extends Dependency {
 
    private String groupId;
    private String artifactId;

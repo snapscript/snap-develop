@@ -7,6 +7,7 @@ import static org.snapscript.studio.project.config.WorkspaceConfiguration.WORKSP
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -15,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -283,10 +283,12 @@ public class ConfigurationReader {
                         log.info("Evicting " + resultName + " in favour of " + existingName);
                      }
                   }
-                  latestVersions.values().iterator().forEachRemaining(result -> {
+                  Collection<DependencyResult> latestResults = latestVersions.values();
+                  
+                  for(DependencyResult result : latestResults) {
                      DependencyFile file = result.getDependencyFile();
                      files.add(file);
-                  });
+                  }
                }
             }
          } catch(Exception e) {
@@ -360,7 +362,7 @@ public class ConfigurationReader {
    
    @Root
    @Data
-   private static class DependencyDefinition implements Dependency {
+   private static class DependencyDefinition extends Dependency {
 
       @Element
       private String groupId;
@@ -376,19 +378,21 @@ public class ConfigurationReader {
       
       @Override
       public Set<String> getExclusions() {
+         Set<String> excludedKeys = new HashSet<String>();
+         
          if(exclusions != null) {
-            return exclusions.stream()
-                  .filter(exclusion -> exclusion != null)
-                  .map(exclusion -> exclusion.getDependencyKey())
-                  .collect(Collectors.toSet());
+            for(ExclusionDefinition exclusion : exclusions) {
+               String excludedKey = exclusion.getDependencyKey();
+               excludedKeys.add(excludedKey);
+            }
          }
-         return Collections.emptySet();
+         return Collections.unmodifiableSet(excludedKeys);
       }
    }
    
    @Root
    @Data
-   private static class ExclusionDefinition implements Dependency {
+   private static class ExclusionDefinition extends Dependency {
 
       @Element
       private String groupId;
