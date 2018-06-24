@@ -1,2 +1,5 @@
-let x = null;
-x.substring();
+func main(args) {
+   args.stream().forEach(x -> println(x));
+}  
+main(args);
+  

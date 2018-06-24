@@ -819,7 +819,7 @@ export module DialogBuilder {
 
    }
    
-   function createFileSelectionDialogLayout(selectedFileFolder, selectedFile) {
+   function createFileSelectionDialogLayout(selectedFileFolder, selectedFile, withArguments) {
       if(!selectedFileFolder) {
          selectedFileFolder = '';
       }

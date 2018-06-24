@@ -18,14 +18,13 @@ import org.snapscript.core.scope.MapModel;
 import org.snapscript.core.scope.Model;
 import org.snapscript.studio.agent.ProcessContext;
 import org.snapscript.studio.agent.ProcessMode;
+import org.snapscript.studio.agent.ProcessModel;
 import org.snapscript.studio.agent.cli.CommandLineUsage;
 import org.snapscript.studio.agent.cli.CommandOption;
 import org.snapscript.studio.agent.local.store.LocalStore;
 import org.snapscript.studio.agent.local.store.LocalStoreBuilder;
 
 public class LocalProcessExecutor {
-   
-   private static final String ARGUMENTS = "args";
    
    private final LocalStoreBuilder builder;
    private final PathConverter converter;
@@ -64,7 +63,8 @@ public class LocalProcessExecutor {
       try {      
          String[] arguments = line.getArguments();
          
-         values.put(ARGUMENTS, arguments);
+         values.put(ProcessModel.SHORT_ARGUMENTS, arguments);
+         values.put(ProcessModel.LONG_ARGUMENTS, arguments);
          
          if(port != null && script != null) {
             LocalProcessController connector = new LocalProcessController(context, script, port);

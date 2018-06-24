@@ -1,6 +1,7 @@
 package org.snapscript.studio.agent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.snapscript.core.ResourceManager;
@@ -59,13 +60,13 @@ public class ProcessClient {
       matcher.update(breakpoints);
    }
    
-   public void beginExecute(String project, String resource, String dependencies, boolean debug) {
+   public void beginExecute(String project, String resource, String dependencies, List<String> arguments, boolean debug) {
       BreakpointMatcher matcher = context.getMatcher();
       ProcessStore store = context.getStore();
 
       matcher.update(breakpoints);
       store.update(project); 
-      executor.beginExecute(client, project, resource, dependencies, debug);
+      executor.beginExecute(client, project, resource, dependencies, arguments, debug);
    }
    
    public void attachProcess(String project, String resource) {

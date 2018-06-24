@@ -43,13 +43,25 @@ define(["require", "exports", "socket"], function (require, exports, socket_1) {
             w2confirm(options);
         }
         Alerts.createConfirmAlert = createConfirmAlert;
+        function createRunPromptAlert(title, placeholder, yesButton, noButton, yesCallback) {
+            createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, "${IMAGE_FOLDER}/run.png", "Arguments");
+        }
+        Alerts.createRunPromptAlert = createRunPromptAlert;
+        function createDebugPromptAlert(title, placeholder, yesButton, noButton, yesCallback) {
+            createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, "${IMAGE_FOLDER}/debug.png", "Arguments");
+        }
+        Alerts.createDebugPromptAlert = createDebugPromptAlert;
         function createRemoteDebugPromptAlert(title, placeholder, yesButton, noButton, yesCallback) {
+            createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, "${IMAGE_FOLDER}/debug.png", "Address");
+        }
+        Alerts.createRemoteDebugPromptAlert = createRemoteDebugPromptAlert;
+        function createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, iconFile, textLabel) {
             var text = '<table border="0" width="100%">' +
                 '  <tr>' +
                 '    <td>&nbsp;&nbsp</td>' +
-                '    <td align="right"><img src="${IMAGE_FOLDER}/debug.png" height="20px"></td>' +
+                '    <td align="right"><img src="' + iconFile + '" height="20px"></td>' +
                 '    <td>&nbsp;</td>' +
-                '    <td align="left">Address</td>' +
+                '    <td align="left">' + textLabel + '</td>' +
                 '    <td>&nbsp;</td>' +
                 '    <td align="left"><input id="textToSearchFor" type="text" placeholder="' + placeholder + '" name="token" width="180"></td>' +
                 '  </tr>' +
@@ -80,13 +92,11 @@ define(["require", "exports", "socket"], function (require, exports, socket_1) {
                 no_text: noButton,
                 no_class: 'btn dialogButton',
                 no_style: '',
-                no_callBack: cancelCallback,
-                callBack: findCallback // common callBack
+                no_callBack: cancelCallback // callBack for no button
             };
             w2confirm(options);
             focusCallback();
         }
-        Alerts.createRemoteDebugPromptAlert = createRemoteDebugPromptAlert;
     })(Alerts = exports.Alerts || (exports.Alerts = {}));
 });
 //ModuleSystem.registerModule("alert", "Alert module: alert.js", null, Alerts.registerAlerts, ["common", "socket"]); 

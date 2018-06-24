@@ -252,7 +252,7 @@ export module FileTree {
          // process all File objects
          for (var i = 0; i < droppedFiles.length; i++) {
             var droppedFile = droppedFiles[i];
-            
+                
             if(isAdvancedFileUpload()) {
                console.log("file="+droppedFile.name+" folder=" + folderPath);
                

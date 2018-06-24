@@ -1,11 +1,13 @@
 package org.snapscript.studio.agent.task;
 
+import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
 import org.snapscript.common.thread.ThreadBuilder;
 import org.snapscript.core.scope.Model;
 import org.snapscript.studio.agent.ProcessContext;
 import org.snapscript.studio.agent.ProcessMode;
+import org.snapscript.studio.agent.ProcessModel;
 import org.snapscript.studio.agent.client.ConnectionChecker;
 import org.snapscript.studio.agent.core.ClassPathUpdater;
 import org.snapscript.studio.agent.core.ExecuteData;
@@ -21,9 +23,11 @@ public class ProcessExecutor {
    private final TraceLogger logger;
    private final ProcessMode mode;
    private final Model model;
+   private final String[] empty;
    
    public ProcessExecutor(ProcessContext context, ConnectionChecker checker, TraceLogger logger, ProcessMode mode, Model model) {
       this.factory = new ThreadBuilder();
+      this.empty = new String[]{};
       this.checker = checker;
       this.logger = logger;
       this.context = context;
@@ -31,19 +35,24 @@ public class ProcessExecutor {
       this.mode = mode;
    }
 
-   public void beginExecute(ProcessEventChannel channel, String project, String resource, String dependencies, boolean debug) {
+   public void beginExecute(ProcessEventChannel channel, String project, String resource, String dependencies, List<String> arguments, boolean debug) {
       ExecuteLatch latch = context.getLatch();
       String process = context.getProcess();
       
       try {         
          if(resource != null) {
+            ProcessModel overrides = new ProcessModel(model);
             ExecuteData data = new ExecuteData(process, project, resource, dependencies, debug);
             ConsoleConnector connector = new ConsoleConnector(channel, process);
-            ProcessTask harness = new ProcessTask(context, channel, mode, model, project, resource, debug);
+            ProcessTask harness = new ProcessTask(context, channel, mode, overrides, project, resource, debug);
             
             if(latch.start(data)) {
                Thread thread = factory.newThread(harness);
                ClassLoader loader = ClassPathUpdater.updateClassPath(dependencies);
+               String[] array = arguments.toArray(empty);
+               
+               overrides.addAttribute(ProcessModel.SHORT_ARGUMENTS, array);
+               overrides.addAttribute(ProcessModel.LONG_ARGUMENTS, array);
                
                if(loader == null) {
                   logger.info("Could not update dependencies");

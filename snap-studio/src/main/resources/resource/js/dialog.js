@@ -775,7 +775,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 }
             };
         }
-        function createFileSelectionDialogLayout(selectedFileFolder, selectedFile) {
+        function createFileSelectionDialogLayout(selectedFileFolder, selectedFile, withArguments) {
             if (!selectedFileFolder) {
                 selectedFileFolder = '';
             }

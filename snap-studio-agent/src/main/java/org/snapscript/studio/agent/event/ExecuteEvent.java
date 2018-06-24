@@ -1,5 +1,6 @@
 package org.snapscript.studio.agent.event;
 
+import java.util.List;
 import java.util.Map;
 
 import org.snapscript.studio.agent.core.ExecuteData;
@@ -7,6 +8,7 @@ import org.snapscript.studio.agent.core.ExecuteData;
 public class ExecuteEvent implements ProcessEvent {
 
    private final Map<String, Map<Integer, Boolean>> breakpoints;
+   private final List<String> arguments;
    private final ExecuteData data;
    private final String dependencies;
    private final String project;
@@ -18,6 +20,7 @@ public class ExecuteEvent implements ProcessEvent {
       this.data = new ExecuteData(builder.process, builder.project, builder.resource, builder.dependencies, builder.debug);
       this.dependencies = builder.dependencies;
       this.breakpoints = builder.breakpoints;
+      this.arguments = builder.arguments;
       this.project = builder.project;
       this.resource = builder.resource;
       this.process = builder.process;
@@ -31,6 +34,10 @@ public class ExecuteEvent implements ProcessEvent {
    
    public ExecuteData getData() {
       return data; 
+   }
+   
+   public List<String> getArguments() {
+      return arguments;
    }
    
    public Map<String, Map<Integer, Boolean>> getBreakpoints() {
@@ -56,6 +63,7 @@ public class ExecuteEvent implements ProcessEvent {
    public static class Builder {
       
       private Map<String, Map<Integer, Boolean>> breakpoints;
+      private List<String> arguments;
       private String dependencies;
       private String project;
       private String resource;
@@ -64,6 +72,11 @@ public class ExecuteEvent implements ProcessEvent {
       
       public Builder(String process) {
          this.process = process;
+      }
+      
+      public Builder withArguments(List<String> arguments) {
+         this.arguments = arguments;
+         return this;
       }
 
       public Builder withBreakpoints(Map<String, Map<Integer, Boolean>> breakpoints) {

@@ -616,7 +616,7 @@ export module Command {
             FileEditor.clearSavedEditorBuffer(editorResource.getResourcePath()); 
          });
       } 
-   }
+   }  
    
    export function deleteFile(resourceDetails: FilePath) {
       var editorState: FileEditorState = FileEditor.currentEditorState();
@@ -672,17 +672,36 @@ export module Command {
       executeScript(true);
    }
    
-   function executeScript(debug) {
+   function executeScript(debug, inputArguments) {
       saveFileWithAction(function() {
-         var editorState: FileEditorState = FileEditor.currentEditorState();
-         var message = {
-            breakpoints : editorState.getBreakpoints(),
-            project : document.title,
-            resource : editorState.getResource().getFilePath(),
-            source : editorState.getSource(),
-            debug: debug ? true: false
+         let editorState: FileEditorState = FileEditor.currentEditorState();
+         let localExecuteFunction = function(isDebug, inputArguments) {
+            var argumentArray = inputArguments.split(/[ ]+/)
+            var message = {
+               breakpoints : editorState.getBreakpoints(),
+               arguments: argumentArray,
+               project : document.title,
+               resource : editorState.getResource().getFilePath(),
+               source : editorState.getSource(),
+               debug: isDebug ? true: false
+            };
+            EventBus.sendEvent("EXECUTE", message);
          };
-         EventBus.sendEvent("EXECUTE", message);
+         setTimeout(function() {
+            if(debug) {
+               Alerts.createDebugPromptAlert("Debug", "<arguments>", "Debug", "Cancel", 
+                  function(inputArguments) {
+                     localExecuteFunction(true, inputArguments);
+                  }
+               );
+            } else {
+               Alerts.createRunPromptAlert("Run", "<arguments>", "Run", "Cancel", 
+                  function(inputArguments) {
+                     localExecuteFunction(false, inputArguments);
+                  }
+               );
+            }
+         }, 100);
       }, true); // save editor
    }
    

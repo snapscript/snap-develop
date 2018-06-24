@@ -1,5 +1,6 @@
 package org.snapscript.studio.agent;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,6 +37,7 @@ public class ProcessAgentController extends ProcessEventAdapter {
    public void onExecute(ProcessEventChannel channel, ExecuteEvent event) throws Exception {
       ExecuteData data = event.getData();
       Map<String, Map<Integer, Boolean>> breakpoints = event.getBreakpoints();
+      List<String> arguments = event.getArguments();
       BreakpointMatcher matcher = context.getMatcher();
       TraceInterceptor interceptor = context.getInterceptor();
       ProcessStore store = context.getStore();
@@ -54,7 +56,7 @@ public class ProcessAgentController extends ProcessEventAdapter {
       }
       matcher.update(breakpoints);
       store.update(project); 
-      executor.beginExecute(channel, project, resource, dependencies, debug);
+      executor.beginExecute(channel, project, resource, dependencies, arguments, debug);
    }
    
    @Override

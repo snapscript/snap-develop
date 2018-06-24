@@ -7,7 +7,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,6 +23,7 @@ public class ExecuteEventMarshaller implements ProcessEventMarshaller<ExecuteEve
       ByteArrayInputStream buffer = new ByteArrayInputStream(array, offset, length);
       DataInputStream input = new DataInputStream(buffer);
       Map<String, Map<Integer, Boolean>> breakpoints = new HashMap<String, Map<Integer, Boolean>>();
+      List<String> arguments = new ArrayList<String>();
       String process = input.readUTF();
       String project = input.readUTF();
       String resource = input.readUTF();
@@ -41,11 +44,18 @@ public class ExecuteEventMarshaller implements ProcessEventMarshaller<ExecuteEve
          }
          breakpoints.put(script, locations);
       }
+      int argumentSize = input.readInt();
+      
+      for(int i = 0; i < argumentSize; i++) {
+         String argument = input.readUTF();
+         arguments.add(argument);
+      }
       return new ExecuteEvent.Builder(process)
          .withProject(project)
          .withResource(resource)
          .withDependencies(dependencies)
          .withBreakpoints(breakpoints)
+         .withArguments(arguments)
          .withDebug(debug)
          .build();
    }
@@ -55,6 +65,7 @@ public class ExecuteEventMarshaller implements ProcessEventMarshaller<ExecuteEve
       ByteArrayOutputStream buffer = new ByteArrayOutputStream();
       DataOutputStream output = new DataOutputStream(buffer);
       Map<String, Map<Integer, Boolean>> breakpoints = event.getBreakpoints();
+      List<String> arguments = event.getArguments();
       Set<String> scripts = breakpoints.keySet();
       String process = event.getProcess();
       String resource = event.getResource();
@@ -62,6 +73,7 @@ public class ExecuteEventMarshaller implements ProcessEventMarshaller<ExecuteEve
       String project = event.getProject();
       boolean debug = event.isDebug();
       int breakpointSize = breakpoints.size();
+      int argumentSize = arguments.size();
       
       output.writeUTF(process);
       output.writeUTF(project);
@@ -84,6 +96,11 @@ public class ExecuteEventMarshaller implements ProcessEventMarshaller<ExecuteEve
             output.writeInt(line);
             output.writeBoolean(enable);
          }
+      }
+      output.writeInt(argumentSize);
+      
+      for(String argument : arguments){
+         output.writeUTF(argument);
       }
       output.flush();
       byte[] array = buffer.toByteArray();

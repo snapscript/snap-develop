@@ -611,17 +611,33 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             executeScript(true);
         }
         Command.debugScript = debugScript;
-        function executeScript(debug) {
+        function executeScript(debug, inputArguments) {
             saveFileWithAction(function () {
                 var editorState = editor_1.FileEditor.currentEditorState();
-                var message = {
-                    breakpoints: editorState.getBreakpoints(),
-                    project: document.title,
-                    resource: editorState.getResource().getFilePath(),
-                    source: editorState.getSource(),
-                    debug: debug ? true : false
+                var localExecuteFunction = function (isDebug, inputArguments) {
+                    var argumentArray = inputArguments.split(/[ ]+/);
+                    var message = {
+                        breakpoints: editorState.getBreakpoints(),
+                        arguments: argumentArray,
+                        project: document.title,
+                        resource: editorState.getResource().getFilePath(),
+                        source: editorState.getSource(),
+                        debug: isDebug ? true : false
+                    };
+                    socket_1.EventBus.sendEvent("EXECUTE", message);
                 };
-                socket_1.EventBus.sendEvent("EXECUTE", message);
+                setTimeout(function () {
+                    if (debug) {
+                        alert_1.Alerts.createDebugPromptAlert("Debug", "<arguments>", "Debug", "Cancel", function (inputArguments) {
+                            localExecuteFunction(true, inputArguments);
+                        });
+                    }
+                    else {
+                        alert_1.Alerts.createRunPromptAlert("Run", "<arguments>", "Run", "Cancel", function (inputArguments) {
+                            localExecuteFunction(false, inputArguments);
+                        });
+                    }
+                }, 100);
             }, true); // save editor
         }
         function updateScriptBreakpoints() {

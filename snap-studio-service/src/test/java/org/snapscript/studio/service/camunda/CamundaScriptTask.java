@@ -2,6 +2,7 @@ package org.snapscript.studio.service.camunda;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -51,7 +52,7 @@ public class CamundaScriptTask {
       ProcessClient service = agent.start(location, task, model);
 
       createBreakpoints(service);
-      service.beginExecute(PROJECT, RESOURCE, System.getProperty("java.class.path"), true);
+      service.beginExecute(PROJECT, RESOURCE, System.getProperty("java.class.path"), Collections.EMPTY_LIST, true);
       service.waitUntilFinish(6000000); // wait for script to finish
    }
 

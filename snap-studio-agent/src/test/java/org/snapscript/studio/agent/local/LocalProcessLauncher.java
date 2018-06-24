@@ -22,14 +22,14 @@ public class LocalProcessLauncher {
 //            "--s=wireframe/render3d.snap",
 //            "--v=true"});     
       
-//      LocalProcess.main(
-//            new String[] {
-//            "--cp=../snap-studio/work/demo/games/src;../snap-studio/work/demo/games/assets/",      
-//            "--s=mario/MarioGame.snap",
-//            "--p=7799",
-//            "--v=true", 
-//            "foo", 
-//            "blah"});     
+      LocalProcess.main(
+            new String[] {
+            "--cp=../snap-studio/work/demo/games/src;../snap-studio/work/demo/games/assets/",      
+            "--s=mario/MarioGame.snap",
+            "--p=7799",
+            "--v=true", 
+            "foo", 
+            "blah"});     
       
 //      LocalProcess.main(
 //            new String[] {
@@ -41,11 +41,11 @@ public class LocalProcessLauncher {
 //            "foo", 
 //            "blah"});  
       
-      LocalProcess.main(
-            new String[] {
-            "--script=foo.snap",
-            "--verbose=true", 
-            "foo", 
-            "blah"});        
+//      LocalProcess.main(
+//            new String[] {
+//            "--script=foo.snap",
+//            "--verbose=true", 
+//            "foo", 
+//            "blah"});        
    }
 }

@@ -1,5 +1,6 @@
 package org.snapscript.studio.service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -63,6 +64,7 @@ public class ProcessManager implements ProcessRemoteController {
       
       if(connection != null) {
          Map<String, Map<Integer, Boolean>> breakpoints = command.getBreakpoints();
+         List<String> arguments = command.getArguments();
          String projectName = command.getProject();
          Project project = workspace.getProject(projectName);
          ClassPathFile classPath = project.getClassPath();
@@ -76,7 +78,7 @@ public class ProcessManager implements ProcessRemoteController {
          }
          connections.put(process, connection);
          
-         return connection.execute(projectName, resource, dependencies, breakpoints, debug);
+         return connection.execute(projectName, resource, dependencies, breakpoints, arguments, debug);
       }
       return true;
    }

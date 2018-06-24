@@ -1,5 +1,6 @@
 package org.snapscript.studio.service.command;
 
+import java.util.List;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class ExecuteCommand implements Command {
 
    private Map<String, Map<Integer, Boolean>> breakpoints;
+   private List<String> arguments;
    private String project;
    private String resource;
    private String system;

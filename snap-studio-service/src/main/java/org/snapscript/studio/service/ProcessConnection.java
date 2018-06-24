@@ -1,6 +1,7 @@
 package org.snapscript.studio.service;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,7 +26,7 @@ public class ProcessConnection {
    private final Workspace workspace;
    private final String process;
 
-   public boolean execute(String projectName, String resource, String dependencies, Map<String, Map<Integer, Boolean>> breakpoints, boolean debug) {
+   public boolean execute(String projectName, String resource, String dependencies, Map<String, Map<Integer, Boolean>> breakpoints, List<String> arguments, boolean debug) {
       try {
          Project project = workspace.getProject(projectName);
          String path = project.getScriptPath(resource);
@@ -35,6 +36,7 @@ public class ProcessConnection {
             .withResource(path)
             .withDependencies(dependencies)
             .withBreakpoints(convert(projectName, breakpoints))
+            .withArguments(arguments)
             .withDebug(debug)
             .build();
 
