@@ -36,6 +36,10 @@ export module DialogBuilder {
    export function newDirectoryTreeDialog(resourceDetails: FilePath, foldersOnly: boolean, saveCallback: any, ignoreOrCancelCallback: any){
       createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, true, "New Directory");
    }
+
+   export function createArchiveTreeDialog(resourceDetails: FilePath, saveCallback: any, ignoreOrCancelCallback: any){
+      createProjectDialog(resourceDetails, true, saveCallback, ignoreOrCancelCallback, false, "Create Archive");
+   }
    
    function createProjectDialog(resourceDetails: FilePath, foldersOnly: boolean, saveCallback: any, ignoreOrCancelCallback: any, nameIsBlank: boolean, dialogTitle: string) {
       createTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle, "/" +document.title)

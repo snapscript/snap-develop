@@ -341,10 +341,10 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             }
         }
         function openTerminal(resourcePath) {
-            if (tree_1.FileTree.isResourceFolder(resourcePath.filePath)) {
+            if (tree_1.FileTree.isResourceFolder(resourcePath.getFilePath())) {
                 var message = {
                     project: document.title,
-                    resource: resourcePath.filePath,
+                    resource: resourcePath.getFilePath(),
                     terminal: true
                 };
                 socket_1.EventBus.sendEvent("EXPLORE", message);
@@ -352,10 +352,10 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         }
         Command.openTerminal = openTerminal;
         function exploreDirectory(resourcePath) {
-            if (tree_1.FileTree.isResourceFolder(resourcePath.filePath)) {
+            if (tree_1.FileTree.isResourceFolder(resourcePath.getFilePath())) {
                 var message = {
                     project: document.title,
-                    resource: resourcePath.filePath,
+                    resource: resourcePath.getFilePath(),
                     terminal: false
                 };
                 socket_1.EventBus.sendEvent("EXPLORE", message);
@@ -592,6 +592,17 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             }
         }
         Command.deleteDirectory = deleteDirectory;
+        function createArchive(savePath, mainScript) {
+            dialog_1.DialogBuilder.createArchiveTreeDialog(savePath, function (resourceDetails) {
+                var message = {
+                    project: document.title,
+                    resource: mainScript.getProjectPath(),
+                    archive: savePath.getProjectPath()
+                };
+                socket_1.EventBus.sendEvent("CREATE_ARCHIVE", message);
+            });
+        }
+        Command.createArchive = createArchive;
         function runScript() {
             executeScript(false);
         }

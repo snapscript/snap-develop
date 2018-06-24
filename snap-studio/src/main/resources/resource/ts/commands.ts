@@ -384,29 +384,29 @@ export module Command {
       }
    }
    
-   export function openTerminal(resourcePath) {
-      if(FileTree.isResourceFolder(resourcePath.filePath)) {
+   export function openTerminal(resourcePath: FilePath) {
+      if(FileTree.isResourceFolder(resourcePath.getFilePath())) {
          var message = {
             project : document.title,
-            resource : resourcePath.filePath,
+            resource : resourcePath.getFilePath(),
             terminal: true
          };
          EventBus.sendEvent("EXPLORE", message);
       }
    }
    
-   export function exploreDirectory(resourcePath) {
-      if(FileTree.isResourceFolder(resourcePath.filePath)) {
+   export function exploreDirectory(resourcePath: FilePath) {
+      if(FileTree.isResourceFolder(resourcePath.getFilePath())) {
          var message = {
             project : document.title,
-            resource : resourcePath.filePath,
+            resource : resourcePath.getFilePath(),
             terminal: false
          };
          EventBus.sendEvent("EXPLORE", message);
       }
    }
    
-   export function folderExpand(resourcePath) {
+   export function folderExpand(resourcePath: string) {
       var message = {
          project: document.title,
          folder : resourcePath
@@ -414,7 +414,7 @@ export module Command {
       EventBus.sendEvent("FOLDER_EXPAND", message);
    }
    
-   export function folderCollapse(resourcePath) {
+   export function folderCollapse(resourcePath: string) {
       var message = {
          project: document.title,
          folder : resourcePath
@@ -653,6 +653,17 @@ export module Command {
       }
    }
    
+   export function createArchive(savePath: FilePath, mainScript: FilePath) {
+      DialogBuilder.createArchiveTreeDialog(savePath, function(resourceDetails: FilePath) {
+         var message = {
+            project: document.title,
+            resource: mainScript.getProjectPath(),
+            archive: savePath.getProjectPath()
+         };
+         EventBus.sendEvent("CREATE_ARCHIVE", message);
+      });
+   }
+         
    export function runScript() {
       executeScript(false);
    }

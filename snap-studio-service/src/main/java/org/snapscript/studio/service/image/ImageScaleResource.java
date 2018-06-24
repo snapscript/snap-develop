@@ -4,6 +4,7 @@ import static org.simpleframework.http.Protocol.CONTENT_TYPE;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -101,6 +102,10 @@ public class ImageScaleResource implements Resource {
    
    private BufferedImage getOriginalImage(String path) throws Exception {
       Content content = fileResolver.resolveContent(path);
+      
+      if(content == null) {
+         throw new IOException("Could not get original image " + path);
+      }
       InputStream contentStream = content.getInputStream();
       
       try {

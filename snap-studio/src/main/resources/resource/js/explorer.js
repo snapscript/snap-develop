@@ -255,6 +255,10 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                     commands_1.Command.debugScript();
                 });
             }
+            else if (commandName == "createArchive") {
+                var savePath = tree_1.FileTree.createResourcePath("/" + document.title + ".jar");
+                commands_1.Command.createArchive(savePath, resourcePath);
+            }
             else if (commandName == "newFile") {
                 commands_1.Command.newFile(resourcePath);
             }

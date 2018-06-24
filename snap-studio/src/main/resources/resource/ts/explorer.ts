@@ -298,6 +298,9 @@ export module FileExplorer {
          openTreeFile(resourcePath.getResourcePath(), function(){
             Command.debugScript();
          });
+      } else if(commandName == "createArchive") {
+         var savePath: FilePath = FileTree.createResourcePath("/" + document.title + ".jar");
+         Command.createArchive(savePath, resourcePath);      
       }else if(commandName == "newFile") {
          Command.newFile(resourcePath);
       }else if(commandName == "newDirectory") {

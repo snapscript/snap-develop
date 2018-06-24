@@ -189,6 +189,7 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
                         { title: "&nbsp;Delete", cmd: "deleteFile", uiIcon: "menu-trash", disabled: false },
                         { title: "&nbsp;Run", cmd: "runScript", uiIcon: "menu-run" },
                         { title: "&nbsp;Debug", cmd: "debugScript", uiIcon: "menu-debug" },
+                        { title: "&nbsp;Export", cmd: "createArchive", uiIcon: "menu-archive" },
                         { title: "&nbsp;Explore", cmd: "exploreDirectory", uiIcon: "menu-explore" },
                         { title: "&nbsp;Terminal", cmd: "openTerminal", uiIcon: "menu-terminal" } //,               
                     ],

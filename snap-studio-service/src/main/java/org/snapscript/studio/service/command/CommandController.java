@@ -61,6 +61,8 @@ public class CommandController implements FrameListener {
                listener.onExplore((ExploreCommand)command);
             } else if(command instanceof RemoteDebugCommand) {
                listener.onRemoteDebug((RemoteDebugCommand)command);
+            } else if(command instanceof CreateArchiveCommand) {
+               listener.onCreateArchive((CreateArchiveCommand)command);
             }
          } else if(type == FrameType.PONG){
             listener.onPing();

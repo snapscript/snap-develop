@@ -150,6 +150,13 @@
 	background-repeat: no-repeat !important;
 }
 
+.menu-archive {
+	background-image: url('${IMAGE_FOLDER}/archive.png') !important;
+	background-size: 16px 16px !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+}
+
 .menu-save {
 	background-image: url('${IMAGE_FOLDER}/save.png') !important;
 	background-size: 16px 16px !important;

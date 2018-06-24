@@ -80,6 +80,7 @@ public class ArchiveBuilder {
          extractClassPath(destDir);
          archiveDirectory(destDir, outputFile, mainScript);
          
+         log.info("Archive {} created for {}", outputFile, name);
          return outputFile;
       }catch(Exception e) {
          log.info("Could not export {}", name);

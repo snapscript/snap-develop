@@ -31,6 +31,10 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
             createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, true, "New Directory");
         }
         DialogBuilder.newDirectoryTreeDialog = newDirectoryTreeDialog;
+        function createArchiveTreeDialog(resourceDetails, saveCallback, ignoreOrCancelCallback) {
+            createProjectDialog(resourceDetails, true, saveCallback, ignoreOrCancelCallback, false, "Create Archive");
+        }
+        DialogBuilder.createArchiveTreeDialog = createArchiveTreeDialog;
         function createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle) {
             createTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle, "/" + document.title);
         }

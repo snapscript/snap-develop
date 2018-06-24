@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import org.simpleframework.http.Path;
 import org.simpleframework.http.socket.FrameChannel;
 import org.snapscript.common.command.CommandBuilder;
 import org.snapscript.common.command.Console;
+import org.snapscript.common.thread.ThreadBuilder;
 import org.snapscript.studio.agent.local.message.AttachResponse;
 import org.snapscript.studio.common.Problem;
 import org.snapscript.studio.common.ProblemFinder;
@@ -43,6 +45,7 @@ public class CommandListener {
    private final BackupManager backupManager;
    private final ProblemFinder finder;
    private final AtomicLong lastModified;
+   private final ThreadFactory factory;
    private final Project project;
    private final String projectName;
    private final String cookie;
@@ -65,6 +68,7 @@ public class CommandListener {
       this.commandClient = new CommandClient(frameChannel, project);
       this.forwarder = new CommandEventForwarder(commandClient, commandFilter, project);
       this.lastModified = new AtomicLong(project.getModificationTime());
+      this.factory = new ThreadBuilder(true);
       this.finder = new ProblemFinder();
       this.projectName = project.getProjectName();
       this.root = project.getProjectPath();
@@ -255,6 +259,39 @@ public class CommandListener {
             long time = System.currentTimeMillis();
             
             commandClient.sendScriptError(resource, description, time, line);
+         }
+      } catch(Exception e) {
+         log.info("Error executing " + resource, e);
+      }
+   }
+
+   public void onCreateArchive(CreateArchiveCommand command) {
+      String resource = command.getResource();
+      String archive = command.getArchive();
+      
+      try {
+         if(archive.endsWith(".jar")) {
+            final String name = command.getProject();
+            final String scriptPath = project.getScriptPath(resource);
+            final File rootPath = project.getProjectPath();
+            final File savePath = new File(rootPath, archive);
+            final Runnable exportTask = new Runnable() {
+               
+               @Override
+               public void run() {
+                  log.info("Exporting archive for {} with {}", name, scriptPath);
+                  File archivePath = project.getExportedArchive(scriptPath);
+                  
+                  if(savePath.exists()) {
+                     savePath.delete();
+                  }
+                  archivePath.renameTo(savePath);
+               }
+            };
+            Thread thread = factory.newThread(exportTask);
+            thread.start();
+         } else {
+            commandClient.sendAlert(archive, "Archive " + archive + " should end with .jar");
          }
       } catch(Exception e) {
          log.info("Error executing " + resource, e);
