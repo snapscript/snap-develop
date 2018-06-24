@@ -1,5 +1,6 @@
 package org.snapscript.studio.project.generate;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -8,20 +9,26 @@ import org.snapscript.studio.project.ClassPathFile;
 public class ClassPathConfigFile implements ConfigFile, ClassPathFile {
 
    private final List<String> errors;
+   private final List<File> files;
    private final String path;
    
-   public ClassPathConfigFile(String path) {
-      this(path, Collections.EMPTY_LIST);
+   public ClassPathConfigFile(List<File> files, String path) {
+      this(files, path, Collections.EMPTY_LIST);
    }
    
-   public ClassPathConfigFile(String path, List<String> errors) {
+   public ClassPathConfigFile(List<File> files, String path, List<String> errors) {
+      this.errors = Collections.unmodifiableList(errors);
+      this.files = Collections.unmodifiableList(files);
       this.path = path;
-      this.errors = errors;
    }
    
    @Override
    public String getPath(){
       return path;
+   }
+   
+   public List<File> getFiles(){
+      return files;
    }
    
    @Override

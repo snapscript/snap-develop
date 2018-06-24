@@ -6,10 +6,13 @@ import static org.snapscript.studio.project.config.ProjectConfiguration.PROJECT_
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.snapscript.core.type.extend.FileExtension;
 import org.snapscript.studio.agent.core.ClassPathUpdater;
 import org.snapscript.studio.index.IndexDatabase;
 import org.snapscript.studio.index.IndexScanner;
@@ -27,14 +30,40 @@ public class ProjectContext {
    
    private final ConfigurationReader reader;
    private final ConfigFileSource source;
+   private final FileExtension extension;
    private final Workspace workspace;
    private final Project project;
    
    public ProjectContext(ConfigurationReader reader, ConfigFileSource source, Workspace workspace, Project project) {
+      this.extension = new FileExtension();
       this.workspace = workspace;
       this.project = project;
       this.source = source;
       this.reader = reader;
+   }
+   
+   public synchronized Map<String, File> getFiles(){
+      String projectName = project.getProjectName();
+      Map<String, File> projectFiles = new LinkedHashMap<String, File>();
+      
+      try {
+         File file = project.getProjectPath();
+         List<File> files = extension.findFiles(file, ".*");
+         String rootPath = file.getCanonicalPath();
+         int length = rootPath.length();
+         
+         for(File entry : files) {
+            String entryPath = entry.getCanonicalPath();
+            String relativePath = entryPath.substring(length).replace(File.separatorChar, '/');
+            String scriptPath = project.getScriptPath(relativePath);
+            
+            projectFiles.put(scriptPath, entry);
+         }
+         return Collections.unmodifiableMap(projectFiles);
+      } catch (Exception e) {
+         log.info("Could not find files for '" + projectName + "'", e);
+      }
+      return Collections.emptyMap();
    }
 
    public synchronized ProjectConfiguration getConfiguration() {

@@ -190,7 +190,7 @@ public class Workspace implements FileDirectorySource {
          if(workspace.exists()) {
             File[] directories = workspace.listFiles();
             
-            if(projects != null) {
+            if(directories != null) {
                for(File directory : directories) {
                   String name = directory.getName();
                  

@@ -23,6 +23,7 @@ import org.snapscript.studio.project.generate.ConfigFileSource;
 public class Project implements FileDirectory {
    
    private final ConfigurationClassLoader classLoader;
+   private final ArchiveBuilder archiveBuilder;
    private final FileSystem fileSystem;
    private final ProjectContext context;
    private final Workspace workspace;
@@ -33,11 +34,16 @@ public class Project implements FileDirectory {
    public Project(ConfigurationReader reader, ConfigFileSource source, Workspace workspace, String projectDirectory, String projectName) {
       this.context = new ProjectContext(reader, source, workspace, this);
       this.classLoader = new ConfigurationClassLoader(this);
+      this.archiveBuilder = new ArchiveBuilder(this, context);
       this.fileSystem = new FileSystem(this);
       this.store = new ProjectStore();
       this.projectDirectory = projectDirectory;
       this.projectName = projectName;
       this.workspace = workspace;
+   }
+   
+   public File getExportedArchive(String mainScript) {
+      return archiveBuilder.exportArchive(mainScript);
    }
    
    public Workspace getWorkspace(){
@@ -99,7 +105,7 @@ public class Project implements FileDirectory {
       File path = getProjectPath();
       return context.getLayout().getDownloadPath(path, resource);
    }
-
+    
    public List<DependencyFile> getDependencies() {
       return context.getDependencies();
    }

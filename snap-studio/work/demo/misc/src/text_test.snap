@@ -1,5 +1,2 @@
-//let f = File("C:\\Work\\development\\snapscript\\snap-release\\snapd.sh");
-let f = File("C:\\Work\\tools\\snap\\snap");
-let x = f.readText();
-x = x.replace("\r", "");
-f.writeText(x);
+let x = null;
+x.substring();

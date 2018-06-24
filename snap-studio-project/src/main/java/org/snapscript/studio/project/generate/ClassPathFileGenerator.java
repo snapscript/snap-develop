@@ -7,7 +7,6 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 import org.snapscript.studio.project.FileSystem;
-import org.snapscript.studio.project.HomeDirectory;
 import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.config.DependencyFile;
 import org.snapscript.studio.project.config.ProjectConfiguration;
@@ -23,6 +22,7 @@ public class ClassPathFileGenerator implements ConfigFileGenerator {
    public ClassPathConfigFile generateConfig(Project project) {
       StringBuilder builder = new StringBuilder();
       List<String> errors = new ArrayList<String>();
+      List<File> files = new ArrayList<File>();
       
       try {
          List<DependencyFile> dependencies = project.getDependencies(true);
@@ -37,6 +37,8 @@ public class ClassPathFileGenerator implements ConfigFileGenerator {
                
                if(message == null && file != null) {
                   String normal = file.getCanonicalPath();
+                  
+                  files.add(file);
                   builder.append(normal);
                } else if(message != null){
                   errors.add(message);
@@ -50,13 +52,14 @@ public class ClassPathFileGenerator implements ConfigFileGenerator {
          log.info("Could not create class path", e);
       }
       String path = builder.toString();
-      return new ClassPathConfigFile(path, errors);
+      return new ClassPathConfigFile(files, path, errors);
    }
 
    @Override
    public ClassPathConfigFile parseConfig(Project project, String content) {
       StringBuilder builder = new StringBuilder();
       List<String> errors = new ArrayList<String>();
+      List<File> files = new ArrayList<File>();
       
       try {
          String[] lines = content.split("\\r?\\n");
@@ -71,8 +74,11 @@ public class ClassPathFileGenerator implements ConfigFileGenerator {
                   
                   errors.add(error);
                } else if(!line.startsWith("#")) {
+                  File file = new File(trimmed);
+                  
                   builder.append(trimmed);
                   builder.append("\n");
+                  files.add(file);
                }
             }
          }
@@ -81,7 +87,7 @@ public class ClassPathFileGenerator implements ConfigFileGenerator {
          return generateConfig(project);
       }
       String path = builder.toString();
-      return new ClassPathConfigFile(path, errors);
+      return new ClassPathConfigFile(files, path, errors);
    }
    
    @Override
