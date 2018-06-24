@@ -8,6 +8,8 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.io.IOUtils;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
@@ -19,6 +21,7 @@ import org.snapscript.studio.project.Project;
 import org.snapscript.studio.project.Workspace;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @ResourcePath("/archive/.*")
 public class ProjectArchiveResource implements Resource {
@@ -33,14 +36,19 @@ public class ProjectArchiveResource implements Resource {
    public void handle(Request request, Response response) throws Throwable {
       Path path = request.getPath();
       Project project = workspace.getProject(path);
-      String mainScript = path.getPath(2); // /<project-name>/<project-path> or /default/blah.snap
+      String[] pathSegments = path.getSegments(); // /archive/<project>/<archive>/<main-script-path>
+      String archiveName = pathSegments[2]; // <archive>
+      String projectName = project.getProjectName();
+      String mainScript = path.getPath(3); // /<main-script-path>
+      
+      log.info("Creating archive {}.jar from {} using {}", archiveName, projectName, mainScript);
+      
       File archiveFile = project.getExportedArchive(mainScript);
-      String name = archiveFile.getName();
       long time = System.currentTimeMillis();
     
       response.setStatus(Status.OK);
       response.setContentType("application/octet-stream");
-      response.setValue(CONTENT_DISPOSITION, "attachment; filename=" + name + ";");
+      response.setValue(CONTENT_DISPOSITION, "attachment; filename=" + archiveName + ".jar;");
       response.setDate(DATE, time);
       
       OutputStream output = response.getOutputStream();
