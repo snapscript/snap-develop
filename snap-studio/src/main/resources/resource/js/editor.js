@@ -17,9 +17,10 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
             FileEditor.scrollEditorToPosition();
             FileEditor.updateProjectTabOnChange(); // listen to change
         };
-        FileEditorView.prototype.updateResourcePath = function (resourcePath) {
+        FileEditorView.prototype.updateResourcePath = function (resourcePath, isReadOnly) {
             window.location.hash = resourcePath.getProjectPath(); // update # anchor
             this._editorResource = resourcePath;
+            this._editorReadOnly = isReadOnly;
         };
         FileEditorView.prototype.getHistoryForResource = function (resource) {
             if (resource) {
@@ -36,6 +37,9 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
         };
         FileEditorView.prototype.getEditorResource = function () {
             return this._editorResource;
+        };
+        FileEditorView.prototype.isEditorReadOnly = function () {
+            return this._editorReadOnly;
         };
         FileEditorView.prototype.getEditorPanel = function () {
             return this._editorPanel;
@@ -160,16 +164,20 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
     }());
     exports.FileEditorUndoState = FileEditorUndoState;
     var FileEditorState = (function () {
-        function FileEditorState(lastModified, breakpoints, resource, undoState, position, source) {
+        function FileEditorState(lastModified, breakpoints, resource, undoState, position, source, isReadOnly) {
             this._lastModified = lastModified;
             this._breakpoints = breakpoints;
             this._resource = resource;
             this._undoState = undoState;
+            this._isReadOnly = isReadOnly;
             this._position = position;
             this._source = source;
         }
         FileEditorState.prototype.isStateValid = function () {
             return this._resource && (this._source != null && this._source != "");
+        };
+        FileEditorState.prototype.isReadOnly = function () {
+            return this._isReadOnly;
         };
         FileEditorState.prototype.getResource = function () {
             return this._resource;
@@ -488,7 +496,7 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
                 editorText = editorBuffer.getSource();
                 editorLastModified = editorBuffer.getLastModified();
             }
-            return new FileEditorState(editorLastModified, editorView.getEditorBreakpoints(), editorView.getEditorResource(), editorUndoState, editorPosition, editorText);
+            return new FileEditorState(editorLastModified, editorView.getEditorBreakpoints(), editorView.getEditorResource(), editorUndoState, editorPosition, editorText, editorView.isEditorReadOnly());
         }
         FileEditor.currentEditorState = currentEditorState;
         function currentEditorText() {
@@ -570,13 +578,15 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
         FileEditor.resolveEditorMode = resolveEditorMode;
         function saveEditorHistory() {
             var editorState = currentEditorState();
-            var editorPath = editorState.getResource();
-            var editorHistory = editorView.getHistoryForResource(editorPath);
-            if (editorState.isStateValid()) {
-                editorHistory.saveHistory(editorState);
-            }
-            else {
-                editorHistory.invalidateHistory();
+            if (!editorState.isReadOnly()) {
+                var editorPath = editorState.getResource();
+                var editorHistory = editorView.getHistoryForResource(editorPath);
+                if (editorState.isStateValid()) {
+                    editorHistory.saveHistory(editorState);
+                }
+                else {
+                    editorHistory.invalidateHistory();
+                }
             }
         }
         function createEditorUndoManager(session, textToDisplay, originalText, resource) {
@@ -585,6 +595,10 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
             editorView.getEditorPanel().setValue(textToDisplay, 1); // this causes a callback resulting in FileEditorHistory.touchHistory
             editorHistory.updateHistory(textToDisplay, originalText);
             editorHistory.restoreUndoManager(session, textToDisplay);
+        }
+        function createEditorWithoutUndoManager(textToDisplay) {
+            editorView.getEditorPanel().setReadOnly(false);
+            editorView.getEditorPanel().setValue(textToDisplay, 1); // this causes a callback resulting in FileEditorHistory.touchHistory
         }
         function clearSavedEditorBuffer(resource) {
             var editorResource = tree_1.FileTree.createResourcePath(resource);
@@ -615,18 +629,26 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
         }
         FileEditor.getEditorBufferForResource = getEditorBufferForResource;
         function resolveEditorTextToUse(fileResource) {
-            console.log("resource=[" + fileResource.getResourcePath().getResourcePath() + "] modified=[" + fileResource.getTimeStamp() + "] length=[" + fileResource.getFileLength() + "]");
             var encodedText = fileResource.getFileContent();
-            var savedHistoryBuffer = getEditorBufferForResource(fileResource.getResourcePath().getResourcePath()); // load saved buffer
-            if (savedHistoryBuffer.getSource() && savedHistoryBuffer.getLastModified() > fileResource.getLastModified()) {
-                console.log("LOAD FROM HISTORY diff=[" + (savedHistoryBuffer.getLastModified() - fileResource.getLastModified()) + "]");
-                return savedHistoryBuffer.getSource();
+            var isReadOnly = fileResource.isHistorical() || fileResource.isError();
+            console.log("resource=[" + fileResource.getResourcePath().getResourcePath() +
+                "] modified=[" + fileResource.getTimeStamp() + "] length=[" + fileResource.getFileLength() + "] readonly=[" + isReadOnly + "]");
+            if (!isReadOnly) {
+                var savedHistoryBuffer = getEditorBufferForResource(fileResource.getResourcePath().getResourcePath()); // load saved buffer
+                if (savedHistoryBuffer.getSource() && savedHistoryBuffer.getLastModified() > fileResource.getLastModified()) {
+                    console.log("LOAD FROM HISTORY diff=[" + (savedHistoryBuffer.getLastModified() - fileResource.getLastModified()) + "]");
+                    return savedHistoryBuffer.getSource();
+                }
+                console.log("IGNORE HISTORY: ", savedHistoryBuffer);
             }
-            console.log("IGNORE HISTORY: ", savedHistoryBuffer);
+            else {
+                console.log("IGNORE HISTORY WHEN READ ONLY");
+            }
             return encodedText;
         }
         function updateEditor(fileResource) {
             var resourcePath = fileResource.getResourcePath();
+            var isReadOnly = fileResource.isHistorical() || fileResource.isError();
             var realText = fileResource.getFileContent();
             var textToDisplay = resolveEditorTextToUse(fileResource);
             var session = editorView.getEditorPanel().getSession();
@@ -639,9 +661,15 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
                     v: Date.now()
                 });
             }
-            createEditorUndoManager(session, textToDisplay, realText, resourcePath); // restore any existing history      
+            if (!isReadOnly) {
+                createEditorUndoManager(session, textToDisplay, realText, resourcePath); // restore any existing history      
+            }
+            else {
+                createEditorWithoutUndoManager(textToDisplay);
+            }
             clearEditor();
-            editorView.updateResourcePath(resourcePath);
+            editorView.getEditorPanel().setReadOnly(isReadOnly);
+            editorView.updateResourcePath(resourcePath, isReadOnly);
             problem_1.ProblemManager.highlightProblems(); // higlight problems on this resource
             if (resourcePath != null && editorView.getEditorResource()) {
                 var filePath = editorView.getEditorResource().getFilePath();
@@ -683,7 +711,8 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
             if (editorView.getEditorResource() != null) {
                 var editorHistory = editorView.getHistoryForResource(editorView.getEditorResource());
                 var currentText = editorView.getEditorPanel().getValue();
-                return currentText != editorHistory.getOriginalText();
+                var originalText = editorHistory.getOriginalText();
+                return currentText != originalText;
             }
             return false;
         }

@@ -24,6 +24,7 @@ import {FileResource} from "explorer"
 export class FileEditorView {   
 
    private _editorResource: FilePath;
+   private _editorReadOnly: boolean;
    private _editorHistory: any; // store all editor context
    private _editorMarkers: any;   
    private _editorBreakpoints: any; // spans multiple resources      
@@ -43,9 +44,10 @@ export class FileEditorView {
       FileEditor.updateProjectTabOnChange(); // listen to change
    }
    
-   public updateResourcePath(resourcePath: FilePath) {
+   public updateResourcePath(resourcePath: FilePath, isReadOnly: boolean) {
       window.location.hash = resourcePath.getProjectPath(); // update # anchor
       this._editorResource = resourcePath;
+      this._editorReadOnly = isReadOnly;
    }  
    
    public getHistoryForResource(resource: FilePath): FileEditorHistory {
@@ -75,6 +77,10 @@ export class FileEditorView {
    
    public getEditorResource(): FilePath {
       return this._editorResource;
+   }
+   
+   public isEditorReadOnly(): boolean {
+      return this._editorReadOnly;
    }
    
    public getEditorPanel() {
@@ -233,18 +239,24 @@ export class FileEditorState {
    private _breakpoints: any;
    private _resource : FilePath;
    private _source : string;
+   private _isReadOnly: boolean;
    
-   constructor(lastModified: number, breakpoints: any, resource: FilePath, undoState: FileEditorUndoState, position: FileEditorPosition, source: string) {
+   constructor(lastModified: number, breakpoints: any, resource: FilePath, undoState: FileEditorUndoState, position: FileEditorPosition, source: string, isReadOnly: boolean) {
       this._lastModified = lastModified;
       this._breakpoints = breakpoints;
       this._resource = resource;
       this._undoState = undoState;
+      this._isReadOnly = isReadOnly;
       this._position = position;
       this._source = source;
    }
    
    public isStateValid(): boolean {
       return this._resource && (this._source != null && this._source != "");      
+   }
+   
+   public isReadOnly(): boolean {
+      return this._isReadOnly;
    }
    
    public getResource(): FilePath {
@@ -622,7 +634,8 @@ export module FileEditor {
          editorView.getEditorResource(),
          editorUndoState,
          editorPosition,
-         editorText         
+         editorText,
+         editorView.isEditorReadOnly()
       );
    }
    
@@ -723,13 +736,16 @@ export module FileEditor {
    
    function saveEditorHistory() {
       var editorState: FileEditorState = currentEditorState();
-      var editorPath: FilePath = editorState.getResource();
-      var editorHistory: FileEditorHistory = editorView.getHistoryForResource(editorPath);
    
-      if(editorState.isStateValid()) {      
-         editorHistory.saveHistory(editorState);         
-      } else {
-         editorHistory.invalidateHistory();
+      if(!editorState.isReadOnly()) {
+         var editorPath: FilePath = editorState.getResource();
+         var editorHistory: FileEditorHistory = editorView.getHistoryForResource(editorPath);
+      
+         if(editorState.isStateValid()) {      
+            editorHistory.saveHistory(editorState);         
+         } else {
+            editorHistory.invalidateHistory();
+         }
       }
    }
    
@@ -741,6 +757,11 @@ export module FileEditor {
       editorHistory.updateHistory(textToDisplay, originalText);
       editorHistory.restoreUndoManager(session, textToDisplay);     
    } 
+   
+   function createEditorWithoutUndoManager(textToDisplay: string) {
+      editorView.getEditorPanel().setReadOnly(false);
+      editorView.getEditorPanel().setValue(textToDisplay, 1); // this causes a callback resulting in FileEditorHistory.touchHistory
+   }
    
    export function clearSavedEditorBuffer(resource: string) {
       var editorResource: FilePath = FileTree.createResourcePath(resource);
@@ -782,21 +803,29 @@ export module FileEditor {
    }
    
    function resolveEditorTextToUse(fileResource: FileResource) {
-      console.log("resource=[" + fileResource.getResourcePath().getResourcePath() + "] modified=[" + fileResource.getTimeStamp() + "] length=[" + fileResource.getFileLength() + "]");
-      
       var encodedText: string = fileResource.getFileContent();
-      var savedHistoryBuffer: FileEditorBuffer = getEditorBufferForResource(fileResource.getResourcePath().getResourcePath()); // load saved buffer
-
-      if(savedHistoryBuffer.getSource() && savedHistoryBuffer.getLastModified() > fileResource.getLastModified()) {
-         console.log("LOAD FROM HISTORY diff=[" + (savedHistoryBuffer.getLastModified() - fileResource.getLastModified()) + "]");
-         return savedHistoryBuffer.getSource();
+      var isReadOnly = fileResource.isHistorical() || fileResource.isError();
+      
+      console.log("resource=[" + fileResource.getResourcePath().getResourcePath() + 
+            "] modified=[" + fileResource.getTimeStamp() + "] length=[" + fileResource.getFileLength() + "] readonly=[" + isReadOnly +"]");
+      
+      if(!isReadOnly) {
+         var savedHistoryBuffer: FileEditorBuffer = getEditorBufferForResource(fileResource.getResourcePath().getResourcePath()); // load saved buffer
+   
+         if(savedHistoryBuffer.getSource() && savedHistoryBuffer.getLastModified() > fileResource.getLastModified()) {
+            console.log("LOAD FROM HISTORY diff=[" + (savedHistoryBuffer.getLastModified() - fileResource.getLastModified()) + "]");
+            return savedHistoryBuffer.getSource();
+         }
+         console.log("IGNORE HISTORY: ", savedHistoryBuffer);
+      } else {
+         console.log("IGNORE HISTORY WHEN READ ONLY");
       }
-      console.log("IGNORE HISTORY: ", savedHistoryBuffer);
       return encodedText;
    }
    
    export function updateEditor(fileResource: FileResource) { // why would you ever ignore an update here?
       var resourcePath: FilePath = fileResource.getResourcePath();
+      var isReadOnly = fileResource.isHistorical() || fileResource.isError();
       var realText: string = fileResource.getFileContent();
       var textToDisplay = resolveEditorTextToUse(fileResource);
       var session = editorView.getEditorPanel().getSession();
@@ -811,10 +840,16 @@ export module FileEditor {
             v: Date.now() 
          })
       }
-      createEditorUndoManager(session, textToDisplay, realText, resourcePath); // restore any existing history      
+      if(!isReadOnly) {
+         createEditorUndoManager(session, textToDisplay, realText, resourcePath); // restore any existing history      
+      } else {
+         createEditorWithoutUndoManager(textToDisplay);
+      }
       clearEditor();
       
-      editorView.updateResourcePath(resourcePath)
+      editorView.getEditorPanel().setReadOnly(isReadOnly);
+      editorView.updateResourcePath(resourcePath, isReadOnly);
+      
       ProblemManager.highlightProblems(); // higlight problems on this resource
       
       if (resourcePath != null && editorView.getEditorResource()) {
@@ -859,8 +894,9 @@ export module FileEditor {
       if(editorView.getEditorResource() != null) {
          var editorHistory: FileEditorHistory = editorView.getHistoryForResource(editorView.getEditorResource());
          var currentText = editorView.getEditorPanel().getValue(); 
+         var originalText = editorHistory.getOriginalText();
          
-         return currentText != editorHistory.getOriginalText();
+         return currentText != originalText;
       }
       return false;
    }
