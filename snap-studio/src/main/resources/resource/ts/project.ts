@@ -772,9 +772,11 @@ export module Project {
                   closable: false 
                } ],
                onClick : function(event) {
-                  FileExplorer.openTreeFile(event.target, function(){
-                     FileEditor.showEditorFileInTree();
-                  });
+                  if(event.target != 'editTab') {
+                     FileExplorer.openTreeFile(event.target, function(){
+                        FileEditor.showEditorFileInTree();
+                     });
+                  }
                },
                onClose : function(event) {
                   closeEditorTabForPath(event.target);

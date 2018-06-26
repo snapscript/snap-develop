@@ -668,9 +668,11 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
                                     closable: false
                                 }],
                             onClick: function (event) {
-                                explorer_1.FileExplorer.openTreeFile(event.target, function () {
-                                    editor_1.FileEditor.showEditorFileInTree();
-                                });
+                                if (event.target != 'editTab') {
+                                    explorer_1.FileExplorer.openTreeFile(event.target, function () {
+                                        editor_1.FileEditor.showEditorFileInTree();
+                                    });
+                                }
                             },
                             onClose: function (event) {
                                 closeEditorTabForPath(event.target);
