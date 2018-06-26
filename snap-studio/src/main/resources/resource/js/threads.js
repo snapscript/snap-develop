@@ -7,7 +7,7 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
     })(exports.ThreadStatus || (exports.ThreadStatus = {}));
     var ThreadStatus = exports.ThreadStatus;
     var ThreadScope = (function () {
-        function ThreadScope(variables, evaluation, status, instruction, process, resource, source, thread, stack, line, depth, key) {
+        function ThreadScope(variables, evaluation, status, instruction, process, resource, source, thread, stack, line, depth, key, change) {
             this._variables = variables;
             this._evaluation = evaluation;
             this._status = status;
@@ -19,6 +19,7 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
             this._stack = stack;
             this._line = line;
             this._depth = depth;
+            this._change = change;
             this._key = key;
         }
         ThreadScope.prototype.getVariables = function () {
@@ -57,8 +58,8 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
         ThreadScope.prototype.getKey = function () {
             return this._key;
         };
-        ThreadScope.prototype.isChange = function () {
-            return false; // XXX what ist his???
+        ThreadScope.prototype.getChange = function () {
+            return this._change;
         };
         return ThreadScope;
     }());
@@ -126,7 +127,7 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
                 threadStatus = ThreadStatus.UNKNOWN; // when we have an error
                 console.warn("No such thread status " + status + " setting to " + ThreadStatus[threadStatus]);
             }
-            var threadScope = new ThreadScope(threadVariables, threadEvaluation, threadStatus, message.instruction, message.process, message.resource, message.source, message.thread, message.stack, message.line, message.depth, message.key);
+            var threadScope = new ThreadScope(threadVariables, threadEvaluation, threadStatus, message.instruction, message.process, message.resource, message.source, message.thread, message.stack, message.line, message.depth, message.key, message.change);
             if (isThreadFocusResumed(threadScope)) {
                 clearFocusThread(); // clear focus as it is a resume
                 updateThreadPanels(threadScope);
@@ -237,7 +238,7 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
                     if (threadEditorFocus.getKey() != threadScope.getKey()) {
                         return true;
                     }
-                    if (threadEditorFocus.isChange() != threadScope.isChange()) {
+                    if (threadEditorFocus.getChange() != threadScope.getChange()) {
                         return true;
                     }
                 }
@@ -269,11 +270,11 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
         ThreadManager.focusedThread = focusedThread;
         function clearFocusThread() {
             variables_1.VariableManager.clearVariables(); // clear the browse tree
-            var threadCopy = new ThreadScope(new ThreadVariables({}), new ThreadVariables({}), ThreadStatus.RUNNING, null, null, null, null, null, null, -1, -1, -1);
+            var threadCopy = new ThreadScope(new ThreadVariables({}), new ThreadVariables({}), ThreadStatus.RUNNING, null, null, null, null, null, null, -1, -1, -1, -1);
             threadEditorFocus = threadCopy;
         }
         function updateThreadFocus(threadScope) {
-            var threadCopy = new ThreadScope(threadScope.getVariables(), threadScope.getEvaluation(), threadScope.getStatus(), threadScope.getInstruction(), threadScope.getProcess(), threadScope.getResource(), threadScope.getSource(), threadScope.getThread(), threadScope.getStack(), threadScope.getLine(), threadScope.getDepth(), threadScope.getKey());
+            var threadCopy = new ThreadScope(threadScope.getVariables(), threadScope.getEvaluation(), threadScope.getStatus(), threadScope.getInstruction(), threadScope.getProcess(), threadScope.getResource(), threadScope.getSource(), threadScope.getThread(), threadScope.getStack(), threadScope.getLine(), threadScope.getDepth(), threadScope.getKey(), threadScope.getChange());
             threadEditorFocus = threadCopy;
             updateThreadPanels(threadCopy); // update the thread variables etc..
         }

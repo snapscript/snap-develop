@@ -386,12 +386,18 @@ export module FileEditor {
       editorView.getEditorPanel().resize(true);
       
       if(line > 1) {
-         editorView.getEditorPanel().scrollToLine(line - 1, true, true, function () {})
-         editorView.getEditorPanel().gotoLine(line); // move the cursor
+         var requestedLine = line - 1;
+         var currentLine = getCurrentLineForEditor();
+         
+         if(currentLine != requestedLine) {
+            editorView.getEditorPanel().scrollToLine(requestedLine, true, true, function () {})
+            editorView.getEditorPanel().gotoLine(line); // move the cursor
+            editorView.getEditorPanel().focus();
+         }
       } else {
          editorView.getEditorPanel().scrollToLine(0, true, true, function () {})
+         editorView.getEditorPanel().focus();
       }
-      editorView.getEditorPanel().focus();
    }
    
    function clearEditorHighlight(line) {

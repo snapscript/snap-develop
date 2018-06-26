@@ -30,6 +30,7 @@ export class ThreadScope {
    private _line: number;
    private _depth: number;
    private _key: number;
+   private _change: number;
    
    constructor(variables: ThreadVariables,
                evaluation: ThreadVariables,
@@ -42,20 +43,22 @@ export class ThreadScope {
                stack: string,
                line: number,
                depth: number,
-               key: number) 
+               key: number,
+               change: number) 
    {
       
       this._variables = variables;
-      this._evaluation= evaluation;
+      this._evaluation = evaluation;
       this._status = status;
-      this._instruction= instruction;
-      this._process= process;
-      this._resource= resource;
-      this._source= source;
-      this._thread= thread;
-      this._stack=stack;
-      this._line= line;
-      this._depth= depth;
+      this._instruction = instruction;
+      this._process = process;
+      this._resource = resource;
+      this._source = source;
+      this._thread = thread;
+      this._stack =stack;
+      this._line = line;
+      this._depth = depth;
+      this._change = change;
       this._key= key;
    }
    
@@ -107,8 +110,8 @@ export class ThreadScope {
       return this._key;
    }
    
-   public isChange(): boolean{
-      return false; // XXX what ist his???
+   public getChange(): number{
+      return this._change; 
    }
    
 }
@@ -199,7 +202,8 @@ export module ThreadManager {
             message.stack,
             message.line,
             message.depth,
-            message.key
+            message.key,
+            message.change
       );
       if(isThreadFocusResumed(threadScope)) {
          clearFocusThread(); // clear focus as it is a resume
@@ -316,7 +320,7 @@ export module ThreadManager {
             if(threadEditorFocus.getKey() != threadScope.getKey()) { // thread position change
                return true;
             }
-            if(threadEditorFocus.isChange() != threadScope.isChange()) { // thread variables change, e.g browse
+            if(threadEditorFocus.getChange() != threadScope.getChange()) { // thread variables change, e.g browse
                return true;
             }
          }
@@ -365,6 +369,7 @@ export module ThreadManager {
             -1,
             -1,
             -1,
+            -1
       );
       threadEditorFocus = threadCopy; 
    }
@@ -382,7 +387,8 @@ export module ThreadManager {
             threadScope.getStack(),
             threadScope.getLine(),
             threadScope.getDepth(),
-            threadScope.getKey()
+            threadScope.getKey(),
+            threadScope.getChange()
       );
       threadEditorFocus = threadCopy; 
       updateThreadPanels(threadCopy); // update the thread variables etc..

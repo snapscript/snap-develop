@@ -1,2 +1,10 @@
-for(i in 0..10)
-   println("foo");
+let map = {:};
+
+func makeKey(x): String {
+   return map.computeIfAbsent(x, k -> String(x));
+}
+
+let t = makeKey('x').substring(1);
+
+println(String('x'));
+println(t.length);
