@@ -658,7 +658,7 @@ export module Command {
          var message = {
             project: document.title,
             resource: mainScript.getProjectPath(),
-            archive: savePath.getProjectPath()
+            archive: resourceDetails.getProjectPath()
          };
          EventBus.sendEvent("CREATE_ARCHIVE", message);
       });

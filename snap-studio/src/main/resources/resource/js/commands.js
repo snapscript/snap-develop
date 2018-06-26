@@ -597,7 +597,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                 var message = {
                     project: document.title,
                     resource: mainScript.getProjectPath(),
-                    archive: savePath.getProjectPath()
+                    archive: resourceDetails.getProjectPath()
                 };
                 socket_1.EventBus.sendEvent("CREATE_ARCHIVE", message);
             });
