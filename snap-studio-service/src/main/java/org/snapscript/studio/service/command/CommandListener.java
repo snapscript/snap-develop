@@ -266,8 +266,8 @@ public class CommandListener {
    }
 
    public void onCreateArchive(CreateArchiveCommand command) {
-      String resource = command.getResource();
-      String archive = command.getArchive();
+      final String resource = command.getResource();
+      final String archive = command.getArchive();
       
       try {
          if(archive.endsWith(".jar")) {
@@ -279,13 +279,22 @@ public class CommandListener {
                
                @Override
                public void run() {
-                  log.info("Exporting archive for {} with {}", name, scriptPath);
-                  File archivePath = project.getExportedArchive(scriptPath);
-                  
-                  if(savePath.exists()) {
-                     savePath.delete();
+                  try {
+                     log.info("Exporting archive for {} with {}", name, scriptPath);
+                     File archivePath = project.getExportedArchive(scriptPath);
+                     
+                     if(savePath.exists()) {
+                        savePath.delete();
+                     }
+                     archivePath.renameTo(savePath);
+                  } catch(Exception e) {
+                     try {
+                        String message = e.getMessage();
+                        commandClient.sendAlert(archive, message);
+                     } catch(Exception ex) {
+                        log.info("Error creating archive " + archive, e);
+                     }
                   }
-                  archivePath.renameTo(savePath);
                }
             };
             Thread thread = factory.newThread(exportTask);
@@ -294,7 +303,7 @@ public class CommandListener {
             commandClient.sendAlert(archive, "Archive " + archive + " should end with .jar");
          }
       } catch(Exception e) {
-         log.info("Error executing " + resource, e);
+         log.info("Error creating archive " + archive, e);
       }
    }
    

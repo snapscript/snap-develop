@@ -4,6 +4,7 @@ import static org.springframework.core.io.support.ResourcePatternResolver.CLASSP
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
@@ -17,9 +18,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -71,15 +73,27 @@ public class ArchiveBuilder {
       String name = project.getProjectName();
       String tempDir = System.getProperty("java.io.tmpdir");
       
-      try { 
-         File destDir = new File(tempDir, name);
-         File outputFile = new File(tempDir, name + ".jar");
+      if(mainScript != null) {
+         String realPath = project.getRealPath(mainScript);
+         File rootPath = project.getProjectPath();
+         File mainScriptFile = new File(rootPath, realPath);
          
+         if(!mainScriptFile.exists()) {
+            throw new IllegalArgumentException("Resource " + mainScript + " does not exist");
+         }
+         if(mainScriptFile.isDirectory()) {
+            throw new IllegalArgumentException("Resource " + mainScript + " is a directory");
+         }
+      }
+      File destDir = new File(tempDir, name);
+      File outputFile = new File(tempDir, name + ".jar");
+      
+      try { 
          collectResources(destDir);
          extractRuntime(destDir);
          extractClassPath(destDir);
          archiveDirectory(destDir, outputFile, mainScript);
-         
+
          log.info("Archive {} created for {}", outputFile, name);
          return outputFile;
       }catch(Exception e) {
@@ -150,7 +164,7 @@ public class ArchiveBuilder {
                if(!outputFile.getParentFile().exists()) {
                   outputFile.getParentFile().mkdirs();
                }
-               log.info("Archiving {}", path);
+               log.info("Collecting {}", path);
                FileUtils.writeByteArrayToFile(outputFile, content);
             } catch(Exception e) {
                log.info("Could not collect {}", path);
@@ -179,7 +193,7 @@ public class ArchiveBuilder {
                InputStream input = resource.getInputStream();
                
                try {
-                  log.info("Archiving {}", relativePath);
+                  log.info("Extracting {}", relativePath);
                   byte[] data = IOUtils.toByteArray(input);
                   FileUtils.writeByteArrayToFile(file, data);
                }finally {
@@ -222,32 +236,28 @@ public class ArchiveBuilder {
       @Override
       public void run() {
          try {
-            JarFile jarfile = new JarFile(file); // jar file path(here sqljdbc4.jar)
-            Enumeration<JarEntry> jarEntries = jarfile.entries();
+            ZipFile zipFile = new ZipFile(file); // jar file path(here sqljdbc4.jar)
+            Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
             
-            while (jarEntries.hasMoreElements()) {
-               JarEntry jarEntry = jarEntries.nextElement();
-               String fileName = jarEntry.getName();
+            while (zipEntries.hasMoreElements()) {
+               ZipEntry zipEntry = zipEntries.nextElement();
+               String fileName = zipEntry.getName();
                File outputPath = new File(destDir, fileName);
                
                if (!outputPath.exists()) {
                   outputPath.getParentFile().mkdirs();
                }
-               if (jarEntry.isDirectory()) {
-                  continue;
-               }
-               InputStream sourceFile = jarfile.getInputStream(jarEntry);
-               FileOutputStream outputFile = new FileOutputStream(outputPath);
-
+               InputStream input = zipFile.getInputStream(zipEntry);
+               
                try {
-                  log.info("Archiving {}", fileName);
-                  IOUtils.copy(sourceFile, outputFile);
+                  log.info("Extracting {}", fileName);
+                  byte[] data = IOUtils.toByteArray(input);
+                  FileUtils.writeByteArrayToFile(file, data);
                }finally {
-                  outputFile.close();
-                  sourceFile.close();
+                  input.close();
                }
             }
-            jarfile.close();
+            zipFile.close();
          } catch(Exception e) {
             log.info("Could not extract {}", file);
          }

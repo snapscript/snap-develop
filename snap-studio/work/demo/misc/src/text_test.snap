@@ -1,5 +1,18 @@
+import util.concurrent.atomic.AtomicInteger;
+
 func main(args) {
    args.stream().forEach(x -> println(x));
 }  
 main(args);
-  
+go();
+go();
+go();
+func go(){
+   let s = System.currentTimeMillis();  
+   let x = new AtomicInteger();
+   for(i in 0..10000000){
+      x.getAndIncrement();
+   }
+   let f = System.currentTimeMillis();
+   println(f-s);
+}

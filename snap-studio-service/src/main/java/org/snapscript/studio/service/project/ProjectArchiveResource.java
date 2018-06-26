@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,22 +43,33 @@ public class ProjectArchiveResource implements Resource {
       String mainScript = path.getPath(3); // /<main-script-path>
       
       log.info("Creating archive {}.jar from {} using {}", archiveName, projectName, mainScript);
-      
-      File archiveFile = project.getExportedArchive(mainScript);
+
       long time = System.currentTimeMillis();
-    
+      
       response.setStatus(Status.OK);
-      response.setContentType("application/octet-stream");
-      response.setValue(CONTENT_DISPOSITION, "attachment; filename=" + archiveName + ".jar;");
       response.setDate(DATE, time);
       
-      OutputStream output = response.getOutputStream();
-      InputStream source = new FileInputStream(archiveFile);
-      
       try {
-         IOUtils.copy(source, output);
-      } finally {
-         source.close();
+         File archiveFile = project.getExportedArchive(mainScript);
+         OutputStream output = response.getOutputStream();
+         
+         response.setContentType("application/octet-stream");
+         response.setValue(CONTENT_DISPOSITION, "attachment; filename=" + archiveName + ".jar;");
+         
+         InputStream source = new FileInputStream(archiveFile);
+         
+         try {
+            IOUtils.copy(source, output);
+         } finally {
+            source.close();
+            output.close();
+         }
+      } catch(Exception cause) {
+         PrintStream output = response.getPrintStream();
+         
+         response.setStatus(Status.INTERNAL_SERVER_ERROR);
+         response.setContentType("text/plain");
+         cause.printStackTrace(output);
          output.close();
       }
    }
