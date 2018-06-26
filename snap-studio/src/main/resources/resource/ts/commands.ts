@@ -428,20 +428,6 @@ export module Command {
       }
    }
    
-   export function attachRemoteDebugger() {
-      if(EventBus.isSocketOpen()) {
-         Alerts.createRemoteDebugPromptAlert("Remote Debug", "<host>:<port>", "Attach", "Cancel", 
-            function(hostAndPort) {
-               var message = {
-                  project: document.title,
-                  address: hostAndPort
-               };
-               EventBus.sendEvent("REMOTE_DEBUG", message);
-            }
-         );
-      }
-   }
-   
    export function uploadFileTo(fileName, uploadToPath, encodedFile) {
       var destinationPath: FilePath = FileTree.createResourcePath(uploadToPath);
       var toPath = FileTree.cleanResourcePath(destinationPath.getFilePath() + "/" + fileName);
@@ -689,13 +675,13 @@ export module Command {
          };
          setTimeout(function() {
             if(debug) {
-               Alerts.createDebugPromptAlert("Debug", "<arguments>", "Debug", "Cancel", 
+               Alerts.createDebugPromptAlert("Debug", "Enter arguments", "Debug", "Cancel", 
                   function(inputArguments) {
                      localExecuteFunction(true, inputArguments);
                   }
                );
             } else {
-               Alerts.createRunPromptAlert("Run", "<arguments>", "Run", "Cancel", 
+               Alerts.createRunPromptAlert("Run", "Enter arguments", "Run", "Cancel", 
                   function(inputArguments) {
                      localExecuteFunction(false, inputArguments);
                   }
@@ -703,6 +689,20 @@ export module Command {
             }
          }, 100);
       }, true); // save editor
+   }
+   
+   export function attachRemoteDebugger() {
+      if(EventBus.isSocketOpen()) {
+         Alerts.createRemoteDebugPromptAlert("Remote Debug", "Enter <host>:<port>", "Attach", "Cancel", 
+            function(hostAndPort) {
+               var message = {
+                  project: document.title,
+                  address: hostAndPort
+               };
+               EventBus.sendEvent("REMOTE_DEBUG", message);
+            }
+         );
+      }
    }
    
    export function updateScriptBreakpoints() {

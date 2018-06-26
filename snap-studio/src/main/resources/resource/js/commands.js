@@ -384,18 +384,6 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             }
         }
         Command.pingProcess = pingProcess;
-        function attachRemoteDebugger() {
-            if (socket_1.EventBus.isSocketOpen()) {
-                alert_1.Alerts.createRemoteDebugPromptAlert("Remote Debug", "<host>:<port>", "Attach", "Cancel", function (hostAndPort) {
-                    var message = {
-                        project: document.title,
-                        address: hostAndPort
-                    };
-                    socket_1.EventBus.sendEvent("REMOTE_DEBUG", message);
-                });
-            }
-        }
-        Command.attachRemoteDebugger = attachRemoteDebugger;
         function uploadFileTo(fileName, uploadToPath, encodedFile) {
             var destinationPath = tree_1.FileTree.createResourcePath(uploadToPath);
             var toPath = tree_1.FileTree.cleanResourcePath(destinationPath.getFilePath() + "/" + fileName);
@@ -628,18 +616,30 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                 };
                 setTimeout(function () {
                     if (debug) {
-                        alert_1.Alerts.createDebugPromptAlert("Debug", "<arguments>", "Debug", "Cancel", function (inputArguments) {
+                        alert_1.Alerts.createDebugPromptAlert("Debug", "Enter arguments", "Debug", "Cancel", function (inputArguments) {
                             localExecuteFunction(true, inputArguments);
                         });
                     }
                     else {
-                        alert_1.Alerts.createRunPromptAlert("Run", "<arguments>", "Run", "Cancel", function (inputArguments) {
+                        alert_1.Alerts.createRunPromptAlert("Run", "Enter arguments", "Run", "Cancel", function (inputArguments) {
                             localExecuteFunction(false, inputArguments);
                         });
                     }
                 }, 100);
             }, true); // save editor
         }
+        function attachRemoteDebugger() {
+            if (socket_1.EventBus.isSocketOpen()) {
+                alert_1.Alerts.createRemoteDebugPromptAlert("Remote Debug", "Enter <host>:<port>", "Attach", "Cancel", function (hostAndPort) {
+                    var message = {
+                        project: document.title,
+                        address: hostAndPort
+                    };
+                    socket_1.EventBus.sendEvent("REMOTE_DEBUG", message);
+                });
+            }
+        }
+        Command.attachRemoteDebugger = attachRemoteDebugger;
         function updateScriptBreakpoints() {
             var editorState = editor_1.FileEditor.currentEditorState();
             var message = {
