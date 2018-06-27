@@ -8621,6 +8621,9 @@ var w2confirm = function (msg, title, callBack) {
                         if (event.target.id == 'Yes' && typeof options.yes_callBack == 'function') options.yes_callBack();
                         if (event.target.id == 'No'  && typeof options.no_callBack == 'function') options.no_callBack();
                     });
+                    if(typeof options.onOpen == 'function') {
+                       options.onOpen();
+                    }
                 }
             },
             onKeydown: function (event) {

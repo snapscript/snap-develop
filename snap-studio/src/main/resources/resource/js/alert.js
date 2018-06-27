@@ -77,7 +77,11 @@ define(["require", "exports", "socket"], function (require, exports, socket_1) {
             var focusCallback = function () {
                 var element = document.getElementById("textToSearchFor");
                 if (element) {
+                    console.log("Taking focus of dialog");
                     element.focus();
+                }
+                else {
+                    console.log("No element to focus dialog");
                 }
             };
             var options = {
@@ -92,10 +96,10 @@ define(["require", "exports", "socket"], function (require, exports, socket_1) {
                 no_text: noButton,
                 no_class: 'btn dialogButton',
                 no_style: '',
-                no_callBack: cancelCallback // callBack for no button
+                no_callBack: cancelCallback,
+                onOpen: focusCallback
             };
             w2confirm(options);
-            focusCallback();
         }
     })(Alerts = exports.Alerts || (exports.Alerts = {}));
 });

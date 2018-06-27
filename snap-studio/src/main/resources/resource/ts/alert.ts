@@ -85,7 +85,10 @@ export module Alerts {
          let element: HTMLElement = document.getElementById("textToSearchFor");
          
          if(element) {
-            element.focus();
+            console.log("Taking focus of dialog");
+            element.focus();            
+         } else {
+            console.log("No element to focus dialog");
          }
       };
       let options = {
@@ -100,10 +103,10 @@ export module Alerts {
          no_text      : noButton,      // text for no button
          no_class     : 'btn dialogButton',        // class for no button
          no_style     : '',        // style for no button
-         no_callBack  : cancelCallback      // callBack for no button
+         no_callBack  : cancelCallback,      // callBack for no button   
+         onOpen: focusCallback
       };
       w2confirm(options);
-      focusCallback();
    }
 }
 //ModuleSystem.registerModule("alert", "Alert module: alert.js", null, Alerts.registerAlerts, ["common", "socket"]);
