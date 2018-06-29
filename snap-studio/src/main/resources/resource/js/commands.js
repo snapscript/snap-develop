@@ -612,8 +612,12 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                         source: editorState.getSource(),
                         debug: isDebug ? true : false
                     };
+                    setTimeout(function () {
+                        editor_1.FileEditor.setReadOnly(false);
+                    }, 200); // delay making it writable 
                     socket_1.EventBus.sendEvent("EXECUTE", message);
                 };
+                editor_1.FileEditor.setReadOnly(true);
                 setTimeout(function () {
                     if (debug) {
                         alert_1.Alerts.createDebugPromptAlert("Debug", "Enter arguments", "Debug", "Cancel", function (inputArguments) {

@@ -673,7 +673,7 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
                 createEditorWithoutUndoManager(textToDisplay);
             }
             clearEditor();
-            editorView.getEditorPanel().setReadOnly(isReadOnly);
+            setReadOnly(isReadOnly);
             editorView.updateResourcePath(resourcePath, isReadOnly);
             problem_1.ProblemManager.highlightProblems(); // higlight problems on this resource
             if (resourcePath != null && editorView.getEditorResource()) {
@@ -698,6 +698,10 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
             updateEditorTabMark(); // add a * to the name if its not in sync
         }
         FileEditor.updateEditor = updateEditor;
+        function setReadOnly(isReadOnly) {
+            editorView.getEditorPanel().setReadOnly(isReadOnly);
+        }
+        FileEditor.setReadOnly = setReadOnly;
         function showEditorFileInTree() {
             var editorState = currentEditorState();
             var resourcePath = editorState.getResource();

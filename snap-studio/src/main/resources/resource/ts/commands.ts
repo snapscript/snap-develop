@@ -671,8 +671,12 @@ export module Command {
                source : editorState.getSource(),
                debug: isDebug ? true: false
             };
+            setTimeout(function() {
+               FileEditor.setReadOnly(false); 
+            }, 200); // delay making it writable 
             EventBus.sendEvent("EXECUTE", message);
          };
+         FileEditor.setReadOnly(true);
          setTimeout(function() {
             if(debug) {
                Alerts.createDebugPromptAlert("Debug", "Enter arguments", "Debug", "Cancel", 

@@ -852,10 +852,9 @@ export module FileEditor {
          createEditorWithoutUndoManager(textToDisplay);
       }
       clearEditor();
+      setReadOnly(isReadOnly);
       
-      editorView.getEditorPanel().setReadOnly(isReadOnly);
       editorView.updateResourcePath(resourcePath, isReadOnly);
-      
       ProblemManager.highlightProblems(); // higlight problems on this resource
       
       if (resourcePath != null && editorView.getEditorResource()) {
@@ -879,6 +878,10 @@ export module FileEditor {
       FileEditor.showEditorFileInTree();
       scrollEditorToPosition();
       updateEditorTabMark(); // add a * to the name if its not in sync
+   }
+   
+   export function setReadOnly(isReadOnly) {
+      editorView.getEditorPanel().setReadOnly(isReadOnly);
    }
    
    export function showEditorFileInTree() {
