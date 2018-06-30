@@ -1,9 +1,18 @@
-  
-let x = String('x');
-println(x.length); 
-// focus needs to be taken by the alert
-println(x);
+func fib() {
+    let a = 0, b = 1;
+    loop {
+        yield a;
+        (a, b) = (b, a + b);
+   }
+}
+let it = fib().iterator();
 
-   
-    
-    
+for(i in 0..40){
+   let index = i - 1;
+   let value = it.next;
+
+   if(index == 30) {
+      assert value == 1346269;
+   }
+   println(`${index}=${value}`);
+}

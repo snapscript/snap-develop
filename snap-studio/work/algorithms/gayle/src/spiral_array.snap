@@ -1,0 +1,11 @@
+
+func spiral(size): Integer[][] {
+   let cube: Integer[][] = new Integer[size][size];
+   let width = size;
+   let height = size;
+   let count = 0;
+   
+   for(let i = 0; i < width; i++){
+      
+   } 
+}
