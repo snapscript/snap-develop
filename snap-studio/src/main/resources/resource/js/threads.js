@@ -176,8 +176,9 @@ define(["require", "exports", "jquery", "w2ui", "socket", "common", "tree", "edi
             var editorState = editor_1.FileEditor.currentEditorState();
             if (threadEditorFocus.getThread() == threadScope.getThread()) {
                 if (editorState.getResource().getFilePath() == threadScope.getResource() && threadScope.getStatus() == ThreadStatus.SUSPENDED) {
-                    editor_1.FileEditor.createEditorHighlight(threadScope.getLine(), "threadHighlight");
-                    editor_1.FileEditor.showEditorLine(threadScope.getLine());
+                    if (editor_1.FileEditor.createEditorHighlight(threadScope.getLine(), "threadHighlight")) {
+                        editor_1.FileEditor.showEditorLine(threadScope.getLine());
+                    }
                 }
             }
         }

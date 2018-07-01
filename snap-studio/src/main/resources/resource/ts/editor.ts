@@ -96,6 +96,31 @@ export class FileEditorView {
    }
 }
 
+export class FileEditorMarker {
+   
+   private _style: string;
+   private _line: number;
+   private _marker: number;
+   
+   constructor(line: number, style: string, marker: number) {
+      this._style = style;
+      this._line = line;
+      this._marker = marker;
+   }
+   
+   public getLine(): number {
+      return this._line;
+   }
+   
+   public getMarker(): number {
+      return this._marker;
+   }
+   
+   public getStyle(): string {
+      return this._style;
+   }
+}
+
 export class FileEditorHistory {
 
    private _undoState: FileEditorUndoState;
@@ -370,10 +395,10 @@ export module FileEditor {
 //      }
       for (var editorLine in editorMarkers) {
          if (editorMarkers.hasOwnProperty(editorLine)) {
-            var marker = editorMarkers[editorLine];
+            var marker: FileEditorMarker = editorMarkers[editorLine];
             
             if(marker != null) {
-               session.removeMarker(marker);
+               session.removeMarker(marker.getMarker());
                delete editorMarkers[editorLine];
             }
          }
@@ -403,29 +428,51 @@ export module FileEditor {
    function clearEditorHighlight(line) {
       var session = editorView.getEditorPanel().getSession();
       var editorMarkers = editorView.getEditorMarkers();
-      var marker = editorMarkers[line];
+      var marker: FileEditorMarker = editorMarkers[line];
       
       if(marker != null) {
-         session.removeMarker(marker);
+         session.removeMarker(marker.getMarker());
       }
    }
    
-   export function createEditorHighlight(line, css) {
+   export function createEditorHighlight(line, css): boolean {
       var Range = ace.require('ace/range').Range;
       var session = editorView.getEditorPanel().getSession();
       var editorMarkers = editorView.getEditorMarkers();
+      var currentMarker: FileEditorMarker = editorMarkers[line];
       
       // clearEditorHighlight(line);
       clearEditorHighlights(); // clear all highlights in editor
 
       var marker = session.addMarker(new Range(line - 1, 0, line - 1, 1), css, "fullLine");
-      editorMarkers[line] = marker;
+      var editorMarker: FileEditorMarker = new FileEditorMarker(line, css, marker);
+      
+      editorMarkers[line] = editorMarker;
+      
+      if(currentMarker) {
+         return currentMarker.getStyle() != css;
+      }
+      return false;
    }
    
-   export function createMultipleEditorHighlights(lines, css) {
+   export function createMultipleEditorHighlights(lines, css): boolean {
       var Range = ace.require('ace/range').Range;
       var session = editorView.getEditorPanel().getSession();
       var editorMarkers = editorView.getEditorMarkers();
+      var highlightsChanged = false;
+      
+      for(var i = 0; i < lines.length; i++) {
+         var line = lines[i];
+         var currentMarker: FileEditorMarker = editorMarkers[line];
+      
+         if(currentMarker) {
+            if(currentMarker.getStyle() != css) {
+               highlightsChanged = true;
+            }
+         } else {
+            highlightsChanged = true;
+         }
+      }
       
       // clearEditorHighlight(line);
       clearEditorHighlights(); // clear all highlights in editor
@@ -433,8 +480,11 @@ export module FileEditor {
       for(var i = 0; i < lines.length; i++) {
          var line = lines[i];
          var marker = session.addMarker(new Range(line - 1, 0, line - 1, 1), css, "fullLine");
-         editorMarkers[line] = marker;
+         var editorMarker: FileEditorMarker = new FileEditorMarker(line, css, marker);
+
+         editorMarkers[line] = editorMarker;
       }
+      return highlightsChanged;
    }
    
    export function findAndReplaceTextInEditor(){

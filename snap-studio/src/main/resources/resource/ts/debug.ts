@@ -196,7 +196,7 @@ export module DebugManager {
       
       if(resource != null) {
       // console.log(message);
-         console.log(description);
+      //   console.log(description);
       }      
       if(processInfo.isFocus()) {
          updateStatusFocus(process);

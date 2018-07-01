@@ -53,6 +53,24 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
         return FileEditorView;
     }());
     exports.FileEditorView = FileEditorView;
+    var FileEditorMarker = (function () {
+        function FileEditorMarker(line, style, marker) {
+            this._style = style;
+            this._line = line;
+            this._marker = marker;
+        }
+        FileEditorMarker.prototype.getLine = function () {
+            return this._line;
+        };
+        FileEditorMarker.prototype.getMarker = function () {
+            return this._marker;
+        };
+        FileEditorMarker.prototype.getStyle = function () {
+            return this._style;
+        };
+        return FileEditorMarker;
+    }());
+    exports.FileEditorMarker = FileEditorMarker;
     var FileEditorHistory = (function () {
         function FileEditorHistory(lastModified, undoState, position, savedText, originalText) {
             this._lastModified = lastModified;
@@ -267,7 +285,7 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
                 if (editorMarkers.hasOwnProperty(editorLine)) {
                     var marker = editorMarkers[editorLine];
                     if (marker != null) {
-                        session.removeMarker(marker);
+                        session.removeMarker(marker.getMarker());
                         delete editorMarkers[editorLine];
                     }
                 }
@@ -297,30 +315,51 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
             var editorMarkers = editorView.getEditorMarkers();
             var marker = editorMarkers[line];
             if (marker != null) {
-                session.removeMarker(marker);
+                session.removeMarker(marker.getMarker());
             }
         }
         function createEditorHighlight(line, css) {
             var Range = ace_1.ace.require('ace/range').Range;
             var session = editorView.getEditorPanel().getSession();
             var editorMarkers = editorView.getEditorMarkers();
+            var currentMarker = editorMarkers[line];
             // clearEditorHighlight(line);
             clearEditorHighlights(); // clear all highlights in editor
             var marker = session.addMarker(new Range(line - 1, 0, line - 1, 1), css, "fullLine");
-            editorMarkers[line] = marker;
+            var editorMarker = new FileEditorMarker(line, css, marker);
+            editorMarkers[line] = editorMarker;
+            if (currentMarker) {
+                return currentMarker.getStyle() != css;
+            }
+            return false;
         }
         FileEditor.createEditorHighlight = createEditorHighlight;
         function createMultipleEditorHighlights(lines, css) {
             var Range = ace_1.ace.require('ace/range').Range;
             var session = editorView.getEditorPanel().getSession();
             var editorMarkers = editorView.getEditorMarkers();
+            var highlightsChanged = false;
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i];
+                var currentMarker = editorMarkers[line];
+                if (currentMarker) {
+                    if (currentMarker.getStyle() != css) {
+                        highlightsChanged = true;
+                    }
+                }
+                else {
+                    highlightsChanged = true;
+                }
+            }
             // clearEditorHighlight(line);
             clearEditorHighlights(); // clear all highlights in editor
             for (var i = 0; i < lines.length; i++) {
                 var line = lines[i];
                 var marker = session.addMarker(new Range(line - 1, 0, line - 1, 1), css, "fullLine");
-                editorMarkers[line] = marker;
+                var editorMarker = new FileEditorMarker(line, css, marker);
+                editorMarkers[line] = editorMarker;
             }
+            return highlightsChanged;
         }
         FileEditor.createMultipleEditorHighlights = createMultipleEditorHighlights;
         function findAndReplaceTextInEditor() {

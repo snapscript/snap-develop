@@ -137,8 +137,6 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
             var description = processInfo.getDescription();
             var resource = processInfo.getResource();
             if (resource != null) {
-                // console.log(message);
-                console.log(description);
             }
             if (processInfo.isFocus()) {
                 updateStatusFocus(process);

@@ -254,8 +254,9 @@ export module ThreadManager {
       
       if(threadEditorFocus.getThread() == threadScope.getThread()) {
          if(editorState.getResource().getFilePath() == threadScope.getResource() && threadScope.getStatus() == ThreadStatus.SUSPENDED) {
-            FileEditor.createEditorHighlight(threadScope.getLine(), "threadHighlight");
-            FileEditor.showEditorLine(threadScope.getLine());
+            if(FileEditor.createEditorHighlight(threadScope.getLine(), "threadHighlight")) {
+               FileEditor.showEditorLine(threadScope.getLine());
+            }
          }
       }
    }
