@@ -1,18 +1,8 @@
-func fib() {
-    let a = 0, b = 1;
-    loop {
-        yield a;
-        (a, b) = (b, a + b);
-   }
-}
-let it = fib().iterator();
+println(Math.random());
 
-for(i in 0..40){
-   let index = i - 1;
-   let value = it.next;
 
-   if(index == 30) {
-      assert value == 1346269;
-   }
-   println(`${index}=${value}`);
-}
+
+
+
+
+

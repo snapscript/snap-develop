@@ -48,19 +48,19 @@ export module Alerts {
       w2confirm(options);
    }
    
-   export function createRunPromptAlert(title, placeholder, yesButton, noButton, yesCallback) {
-      createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, "${IMAGE_FOLDER}/run.png", "Arguments");
+   export function createRunPromptAlert(title, placeholder, yesButton, noButton, yesCallback, cancelCallback) {
+      createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, cancelCallback, "${IMAGE_FOLDER}/run.png", "Arguments");
    }
    
-   export function createDebugPromptAlert(title, placeholder, yesButton, noButton, yesCallback) {
-      createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, "${IMAGE_FOLDER}/debug.png", "Arguments");
+   export function createDebugPromptAlert(title, placeholder, yesButton, noButton, yesCallback, cancelCallback) {
+      createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, cancelCallback, "${IMAGE_FOLDER}/debug.png", "Arguments");
    }
 
-   export function createRemoteDebugPromptAlert(title, placeholder, yesButton, noButton, yesCallback) {
-      createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, "${IMAGE_FOLDER}/debug.png", "Address");
+   export function createRemoteDebugPromptAlert(title, placeholder, yesButton, noButton, yesCallback, cancelCallback) {
+      createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, cancelCallback, "${IMAGE_FOLDER}/debug.png", "Address");
    }
    
-   function createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, iconFile, textLabel) {
+   function createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, cancelCallback, iconFile, textLabel) {
       let text = '<table border="0" width="100%">'+
       '  <tr>'+
       '    <td>&nbsp;&nbsp</td>'+
@@ -80,7 +80,11 @@ export module Alerts {
             yesCallback = null;
          }
       };
-      let cancelCallback = function(){};
+      let noCallback = function(){
+         if(cancelCallback) {
+            cancelCallback();
+         }
+      };
       let focusCallback = function(){
          let element: HTMLElement = document.getElementById("textToSearchFor");
          
@@ -103,7 +107,7 @@ export module Alerts {
          no_text      : noButton,      // text for no button
          no_class     : 'btn dialogButton',        // class for no button
          no_style     : '',        // style for no button
-         no_callBack  : cancelCallback,      // callBack for no button   
+         no_callBack  : noCallback,      // callBack for no button   
          onOpen: focusCallback
       };
       w2confirm(options);

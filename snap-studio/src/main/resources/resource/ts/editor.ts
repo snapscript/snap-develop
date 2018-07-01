@@ -880,6 +880,10 @@ export module FileEditor {
       updateEditorTabMark(); // add a * to the name if its not in sync
    }
    
+   export function focusEditor() {
+      editorView.getEditorPanel().focus();
+   }
+   
    export function setReadOnly(isReadOnly) {
       editorView.getEditorPanel().setReadOnly(isReadOnly);
    }

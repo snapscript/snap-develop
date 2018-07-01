@@ -8467,27 +8467,29 @@ var w2popup = {};
 
         resize: function (width, height, callBack) {
             var options = $('#w2ui-popup').data('options');
-            // calculate new position
-            if (parseInt($(window).width())  - 10 < parseInt(width))  width  = parseInt($(window).width())  - 10;
-            if (parseInt($(window).height()) - 10 < parseInt(height)) height = parseInt($(window).height()) - 10;
-            var top  = ((parseInt($(window).height()) - parseInt(height)) / 2) * 0.8;
-            var left = (parseInt($(window).width()) - parseInt(width)) / 2;
-            // resize there
-            $('#w2ui-popup').css({
-                '-webkit-transition': options.speed + 's width, ' + options.speed + 's height, ' + options.speed + 's left, ' + options.speed + 's top',
-                '-moz-transition': options.speed + 's width, ' + options.speed + 's height, ' + options.speed + 's left, ' + options.speed + 's top',
-                '-ms-transition': options.speed + 's width, ' + options.speed + 's height, ' + options.speed + 's left, ' + options.speed + 's top',
-                '-o-transition': options.speed + 's width, ' + options.speed + 's height, ' + options.speed + 's left, ' + options.speed + 's top',
-                'top': top,
-                'left': left,
-                'width': width,
-                'height': height
-            });
-            setTimeout(function () {
-                options.width  = width;
-                options.height = height;
-                if (typeof callBack == 'function') callBack();
-            }, (options.speed * 1000) + 50); // give extra 50 ms
+            if(options) {
+               // calculate new position
+               if (parseInt($(window).width())  - 10 < parseInt(width))  width  = parseInt($(window).width())  - 10;
+               if (parseInt($(window).height()) - 10 < parseInt(height)) height = parseInt($(window).height()) - 10;
+               var top  = ((parseInt($(window).height()) - parseInt(height)) / 2) * 0.8;
+               var left = (parseInt($(window).width()) - parseInt(width)) / 2;
+               // resize there
+               $('#w2ui-popup').css({
+                   '-webkit-transition': options.speed + 's width, ' + options.speed + 's height, ' + options.speed + 's left, ' + options.speed + 's top',
+                   '-moz-transition': options.speed + 's width, ' + options.speed + 's height, ' + options.speed + 's left, ' + options.speed + 's top',
+                   '-ms-transition': options.speed + 's width, ' + options.speed + 's height, ' + options.speed + 's left, ' + options.speed + 's top',
+                   '-o-transition': options.speed + 's width, ' + options.speed + 's height, ' + options.speed + 's left, ' + options.speed + 's top',
+                   'top': top,
+                   'left': left,
+                   'width': width,
+                   'height': height
+               });
+               setTimeout(function () {
+                   options.width  = width;
+                   options.height = height;
+                   if (typeof callBack == 'function') callBack();
+               }, (options.speed * 1000) + 50); // give extra 50 ms
+            }
         }
     }
 

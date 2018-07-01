@@ -698,6 +698,10 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
             updateEditorTabMark(); // add a * to the name if its not in sync
         }
         FileEditor.updateEditor = updateEditor;
+        function focusEditor() {
+            editorView.getEditorPanel().focus();
+        }
+        FileEditor.focusEditor = focusEditor;
         function setReadOnly(isReadOnly) {
             editorView.getEditorPanel().setReadOnly(isReadOnly);
         }

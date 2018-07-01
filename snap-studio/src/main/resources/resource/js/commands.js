@@ -484,27 +484,29 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         }
         Command.newDirectory = newDirectory;
         function saveFile() {
-            saveFileWithAction(function () { }, true);
+            saveFileWithAction(true, function (functionToExecute) {
+                functionToExecute();
+            });
         }
         Command.saveFile = saveFile;
-        function saveFileWithAction(saveCallback, update) {
+        function saveFileWithAction(update, saveCallback) {
             var editorState = editor_1.FileEditor.currentEditorState();
             if (editorState.getResource() == null) {
                 dialog_1.DialogBuilder.openTreeDialog(null, false, function (resourceDetails) {
-                    saveEditor(update);
-                    saveCallback();
+                    var saveFunction = saveEditor(update);
+                    saveCallback(saveFunction);
                 });
             }
             else {
                 if (editor_1.FileEditor.isEditorChanged()) {
                     dialog_1.DialogBuilder.openTreeDialog(editorState.getResource(), true, function (resourceDetails) {
-                        saveEditor(update);
-                        saveCallback();
+                        var saveFunction = saveEditor(update);
+                        saveCallback(saveFunction);
                     });
                 }
                 else {
                     console_1.ProcessConsole.clearConsole();
-                    saveCallback();
+                    saveCallback(function () { });
                 }
             }
         }
@@ -522,13 +524,15 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                 console_1.ProcessConsole.clearConsole();
                 socket_1.EventBus.sendEvent("SAVE", message);
                 if (update) {
-                    var modificationTime = new Date().getTime();
-                    var fileResource = new explorer_1.FileResource(editorPath, null, modificationTime, editorState.getSource(), null, false, false);
-                    editor_1.FileEditor.updateEditor(fileResource);
+                    return function () {
+                        var modificationTime = new Date().getTime();
+                        var fileResource = new explorer_1.FileResource(editorPath, null, modificationTime, editorState.getSource(), null, false, false);
+                        editor_1.FileEditor.updateEditor(fileResource);
+                    };
                 }
             }
+            return function () { };
         }
-        Command.saveEditor = saveEditor;
         function saveEditorOnClose(editorText, editorResource) {
             if (editorResource != null && editorResource.getResourcePath()) {
                 dialog_1.DialogBuilder.openTreeDialog(editorResource, true, function (resourceDetails) {
@@ -600,37 +604,48 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         }
         Command.debugScript = debugScript;
         function executeScript(debug, inputArguments) {
-            saveFileWithAction(function () {
-                var editorState = editor_1.FileEditor.currentEditorState();
-                var localExecuteFunction = function (isDebug, inputArguments) {
-                    var argumentArray = inputArguments.split(/[ ]+/);
-                    var message = {
-                        breakpoints: editorState.getBreakpoints(),
-                        arguments: argumentArray,
-                        project: document.title,
-                        resource: editorState.getResource().getFilePath(),
-                        source: editorState.getSource(),
-                        debug: isDebug ? true : false
-                    };
-                    setTimeout(function () {
-                        editor_1.FileEditor.setReadOnly(false);
-                    }, 200); // delay making it writable 
-                    socket_1.EventBus.sendEvent("EXECUTE", message);
+            var editorState = editor_1.FileEditor.currentEditorState();
+            var localExecuteFunction = function (isDebug, inputArguments) {
+                var argumentArray = inputArguments.split(/[ ]+/);
+                var message = {
+                    breakpoints: editorState.getBreakpoints(),
+                    arguments: argumentArray,
+                    project: document.title,
+                    resource: editorState.getResource().getFilePath(),
+                    source: editorState.getSource(),
+                    debug: isDebug ? true : false
                 };
-                editor_1.FileEditor.setReadOnly(true);
+                socket_1.EventBus.sendEvent("EXECUTE", message);
+            };
+            var saveFunction = function (functionToExecute) {
                 setTimeout(function () {
+                    var delayFunction = function () {
+                        setTimeout(function () {
+                            editor_1.FileEditor.setReadOnly(false);
+                            editor_1.FileEditor.focusEditor();
+                            functionToExecute();
+                        }, 400);
+                    };
                     if (debug) {
                         alert_1.Alerts.createDebugPromptAlert("Debug", "Enter arguments", "Debug", "Cancel", function (inputArguments) {
                             localExecuteFunction(true, inputArguments);
+                            delayFunction();
+                        }, function (inputArguments) {
+                            delayFunction();
                         });
                     }
                     else {
                         alert_1.Alerts.createRunPromptAlert("Run", "Enter arguments", "Run", "Cancel", function (inputArguments) {
                             localExecuteFunction(false, inputArguments);
+                            delayFunction();
+                        }, function (inputArguments) {
+                            delayFunction();
                         });
                     }
-                }, 100);
-            }, true); // save editor
+                }, 1);
+            };
+            editor_1.FileEditor.setReadOnly(true);
+            saveFileWithAction(true, saveFunction); // save editor
         }
         function attachRemoteDebugger() {
             if (socket_1.EventBus.isSocketOpen()) {

@@ -536,30 +536,33 @@ export module Command {
    }
    
    export function saveFile() {
-      saveFileWithAction(function(){}, true);
+      saveFileWithAction(true, function(functionToExecute){
+         functionToExecute();
+      });
    }
    
-   function saveFileWithAction(saveCallback, update) {
+   function saveFileWithAction(update, saveCallback) {
       var editorState: FileEditorState = FileEditor.currentEditorState();
+   
       if (editorState.getResource() == null) {
          DialogBuilder.openTreeDialog(null, false, function(resourceDetails: FilePath) {
-            saveEditor(update);
-            saveCallback();
+            var saveFunction = saveEditor(update);
+            saveCallback(saveFunction);
          });
       } else {
          if (FileEditor.isEditorChanged()) {
             DialogBuilder.openTreeDialog(editorState.getResource(), true, function(resourceDetails: FilePath) {
-               saveEditor(update);
-               saveCallback();
+               var saveFunction = saveEditor(update);
+               saveCallback(saveFunction);
             });
          } else {
             ProcessConsole.clearConsole();
-            saveCallback();
+            saveCallback(function(){});
          }
       }
    }
    
-   export function saveEditor(update) {
+   function saveEditor(update) {
       var editorState: FileEditorState = FileEditor.currentEditorState();
       var editorPath: FilePath = editorState.getResource();
         
@@ -575,12 +578,15 @@ export module Command {
          EventBus.sendEvent("SAVE", message);
          
          if(update) { // should the editor be updated?
-            var modificationTime: number = new Date().getTime();
-            var fileResource: FileResource = new FileResource(editorPath, null, modificationTime, editorState.getSource(), null, false, false);
-            
-            FileEditor.updateEditor(fileResource);
+            return function() {
+               var modificationTime: number = new Date().getTime();
+               var fileResource: FileResource = new FileResource(editorPath, null, modificationTime, editorState.getSource(), null, false, false);
+               
+               FileEditor.updateEditor(fileResource);
+            };
          }
       }
+      return function(){}
    }
    
    export function saveEditorOnClose(editorText, editorResource: FilePath) {
@@ -659,40 +665,53 @@ export module Command {
    }
    
    function executeScript(debug, inputArguments) {
-      saveFileWithAction(function() {
-         let editorState: FileEditorState = FileEditor.currentEditorState();
-         let localExecuteFunction = function(isDebug, inputArguments) {
-            var argumentArray = inputArguments.split(/[ ]+/)
-            var message = {
-               breakpoints : editorState.getBreakpoints(),
-               arguments: argumentArray,
-               project : document.title,
-               resource : editorState.getResource().getFilePath(),
-               source : editorState.getSource(),
-               debug: isDebug ? true: false
-            };
-            setTimeout(function() {
-               FileEditor.setReadOnly(false); 
-            }, 200); // delay making it writable 
-            EventBus.sendEvent("EXECUTE", message);
+      let editorState: FileEditorState = FileEditor.currentEditorState();
+      let localExecuteFunction = function(isDebug, inputArguments) {
+         var argumentArray = inputArguments.split(/[ ]+/)
+         var message = {
+            breakpoints : editorState.getBreakpoints(),
+            arguments: argumentArray,
+            project : document.title,
+            resource : editorState.getResource().getFilePath(),
+            source : editorState.getSource(),
+            debug: isDebug ? true: false
          };
-         FileEditor.setReadOnly(true);
+         EventBus.sendEvent("EXECUTE", message);
+      };
+      let saveFunction = function(functionToExecute) {
          setTimeout(function() {
+            let delayFunction = function() {
+               setTimeout(function() {
+                  FileEditor.setReadOnly(false);
+                  FileEditor.focusEditor();
+                  functionToExecute();
+               }, 400);
+            }
             if(debug) {
                Alerts.createDebugPromptAlert("Debug", "Enter arguments", "Debug", "Cancel", 
                   function(inputArguments) {
                      localExecuteFunction(true, inputArguments);
+                     delayFunction();
+                  },
+                  function(inputArguments) {
+                     delayFunction();
                   }
                );
             } else {
                Alerts.createRunPromptAlert("Run", "Enter arguments", "Run", "Cancel", 
                   function(inputArguments) {
                      localExecuteFunction(false, inputArguments);
+                     delayFunction();
+                  },
+                  function(inputArguments) {
+                     delayFunction();
                   }
                );
             }
-         }, 100);
-      }, true); // save editor
+         }, 1);
+      };
+      FileEditor.setReadOnly(true);
+      saveFileWithAction(true, saveFunction); // save editor
    }
    
    export function attachRemoteDebugger() {

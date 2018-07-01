@@ -43,19 +43,19 @@ define(["require", "exports", "socket"], function (require, exports, socket_1) {
             w2confirm(options);
         }
         Alerts.createConfirmAlert = createConfirmAlert;
-        function createRunPromptAlert(title, placeholder, yesButton, noButton, yesCallback) {
-            createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, "${IMAGE_FOLDER}/run.png", "Arguments");
+        function createRunPromptAlert(title, placeholder, yesButton, noButton, yesCallback, cancelCallback) {
+            createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, cancelCallback, "${IMAGE_FOLDER}/run.png", "Arguments");
         }
         Alerts.createRunPromptAlert = createRunPromptAlert;
-        function createDebugPromptAlert(title, placeholder, yesButton, noButton, yesCallback) {
-            createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, "${IMAGE_FOLDER}/debug.png", "Arguments");
+        function createDebugPromptAlert(title, placeholder, yesButton, noButton, yesCallback, cancelCallback) {
+            createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, cancelCallback, "${IMAGE_FOLDER}/debug.png", "Arguments");
         }
         Alerts.createDebugPromptAlert = createDebugPromptAlert;
-        function createRemoteDebugPromptAlert(title, placeholder, yesButton, noButton, yesCallback) {
-            createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, "${IMAGE_FOLDER}/debug.png", "Address");
+        function createRemoteDebugPromptAlert(title, placeholder, yesButton, noButton, yesCallback, cancelCallback) {
+            createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, cancelCallback, "${IMAGE_FOLDER}/debug.png", "Address");
         }
         Alerts.createRemoteDebugPromptAlert = createRemoteDebugPromptAlert;
-        function createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, iconFile, textLabel) {
+        function createIconPromptAlert(title, placeholder, yesButton, noButton, yesCallback, cancelCallback, iconFile, textLabel) {
             var text = '<table border="0" width="100%">' +
                 '  <tr>' +
                 '    <td>&nbsp;&nbsp</td>' +
@@ -73,7 +73,11 @@ define(["require", "exports", "socket"], function (require, exports, socket_1) {
                     yesCallback = null;
                 }
             };
-            var cancelCallback = function () { };
+            var noCallback = function () {
+                if (cancelCallback) {
+                    cancelCallback();
+                }
+            };
             var focusCallback = function () {
                 var element = document.getElementById("textToSearchFor");
                 if (element) {
@@ -96,7 +100,7 @@ define(["require", "exports", "socket"], function (require, exports, socket_1) {
                 no_text: noButton,
                 no_class: 'btn dialogButton',
                 no_style: '',
-                no_callBack: cancelCallback,
+                no_callBack: noCallback,
                 onOpen: focusCallback
             };
             w2confirm(options);
