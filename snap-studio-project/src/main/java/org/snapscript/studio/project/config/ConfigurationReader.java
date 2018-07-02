@@ -230,7 +230,7 @@ public class ConfigurationReader {
                if(dependencies != null) {
                   Map<String, DependencyResult> latestVersions = new LinkedHashMap<String, DependencyResult>();
                   List<DependencyResult> matchedResults = new ArrayList<DependencyResult>();
-                  DependencyComparator comparator = new DependencyComparator();
+                  DependencyComparator comparator = new DependencyComparator(true);
                   
                   for (Dependency dependency : dependencies) {
                      Set<String> exclusions = dependency.getExclusions();
@@ -280,7 +280,10 @@ public class ConfigurationReader {
                         latestVersions.put(resultKey, result);
                      } else {
                         String existingName = existing.getDependencyFullName();
-                        log.info("Evicting " + resultName + " in favour of " + existingName);
+                        
+                        if(!existingName.equals(resultName)) {
+                           log.info("Evicting " + resultName + " in favour of " + existingName);
+                        }
                      }
                   }
                   Collection<DependencyResult> latestResults = latestVersions.values();

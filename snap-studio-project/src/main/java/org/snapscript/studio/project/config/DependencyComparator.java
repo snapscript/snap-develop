@@ -5,6 +5,16 @@ import java.util.Comparator;
 import org.apache.commons.lang.StringUtils;
 
 public class DependencyComparator implements Comparator<Dependency> {
+   
+   private final int multiplier;
+   
+   public DependencyComparator() {
+      this(false);
+   }
+   
+   public DependencyComparator(boolean reverse) {
+      this.multiplier = reverse ? -1 : 1;
+   }
 
    @Override
    public int compare(Dependency left, Dependency right) {
@@ -18,11 +28,11 @@ public class DependencyComparator implements Comparator<Dependency> {
          
          return compareVersion(leftVersion, rightVersion);
       }
-      return compare;
+      return compare * multiplier;
    }
 
   
-   private int compareVersion(String left, String right) {
+   public int compareVersion(String left, String right) {
       String[] leftParts = left.split("\\.");
       String[] rightParts = right.split("\\.");
       
@@ -39,11 +49,11 @@ public class DependencyComparator implements Comparator<Dependency> {
             int compare = Integer.compare(leftValue, rightValue);
             
             if(compare != 0) {
-               return compare;
+               return compare * multiplier;
             }
          }
       }
-      return Integer.compare(leftParts.length, rightParts.length);
+      return Integer.compare(leftParts.length, rightParts.length) * multiplier;
       
    }
 }
