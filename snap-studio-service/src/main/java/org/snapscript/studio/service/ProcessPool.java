@@ -82,16 +82,18 @@ public class ProcessPool {
 
    public ProcessConnection acquire(String process) {
       try {
-         long time = System.currentTimeMillis();
          ProcessConnection connection = waiting.acquire(DEFAULT_WAIT_TIME, process); // take a process from the pool
          
          if(connection == null) {
             if(process == null) {
                throw new IllegalStateException("No agent found as pool is empty");
             }
-            throw new IllegalStateException("No agent '" + process + "' as pool is empty");
+            throw new IllegalStateException("The agent '" + process + "' is not available in pool");
          }
-         requests.cache(process, time);
+         long time = System.currentTimeMillis();
+         String agent = connection.getProcess();
+         
+         requests.cache(agent, time);
          running.offer(connection);
          launch(); // start a process straight away
          return connection;
