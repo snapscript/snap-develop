@@ -60,7 +60,8 @@ public class ProcessManager implements ProcessRemoteController {
    
    public boolean execute(ExecuteCommand command, ProcessEventFilter filter) { 
       String focus = filter.getFocus();
-      ProcessConnection connection = pool.acquire(focus);
+      String agent = pool.active(focus) ? null : focus; // if not running then use
+      ProcessConnection connection = pool.acquire(agent);
       
       if(connection != null) {
          Map<String, Map<Integer, Boolean>> breakpoints = command.getBreakpoints();
@@ -83,7 +84,7 @@ public class ProcessManager implements ProcessRemoteController {
       return true;
    }
    
-   public boolean debug(RemoteDebugCommand command, String process) {
+   public boolean debug(RemoteDebugCommand command, String process) { // attach remote debug
       ProcessConnection connection = pool.acquire(process);
       
       if(connection != null) {

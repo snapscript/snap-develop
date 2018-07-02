@@ -13,6 +13,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.slf4j.Slf4j;
 
 import org.simpleframework.transport.Channel;
+import org.snapscript.common.Cache;
+import org.snapscript.common.LeastRecentlyUsedCache;
 import org.snapscript.common.thread.ThreadBuilder;
 import org.snapscript.studio.agent.event.BeginEvent;
 import org.snapscript.studio.agent.event.ExitEvent;
@@ -38,6 +40,7 @@ public class ProcessPool {
    private static final long DEFAULT_WAIT_TIME = 10000;
    private static final long DEFAULT_PING_FREQUENCY = 4000;
    
+   private final Cache<String, Long> requests;
    private final BlockingQueue<ProcessConnection> running;
    private final Set<ProcessEventListener> listeners;
    private final ProcessConfiguration configuration;
@@ -60,6 +63,7 @@ public class ProcessPool {
    
    public ProcessPool(ProcessConfiguration configuration, ProcessLauncher launcher, ProcessNameFilter filter, Workspace workspace, int capacity, long frequency) throws IOException {
       this.waiting = new ProcessConnectionPool();
+      this.requests = new LeastRecentlyUsedCache<String, Long>();
       this.listeners = new CopyOnWriteArraySet<ProcessEventListener>();
       this.running = new LinkedBlockingQueue<ProcessConnection>();
       this.interceptor = new ProcessEventInterceptor(listeners);
@@ -75,9 +79,10 @@ public class ProcessPool {
       this.capacity = capacity;
       this.filter = filter;
    }
-   
+
    public ProcessConnection acquire(String process) {
       try {
+         long time = System.currentTimeMillis();
          ProcessConnection connection = waiting.acquire(DEFAULT_WAIT_TIME, process); // take a process from the pool
          
          if(connection == null) {
@@ -86,6 +91,7 @@ public class ProcessPool {
             }
             throw new IllegalStateException("No agent '" + process + "' as pool is empty");
          }
+         requests.cache(process, time);
          running.offer(connection);
          launch(); // start a process straight away
          return connection;
@@ -154,6 +160,10 @@ public class ProcessPool {
       } catch(Exception e) {
          log.info("Could not launch process", e);
       }
+   }
+   
+   public boolean active(String process) {
+      return requests.contains(process);
    }
    
    private class ProcessEventInterceptor extends ProcessEventAdapter {
