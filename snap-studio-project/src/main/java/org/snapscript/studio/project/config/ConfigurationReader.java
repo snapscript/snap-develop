@@ -269,7 +269,7 @@ public class ConfigurationReader {
                         }
                      }
                   }
-                  Collections.sort(matchedResults, comparator);
+                  Collections.sort(matchedResults, comparator); // later versions first
                   
                   for(DependencyResult result : matchedResults) {
                      String resultKey = result.getDependencyKey();
