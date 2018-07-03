@@ -26,6 +26,7 @@ public class LocalProcessLauncher {
             new String[] {
             "--cp=../snap-studio/work/demo/games/src;../snap-studio/work/demo/games/assets/",      
             "--s=mario/MarioGame.snap",
+            "--w=true", // suspend
             "--p=7799",
             "--v=true", 
             "foo", 

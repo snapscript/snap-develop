@@ -3,6 +3,7 @@ package org.snapscript.studio.agent.local;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -22,14 +23,16 @@ public class LocalProcessController {
    private final ConnectLauncher launcher;
    private final ProcessContext context;
    private final AtomicBoolean active;
+   private final CountDownLatch latch;
    private final Path script;
    
-   public LocalProcessController(ProcessContext context, Path script, int port) {
+   public LocalProcessController(ProcessContext context, CountDownLatch latch, Path script, int port) {
       this.launcher = new ConnectLauncher(context, this, port);
       this.reference = new AtomicReference<ProcessClient>();
       this.active = new AtomicBoolean();
       this.context = context;
       this.script = script;
+      this.latch = latch;
    }
 
    public String attachRequest(AttachRequest request) {
@@ -45,6 +48,7 @@ public class LocalProcessController {
             System.err.println("Debug agent attached to " + root);
             reference.set(client);
             client.attachProcess(project, path);
+            latch.countDown();
          }catch(Exception e){
             e.printStackTrace();
          }

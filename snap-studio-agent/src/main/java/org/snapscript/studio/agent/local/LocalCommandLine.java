@@ -28,6 +28,10 @@ public class LocalCommandLine {
       return (Boolean)line.getValue(LocalOption.CHECK.name);
    }
    
+   public boolean isWait() {
+      return (Boolean)line.getValue(LocalOption.WAIT.name);
+   }
+   
    public Integer getPort() {
       return (Integer)line.getValue(LocalOption.PORT.name);
    }
