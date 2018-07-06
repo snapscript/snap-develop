@@ -1,8 +1,6 @@
-println(Math.random());
+const p: Properties = {
+   "a": "b",
+   "c": "d"
+};
 
-
-
-
-
-
-
+println(p.getProperty("a"));
