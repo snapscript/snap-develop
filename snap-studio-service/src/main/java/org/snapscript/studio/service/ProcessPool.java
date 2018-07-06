@@ -40,7 +40,7 @@ public class ProcessPool {
    private static final long DEFAULT_WAIT_TIME = 10000;
    private static final long DEFAULT_PING_FREQUENCY = 4000;
    
-   private final Cache<String, Long> requests;
+   private final Cache<String, Long> active;
    private final BlockingQueue<ProcessConnection> running;
    private final Set<ProcessEventListener> listeners;
    private final ProcessConfiguration configuration;
@@ -63,7 +63,7 @@ public class ProcessPool {
    
    public ProcessPool(ProcessConfiguration configuration, ProcessLauncher launcher, ProcessNameFilter filter, Workspace workspace, int capacity, long frequency) throws IOException {
       this.waiting = new ProcessConnectionPool();
-      this.requests = new LeastRecentlyUsedCache<String, Long>();
+      this.active = new LeastRecentlyUsedCache<String, Long>();
       this.listeners = new CopyOnWriteArraySet<ProcessEventListener>();
       this.running = new LinkedBlockingQueue<ProcessConnection>();
       this.interceptor = new ProcessEventInterceptor(listeners);
@@ -93,7 +93,7 @@ public class ProcessPool {
          long time = System.currentTimeMillis();
          String agent = connection.getProcess();
          
-         requests.cache(agent, time);
+         active.cache(agent, time);
          running.offer(connection);
          launch(); // start a process straight away
          return connection;
@@ -165,7 +165,7 @@ public class ProcessPool {
    }
    
    public boolean active(String process) {
-      return requests.contains(process);
+      return active.contains(process);
    }
    
    private class ProcessEventInterceptor extends ProcessEventAdapter {
@@ -201,6 +201,7 @@ public class ProcessPool {
          
          for(ProcessEventListener listener : listeners) {
             try {
+               active.take(process);
                listener.onExit(channel, event);
             } catch(Exception e) {
                log.info(process + ": Exception processing exit event", e);
@@ -405,6 +406,8 @@ public class ProcessPool {
                      connection.close(name + ": Killing process due to over capacity");
                   }catch(Exception e) {
                      log.info("Error killing agent " + name, e);
+                  } finally {
+                     active.take(name);
                   }
                }
                return true;
@@ -438,6 +441,11 @@ public class ProcessPool {
                }
                if(connection.ping(time)) {
                   notDead.add(connection);
+               } else {
+                  String process = connection.getProcess();
+                  
+                  log.info("Dead connection " + process);
+                  active.take(process);
                }
             }
             waiting.register(notDead);
@@ -477,7 +485,9 @@ public class ProcessPool {
                   notDead.add(connection);
                } else {
                   String process = connection.getProcess();
+                  
                   log.info("Dead connection " + process);
+                  active.take(process);
                }
             }
             running.addAll(notDead);
