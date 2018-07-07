@@ -5,7 +5,7 @@ import mario.core.MarioGame;
  * instance of class which will start the display and game
  * loop.
  */
-function start() {
+//function start() {
    var g = new MarioGame(context, width, height, landscape);
 
    // Start the game at 20 frames per second
@@ -14,6 +14,6 @@ function start() {
    } catch(e) {
       e.printStackTrace();
    }
-}
+//}
    
-start();
+//start();
