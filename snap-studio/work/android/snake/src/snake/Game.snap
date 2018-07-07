@@ -4,7 +4,7 @@
  * instance of class which will start the display and game
  * loop.
  */
-function start() {
+function start(game) {
    var p = new GamePanel(context);
 
    // Start the game at 20 frames per second
@@ -15,4 +15,4 @@ function start() {
    }
 }
    
-start();
+start(game);

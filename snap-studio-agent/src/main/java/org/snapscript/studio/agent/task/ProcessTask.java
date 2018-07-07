@@ -19,6 +19,7 @@ public class ProcessTask implements Runnable {
    private final ProgressReporter reporter;
    private final ProcessEventChannel client;
    private final ProcessContext context;
+   private final ProcessMode mode;
    private final String resource;
    private final Model model;
    
@@ -28,6 +29,7 @@ public class ProcessTask implements Runnable {
       this.resource = resource;
       this.context = context;
       this.model = model;
+      this.mode = mode;
    }
    
    @Override
@@ -54,8 +56,10 @@ public class ProcessTask implements Runnable {
             ConsoleFlusher.flushError(cause);
          }finally {            
             try {
-               reporter.reportTerminating();
-               reporter.reportProfile(); // one last update
+               if(mode.isTerminateRequired()) {
+                  reporter.reportTerminating();
+                  reporter.reportProfile(); // one last update
+               }
                ConsoleFlusher.flush();               
             } catch(Exception cause) {
                ConsoleFlusher.flushError(cause);
@@ -64,10 +68,12 @@ public class ProcessTask implements Runnable {
       } catch (Exception cause) {
          ConsoleFlusher.flushError(cause);
       } finally {
-         long finish = System.nanoTime();
-         long duration = TimeUnit.NANOSECONDS.toMillis(finish - start);
+         if(mode.isTerminateRequired()) {
+            long finish = System.nanoTime();
+            long duration = TimeUnit.NANOSECONDS.toMillis(finish - start);
          
-         reporter.reportFinished(duration);
+            reporter.reportFinished(duration);
+         }
       }
    }
 }

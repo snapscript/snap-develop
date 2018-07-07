@@ -1,8 +1,8 @@
 
-import android.game.Frame;
-import android.game.FrameThread;
-import android.game.Panel;
-import android.game.R;
+import org.snapscript.android.game.Frame;
+import org.snapscript.android.game.FrameThread;
+import org.snapscript.android.game.Panel;
+import org.snapscript.android.game.R;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -136,8 +136,10 @@ class GamePanel with Panel {
       if (tickCounter % rate == 0)
          snake.updateClock();
 
+      var moveDelay = snake.getMoveDelay();
+      
       // update snake
-      if (tickCounter % snake.getMoveDelay() == 0) {
+      if (moveDelay == 0 || tickCounter % moveDelay == 0) {
          // increase snake speed if needed
          if (snake.speedNeedsToBeIncremented())
             snake.increaseSpeed();
@@ -391,9 +393,9 @@ class GamePanel with Panel {
          var width = frame.getWidth();
          var height = frame.getHeight();
          var bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888); // this creates a MUTABLE bitmap
-         var canvas = new Canvas(bitmap);
+         var wrapper = new Canvas(bitmap);
          
-         drawBoardLimits(frame, canvas);
+         drawBoardLimits(frame, wrapper);
          border = bitmap; // cache background
       }
       canvas.drawBitmap(border, 0, 0, paint); // draw cache image

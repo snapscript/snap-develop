@@ -5,16 +5,16 @@ import android.graphics.BitmapFactory;
 
 class Score {
    
-   const resources = [ "/flappybird/resources/font_0.png", 
-            "/flappybird/resources/font_1.png", 
-            "/flappybird/resources/font_2.png", 
-            "/flappybird/resources/font_3.png", 
-            "/flappybird/resources/font_4.png", 
-            "/flappybird/resources/font_5.png", 
-            "/flappybird/resources/font_6.png", 
-            "/flappybird/resources/font_7.png", 
-            "/flappybird/resources/font_8.png", 
-            "/flappybird/resources/font_9.png" ];
+   const resources = [ "/flappybird/font_0.png", 
+            "/flappybird/font_1.png", 
+            "/flappybird/font_2.png", 
+            "/flappybird/font_3.png", 
+            "/flappybird/font_4.png", 
+            "/flappybird/font_5.png", 
+            "/flappybird/font_6.png", 
+            "/flappybird/font_7.png", 
+            "/flappybird/font_8.png", 
+            "/flappybird/font_9.png" ];
 
    const scoreBitmaps = [];
    const context;

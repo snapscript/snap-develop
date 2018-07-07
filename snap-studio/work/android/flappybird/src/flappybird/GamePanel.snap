@@ -148,15 +148,15 @@ class GamePanel with Panel {
    }
 
    initResources() {
-      dayBgBitmap = ImageStore.loadImage("/flappybird/resources/bg_day.png");
-      landBitmap = ImageStore.loadImage("/flappybird/resources/land.png");
-      birdDownBitmap = ImageStore.loadImage("/flappybird/resources/bird0_4.png");
-      pipeDownBitmap = ImageStore.loadImage("/flappybird/resources/pipe_down.png");
-      pipeUpBitmap = ImageStore.loadImage("/flappybird/resources/pipe_up.png");
-      getReadyBitmap = ImageStore.loadImage("/flappybird/resources/get_ready.png");
-      tutorialBitmap = ImageStore.loadImage("/flappybird/resources/tutorial.png");
-      titleBitmap = ImageStore.loadImage("/flappybird/resources/title.png");
-      gameOverBitmap = ImageStore.loadImage("/flappybird/resources/game_over.png");
+      dayBgBitmap = ImageStore.loadImage("/flappybird/bg_day.png");
+      landBitmap = ImageStore.loadImage("/flappybird/land.png");
+      birdDownBitmap = ImageStore.loadImage("/flappybird/bird0_4.png");
+      pipeDownBitmap = ImageStore.loadImage("/flappybird/pipe_down.png");
+      pipeUpBitmap = ImageStore.loadImage("/flappybird/pipe_up.png");
+      getReadyBitmap = ImageStore.loadImage("/flappybird/get_ready.png");
+      tutorialBitmap = ImageStore.loadImage("/flappybird/tutorial.png");
+      titleBitmap = ImageStore.loadImage("/flappybird/title.png");
+      gameOverBitmap = ImageStore.loadImage("/flappybird/game_over.png");
       bird.get(0);
       scores.get(0);
    }

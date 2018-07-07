@@ -1,8 +1,2 @@
-const p: Properties = {
-   "a": "b",
-   "c": "d",
-   "e": 1
-};
-
-println(p.getProperty("a"));
-println(p.getProperty("e"));
+let x = 1;
+println(x%0);

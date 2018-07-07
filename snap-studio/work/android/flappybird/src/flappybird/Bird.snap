@@ -5,9 +5,9 @@ import android.graphics.BitmapFactory;
 
 class Bird {
 
-   const resources = ["/flappybird/resources/bird0_0.png",
-         "/flappybird/resources/bird0_1.png",
-         "/flappybird/resources/bird0_2.png"];
+   const resources = ["/flappybird/bird0_0.png",
+         "/flappybird/bird0_1.png",
+         "/flappybird/bird0_2.png"];
 
    const birdBitmaps = [];
    const context;
