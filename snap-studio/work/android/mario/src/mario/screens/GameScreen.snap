@@ -73,13 +73,13 @@ class GameScreen extends Screen {
      public loadGame(){
        //soundManager = new MarioSoundManager((Activity) game);
        //ResourceManager.prepareManager((Activity) game);
-       mario = new Mario(game.soundManager);
+       mario = new Mario(game!.soundManager);
        readyDrawn=false; 
       try {
          gameLoader = new GameLoader(game);
          renderer = new GameRenderer();
          renderer.setBackground(MarioResourceManager.Background);
-         map = gameLoader.loadMap("maps/map3.txt", game.soundManager); // use the ResourceManager to load the game map
+         map = gameLoader.loadMap("maps/map3.txt", game!.soundManager); // use the ResourceManager to load the game map
          backgroundMap = gameLoader.loadOtherMaps("maps/back3.txt");
          foregroundMap = gameLoader.loadOtherMaps("maps/fore3.txt");
          map.setPlayer(mario); // set the games main player to mario

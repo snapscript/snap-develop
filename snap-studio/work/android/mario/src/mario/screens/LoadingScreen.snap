@@ -16,13 +16,13 @@ class LoadingScreen extends Screen {
        var g = game.getGraphics();
         //Settings.load(game.getFileIO());
         
-        game.soundManager.loadResouces();
+        game!.soundManager.loadResouces();
         MarioSoundManager.musicEnabled=Settings.musicEnabled;
         if(Settings.musicEnabled){
-            game.soundManager.playMusic();
+            game!.soundManager.playMusic();
         }
         Assets.menu = g.newImage("menu/menu.png", ImageFormat.RGB565);
-        game.resourceManager.loadResouces();
+        game!.resourceManager.loadResouces();
        
        //
         /*Assets.background = g.newImage("background.png", ImageFormat.RGB565);

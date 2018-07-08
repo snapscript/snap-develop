@@ -1,0 +1,10 @@
+org/snapscript/studio/cli/CommandLineArgument.class
+org/snapscript/studio/cli/CommandLineParser.class
+org/snapscript/studio/cli/CommandLineUsage.class
+org/snapscript/studio/cli/store/FileCacheStore$CacheInputStream.class
+org/snapscript/studio/cli/store/FileCacheStore$CacheOutputStream.class
+org/snapscript/studio/cli/load/FileClassLoader.class
+org/snapscript/studio/cli/CommandLine.class
+org/snapscript/studio/cli/CommandLineInterpreter.class
+org/snapscript/studio/cli/store/FileCacheStore.class
+org/snapscript/studio/cli/store/StoreBuilder.class

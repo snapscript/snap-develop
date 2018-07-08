@@ -1,3 +1,15 @@
+07-08 15:53:38.576 12907-13431/org.snapscript.android.game W/System.err: org.snapscript.core.error.InternalStateException: Constructor 'new(core.type.index.ScopeType)' not found for 'mario.objects.mario.Mario'
+07-08 15:53:38.584 12907-13431/org.snapscript.android.game W/System.err:     at mario.screens.GameScreen.loadGame(/mario/screens/GameScreen.snap:76)
+07-08 15:53:38.591 12907-13431/org.snapscript.android.game W/System.err:     at mario.screens.GameScreen.new(/mario/screens/GameScreen.snap:70)
+07-08 15:53:38.605 12907-13431/org.snapscript.android.game W/System.err:     at mario.screens.MainMenuScreen.update(/mario/screens/MainMenuScreen.snap:30)
+07-08 15:53:38.615 12907-13431/org.snapscript.android.game W/System.err:     at java.lang.Thread.getStackTrace(Thread.java:1566)
+07-08 15:53:38.624 12907-13431/org.snapscript.android.game W/System.err:     at Screen_Bridge_075cf74d3b48bd998f93081077b8f45e_Proxy_f53e2326a4b72a33913478276a9a0cf5.update(Screen_Bridge_075cf74d3b48bd998f93081077b8f45e_Proxy_f53e2326a4b72a33913478276a9a0cf5.generated)
+07-08 15:53:38.631 12907-13431/org.snapscript.android.game W/System.err:     at java.lang.Thread.run(Thread.java:761)
+
+
+
+
+
 lExecutor.getTask(ThreadPoolExecutor.java:1058)
 07-08 00:25:24.142 10973-10990/org.snapscript.android.game W/System.err:    java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1118)
 07-08 00:25:24.142 10973-10990/org.snapscript.android.game W/System.err:    java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:607)
