@@ -7,6 +7,7 @@ import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
 import org.snapscript.core.variable.Value;
 import org.snapscript.tree.NameReference;
+import org.snapscript.tree.reference.TypeNavigation;
 
 public class TypeReferencePartIndex implements Compilation {
 
@@ -24,12 +25,20 @@ public class TypeReferencePartIndex implements Compilation {
       return new TypeIndexPart(name);
    }
    
-   private static class TypeIndexPart extends Evaluation {
+   private static class TypeIndexPart extends TypeNavigation {
       
       private final String name;
       
       public TypeIndexPart(String name) {
          this.name = name;
+      }
+
+      @Override
+      public String qualify(Scope scope, String left) throws Exception {
+         if(left != null) {
+            return left + '$' +name;
+         }
+         return name;
       }
       
       @Override
