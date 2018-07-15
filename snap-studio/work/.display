@@ -3,6 +3,6 @@
    <console-capacity>50000</console-capacity>
    <font>
       <font-family>Menlo</font-family>
-      <font-size>14</font-size>
+      <font-size>13</font-size>
    </font>
 </displayDefinition>
