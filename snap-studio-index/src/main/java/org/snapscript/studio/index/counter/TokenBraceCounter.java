@@ -55,7 +55,8 @@ public class TokenBraceCounter implements BraceCounter {
          char[] compress = code.getSource();
          short[] lines = code.getLines();
          short[]types = code.getTypes();
-         TokenIndexer tokenIndexer = new TokenIndexer(grammarIndexer, resource, original, compress, lines, types);
+         int count = code.getCount();
+         TokenIndexer tokenIndexer = new TokenIndexer(grammarIndexer, resource, original, compress, lines, types, count);
          tokenIndexer.index(tokens);
       }
       return tokens;
