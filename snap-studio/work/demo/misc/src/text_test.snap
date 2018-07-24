@@ -1,2 +1,10 @@
-let x = 1;
+//let x = 1;
+
+
+let x: Integer = 1;
+let y: String = null;
+
 println(x%0);
+
+y.substring(1);
+x.intValue();
