@@ -2,12 +2,11 @@ package org.snapscript.studio.index.tree;
 
 import org.snapscript.core.Compilation;
 import org.snapscript.core.Evaluation;
+import org.snapscript.core.constraint.Constraint;
 import org.snapscript.core.module.Module;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
 import org.snapscript.core.variable.Value;
-import org.snapscript.parse.StringToken;
-import org.snapscript.tree.reference.TypeReference;
 
 public class ArrayConstraintIndex implements Compilation {
    
@@ -15,8 +14,12 @@ public class ArrayConstraintIndex implements Compilation {
 
    private final IndexConstraint constraint;
    
-   public ArrayConstraintIndex(TypeReference reference, StringToken... bounds) {
-      this.constraint = new IndexConstraint(reference, bounds);
+   public ArrayConstraintIndex(Constraint entry, String name, int bounds) {
+      this(entry, name, bounds, 0);
+   }
+   
+   public ArrayConstraintIndex(Constraint entry, String name, int bounds, int modifiers) {
+      this.constraint = new IndexConstraint(entry, bounds);
    }
 
    @Override
@@ -26,19 +29,18 @@ public class ArrayConstraintIndex implements Compilation {
    
    private static class IndexConstraint extends Evaluation {
       
-      private final TypeReference reference;
-      private final StringToken[] bounds;
+      private final Constraint entry;
+      private final int bounds;
       
-      public IndexConstraint(TypeReference reference, StringToken... bounds) {
-         this.reference = reference;
+      public IndexConstraint(Constraint entry, int bounds) {
          this.bounds = bounds;
+         this.entry = entry;
       }
 
       @Override
       public Value evaluate(Scope scope, Object left) throws Exception {
-         Value value = reference.evaluate(scope, null);
-         String entry = value.getValue();
-         String name = entry + DIMENSIONS[bounds.length];
+         String type = entry.getName(scope);
+         String name = type + DIMENSIONS[bounds];
          
          return Value.getTransient(name);
       }

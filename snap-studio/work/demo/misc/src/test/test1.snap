@@ -11,7 +11,7 @@ class TestCase {
       println(this.class.getFunctions());
       for(var fn in this.class.functions){
          if(fn.name.startsWith("test")){   
-            System.out.println("Running.. "+func.name+"()");
+            System.out.println("Running.. "+fn.name+"()");
             fn();
          }
       }
