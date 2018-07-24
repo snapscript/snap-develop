@@ -536,8 +536,8 @@ export module Command {
    }
    
    export function saveFile() {
-      saveFileWithAction(true, function(functionToExecute){
-         functionToExecute();
+      saveFileWithAction(true, function(functionToExecuteAfterSave){
+         functionToExecuteAfterSave();
       });
    }
    
@@ -664,33 +664,19 @@ export module Command {
       executeScript(true);
    }
    
-   function executeScript(debug, inputArguments) {
-      let editorState: FileEditorState = FileEditor.currentEditorState();
-      let localExecuteFunction = function(isDebug, inputArguments) {
-         var argumentArray = inputArguments.split(/[ ]+/)
-         var message = {
-            breakpoints : editorState.getBreakpoints(),
-            arguments: argumentArray,
-            project : document.title,
-            resource : editorState.getResource().getFilePath(),
-            source : editorState.getSource(),
-            debug: isDebug ? true: false
-         };
-         EventBus.sendEvent("EXECUTE", message);
-      };
-      let saveFunction = function(functionToExecute) {
+   function executeScript(debug) {
+      var saveFunction = function(functionToExecuteAfterSave) {
          setTimeout(function() {
-            let delayFunction = function() {
+            var delayFunction = function() {
                setTimeout(function() {
-                  FileEditor.setReadOnly(false);
                   FileEditor.focusEditor();
-                  functionToExecute();
-               }, 400);
+                  functionToExecuteAfterSave();
+               }, 1);
             }
             if(debug) {
                Alerts.createDebugPromptAlert("Debug", "Enter arguments", "Debug", "Cancel", 
                   function(inputArguments) {
-                     localExecuteFunction(true, inputArguments);
+                     executeScriptWithArguments(true, inputArguments);
                      delayFunction();
                   },
                   function(inputArguments) {
@@ -700,7 +686,7 @@ export module Command {
             } else {
                Alerts.createRunPromptAlert("Run", "Enter arguments", "Run", "Cancel", 
                   function(inputArguments) {
-                     localExecuteFunction(false, inputArguments);
+                     executeScriptWithArguments(false, inputArguments);
                      delayFunction();
                   },
                   function(inputArguments) {
@@ -710,9 +696,22 @@ export module Command {
             }
          }, 1);
       };
-      FileEditor.setReadOnly(true);
       saveFileWithAction(true, saveFunction); // save editor
    }
+   
+   function executeScriptWithArguments(debug, inputArguments) {
+      var editorState: FileEditorState = FileEditor.currentEditorState();
+      var argumentArray = inputArguments.split(/[ ]+/)
+      var message = {
+         breakpoints : editorState.getBreakpoints(),
+         arguments: argumentArray,
+         project : document.title,
+         resource : editorState.getResource().getFilePath(),
+         source : editorState.getSource(),
+         debug: debug ? true: false
+      };
+      EventBus.sendEvent("EXECUTE", message);
+   };
    
    export function attachRemoteDebugger() {
       if(EventBus.isSocketOpen()) {

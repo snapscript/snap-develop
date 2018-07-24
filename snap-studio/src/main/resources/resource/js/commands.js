@@ -484,8 +484,8 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         }
         Command.newDirectory = newDirectory;
         function saveFile() {
-            saveFileWithAction(true, function (functionToExecute) {
-                functionToExecute();
+            saveFileWithAction(true, function (functionToExecuteAfterSave) {
+                functionToExecuteAfterSave();
             });
         }
         Command.saveFile = saveFile;
@@ -603,32 +603,18 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             executeScript(true);
         }
         Command.debugScript = debugScript;
-        function executeScript(debug, inputArguments) {
-            var editorState = editor_1.FileEditor.currentEditorState();
-            var localExecuteFunction = function (isDebug, inputArguments) {
-                var argumentArray = inputArguments.split(/[ ]+/);
-                var message = {
-                    breakpoints: editorState.getBreakpoints(),
-                    arguments: argumentArray,
-                    project: document.title,
-                    resource: editorState.getResource().getFilePath(),
-                    source: editorState.getSource(),
-                    debug: isDebug ? true : false
-                };
-                socket_1.EventBus.sendEvent("EXECUTE", message);
-            };
-            var saveFunction = function (functionToExecute) {
+        function executeScript(debug) {
+            var saveFunction = function (functionToExecuteAfterSave) {
                 setTimeout(function () {
                     var delayFunction = function () {
                         setTimeout(function () {
-                            editor_1.FileEditor.setReadOnly(false);
                             editor_1.FileEditor.focusEditor();
-                            functionToExecute();
-                        }, 400);
+                            functionToExecuteAfterSave();
+                        }, 1);
                     };
                     if (debug) {
                         alert_1.Alerts.createDebugPromptAlert("Debug", "Enter arguments", "Debug", "Cancel", function (inputArguments) {
-                            localExecuteFunction(true, inputArguments);
+                            executeScriptWithArguments(true, inputArguments);
                             delayFunction();
                         }, function (inputArguments) {
                             delayFunction();
@@ -636,7 +622,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                     }
                     else {
                         alert_1.Alerts.createRunPromptAlert("Run", "Enter arguments", "Run", "Cancel", function (inputArguments) {
-                            localExecuteFunction(false, inputArguments);
+                            executeScriptWithArguments(false, inputArguments);
                             delayFunction();
                         }, function (inputArguments) {
                             delayFunction();
@@ -644,9 +630,22 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                     }
                 }, 1);
             };
-            editor_1.FileEditor.setReadOnly(true);
             saveFileWithAction(true, saveFunction); // save editor
         }
+        function executeScriptWithArguments(debug, inputArguments) {
+            var editorState = editor_1.FileEditor.currentEditorState();
+            var argumentArray = inputArguments.split(/[ ]+/);
+            var message = {
+                breakpoints: editorState.getBreakpoints(),
+                arguments: argumentArray,
+                project: document.title,
+                resource: editorState.getResource().getFilePath(),
+                source: editorState.getSource(),
+                debug: debug ? true : false
+            };
+            socket_1.EventBus.sendEvent("EXECUTE", message);
+        }
+        ;
         function attachRemoteDebugger() {
             if (socket_1.EventBus.isSocketOpen()) {
                 alert_1.Alerts.createRemoteDebugPromptAlert("Remote Debug", "Enter <host>:<port>", "Attach", "Cancel", function (hostAndPort) {

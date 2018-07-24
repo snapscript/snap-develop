@@ -6,7 +6,7 @@ import {VariableManager} from "variables"
 import {FileExplorer} from "explorer"
 import {FileEditor} from "editor"
 import {FileTree, FilePath} from "tree"
- 
+
 export module DialogBuilder {
    
    export function evaluateExpressionDialog(expressionToEvaluate: any){
