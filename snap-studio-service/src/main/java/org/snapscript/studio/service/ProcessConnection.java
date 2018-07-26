@@ -28,7 +28,7 @@ public class ProcessConnection {
 
    public boolean execute(String projectName, String resource, String dependencies, Map<String, Map<Integer, Boolean>> breakpoints, List<String> arguments, boolean debug) {
       try {
-         Project project = workspace.getProject(projectName);
+         Project project = workspace.getByName(projectName);
          String path = project.getScriptPath(resource);
          
          ExecuteEvent event = new ExecuteEvent.Builder(process)
@@ -128,7 +128,7 @@ public class ProcessConnection {
    }
    
    private Map<String, Map<Integer, Boolean>> convert(String name, Map<String, Map<Integer, Boolean>> breakpoints) {
-      Project project = workspace.getProject(name);
+      Project project = workspace.getByName(name);
       Set<String> breakpointPaths = breakpoints.keySet();
       
       if(!breakpointPaths.isEmpty()) {

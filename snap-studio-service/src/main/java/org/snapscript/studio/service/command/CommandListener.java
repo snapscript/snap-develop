@@ -70,8 +70,8 @@ public class CommandListener {
       this.lastModified = new AtomicLong(project.getModificationTime());
       this.factory = new ThreadBuilder(true);
       this.finder = new ProblemFinder();
-      this.projectName = project.getProjectName();
-      this.root = project.getProjectPath();
+      this.projectName = project.getName();
+      this.root = project.getBasePath();
       this.displayPersister = displayPersister;
       this.treeManager = treeManager;
       this.problemFinder = problemFinder;
@@ -273,7 +273,7 @@ public class CommandListener {
          if(archive.endsWith(".jar")) {
             final String name = command.getProject();
             final String scriptPath = project.getScriptPath(resource);
-            final File rootPath = project.getProjectPath();
+            final File rootPath = project.getBasePath();
             final File savePath = new File(rootPath, archive);
             final Runnable exportTask = new Runnable() {
                

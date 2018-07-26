@@ -43,11 +43,11 @@ public class ProjectContext {
    }
    
    public synchronized Map<String, File> getFiles(){
-      String projectName = project.getProjectName();
+      String projectName = project.getName();
       Map<String, File> projectFiles = new LinkedHashMap<String, File>();
       
       try {
-         File file = project.getProjectPath();
+         File file = project.getBasePath();
          List<File> files = extension.findFiles(file, ".*");
          String rootPath = file.getCanonicalPath();
          int length = rootPath.length();
@@ -67,7 +67,7 @@ public class ProjectContext {
    }
 
    public synchronized ProjectConfiguration getConfiguration() {
-      String projectName = project.getProjectName();
+      String projectName = project.getName();
       
       try {
          return reader.loadProjectConfiguration(projectName);
@@ -78,7 +78,7 @@ public class ProjectContext {
    }
    
    public synchronized ProjectLayout getLayout() {
-      String projectName = project.getProjectName();
+      String projectName = project.getName();
       
       try {
          return getConfiguration().getProjectLayout();
@@ -97,8 +97,8 @@ public class ProjectContext {
             (IndexConfigFile)source.getConfigFile(project, ProjectConfiguration.INDEX_FILE),
             project.getProjectContext(), 
             workspace.getExecutor(), 
-            project.getProjectPath(), 
-            project.getProjectName(), 
+            project.getBasePath(), 
+            project.getName(), 
             getLayout().getPrefixes());
 
          configuraton.setAttribute(INDEX_DATABASE_KEY, database);
@@ -125,7 +125,7 @@ public class ProjectContext {
          for(File file : files) {
             if(!file.exists()) {
                if(source.deleteConfigFile(project, CLASSPATH_FILE)) { // make sure we rewrite the file
-                  String projectName = project.getProjectName();
+                  String projectName = project.getName();
                   String filePath = file.getAbsolutePath();
 
                   log.info("Deleting " + CLASSPATH_FILE + " from project " + projectName + " as " + filePath + " not found");

@@ -26,8 +26,8 @@ public class ConnectListener {
       if(script != null) {
          try {
             Project project = workspace.createProject(path);
-            File projectPath = project.getProjectPath();
-            String projectName = project.getProjectName();
+            File projectPath = project.getBasePath();
+            String projectName = project.getName();
             File file = new File(projectPath, "/" + script);
             FileInputStream input = new FileInputStream(file);
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();

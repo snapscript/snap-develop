@@ -69,7 +69,7 @@ public class CommandEventConverter {
    public ProblemCommand convert(ScriptErrorEvent event) throws Exception {
       String resource = event.getResource();
       String path = project.getRealPath(resource);
-      String name = project.getProjectName();
+      String name = project.getName();
       
       return ProblemCommand.builder()
             .project(name)

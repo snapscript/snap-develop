@@ -41,8 +41,8 @@ public class TextMatchResource {
          @QueryParam("wholeWord") @DefaultValue("false") boolean wholeWord,
          @QueryParam("enableReplace") @DefaultValue("false") boolean enableReplace) throws Exception 
    {
-      FileDirectory directory = workspace.getProject(project);
-      File root = directory.getProjectPath();
+      FileDirectory directory = workspace.getByName(project);
+      File root = directory.getBasePath();
       TextMatchQuery query = TextMatchQuery.builder()
             .pattern(pattern)
             .query(expression)

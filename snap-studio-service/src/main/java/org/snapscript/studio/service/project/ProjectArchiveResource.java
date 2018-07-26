@@ -36,10 +36,10 @@ public class ProjectArchiveResource implements Resource {
    @Override
    public void handle(Request request, Response response) throws Throwable {
       Path path = request.getPath();
-      Project project = workspace.getProject(path);
+      Project project = workspace.getByPath(path);
       String[] pathSegments = path.getSegments(); // /archive/<project>/<archive>/<main-script-path>
       String archiveName = pathSegments[2]; // <archive>
-      String projectName = project.getProjectName();
+      String projectName = project.getName();
       String mainScript = path.getPath(3); // /<main-script-path>
       
       log.info("Creating archive {}.jar from {} using {}", archiveName, projectName, mainScript);

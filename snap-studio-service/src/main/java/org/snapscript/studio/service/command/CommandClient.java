@@ -21,7 +21,7 @@ public class CommandClient {
    }
    
    public void sendDependencyError(String resource, String description, long time, int line) throws Exception {
-      String name = project.getProjectName();
+      String name = project.getName();
       ProblemCommand command = ProblemCommand.builder()
             .project(name)
             .description(description)
@@ -35,7 +35,7 @@ public class CommandClient {
    }
    
    public void sendScriptError(String resource, String description, long time, int line) throws Exception {
-      String name = project.getProjectName();
+      String name = project.getName();
       ProblemCommand command = ProblemCommand.builder()
             .project(name)
             .description(description)

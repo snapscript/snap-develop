@@ -20,13 +20,13 @@ public class FileMatchQueryParser {
    public FileMatchQuery parse(Request request) {
       RequestParser parser = new RequestParser(request);
       Path path = request.getPath();
-      FileDirectory project = workspace.getProject(path);
+      FileDirectory project = workspace.getByPath(path);
       
       if(project == null) {
          throw new IllegalStateException("Could not find project for " + path);
       }
-      String name = project.getProjectName();
-      File root = project.getProjectPath();
+      String name = project.getName();
+      File root = project.getBasePath();
       String query = parser.getString(EXPRESSION);
       
       return FileMatchQuery.builder()

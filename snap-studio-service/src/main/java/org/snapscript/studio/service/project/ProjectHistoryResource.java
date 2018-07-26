@@ -61,7 +61,7 @@ public class ProjectHistoryResource implements Resource {
       Project project = workspace.createProject(path);
       FileSystem system = project.getFileSystem();
       File file = system.getFile(path);
-      String name = project.getProjectName();
+      String name = project.getName();
       long modificationTime = file.lastModified();
       List<BackupFile> files = manager.findAllBackups(file, name);
       Date modificationDate = new Date(modificationTime);
@@ -107,7 +107,7 @@ public class ProjectHistoryResource implements Resource {
       Project project = workspace.createProject(path);
       FileSystem system = project.getFileSystem();
       File file = system.getFile(path);
-      String name = project.getProjectName();
+      String name = project.getName();
       List<BackupFile> files = manager.findAllBackups(file, name);
       
       for(BackupFile entry : files) {

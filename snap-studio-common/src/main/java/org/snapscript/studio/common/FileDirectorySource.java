@@ -5,7 +5,7 @@ import java.io.File;
 import org.simpleframework.http.Path;
 
 public interface FileDirectorySource {
-   FileDirectory getProject(String path);
-   FileDirectory getProject(Path path);
+   FileDirectory getByName(String path); // getProject
+   FileDirectory getByPath(Path path); // getProject
    File createFile(String name);
 }

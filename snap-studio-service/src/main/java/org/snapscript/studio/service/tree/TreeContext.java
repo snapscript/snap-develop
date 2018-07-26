@@ -51,7 +51,7 @@ public class TreeContext implements TreeFolderExpander {
    
    public boolean isLayoutPath(String prefix, String path) {
       if(isProject) {
-         Project project = workspace.getProject(projectName);
+         Project project = workspace.getByName(projectName);
          
          if(project != null) {
             path = getRelativePath(path);

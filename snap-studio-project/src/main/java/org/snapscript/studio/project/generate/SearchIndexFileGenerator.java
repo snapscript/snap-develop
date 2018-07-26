@@ -91,7 +91,7 @@ public class SearchIndexFileGenerator implements ConfigFileGenerator {
    @Override
    public File getConfigFilePath(Project project) {
       try {
-         String projectName = project.getProjectName();
+         String projectName = project.getName();
          File file = HomeDirectory.getPath(SEARCH_INDEX_DIRECTORY, projectName, SEARCH_INDEX_FILE);
          
          return file.getCanonicalFile();

@@ -51,7 +51,7 @@ public class ProjectTreeResource implements Resource {
       
       if(segments.length > 1) {
          Project project = workspace.createProject(path);
-         treePath = project.getProjectPath();
+         treePath = project.getBasePath();
          isProject = true;
       }
       if(depth != null) {

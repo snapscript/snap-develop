@@ -69,7 +69,7 @@ public class ProjectManager {
             project = new Project(reader, source, workspace, projectName, projectName);
             projects.put(projectName, project);
          }
-         File file = project.getProjectPath();
+         File file = project.getBasePath();
          
          if(!file.exists()) {
             file.mkdirs();

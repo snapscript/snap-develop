@@ -30,7 +30,7 @@ public class SourceFormatResource {
          @QueryParam("indent") @DefaultValue("3") int indent,
          String body) throws Exception
    {
-      Project project = workspace.getProject(name);
+      Project project = workspace.getByName(name);
       return formatter.format(project, path, body, indent);
    }
 }

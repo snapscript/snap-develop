@@ -70,12 +70,12 @@ public class ArchiveBuilder {
    }
    
    public File exportArchive(String mainScript) {
-      String name = project.getProjectName();
+      String name = project.getName();
       String tempDir = System.getProperty("java.io.tmpdir");
       
       if(mainScript != null) {
          String realPath = project.getRealPath(mainScript);
-         File rootPath = project.getProjectPath();
+         File rootPath = project.getBasePath();
          File mainScriptFile = new File(rootPath, realPath);
          
          if(!mainScriptFile.exists()) {

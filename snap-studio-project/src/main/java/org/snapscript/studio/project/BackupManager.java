@@ -78,12 +78,12 @@ public class BackupManager {
    private synchronized File createBackupFile(File file, String project) {
       long time = file.lastModified();
       File backupRoot = HomeDirectory.getPath(WorkspaceConfiguration.BACKUP_PATH);
-      Project proj = workspace.getProject(project);
+      Project proj = workspace.getByName(project);
       
       if(proj == null) {
          throw new IllegalArgumentException("Project " + project + " does not exist");
       }
-      File root = proj.getProjectPath();
+      File root = proj.getBasePath();
       String extension = DateFormatter.format(DATE_FORMAT, time);
       String relative = relative(root, file);
       String timestampFile = String.format("%s/%s.%s", project, relative, extension);
@@ -151,12 +151,12 @@ public class BackupManager {
          File[] list = backupDirectory.listFiles();
          
          if(list != null) {
-            Project proj = workspace.getProject(project);
+            Project proj = workspace.getByName(project);
             
             if(proj == null) {
                throw new IllegalArgumentException("Project " + project + " does not exist");
             }
-            File root = proj.getProjectPath();
+            File root = proj.getBasePath();
             String rootPath = root.getCanonicalPath();
             String matchName = file.getName();
             

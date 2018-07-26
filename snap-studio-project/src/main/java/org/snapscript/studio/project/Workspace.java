@@ -81,12 +81,13 @@ public class Workspace implements FileDirectorySource {
       return pool;
    }
    
-   public Project getProject(String name){ 
+   @Override
+   public Project getByName(String name){ 
       return manager.getProject(name);
    }
    
    @Override
-   public Project getProject(Path path){ // /project/<project-name>/ || /project/default
+   public Project getByPath(Path path){ // /project/<project-name>/ || /project/default
       return manager.getProject(path);
    }
    

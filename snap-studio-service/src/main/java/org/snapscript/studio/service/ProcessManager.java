@@ -67,7 +67,7 @@ public class ProcessManager implements ProcessRemoteController {
          Map<String, Map<Integer, Boolean>> breakpoints = command.getBreakpoints();
          List<String> arguments = command.getArguments();
          String projectName = command.getProject();
-         Project project = workspace.getProject(projectName);
+         Project project = workspace.getByName(projectName);
          ClassPathFile classPath = project.getClassPath();
          String dependencies = classPath.getPath();
          String resource = command.getResource();

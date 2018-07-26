@@ -32,8 +32,8 @@ public class FileMatchResource {
          @PathParam("project") String name, 
          @QueryParam("expression") String expression) throws Exception 
    {
-      FileDirectory project = workspace.getProject(name);
-      File directory = project.getProjectPath();
+      FileDirectory project = workspace.getByName(name);
+      File directory = project.getBasePath();
       
       return scanner.findAllFiles(directory, name, expression);
    }

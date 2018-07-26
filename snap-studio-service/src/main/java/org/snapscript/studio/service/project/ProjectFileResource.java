@@ -40,7 +40,7 @@ public class ProjectFileResource implements Resource {
    @Override
    public void handle(Request request, Response response) throws Throwable {
       Path path = request.getPath();
-      Project project = workspace.getProject(path);
+      Project project = workspace.getByPath(path);
       String projectPath = getPath(project, request); // /<project-name>/<project-path> or /default/blah.snap
    
       if(projectPath.startsWith("/decompile") && projectPath.endsWith(".java")) {
@@ -52,8 +52,8 @@ public class ProjectFileResource implements Resource {
    
    private void handleFile(Request request, Response response) throws Throwable {
       Path path = request.getPath();
-      Project project = workspace.getProject(path);
-      String projectName = project.getProjectName();
+      Project project = workspace.getByPath(path);
+      String projectName = project.getName();
       String projectPath = getPath(project, request); // /<project-name>/<project-path> or /default/blah.snap
       FileData projectFile = cache.getFile(projectName, projectPath);
       OutputStream stream = response.getOutputStream();

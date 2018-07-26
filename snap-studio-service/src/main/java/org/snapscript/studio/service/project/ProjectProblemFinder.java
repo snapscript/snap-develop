@@ -30,8 +30,8 @@ public class ProjectProblemFinder {
    
    public Set<Problem> compileProject(Path path) throws Exception {
       Project project = workspace.createProject(path);
-      String name = project.getProjectName();
-      File directory = project.getProjectPath();
+      String name = project.getName();
+      File directory = project.getBasePath();
       String root = directory.getCanonicalPath();
       int length = root.length();
       
@@ -64,9 +64,9 @@ public class ProjectProblemFinder {
       
       @Override
       public Problem execute(String reference, File file) throws Exception {
-         Project project = workspace.getProject(reference);
-         String name = project.getProjectName();
-         File root = project.getProjectPath();
+         Project project = workspace.getByName(reference);
+         String name = project.getName();
+         File root = project.getBasePath();
          String rootPath = root.getCanonicalPath();
          String filePath = file.getCanonicalPath();
          String relativePath = filePath.replace(rootPath, "");

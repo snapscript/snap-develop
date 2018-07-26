@@ -29,7 +29,7 @@ public class ConfigurationClassLoader {
    }
    
    public ClassLoader getClassLoader() {
-      String name = project.getProjectName();
+      String name = project.getName();
       long time = System.currentTimeMillis();
       
       try {
