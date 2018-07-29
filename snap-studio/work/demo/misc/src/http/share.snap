@@ -61,13 +61,13 @@ class FileSystem {
          
       var format = new SimpleDateFormat('yyyy-MM-dd HH:mm:ss');
       
-      for(var file in list){
-         var suffix = file.isDirectory() ? "/" : "";
+      for(var entry in list){
+         var suffix = entry.isDirectory() ? "/" : "";
          var prefix = directory == "/" ? "" : directory;
-         var date = format.format(file.lastModified);
+         var date = format.format(entry.lastModified);
          
          stream.println("<tr>
-            <td><a href='${prefix}${file.name}${suffix}'>${file.name}${suffix}</a></td>
+            <td><a href='${prefix}${entry.name}${suffix}'>${entry.name}${suffix}</a></td>
             <td>${date}</td>
             </tr>");
       }
@@ -91,7 +91,7 @@ class FileSystem {
    }
 }
 
-var root = new File("c:\\temp");
+var root = new File("c:\\");
 var system = new FileSystem(root);
 
 Server.create(8911).register("/.*", system::handle).start();

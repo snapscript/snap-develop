@@ -1,1 +1,1 @@
-[1,2,3,4,5,6,7,8].iterator().filter(x -> x % 2 != 0).reverse().forEachRemaining(x -> println(x));
+exec("dir c:/temp").forEachRemaining(l -> println(l));

@@ -7,6 +7,7 @@ import org.glassfish.jersey.simple.SimpleServer;
 import org.snapscript.studio.common.server.RestServer;
 import org.snapscript.studio.service.ProcessManager;
 import org.snapscript.studio.service.StudioOption;
+import org.snapscript.studio.service.browser.BrowserEngine;
 import org.snapscript.studio.service.browser.BrowserLauncher;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class ServerStartListener implements ApplicationListener<ContextRefreshedEvent> {
   
     private final BrowserLauncher launcher;
-    private final ProcessManager engine;
+    private final ProcessManager manager;
     private final RestServer starter;
    
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -35,10 +36,11 @@ public class ServerStartListener implements ApplicationListener<ContextRefreshed
           log.info("Listening to " + project);
              
           if(script != null) {
-             engine.launch(); // start a new process
+             manager.launch(); // start a new process
           }
-          launcher.launch(browser, host, port);
-          engine.start(host, port);
+          BrowserEngine engine = BrowserEngine.resolveEngine(browser);
+          launcher.launch(engine, host, port);
+          manager.start(host, port);
        } catch(Exception e) {
           throw new IllegalStateException("Could not start server", e);
        }

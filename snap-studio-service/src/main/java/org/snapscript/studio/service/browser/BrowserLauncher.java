@@ -26,7 +26,7 @@ public class BrowserLauncher {
       this.debug = debug;
    }
    
-   public void launch(final String engine, final String host, final int port) {
+   public void launch(final BrowserEngine engine, final String host, final int port) {
       if(!disabled) {
          final BrowserContext context = new BrowserContext.Builder()
             .withDebug(debug)

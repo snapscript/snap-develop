@@ -8,8 +8,8 @@ public class BrowserContext {
 
    private static final String ICON_PATH = "/resource/img/icon_large.png";
    
+   private final BrowserEngine engine;
    private final File directory;
-   private final String engine;
    private final String host;
    private final int port;
    private final boolean debug;
@@ -26,7 +26,7 @@ public class BrowserContext {
       return ICON_PATH;
    }
    
-   public String getEngine() {
+   public BrowserEngine getEngine() {
       return engine;
    }
 
@@ -51,11 +51,11 @@ public class BrowserContext {
       return debug;
    }
 
+   
    public static class Builder {
       
-      private Logger logger;
+      private BrowserEngine engine;
       private File directory;
-      private String engine;
       private String host;
       private int port;
       private boolean debug;
@@ -64,7 +64,7 @@ public class BrowserContext {
          super();
       }
       
-      public Builder withEngine(String engine) {
+      public Builder withEngine(BrowserEngine engine) {
          this.engine = engine;
          return this;
       }
