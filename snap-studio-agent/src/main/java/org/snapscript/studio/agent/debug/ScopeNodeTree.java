@@ -55,7 +55,7 @@ public class ScopeNodeTree implements ScopeNode {
                
                if(local != null) {
                   Object object = local.getValue();
-                  String name = local.getName(scope);
+                  String name = local.getName();
                   
                   if(done.add(name)) { 
                      int modifiers = local.getModifiers();

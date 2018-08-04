@@ -38,11 +38,12 @@ public class ArrayConstraintIndex implements Compilation {
       }
 
       @Override
-      public Value evaluate(Scope scope, Object left) throws Exception {
+      public Value evaluate(Scope scope, Value left) throws Exception {
          String type = entry.getName(scope);
          String name = type + DIMENSIONS[bounds];
+         Module module = scope.getModule();
          
-         return Value.getTransient(name);
+         return Value.getTransient(name, module);
       }
    }
 }

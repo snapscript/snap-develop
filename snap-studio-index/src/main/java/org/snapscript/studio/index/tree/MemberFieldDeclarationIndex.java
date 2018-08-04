@@ -42,7 +42,7 @@ public class MemberFieldDeclarationIndex implements Compilation {
    public Object compile(Module module, Path path, int line) throws Exception {
       Scope scope = module.getScope();
       Value value = identifier.evaluate(scope, null);
-      String name = value.getString();
+      String name = value.getData().getString();
       String prefix = module.getName();
       String type = null;
       

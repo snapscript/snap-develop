@@ -38,7 +38,7 @@ public class ImportIndex implements Compilation {
          Scope scope = module.getScope();
          Value value = alias.evaluate(scope, null);
          
-         name = value.getString();
+         name = value.getData().getString();
       }
       return new IndexResult(IMPORT, statement, null, fullName, name, path, line);
    }
