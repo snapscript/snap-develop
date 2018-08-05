@@ -1,6 +1,7 @@
 package org.snapscript.studio.index.tree;
 
 import static org.snapscript.core.ModifierType.CLASS;
+import static org.snapscript.core.variable.Value.NULL;
 
 import org.snapscript.core.Compilation;
 import org.snapscript.core.Evaluation;
@@ -46,7 +47,7 @@ public class GenericReferenceIndex implements Compilation {
       @Override
       public Type getType(Scope scope) {
          try {
-            Value value = reference.evaluate(scope, null);
+            Value value = reference.evaluate(scope, NULL);
             Module module = scope.getModule();
             String entry = value.getValue();               
 
