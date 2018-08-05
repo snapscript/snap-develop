@@ -42,9 +42,11 @@ public class TypeReferencePartIndex implements Compilation {
       }
       
       @Override
-      public Value evaluate(Scope scope, Object left) {
-         if(left != null) {
-            return Value.getTransient(left + "." + name);
+      public Value evaluate(Scope scope, Value left) {
+         Object object = left.getValue();
+         
+         if(object != null) {
+            return Value.getTransient(object + "." + name);
          }
          return Value.getTransient(name);
       }
