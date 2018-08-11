@@ -6,19 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.snapscript.studio.agent.ProcessMode;
 import org.snapscript.studio.agent.cli.CommandLineBuilder;
 import org.snapscript.studio.agent.cli.CommandOption;
+import org.snapscript.studio.agent.log.LogLevel;
 
 public enum WorkerOption implements CommandOption {
    HOST("h", "host", "download host", ".+", String.class),
    PORT("p", "port", "download port", "\\d+", Integer.class),
    NAME("n", "name", "name of the process", ".+", String.class),
-   LEVEL("l", "level", "log level", "(TRACE|DEBUG|INFO)", String.class, "INFO"),
-   MODE("m", "mode", "run mode to use", "(SCRIPT|SERVICE)", String.class, "SCRIPT");
+   LEVEL("l", "level", "log level", "(TRACE|DEBUG|INFO)", String.class, LogLevel.INFO),
+   MODE("m", "mode", "run mode to use", "(SCRIPT|SERVICE)", String.class, ProcessMode.SCRIPT);
 
    public final Pattern pattern;
    public final String description;
-   public final String value;
+   public final Object value;
    public final String name;
    public final String code;
    public final Class type;
@@ -27,7 +29,7 @@ public enum WorkerOption implements CommandOption {
       this(code, name, description, pattern, type, null);
    }
    
-   private WorkerOption(String code, String name, String description, String pattern, Class type, String value) {
+   private WorkerOption(String code, String name, String description, String pattern, Class type, Object value) {
       this.pattern = Pattern.compile(pattern);
       this.description = description;
       this.value = value;
@@ -52,7 +54,7 @@ public enum WorkerOption implements CommandOption {
    }
 
    @Override
-   public String getDefault() {
+   public Object getDefault() {
       return value;
    }
    

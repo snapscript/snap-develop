@@ -18,14 +18,14 @@ public enum LocalOption implements CommandOption {
    SCRIPT("s", "script", "script to execute", ".+", Path.class),
    EXPRESSION("e", "expression", "expression to evaluate", ".+", String.class),
    CLASSPATH("cp", "classpath", "optional classpath file", ".+", File[].class),
-   VERBOSE("v", "verbose", "enable verbose logging", "(true|false)", Boolean.class, "false"),
-   CHECK("c", "check", "compile script only", "(true|false)", Boolean.class, "false"),
+   VERBOSE("v", "verbose", "enable verbose logging", "(true|false)", Boolean.class, false),
+   CHECK("c", "check", "compile script only", "(true|false)", Boolean.class, false),
    PORT("p", "port", "debug port", "\\d+", Integer.class),
-   WAIT("w", "wait", "wait for debugger", "(true|false)", Boolean.class, "false");
+   WAIT("w", "wait", "wait for debugger", "(true|false)", Boolean.class, false);
 
    public final Pattern pattern;
    public final String description;
-   public final String value;
+   public final Object value;
    public final String name;
    public final String code;
    public final Class type;
@@ -34,7 +34,7 @@ public enum LocalOption implements CommandOption {
       this(code, name, description, pattern, type, null);
    }
    
-   private LocalOption(String code, String name, String description, String pattern, Class type, String value) {
+   private LocalOption(String code, String name, String description, String pattern, Class type, Object value) {
       this.pattern = Pattern.compile(pattern);
       this.description = description;
       this.value = value;
@@ -59,7 +59,7 @@ public enum LocalOption implements CommandOption {
    }
 
    @Override
-   public String getDefault() {
+   public Object getDefault() {
       return value;
    }
    
