@@ -22,7 +22,7 @@ public class SourceSanatizer {
    }   
    
    public SyntaxNode sanatize(String script, String source) throws Exception {
-      return sanatize(script, source, 4);
+      return sanatize(script, source, 5);
    }
    
    private SyntaxNode sanatize(String script, String source, int attempts) throws Exception {
