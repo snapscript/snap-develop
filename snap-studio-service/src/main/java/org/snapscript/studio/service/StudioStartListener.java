@@ -1,14 +1,11 @@
-package org.snapscript.studio.service.server;
+package org.snapscript.studio.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.glassfish.jersey.simple.SimpleServer;
 import org.snapscript.studio.common.server.RestServer;
-import org.snapscript.studio.service.ProcessManager;
-import org.snapscript.studio.service.StudioOption;
-import org.snapscript.studio.service.browser.BrowserEngine;
-import org.snapscript.studio.service.browser.BrowserLauncher;
+import org.snapscript.ui.ClientEngine;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -17,9 +14,9 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @AllArgsConstructor
-public class ServerStartListener implements ApplicationListener<ContextRefreshedEvent> {
+public class StudioStartListener implements ApplicationListener<ContextRefreshedEvent> {
   
-    private final BrowserLauncher launcher;
+    private final StudioClientLauncher launcher;
     private final ProcessManager manager;
     private final RestServer starter;
    
@@ -38,7 +35,7 @@ public class ServerStartListener implements ApplicationListener<ContextRefreshed
           if(script != null) {
              manager.launch(); // start a new process
           }
-          BrowserEngine engine = BrowserEngine.resolveEngine(browser);
+          ClientEngine engine = ClientEngine.resolveEngine(browser);
           launcher.launch(engine, host, port);
           manager.start(host, port);
        } catch(Exception e) {

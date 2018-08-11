@@ -48,7 +48,7 @@ public class CommandLineBuilder {
          String name = option.getName();
          
          if(!map.containsKey(name)) {
-            String token = option.getDefault();
+            Object token = option.getDefault();
             
             if(token != null) {
                Class type = option.getType();

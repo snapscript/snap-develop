@@ -4,7 +4,9 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,7 +51,8 @@ public class CommandOptionParser {
       if(pair.length > 1) {
          value = pair[1];
       } else if(option != null){
-         value = option.getDefault();
+         Object object = option.getDefault();
+         value = interpolate(object);
       } 
       if(value == null) {
          String warning = String.format(MISSING_VALUE, key);
@@ -75,10 +78,34 @@ public class CommandOptionParser {
       }
       Object object = convert(value, type);
       return new CommandValue(name, object);
-   } 
+   }
    
-   public Object convert(String value, Class type) {
+   public String interpolate(Object object) {
+      if(object != null) {
+         String text = String.valueOf(object);
+         
+         if(text.contains("$")) {
+            Properties properties = System.getProperties();
+            Enumeration<?> names = properties.propertyNames();
+            
+            while(names.hasMoreElements()) {
+               Object name = names.nextElement();
+               Object value = properties.get(name);
+               String token = String.valueOf(value);
+               
+               text = text.replace("$" + name, token);
+               text = text.replace("${" + name + "}", token);
+            }
+         }
+         return text;
+      }
+      return null;
+   }
+   
+   public Object convert(Object object, Class type) {
       try {
+         String value = interpolate(object);
+         
          if(type == File[].class) {
             StringTokenizer tokenizer = new StringTokenizer(value, File.pathSeparator);
             List<File> files = new ArrayList<File>();
@@ -117,7 +144,7 @@ public class CommandOptionParser {
          }
          return value;
       } catch(Exception e) {
-         throw new IllegalStateException("Error parsing " + value, e);
+         throw new IllegalStateException("Error parsing " + object, e);
       }
    }
    

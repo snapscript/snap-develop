@@ -35,7 +35,6 @@
     <module>snap-studio-common</module>    
     <module>snap-studio-agent</module>
     <module>snap-studio-service</module>
-    <module>snap-studio-ui</module>
     <module>snap-studio-index</module>
     <module>snap-studio-project</module>  
     <module>snap-studio-build</module>  

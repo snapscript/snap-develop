@@ -6,7 +6,7 @@ public interface CommandOption {
    String getCode();
    String getName();
    String getDescription();
-   String getDefault();
+   Object getDefault();
    Pattern getPattern();
    Class getType();
 }

@@ -10,23 +10,25 @@ import java.util.regex.Pattern;
 import org.snapscript.core.module.Path;
 import org.snapscript.studio.agent.cli.CommandLineBuilder;
 import org.snapscript.studio.agent.cli.CommandOption;
+import org.snapscript.studio.project.HomeDirectory;
 import org.snapscript.studio.project.ProjectMode;
+import org.snapscript.ui.ClientEngine;
 
 public enum StudioOption implements CommandOption {
-   AGENT_POOL("n", "agent-pool", "Number of agents in pool", "\\d+", Integer.class, "4"),
-   PORT("p", "port", "Port for HTTP connections", "\\d+", Integer.class, "0"),
-   MODE("m", "mode", "Mode to start on", "(DEVELOP|DEBUG)", ProjectMode.class, "DEVELOP"),
+   AGENT_POOL("n", "agent-pool", "Number of agents in pool", "\\d+", Integer.class, 4),
+   PORT("p", "port", "Port for HTTP connections", "\\d+", Integer.class, 0),
+   MODE("m", "mode", "Mode to start on", "(DEVELOP|DEBUG)", ProjectMode.class, ProjectMode.DEVELOP),
    DIRECTORY("d", "directory", "Directory used for sources", ".*", File.class, "work"),
    LOG_LEVEL("l", "log-level", "Level of logging", "(TRACE|DEBUG|INFO)", String.class, "INFO"),
-   LOG("f", "log-file", "Log file to use", ".+", File.class, "log/snapd.log"),
+   LOG("f", "log-file", "Log file to use", ".+", File.class, "${user.home}/" + HomeDirectory.HOME_DIRECTORY + "/log/snapd.log"),
    SCRIPT("s", "script", "Script to launch", ".*.snap", Path.class),
-   SERVER_ONLY("o", "server-only", "Launch server only", "(true|false)", Boolean.class, "false"),
-   BROWSER_ENGINE("e", "browser-engine", "Browser engine to use", "(javafx|cef)", String.class, "cef"),
-   CLIENT_DEBUG("i", "client-debug", "Enable client debugger", "(true|false)", String.class, "false"); // firebug
+   SERVER_ONLY("o", "server-only", "Launch server only", "(true|false)", Boolean.class, false),
+   BROWSER_ENGINE("e", "browser-engine", "Browser engine to use", "(javafx|cef)", String.class, ClientEngine.CEF),
+   CLIENT_DEBUG("i", "client-debug", "Enable client debugger", "(true|false)", String.class, false); // firebug
 
    public final Pattern pattern;
    public final String description;
-   public final String value;
+   public final Object value;
    public final String name;
    public final String code;
    public final Class type;
@@ -35,7 +37,7 @@ public enum StudioOption implements CommandOption {
       this(code, name, description, pattern, type, null);
    }
    
-   private StudioOption(String code, String name, String description, String pattern, Class type, String value) {
+   private StudioOption(String code, String name, String description, String pattern, Class type, Object value) {
       this.pattern = Pattern.compile(pattern);
       this.description = description;
       this.value = value;
@@ -64,7 +66,7 @@ public enum StudioOption implements CommandOption {
    }
 
    @Override
-   public String getDefault() {
+   public Object getDefault() {
       return value;
    }
    
