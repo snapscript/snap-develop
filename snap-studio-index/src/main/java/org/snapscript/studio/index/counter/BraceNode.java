@@ -24,6 +24,10 @@ public class BraceNode {
       this.type = type;
    }
    
+   public BraceType getType() {
+      return type;
+   }
+   
    public BraceNode getParent(){
       return parent;
    }

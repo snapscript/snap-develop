@@ -22,11 +22,9 @@ import org.snapscript.parse.GrammarReader;
 import org.snapscript.parse.GrammarResolver;
 import org.snapscript.parse.SourceProcessor;
 import org.snapscript.parse.SyntaxNode;
-import org.snapscript.parse.SyntaxParser;
 import org.snapscript.studio.index.compile.IndexInstructionBuilder;
 import org.snapscript.studio.index.compile.IndexInstructionResolver;
 import org.snapscript.studio.index.counter.TokenBraceCounter;
-import org.snapscript.tree.Instruction;
 import org.snapscript.tree.OperationResolver;
 
 public class SourceIndexer {
@@ -41,7 +39,7 @@ public class SourceIndexer {
    private final FilePathConverter converter;
    private final PathTranslator translator;
    private final IndexDatabase database;
-   private final SyntaxParser parser;
+   private final SourceSanatizer sanatizer;
    private final GrammarReader reader;
    private final Executor executor;
    private final Context context;
@@ -58,7 +56,7 @@ public class SourceIndexer {
       this.grammarCompiler = new GrammarCompiler(grammarResolver, grammarIndexer);  
       this.sourceProcessor = new SourceProcessor(100);
       this.reader = new GrammarReader(GRAMMAR_FILE);
-      this.parser = new SyntaxParser(grammarResolver, grammarIndexer);
+      this.sanatizer = new SourceSanatizer(grammarResolver, grammarIndexer, grammarCompiler);
       this.converter = new FilePathConverter();
       this.translator = translator;
       this.database = database;
@@ -83,14 +81,14 @@ public class SourceIndexer {
       OperationResolver resolver = new IndexInstructionResolver(context);
       OperationTraverser traverser = new OperationTraverser(builder, resolver);
       TokenBraceCounter counter = new TokenBraceCounter(grammarIndexer, sourceProcessor, script, source);
-      SyntaxNode node = parser.parse(script, source, Instruction.SCRIPT.name);
+      SyntaxNode node = sanatizer.sanatize(script, source);
       Path path = converter.createPath(script);
       Object result = traverser.create(node, path);
       IndexNode top = listener.build();
 
       return new IndexSearcher(database, counter, top, file, resource, script);
-   }
-   
+   }   
+
    private static class NodeBuilder implements IndexListener {
       
       private final Stack<SourceFileNode> stack;
