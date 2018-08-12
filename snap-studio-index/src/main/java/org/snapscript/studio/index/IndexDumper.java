@@ -21,10 +21,18 @@ public class IndexDumper {
             
             if(!type.isCompound()) {
                String description = type.getName();
-               
+               IndexNode constraint = node.getConstraint();
+
                builder.append(description);
                builder.append(" ");
                builder.append(name);
+
+               if(constraint != null) {
+                  String token = constraint.getName();
+
+                  builder.append(": ");
+                  builder.append(token);
+               }
                builder.append(" ");
             }
             if(type.isLeaf()) {
