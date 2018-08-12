@@ -931,7 +931,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 explorer_1.FileExplorer.openTreeFile(resource, function () {
                     window.setTimeout(function () {
                         editor_1.FileEditor.showEditorLine(line);
-                    }, 100); // delay focus on line, some bug here that needs a delay 
+                    }, 100); // delay focus on line, some bug here that needs a delay
                 });
             }
             else {

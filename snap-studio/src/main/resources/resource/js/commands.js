@@ -32,11 +32,13 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                         var typeCell = {
                             text: typesFound[i].name + "&nbsp;&nbsp;" + typePackage,
                             link: resourceLink,
+                            line: 0,
                             style: typesFound[i].type == 'module' ? 'moduleNode' : 'typeNode'
                         };
                         var resourceCell = {
                             text: typesFound[i].resource + "&nbsp;&nbsp;" + absolutePath,
                             link: resourceLink,
+                            line: 0,
                             style: 'resourceNode'
                         };
                         typeRows.push([typeCell, resourceCell]);

@@ -978,12 +978,12 @@ export module DialogBuilder {
     
    function submitDialogListResource(resource, line) {
       $("#dialogCancel").click(); // force the click
-      
+
       if(line) {
          FileExplorer.openTreeFile(resource, function() {
             window.setTimeout(function() {
                FileEditor.showEditorLine(line);
-            }, 100); // delay focus on line, some bug here that needs a delay 
+            }, 100); // delay focus on line, some bug here that needs a delay
          });
       }else {
          location.href = resource;
