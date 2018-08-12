@@ -1,1 +1,5 @@
-println("x");
+import util.regex.{ Pattern, Matcher};
+
+
+let m = {:};
+m.computeIfAbsent('1', (_) -> new String('1'));

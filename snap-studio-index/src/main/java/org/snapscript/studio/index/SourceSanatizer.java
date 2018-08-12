@@ -70,8 +70,8 @@ public class SourceSanatizer {
       for(int j = 0; j < lines.length; j++) {
          if(j != index) {
             builder.append(lines[j]);
-            builder.append("\n");
          }
+         builder.append("\n");
       }
       return builder.toString();
    }
