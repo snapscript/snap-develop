@@ -33,23 +33,27 @@ public class EditContextExtractor {
          return Arrays.asList(
                  createContext(request, lines, result, ""),
                  createContext(request, lines, result, ";"));
-
       }
-      return Collections.emptyList();
+      return Collections.singletonList(
+              createContext(request, lines, "", ""));
    }
 
    private static EditContext createContext(CompletionRequest request, String[] lines, String result, String replace) {
       String source = request.getSource();
       String completion = request.getComplete();
       int length = completion.length();
-      int line = request.getLine();
-      String finished = generateSource(lines, replace, line);
-      char last = completion.charAt(length -1);
 
-      if(Character.isWhitespace(last)) { // did user input end in a space?
-         return new EditContext(finished, completion, result + " ");
+      if(length > 0) {
+         int line = request.getLine();
+         String finished = generateSource(lines, replace, line);
+         char last = completion.charAt(length - 1);
+
+         if (Character.isWhitespace(last)) { // did user input end in a space?
+            return new EditContext(finished, completion, result + " ");
+         }
+         return new EditContext(finished, completion, result);
       }
-      return new EditContext(finished, completion, result);
+      return new EditContext(source, completion, "");
    }
    
 
