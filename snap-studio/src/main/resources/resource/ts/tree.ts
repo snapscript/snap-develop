@@ -284,11 +284,14 @@ export module FileTree {
               },
               select: function(event, ui) {
                 var node = $.ui.fancytree.getNode(ui.target);
-                var resourcePath = createResourcePath(node.tooltip);
-                var commandName = ui.cmd;
-                var elementId = ui.key;
+
+                if(node) {
+                    var resourcePath = createResourcePath(node.tooltip);
+                    var commandName = ui.cmd;
+                    var elementId = ui.key;
                 
-                treeMenuHandler(resourcePath, commandName, elementId, node.isFolder());
+                    treeMenuHandler(resourcePath, commandName, elementId, node.isFolder());
+                }
               }
          });         
      }

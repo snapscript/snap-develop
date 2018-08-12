@@ -217,7 +217,7 @@ public class CommandListener {
             boolean toExists = toFile.exists();
             
             if(!fromExists) {
-               commandClient.sendAlert(from, "Resource " + from + " does not exist");
+               //commandClient.sendAlert(from, "Resource " + from + " does not exist");
             } else {
                if(toExists) {
                   commandClient.sendAlert(to, "Resource " + to + " already exists");

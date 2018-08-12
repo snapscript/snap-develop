@@ -239,10 +239,12 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
                     },
                     select: function (event, ui) {
                         var node = $.ui.fancytree.getNode(ui.target);
-                        var resourcePath = createResourcePath(node.tooltip);
-                        var commandName = ui.cmd;
-                        var elementId = ui.key;
-                        treeMenuHandler(resourcePath, commandName, elementId, node.isFolder());
+                        if (node) {
+                            var resourcePath = createResourcePath(node.tooltip);
+                            var commandName = ui.cmd;
+                            var elementId = ui.key;
+                            treeMenuHandler(resourcePath, commandName, elementId, node.isFolder());
+                        }
                     }
                 });
             }

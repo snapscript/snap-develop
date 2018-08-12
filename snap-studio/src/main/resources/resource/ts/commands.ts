@@ -630,8 +630,7 @@ export module Command {
          resourceDetails = editorState.getResource();
       }
       if(resourceDetails != null) {
-         var editorResource: FilePath = editorState.getResource();
-         var message = "Delete resource " + editorResource.getFilePath();
+         var message = "Delete resource " + resourceDetails.getFilePath();
          
          Alerts.createConfirmAlert("Delete File", message, "Delete", "Cancel", 
                function(){

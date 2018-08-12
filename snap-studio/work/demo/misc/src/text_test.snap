@@ -1,1 +1,1 @@
-exec("dir c:/temp").forEachRemaining(l -> println(l));
+println("x");

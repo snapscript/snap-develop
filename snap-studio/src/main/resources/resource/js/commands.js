@@ -569,8 +569,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                 resourceDetails = editorState.getResource();
             }
             if (resourceDetails != null) {
-                var editorResource = editorState.getResource();
-                var message = "Delete resource " + editorResource.getFilePath();
+                var message = "Delete resource " + resourceDetails.getFilePath();
                 alert_1.Alerts.createConfirmAlert("Delete File", message, "Delete", "Cancel", function () {
                     var message = {
                         project: document.title,
