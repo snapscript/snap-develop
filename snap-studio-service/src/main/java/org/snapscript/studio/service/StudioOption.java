@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import org.snapscript.core.module.Path;
 import org.snapscript.studio.agent.cli.CommandLineBuilder;
 import org.snapscript.studio.agent.cli.CommandOption;
+import org.snapscript.studio.agent.log.LogLevel;
 import org.snapscript.studio.project.HomeDirectory;
 import org.snapscript.studio.project.ProjectMode;
 import org.snapscript.ui.ClientEngine;
@@ -19,11 +20,11 @@ public enum StudioOption implements CommandOption {
    PORT("p", "port", "Port for HTTP connections", "\\d+", Integer.class, 0),
    MODE("m", "mode", "Mode to start on", "(DEVELOP|DEBUG)", ProjectMode.class, ProjectMode.DEVELOP),
    DIRECTORY("d", "directory", "Directory used for sources", ".*", File.class, "work"),
-   LOG_LEVEL("l", "log-level", "Level of logging", "(TRACE|DEBUG|INFO)", String.class, "INFO"),
+   LOG_LEVEL("l", "log-level", "Level of logging", "(TRACE|DEBUG|INFO)", String.class, LogLevel.INFO),
    LOG("f", "log-file", "Log file to use", ".+", File.class, "${user.home}/" + HomeDirectory.HOME_DIRECTORY + "/log/snapd.log"),
    SCRIPT("s", "script", "Script to launch", ".*.snap", Path.class),
    SERVER_ONLY("o", "server-only", "Launch server only", "(true|false)", Boolean.class, false),
-   BROWSER_ENGINE("e", "browser-engine", "Browser engine to use", "(javafx|cef)", String.class, ClientEngine.CEF),
+   BROWSER_ENGINE("e", "browser-engine", "Browser engine to use", "(JAVAFX|CEF)", String.class, ClientEngine.CEF),
    CLIENT_DEBUG("i", "client-debug", "Enable client debugger", "(true|false)", String.class, false); // firebug
 
    public final Pattern pattern;

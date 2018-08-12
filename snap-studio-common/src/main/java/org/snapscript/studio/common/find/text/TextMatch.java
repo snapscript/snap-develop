@@ -19,6 +19,9 @@ public class TextMatch implements Comparable<TextMatch> {
       if(!resource.equals(other.resource)) {
          return resource.compareTo(other.resource);
       }
+      if(other.line != line) {
+         return line < other.line ? -1 : 1;
+      }
       return text.compareTo(other.text);
    }
 

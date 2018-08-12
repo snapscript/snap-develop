@@ -52,6 +52,29 @@ export class FilePath {
    }
 }
 
+export class FileNode {
+
+   private _resourcePath: FilePath;
+   private _children: any;
+
+   constructor(resourcePath: FilePath, children: any) {
+      this._resourcePath = resourcePath;
+      this._children = children;
+   }
+
+   public getResource(): FilePath {
+      return this._resourcePath;
+   }
+
+   public getChildren(): any {
+       return this._children;
+   }
+
+   public isFolder(): boolean {
+      return this._children.length > 0;
+   }
+}
+
 export module FileTree {
    
    export function createTree(treePath, element, id, expandPath, foldersOnly, treeMenuHandler, clickCallback) { // #explorer
@@ -154,27 +177,53 @@ export module FileTree {
             var folderElement = $(child).find('.fancytree-title');
             var dataTransfer = event.target.dataTransfer || event.originalEvent.dataTransfer;
             var target = event.target || event.currentTarger;
-            var fromPath = dataTransfer.getData("resource");
+            var dataPath = dataTransfer.getData("resource");
             var folderPath = $(folderElement).attr("title");
             
             $(folderElement).removeClass("treeFolderDragOver");
             event.stopPropagation();
             event.preventDefault();
-            
-            if(fromPath) {
-               var toPath = {
-                     resource: folderPath,
-                     folder: isTreeNodeFolder(target)
-               }
-               handleNodeDroppedOverFolder(event, JSON.parse(fromPath), toPath);
+
+           var toPath: FilePath = createResourcePath(folderPath);
+           var toChildren: any =  findAllChildrenOf(explorerTree, toPath);
+           var toNode: FileNode = new FileNode(toPath, toChildren);
+
+            if(dataPath) {
+               var fromBlob = JSON.parse(dataPath);
+               var fromPath: FilePath = createResourcePath(fromBlob.resource);
+               var fromChildren: any =  findAllChildrenOf(explorerTree, fromPath);
+               var fromNode: FileNode = new FileNode(fromPath, fromChildren);
+     
+               handleNodeDroppedOverFolder(event, fromNode, toNode);
             }else {
-               handleFileDroppedOverFolder(event, folderPath);
+               handleFileDroppedOverFolder(event, toNode);
             }
         }).on('dragover',function(event){
             event.preventDefault();
         });
         updateNodesAsDraggable(explorerTree);
       }  
+   }
+
+   function findAllChildrenOf(explorerTree, parentPath: FilePath) {
+      var prefix = parentPath.getResourcePath();
+      var tree = $(explorerTree).fancytree("getTree");
+      var treeNodes = tree.findAll(function(node) {
+          if(node.key != prefix) {
+             return Common.stringStartsWith(node.key, prefix);
+          }
+          return false;
+      });
+
+      if(treeNodes && treeNodes.length > 0) {
+          var children = [];
+
+          for(var i = 0; i < treeNodes.length; i++) {
+              children.push(treeNodes[i].key);
+          }
+          return children;
+      }
+      return [];
    }
    
    function updateNodesAsDraggable(nodeElement) {
@@ -268,7 +317,7 @@ export module FileTree {
       }
    }
    
-   function handleNodeDroppedOverFolder(dropEvent, fromPath, toPath) {
+   function handleNodeDroppedOverFolder(dropEvent, fromPath: FileNode, toPath: FileNode) {
       Command.dragAndDropFile(fromPath, toPath);
    }
    

@@ -41,8 +41,6 @@ public class CommandController implements FrameListener {
                listener.onStop((StopCommand)command);
             } else if(command instanceof BrowseCommand) {
                listener.onBrowse((BrowseCommand)command);
-            } else if(command instanceof BrowseCommand) {
-               listener.onBrowse((BrowseCommand)command);
             } else if(command instanceof EvaluateCommand) {
                listener.onEvaluate((EvaluateCommand)command);
             } else if(command instanceof RenameCommand) {

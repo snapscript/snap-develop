@@ -405,8 +405,8 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         Command.isDragAndDropFilePossible = isDragAndDropFilePossible;
         function dragAndDropFile(fileToMove, moveTo) {
             if (isDragAndDropFilePossible(fileToMove, moveTo)) {
-                var originalPath = tree_1.FileTree.createResourcePath(fileToMove.resource);
-                var destinationPath = tree_1.FileTree.createResourcePath(moveTo.resource);
+                var originalPath = fileToMove.getResource();
+                var destinationPath = moveTo.getResource();
                 var fromPath = tree_1.FileTree.cleanResourcePath(originalPath.getFilePath());
                 var toPath = tree_1.FileTree.cleanResourcePath(destinationPath.getFilePath() + "/" + originalPath.getFileName());
                 console.log("source: " + fromPath + " destination: " + toPath);
@@ -417,7 +417,17 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                     dragAndDrop: true
                 };
                 socket_1.EventBus.sendEvent("RENAME", message);
-                project_1.Project.renameEditorTab(fromPath, toPath); // rename tabs if open
+                if (fileToMove.isFolder()) {
+                    var children = fileToMove.getChildren();
+                    for (var i = 0; i < children.length; i++) {
+                        var oldChildPath = children[i];
+                        var newChildPath = common_1.Common.stringReplaceText(oldChildPath, fromPath, toPath);
+                        project_1.Project.renameEditorTab(tree_1.FileTree.createResourcePath(oldChildPath), tree_1.FileTree.createResourcePath(newChildPath)); // rename tabs if open
+                    }
+                }
+                else {
+                    project_1.Project.renameEditorTab(originalPath, tree_1.FileTree.createResourcePath(toPath)); // rename tabs if open
+                }
             }
         }
         Command.dragAndDropFile = dragAndDropFile;
@@ -431,7 +441,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                     dragAndDrop: false
                 };
                 socket_1.EventBus.sendEvent("RENAME", message);
-                project_1.Project.renameEditorTab(resourcePath.getResourcePath(), resourceDetails.getResourcePath()); // rename tabs if open
+                project_1.Project.renameEditorTab(resourcePath, resourceDetails); // rename tabs if open
             });
         }
         Command.renameFile = renameFile;
@@ -499,10 +509,10 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             }
             else {
                 if (editor_1.FileEditor.isEditorChanged()) {
-                    dialog_1.DialogBuilder.openTreeDialog(editorState.getResource(), true, function (resourceDetails) {
-                        var saveFunction = saveEditor(update);
-                        saveCallback(saveFunction);
-                    });
+                    // XXX don't prompt
+                    //DialogBuilder.openTreeDialog(editorState.getResource(), true, function(resourceDetails: FilePath) {
+                    var saveFunction = saveEditor(update);
+                    saveCallback(saveFunction);
                 }
                 else {
                     console_1.ProcessConsole.clearConsole();

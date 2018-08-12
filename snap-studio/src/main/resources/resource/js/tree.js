@@ -34,6 +34,23 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
         return FilePath;
     }());
     exports.FilePath = FilePath;
+    var FileNode = (function () {
+        function FileNode(resourcePath, children) {
+            this._resourcePath = resourcePath;
+            this._children = children;
+        }
+        FileNode.prototype.getResource = function () {
+            return this._resourcePath;
+        };
+        FileNode.prototype.getChildren = function () {
+            return this._children;
+        };
+        FileNode.prototype.isFolder = function () {
+            return this._children.length > 0;
+        };
+        return FileNode;
+    }());
+    exports.FileNode = FileNode;
     var FileTree;
     (function (FileTree) {
         function createTree(treePath, element, id, expandPath, foldersOnly, treeMenuHandler, clickCallback) {
@@ -127,20 +144,23 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
                     var folderElement = $(child).find('.fancytree-title');
                     var dataTransfer = event.target.dataTransfer || event.originalEvent.dataTransfer;
                     var target = event.target || event.currentTarger;
-                    var fromPath = dataTransfer.getData("resource");
+                    var dataPath = dataTransfer.getData("resource");
                     var folderPath = $(folderElement).attr("title");
                     $(folderElement).removeClass("treeFolderDragOver");
                     event.stopPropagation();
                     event.preventDefault();
-                    if (fromPath) {
-                        var toPath = {
-                            resource: folderPath,
-                            folder: isTreeNodeFolder(target)
-                        };
-                        handleNodeDroppedOverFolder(event, JSON.parse(fromPath), toPath);
+                    var toPath = createResourcePath(folderPath);
+                    var toChildren = findAllChildrenOf(explorerTree, toPath);
+                    var toNode = new FileNode(toPath, toChildren);
+                    if (dataPath) {
+                        var fromBlob = JSON.parse(dataPath);
+                        var fromPath = createResourcePath(fromBlob.resource);
+                        var fromChildren = findAllChildrenOf(explorerTree, fromPath);
+                        var fromNode = new FileNode(fromPath, fromChildren);
+                        handleNodeDroppedOverFolder(event, fromNode, toNode);
                     }
                     else {
-                        handleFileDroppedOverFolder(event, folderPath);
+                        handleFileDroppedOverFolder(event, toNode);
                     }
                 }).on('dragover', function (event) {
                     event.preventDefault();
@@ -150,6 +170,24 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
             for (var i = 0; i < folders.length; i++) {
                 _loop_1();
             }
+        }
+        function findAllChildrenOf(explorerTree, parentPath) {
+            var prefix = parentPath.getResourcePath();
+            var tree = $(explorerTree).fancytree("getTree");
+            var treeNodes = tree.findAll(function (node) {
+                if (node.key != prefix) {
+                    return common_1.Common.stringStartsWith(node.key, prefix);
+                }
+                return false;
+            });
+            if (treeNodes && treeNodes.length > 0) {
+                var children = [];
+                for (var i = 0; i < treeNodes.length; i++) {
+                    children.push(treeNodes[i].key);
+                }
+                return children;
+            }
+            return [];
         }
         function updateNodesAsDraggable(nodeElement) {
             var childNodes = common_1.Common.getElementsByClassName(nodeElement, 'fancytree-node');

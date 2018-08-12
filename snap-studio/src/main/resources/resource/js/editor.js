@@ -834,20 +834,22 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
                         dataType: 'json',
                         success: function (response) {
                             var expression = response.expression;
-                            var dotIndex = Math.max(0, expression.lastIndexOf('.') + 1);
-                            var tokens = response.tokens;
-                            var length = tokens.length;
-                            var suggestions = [];
-                            for (var token in tokens) {
-                                if (tokens.hasOwnProperty(token)) {
-                                    var type = tokens[token];
-                                    if (common_1.Common.stringStartsWith(token, expression)) {
-                                        token = token.substring(dotIndex);
+                            if (expression) {
+                                var dotIndex = Math.max(0, expression.lastIndexOf('.') + 1);
+                                var tokens = response.tokens;
+                                var length = tokens.length;
+                                var suggestions = [];
+                                for (var token in tokens) {
+                                    if (tokens.hasOwnProperty(token)) {
+                                        var type = tokens[token];
+                                        if (common_1.Common.stringStartsWith(token, expression)) {
+                                            token = token.substring(dotIndex);
+                                        }
+                                        suggestions.push({ className: 'autocomplete_' + type, token: token, value: token, score: 300, meta: type });
                                     }
-                                    suggestions.push({ className: 'autocomplete_' + type, token: token, value: token, score: 300, meta: type });
                                 }
+                                callback(null, suggestions);
                             }
-                            callback(null, suggestions);
                         },
                         error: function () {
                             console.log("Completion control failed");

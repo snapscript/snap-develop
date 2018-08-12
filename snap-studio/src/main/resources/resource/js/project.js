@@ -314,7 +314,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
         function showEditorHelpContent(containsEditor) {
             var newParent = document.getElementById('editParent');
             var editorFileName = document.getElementById("editFileName");
-            if (newParent != null && editorFileName != null) {
+            if (newParent != null) {
                 var keyBindings = keys_1.KeyBinder.getKeyBindings();
                 var content = "";
                 content += "<div id='help'>";
@@ -388,34 +388,27 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
                 var removeTab = tabs.get(resource);
                 if (removeTab && removeTab.closable) {
                     tabs.remove(resource); // remove the tab
-                    if (removeTab.active) {
+                    if (removeTab.active && tabs.tabs.length > 0) {
                         activateAnyEditorTab(); // if it was active then activate another 
                     }
                 }
             }
-            if (tabs.tabs.length == 1) {
-                var tabList = tabs.tabs;
-                for (var i = 0; i < tabList.length; i++) {
-                    var nextTab = tabList[i];
-                    if (nextTab) {
-                        nextTab.closable = false;
-                    }
-                }
+            if (tabs.tabs.length == 0) {
+                createWelcomeTab();
             }
         }
         Project.deleteEditorTab = deleteEditorTab;
-        function renameEditorTab(from, to) {
+        function renameEditorTab(fromPath, toPath) {
             var layout = findActiveEditorLayout();
             var tabs = findActiveEditorTabLayout();
-            if (tabs != null && from != null && to != null) {
+            if (tabs != null && fromPath != null && toPath != null) {
+                var originalId = fromPath.getResourcePath();
                 var tabList = tabs.tabs;
                 var count = 0;
                 for (var i = 0; i < tabList.length; i++) {
                     var nextTab = tabList[i];
-                    if (nextTab != null && nextTab.id == from) {
+                    if (nextTab != null && nextTab.id == originalId) {
                         var newTab = JSON.parse(JSON.stringify(nextTab)); // clone the tab
-                        var toPath = tree_1.FileTree.createResourcePath(to);
-                        var fromPath = tree_1.FileTree.createResourcePath(from);
                         tabs.remove(nextTab.id); // remove the tab
                         if (nextTab.active) {
                             explorer_1.FileExplorer.openTreeFile(toPath.getResourcePath(), function () { }); // browse style makes no difference here
@@ -458,6 +451,26 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
             }
         }
         Project.markEditorTab = markEditorTab;
+        function createWelcomeTab() {
+            var layout = findActiveEditorLayout();
+            var tabs = findActiveEditorTabLayout();
+            if (tabs != null) {
+                var tabList = tabs.tabs;
+                if (tabList.length === 0) {
+                    tabs.add({
+                        id: 'editTab',
+                        caption: "<div class='helpTab' id='editFileName'><span title='Welcome'>&nbsp;Welcome&nbsp;</span></div>",
+                        content: "<div style='overflow: scroll; font-family: monospace;' id='edit'><div id='editParent'></div></div>",
+                        closable: false,
+                        active: true
+                    });
+                    tabs.select('editTab');
+                    window.location.hash = '';
+                    activateTab('editTab', layout.name, false, true, ""); // browse style makes no difference here
+                    addTabClickHandler('editTab');
+                }
+            }
+        }
         function createEditorTab() {
             var layout = findActiveEditorLayout();
             var tabs = findActiveEditorTabLayout();
@@ -495,22 +508,25 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
                 for (var i = 0; i < sortedNames.length; i++) {
                     var tabResource = sortedNames[i];
                     var nextTab = tabResources[tabResource];
-                    nextTab.closable = sortedNames.length > 1; // if only one tab make sure it cannot be closed
+                    //nextTab.closable = sortedNames.length > 1; // if only one tab make sure it cannot be closed
                     sortedTabs[i] = nextTab;
                 }
                 tabs.tabs = sortedTabs;
                 tabs.active = editorState.getResource().getResourcePath();
                 activateTab(editorState.getResource().getResourcePath(), layout.name, false, true, ""); // browse style makes no difference here
-                // this is pretty rubbish, it would be good if there was a promise after redraw/repaint
-                setTimeout(function () {
-                    $('#editFileName').on('click', function (e) {
-                        clickOnTab(editorState.getResource().getResourcePath(), toggleFullScreen);
-                        e.preventDefault();
-                    });
-                }, 100);
+                addTabClickHandler(editorState.getResource().getResourcePath());
             }
         }
         Project.createEditorTab = createEditorTab;
+        function addTabClickHandler(id) {
+            // this is pretty rubbish, it would be good if there was a promise after redraw/repaint
+            setTimeout(function () {
+                $('#editFileName').on('click', function (e) {
+                    clickOnTab(id, toggleFullScreen);
+                    e.preventDefault();
+                });
+            }, 100);
+        }
         function closeEditorTabForPath(resourcePathToClose) {
             deleteEditorTab(resourcePathToClose); // activate some other tab
             if (editor_1.FileEditor.isEditorChangedForPath(resourcePathToClose)) {

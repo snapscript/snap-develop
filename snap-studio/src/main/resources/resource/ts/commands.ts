@@ -8,7 +8,7 @@ import {ProcessConsole} from "console"
 import {ProblemManager} from "problem"
 import {FileEditor, FileEditorState} from "editor"
 import {LoadSpinner} from "spinner"
-import {FileTree, FilePath} from "tree"
+import {FileTree, FilePath, FileNode} from "tree"
 import {ThreadManager, ThreadScope, ThreadStatus} from "threads"
 import {History} from "history"
 import {VariableManager} from "variables"
@@ -444,15 +444,15 @@ export module Command {
       EventBus.sendEvent("UPLOAD", message);
    }
    
-   export function isDragAndDropFilePossible(fileToMove, moveTo) {
+   export function isDragAndDropFilePossible(fileToMove: FileNode, moveTo: FileNode) {
       //return moveTo.folder; // only move files and folders to different folders
       return true;
    }
    
-   export function dragAndDropFile(fileToMove, moveTo) {
+   export function dragAndDropFile(fileToMove: FileNode, moveTo: FileNode) {
       if(isDragAndDropFilePossible(fileToMove, moveTo)) {
-         var originalPath: FilePath = FileTree.createResourcePath(fileToMove.resource);
-         var destinationPath: FilePath = FileTree.createResourcePath(moveTo.resource);
+         var originalPath: FilePath = fileToMove.getResource();
+         var destinationPath: FilePath = moveTo.getResource();
          var fromPath = FileTree.cleanResourcePath(originalPath.getFilePath());
          var toPath = FileTree.cleanResourcePath(destinationPath.getFilePath() + "/" + originalPath.getFileName());
          
@@ -465,7 +465,19 @@ export module Command {
             dragAndDrop: true
          };
          EventBus.sendEvent("RENAME", message);
-         Project.renameEditorTab(fromPath, toPath); // rename tabs if open
+
+         if(fileToMove.isFolder()) {
+            var children = fileToMove.getChildren();
+
+            for(var i = 0; i < children.length; i++) {
+                var oldChildPath = children[i];
+                var newChildPath = Common.stringReplaceText(oldChildPath, fromPath, toPath);
+                
+                Project.renameEditorTab(FileTree.createResourcePath(oldChildPath), FileTree.createResourcePath(newChildPath)); // rename tabs if open
+            }
+         } else {
+            Project.renameEditorTab(originalPath, FileTree.createResourcePath(toPath)); // rename tabs if open
+         }
       }
    }
    
@@ -480,7 +492,7 @@ export module Command {
             dragAndDrop: false
          };
          EventBus.sendEvent("RENAME", message);
-         Project.renameEditorTab(resourcePath.getResourcePath(), resourceDetails.getResourcePath()); // rename tabs if open
+         Project.renameEditorTab(resourcePath, resourceDetails); // rename tabs if open
       });
    }
      
@@ -551,10 +563,11 @@ export module Command {
          });
       } else {
          if (FileEditor.isEditorChanged()) {
-            DialogBuilder.openTreeDialog(editorState.getResource(), true, function(resourceDetails: FilePath) {
+            // XXX don't prompt
+            //DialogBuilder.openTreeDialog(editorState.getResource(), true, function(resourceDetails: FilePath) {
                var saveFunction = saveEditor(update);
                saveCallback(saveFunction);
-            });
+            //});
          } else {
             ProcessConsole.clearConsole();
             saveCallback(function(){});

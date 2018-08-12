@@ -7,12 +7,17 @@ import org.snapscript.core.module.Module;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
 import org.snapscript.core.variable.Value;
+import org.snapscript.parse.StringToken;
 
 public class ArrayConstraintIndex implements Compilation {
    
-   private static final String[] DIMENSIONS = {"", "[]", "[][]", "[][][]", "[][][][]" };   
+   private static final String[] DIMENSIONS = {"", "[]", "[][]", "[][][]", "[][][][]" };
 
    private final IndexConstraint constraint;
+
+   public ArrayConstraintIndex(Constraint entry, StringToken... name) {
+      this(entry, DIMENSIONS[name.length], name.length, 0);
+   }
    
    public ArrayConstraintIndex(Constraint entry, String name, int bounds) {
       this(entry, name, bounds, 0);
