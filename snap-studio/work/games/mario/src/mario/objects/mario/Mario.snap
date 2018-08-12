@@ -16,13 +16,7 @@ import mario.core.tile.GameTile;
 import mario.core.tile.TileMap;
 import mario.objects.base.Collision;
 import mario.objects.base.Creature;
-import mario.objects.creatures.Coin;
-import mario.objects.creatures.Goomba;
-import mario.objects.creatures.Mushroom;
-import mario.objects.creatures.Platform;
-import mario.objects.creatures.RedKoopa;
-import mario.objects.creatures.RedShell;
-import mario.objects.creatures.Score;
+import mario.objects.creatures.{ Coin, Goomba, Mushroom, Platform, RedKoopa, RedShell, Score};
 import mario.util.ImageManipulator;
 
 

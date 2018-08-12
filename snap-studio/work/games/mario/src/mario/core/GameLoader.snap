@@ -11,14 +11,8 @@ import imageio.ImageIO;
 import mario.core.sound.specific.MarioSoundManager22050Hz;
 import mario.core.tile.GameTile;
 import mario.core.tile.TileMap;
-import mario.objects.creatures.Coin;
-import mario.objects.creatures.Goomba;
-import mario.objects.creatures.Platform;
-import mario.objects.creatures.RedKoopa;
-import mario.objects.creatures.RedShell;
-import mario.objects.tiles.QuestionBlock;
-import mario.objects.tiles.RotatingBlock;
-import mario.objects.tiles.SlopedTile;
+import mario.objects.creatures.{ Coin, Goomba, Platform, RedKoopa, RedShell };
+import mario.objects.tiles.{ QuestionBlock, RotatingBlock, SlopedTile};
 import mario.util.SpriteMap;
 import mario.util.ImageManipulator;
 
