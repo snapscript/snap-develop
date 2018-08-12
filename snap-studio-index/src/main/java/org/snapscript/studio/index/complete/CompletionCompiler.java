@@ -31,54 +31,65 @@ public class CompletionCompiler {
    
    public CompletionOutlineResponse completeOutline(CompletionRequest request) throws Exception {
       int line = request.getLine();
-      EditContext input = EditContextExtractor.extractContext(request);
-      String source = input.getSource();
-      String resource = request.getResource();
-      String complete = request.getComplete();
-      SourceFile file = database.getFile(resource, source);
-      IndexNode node = file.getNodeAtLine(line);
-      IndexNode root = file.getRootNode();
-      String details = IndexDumper.dump(root);
-      
-      while(node != null) {
-         IndexType type = node.getType();
-         
-         if(type.isType() && !type.isImport()) {
-            Map<String, IndexNode> nodes = database.getMemberNodes(node);
-            Map<String, CompletionOutline> outlines = completeOutlineTokens(complete, nodes);
-            
+      List<EditContext> inputs = EditContextExtractor.extractContext(request);
+
+      for(EditContext input : inputs) {
+         String source = input.getSource();
+         String resource = request.getResource();
+         String complete = request.getComplete();
+         SourceFile file = database.getFile(resource, source);
+         IndexNode node = file.getNodeAtLine(line);
+         IndexNode root = file.getRootNode();
+         String details = IndexDumper.dump(root);
+
+         while (node != null) {
+            IndexType type = node.getType();
+
+            if (type.isType() && !type.isImport()) {
+               Map<String, IndexNode> nodes = database.getMemberNodes(node);
+               Map<String, CompletionOutline> outlines = completeOutlineTokens(complete, nodes);
+
+               return new CompletionOutlineResponse(outlines, complete, details);
+            }
+            node = node.getParent();
+         }
+         Map<String, IndexNode> nodes = database.getNodesInScope(root);
+         Map<String, CompletionOutline> outlines = completeOutlineTokens(complete, nodes);
+
+         if(!outlines.isEmpty()) {
             return new CompletionOutlineResponse(outlines, complete, details);
          }
-         node = node.getParent();
       }
-      Map<String, IndexNode> nodes = database.getNodesInScope(root);
-      Map<String, CompletionOutline> outlines = completeOutlineTokens(complete, nodes);
-      
-      return new CompletionOutlineResponse(outlines, complete, details);
+      return new CompletionOutlineResponse();
    }
    
    public CompletionResponse completeExpression(CompletionRequest request) throws Exception {
       int line = request.getLine();
-      EditContext input = EditContextExtractor.extractContext(request);
-      String source = input.getSource();
-      String resource = request.getResource();
-      SourceFile file = database.getFile(resource, source);
-      IndexNode node = file.getNodeAtLine(line);
-      IndexNode root = file.getRootNode();
-      String details = IndexDumper.dump(root);
-      
-      for(Class<? extends CompletionFinder> finderType : finders) {
-         CompletionFinder finder = finderType.newInstance();
-         InputExpression text = finder.parseExpression(input);
-         
-         if(text != null) {
-            Set<IndexNode> matches = finder.findMatches(database, node, text);
-            List<IndexNode> sortedMatches = IndexNodeSorter.sort(matches, resource);
-            Map<String, IndexNode> nodes = database.getTypeNodes();
-            Map<String, String> tokens = completeExpressionTokens(sortedMatches, nodes);
-            String expression = input.getExpression();
-            
-            return new CompletionResponse(tokens, expression, details);
+      List<EditContext> inputs = EditContextExtractor.extractContext(request);
+
+      for(EditContext input : inputs) {
+         String source = input.getSource();
+         String resource = request.getResource();
+         SourceFile file = database.getFile(resource, source);
+         IndexNode node = file.getNodeAtLine(line);
+         IndexNode root = file.getRootNode();
+         String details = IndexDumper.dump(root);
+
+         for (Class<? extends CompletionFinder> finderType : finders) {
+            CompletionFinder finder = finderType.newInstance();
+            InputExpression text = finder.parseExpression(input);
+
+            if (text != null) {
+               Set<IndexNode> matches = finder.findMatches(database, node, text);
+               List<IndexNode> sortedMatches = IndexNodeSorter.sort(matches, resource);
+               Map<String, IndexNode> nodes = database.getTypeNodes();
+               Map<String, String> tokens = completeExpressionTokens(sortedMatches, nodes);
+               String expression = input.getExpression();
+
+               if(!tokens.isEmpty()) {
+                  return new CompletionResponse(tokens, expression, details);
+               }
+            }
          }
       }
       return new CompletionResponse();
