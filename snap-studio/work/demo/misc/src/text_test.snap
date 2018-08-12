@@ -1,5 +1,7 @@
 import util.regex.{ Pattern, Matcher};
 
 
-let m = {:};
-m.computeIfAbsent('1', (_) -> new String('1'));
+func doesItMatch(regex, values: List<String>): Boolean {
+   return values.stream().anyMatch(text -> text.matches(regex));
+}
+

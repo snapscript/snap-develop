@@ -17,12 +17,19 @@ public class FindInScopeMatching implements CompletionFinder {
    private static final Pattern[] PATTERNS = {
       Pattern.compile("\\s*([a-zA-Z0-9_]*)$"),
       Pattern.compile("\\s*return\\s+([a-zA-Z0-9_]*)$"),
+      Pattern.compile(".*\\s*->\\s+([a-zA-Z0-9_]*)$"),
       Pattern.compile("\\s*var\\s+[a-zA-Z0-9_]+\\s*\\:\\s*([a-zA-Z0-9_]*)$"),
       Pattern.compile("\\s*let\\s+[a-zA-Z0-9_]+\\s*\\:\\s*([a-zA-Z0-9_]*)$"),
       Pattern.compile("\\s*const\\s+[a-zA-Z0-9_]+\\s*\\:\\s*([a-zA-Z0-9_]*)$"),
       Pattern.compile(".*\\s+var\\s+[a-zA-Z0-9_]+\\s*\\:\\s*([a-zA-Z0-9_]*)$"),
       Pattern.compile(".*\\s+let\\s+[a-zA-Z0-9_]+\\s*\\:\\s*([a-zA-Z0-9_]*)$"),
-      Pattern.compile(".*\\s+const\\s+[a-zA-Z0-9_]+\\s*\\:\\s*([a-zA-Z0-9_]*)$")  
+      Pattern.compile(".*\\s+const\\s+[a-zA-Z0-9_]+\\s*\\:\\s*([a-zA-Z0-9_]*)$"),
+      Pattern.compile("\\s*var\\s+[a-zA-Z0-9_]+\\s*=\\s*([a-zA-Z0-9_]*)$"),
+      Pattern.compile("\\s*let\\s+[a-zA-Z0-9_]+\\s*=\\s*([a-zA-Z0-9_]*)$"),
+      Pattern.compile("\\s*const\\s+[a-zA-Z0-9_]+\\s*=\\s*([a-zA-Z0-9_]*)$"),
+      Pattern.compile("\\s*var\\s+[a-zA-Z0-9_]+\\s*\\:\\s*[a-zA-Z0-9_]+\\s*=\\s*([a-zA-Z0-9_]*)$"),
+      Pattern.compile("\\s*let\\s+[a-zA-Z0-9_]+\\s*\\:\\s*[a-zA-Z0-9_]+\\s*=\\s*([a-zA-Z0-9_]*)$"),
+      Pattern.compile("\\s*const\\s+[a-zA-Z0-9_]+\\s*\\:\\s*[a-zA-Z0-9_]+\\s*=\\s*([a-zA-Z0-9_]*)$"),
    };
    
    @Override
