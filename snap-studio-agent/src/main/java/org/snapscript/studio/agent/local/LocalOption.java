@@ -21,7 +21,8 @@ public enum LocalOption implements CommandOption {
    VERBOSE("v", "verbose", "enable verbose logging", "(true|false)", Boolean.class, false),
    CHECK("c", "check", "compile script only", "(true|false)", Boolean.class, false),
    PORT("p", "port", "debug port", "\\d+", Integer.class),
-   WAIT("w", "wait", "wait for debugger", "(true|false)", Boolean.class, false);
+   WAIT("w", "wait", "wait for debugger", "(true|false)", Boolean.class, false),
+   VERSION("ve", "version", "implementation version", ".+", Boolean.class, false);
 
    public final Pattern pattern;
    public final String description;

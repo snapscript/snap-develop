@@ -21,7 +21,14 @@ public class LocalProcess {
       LocalProcessExecutor executor = new LocalProcessExecutor();
       List<File> classpath = local.getClasspath();
       boolean debug = local.isDebug();
-      
+
+      if(local.isVersion()) {
+         String version = LocalVersion.getVersion();
+         System.err.println(version);
+         System.err.flush();
+         System.exit(0);
+      }
+
       try {
          if(classpath != null) {
             for(File dependency : classpath) {

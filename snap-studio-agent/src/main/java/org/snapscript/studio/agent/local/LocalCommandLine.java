@@ -3,6 +3,7 @@ package org.snapscript.studio.agent.local;
 import java.io.File;
 import java.net.URI;
 import java.util.List;
+import java.util.jar.Manifest;
 
 import org.snapscript.core.module.Path;
 import org.snapscript.studio.agent.cli.CommandLine;
@@ -58,6 +59,10 @@ public class LocalCommandLine {
    
    public String getSystem() {
       return System.getProperty("os.name", "unknown");
+   }
+
+   public boolean isVersion() {
+      return (Boolean)line.getValue(LocalOption.VERSION.name);
    }
    
    public String[] getArguments() {

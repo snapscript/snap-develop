@@ -46,6 +46,8 @@
           <archive>
             <manifest>
               <mainClass>org.snapscript.studio.agent.local.LocalProcess</mainClass>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
             </manifest>
           </archive>
           <descriptorRefs>
