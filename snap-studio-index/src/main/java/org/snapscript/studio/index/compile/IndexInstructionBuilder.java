@@ -4,6 +4,7 @@ import java.util.concurrent.Executor;
 
 import org.snapscript.compile.assemble.OperationBuilder;
 import org.snapscript.core.Context;
+import org.snapscript.core.NoStatement;
 import org.snapscript.core.type.Type;
 import org.snapscript.parse.Line;
 import org.snapscript.studio.index.Index;
@@ -28,6 +29,17 @@ public class IndexInstructionBuilder extends OperationBuilder {
          
          listener.update(index);
          return operation;
+      }
+      if(Index[].class.isInstance(result)) {
+         Index[] indexes = (Index[])result;
+
+         for(Index index : indexes) {
+            listener.update(index);
+         }
+         if(indexes.length > 0) {
+            return indexes[0].getOperation();
+         }
+         return new NoStatement();
       }
       return result;
    }

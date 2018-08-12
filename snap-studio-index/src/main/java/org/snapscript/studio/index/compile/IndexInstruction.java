@@ -9,6 +9,7 @@ import org.snapscript.studio.index.tree.EnumConstructorIndex;
 import org.snapscript.studio.index.tree.EnumDefinitionIndex;
 import org.snapscript.studio.index.tree.GenericReferenceIndex;
 import org.snapscript.studio.index.tree.ImportIndex;
+import org.snapscript.studio.index.tree.ImportListIndex;
 import org.snapscript.studio.index.tree.ImportStaticIndex;
 import org.snapscript.studio.index.tree.MemberFieldDeclarationIndex;
 import org.snapscript.studio.index.tree.MemberFunctionIndex;
@@ -56,6 +57,7 @@ public enum IndexInstruction {
    MODULE_FUNCTION(ModuleFunctionIndex.class, "module-function"),
    MODULE_PROPERTY(ModulePropertyIndex.class, "module-property"),
    IMPORT(ImportIndex.class, "import"),
+   IMPORT_LIST(ImportListIndex.class, "import-list"),
    IMPORT_STATIC(ImportStaticIndex.class, "import-static"),
    SCRIPT(ScriptIndex.class, "script");
    

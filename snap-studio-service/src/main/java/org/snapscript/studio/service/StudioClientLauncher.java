@@ -1,12 +1,14 @@
 package org.snapscript.studio.service;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicReference;
 
 import lombok.SneakyThrows;
 
 import org.snapscript.studio.project.HomeDirectory;
 import org.snapscript.studio.project.Workspace;
 import org.snapscript.ui.ClientContext;
+import org.snapscript.ui.ClientControl;
 import org.snapscript.ui.ClientEngine;
 import org.snapscript.ui.ClientProvider;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +20,7 @@ public class StudioClientLauncher {
    public static final String CLIENT_LOG = "client.log";
    public static final String CLIENT_CACHE = "cache";         
 
+   private final AtomicReference<ClientControl> reference;
    private final Workspace workspace;
    private final File directory;
    private final boolean disabled;
@@ -29,12 +32,13 @@ public class StudioClientLauncher {
          @Value("${server-only}") boolean disabled, 
          @Value("${client-debug}") boolean debug)
    {
+      this.reference = new AtomicReference<ClientControl>();
       this.workspace = workspace;
       this.directory = directory;
       this.disabled = disabled;
       this.debug = debug;
    }
-   
+
    @SneakyThrows
    public void launch(final ClientEngine engine, final String host, final int port) {
       if(!disabled) {
@@ -58,10 +62,20 @@ public class StudioClientLauncher {
          final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-               ClientProvider.provide(engine).show(context);
+               ClientControl control = ClientProvider.provide(engine).show(context);
+               reference.set(control);
             }
          });
          thread.start();
       }
    }
+
+   public void debug() {
+      ClientControl control = reference.get();
+
+      if(control != null) {
+         control.showDebugger();
+      }
+   }
+
 }
