@@ -236,25 +236,28 @@ public class ArchiveBuilder {
       @Override
       public void run() {
          try {
-            ZipFile zipFile = new ZipFile(file); // jar file path(here sqljdbc4.jar)
+            ZipFile zipFile = new ZipFile(file); 
             Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
             
             while (zipEntries.hasMoreElements()) {
                ZipEntry zipEntry = zipEntries.nextElement();
-               String fileName = zipEntry.getName();
-               File outputPath = new File(destDir, fileName);
-               
-               if (!outputPath.exists()) {
-                  outputPath.getParentFile().mkdirs();
-               }
-               InputStream input = zipFile.getInputStream(zipEntry);
-               
-               try {
-                  log.info("Extracting {}", fileName);
-                  byte[] data = IOUtils.toByteArray(input);
-                  FileUtils.writeByteArrayToFile(file, data);
-               }finally {
-                  input.close();
+
+               if(!zipEntry.isDirectory()) {
+                  String fileName = zipEntry.getName();
+                  File outputPath = new File(destDir, fileName);
+
+                  if (!outputPath.exists()) {
+                     outputPath.getParentFile().mkdirs();
+                  }
+                  InputStream input = zipFile.getInputStream(zipEntry);
+
+                  try {
+                     log.info("Extracting {}", fileName);
+                     byte[] data = IOUtils.toByteArray(input);
+                     FileUtils.writeByteArrayToFile(outputPath, data);
+                  } finally {
+                     input.close();
+                  }
                }
             }
             zipFile.close();
