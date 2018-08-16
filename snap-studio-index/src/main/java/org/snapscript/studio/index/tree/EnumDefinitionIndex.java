@@ -1,7 +1,5 @@
 package org.snapscript.studio.index.tree;
 
-import static org.snapscript.studio.index.IndexType.ENUM;
-
 import org.snapscript.core.Compilation;
 import org.snapscript.core.Statement;
 import org.snapscript.core.module.Module;
@@ -10,11 +8,13 @@ import org.snapscript.core.scope.Scope;
 import org.snapscript.core.type.TypePart;
 import org.snapscript.studio.index.IndexResult;
 import org.snapscript.tree.annotation.AnnotationList;
+import org.snapscript.tree.constraint.EnumName;
 import org.snapscript.tree.define.EnumDefinition;
 import org.snapscript.tree.define.EnumList;
-import org.snapscript.tree.define.EnumName;
 import org.snapscript.tree.define.TypeHierarchy;
 import org.snapscript.tree.define.TypeName;
+
+import static org.snapscript.studio.index.IndexType.ENUM;
 
 public class EnumDefinitionIndex implements Compilation {
    

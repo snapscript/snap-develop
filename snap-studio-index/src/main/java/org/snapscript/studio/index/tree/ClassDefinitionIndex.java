@@ -8,8 +8,8 @@ import org.snapscript.core.scope.Scope;
 import org.snapscript.core.type.TypePart;
 import org.snapscript.studio.index.IndexResult;
 import org.snapscript.tree.annotation.AnnotationList;
+import org.snapscript.tree.constraint.ClassName;
 import org.snapscript.tree.define.ClassDefinition;
-import org.snapscript.tree.define.ClassName;
 import org.snapscript.tree.define.TypeHierarchy;
 import org.snapscript.tree.define.TypeName;
 

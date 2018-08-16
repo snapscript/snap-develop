@@ -1,7 +1,9 @@
-import util.regex.{ Pattern, Matcher};
 
 
-func doesItMatch(regex, values: List<String>): Boolean {
-   return values.stream().anyMatch(text -> text.matches(regex));
+func fun<T: String>(a) {
+   return 'a';
 }
 
+let x = fun<String>('a');
+
+println(x);

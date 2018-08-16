@@ -9,8 +9,8 @@ import org.snapscript.core.type.TypePart;
 import org.snapscript.studio.index.IndexResult;
 import org.snapscript.studio.index.IndexType;
 import org.snapscript.tree.annotation.AnnotationList;
+import org.snapscript.tree.constraint.TraitName;
 import org.snapscript.tree.define.TraitDefinition;
-import org.snapscript.tree.define.TraitName;
 import org.snapscript.tree.define.TypeHierarchy;
 
 public class TraitDefinitionIndex implements Compilation {

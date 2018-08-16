@@ -14,6 +14,7 @@ import org.snapscript.core.constraint.Constraint;
 import org.snapscript.studio.index.IndexResult;
 import org.snapscript.tree.ModifierList;
 import org.snapscript.tree.annotation.AnnotationList;
+import org.snapscript.tree.constraint.FunctionName;
 import org.snapscript.tree.define.ModuleFunction;
 import org.snapscript.tree.function.ParameterList;
 
@@ -21,14 +22,14 @@ public class ModuleFunctionIndex implements Compilation {
    
    private final ParameterList parameters;
    private final ModuleFunction function;
-   private final Evaluation identifier;
+   private final FunctionName identifier;
    private final Constraint constraint;
 
-   public ModuleFunctionIndex(AnnotationList annotations, ModifierList modifiers, Evaluation identifier, ParameterList parameters, Statement body){  
+   public ModuleFunctionIndex(AnnotationList annotations, ModifierList modifiers, FunctionName identifier, ParameterList parameters, Statement body){
       this(annotations, modifiers, identifier, parameters, null, body);
    }
    
-   public ModuleFunctionIndex(AnnotationList annotations, ModifierList modifiers, Evaluation identifier, ParameterList parameters, Constraint constraint, Statement body){
+   public ModuleFunctionIndex(AnnotationList annotations, ModifierList modifiers, FunctionName identifier, ParameterList parameters, Constraint constraint, Statement body){
       this.function = new ModuleFunction(annotations, modifiers, identifier, parameters, constraint, body);
       this.parameters = parameters;
       this.identifier = identifier;
@@ -38,8 +39,7 @@ public class ModuleFunctionIndex implements Compilation {
    @Override
    public Object compile(Module module, Path path, int line) throws Exception {
       Scope scope = module.getScope();
-      Value value = identifier.evaluate(scope, null);
-      String name = value.getString();
+      String name = identifier.getName(scope);
       String prefix = module.getName();
       String type = null;
       
