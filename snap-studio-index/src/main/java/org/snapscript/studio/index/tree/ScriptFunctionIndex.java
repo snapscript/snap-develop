@@ -1,5 +1,8 @@
 package org.snapscript.studio.index.tree;
 
+import static java.util.Collections.EMPTY_LIST;
+import static org.snapscript.studio.index.IndexType.FUNCTION;
+
 import org.snapscript.core.Compilation;
 import org.snapscript.core.Statement;
 import org.snapscript.core.constraint.Constraint;
@@ -11,8 +14,6 @@ import org.snapscript.studio.index.IndexResult;
 import org.snapscript.tree.constraint.FunctionName;
 import org.snapscript.tree.function.ParameterList;
 import org.snapscript.tree.script.ScriptFunction;
-
-import static org.snapscript.studio.index.IndexType.FUNCTION;
 
 public class ScriptFunctionIndex implements Compilation {
    
@@ -40,7 +41,7 @@ public class ScriptFunctionIndex implements Compilation {
       String type = null;
       
       if(parameters != null) {
-         name = name + parameters.create(scope);
+         name = name + parameters.create(scope, EMPTY_LIST);
       }
       if(constraint != null) {
          Type object = constraint.getType(scope);

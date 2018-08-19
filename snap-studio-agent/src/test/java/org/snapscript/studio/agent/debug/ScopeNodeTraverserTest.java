@@ -137,7 +137,7 @@ public class ScopeNodeTraverserTest extends TestCase {
       for(String key : keys) {
          Object value = values.get(key);
          Reference reference = new Reference(value);
-         state.add(key, reference);
+         state.addValue(key, reference);
       }
       return scope;
    }
@@ -156,7 +156,7 @@ public class ScopeNodeTraverserTest extends TestCase {
          Property property = new AccessorProperty(key, null, null, null, 0);
          Reference reference = new Reference(value);
          properties.add(property);
-         state.add(key, reference);
+         state.addValue(key, reference);
       }
       return instance;
    }

@@ -1,5 +1,8 @@
 package org.snapscript.studio.index.tree;
 
+import static java.util.Collections.EMPTY_LIST;
+import static org.snapscript.studio.index.IndexType.MEMBER_FUNCTION;
+
 import org.snapscript.core.Compilation;
 import org.snapscript.core.Statement;
 import org.snapscript.core.constraint.Constraint;
@@ -13,9 +16,6 @@ import org.snapscript.tree.annotation.AnnotationList;
 import org.snapscript.tree.constraint.FunctionName;
 import org.snapscript.tree.define.MemberFunction;
 import org.snapscript.tree.function.ParameterList;
-
-import static org.snapscript.studio.index.IndexType.MEMBER_FUNCTION;
-
 public class MemberFunctionIndex implements Compilation {
    
    private final ParameterList parameters;
@@ -50,7 +50,7 @@ public class MemberFunctionIndex implements Compilation {
       String type = null;
       
       if(parameters != null) {
-         name = name + parameters.create(scope);
+         name = name + parameters.create(scope, EMPTY_LIST);
       }
       if(constraint != null) {
          Type object = constraint.getType(scope);
