@@ -1,9 +1,12 @@
 
 
-func fun<T>(a: T): List<T>{
+type Seq = List<Integer>;
+
+let it: Iterator<Seq> = [[1,2,3], [2,3,4]].iterator();
+
+while(it.hasNext()){
+   let s: Seq = it.next();
+   let d = s.get(0).intValue();
+   
+   println(d);
 }
-
-
-let x = <T: Runnable>(a: T) -> a.run();
-println(x);
-
