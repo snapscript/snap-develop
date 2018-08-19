@@ -1,5 +1,6 @@
 package org.snapscript.studio.index.tree;
 
+import static java.util.Collections.EMPTY_LIST;
 import static org.snapscript.core.Reserved.TYPE_CONSTRUCTOR;
 import static org.snapscript.studio.index.IndexType.CONSTRUCTOR;
 
@@ -32,7 +33,7 @@ public class EnumConstructorIndex implements Compilation {
       String name = TYPE_CONSTRUCTOR;
       
       if(parameters != null) {
-         name = name + parameters.create(scope);
+         name = name + parameters.create(scope, EMPTY_LIST);
       }
       return new IndexResult(CONSTRUCTOR, constructor, null, prefix, name, path, line);
    }

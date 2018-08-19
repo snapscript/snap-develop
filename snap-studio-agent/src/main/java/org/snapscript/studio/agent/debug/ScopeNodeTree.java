@@ -69,7 +69,7 @@ public class ScopeNodeTree implements ScopeNode {
             }
             while(names.hasNext()) {
                String name = names.next();
-               Value value = state.get(name);
+               Value value = state.getValue(name);
                
                if(value != null && done.add(name)) { // don't override stack locals
                   Object object = value.getValue();

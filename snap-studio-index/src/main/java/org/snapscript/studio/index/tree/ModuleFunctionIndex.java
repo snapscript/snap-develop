@@ -1,16 +1,15 @@
 package org.snapscript.studio.index.tree;
 
+import static java.util.Collections.EMPTY_LIST;
 import static org.snapscript.studio.index.IndexType.MEMBER_FUNCTION;
 
 import org.snapscript.core.Compilation;
-import org.snapscript.core.Evaluation;
 import org.snapscript.core.Statement;
+import org.snapscript.core.constraint.Constraint;
 import org.snapscript.core.module.Module;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
 import org.snapscript.core.type.Type;
-import org.snapscript.core.variable.Value;
-import org.snapscript.core.constraint.Constraint;
 import org.snapscript.studio.index.IndexResult;
 import org.snapscript.tree.ModifierList;
 import org.snapscript.tree.annotation.AnnotationList;
@@ -44,7 +43,7 @@ public class ModuleFunctionIndex implements Compilation {
       String type = null;
       
       if(parameters != null) {
-         name = name + parameters.create(scope);
+         name = name + parameters.create(scope, EMPTY_LIST);
       }
       if(constraint != null) {
          Type object = constraint.getType(scope);

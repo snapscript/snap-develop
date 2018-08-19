@@ -40,11 +40,11 @@ module DependencyInjection{
 class DynamicTypeLoadTest with TestCase {
 
    testDynamicLoad() {
-      var type = Foo.class;
+      var t = Foo.class;
       var package = Foo.class.getModule();
       var context = package.getContext();
       var loader = context.getLoader();
-      var data = package.getManager().addImport(package.getName() +"." + type.getName(), "O");
+      var data = package.getManager().addImport(package.getName() +"." + t.getName(), "O");
       var constructor = eval("O::new");
       var instance = constructor(1,2);
       
@@ -56,11 +56,11 @@ class DynamicTypeLoadTest with TestCase {
    }
    
    testDynamicLoadExpression() {
-      var type = Foo.class;
+      var t = Foo.class;
       var package = Foo.class.getModule();
       var context = package.getContext();
       var loader = context.getLoader();
-      var data = package.getManager().addImport(package.getName() +"." + type.getName(), "X");
+      var data = package.getManager().addImport(package.getName() +"." + t.getName(), "X");
    
       assert eval("new X(13,32)").toString() == "Foo(13,32)";
       assert eval("new X(13,32)").x == 13;
@@ -69,9 +69,9 @@ class DynamicTypeLoadTest with TestCase {
    
    testDynamicLoadInjection() {
       var args = [12,33];
-      var type = Foo.class;
+      var t = Foo.class;
       var package = Foo.class.getModule();
-      var name = package.getName() +"." + type.getName();
+      var name = package.getName() +"." + t.getName();
       
       assert DependencyInjection.create(name, "Y", args).toString() == "Foo(12,33)";
       assert DependencyInjection.create(name, "Y", args).x == 12;

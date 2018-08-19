@@ -74,7 +74,7 @@ public class InstanceScopeNode implements ScopeNode {
                String name = names.next();
                
                if(include.contains(name)) {
-                  Value value = state.get(name); 
+                  Value value = state.getValue(name); 
                   Object object = value.getValue();
                   int modifiers = value.getModifiers();
                   ScopeNode node = builder.createNode(path + "." + name, name, object, modifiers, depth);

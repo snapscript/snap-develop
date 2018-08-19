@@ -1,9 +1,9 @@
 
 
-func fun<T: String>(a) {
-   return 'a';
+func fun<T>(a: T): List<T>{
 }
 
-let x = fun<String>('a');
 
+let x = <T: Runnable>(a: T) -> a.run();
 println(x);
+
