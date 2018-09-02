@@ -1,12 +1,5 @@
-
-
-type Seq = List<Integer>;
-
-let it: Iterator<Seq> = [[1,2,3], [2,3,4]].iterator();
-
-while(it.hasNext()){
-   let s: Seq = it.next();
-   let d = s.get(0).intValue();
-   
-   println(d);
+type Bag<T> = Map<T, T>;
+func foo<T: Bag<String>>(a: T) {
+   println(a);
 }
+foo<Map<String, String>>("a");
