@@ -2,6 +2,7 @@ package org.snapscript.studio.service.loader;
 
 import static org.snapscript.core.Reserved.GRAMMAR_FILE;
 import static org.snapscript.core.Reserved.IMPORT_FILE;
+import static org.snapscript.core.Reserved.INSTRUCTION_FILE;
 import static org.snapscript.studio.project.config.WorkspaceConfiguration.JAR_FILE;
 import static org.snapscript.studio.project.config.WorkspaceConfiguration.TEMP_PATH;
 
@@ -37,6 +38,7 @@ public class SandBoxBuilder {
                .addResource(SandBoxClassLoader.class)
                .addResource("/" + GRAMMAR_FILE)
                .addResource("/" + IMPORT_FILE)
+               .addResource("/" + INSTRUCTION_FILE)
                .saveFile(file);
    }
 }
