@@ -1,5 +1,7 @@
 package org.snapscript.studio.index;
 
+import static org.snapscript.core.Reserved.GRAMMAR_SCRIPT;
+
 import org.snapscript.parse.GrammarCompiler;
 import org.snapscript.parse.GrammarIndexer;
 import org.snapscript.parse.GrammarResolver;
@@ -7,7 +9,6 @@ import org.snapscript.parse.SourceProcessor;
 import org.snapscript.parse.SyntaxNode;
 import org.snapscript.parse.SyntaxParser;
 import org.snapscript.studio.index.counter.TokenBraceCounter;
-import org.snapscript.tree.Instruction;
 
 public class SourceSanatizer {   
 
@@ -30,7 +31,7 @@ public class SourceSanatizer {
       
       for(int i = 0; i < attempts; i++) {
          try {
-            return parser.parse(script, source, Instruction.SCRIPT.name);
+            return parser.parse(script, source, GRAMMAR_SCRIPT);
          } catch(Exception cause) {
             if(problem == null) {
                problem = cause;
