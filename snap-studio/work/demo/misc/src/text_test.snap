@@ -1,5 +1,8 @@
-type Bag<T> = Map<T, T>;
-func foo<T: Bag<String>>(a: T) {
-   println(a);
+
+func fun<T>(a: T, b: List<T>): T{
+   return a;
 }
-foo<Map<String, String>>("a");
+
+
+let x = fun<Date>(Date(), []).getTimes();
+println(x);
