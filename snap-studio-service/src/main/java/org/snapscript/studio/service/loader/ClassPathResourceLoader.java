@@ -13,7 +13,8 @@ public class ClassPathResourceLoader {
    private static final String[] DEFAULT_RESOURCE_PREFIXES = {
       "org.snapscript.",
       "/grammar.txt",
-      "/import.txt"
+      "/import.txt",
+      "/instruction.txt"
    };
    
    private final Map<String, byte[]> cache;
