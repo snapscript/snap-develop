@@ -566,6 +566,9 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
             if (common_1.Common.stringEndsWith(token, ".snap")) {
                 return "ace/mode/snapscript";
             }
+            if (common_1.Common.stringEndsWith(token, ".policy")) {
+                return "ace/mode/policy";
+            }
             if (common_1.Common.stringEndsWith(token, ".xml")) {
                 return "ace/mode/xml";
             }

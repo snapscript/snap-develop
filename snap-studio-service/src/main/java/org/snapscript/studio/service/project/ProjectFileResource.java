@@ -2,7 +2,6 @@ package org.snapscript.studio.service.project;
 
 import static org.simpleframework.http.Protocol.CACHE_CONTROL;
 import static org.simpleframework.http.Protocol.LAST_MODIFIED;
-import static org.simpleframework.http.Protocol.NO_CACHE;
 import static org.simpleframework.http.Protocol.PRAGMA;
 
 import java.io.OutputStream;
@@ -11,7 +10,6 @@ import java.io.PrintStream;
 import lombok.extern.slf4j.Slf4j;
 
 import org.simpleframework.http.Path;
-import org.simpleframework.http.Protocol;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;

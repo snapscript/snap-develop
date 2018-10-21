@@ -23,5 +23,6 @@
 	".*.woff": "text/plain",
 	".*.project": "text/xml",
 	".*.index": "application/json",
-	".*.classpath": "text/plain"
+	".*.classpath": "text/plain",
+	".*.policy": "text/plain"
 }

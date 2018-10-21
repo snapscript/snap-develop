@@ -736,6 +736,9 @@ export module FileEditor {
       if(Common.stringEndsWith(token, ".snap")) {
          return "ace/mode/snapscript";
       }
+      if(Common.stringEndsWith(token, ".policy")) {
+         return "ace/mode/policy";
+      }
       if(Common.stringEndsWith(token, ".xml")) {
          return "ace/mode/xml";
       }

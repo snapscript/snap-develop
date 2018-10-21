@@ -1,1 +1,2 @@
-import text_test.Foo;
+println(new Date(1538934828757L));
+println(new Date(1538939661550L));
