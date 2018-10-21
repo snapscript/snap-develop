@@ -1,9 +1,10 @@
 import static lang.Integer.*; // static import
+
 import mario.core.GameFrame;
 import mario.core.GamePanel;
 
 func start(scale) {
-   var g = new GameFrame(scale);
+   const g = new GameFrame(scale);
    
    try {
       g.start();
