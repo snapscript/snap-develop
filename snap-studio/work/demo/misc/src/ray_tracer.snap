@@ -326,5 +326,5 @@ function start(path) {
 }
 
 var start = System.currentTimeMillis();
-start("c:\\temp\\raytrace.png");
+start("c:\\Work\\temp\\raytrace.png");
 println(System.currentTimeMillis()-start);
