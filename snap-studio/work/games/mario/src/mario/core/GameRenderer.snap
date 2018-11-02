@@ -79,11 +79,12 @@ class GameRenderer {
        var fromTileY = GameRenderer.pixelsToTiles(fromY);
        var toTileX = GameRenderer.pixelsToTiles(toX + sprite.getWidth() - 1);
        var toTileY = GameRenderer.pixelsToTiles(toY + sprite.getHeight() - 1);
-   
+       var width = map.getWidth();
+
        // check each tile for a collision
-       for (var x=fromTileX; x<=toTileX; x++) {
-           for (var y=fromTileY; y<=toTileY; y++) {
-               if (x < 0 || x >= map.getWidth() || map.getImage(x, y) != null) {
+       for (x in fromTileX .. toTileX) {
+           for (y in fromTileY .. toTileY) {
+               if (x < 0 || x >= width || map.getImage(x, y) != null) {
                   var tile = map.getTile(x,y);
                   if(tile != null && tile.isCollidable()) {
                    // collision found and the tile is collidable, return the tile
@@ -113,11 +114,12 @@ class GameRenderer {
        var fromTileY = GameRenderer.pixelsToTiles(fromY);
        var toTileX = GameRenderer.pixelsToTiles(toX + sprite.getWidth() - 1);
        var toTileY = GameRenderer.pixelsToTiles(toY + sprite.getHeight() - 1);
+       var width = map.getWidth();
 
        // check each tile for a collision
-       for (var x=fromTileX; x<=toTileX; x++) {
-           for (var y=fromTileY; y<=toTileY; y++) {
-               if (x < 0 || x >= map.getWidth() || map.getImage(x, y) != null) {
+       for (x in fromTileX .. toTileX) {
+           for (y in fromTileY .. toTileY) {
+               if (x < 0 || x >= width || map.getImage(x, y) != null) {
                   var tile = map.getTile(x,y);
                   if(tile != null && tile.isCollidable()) {
                    // collision found and the tile is collidable, return the tile
