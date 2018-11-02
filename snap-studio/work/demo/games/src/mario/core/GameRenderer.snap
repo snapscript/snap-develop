@@ -85,7 +85,7 @@ class GameRenderer {
            for (var y=fromTileY; y<=toTileY; y++) {
                if (x < 0 || x >= map.getWidth() || map.getImage(x, y) != null) {
                   var tile: Tile = map.getTile(x,y);
-                  if(tile != null && map.getTile(x, y).isCollidable()) {
+                  if(tile != null && tile.isCollidable()) {
                    // collision found and the tile is collidable, return the tile
                      return new Point(x,y);
                   } 
@@ -119,7 +119,7 @@ class GameRenderer {
            for (var y=fromTileY; y<=toTileY; y++) {
                if (x < 0 || x >= map.getWidth() || map.getImage(x, y) != null) {
                   var tile: Tile = map.getTile(x,y);
-                  if(tile != null && map.getTile(x, y).isCollidable()) {
+                  if(tile != null && tile.isCollidable()) {
                    // collision found and the tile is collidable, return the tile
                      collisionPoints.add(new Point(x,y));
                   } 

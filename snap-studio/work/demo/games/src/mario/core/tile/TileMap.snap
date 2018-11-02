@@ -24,19 +24,23 @@ class TileMap {
    private var animatedTiles: List;
    private var slopedTiles: List;
    private var player: Mario; 
-   
+   private var height: Integer;
+   private var width: Integer;
+
    /**
     * Constructs a new TileMap with the specified width and height (in number of tiles)
     * of the map.
     */
    public new(width: Integer, height: Integer) {
-      tiles = new GameTile[width][height];
-      creatures = new ArrayList();
-      relevantCreatures = new ArrayList();
-      creaturesToAdd = new ArrayList();
-      platforms = new ArrayList();
-      animatedTiles = new ArrayList();
-      slopedTiles = new ArrayList();
+      this.tiles = new GameTile[width][height];
+      this.creatures = new ArrayList();
+      this.relevantCreatures = new ArrayList();
+      this.creaturesToAdd = new ArrayList();
+      this.platforms = new ArrayList();
+      this.animatedTiles = new ArrayList();
+      this.slopedTiles = new ArrayList();
+      this.width = width;
+      this.height = height;
    }
    
    public getTiles(): GameTile[][] {
@@ -47,14 +51,14 @@ class TileMap {
     * @return the width of this TileMap in GameTiles.
     */
    public getWidth(): Integer {
-      return tiles.length;
+      return width;
    }
    
    /**
     * @return the height of this TileMap in GameTiles.
     */
    public getHeight(): Integer {
-      return tiles[0].length;
+      return height;
    }
    
    /**
@@ -62,7 +66,7 @@ class TileMap {
     * or if tiles[x][y] == null, null is returned.
     */
    public getTile(x: Integer, y: Integer): GameTile {
-      if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) {
+      if (x < 0 || x >= width || y < 0 || y >= height) {
          return null;
       } else {
          if(tiles[x][y] != null) {
