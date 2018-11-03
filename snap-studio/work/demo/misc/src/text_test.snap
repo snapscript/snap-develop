@@ -1,16 +1,6 @@
-import javax.net.ssl.SSLContext;
 
-let s = SSLContext.getDefault();
-let f = s.getSocketFactory();
-let c  = f.createSocket("prodapp1", 443);
+let fun: (s: String) = String::new;
 
-//c.getOutputStream().write("POST /login/login?email=gallagher.niall@gmail.com&password=Password12&type=password&redirect=/ HTTP/1.1\r\nHost: www.orthrus.io\r\n\r\n".getBytes("UTF-8"));
-c.getOutputStream().write("GET /login/access/grant/b67c9a70-e375-46a0-a38b-3ec5370a761f HTTP/1.1\r\nHost: www.orthrus.io\r\n\r\n".getBytes("UTF-8"));
-c.getOutputStream().flush();
+let res = fun("x", "x");
 
-let i = c.getInputStream();
-
-loop{
-   let x = i.read();
-   System.out.write(x as Integer);
-}
+println(res);
