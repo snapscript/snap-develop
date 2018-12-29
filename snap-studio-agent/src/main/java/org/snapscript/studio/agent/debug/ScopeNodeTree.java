@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.snapscript.core.scope.Scope;
 import org.snapscript.core.scope.State;
-import org.snapscript.core.scope.index.Local;
 import org.snapscript.core.scope.index.Table;
 import org.snapscript.core.variable.Value;
 
@@ -45,13 +44,13 @@ public class ScopeNodeTree implements ScopeNode {
          State state = scope.getState();
          Table table = scope.getTable();
          Iterator<String> names = state.iterator();
-         Iterator<Local> locals = table.iterator();
+         Iterator<Value> locals = table.iterator();
          
          if(names.hasNext() || locals.hasNext()) {
             Set<String> done = new HashSet<String>();
           
             while(locals.hasNext()) {
-               Local local = locals.next();
+               Value local = locals.next();
                
                if(local != null) {
                   String name = local.getName();

@@ -70,9 +70,9 @@ public class ParameterDeclarationIndex implements Compilation  {
       }
 
       @Override
-      public Parameter get(Scope scope) throws Exception {
+      public Parameter get(Scope scope, int index) throws Exception {
          String name = reference.getName(scope);
-         return new Parameter(name, NONE, modifier != null);
+         return new Parameter(name, NONE, index, modifier != null);
       }
    }
 }
