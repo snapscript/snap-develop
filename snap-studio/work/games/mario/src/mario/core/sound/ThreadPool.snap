@@ -139,6 +139,7 @@ class ThreadPool extends ThreadGroup {
         }
 
         public run() {
+           Thread.sleep(1000);
               pool.threadStarted();
             while (!thread.isInterrupted()) {
 
