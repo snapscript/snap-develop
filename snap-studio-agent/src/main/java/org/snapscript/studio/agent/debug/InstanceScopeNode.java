@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.snapscript.core.scope.Scope;
-import org.snapscript.core.scope.State;
+import org.snapscript.core.scope.ScopeState;
 import org.snapscript.core.scope.instance.Instance;
 import org.snapscript.core.type.Type;
 import org.snapscript.core.property.Property;
@@ -54,7 +54,7 @@ public class InstanceScopeNode implements ScopeNode {
    @Override
    public List<ScopeNode> getNodes() {
       if(nodes.isEmpty()) {
-         State state = scope.getState();
+         ScopeState state = scope.getState();
          Iterator<String> names = state.iterator();
          Type type = scope.getType();
          Set<Type> types = extractor.findHierarchy(type);

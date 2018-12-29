@@ -15,7 +15,7 @@ import org.snapscript.core.error.InternalErrorBuilder;
 import org.snapscript.core.module.Module;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
-import org.snapscript.core.scope.State;
+import org.snapscript.core.scope.ScopeState;
 import org.snapscript.core.stack.ThreadStack;
 import org.snapscript.core.trace.Trace;
 import org.snapscript.studio.agent.event.FaultEvent;
@@ -65,7 +65,7 @@ public class FaultContextExtractor extends TraceAdapter {
    private ScopeVariableTree createVariables(Scope scope) {
       Module module = scope.getModule();
       Context context = module.getContext();
-      State state = scope.getState();
+      ScopeState state = scope.getState();
       Iterator<String> iterator = state.iterator();
       int change = counter.getAndIncrement();
       

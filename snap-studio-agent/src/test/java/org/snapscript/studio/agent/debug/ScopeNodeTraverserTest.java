@@ -26,7 +26,7 @@ import org.snapscript.core.scope.MapModel;
 import org.snapscript.core.scope.Model;
 import org.snapscript.core.scope.ModelScope;
 import org.snapscript.core.scope.Scope;
-import org.snapscript.core.scope.State;
+import org.snapscript.core.scope.ScopeState;
 import org.snapscript.core.scope.instance.Instance;
 import org.snapscript.core.scope.instance.PrimitiveInstance;
 import org.snapscript.core.type.Type;
@@ -131,7 +131,7 @@ public class ScopeNodeTraverserTest extends TestCase {
    private static Scope createRootScope(Map<String, Object> values) {
       Model model = new MapModel(Collections.EMPTY_MAP);
       Scope scope = new ModelScope(model, null);
-      State state = scope.getState();
+      ScopeState state = scope.getState();
       Set<String> keys = values.keySet();
       
       for(String key : keys) {
@@ -148,7 +148,7 @@ public class ScopeNodeTraverserTest extends TestCase {
       Type type = new ScopeType(null, null, name, CLASS.mask, 0);
       Instance instance = new PrimitiveInstance(null, scope, type);
       List<Property> properties = type.getProperties();
-      State state = instance.getState();
+      ScopeState state = instance.getState();
       Set<String> keys = values.keySet();
       
       for(String key : keys) {

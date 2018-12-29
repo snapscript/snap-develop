@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.snapscript.core.scope.Scope;
-import org.snapscript.core.scope.State;
-import org.snapscript.core.scope.index.Table;
+import org.snapscript.core.scope.ScopeState;
+import org.snapscript.core.scope.index.ScopeTable;
 import org.snapscript.core.variable.Value;
 
 public class ScopeNodeTree implements ScopeNode {
@@ -41,8 +41,8 @@ public class ScopeNodeTree implements ScopeNode {
    @Override
    public List<ScopeNode> getNodes() {
       if(nodes.isEmpty()) {
-         State state = scope.getState();
-         Table table = scope.getTable();
+         ScopeState state = scope.getState();
+         ScopeTable table = scope.getTable();
          Iterator<String> names = state.iterator();
          Iterator<Value> locals = table.iterator();
          
