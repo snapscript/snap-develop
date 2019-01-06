@@ -1,2 +1,4 @@
-println(new Date(1538934828757L));
-println(new Date(1538939661550L));
+class Foo<T: Collection<?>>{
+}
+
+Foo<Map<Integer>>();
