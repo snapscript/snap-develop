@@ -20,12 +20,12 @@ class X{
 
 class Y extends X {
    static const DEFAULT_SIZE = 10;
-   var a;
+   var d;
    new(a,b) : super(a, DEFAULT_SIZE){
-      this.a=b;
+      this.d=b;
    }
    toString(){
-      return "${a}, ${b}";
+      return "${a}, ${b}, ${c}, ${d}";
    }
 }
 
@@ -34,8 +34,9 @@ class StaticConstructorReferenceTest with TestCase {
    testStaticConstructorReference() {
       var y = new Y(1, 2);
    
-      assert y.a == 2;
+      assert y.a == 1;
       assert y.b == 10;
       assert y.c == "ss";
+      assert y.d === 2;
    }
 }

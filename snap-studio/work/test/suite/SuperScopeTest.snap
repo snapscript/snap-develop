@@ -26,16 +26,16 @@ class Base with Runnable {
 class Nuh extends Base {
    static const DEFAULT_SIZE=1;
    static const INSTANCE = new Nuh(44);
-   var a;
+   var b;
    new(a): super(DEFAULT_SIZE){
-      this.a=a;
+      this.b=a;
       println("Nuh.new(${a})");
    }
    dump(){
       super.dump();
    }
    fun() {
-      return "Nuh.fun(): a=${a} x=${x}";
+      return "Nuh.fun(): a=${a} b=${b} x=${x}";
    }
    iterate(){
       for(var i in 0..5){
@@ -57,7 +57,7 @@ class SuperScopeTest with TestCase {
       var x = Nuh.get().dump();
       println("RESULT: "+g);
       println("RESULT: "+x);
-      assert g == "Nuh.fun(): a=44 x=1";
-      assert x == "Nuh.fun(): a=44 x=1";
+      assert g == "Nuh.fun(): a=a=1 b=44 x=1";
+      assert x == "Nuh.fun(): a=a=1 b=44 x=1";
    }
 }

@@ -31,12 +31,12 @@ class Foo with Blah{
 }
 class Boo extends Foo{
    static const V24 = VAL12PLUSVAL11 + 1;
-   var x;
+   var z;
    new(x) :super(V24, VAL12){
-      this.x=x;
+      this.z=x;
    }
    getBoo(){
-      return x;
+      return z;
    }
 }
 

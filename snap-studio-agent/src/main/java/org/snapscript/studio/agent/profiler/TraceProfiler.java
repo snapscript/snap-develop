@@ -3,13 +3,13 @@ package org.snapscript.studio.agent.profiler;
 import static org.snapscript.core.Reserved.SCRIPT_EXTENSION;
 
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.snapscript.common.Cache;
+import org.snapscript.common.CopyOnWriteCache;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
 import org.snapscript.core.trace.Trace;
@@ -17,11 +17,11 @@ import org.snapscript.studio.agent.debug.TraceAdapter;
 
 public class TraceProfiler extends TraceAdapter {
    
-   private final Map<String, ResourceProfiler> profilers;
+   private final Cache<String, ResourceProfiler> profilers;
    private final Set<String> resources;
    
    public TraceProfiler() {
-      this.profilers = new ConcurrentHashMap<String, ResourceProfiler>();
+      this.profilers = new CopyOnWriteCache<String, ResourceProfiler>();
       this.resources = new CopyOnWriteArraySet<String>();
    }
 
@@ -30,7 +30,7 @@ public class TraceProfiler extends TraceAdapter {
       SortedSet<ProfileResult> reduced = new TreeSet<ProfileResult>();
       
       for(String resource : resources){
-         ResourceProfiler profiler = profilers.get(resource);
+         ResourceProfiler profiler = profilers.fetch(resource);
          
          if(profiler != null) {
             profiler.collect(results, size);
@@ -59,7 +59,7 @@ public class TraceProfiler extends TraceAdapter {
    public void traceBefore(Scope scope, Trace trace) {
       Path path = trace.getPath();
       String resource = path.getPath();
-      ResourceProfiler profiler = profilers.get(resource);
+      ResourceProfiler profiler = profilers.fetch(resource);
       int line = trace.getLine();
       
       if(profiler == null) {
@@ -72,9 +72,14 @@ public class TraceProfiler extends TraceAdapter {
          if(!local.startsWith("/")) {
             local = "/" + local; // /a/b/c.snap
          }
+         profiler = profilers.fetch(local);        
+         
          if(resources.add(local)) {
-            profiler = new ResourceProfiler(local);
-            profilers.put(resource, profiler);
+            if(profiler == null) {
+               profiler = new ResourceProfiler(local);
+            }
+            profilers.cache(local, profiler);
+            profilers.cache(resource, profiler);
             resources.add(resource);
          }
       }
@@ -87,7 +92,7 @@ public class TraceProfiler extends TraceAdapter {
    public void traceAfter(Scope scope, Trace trace) {
       Path path = trace.getPath();
       String resource = path.getPath();
-      ResourceProfiler profiler = profilers.get(resource);
+      ResourceProfiler profiler = profilers.fetch(resource);
       int line = trace.getLine();
       
       if(profiler != null) {
