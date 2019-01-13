@@ -1,11 +1,1 @@
-<<<<<<< HEAD
-
-func swap<T: Number>(a: T, b: T): List<T> {
-   return [b, a];
-}
-
-let l = swap<Float>(2, 3).get(0).doubleValue();
-println(l);
-=======
-[null,2,3].get(0).intValue();
->>>>>>> e42905eade737f4d4b6961bc553f0c7f166e0aa7
+println(1);
