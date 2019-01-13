@@ -70,13 +70,18 @@ public class ScopeNodeTree implements ScopeNode {
                String name = names.next();
                Value value = state.getValue(name);
                
-               if(value != null && done.add(name)) { // don't override stack locals
-                  Object object = value.getValue();
-                  int modifiers = value.getModifiers();
-                  ScopeNode node = builder.createNode(name, name, object, modifiers, 0);
+               if(value != null) { // don't override stack locals
+                  String real = value.getName();
+                  String alias = real == null ? name : real;
                   
-                  if(node != null) {
-                     nodes.add(node);
+                  if(done.add(alias)){
+                     Object object = value.getValue();
+                     int modifiers = value.getModifiers();
+                     ScopeNode node = builder.createNode(alias, alias, object, modifiers, 0);
+                     
+                     if(node != null) {
+                        nodes.add(node);
+                     }
                   }
                }
             }

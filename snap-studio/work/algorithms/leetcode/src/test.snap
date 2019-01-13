@@ -2,7 +2,7 @@
 
 
 class Foo{
-   let x = 1;
+   private let x = 1;
    fun(){
       println(x);
    }
