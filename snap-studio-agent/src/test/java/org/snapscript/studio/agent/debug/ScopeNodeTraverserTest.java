@@ -153,7 +153,7 @@ public class ScopeNodeTraverserTest extends TestCase {
       
       for(String key : keys) {
          Object value = values.get(key);
-         Property property = new AccessorProperty(key, null, null, null, 0);
+         Property property = new AccessorProperty(key, key, null, null, null, 0);
          Reference reference = new Reference(value);
          properties.add(property);
          state.addValue(key, reference);

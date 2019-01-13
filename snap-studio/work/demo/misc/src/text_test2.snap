@@ -1,4 +1,8 @@
-class Foo<T: Collection<?>>{
+let v = null;
+let z = 2;
+func f(){
+   return v = v ?? z++;
 }
 
-Foo<Map<Integer>>();
+for(i in 0.. 10)
+   println(f());  
