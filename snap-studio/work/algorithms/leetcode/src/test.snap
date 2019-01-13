@@ -1,1 +1,1 @@
-File("C:/Work/temp/snapshot_blob.bin").forEachLine(l -> println(l));
+File.class.functions.forEach(f -> println(f));
