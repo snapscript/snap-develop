@@ -1,5 +1,5 @@
 
-let tree: Tree = new Tree();
+let tree: Tree<Number> = new Tree<Number>();
 
 tree.add(7);
 tree.add(2);
@@ -17,12 +17,12 @@ let root = tree.flatten();
 //    root = root.node2;
 // }
 
-class BiNode {
-   let node1: BiNode;
-   let node2: BiNode;
-   let val;
+class BiNode<T> {
+   let node1: BiNode<T>;
+   let node2: BiNode<T>;
+   let val: T;
    
-   new(val) {
+   new(val: T) {
       this.val = val;
    }
    
@@ -32,11 +32,11 @@ class BiNode {
    }
 }
 
-class Tree{
-   let root: BiNode;
+class Tree<T>{
+   let root: BiNode<T>;
    
-   add(val){
-      let node = new BiNode(val);
+   add(val: T){
+      let node = new BiNode<T>(val);
       
       if(root) {
          add(node, root);

@@ -1,0 +1,8 @@
+File("c:/Work/development/snapscript")
+   .findFiles(f -> f.name.equals("pom.xml"))
+   .stream()
+   .forEach(x -> {
+      let t = x.readText();
+      t = t.replace("<version>1.4.2</version>", "<version>1.4.3</version>");
+      x.writeText(t);
+   });
