@@ -66,9 +66,9 @@ class TreeNode {
 
 
 class TreeIterator { 
-   let curr: TreeNode;
-   let prev: TreeNode;
-   let stack: Stack;
+   private let curr: TreeNode;
+   private let prev: TreeNode;
+   private let stack: Stack;
    
    new(curr: TreeNode) {
       this.stack = new Stack();

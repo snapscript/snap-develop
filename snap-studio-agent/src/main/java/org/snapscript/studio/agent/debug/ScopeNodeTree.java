@@ -36,6 +36,11 @@ public class ScopeNodeTree implements ScopeNode {
    }
    
    @Override
+   public String getAlias() {
+      return "";
+   }  
+   
+   @Override
    public String getPath() {
       return "";
    }
@@ -60,7 +65,7 @@ public class ScopeNodeTree implements ScopeNode {
                   
                   if(done.add(name)) { 
                      int modifiers = local.getModifiers();
-                     ScopeNode node = builder.createNode(name, name, object, modifiers, 0);
+                     ScopeNode node = builder.createNode(name, name, name, object, modifiers, 0);
                      
                      if(node != null) {
                         nodes.add(node);
@@ -78,7 +83,7 @@ public class ScopeNodeTree implements ScopeNode {
                   if(done.add(name)){
                      Object object = value.getValue();
                      int modifiers = value.getModifiers();
-                     ScopeNode node = builder.createNode(name, actual, object, modifiers, 0);
+                     ScopeNode node = builder.createNode(name, actual, name, object, modifiers, 0);
                      
                      if(node != null) {
                         nodes.add(node);

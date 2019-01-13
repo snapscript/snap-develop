@@ -21,16 +21,18 @@ public class InstanceScopeNode implements ScopeNode {
    private final ScopeNodeBuilder builder;
    private final List<ScopeNode> nodes;
    private final Scope scope;
+   private final String alias;
    private final String path;
    private final String name;
    private final int depth;
    
-   public InstanceScopeNode(ScopeNodeBuilder builder, Instance scope, String path, String name, int depth) {
+   public InstanceScopeNode(ScopeNodeBuilder builder, Instance scope, String path, String name, String alias, int depth) {
       this.extractor = new TypeTraverser();
       this.nodes = new ArrayList<ScopeNode>();
       this.builder = builder;
       this.scope = scope;
       this.depth = depth;
+      this.alias = alias;
       this.name = name;
       this.path = path;
    }
@@ -43,6 +45,11 @@ public class InstanceScopeNode implements ScopeNode {
    @Override
    public String getName() {
       return name;
+   }
+   
+   @Override
+   public String getAlias() {
+      return alias;
    }
    
    @Override
@@ -79,7 +86,7 @@ public class InstanceScopeNode implements ScopeNode {
                   Value value = state.getValue(alias);                  
                   Object object = value.getValue();
                   int modifiers = value.getModifiers();
-                  ScopeNode node = builder.createNode(path + "." + alias, name, object, modifiers, depth);
+                  ScopeNode node = builder.createNode(path + "." + alias, name, alias, object, modifiers, depth);
                   
                   if(node != null) {
                      nodes.add(node);

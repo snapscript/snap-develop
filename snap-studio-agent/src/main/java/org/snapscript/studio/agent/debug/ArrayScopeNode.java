@@ -12,15 +12,17 @@ public class ArrayScopeNode implements ScopeNode {
    private final ScopeNodeBuilder builder;
    private final List<ScopeNode> nodes;
    private final Object object;
+   private final String alias;
    private final String name;
    private final String path;
    private final int depth;
    
-   public ArrayScopeNode(ScopeNodeBuilder builder, Object object, String path, String name, int depth) {
+   public ArrayScopeNode(ScopeNodeBuilder builder, Object object, String path, String name, String alias, int depth) {
       this.nodes = new ArrayList<ScopeNode>();
       this.builder = builder;
       this.object = object;
       this.depth = depth;
+      this.alias = alias;
       this.path = path;
       this.name = name;
    }
@@ -34,6 +36,11 @@ public class ArrayScopeNode implements ScopeNode {
    public String getName() {
       return name;
    }
+   
+   @Override
+   public String getAlias() {
+      return alias;
+   }   
    
    @Override
    public String getPath() {
@@ -51,7 +58,8 @@ public class ArrayScopeNode implements ScopeNode {
                   Object value = Array.get(object, i);
                   
                   if(value != null) {
-                     ScopeNode node = builder.createNode(path + ".[" + i + "]", "[" + i + "]", value, 0, depth);
+                     String index =  "[" + i + "]";
+                     ScopeNode node = builder.createNode(path + "." + index,  index, index, value, 0, depth);
                      
                      if(node != null) {
                         nodes.add(node);

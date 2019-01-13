@@ -18,16 +18,18 @@ public class ObjectScopeNode implements ScopeNode {
    private final ScopeNodeBuilder builder;
    private final List<ScopeNode> nodes;
    private final Object object;
+   private final String alias;
    private final String path;
    private final String name;
    private final int depth;
    
-   public ObjectScopeNode(ScopeNodeBuilder builder, Object object, String path, String name, int depth) {
+   public ObjectScopeNode(ScopeNodeBuilder builder, Object object, String path, String name, String alias, int depth) {
       this.converter = new ModifierConverter();
       this.nodes = new ArrayList<ScopeNode>();
       this.builder = builder;
       this.object = object;
       this.depth = depth;
+      this.alias = alias;
       this.path = path;
       this.name = name;
    }
@@ -40,6 +42,11 @@ public class ObjectScopeNode implements ScopeNode {
    @Override
    public String getName() {
       return name;
+   }
+   
+   @Override
+   public String getAlias() {
+      return alias;
    }
    
    @Override
@@ -60,7 +67,7 @@ public class ObjectScopeNode implements ScopeNode {
                   Field field = fields.get(name);
                   Object value = field.get(object);
                   int modifiers = converter.convert(field);
-                  ScopeNode node = builder.createNode(path + "." + name, name, value, modifiers, depth);
+                  ScopeNode node = builder.createNode(path + "." + name, name, name, value, modifiers, depth);
                   
                   if(node != null) {
                      nodes.add(node);

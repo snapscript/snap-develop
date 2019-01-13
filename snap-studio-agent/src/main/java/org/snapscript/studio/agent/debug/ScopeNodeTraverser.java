@@ -42,7 +42,7 @@ public class ScopeNodeTraverser {
       String match = parts[index];
       
       for(ScopeNode child : children) {
-         String name = child.getName();
+         String name = child.getAlias();
          
          if(name.equals(match)) {
             expand(child, parts, index+1);
