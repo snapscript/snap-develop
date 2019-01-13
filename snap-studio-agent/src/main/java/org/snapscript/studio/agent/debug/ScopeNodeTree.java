@@ -13,12 +13,14 @@ import org.snapscript.core.variable.Value;
 
 public class ScopeNodeTree implements ScopeNode {
    
+   private final PropertyNameParser parser;
    private final ScopeNodeBuilder builder;
    private final List<ScopeNode> nodes;
    private final Scope scope;
    
    public ScopeNodeTree(ScopeNodeBuilder builder, Scope scope) {
       this.nodes = new ArrayList<ScopeNode>();
+      this.parser = new PropertyNameParser();
       this.builder = builder;
       this.scope = scope;
    }
@@ -71,13 +73,12 @@ public class ScopeNodeTree implements ScopeNode {
                Value value = state.getValue(name);
                
                if(value != null) { // don't override stack locals
-                  int last = name.indexOf('@');                  
-                  String prefix = last != -1 ? name.substring(0, last) : name;
+                  String actual = parser.parse(name);
                   
-                  if(done.add(prefix)){
+                  if(done.add(actual)){
                      Object object = value.getValue();
                      int modifiers = value.getModifiers();
-                     ScopeNode node = builder.createNode(prefix, prefix, object, modifiers, 0);
+                     ScopeNode node = builder.createNode(actual, actual, object, modifiers, 0);
                      
                      if(node != null) {
                         nodes.add(node);
