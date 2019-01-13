@@ -9,7 +9,7 @@ class Foo{
 }
 
 class Bar extends Foo{
-   let y = 'aa';
+   let x = 'aa';
    override fun(){
       super.fun();
    }

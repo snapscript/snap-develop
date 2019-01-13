@@ -75,10 +75,10 @@ public class ScopeNodeTree implements ScopeNode {
                if(value != null) { // don't override stack locals
                   String actual = parser.parse(name);
                   
-                  if(done.add(actual)){
+                  if(done.add(name)){
                      Object object = value.getValue();
                      int modifiers = value.getModifiers();
-                     ScopeNode node = builder.createNode(actual, actual, object, modifiers, 0);
+                     ScopeNode node = builder.createNode(name, actual, object, modifiers, 0);
                      
                      if(node != null) {
                         nodes.add(node);
