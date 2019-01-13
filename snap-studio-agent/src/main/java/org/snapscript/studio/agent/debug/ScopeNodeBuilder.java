@@ -5,15 +5,10 @@ import java.util.Map;
 
 import org.snapscript.core.Context;
 import org.snapscript.core.convert.PrimitivePromoter;
+import org.snapscript.core.convert.proxy.AnyProxy;
 import org.snapscript.core.convert.proxy.ProxyWrapper;
+import org.snapscript.core.platform.Bridge;
 import org.snapscript.core.scope.instance.Instance;
-import org.snapscript.studio.agent.debug.ArrayScopeNode;
-import org.snapscript.studio.agent.debug.InstanceScopeNode;
-import org.snapscript.studio.agent.debug.ObjectScopeNode;
-import org.snapscript.studio.agent.debug.ScopeNode;
-import org.snapscript.studio.agent.debug.ScopeNodeChecker;
-import org.snapscript.studio.agent.debug.ValueData;
-import org.snapscript.studio.agent.debug.ValueDataBuilder;
 
 public class ScopeNodeBuilder {
    
@@ -35,7 +30,7 @@ public class ScopeNodeBuilder {
       if(object != null) {
          ProxyWrapper wrapper = context.getWrapper();
          
-         if(object instanceof Proxy) {
+         if(object instanceof Proxy || object instanceof AnyProxy || object instanceof Bridge) {
             object = wrapper.fromProxy(object);
          }
          if(object instanceof Instance) {
