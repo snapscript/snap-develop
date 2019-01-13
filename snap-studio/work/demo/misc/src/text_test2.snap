@@ -1,8 +1,1 @@
-let v = null;
-let z = 2;
-func f(){
-   return v = v ?? z++;
-}
-
-for(i in 0.. 10)
-   println(f());  
+[null,2,3].get(0).intValue();
