@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.snapscript.core.Context;
+import org.snapscript.core.function.Function;
 import org.snapscript.core.module.Module;
 import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
@@ -50,11 +51,12 @@ public class SuspendInterceptor extends TraceAdapter {
             int depth = progress.currentDepth();
             Context context = module.getContext();
             ThreadStack stack = context.getStack();
+            Function function = stack.current(); // we can determine the function type
             String path = ResourceExtractor.extractResource(resource);
             ThreadStackGenerator generator = new ThreadStackGenerator(stack);
             String threads = generator.generate();
             String threadName = String.format(THREAD_NAME, ScopeNotifier.class.getSimpleName(), path, line);
-            ScopeExtractor extractor = new ScopeExtractor(context, scope, path);
+            ScopeExtractor extractor = new ScopeExtractor(context, scope, function, path);
             ScopeEventBuilder builder = new ScopeEventBuilder(extractor, type, process, thread, threads, path, line, depth, count);
             ScopeNotifier notifier = new ScopeNotifier(builder, mode, threadName);
             ScopeEvent suspend = builder.suspendEvent(mode);
@@ -88,11 +90,12 @@ public class SuspendInterceptor extends TraceAdapter {
             int depth = progress.currentDepth();
             Context context = module.getContext();
             ThreadStack stack = context.getStack();
+            Function function = stack.current(); // we can determine the function type
             String path = ResourceExtractor.extractResource(resource);
             ThreadStackGenerator generator = new ThreadStackGenerator(stack);
             String threads = generator.generate();
             String threadName = String.format(THREAD_NAME, ScopeNotifier.class.getSimpleName(), path, line);
-            ScopeExtractor extractor = new ScopeExtractor(context, scope, path);
+            ScopeExtractor extractor = new ScopeExtractor(context, scope, function, path);
             ScopeEventBuilder builder = new ScopeEventBuilder(extractor, type, process, thread, threads, path, line, depth, count);
             ScopeNotifier notifier = new ScopeNotifier(builder, mode, threadName);
             ScopeEvent suspend = builder.suspendEvent(mode);

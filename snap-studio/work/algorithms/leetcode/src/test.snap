@@ -16,3 +16,4 @@ class Bar extends Foo{
 }
 
 new Bar().fun();
+//println(new Foo().x);

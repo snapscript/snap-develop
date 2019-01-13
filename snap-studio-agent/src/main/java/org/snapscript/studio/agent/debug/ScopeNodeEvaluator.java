@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.snapscript.core.Context;
+import org.snapscript.core.function.Function;
 import org.snapscript.core.scope.Scope;
 import org.snapscript.studio.agent.debug.ExpressionProcessor;
 import org.snapscript.studio.agent.debug.ExpressionScopeNode;
@@ -19,8 +20,8 @@ public class ScopeNodeEvaluator {
    private final VariableNameEncoder encoder;
    private final Context context;
    
-   public ScopeNodeEvaluator(Context context, Scope scope) {
-      this.processor = new ExpressionProcessor(context, scope); // this keeps expression cache
+   public ScopeNodeEvaluator(Context context, Scope scope, Function function) {
+      this.processor = new ExpressionProcessor(context, scope, function); // this keeps expression cache
       this.encoder = new VariableNameEncoder();
       this.context = context;
    }

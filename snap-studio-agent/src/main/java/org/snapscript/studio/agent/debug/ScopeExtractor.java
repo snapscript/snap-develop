@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.snapscript.core.Context;
 import org.snapscript.core.ResourceManager;
+import org.snapscript.core.function.Function;
 import org.snapscript.core.scope.Scope;
 
 public class ScopeExtractor implements ScopeBrowser {
@@ -24,9 +25,9 @@ public class ScopeExtractor implements ScopeBrowser {
    private final Context context;
    private final String path;
    
-   public ScopeExtractor(Context context, Scope scope, String path) {
+   public ScopeExtractor(Context context, Scope scope, Function function, String path) {
       this.traverser = new ScopeNodeTraverser(context, scope);
-      this.evaluator = new ScopeNodeEvaluator(context, scope);
+      this.evaluator = new ScopeNodeEvaluator(context, scope, function);
       this.evaluate = new AtomicReference<String>();
       this.watch = new CopyOnWriteArraySet<String>();
       this.local = new CopyOnWriteArraySet<String>();
