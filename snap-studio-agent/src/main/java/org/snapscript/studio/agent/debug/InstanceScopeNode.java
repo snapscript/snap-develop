@@ -1,20 +1,19 @@
 package org.snapscript.studio.agent.debug;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.snapscript.core.property.Property;
 import org.snapscript.core.scope.Scope;
 import org.snapscript.core.scope.ScopeState;
 import org.snapscript.core.scope.instance.Instance;
 import org.snapscript.core.type.Type;
-import org.snapscript.core.property.Property;
 import org.snapscript.core.type.TypeTraverser;
 import org.snapscript.core.variable.Value;
-import org.snapscript.studio.agent.debug.ScopeNode;
-import org.snapscript.studio.agent.debug.ScopeNodeBuilder;
 
 public class InstanceScopeNode implements ScopeNode {
    
@@ -60,21 +59,24 @@ public class InstanceScopeNode implements ScopeNode {
          Set<Type> types = extractor.findHierarchy(type);
          
          if(names.hasNext() && !types.isEmpty()) {
-            Set<String> include = new HashSet<String>();
+            Map<String, String> include = new HashMap<String, String>();
             
             for(Type base : types) {
                List<Property> fields = base.getProperties();
                
                for(Property property : fields) {
+                  String alias = property.getAlias();
                   String name = property.getName();
-                  include.add(name);
+                  
+                  include.put(alias, name);
                }
             }
             while(names.hasNext()) {
-               String name = names.next();
+               String alias = names.next();
                
-               if(include.contains(name)) {
-                  Value value = state.getValue(name); 
+               if(include.containsKey(alias)) {
+                  String name = include.get(alias);
+                  Value value = state.getValue(alias);                  
                   Object object = value.getValue();
                   int modifiers = value.getModifiers();
                   ScopeNode node = builder.createNode(path + "." + name, name, object, modifiers, depth);
