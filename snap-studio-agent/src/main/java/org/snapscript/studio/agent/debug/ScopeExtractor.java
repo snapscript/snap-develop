@@ -11,7 +11,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.snapscript.core.Context;
 import org.snapscript.core.ResourceManager;
 import org.snapscript.core.scope.Scope;
-import org.snapscript.studio.agent.ProcessMode;
 
 public class ScopeExtractor implements ScopeBrowser {
 

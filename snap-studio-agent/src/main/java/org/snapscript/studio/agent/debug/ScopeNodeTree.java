@@ -71,13 +71,13 @@ public class ScopeNodeTree implements ScopeNode {
                Value value = state.getValue(name);
                
                if(value != null) { // don't override stack locals
-                  String real = value.getName();
-                  String alias = real == null ? name : real;
+                  int last = name.indexOf('@');                  
+                  String prefix = last != -1 ? name.substring(0, last) : name;
                   
-                  if(done.add(alias)){
+                  if(done.add(prefix)){
                      Object object = value.getValue();
                      int modifiers = value.getModifiers();
-                     ScopeNode node = builder.createNode(alias, alias, object, modifiers, 0);
+                     ScopeNode node = builder.createNode(prefix, prefix, object, modifiers, 0);
                      
                      if(node != null) {
                         nodes.add(node);
