@@ -26,13 +26,11 @@ public class ScopeNodeBuilder {
       this.context = context;
    }
 
-   public ScopeNode createNode(String path, String name, String alias, Object object, int modifiers, int depth) {
-      if(object != null) {
+   public ScopeNode createNode(String path, String name, String alias, Object original, int modifiers, int depth) {
+      if(original != null) {
          ProxyWrapper wrapper = context.getWrapper();
-         
-         if(object instanceof Proxy || object instanceof AnyProxy || object instanceof Bridge) {
-            object = wrapper.fromProxy(object);
-         }
+         Object object = wrapper.fromProxy(original);
+
          if(object instanceof Instance) {
             Instance instance = (Instance)object;
             ValueData data = builder.createScope(name, instance, modifiers, depth);
@@ -65,7 +63,7 @@ public class ScopeNodeBuilder {
             variables.put(path, map);
          }
       } else {
-         ValueData data = builder.createNull(name, object, modifiers, depth);
+         ValueData data = builder.createNull(name, null, modifiers, depth);
          Map<String, String> map = data.getData();
          
          variables.put(path, map);
