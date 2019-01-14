@@ -24,7 +24,7 @@
       <arg value="../snap-site/www.snapscript.org/download/snapd.jar" />
       <arg value="--directory=snap-studio\work" />
       <arg value="--port=4457"/>
-      <arg value="--log-level=DEBUG"/>  
+      <arg value="--log-level=INFO"/>  
       <arg value="--agent-pool=6"/>
       <arg value="--server-only=false"/> 
    </exec>        
