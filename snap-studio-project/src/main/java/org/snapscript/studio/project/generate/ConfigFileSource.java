@@ -41,7 +41,8 @@ public class ConfigFileSource {
       }
       ConfigFileGenerator generator = cache.get(name);
       FileSystem fileSystem = project.getFileSystem();
-      
+      String projectName = project.getName();
+
       if(generator != null) {
          File projectFile = fileSystem.getFile(PROJECT_FILE);
          File configFile = generator.getConfigFilePath(project);
@@ -50,6 +51,8 @@ public class ConfigFileSource {
             String configKey = configFile.getCanonicalPath();
             
             if(!configFile.exists()) {
+               log.info("Generating new {} for project {}", name, projectName);
+
                ConfigFile file = generator.generateConfig(project);
                String source = file.getConfigSource();
                
@@ -60,6 +63,8 @@ public class ConfigFileSource {
                long configFileChange = configFile.lastModified();
                
                if(projectFileChange > configFileChange) {
+                  log.info("Generating {} for project {} as project file changed", name, projectName);
+
                   ConfigFile file = generator.generateConfig(project);
                   String source = file.getConfigSource();
                   
@@ -70,6 +75,8 @@ public class ConfigFileSource {
             ConfigFile file = files.get(configKey);
             
             if(file == null) {
+               log.info("Loading existing {} for project {}", name, projectName);
+
                String source = FilePersister.readAsString(configFile);
                ConfigFile parsedFile = generator.parseConfig(project, source);
             
@@ -95,7 +102,6 @@ public class ConfigFileSource {
          }
       }
       ConfigFileGenerator generator = cache.get(name);
-      FileSystem fileSystem = project.getFileSystem();
 
       if(generator != null) {
          File configFile = generator.getConfigFilePath(project);

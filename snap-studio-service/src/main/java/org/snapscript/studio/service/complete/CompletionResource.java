@@ -67,9 +67,9 @@ public class CompletionResource implements Resource {
       out.println(text);
       out.close();
       
-      if(log.isDebugEnabled()) {
-         log.debug("Expression: " + expression);
-         log.debug("Tree: \n" + details);
+      if(log.isInfoEnabled()) {
+         log.info("Expression: " + expression);
+         log.info("Tree: \n" + details);
       }
    }
 }

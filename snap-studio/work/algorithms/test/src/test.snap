@@ -1,0 +1,1 @@
+File(`${System.getProperty('user.home')}/.bash_history`).forEachLine(l -> println(l));

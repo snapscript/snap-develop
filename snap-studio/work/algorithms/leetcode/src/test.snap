@@ -1,1 +1,0 @@
-File.class.functions.forEach(f -> println(f));

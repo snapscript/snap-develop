@@ -205,6 +205,9 @@ public class Workspace implements FileDirectorySource {
                            @Override
                            public void run() {
                               try {
+                                 String name = project.getName();
+
+                                 log.info("Loading project {}", name);
                                  project.getClassPath(); // resolve dependencies
                                  project.getIndexDatabase().getTypeNodes(); // index all classes
                               }catch(Throwable e) {}

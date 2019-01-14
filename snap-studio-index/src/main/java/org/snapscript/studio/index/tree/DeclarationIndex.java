@@ -45,7 +45,7 @@ public class DeclarationIndex implements Compilation {
       String name = value.getString();
       String prefix = module.getName();
       String type = null;
-      
+
       if(constraint != null) {
          Type object = constraint.getType(scope);
          type = String.valueOf(object);

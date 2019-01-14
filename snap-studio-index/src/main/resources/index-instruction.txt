@@ -1,4 +1,5 @@
 declaration = org.snapscript.studio.index.tree.DeclarationIndex
+for-in-declaration = org.snapscript.studio.index.tree.DeclarationIndex
 global = org.snapscript.studio.index.tree.GlobalIndex
 generic-reference = org.snapscript.studio.index.tree.GenericReferenceIndex
 list-reference = org.snapscript.studio.index.tree.GenericReferenceIndex

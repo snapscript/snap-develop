@@ -38,7 +38,7 @@ public class ResourceClassScanner {
          String pattern = CLASSPATH_ALL_URL_PREFIX + RESOURCE_PATH + "**/*" + RESOURCE_SUFFIX + ".class";
          Resource[] resources = resolver.getResources(pattern);
          
-         log.info("Scan of '" + pattern + "' found " + resources.length + " resources");
+         log.debug("Scan of '{}' found {} resources", pattern, resources.length);
          
          if(resources.length > 0) {
             Set<Class<?>> matches = new HashSet<Class<?>>();
@@ -54,13 +54,13 @@ public class ResourceClassScanner {
                      Path annotation = type.getAnnotation(Path.class);
                      
                      if(annotation != null) {
-                        log.info("Loading resource " + resource);
+                        log.debug("Loading resource {}", resource);
                         matches.add(type);
                      } else {
-                        log.info("Ignoring resource " + resource);
+                        log.debug("Ignoring resource {}", resource);
                      }
                   } catch(Exception e) {
-                     log.info("Could not load " + name);
+                     log.warn("Could not load {}", name);
                   }
                }
             }
