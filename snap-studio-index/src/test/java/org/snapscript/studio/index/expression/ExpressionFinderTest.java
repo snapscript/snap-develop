@@ -62,7 +62,7 @@ public class ExpressionFinderTest extends TestCase {
       SourceFile indexFile = database.getFile("/test.snap", SOURCE_1);
       IndexNode nodeAtLine = indexFile.getNodeAtLine(5);
       IndexNode root = indexFile.getRootNode();
-      String details = IndexDumper.dump(root);
+      String details = IndexDumper.dump(root, nodeAtLine, "memb2.someInnerFunc().a");
       Set<IndexNode> matched = finder.find(nodeAtLine, "memb2.someInnerFunc().a");
       
       System.err.println(details);

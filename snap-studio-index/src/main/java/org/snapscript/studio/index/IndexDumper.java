@@ -4,18 +4,27 @@ import java.util.Set;
 
 public class IndexDumper {
 
-   public static String dump(IndexNode node) throws Exception {
+   public static String dump(IndexNode node, IndexNode match, String expression) throws Exception {
       StringBuilder builder = new StringBuilder();
-      dump(node, builder, "");
+      dump(node, match, expression, builder, "");
       return builder.toString();
    }
    
-   private static void dump(IndexNode node, StringBuilder builder, String indent) throws Exception {
+   private static void dump(IndexNode node, IndexNode match, String expression, StringBuilder builder, String indent) throws Exception {
       if(node != null) {
          Set<IndexNode> nodes = node.getNodes();
          IndexType type = node.getType();
          String name = node.getName();
-         
+
+         if(node == match) {
+            builder.append("\n");
+            builder.append(indent);
+            builder.append(">>>");
+            builder.append(expression);
+            builder.append("<<<");
+            builder.append("\n");
+            builder.append("\n");
+         }
          if(!type.isRoot()) {
             builder.append(indent);
             
@@ -43,9 +52,9 @@ public class IndexDumper {
          }
          for(IndexNode entry : nodes) {
             if(type.isRoot()) {
-               dump(entry, builder, "");
+               dump(entry, match, expression, builder, "");
             } else {
-               dump(entry, builder, indent + "   ");
+               dump(entry, match, expression, builder, indent + "   ");
             }
          }
          if(!type.isRoot() && !type.isLeaf()) {

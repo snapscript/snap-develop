@@ -40,7 +40,7 @@ public class CompletionCompiler {
          SourceFile file = database.getFile(resource, source);
          IndexNode node = file.getNodeAtLine(line);
          IndexNode root = file.getRootNode();
-         String details = IndexDumper.dump(root);
+         String details = IndexDumper.dump(root, node, complete);
 
          while (node != null) {
             IndexType type = node.getType();
@@ -70,10 +70,11 @@ public class CompletionCompiler {
       for(EditContext input : inputs) {
          String source = input.getSource();
          String resource = request.getResource();
+         String complete = request.getComplete();
          SourceFile file = database.getFile(resource, source);
          IndexNode node = file.getNodeAtLine(line);
          IndexNode root = file.getRootNode();
-         String details = IndexDumper.dump(root);
+         String details = IndexDumper.dump(root, node, complete);
 
          for (Class<? extends CompletionFinder> finderType : finders) {
             CompletionFinder finder = finderType.newInstance();

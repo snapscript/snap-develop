@@ -173,7 +173,7 @@ public class IndexerTest extends TestCase {
       SourceFile searcher = indexer.index("/some/package.snap", SOURCE);
       IndexNode node = searcher.getRootNode();
       
-      System.err.println(IndexDumper.dump(node));
+      System.err.println(IndexDumper.dump(node, node, ""));
       
       assertEquals(((IndexSearcher)searcher).getDepthAtLine(4), 1);
       assertEquals(((IndexSearcher)searcher).getDepthAtLine(7), 2);

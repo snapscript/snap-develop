@@ -21,7 +21,7 @@ public class IndexSearcherTest extends TestCase {
       IndexDatabase database = new IndexScanner(SystemIndexConfigFile.getSystemClassPath(), context, pool, file, "test");
       SourceFile indexFile = database.getFile("/file.snap", "class X extends HashMap with Runnable {\nconst x = 0;\n}\n");
       IndexNode root = indexFile.getRootNode();
-      String detail = IndexDumper.dump(root);
+      String detail = IndexDumper.dump(root, root, "");
       
       System.err.println(detail);
       
