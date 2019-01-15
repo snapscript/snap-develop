@@ -1,9 +1,6 @@
 
+[-1 from 11].stream().forEach(x -> println(x));
 
-for(i in 0 from 9) {
-   println(i);
-}
 
-for(i in 0 to 9) {
-   println(i);
-}
+
+for(i in 0 to 10) println(i);

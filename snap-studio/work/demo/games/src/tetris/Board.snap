@@ -104,9 +104,9 @@ class Board {
         board = boardX;
     }
 
-    copyRow(to, y, toy) {
+    copyRow(row, y, toy) {
         for (var x = 0; x < WIDTH; x++) {
-            to[x][toy] = board[x][y];
+            row[x][toy] = board[x][y];
         }
     }
 
