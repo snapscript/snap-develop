@@ -1,6 +1,36 @@
 
-[-1 from 11].stream().forEach(x -> println(x));
+let x = 10;
+
+unless(x == 10){
+   println(x);
+}
+
+unless(x == 1){
+   println('xx');
+}
+
+func foo(){
+   let a = 1;
+   let b = 1;
+   
+   until(a == 10){
+      //println(--b);
+      yield a++;
+   }
+}
+
+let f = () -> {
+   let a = 1;
+   let b = 1;
+   
+   unless(a == 11) {
+      until(a == 10){
+         //println(--b);
+         yield a++;
+      }
+   }
+};
 
 
+f().iterator().forEachRemaining(x -> println(x));
 
-for(i in 0 to 10) println(i);
