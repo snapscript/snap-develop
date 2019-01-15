@@ -25,7 +25,7 @@ class RangeTest with TestCase {
    
    testReverseRange(){
       const l = [];
-      for(var x in 10..0){
+      for(var x in 0 from 10){
          l.add(x);
       }
       println(l);

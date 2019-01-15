@@ -1,1 +1,9 @@
-println(1);
+
+
+for(i in 0 from 9) {
+   println(i);
+}
+
+for(i in 0 to 9) {
+   println(i);
+}

@@ -4,6 +4,10 @@ let result = threeSum([-1, 0, 1, 2, -1, -4]);
 
 println(result);
 
+// we need to bring the pointer closer to the missing value
+// so if a + b 
+//
+// -2 + 3 = 1
 func threeSum(nums) {
    let head = 0;
    let tail = nums.length -1;
