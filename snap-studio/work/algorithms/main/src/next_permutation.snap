@@ -1,0 +1,31 @@
+//https://leetcode.com/problems/next-permutation/
+//https://www.nayuki.io/page/next-lexicographical-permutation-algorithm
+assert nextPermutation([0,1,2,5,3,3,0]) == [0,1,3,0,2,3,5];
+assert nextPermutation([1,2,3]) == [1,3,2];
+assert nextPermutation([3,2,1]) == [1,2,3];
+assert nextPermutation([1,1,5]) == [1,5,1];
+
+// seek to a pivot
+// swap the pivot with the smallest number in the remaining elements, right most
+// reverse values from pivot to the end
+func nextPermutation(s) {
+   let pivot = s.length -1;
+   let index = pivot;
+   
+   for(i in 0 to s.length -2){ // find longest increasing prefix
+      if(s[i + 1] < s[i]){
+         pivot = i - 1;
+         break;
+      }
+   }
+   // from pivot swap right most smallest value greater than the pivot
+   // reverse from the pivot up
+   
+}
+
+func swap(s, i, j) {
+   let a = s[i];
+   
+   s[i] = s[j];
+   s[j] = a;
+}
