@@ -11,6 +11,7 @@ public class BeginEvent implements StatusEvent {
    private final String process;
    private final String project;
    private final String system;
+   private final String pid;
    private final long totalMemory;
    private final long usedMemory;
    private final int threads;
@@ -27,6 +28,7 @@ public class BeginEvent implements StatusEvent {
       this.system = builder.system;
       this.duration = builder.duration;
       this.mode = builder.mode;
+      this.pid = builder.pid;
    }   
 
    @Override
@@ -41,6 +43,11 @@ public class BeginEvent implements StatusEvent {
    @Override
    public ExecuteStatus getStatus() {
       return status;
+   }
+
+   @Override
+   public String getPid() {
+      return pid;
    }
    
    @Override
@@ -85,6 +92,7 @@ public class BeginEvent implements StatusEvent {
       private String process;
       private String project;
       private String system;
+      private String pid;
       private long totalMemory;
       private long usedMemory;
       private int threads;
@@ -109,6 +117,12 @@ public class BeginEvent implements StatusEvent {
       @Override
       public Builder withResource(String resource) {
          this.resource = resource;
+         return this;
+      }
+
+      @Override
+      public Builder withPid(String pid) {
+         this.pid = pid;
          return this;
       }
 

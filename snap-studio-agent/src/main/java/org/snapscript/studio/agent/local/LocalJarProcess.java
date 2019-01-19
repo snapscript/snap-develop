@@ -2,12 +2,11 @@ package org.snapscript.studio.agent.local;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 
 import org.snapscript.core.module.Path;
 import org.snapscript.studio.agent.cli.CommandLine;
 import org.snapscript.studio.agent.cli.CommandLineBuilder;
+import org.snapscript.studio.agent.runtime.RuntimeAttribute;
 
 public class LocalJarProcess {
    
@@ -22,10 +21,7 @@ public class LocalJarProcess {
       if(path == null) {
          String[] empty = new String[]{};
          List<String> expanded = new ArrayList<String>();
-         Attributes.Name key = new Attributes.Name(MAIN_SCRIPT);
-         
-         Manifest manifest = LocalManifestReader.readManifest();
-         String script = (String)manifest.getMainAttributes().get(key);
+         String script = RuntimeAttribute.SCRIPT.getValue();
          
          for(String argument : arguments) {
             expanded.add(argument);

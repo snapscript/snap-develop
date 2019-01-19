@@ -40,11 +40,7 @@ public class WorkerCommandLine {
    public URI getClassURL() {
       return URI.create(getAddress() + CLASSES_PATH);
    }
-   
-   public String getSystem() {
-      return System.getProperty("os.name", "unknown");
-   }
-   
+
    public String[] getArguments() {
       return line.getArguments();
    }

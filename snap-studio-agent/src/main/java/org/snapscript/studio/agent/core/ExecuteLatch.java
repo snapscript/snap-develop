@@ -3,12 +3,17 @@ package org.snapscript.studio.agent.core;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static org.snapscript.studio.agent.core.ExecuteStatus.STARTING;
 import static org.snapscript.studio.agent.core.ExecuteStatus.WAITING;
+import static org.snapscript.studio.agent.runtime.RuntimeAttribute.OS;
+import static org.snapscript.studio.agent.runtime.RuntimeAttribute.PID;
 
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.snapscript.common.LockProgress;
 import org.snapscript.common.Progress;
+import org.snapscript.studio.agent.runtime.RuntimeAttribute;
+import org.snapscript.studio.agent.runtime.RuntimeValue;
+import org.snapscript.studio.agent.runtime.RuntimeState;
 
 public class ExecuteLatch {
    
@@ -22,16 +27,16 @@ public class ExecuteLatch {
    private final ExecuteState state;
    private final long duration;
    
-   public ExecuteLatch(String process, String system) {
-      this(process, system, DEFAULT_DURATION);
+   public ExecuteLatch(String process) {
+      this(process, DEFAULT_DURATION);
    }
    
-   public ExecuteLatch(String process, String system, long duration) {
+   public ExecuteLatch(String process, long duration) {
       this.waitData = new ExecuteData(process, null, null, null, false);
       this.executeReference = new AtomicReference<ExecuteData>(waitData);      
       this.statusReference = new AtomicReference<ExecuteStatus>(WAITING);
       this.progress = new LockProgress<ExecuteStatus>();
-      this.state = new StateReference(this, process, system);
+      this.state = new StateReference(this, process);
       this.lastUpdate = new AtomicLong();
       this.duration = duration;
    }
@@ -99,12 +104,10 @@ public class ExecuteLatch {
    private static class StateReference implements ExecuteState {
    
       private final ExecuteLatch latch;
-      private final String system;
       private final String process;
       
-      public StateReference(ExecuteLatch latch, String process, String system) {
+      public StateReference(ExecuteLatch latch, String process) {
          this.process = process;
-         this.system = system;
          this.latch = latch;
       }
       
@@ -112,20 +115,25 @@ public class ExecuteLatch {
       public ExecuteData getData(){
          return latch.executeReference.get();
       }
-      
+
       @Override
       public ExecuteStatus getStatus(){
          return latch.statusReference.get();
       }
-      
+
+      @Override
+      public String getSystem(){
+         return OS.getValue();
+      }
+
+      @Override
+      public String getPid(){
+         return PID.getValue();
+      }
+
       @Override
       public String getProcess(){
          return process;
-      }
-      
-      @Override
-      public String getSystem(){
-         return system;
       }
    }
 

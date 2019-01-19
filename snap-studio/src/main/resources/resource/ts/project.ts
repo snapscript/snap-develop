@@ -1643,9 +1643,15 @@ export module Project {
             sortable : true,
             resizable : true
          }, {
+            field : 'pid',
+            caption : 'PID',
+            size : '10%',
+            sortable : true,
+            resizable : true
+         },{
             field : 'status',
             caption : 'Status',
-            size : '20%',
+            size : '10%',
             sortable : true,
             resizable : true
          },{

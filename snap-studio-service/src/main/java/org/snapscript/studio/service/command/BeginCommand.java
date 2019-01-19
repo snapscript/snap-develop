@@ -18,10 +18,14 @@ public class BeginCommand implements Command {
    private ExecuteStatus status;
    private String resource;
    private String process;
+   private String system;
+   private String pid;
    private long duration;
    private boolean debug;
    
    public BeginCommand validate() {
+      Preconditions.checkNotNull(pid, "Process identity must not be null");
+      Preconditions.checkNotNull(system, "System must not be null");
       Preconditions.checkNotNull(status, "Status must not be null");
       Preconditions.checkNotNull(process, "Process must not be null");
       Preconditions.checkNotNull(resource, "Resource must not be null");

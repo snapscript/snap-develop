@@ -32,6 +32,7 @@ export module DebugManager {
       private _resource: string;
       private _project: string;
       private _system: string;
+      private _pid: string;
       private _time: number;
       private _running: boolean; // is anything running
       private _debug: boolean;
@@ -39,10 +40,11 @@ export module DebugManager {
       private _memory: number;
       private _threads: number;
       
-      constructor(process: string, project: string, resource: string, system: string, status: ProcessStatus, time: number, running: boolean, debug: boolean, focus: boolean, memory: number, threads: number) {
+      constructor(process: string, project: string, resource: string, system: string, pid: string, status: ProcessStatus, time: number, running: boolean, debug: boolean, focus: boolean, memory: number, threads: number) {
          this._process = process;
          this._resource = resource;
          this._system = system;
+         this._pid = pid;
          this._time = time;
          this._running = running;
          this._focus = focus;
@@ -78,6 +80,10 @@ export module DebugManager {
       
       public getSystem(): string {
          return this._system;
+      }
+
+      public getPid(): string {
+         return this._pid;
       }
       
       public getMemory(): number {
@@ -183,6 +189,7 @@ export module DebugManager {
          message.project,         
          message.resource,         
          message.system,
+         message.pid,
          processStatus,
          message.time,                  
          message.running, // is anything running
@@ -311,6 +318,7 @@ export module DebugManager {
                      status: ProcessStatus[status],
                      running: running,
                      system: statusProcessInfo.getSystem(),
+                     pid: statusProcessInfo.getPid(),
                      resource: statusProcessInfo.getResource(),
                      focus: statusFocus == statusProcess,
                      script: resourcePath

@@ -8,17 +8,23 @@ public class RegisterEvent implements ProcessEvent {
 
    private final String process;
    private final String system;
+   private final String pid;
    
    private RegisterEvent(Builder builder) {
       this.process = builder.process;
       this.system = builder.system;
+      this.pid = builder.pid;
    }
    
    @Override
    public String getProcess() {
       return process;
    }
-   
+
+   public String getPid() {
+      return pid;
+   }
+
    public String getSystem() {
       return system;
    }
@@ -31,6 +37,7 @@ public class RegisterEvent implements ProcessEvent {
       
       private String process;
       private String system;
+      private String pid;
       
       public Builder(String process) {
          this.process = process;
@@ -38,6 +45,11 @@ public class RegisterEvent implements ProcessEvent {
 
       public Builder withProcess(String process) {
          this.process = process;
+         return this;
+      }
+
+      public Builder withPid(String pid) {
+         this.pid = pid;
          return this;
       }
 

@@ -5,4 +5,5 @@ public interface ExecuteState {
    ExecuteStatus getStatus();
    String getProcess();
    String getSystem();
+   String getPid();
 }

@@ -9,6 +9,8 @@ import org.snapscript.studio.agent.client.ConnectTunnelClient;
 import org.snapscript.studio.agent.client.ConnectionChecker;
 import org.snapscript.studio.agent.client.ConnectionListener;
 import org.snapscript.studio.agent.core.CompileValidator;
+import org.snapscript.studio.agent.core.ExecuteLatch;
+import org.snapscript.studio.agent.core.ExecuteState;
 import org.snapscript.studio.agent.debug.BreakpointMatcher;
 import org.snapscript.studio.agent.debug.FaultContextExtractor;
 import org.snapscript.studio.agent.debug.ResumeType;
@@ -54,8 +56,11 @@ public class ProcessAgent {
       final TraceInterceptor interceptor = context.getInterceptor();
       final TraceProfiler profiler = context.getProfiler();
       final String process = context.getProcess();
-      final String system = context.getSystem();
       final ProcessMode mode = context.getMode();
+      final ExecuteLatch latch = context.getLatch();
+      final ExecuteState state = latch.getState();
+      final String system = state.getSystem();
+      final String pid = state.getPid();
       final String host = root.getHost();
       final int port = root.getPort();
       
@@ -63,7 +68,7 @@ public class ProcessAgent {
          final AsyncLog adapter = new AsyncLog(log, level);
          final TraceLogger logger = new LogLogger(adapter, level);
          final CompileValidator validator = new CompileValidator(context);
-         final ConnectionChecker checker = new ConnectionChecker(context, process, system);
+         final ConnectionChecker checker = new ConnectionChecker(context, process);
          final ProcessExecutor executor = new ProcessExecutor(context, checker, logger, mode, model);
          final ProcessAgentController listener = new ProcessAgentController(context, checker, executor);
          final ProcessEventTimer timer = new ProcessEventTimer(listener, logger);
@@ -72,6 +77,7 @@ public class ProcessAgent {
          final SuspendInterceptor suspender = new SuspendInterceptor(channel, matcher, controller, mode, process);
          final FaultContextExtractor extractor = new FaultContextExtractor(channel, logger, process);
          final RegisterEvent register = new RegisterEvent.Builder(process)
+            .withPid(pid)
             .withSystem(system)
             .build();
          

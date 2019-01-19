@@ -39,8 +39,7 @@ public class CamundaScriptTask {
       ProcessContext context = new ProcessContext(
             ProcessMode.TASK,
             store,
-            "Camunda 2.0", 
-            execution.getProcessInstanceId());
+            "Camunda 2.0 - " + execution.getProcessInstanceId());
       ProcessAgent agent = new ProcessAgent(context, LogLevel.DEBUG);
       Runnable task = new Runnable() {
          @Override

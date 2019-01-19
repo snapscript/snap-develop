@@ -16,11 +16,10 @@ public class WorkerProcessExecutor {
       ProcessMode mode = line.getMode();
       String process = line.getName();
       LogLevel level = line.getLogLevel();
-      String system = line.getSystem();
       
       WorkerStore store = new WorkerStore(download);
       Runnable listener = new TerminateListener(mode);
-      ProcessContext context = new ProcessContext(mode, store, process, system);
+      ProcessContext context = new ProcessContext(mode, store, process);
       ProcessAgent agent = new ProcessAgent(context, level);
       
       agent.start(download, listener);

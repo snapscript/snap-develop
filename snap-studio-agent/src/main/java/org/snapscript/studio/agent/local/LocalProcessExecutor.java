@@ -87,7 +87,6 @@ public class LocalProcessExecutor {
       String process = LocalNameGenerator.getProcess();
       LocalStore store = builder.create(line);
       String evaluate = line.getEvaluation();
-      String system = line.getSystem();
       Path script = line.getScript();
       
       if(evaluate == null && script == null) {
@@ -101,7 +100,7 @@ public class LocalProcessExecutor {
          String message = cause.getMessage();
          CommandLineUsage.usage(options, message);
       }
-      return new ProcessContext(ProcessMode.REMOTE, store, process, system);
+      return new ProcessContext(ProcessMode.REMOTE, store, process);
    }
    
    private Executable createExecutable(LocalCommandLine line, ProcessContext context) throws Exception {

@@ -86,6 +86,8 @@ public class CommandEventConverter {
       
       return BeginCommand.builder()
             .process(event.getProcess())
+            .pid(event.getPid())
+            .system(event.getSystem())
             .duration(event.getDuration())
             .status(event.getStatus())
             .debug(event.getStatus().isDebug())
@@ -116,6 +118,7 @@ public class CommandEventConverter {
       return StatusCommand.builder()
             .process(process)
             .system(event.getSystem())
+            .pid(event.getPid())
             .project(null)
             .resource(null)
             .time(System.currentTimeMillis())
@@ -135,6 +138,7 @@ public class CommandEventConverter {
       
       return StatusCommand.builder()
             .process(process)
+            .pid(event.getPid())
             .system(event.getSystem())
             .project(event.getProject())
             .time(System.currentTimeMillis())

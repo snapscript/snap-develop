@@ -28,9 +28,8 @@ public class ConnectionChecker implements Closeable {
    private final AtomicBoolean active;
    private final AtomicLong update;
    private final String process;
-   private final String system;
    
-   public ConnectionChecker(ProcessContext context, String process, String system) {
+   public ConnectionChecker(ProcessContext context, String process) {
       this.listeners = new CopyOnWriteArraySet<ConnectionListener>();
       this.active = new AtomicBoolean();
       this.update = new AtomicLong();
@@ -38,7 +37,6 @@ public class ConnectionChecker implements Closeable {
       this.factory = new ThreadBuilder();
       this.context = context;
       this.process = process;
-      this.system = system;
    }
    
    public void register(ConnectionListener listener) {
@@ -57,11 +55,13 @@ public class ConnectionChecker implements Closeable {
       ExecuteData data = state.getData();
       String project = data.getProject();
       String resource = data.getResource();
-      
+      String system = state.getSystem();
+      String pid = state.getPid();
       long time = System.currentTimeMillis();
       
       try {
          PongEvent pong = new PongEvent.Builder(process)
+            .withPid(pid)
             .withSystem(system)
             .withProject(project)
             .withResource(resource)

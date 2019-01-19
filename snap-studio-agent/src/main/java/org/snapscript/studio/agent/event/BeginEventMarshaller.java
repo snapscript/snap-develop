@@ -21,11 +21,13 @@ public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> 
       ByteArrayInputStream buffer = new ByteArrayInputStream(array, offset, length);
       DataInputStream input = new DataInputStream(buffer);
       String process = input.readUTF();
-      String system = input.readUTF();  
+      String system = input.readUTF();
+      String pid = input.readUTF();
       String project = input.readUTF(); 
       String resource = input.readUTF();      
       String status = input.readUTF();
       String mode = input.readUTF();
+
       long totalMemory = input.readLong();
       long usedMemory = input.readLong();
       int threads = input.readInt();
@@ -34,6 +36,7 @@ public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> 
       return new BeginEvent.Builder(process)
          .withMode(ProcessMode.resolveMode(mode))
          .withDuration(duration)
+         .withPid(pid)
          .withSystem(system)
          .withProject(project)
          .withResource(resource)
@@ -50,6 +53,7 @@ public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> 
       DataOutputStream output = new DataOutputStream(buffer);      
       String process = event.getProcess();
       String system = event.getSystem();
+      String pid = event.getPid();
       String project = event.getProject();
       String resource = event.getResource();
       ExecuteStatus status = event.getStatus();
@@ -61,6 +65,7 @@ public class BeginEventMarshaller implements ProcessEventMarshaller<BeginEvent> 
       
       output.writeUTF(process);
       output.writeUTF(system);
+      output.writeUTF(pid);
       output.writeUTF(project);
       output.writeUTF(resource);
       output.writeUTF(status.name());

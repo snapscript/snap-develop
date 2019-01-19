@@ -49,11 +49,13 @@ public class ProgressReporter {
       String process = state.getProcess();
       String system = state.getSystem();
       String project = data.getProject();
+      String pid = state.getPid();
       long duration = latch.update(COMPILING);
       
       if(duration >= 0) {
          try {  
             ProgressEvent event = new ProgressEvent.Builder(process)
+               .withPid(pid)
                .withSystem(system)
                .withProject(project)
                .withResource(resource)
@@ -77,6 +79,7 @@ public class ProgressReporter {
       String process = state.getProcess();
       String system = state.getSystem();
       String project = data.getProject();
+      String pid = state.getPid();
       long duration = latch.update(debug ? DEBUGGING : RUNNING);
       
       if(duration >= 0) {
@@ -84,6 +87,7 @@ public class ProgressReporter {
             BeginEvent event = new BeginEvent.Builder(process)
                .withMode(context.getMode())
                .withDuration(duration)
+               .withPid(pid)
                .withSystem(system)
                .withProject(project)
                .withResource(resource)
@@ -129,11 +133,13 @@ public class ProgressReporter {
       ExecuteState state = latch.getState();
       String process = state.getProcess();
       String system = state.getSystem();
+      String pid = state.getPid();
       long duration = latch.update(TERMINATING);
       
       if(duration >= 0) {
          try {  
             ProgressEvent event = new ProgressEvent.Builder(process)
+               .withPid(pid)
                .withSystem(system)
                .withProject(project)
                .withResource(resource)

@@ -9,6 +9,7 @@ public class PongEvent implements StatusEvent {
    private final String process;
    private final String resource;
    private final String system;
+   private final String pid;
    private final long totalMemory;
    private final long usedMemory;
    private final int threads;
@@ -22,6 +23,7 @@ public class PongEvent implements StatusEvent {
       this.project = builder.project;
       this.status = builder.status;
       this.system = builder.system;
+      this.pid = builder.pid;
    }
    
    @Override
@@ -37,6 +39,11 @@ public class PongEvent implements StatusEvent {
    @Override
    public String getProject() {
       return project;
+   }
+
+   @Override
+   public String getPid(){
+      return pid;
    }
 
    @Override
@@ -71,6 +78,7 @@ public class PongEvent implements StatusEvent {
       private String process;
       private String resource;
       private String system;
+      private String pid;
       private long totalMemory;
       private long usedMemory;
       private int threads;
@@ -94,6 +102,12 @@ public class PongEvent implements StatusEvent {
       @Override
       public Builder<T> withResource(String resource) {
          this.resource = resource;
+         return this;
+      }
+
+      @Override
+      public Builder<T> withPid(String pid) {
+         this.pid = pid;
          return this;
       }
 

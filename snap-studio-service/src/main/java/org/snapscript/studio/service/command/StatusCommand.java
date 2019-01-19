@@ -20,6 +20,7 @@ public class StatusCommand implements Command {
    private String resource;
    private String process;
    private String system;
+   private String pid;
    private boolean focus;
    private boolean running;
    private boolean debug;
@@ -29,6 +30,7 @@ public class StatusCommand implements Command {
    private long time;
    
    public StatusCommand validate() {
+      Preconditions.checkNotNull(pid, "Process identity must not be null");
       Preconditions.checkNotNull(status, "Status must not be null");
       Preconditions.checkNotNull(process, "Process must not be null");
       Preconditions.checkNotNull(system, "System must not be null");

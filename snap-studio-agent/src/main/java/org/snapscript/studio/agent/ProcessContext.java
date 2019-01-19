@@ -30,19 +30,18 @@ public class ProcessContext {
    private final Context context;
    private final Model model;   
    private final String process;
-   private final String system;
 
-   public ProcessContext(ProcessMode mode, ProcessStore store, String process, String system) {
-      this(mode, store, process, system, 10);
+   public ProcessContext(ProcessMode mode, ProcessStore store, String process) {
+      this(mode, store, process, 10);
    }
    
-   public ProcessContext(ProcessMode mode, ProcessStore store, String process, String system, int threads) {
-      this(mode, store, process, system, threads, 0);
+   public ProcessContext(ProcessMode mode, ProcessStore store, String process, int threads) {
+      this(mode, store, process, threads, 0);
    }
    
-   public ProcessContext(ProcessMode mode, ProcessStore store, String process, String system, int threads, int stack) {
+   public ProcessContext(ProcessMode mode, ProcessStore store, String process, int threads, int stack) {
       this.executor = new ThreadPool(threads < 5 ? 5 : threads, stack);
-      this.latch = new ExecuteLatch(process, system);
+      this.latch = new ExecuteLatch(process);
       this.context = new StoreContext(store, executor);
       this.compiler = new ResourceCompiler(context);
       this.controller = new SuspendController();
@@ -50,7 +49,6 @@ public class ProcessContext {
       this.profiler = new TraceProfiler();
       this.model = new EmptyModel();
       this.process = process;
-      this.system = system;
       this.store = store;
       this.mode = mode;
    }
@@ -101,10 +99,6 @@ public class ProcessContext {
    
    public Model getModel() {
       return model;
-   }
-   
-   public String getSystem() {
-      return system;
    }
    
    public String getProcess() {

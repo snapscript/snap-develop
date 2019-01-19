@@ -19,8 +19,10 @@ public class RegisterEventMarshaller implements ProcessEventMarshaller<RegisterE
       DataInputStream input = new DataInputStream(buffer);
       String process = input.readUTF();
       String system = input.readUTF();
-      
+      String pid = input.readUTF();
+
       return new RegisterEvent.Builder(process)
+         .withPid(pid)
          .withSystem(system)
          .build();
    }
@@ -31,9 +33,11 @@ public class RegisterEventMarshaller implements ProcessEventMarshaller<RegisterE
       DataOutputStream output = new DataOutputStream(buffer);
       String process = event.getProcess();
       String system = event.getSystem();
-      
+      String pid = event.getPid();
+
       output.writeUTF(process);
       output.writeUTF(system);
+      output.writeUTF(pid);
       output.flush();
       
       byte[] array = buffer.toByteArray();

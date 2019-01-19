@@ -7,6 +7,7 @@ public interface StatusEvent extends ProcessEvent {
    String getProject();
    String getSystem();
    String getResource();
+   String getPid();
    long getUsedMemory();
    long getTotalMemory();
    int getThreads();
@@ -16,6 +17,7 @@ public interface StatusEvent extends ProcessEvent {
       Builder<T> withStatus(ExecuteStatus status);
       Builder<T> withResource(String resource);
       Builder<T> withSystem(String system);
+      Builder<T> withPid(String pid);
       Builder<T> withThreads(int threads);
       Builder<T> withTotalMemory(long totalMemory);
       Builder<T> withUsedMemory(long usedMemory);

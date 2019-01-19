@@ -56,10 +56,6 @@ public class LocalCommandLine {
    public URI getURI() {
       return (URI)line.getValue(LocalOption.URL.name);
    }
-   
-   public String getSystem() {
-      return System.getProperty("os.name", "unknown");
-   }
 
    public boolean isVersion() {
       return (Boolean)line.getValue(LocalOption.VERSION.name);

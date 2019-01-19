@@ -15,10 +15,11 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
             ProcessStatus[ProcessStatus["UNKNOWN"] = 8] = "UNKNOWN";
         })(ProcessStatus || (ProcessStatus = {}));
         var ProcessInfo = (function () {
-            function ProcessInfo(process, project, resource, system, status, time, running, debug, focus, memory, threads) {
+            function ProcessInfo(process, project, resource, system, pid, status, time, running, debug, focus, memory, threads) {
                 this._process = process;
                 this._resource = resource;
                 this._system = system;
+                this._pid = pid;
                 this._time = time;
                 this._running = running;
                 this._focus = focus;
@@ -48,6 +49,9 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
             };
             ProcessInfo.prototype.getSystem = function () {
                 return this._system;
+            };
+            ProcessInfo.prototype.getPid = function () {
+                return this._pid;
             };
             ProcessInfo.prototype.getMemory = function () {
                 return this._memory;
@@ -132,7 +136,7 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
                 processStatus = ProcessStatus.UNKNOWN; // when we have an error
                 console.warn("No such status " + status + " setting to " + ProcessStatus[processStatus]);
             }
-            var processInfo = statusProcesses[process] = new ProcessInfo(process, message.project, message.resource, message.system, processStatus, message.time, message.running, // is anything running
+            var processInfo = statusProcesses[process] = new ProcessInfo(process, message.project, message.resource, message.system, message.pid, processStatus, message.time, message.running, // is anything running
             message.debug, message.focus, processMemory, message.threads);
             var description = processInfo.getDescription();
             var resource = processInfo.getResource();
@@ -239,6 +243,7 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
                                 status: ProcessStatus[status],
                                 running: running,
                                 system: statusProcessInfo.getSystem(),
+                                pid: statusProcessInfo.getPid(),
                                 resource: statusProcessInfo.getResource(),
                                 focus: statusFocus == statusProcess,
                                 script: resourcePath

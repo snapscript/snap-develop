@@ -31,6 +31,7 @@ public class PongEventMarshaller<T extends PongEvent> implements ProcessEventMar
       DataInputStream input = new DataInputStream(buffer);
       String process = input.readUTF();
       String system = input.readUTF();
+      String pid = input.readUTF();
       String status = input.readUTF();
       
       if(input.readBoolean()) {
@@ -41,6 +42,7 @@ public class PongEventMarshaller<T extends PongEvent> implements ProcessEventMar
          int threads = input.readInt();
          
          return (T)getBuilder(process)
+            .withPid(pid)
             .withSystem(system)
             .withProject(project)
             .withResource(resource)
@@ -51,6 +53,7 @@ public class PongEventMarshaller<T extends PongEvent> implements ProcessEventMar
             .build();
       }
       return (T)getBuilder(process)
+         .withPid(pid)
          .withSystem(system)
          .withStatus(ExecuteStatus.resolveStatus(status))
          .build();
@@ -65,12 +68,14 @@ public class PongEventMarshaller<T extends PongEvent> implements ProcessEventMar
       String resource = event.getResource();
       String project = event.getProject();
       String system = event.getSystem();
+      String pid = event.getPid();
       long totalMemory = event.getTotalMemory();
       long usedMemory = event.getUsedMemory();
       int threads = event.getThreads();
       
       output.writeUTF(process);
       output.writeUTF(system);
+      output.writeUTF(pid);
       output.writeUTF(status.name());
       
       if(status.isStarted()) {

@@ -27,7 +27,7 @@ import org.snapscript.studio.common.ProgressManager;
 public class SplashScreen {
 
    private static final SplashPanel INSTANCE = createPanel(
-           "Please wait ...",
+           "Starting ...",
            "resource/img/logo.png",
            "0xffffff",
            "0x505050"

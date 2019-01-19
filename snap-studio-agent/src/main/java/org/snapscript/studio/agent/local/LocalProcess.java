@@ -1,5 +1,7 @@
 package org.snapscript.studio.agent.local;
 
+import static org.snapscript.studio.agent.runtime.RuntimeAttribute.VERSION;
+
 import java.io.File;
 import java.util.List;
 
@@ -8,6 +10,9 @@ import org.snapscript.studio.agent.cli.CommandLineBuilder;
 import org.snapscript.studio.agent.cli.CommandLineUsage;
 import org.snapscript.studio.agent.cli.CommandOption;
 import org.snapscript.studio.agent.core.ClassPathUpdater;
+import org.snapscript.studio.agent.runtime.RuntimeAttribute;
+import org.snapscript.studio.agent.runtime.RuntimeValue;
+import org.snapscript.studio.agent.runtime.RuntimeState;
 
 public class LocalProcess {
    
@@ -23,7 +28,8 @@ public class LocalProcess {
       boolean debug = local.isDebug();
 
       if(local.isVersion()) {
-         String version = LocalVersion.getVersion();
+         String version = VERSION.getValue();
+
          System.err.println(version);
          System.err.flush();
          System.exit(0);
