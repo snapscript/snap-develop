@@ -27,6 +27,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.snapscript.studio.common.ClassPathReader;
+import org.snapscript.studio.common.ProgressManager;
 
 @Slf4j
 public class SplashScreen {   
@@ -64,6 +65,7 @@ public class SplashScreen {
       } catch(Exception e) {
          log.info("Could not create splash panel", e);
       }
+      ProgressManager.setProgress(controller);
       return controller;
    }
    
@@ -88,7 +90,8 @@ public class SplashScreen {
          tasks.offer(new Runnable() {
             @Override
             public void run() {
-               try {         
+               try {  
+                  log.debug("Processing splash message: {}", message);
                   panel.get(4, TimeUnit.SECONDS).update(message);
                } catch(Exception e) {
                   log.debug("Could not update splash panel", e);
@@ -132,28 +135,43 @@ public class SplashScreen {
       public void run() {
          try {
             while(active.get()) {
-               Runnable task = tasks.poll(1, TimeUnit.SECONDS);
-               
-               if(task != null) {
-                  task.run();
-               }
                long time = System.currentTimeMillis();
                long threshold = expiry.get();
                
                if(time > threshold) {
                   active.set(false);
-               }               
+               }     
+               process(1);
+               Thread.sleep(100);
             }
          } catch(Exception e){
             log.debug("Could not process splash panel events", e);                           
          } finally{
+            hide();
             active.set(false);
+            process(Integer.MAX_VALUE);
+         }         
+      }
+      
+      private void process(int count) {
+         try {            
+            while(count-- > 0) {
+               Runnable task = tasks.poll();
+               
+               if(task != null) {
+                  task.run();
+               } else {
+                  break;
+               }
+            }
+         } catch(Exception e){
+            log.debug("Could not process splash panel events", e);
          }
-         
       }
       
       public void start() {
          if(active.compareAndSet(false, true)) {
+            thread.setName("SplashScreen");
             thread.start();
          }
       }

@@ -1,4 +1,4 @@
-package org.snapscript.studio.service;
+package org.snapscript.studio.common;
 
 public interface ProgressListener {
    void update(String message);

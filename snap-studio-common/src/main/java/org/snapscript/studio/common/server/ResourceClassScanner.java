@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.snapscript.core.Any;
 import org.snapscript.core.ContextClassLoader;
+import org.snapscript.studio.common.ProgressManager;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
@@ -39,6 +40,7 @@ public class ResourceClassScanner {
          Resource[] resources = resolver.getResources(pattern);
          
          log.debug("Scan of '{}' found {} resources", pattern, resources.length);
+         ProgressManager.getProgress().update("Found all resources");
          
          if(resources.length > 0) {
             Set<Class<?>> matches = new HashSet<Class<?>>();
@@ -53,8 +55,11 @@ public class ResourceClassScanner {
                      Class<?> type = loader.loadClass(name);
                      Path annotation = type.getAnnotation(Path.class);
                      
-                     if(annotation != null) {
+                     if(annotation != null) {                        
+                        String value = annotation.value();
+                        
                         log.debug("Loading resource {}", resource);
+                        ProgressManager.getProgress().update("Loading resource for " + value);
                         matches.add(type);
                      } else {
                         log.debug("Ignoring resource {}", resource);

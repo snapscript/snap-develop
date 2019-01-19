@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.glassfish.jersey.simple.SimpleServer;
+import org.snapscript.studio.common.ProgressManager;
 import org.snapscript.studio.common.server.RestServer;
 import org.snapscript.ui.ClientEngine;
 import org.springframework.context.ApplicationContext;
@@ -30,7 +31,7 @@ public class StudioStartListener implements ApplicationListener<ContextRefreshed
           String script = StudioOption.SCRIPT.getValue();
           String browser = StudioOption.BROWSER_ENGINE.getValue();
           
-          ProgressManager.getProgress().update("Starting service at " + project);
+          ProgressManager.getProgress().update("Starting service on " + port);
           log.info("Listening to " + project);
              
           if(script != null) {
@@ -39,7 +40,7 @@ public class StudioStartListener implements ApplicationListener<ContextRefreshed
           ClientEngine engine = ClientEngine.resolveEngine(browser);
           launcher.launch(engine, host, port);
           manager.start(host, port);
-          ProgressManager.getProgress().update("Service started at " + project);
+          ProgressManager.getProgress().update("Service started at " + port);
        } catch(Exception e) {
           throw new IllegalStateException("Could not start server", e);
        }

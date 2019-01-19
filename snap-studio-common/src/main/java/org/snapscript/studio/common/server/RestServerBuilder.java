@@ -22,6 +22,7 @@ import org.simpleframework.http.socket.service.Service;
 import org.simpleframework.transport.SocketProcessor;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
+import org.snapscript.studio.common.ProgressManager;
 import org.snapscript.studio.common.resource.CombinationMatcher;
 import org.springframework.stereotype.Component;
 
@@ -49,6 +50,7 @@ public class RestServerBuilder {
          int bindPort = bound.getPort();
          
          container.getApplicationHandler().onStartup(container);
+         ProgressManager.getProgress().update("Container started on " + bindPort);
 
          return new InternalServer(container, analyzer, connection, bindPort);
       } catch (final IOException ex) {

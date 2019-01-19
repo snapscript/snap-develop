@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import lombok.SneakyThrows;
 
+import org.snapscript.studio.common.ProgressManager;
 import org.snapscript.studio.project.HomeDirectory;
 import org.snapscript.studio.project.Workspace;
 import org.snapscript.ui.ClientContext;
