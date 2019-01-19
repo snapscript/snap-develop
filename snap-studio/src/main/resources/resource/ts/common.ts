@@ -16,7 +16,7 @@ export module Common {
       return false;
    }
 
-   export function getProjectName() {
+   export function getProjectName() { // total hack job
       var title = document.title;
 
       if(title) {
