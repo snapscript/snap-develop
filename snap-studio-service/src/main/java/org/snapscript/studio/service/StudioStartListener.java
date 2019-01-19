@@ -30,6 +30,7 @@ public class StudioStartListener implements ApplicationListener<ContextRefreshed
           String script = StudioOption.SCRIPT.getValue();
           String browser = StudioOption.BROWSER_ENGINE.getValue();
           
+          ProgressManager.getProgress().update("Starting service at " + project);
           log.info("Listening to " + project);
              
           if(script != null) {
@@ -38,6 +39,7 @@ public class StudioStartListener implements ApplicationListener<ContextRefreshed
           ClientEngine engine = ClientEngine.resolveEngine(browser);
           launcher.launch(engine, host, port);
           manager.start(host, port);
+          ProgressManager.getProgress().update("Service started at " + project);
        } catch(Exception e) {
           throw new IllegalStateException("Could not start server", e);
        }

@@ -7,6 +7,7 @@ import javax.swing.UIManager;
 
 import org.snapscript.studio.agent.cli.CommandLine;
 import org.snapscript.studio.agent.cli.CommandLineBuilder;
+import org.snapscript.studio.service.SplashScreen;
 import org.snapscript.studio.service.StudioCommandLine;
 import org.snapscript.studio.service.StudioOption;
 import org.springframework.boot.SpringApplication;
@@ -39,6 +40,7 @@ public class StudioApplication {
          System.setProperty("apple.laf.useScreenMenuBar", "true");
          System.setProperty("com.apple.mrj.application.apple.menu.about.name", ABOUT_NAME);
          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+         SplashScreen.getPanel().show(60000); // 1 minute
       }
       SpringApplication.run(StudioApplication.class, list);
       

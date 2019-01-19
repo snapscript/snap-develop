@@ -57,12 +57,16 @@ public class StudioClientLauncher {
             .title(title)
             .build();
          
+         ProgressManager.getProgress().update("Creating client");
          context.validate();
          
          final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                ClientControl control = ClientProvider.provide(engine).show(context);
+               SplashPanel panel = SplashScreen.getPanel();
+               
+               panel.hide();
                reference.set(control);
             }
          });
