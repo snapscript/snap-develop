@@ -10,15 +10,16 @@ import org.snapscript.studio.agent.cli.CommandLineBuilder;
 import org.snapscript.studio.agent.cli.CommandLineUsage;
 import org.snapscript.studio.agent.cli.CommandOption;
 import org.snapscript.studio.agent.core.ClassPathUpdater;
-import org.snapscript.studio.agent.runtime.RuntimeAttribute;
-import org.snapscript.studio.agent.runtime.RuntimeValue;
-import org.snapscript.studio.agent.runtime.RuntimeState;
 
 public class LocalProcess {
    
    private static final String WARNING = "Could not find classpath entry %s";
 
    public static void main(String[] arguments) throws Exception {
+      launch(arguments);
+   }
+
+   public static void launch(String... arguments) throws Exception {
       CommandLineBuilder builder = LocalOption.getBuilder();
       CommandLine line = builder.build(arguments);
       List<? extends CommandOption> options = line.getOptions();
@@ -39,7 +40,9 @@ public class LocalProcess {
          if(classpath != null) {
             for(File dependency : classpath) {
                if(!dependency.exists()) {
-                  String warning = String.format(WARNING, dependency);
+                  String path = dependency.getCanonicalPath();
+                  String warning = String.format(WARNING, path);
+
                   CommandLineUsage.usage(options, warning);
                }
             }

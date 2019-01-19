@@ -566,7 +566,7 @@ class ThreeD extends JPanel with MouseMotionListener {
    let message = null;
    let panel;
 
-   init(panel) {
+   init(panel, resource) {
       try {
          scalefudge = Float.valueOf("0.8").floatValue();
       } catch (e) {
@@ -580,7 +580,7 @@ class ThreeD extends JPanel with MouseMotionListener {
       let is = null;
       try {
          Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-         is = ThreeD.class.getModule().getResource("/wireframe/hughes_500.spec");
+         is = ThreeD.class.getModule().getResource(resource);
          let m = new Model3D(is);
          md = m;
          m.findBB();
@@ -656,10 +656,10 @@ class ThreeD extends JPanel with MouseMotionListener {
 
 }
 
-function start()  {
+function start(resource)  {
     let d = new ThreeD();
     let f = new JFrame();
-    d.init(d);
+    d.init(d, resource);
     f.add(d);
     f.getContentPane().addMouseMotionListener(d);
     f.setSize(new Dimension(600, 600));
@@ -667,5 +667,9 @@ function start()  {
     Thread.sleep(1000000);
 }
 
-start();
+if(args.length > 0){
+    start(args[0]);
+} else {
+    start("/wireframe/knoxS.spec");
+}
 

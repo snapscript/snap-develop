@@ -14,4 +14,4 @@ func start(scale) {
    }
 }
 
-start(6);
+start(2);
