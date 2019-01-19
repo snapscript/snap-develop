@@ -1,4 +1,5 @@
 import * as $ from "jquery"
+import {Common} from "./common"
 import {FileTree, FilePath} from "tree"
 
 export module StatusPanel {
@@ -30,7 +31,7 @@ export module StatusPanel {
       pathBreadcrumb += "<table border='0'>\n";
       pathBreadcrumb += "<tr>\n";
       pathBreadcrumb += "<td><div class='treeIndexFolder'></div><td>\n";
-      pathBreadcrumb += "<td>"+document.title+"</td>\n";
+      pathBreadcrumb += "<td>"+Common.getProjectName()+"</td>\n";
       
       for(var i = 0; i < pathSegments.length; i++) {
          var segment = pathSegments[i];

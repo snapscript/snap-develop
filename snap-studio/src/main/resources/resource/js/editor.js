@@ -859,7 +859,7 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
                         },
                         processData: false,
                         type: 'POST',
-                        url: '/complete/' + document.title
+                        url: '/complete/' + common_1.Common.getProjectName()
                     });
                 }
             };
@@ -880,7 +880,7 @@ define(["require", "exports", "jquery", "ace", "w2ui", "common", "socket", "prob
                 },
                 processData: false,
                 type: 'POST',
-                url: '/format/' + document.title + path
+                url: '/format/' + common_1.Common.getProjectName() + path
             });
         }
         FileEditor.formatEditorSource = formatEditorSource;

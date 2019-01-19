@@ -15,6 +15,21 @@ export module Common {
       }
       return false;
    }
+
+   export function getProjectName() {
+      var title = document.title;
+
+      if(title) {
+        var trim = title.trim();
+        var index = trim.lastIndexOf(" ");
+
+        if(index != -1 && index != trim.length) {
+           return trim.substring(index + 1, trim.length);
+        }
+        return trim;
+      }
+      return "";
+   }
    
    export function extractParameter(name) {
       var source = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");

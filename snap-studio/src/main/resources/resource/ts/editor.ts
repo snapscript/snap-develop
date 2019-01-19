@@ -1063,7 +1063,7 @@ export module FileEditor {
                 },
                 processData: false,
                 type: 'POST',
-                url: '/complete/' + document.title
+                url: '/complete/' + Common.getProjectName()
             });
          }
       }
@@ -1086,7 +1086,7 @@ export module FileEditor {
          },
          processData: false,
          type: 'POST',
-         url: '/format/' + document.title + path
+         url: '/format/' + Common.getProjectName() + path
      });
    }
    

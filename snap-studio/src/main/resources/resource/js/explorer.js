@@ -82,7 +82,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
             reloadTreeAtRoot();
         }
         function reloadTreeAtRoot() {
-            tree_1.FileTree.createTree("/" + document.title, "explorer", "explorerTree", "/.", false, handleTreeMenu, function (event, data) {
+            tree_1.FileTree.createTree("/" + common_1.Common.getProjectName(), "explorer", "explorerTree", "/.", false, handleTreeMenu, function (event, data) {
                 if (!data.node.isFolder()) {
                     openTreeFile(data.node.tooltip, function () { });
                 }
@@ -256,7 +256,7 @@ define(["require", "exports", "jquery", "common", "socket", "tree", "editor", "c
                 });
             }
             else if (commandName == "createArchive") {
-                var savePath = tree_1.FileTree.createResourcePath("/" + document.title + ".jar");
+                var savePath = tree_1.FileTree.createResourcePath("/" + common_1.Common.getProjectName() + ".jar");
                 commands_1.Command.createArchive(savePath, resourcePath);
             }
             else if (commandName == "newFile") {

@@ -266,7 +266,7 @@ export module Project {
    }
    
    function applyProjectTheme() {
-      $.get("/display/"+document.title, function(displayInfo) {
+      $.get("/display/" + Common.getProjectName(), function(displayInfo) {
          currentDisplayInfo = displayInfo; // save display info
          
          if(displayInfo.fontName != null && displayInfo.fontSize != null) {

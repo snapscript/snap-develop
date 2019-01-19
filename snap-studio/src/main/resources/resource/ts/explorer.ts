@@ -116,7 +116,7 @@ export module FileExplorer {
    }
    
    function reloadTreeAtRoot() {
-      FileTree.createTree("/" + document.title, "explorer", "explorerTree", "/.", false, handleTreeMenu, function(event, data) {
+      FileTree.createTree("/" + Common.getProjectName(), "explorer", "explorerTree", "/.", false, handleTreeMenu, function(event, data) {
          if (!data.node.isFolder()) {
             openTreeFile(data.node.tooltip, function(){});
          }
@@ -299,7 +299,7 @@ export module FileExplorer {
             Command.debugScript();
          });
       } else if(commandName == "createArchive") {
-         var savePath: FilePath = FileTree.createResourcePath("/" + document.title + ".jar");
+         var savePath: FilePath = FileTree.createResourcePath("/" + Common.getProjectName() + ".jar");
          Command.createArchive(savePath, resourcePath);      
       }else if(commandName == "newFile") {
          Command.newFile(resourcePath);

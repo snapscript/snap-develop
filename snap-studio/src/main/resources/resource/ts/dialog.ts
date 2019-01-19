@@ -42,7 +42,7 @@ export module DialogBuilder {
    }
    
    function createProjectDialog(resourceDetails: FilePath, foldersOnly: boolean, saveCallback: any, ignoreOrCancelCallback: any, nameIsBlank: boolean, dialogTitle: string) {
-      createTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle, "/" +document.title)
+      createTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle, "/" +Common.getProjectName())
    }
    
    function createTreeDialog(resourceDetails: FilePath, foldersOnly: boolean, saveCallback: any, ignoreOrCancelCallback: any, nameIsBlank: boolean, dialogTitle: string, treePath: string) {
@@ -207,7 +207,7 @@ export module DialogBuilder {
          completeFunction();
          w2popup.close();
       });
-      FileTree.createTreeOfDepth(treePath, "dialog", "dialogTree", "/" + document.title, true, null, function(event, data) {
+      FileTree.createTreeOfDepth(treePath, "dialog", "dialogTree", "/" + Common.getProjectName(), true, null, function(event, data) {
          var selectedFileDetails: FilePath = FileTree.createResourcePath(data.node.tooltip);
          var selectedDirectory = selectedFileDetails.getProjectDirectory();
          

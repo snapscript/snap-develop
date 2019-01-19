@@ -1,10 +1,13 @@
 package org.snapscript.studio.service.project;
 
+import static org.snapscript.studio.agent.runtime.RuntimeAttribute.VERSION;
+
 import java.io.PrintStream;
 
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
+import org.snapscript.studio.agent.runtime.RuntimeAttribute;
 import org.snapscript.studio.common.resource.Resource;
 import org.snapscript.studio.common.resource.ResourcePath;
 import org.snapscript.studio.common.resource.display.DisplayModelResolver;
@@ -33,6 +36,9 @@ public class ProjectResource implements Resource {
       String projectPrefix = path.getPath(1, 2); // /<project-name>
       String projectDirectory = path.getPath(1); // /<project-name>
       String projectName = projectPrefix.substring(1); // <project-name>
+      String version = VERSION.getValue();
+
+      model.setAttribute("version", version);
       model.setAttribute("project", projectName);
       model.setAttribute("projectDirectory", projectDirectory);
       String text = engine.renderTemplate(model, PROJECT_RESOURCE);

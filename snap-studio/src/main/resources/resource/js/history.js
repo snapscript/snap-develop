@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "w2ui", "tree", "editor", "explorer"], function (require, exports, $, w2ui_1, tree_1, editor_1, explorer_1) {
+define(["require", "exports", "jquery", "w2ui", "./common", "tree", "editor", "explorer"], function (require, exports, $, w2ui_1, common_1, tree_1, editor_1, explorer_1) {
     "use strict";
     var History;
     (function (History) {
@@ -17,7 +17,7 @@ define(["require", "exports", "jquery", "w2ui", "tree", "editor", "explorer"], f
             }
             var resource = editorPath.getProjectPath();
             $.ajax({
-                url: '/history/' + document.title + '/' + resource,
+                url: '/history/' + common_1.Common.getProjectName() + '/' + resource,
                 success: function (currentRecords) {
                     var historyRecords = [];
                     var historyIndex = 1;

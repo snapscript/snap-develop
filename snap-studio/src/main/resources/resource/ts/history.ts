@@ -1,5 +1,6 @@
 import * as $ from "jquery"
 import {w2ui} from "w2ui"
+import {Common} from "./common"
 import {FileTree, FilePath} from "tree"
 import {FileEditor, FileEditorState} from "editor"
 import {FileExplorer} from "explorer"
@@ -23,7 +24,7 @@ export module History {
       var resource = editorPath.getProjectPath();
       
       $.ajax({
-         url: '/history/' + document.title + '/' + resource,
+         url: '/history/' + Common.getProjectName() + '/' + resource,
          success: function (currentRecords) {
             var historyRecords = [];
             var historyIndex = 1;

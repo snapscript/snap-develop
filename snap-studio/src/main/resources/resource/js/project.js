@@ -234,7 +234,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "console", "problem", 
             };
         }
         function applyProjectTheme() {
-            $.get("/display/" + document.title, function (displayInfo) {
+            $.get("/display/" + common_1.Common.getProjectName(), function (displayInfo) {
                 currentDisplayInfo = displayInfo; // save display info
                 if (displayInfo.fontName != null && displayInfo.fontSize != null) {
                     var fontFamily = document.getElementById("fontFamily");

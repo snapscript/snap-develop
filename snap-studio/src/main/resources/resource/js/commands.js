@@ -67,7 +67,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             var originalExpression = text; // keep track of the requested expression
             if (text && text.length > 1) {
                 $.ajax({
-                    url: '/type/' + document.title + '?expression=' + originalExpression,
+                    url: '/type/' + common_1.Common.getProjectName() + '?expression=' + originalExpression,
                     success: function (typeMatches) {
                         var sortedMatches = [];
                         for (var typeMatch in typeMatches) {
@@ -86,7 +86,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                                 module: typeReference.module,
                                 extra: typeReference.extra,
                                 type: typeReference.type,
-                                project: document.title
+                                project: common_1.Common.getProjectName()
                             };
                             response.push(typeEntry);
                         }
@@ -115,11 +115,11 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                         var resourceLink = null;
                         var libraryPath = "";
                         if (isJavaResource(outlineFound.libraryPath) && outlineFound.declaringClass) {
-                            resourceLink = "/project/" + document.title + "#" + createLinkForJavaResource(outlineFound.libraryPath, outlineFound.declaringClass);
+                            resourceLink = "/project/" + common_1.Common.getProjectName() + "#" + createLinkForJavaResource(outlineFound.libraryPath, outlineFound.declaringClass);
                             line = null;
                         }
                         else {
-                            resource = "/resource/" + document.title + resource;
+                            resource = "/resource/" + common_1.Common.getProjectName() + resource;
                         }
                         var outlineCell = {
                             text: outlineFound.name + "&nbsp;&nbsp;" + constraintInfo,
@@ -183,7 +183,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                     async: true,
                     processData: false,
                     type: 'POST',
-                    url: '/outline/' + document.title
+                    url: '/outline/' + common_1.Common.getProjectName()
                 });
             }
             else {
@@ -258,7 +258,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             var originalText = text;
             if (text && text.length > 1) {
                 var searchUrl = '';
-                searchUrl += '/find/' + document.title;
+                searchUrl += '/find/' + common_1.Common.getProjectName();
                 searchUrl += '?expression=' + encodeURIComponent(originalText);
                 searchUrl += '&pattern=' + encodeURIComponent(fileTypes);
                 searchUrl += "&caseSensitive=" + encodeURIComponent(searchCriteria.caseSensitive);
@@ -275,7 +275,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                             var typeEntry = {
                                 resource: fileMatch.resource,
                                 line: fileMatch.line,
-                                project: document.title
+                                project: common_1.Common.getProjectName()
                             };
                             response.push(fileMatch);
                         }
@@ -320,7 +320,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             var originalText = text;
             if (text && text.length > 1) {
                 $.ajax({
-                    url: '/file/' + document.title + '?expression=' + originalText,
+                    url: '/file/' + common_1.Common.getProjectName() + '?expression=' + originalText,
                     success: function (filesMatched) {
                         var response = [];
                         for (var i = 0; i < filesMatched.length; i++) {
@@ -329,7 +329,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                                 resource: fileMatch.resource,
                                 path: fileMatch.path,
                                 name: fileMatch.name,
-                                project: document.title
+                                project: common_1.Common.getProjectName()
                             };
                             response.push(fileMatch);
                         }
@@ -345,7 +345,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         function openTerminal(resourcePath) {
             if (tree_1.FileTree.isResourceFolder(resourcePath.getFilePath())) {
                 var message = {
-                    project: document.title,
+                    project: common_1.Common.getProjectName(),
                     resource: resourcePath.getFilePath(),
                     terminal: true
                 };
@@ -356,7 +356,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         function exploreDirectory(resourcePath) {
             if (tree_1.FileTree.isResourceFolder(resourcePath.getFilePath())) {
                 var message = {
-                    project: document.title,
+                    project: common_1.Common.getProjectName(),
                     resource: resourcePath.getFilePath(),
                     terminal: false
                 };
@@ -366,7 +366,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         Command.exploreDirectory = exploreDirectory;
         function folderExpand(resourcePath) {
             var message = {
-                project: document.title,
+                project: common_1.Common.getProjectName(),
                 folder: resourcePath
             };
             socket_1.EventBus.sendEvent("FOLDER_EXPAND", message);
@@ -374,7 +374,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         Command.folderExpand = folderExpand;
         function folderCollapse(resourcePath) {
             var message = {
-                project: document.title,
+                project: common_1.Common.getProjectName(),
                 folder: resourcePath
             };
             socket_1.EventBus.sendEvent("FOLDER_COLLAPSE", message);
@@ -382,7 +382,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         Command.folderCollapse = folderCollapse;
         function pingProcess() {
             if (socket_1.EventBus.isSocketOpen()) {
-                socket_1.EventBus.sendEvent("PING", document.title);
+                socket_1.EventBus.sendEvent("PING", common_1.Common.getProjectName());
             }
         }
         Command.pingProcess = pingProcess;
@@ -391,7 +391,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             var toPath = tree_1.FileTree.cleanResourcePath(destinationPath.getFilePath() + "/" + fileName);
             console.log("source: " + fileName + " destination: " + toPath);
             var message = {
-                project: document.title,
+                project: common_1.Common.getProjectName(),
                 name: fileName,
                 to: toPath,
                 data: encodedFile,
@@ -413,7 +413,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                 var toPath = tree_1.FileTree.cleanResourcePath(destinationPath.getFilePath() + "/" + originalPath.getFileName());
                 console.log("source: " + fromPath + " destination: " + toPath);
                 var message = {
-                    project: document.title,
+                    project: common_1.Common.getProjectName(),
                     from: fromPath,
                     to: toPath,
                     dragAndDrop: true
@@ -437,7 +437,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             var originalFile = resourcePath.getFilePath();
             dialog_1.DialogBuilder.renameFileTreeDialog(resourcePath, true, function (resourceDetails) {
                 var message = {
-                    project: document.title,
+                    project: common_1.Common.getProjectName(),
                     from: originalFile,
                     to: resourceDetails.getFilePath(),
                     dragAndDrop: false
@@ -452,7 +452,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             var directoryPath = tree_1.FileTree.createResourcePath(originalPath + ".#"); // put a # in to trick in to thinking its a file
             dialog_1.DialogBuilder.renameDirectoryTreeDialog(directoryPath, true, function (resourceDetails) {
                 var message = {
-                    project: document.title,
+                    project: common_1.Common.getProjectName(),
                     from: originalPath,
                     to: resourceDetails.getFilePath()
                 };
@@ -464,7 +464,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             dialog_1.DialogBuilder.newFileTreeDialog(resourcePath, true, function (resourceDetails) {
                 if (!tree_1.FileTree.isResourceFolder(resourceDetails.getFilePath())) {
                     var message = {
-                        project: document.title,
+                        project: common_1.Common.getProjectName(),
                         resource: resourceDetails.getFilePath(),
                         source: "",
                         directory: false,
@@ -483,7 +483,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             dialog_1.DialogBuilder.newDirectoryTreeDialog(resourcePath, true, function (resourceDetails) {
                 if (tree_1.FileTree.isResourceFolder(resourceDetails.getFilePath())) {
                     var message = {
-                        project: document.title,
+                        project: common_1.Common.getProjectName(),
                         resource: resourceDetails.getFilePath(),
                         source: "",
                         directory: true,
@@ -527,7 +527,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             var editorPath = editorState.getResource();
             if (editorPath != null) {
                 var message = {
-                    project: document.title,
+                    project: common_1.Common.getProjectName(),
                     resource: editorPath.getFilePath(),
                     source: editorState.getSource(),
                     directory: false,
@@ -549,7 +549,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             if (editorResource != null && editorResource.getResourcePath()) {
                 dialog_1.DialogBuilder.openTreeDialog(editorResource, true, function (resourceDetails) {
                     var message = {
-                        project: document.title,
+                        project: common_1.Common.getProjectName(),
                         resource: editorResource.getFilePath(),
                         source: editorText,
                         directory: false,
@@ -574,7 +574,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
                 var message = "Delete resource " + resourceDetails.getFilePath();
                 alert_1.Alerts.createConfirmAlert("Delete File", message, "Delete", "Cancel", function () {
                     var message = {
-                        project: document.title,
+                        project: common_1.Common.getProjectName(),
                         resource: resourceDetails.getFilePath()
                     };
                     console_1.ProcessConsole.clearConsole();
@@ -587,7 +587,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         function deleteDirectory(resourceDetails) {
             if (resourceDetails != null) {
                 var message = {
-                    project: document.title,
+                    project: common_1.Common.getProjectName(),
                     resource: resourceDetails.getFilePath()
                 };
                 console_1.ProcessConsole.clearConsole();
@@ -598,7 +598,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
         function createArchive(savePath, mainScript) {
             dialog_1.DialogBuilder.createArchiveTreeDialog(savePath, function (resourceDetails) {
                 var message = {
-                    project: document.title,
+                    project: common_1.Common.getProjectName(),
                     resource: mainScript.getProjectPath(),
                     archive: resourceDetails.getProjectPath()
                 };
@@ -649,7 +649,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             var message = {
                 breakpoints: editorState.getBreakpoints(),
                 arguments: argumentArray,
-                project: document.title,
+                project: common_1.Common.getProjectName(),
                 resource: editorState.getResource().getFilePath(),
                 source: editorState.getSource(),
                 debug: debug ? true : false
@@ -661,7 +661,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             if (socket_1.EventBus.isSocketOpen()) {
                 alert_1.Alerts.createRemoteDebugPromptAlert("Remote Debug", "Enter <host>:<port>", "Attach", "Cancel", function (hostAndPort) {
                     var message = {
-                        project: document.title,
+                        project: common_1.Common.getProjectName(),
                         address: hostAndPort
                     };
                     socket_1.EventBus.sendEvent("REMOTE_DEBUG", message);
@@ -673,7 +673,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             var editorState = editor_1.FileEditor.currentEditorState();
             var message = {
                 breakpoints: editorState.getBreakpoints(),
-                project: document.title
+                project: common_1.Common.getProjectName()
             };
             socket_1.EventBus.sendEvent("BREAKPOINTS", message);
         }
@@ -760,7 +760,7 @@ define(["require", "exports", "jquery", "common", "project", "alert", "socket", 
             var message = {
                 process: process,
                 breakpoints: editorState.getBreakpoints(),
-                project: document.title,
+                project: common_1.Common.getProjectName(),
                 focus: statusFocus != process // toggle the focus
             };
             socket_1.EventBus.sendEvent("ATTACH", message); // attach to process

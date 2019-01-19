@@ -214,7 +214,7 @@ define(["require", "exports", "jquery", "w2ui", "./common", "./socket", "./edito
                     var statusProcessInfo = statusProcesses[statusProcess];
                     if (statusProcessInfo != null) {
                         var statusProject = statusProcessInfo.getProject();
-                        if (statusProject == document.title || statusProject == null) {
+                        if (statusProject == common_1.Common.getProjectName() || statusProject == null) {
                             var displayName = "<div class='debugIdleRecord'>" + statusProcess + "</div>";
                             var active = "&nbsp;<input type='radio'><label></label>";
                             var resourcePath = "";

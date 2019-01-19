@@ -2,18 +2,15 @@ package org.snapscript.studio.common.server;
 
 import static org.springframework.core.io.support.ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX;
 
+import javax.ws.rs.Path;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.ws.rs.Path;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.snapscript.core.Any;
 import org.snapscript.core.ContextClassLoader;
-import org.snapscript.studio.common.ProgressManager;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
@@ -40,7 +37,6 @@ public class ResourceClassScanner {
          Resource[] resources = resolver.getResources(pattern);
          
          log.debug("Scan of '{}' found {} resources", pattern, resources.length);
-         ProgressManager.getProgress().update("Found all resources");
          
          if(resources.length > 0) {
             Set<Class<?>> matches = new HashSet<Class<?>>();
@@ -59,7 +55,6 @@ public class ResourceClassScanner {
                         String value = annotation.value();
                         
                         log.debug("Loading resource {}", resource);
-                        ProgressManager.getProgress().update("Loading resource for " + value);
                         matches.add(type);
                      } else {
                         log.debug("Ignoring resource {}", resource);

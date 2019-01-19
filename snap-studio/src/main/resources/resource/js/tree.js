@@ -59,7 +59,7 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
         FileTree.createTree = createTree;
         function createTreeOfDepth(treePath, element, id, expandPath, foldersOnly, treeMenuHandler, clickCallback, depth) {
             $(document).ready(function () {
-                var project = document.title;
+                var project = common_1.Common.getProjectName();
                 var requestPath = '/tree' + treePath + "?id=" + id + "&folders=" + foldersOnly + "&depth=" + depth;
                 if (expandPath != null) {
                     requestPath += "&expand=" + expandPath;
@@ -318,8 +318,8 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
         }
         FileTree.cleanResourcePath = cleanResourcePath;
         function createResourcePath(path) {
-            var resourcePathPrefix = "/resource/" + document.title + "/";
-            var resourcePathRoot = "/resource/" + document.title;
+            var resourcePathPrefix = "/resource/" + common_1.Common.getProjectName() + "/";
+            var resourcePathRoot = "/resource/" + common_1.Common.getProjectName();
             while (path.indexOf("//") != -1) {
                 path = path.replace("//", "/"); // remove double slashes like /x/y//z.snap
             }
@@ -348,11 +348,11 @@ define(["require", "exports", "jquery", "common", "commands"], function (require
                 path = "/" + path; // /snap.script
             }
             if (path.indexOf(resourcePathPrefix) != 0) {
-                path = "/resource/" + document.title + path;
+                path = "/resource/" + common_1.Common.getProjectName() + path;
             }
             var isFolder = isResourceFolder(path); // /resource/<project>/blah/
             var pathSegments = path.split("/"); // [0="", 1="resource", 2="<project>", 3="blah", 4="script.snap"]
-            var currentResourcePath = "/resource/" + document.title;
+            var currentResourcePath = "/resource/" + common_1.Common.getProjectName();
             var currentProjectPath = "";
             var currentProjectDirectory = "";
             var currentFileName = null;

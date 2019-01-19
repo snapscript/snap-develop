@@ -91,7 +91,7 @@ export module Command {
       
       if(text && text.length > 1) {         
          $.ajax({
-            url: '/type/' + document.title + '?expression=' + originalExpression,
+            url: '/type/' + Common.getProjectName() + '?expression=' + originalExpression,
             success: function (typeMatches) {
                var sortedMatches = [];
                
@@ -111,7 +111,7 @@ export module Command {
                      module: typeReference.module,
                      extra: typeReference.extra,
                      type: typeReference.type,
-                     project: document.title
+                     project: Common.getProjectName()
                   };
                   response.push(typeEntry);
                }
@@ -142,10 +142,10 @@ export module Command {
                var libraryPath = "";
                
                if(isJavaResource(outlineFound.libraryPath) && outlineFound.declaringClass) { // java class in a JAR file
-                  resourceLink = "/project/" + document.title + "#" + createLinkForJavaResource(outlineFound.libraryPath, outlineFound.declaringClass);
+                  resourceLink = "/project/" + Common.getProjectName() + "#" + createLinkForJavaResource(outlineFound.libraryPath, outlineFound.declaringClass);
                   line = null;
                } else {
-                  resource = "/resource/" + document.title + resource;
+                  resource = "/resource/" + Common.getProjectName() + resource;
                }
                var outlineCell = {
                   text: outlineFound.name + "&nbsp;&nbsp;" + constraintInfo,
@@ -212,7 +212,7 @@ export module Command {
             async: true,
             processData: false,
             type: 'POST',
-            url: '/outline/' + document.title
+            url: '/outline/' + Common.getProjectName()
         });
       } else {
          onComplete([], originalExpression);
@@ -295,7 +295,7 @@ export module Command {
       if(text && text.length > 1) {
          var searchUrl = '';
          
-         searchUrl += '/find/' + document.title;
+         searchUrl += '/find/' + Common.getProjectName();
          searchUrl += '?expression=' + encodeURIComponent(originalText);
          searchUrl += '&pattern=' + encodeURIComponent(fileTypes);
          searchUrl += "&caseSensitive=" + encodeURIComponent(searchCriteria.caseSensitive);
@@ -314,7 +314,7 @@ export module Command {
                   var typeEntry = {
                      resource: fileMatch.resource,
                      line: fileMatch.line,
-                     project: document.title
+                     project: Common.getProjectName()
                   };
                   response.push(fileMatch);   
                }
@@ -363,7 +363,7 @@ export module Command {
       
       if(text && text.length > 1) {
          $.ajax({
-            url: '/file/' + document.title + '?expression=' + originalText,
+            url: '/file/' + Common.getProjectName() + '?expression=' + originalText,
             success: function (filesMatched) {
                var response = [];
                
@@ -373,7 +373,7 @@ export module Command {
                      resource: fileMatch.resource,
                      path: fileMatch.path,
                      name: fileMatch.name,
-                     project: document.title
+                     project: Common.getProjectName()
                   };
                   response.push(fileMatch);
                }
@@ -389,7 +389,7 @@ export module Command {
    export function openTerminal(resourcePath: FilePath) {
       if(FileTree.isResourceFolder(resourcePath.getFilePath())) {
          var message = {
-            project : document.title,
+            project : Common.getProjectName(),
             resource : resourcePath.getFilePath(),
             terminal: true
          };
@@ -400,7 +400,7 @@ export module Command {
    export function exploreDirectory(resourcePath: FilePath) {
       if(FileTree.isResourceFolder(resourcePath.getFilePath())) {
          var message = {
-            project : document.title,
+            project : Common.getProjectName(),
             resource : resourcePath.getFilePath(),
             terminal: false
          };
@@ -410,7 +410,7 @@ export module Command {
    
    export function folderExpand(resourcePath: string) {
       var message = {
-         project: document.title,
+         project: Common.getProjectName(),
          folder : resourcePath
       };
       EventBus.sendEvent("FOLDER_EXPAND", message);
@@ -418,7 +418,7 @@ export module Command {
    
    export function folderCollapse(resourcePath: string) {
       var message = {
-         project: document.title,
+         project: Common.getProjectName(),
          folder : resourcePath
       };
       EventBus.sendEvent("FOLDER_COLLAPSE", message);
@@ -426,7 +426,7 @@ export module Command {
    
    export function pingProcess() {
       if(EventBus.isSocketOpen()) {
-         EventBus.sendEvent("PING", document.title);
+         EventBus.sendEvent("PING", Common.getProjectName());
       }
    }
    
@@ -437,7 +437,7 @@ export module Command {
       console.log("source: " + fileName + " destination: " + toPath);
       
       var message = {
-         project : document.title,   
+         project : Common.getProjectName(),
          name : fileName,
          to: toPath,
          data: encodedFile,
@@ -461,7 +461,7 @@ export module Command {
          console.log("source: " + fromPath + " destination: " + toPath);
          
          var message = {
-            project : document.title,
+            project : Common.getProjectName(),
             from : fromPath,
             to: toPath,
             dragAndDrop: true
@@ -488,7 +488,7 @@ export module Command {
       
       DialogBuilder.renameFileTreeDialog(resourcePath, true, function(resourceDetails) {
          var message = {
-            project : document.title,
+            project : Common.getProjectName(),
             from : originalFile,
             to: resourceDetails.getFilePath(),
             dragAndDrop: false
@@ -504,7 +504,7 @@ export module Command {
       
       DialogBuilder.renameDirectoryTreeDialog(directoryPath, true, function(resourceDetails) {
          var message = {
-            project : document.title,
+            project : Common.getProjectName(),
             from : originalPath,
             to: resourceDetails.getFilePath()
          };
@@ -516,7 +516,7 @@ export module Command {
       DialogBuilder.newFileTreeDialog(resourcePath, true, function(resourceDetails: FilePath) {
          if(!FileTree.isResourceFolder(resourceDetails.getFilePath())) {
             var message = {
-               project : document.title,
+               project : Common.getProjectName(),
                resource : resourceDetails.getFilePath(),
                source : "",
                directory: false,
@@ -537,7 +537,7 @@ export module Command {
       DialogBuilder.newDirectoryTreeDialog(resourcePath, true, function(resourceDetails: FilePath) {
          if(FileTree.isResourceFolder(resourceDetails.getFilePath())) {
             var message = {
-               project : document.title,
+               project : Common.getProjectName(),
                resource : resourceDetails.getFilePath(),
                source : "",
                directory: true,
@@ -583,7 +583,7 @@ export module Command {
         
       if(editorPath != null) {
          var message = {
-            project : document.title,
+            project : Common.getProjectName(),
             resource : editorPath.getFilePath(),
             source : editorState.getSource(),
             directory: false,
@@ -608,7 +608,7 @@ export module Command {
       if (editorResource != null && editorResource.getResourcePath()) {
          DialogBuilder.openTreeDialog(editorResource, true, function(resourceDetails: FilePath) {
             var message = {
-               project : document.title,
+               project : Common.getProjectName(),
                resource : editorResource.getFilePath(),
                source : editorText,
                directory: false,
@@ -637,7 +637,7 @@ export module Command {
          Alerts.createConfirmAlert("Delete File", message, "Delete", "Cancel", 
                function(){
                   var message = {
-                     project : document.title,
+                     project : Common.getProjectName(),
                      resource : resourceDetails.getFilePath()
                   };
                   ProcessConsole.clearConsole();
@@ -651,7 +651,7 @@ export module Command {
    export function deleteDirectory(resourceDetails: FilePath) {
       if(resourceDetails != null) {
          var message = {
-            project : document.title,
+            project : Common.getProjectName(),
             resource : resourceDetails.getFilePath()
          };
          ProcessConsole.clearConsole();
@@ -662,7 +662,7 @@ export module Command {
    export function createArchive(savePath: FilePath, mainScript: FilePath) {
       DialogBuilder.createArchiveTreeDialog(savePath, function(resourceDetails: FilePath) {
          var message = {
-            project: document.title,
+            project: Common.getProjectName(),
             resource: mainScript.getProjectPath(),
             archive: resourceDetails.getProjectPath()
          };
@@ -719,7 +719,7 @@ export module Command {
       var message = {
          breakpoints : editorState.getBreakpoints(),
          arguments: argumentArray,
-         project : document.title,
+         project : Common.getProjectName(),
          resource : editorState.getResource().getFilePath(),
          source : editorState.getSource(),
          debug: debug ? true: false
@@ -732,7 +732,7 @@ export module Command {
          Alerts.createRemoteDebugPromptAlert("Remote Debug", "Enter <host>:<port>", "Attach", "Cancel", 
             function(hostAndPort) {
                var message = {
-                  project: document.title,
+                  project: Common.getProjectName(),
                   address: hostAndPort
                };
                EventBus.sendEvent("REMOTE_DEBUG", message);
@@ -745,7 +745,7 @@ export module Command {
       var editorState: FileEditorState = FileEditor.currentEditorState();
       var message = {
          breakpoints : editorState.getBreakpoints(),
-         project : document.title,
+         project : Common.getProjectName(),
       };
       EventBus.sendEvent("BREAKPOINTS", message);
    }
@@ -832,7 +832,7 @@ export module Command {
       var message = {
          process: process,
          breakpoints : editorState.getBreakpoints(),
-         project : document.title,
+         project : Common.getProjectName(),
          focus: statusFocus != process // toggle the focus
       };
       EventBus.sendEvent("ATTACH", message); // attach to process

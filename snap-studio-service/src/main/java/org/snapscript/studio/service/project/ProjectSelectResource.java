@@ -1,5 +1,7 @@
 package org.snapscript.studio.service.project;
 
+import static org.snapscript.studio.agent.runtime.RuntimeAttribute.VERSION;
+
 import java.io.File;
 import java.io.PrintStream;
 
@@ -34,7 +36,11 @@ public class ProjectSelectResource implements Resource {
       TemplateModel model = resolver.getModel();
       File root = workspace.getRoot();
       String name = root.getName();
+      String version = VERSION.getValue();
+
+      model.setAttribute("version", version);
       model.setAttribute("root", name);
+
       String text = engine.renderTemplate(model, SELECT_RESOURCE);
       PrintStream stream = response.getPrintStream();
 

@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "tree"], function (require, exports, $, tree_1) {
+define(["require", "exports", "jquery", "./common", "tree"], function (require, exports, $, common_1, tree_1) {
     "use strict";
     var StatusPanel;
     (function (StatusPanel) {
@@ -26,7 +26,7 @@ define(["require", "exports", "jquery", "tree"], function (require, exports, $, 
             pathBreadcrumb += "<table border='0'>\n";
             pathBreadcrumb += "<tr>\n";
             pathBreadcrumb += "<td><div class='treeIndexFolder'></div><td>\n";
-            pathBreadcrumb += "<td>" + document.title + "</td>\n";
+            pathBreadcrumb += "<td>" + common_1.Common.getProjectName() + "</td>\n";
             for (var i = 0; i < pathSegments.length; i++) {
                 var segment = pathSegments[i];
                 if (segment.length > 0) {

@@ -36,7 +36,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
         }
         DialogBuilder.createArchiveTreeDialog = createArchiveTreeDialog;
         function createProjectDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle) {
-            createTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle, "/" + document.title);
+            createTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle, "/" + common_1.Common.getProjectName());
         }
         function createTreeDialog(resourceDetails, foldersOnly, saveCallback, ignoreOrCancelCallback, nameIsBlank, dialogTitle, treePath) {
             var windowHeight = $(window).height(); // returns height of browser viewport
@@ -194,7 +194,7 @@ define(["require", "exports", "jquery", "w2ui", "common", "commands", "variables
                 completeFunction();
                 w2ui_1.w2popup.close();
             });
-            tree_1.FileTree.createTreeOfDepth(treePath, "dialog", "dialogTree", "/" + document.title, true, null, function (event, data) {
+            tree_1.FileTree.createTreeOfDepth(treePath, "dialog", "dialogTree", "/" + common_1.Common.getProjectName(), true, null, function (event, data) {
                 var selectedFileDetails = tree_1.FileTree.createResourcePath(data.node.tooltip);
                 var selectedDirectory = selectedFileDetails.getProjectDirectory();
                 if (selectedDirectory.indexOf("/") == 0) {

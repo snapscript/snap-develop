@@ -288,7 +288,7 @@ export module DebugManager {
             if(statusProcessInfo != null) {
                var statusProject: string = statusProcessInfo.getProject();
                
-               if(statusProject == document.title || statusProject == null) {
+               if(statusProject == Common.getProjectName() || statusProject == null) {
                   var displayName = "<div class='debugIdleRecord'>"+statusProcess+"</div>";
                   var active = "&nbsp;<input type='radio'><label></label>";
                   var resourcePath = "";

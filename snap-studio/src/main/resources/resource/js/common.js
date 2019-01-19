@@ -14,6 +14,19 @@ define(["require", "exports", "jquery", "w2ui"], function (require, exports, $, 
             return false;
         }
         Common.openDialog = openDialog;
+        function getProjectName() {
+            var title = document.title;
+            if (title) {
+                var trim = title.trim();
+                var index = trim.lastIndexOf(" ");
+                if (index != -1 && index != trim.length) {
+                    return trim.substring(index + 1, trim.length);
+                }
+                return trim;
+            }
+            return "";
+        }
+        Common.getProjectName = getProjectName;
         function extractParameter(name) {
             var source = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
             var expression = "[\\?&]" + source + "=([^&#]*)";

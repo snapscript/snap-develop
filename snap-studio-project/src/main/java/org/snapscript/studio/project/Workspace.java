@@ -16,8 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.simpleframework.http.Path;
 import org.slf4j.LoggerFactory;
+import org.snapscript.common.Progress;
 import org.snapscript.common.thread.ThreadPool;
 import org.snapscript.studio.common.FileDirectorySource;
+import org.snapscript.studio.common.ProgressManager;
 import org.snapscript.studio.project.config.ConfigurationReader;
 import org.snapscript.studio.project.config.Dependency;
 import org.snapscript.studio.project.config.DependencyFile;
@@ -208,6 +210,7 @@ public class Workspace implements FileDirectorySource {
                                  String name = project.getName();
 
                                  log.info("Loading project {}", name);
+                                 ProgressManager.getProgress().update("Loading project " + name);
                                  project.getClassPath(); // resolve dependencies
                                  project.getIndexDatabase().getTypeNodes(); // index all classes
                               }catch(Throwable e) {}
