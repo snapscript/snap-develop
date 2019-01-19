@@ -1,39 +1,13 @@
 
-let x = 10;
+class Bag<A, B, C>{
 
-unless(x == 10){
-   println(x);
-}
-
-unless(x == 1){
-   println('xx');
-}
-
-func foo(){
-   let a = 1;
-   let b = 1;
-   
-   until(a == 10){
-      //println(--b);
-      yield a++;
+   call(b: B): List<A> {
+      return [];
    }
 }
 
-let fun = () -> {
-   let a = 1;
-   let b = 1;
-   
-   unless(a == 11) {
-      until(a == 10){
-         //println(--b);
-         yield a++;
-      }
-   }
-};
+let x: Bag<String, Integer, Locale> = new Bag();
 
-fun().iterator().forEachRemaining(this::print);
 
-let xx = this::println;
+x.call(1).iterator().next().toUpperCase();
 
-println();
-println(xx);

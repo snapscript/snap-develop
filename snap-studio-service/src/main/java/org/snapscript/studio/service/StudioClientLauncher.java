@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
 
 import lombok.SneakyThrows;
-
 import org.snapscript.studio.common.ProgressManager;
 import org.snapscript.studio.project.HomeDirectory;
 import org.snapscript.studio.project.Workspace;
@@ -67,7 +66,7 @@ public class StudioClientLauncher {
                ClientControl control = ClientProvider.provide(engine).show(context);
                SplashPanel panel = SplashScreen.getPanel();
                
-               panel.hide();
+               panel.dispose();
                reference.set(control);
             }
          });
