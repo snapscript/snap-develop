@@ -1,30 +1,20 @@
-class Mod{
-
-   async static top(n){
-      const x: Integer = await foo(n);
-      println(x);
-      return x;
+async func foo(): Promise<Integer> {
+   for(i in 0 to 10) {
+      println(i);
+      await i;
+      println("i="+Thread.currentThread().getName());
    }
-
-   async static foo(n){
-      println(n);
-      const x: Integer = await longTime().doubleValue();
-      println(x);
-      return x;
-   }
-   
-   static longTime(){
-      println(Thread.currentThread().getName());
-      sleep(10000);
-      return 12;
-   }
+   println("done");
+   return 110;
 }
-println(Thread.currentThread().getName());
-Mod.top(1)
-   .then(x -> println("a="+x))
-   .then(x -> println("b="+x))
-   .then(x -> println("c="+x))
-   .then(x -> println("d="+x))   
-   .get();
+println("x="+Thread.currentThread().getName());
+let x = foo().get();
+println(x);
 
-
+func do(): Yield<Integer> {
+   yield 1;
+}
+println(Promise.class);
+println(Yield.class);
+let t = do().iterator().next().intValue();
+println(t);
