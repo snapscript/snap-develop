@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.snapscript</groupId>
     <artifactId>snap-studio-parent</artifactId>
-    <version>1.4.3</version>
+    <version>1.4.4</version>
   </parent>
   <dependencies>
     <dependency>
@@ -62,17 +62,17 @@
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-compile</artifactId>
-      <version>1.4.3</version>
+      <version>1.4.4</version>
     </dependency>
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-tree</artifactId>
-      <version>1.4.3</version>
+      <version>1.4.4</version>
     </dependency>
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-studio-index</artifactId>
-      <version>1.4.3</version>
+      <version>1.4.4</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
