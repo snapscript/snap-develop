@@ -64,6 +64,7 @@ public class ExecuteEventMarshaller implements ProcessEventMarshaller<ExecuteEve
    public MessageEnvelope toMessage(ExecuteEvent event) throws IOException {
       ByteArrayOutputStream buffer = new ByteArrayOutputStream();
       DataOutputStream output = new DataOutputStream(buffer);
+      List<String> validated = new ArrayList<String>();
       Map<String, Map<Integer, Boolean>> breakpoints = event.getBreakpoints();
       List<String> arguments = event.getArguments();
       Set<String> scripts = breakpoints.keySet();
@@ -73,7 +74,6 @@ public class ExecuteEventMarshaller implements ProcessEventMarshaller<ExecuteEve
       String project = event.getProject();
       boolean debug = event.isDebug();
       int breakpointSize = breakpoints.size();
-      int argumentSize = arguments.size();
       
       output.writeUTF(process);
       output.writeUTF(project);
@@ -97,10 +97,26 @@ public class ExecuteEventMarshaller implements ProcessEventMarshaller<ExecuteEve
             output.writeBoolean(enable);
          }
       }
-      output.writeInt(argumentSize);
-      
       for(String argument : arguments){
-         output.writeUTF(argument);
+         if(argument != null) {
+            String token = argument.trim();
+            int length = token.length();
+
+            if(length > 0) {
+               validated.add(token);
+            }
+         }
+      }
+      int argumentSize = validated.size();
+
+      if(argumentSize > 0) {
+         output.writeInt(argumentSize);
+
+         for (String argument : validated) {
+            output.writeUTF(argument);
+         }
+      } else {
+         output.writeInt(0);
       }
       output.flush();
       byte[] array = buffer.toByteArray();

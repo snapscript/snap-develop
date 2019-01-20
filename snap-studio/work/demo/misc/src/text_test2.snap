@@ -1,21 +1,5 @@
-async func foo(): Promise<Integer> {
-   for(i in 0 to 10) {
-      println(i);
-      await i;
-      println("i="+Thread.currentThread().getName());
-   }
-   println("done");
-   return 110;
-}
-println("x="+Thread.currentThread().getName());
-let x = foo().get();
-println(x);
-
-func do(): Yield<Integer> {
-   yield 1;
-   yield 2;
-}
-println(Promise.class);
-println(Yield.class);
-do().iterator().forEachRemaining(this::println);
-//println(t);
+let x = async (a) -> {   
+   return await System.currentTimeMillis();
+};
+println(x.class);
+x(1).then(y -> println(y)).block();
