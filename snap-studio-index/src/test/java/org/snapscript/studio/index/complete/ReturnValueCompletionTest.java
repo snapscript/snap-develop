@@ -17,7 +17,7 @@ public class ReturnValueCompletionTest extends TestCase {
    
    private static final String SOURCE = 
    "import util.stream.Collectors;\n"+
-   "function func(list: List) {\n"+
+   "function fun(list: List) {\n"+
    "   return // replace me\n"+
    "}\n";
          

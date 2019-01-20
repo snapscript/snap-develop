@@ -17,20 +17,20 @@ public class ScriptFunctionCompletionTest extends TestCase {
    
    private static final String SOURCE_1 =
    "import util.regex.Pattern;\n"+
-   "function func(p: Pattern, s: String) {\n"+     
+   "function fun(p: Pattern, s: String) {\n"+
    "   // replace me\n"+
    "}\n";
 
    private static final String SOURCE_2 =
    "import util.regex.Pattern;\n"+
-   "function func(p: Pattern, s: String)\n" +
+   "function fun(p: Pattern, s: String)\n" +
    "{\n"+     
    "   // replace me\n"+
    "}\n";
    
    private static final String SOURCE_3 =
    "import util.regex.Pattern;\n"+
-   "function func(p: Pattern, s: String)\n" +
+   "function fun(p: Pattern, s: String)\n" +
    "// some comment\n" +
    "{\n"+     
    "   // replace me\n"+
@@ -38,14 +38,14 @@ public class ScriptFunctionCompletionTest extends TestCase {
    
    private static final String SOURCE_4 =
    "import util.regex.Pattern;\n"+
-   "function func(p: Pattern, s: String) { // comment\n"+
+   "function fun(p: Pattern, s: String) { // comment\n"+
    "   // replace me\n"+
    "}\n";
    
    private static final String SOURCE_5 =
    "import util.regex.Pattern;\n"+
    "class Foo {\n"+
-   "   func(p: Pattern, s: String) {\n"+
+   "   fun(p: Pattern, s: String) {\n"+
    "      // replace me\n"+
    "   }\n"+
    "}";

@@ -11,6 +11,7 @@ import org.snapscript.core.module.Path;
 import org.snapscript.core.scope.Scope;
 import org.snapscript.core.type.Type;
 import org.snapscript.studio.index.IndexResult;
+import org.snapscript.tree.ModifierList;
 import org.snapscript.tree.constraint.FunctionName;
 import org.snapscript.tree.function.ParameterList;
 import org.snapscript.tree.script.ScriptFunction;
@@ -22,12 +23,12 @@ public class ScriptFunctionIndex implements Compilation {
    private final FunctionName identifier;
    private final Constraint constraint;
    
-   public ScriptFunctionIndex(FunctionName identifier, ParameterList parameters, Statement body){
-      this(identifier, parameters, null, body);
+   public ScriptFunctionIndex(ModifierList list, FunctionName identifier, ParameterList parameters, Statement body){
+      this(list, identifier, parameters, null, body);
    }
    
-   public ScriptFunctionIndex(FunctionName identifier, ParameterList parameters, Constraint constraint, Statement body){
-      this.function = new ScriptFunction(identifier, parameters, constraint, body);
+   public ScriptFunctionIndex(ModifierList list, FunctionName identifier, ParameterList parameters, Constraint constraint, Statement body){
+      this.function = new ScriptFunction(list, identifier, parameters, constraint, body);
       this.parameters = parameters;
       this.constraint = constraint;
       this.identifier = identifier;

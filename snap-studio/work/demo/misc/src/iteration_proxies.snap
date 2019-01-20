@@ -33,12 +33,12 @@ module Blah{
 var f = new Blah.Foo(11);
 println(f.x);
 
-func(f);
-func("f");
+fun(f);
+fun("f");
 
-function func(x: Blah.Foo){
+function fun(x: Blah.Foo){
    println(x.x);
 }
-function func(x: String){
+function fun(x: String){
    println("x");
 }

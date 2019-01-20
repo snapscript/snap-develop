@@ -1,13 +1,25 @@
+class Mod{
 
-class Bag<A, B, C>{
+   async static top(n){
+      const x: Integer = await foo(n);
+      println(x);
+      return x;
+   }
 
-   call(b: B): List<A> {
-      return [];
+   async static foo(n){
+      println(n);
+      const x: Integer = await longTime().doubleValue();
+      println(x);
+      return x;
+   }
+   
+   static longTime(){
+      println(Thread.currentThread().getName());
+      sleep(10000);
+      return 12;
    }
 }
+println(Thread.currentThread().getName());
+Mod.top(1).then(x -> println("x="+x)).get();
 
-let x: Bag<String, Integer, Locale> = new Bag();
-
-
-x.call(1).iterator().next().toUpperCase();
 

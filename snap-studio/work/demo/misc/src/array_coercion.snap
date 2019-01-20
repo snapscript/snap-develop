@@ -8,29 +8,29 @@ var s : String[][] = [['a','b'],[]];
 var i : Integer[][] = [['1','2', 3.0d, 11L],[2]];
 // this is a test
 // blah blah blah 
-function(s);
-function(i);
+fun(s);
+fun(i);
 
 
-function function(s: String[][]){
+function fun(s: String[][]){
    for(var e in s){
-      function(e);
+      fun(e);
    }
 }
 
-function function(s: String[]){
+function fun(s: String[]){
    for(var e in s){
       println("string=${e}");
    }
 }
 
-function function(s: Float[][]){
+function fun(s: Float[][]){
    for(var e in s){
-      function(e);
+      fun(e);
    }
 }
 
-function function(s: Float[]){
+function fun(s: Float[]){
    for(var e in s){
       println("float=${e}");
    }

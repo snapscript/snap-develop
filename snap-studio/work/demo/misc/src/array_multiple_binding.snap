@@ -11,11 +11,11 @@ func([1,2L,3.3d]);
 func([1,2L,'foo']);
 func(['blah',2L,'foo']);
 
-function func(x: Integer[]){
+function fun(x: Integer[]){
    println("Iteger[]"+x);
 }
 
-function func(x: String[]){
+function fun(x: String[]){
    println("String[]"+x);
 } 
   
