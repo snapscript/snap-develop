@@ -20,6 +20,11 @@ class Mod{
    }
 }
 println(Thread.currentThread().getName());
-Mod.top(1).then(x -> println("x="+x)).get();
+Mod.top(1)
+   .then(x -> println("a="+x))
+   .then(x -> println("b="+x))
+   .then(x -> println("c="+x))
+   .then(x -> println("d="+x))   
+   .get();
 
 
