@@ -13,8 +13,9 @@ println(x);
 
 func do(): Yield<Integer> {
    yield 1;
+   yield 2;
 }
 println(Promise.class);
 println(Yield.class);
-let t = do().iterator().next().intValue();
-println(t);
+do().iterator().forEachRemaining(this::println);
+//println(t);
