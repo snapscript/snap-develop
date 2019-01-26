@@ -40,7 +40,7 @@ public class ProcessContext {
    }
    
    public ProcessContext(ProcessMode mode, ProcessStore store, String process, int threads, int stack) {
-      this.executor = new ThreadPool(threads < 5 ? 5 : threads, stack);
+      this.executor = new ThreadPool(threads < 5 ? 5 : threads, 100, stack);
       this.latch = new ExecuteLatch(process);
       this.context = new StoreContext(store, executor);
       this.compiler = new ResourceCompiler(context);
