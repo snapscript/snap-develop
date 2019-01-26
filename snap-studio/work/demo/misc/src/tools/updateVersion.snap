@@ -3,8 +3,8 @@ File("c:/Work/development/snapscript")
    .stream()
    .forEach(f -> {
       let t = f.readText();
-      if(t.contains("<version>1.4.3</")) {
-         let n = t.replace("<version>1.4.3</", "<version>1.4.4</");
+      if(t.contains("<version>1.4.4</")) {
+         let n = t.replace("<version>1.4.4</", "<version>1.4.5</");
          f.writeText(n);
       }
       

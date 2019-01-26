@@ -1,3 +1,4 @@
+
 var square = (x) -> x * x;
 var cube = (x) -> square(x) * x;
 
@@ -38,5 +39,8 @@ class X extends Z{
 var v = new X();
 v.dump();
 
+println(v.x);
+let t = v.x;
+t(11,22);
 v.x(11,22);
 v.x("blah blah", "foo");

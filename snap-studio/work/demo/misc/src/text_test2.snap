@@ -1,5 +1,16 @@
-let x = async (a) -> {   
-   return await System.currentTimeMillis();
-};
-println(x.class);
-x(1).then(y -> println(y)).block();
+async func one(n){
+   if(n > 0) {
+      println(`two(${n}): ` +Thread.currentThread().getName());
+      await two(n-1);
+   }
+   return 'one';
+}
+
+async func two(n){
+   if(n > 0) {
+      println(`one(${n}): ` +Thread.currentThread().getName());
+      await one(n-1);
+   }
+   return 'two';
+}
+one(1000).join().success(this::println);

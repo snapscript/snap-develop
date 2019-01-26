@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.snapscript</groupId>
     <artifactId>snap-studio-parent</artifactId>
-    <version>1.4.4</version>
+    <version>1.4.5</version>
   </parent>
   <properties>
     <maven.compiler.source>1.6</maven.compiler.source>
@@ -17,12 +17,12 @@
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-studio-build</artifactId>
-      <version>1.4.4</version>
+      <version>1.4.5</version>
     </dependency>
     <dependency>
       <groupId>org.snapscript</groupId>
       <artifactId>snap-studio-service</artifactId>
-      <version>1.4.4</version>
+      <version>1.4.5</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
