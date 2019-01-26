@@ -11,6 +11,6 @@ async func two(n){
       println(`one(${n}): ` +Thread.currentThread().getName());
       await one(n-1);
    }
-   return 'two';
+   throw 'x';
 }
-one(1000).join().success(this::println);
+one(1000).join().success(this::println).failure(e -> e.printStackTrace());

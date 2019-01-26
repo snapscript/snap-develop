@@ -95,7 +95,7 @@ class Entity {
     * @param g The graphics context on which to draw
     */
    draw(g) {
-      sprite.draw(g, x, y);
+      sprite.value.draw(g, x, y);
    }
    
    /**
@@ -130,8 +130,8 @@ class Entity {
     * @return True if the entities collide with each other
     */
    collidesWith(other) {
-      me.setBounds(x,y,sprite.getWidth(),sprite.getHeight());
-      him.setBounds(other.x,other.y,other.sprite.getWidth(),other.sprite.getHeight());
+      me.setBounds(x,y,sprite.value.getWidth(),sprite.value.getHeight());
+      him.setBounds(other.x,other.y,other.sprite.value.getWidth(),other.sprite.value.getHeight());
 
       return me.intersects(him);
    }

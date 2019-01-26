@@ -239,7 +239,7 @@ class Game  {
          var g = strategy.getDrawGraphics();
          var stars = SpriteStore.getSprite("/spaceinvaders/stars.png");
          
-         stars.draw(g,0,0);
+         stars.value.draw(g,0,0);
          //g.setColor(Color.black);
          //g.fillRect(0,0,800,600);
          

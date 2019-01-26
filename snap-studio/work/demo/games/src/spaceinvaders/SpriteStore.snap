@@ -20,7 +20,7 @@ module SpriteStore {
     * @param ref The reference to the image to use for the sprite
     * @return A sprite instance containing an accelerate image of the request reference
     */
-   getSprite(ref): Sprite {
+   async getSprite(ref): Promise<Sprite> {
       // if we've already got the sprite in the cache
       // then just return the existing version
       if (sprites.get(ref) != null) {
@@ -43,7 +43,7 @@ module SpriteStore {
          }
          
          // use ImageIO to read the image in
-         sourceImage = ImageIO.read(stream);
+         sourceImage = await ImageIO.read(stream);
       } catch (e) {
          fail("Failed to load: "+ref);
       }
