@@ -1,16 +1,8 @@
-async func one(n){
-   if(n > 0) {
-      println(`two(${n}): ` +Thread.currentThread().getName());
-      await two(n-1);
+async func foo(n){
+   if(n <= 0){
+      throw new Exception('err');
    }
-   return 'one';
+   await foo(n -1);
 }
 
-async func two(n){
-   if(n > 0) {
-      println(`one(${n}): ` +Thread.currentThread().getName());
-      await one(n-1);
-   }
-   throw 'x';
-}
-one(1000).join().success(this::println).failure(e -> e.printStackTrace());
+foo(10).join().failure(e -> e.printStackTrace());

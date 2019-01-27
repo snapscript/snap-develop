@@ -4,7 +4,7 @@
  * instance of class which will start the display and game
  * loop.
  */
-function start() {
+func start() {
    var g =new Game();
 
    // Start the main game loop, note: this method will not
