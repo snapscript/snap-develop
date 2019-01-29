@@ -80,10 +80,10 @@ class Sprite extends Animatible {
        }
    
        // get the pixel location of the Sprites
-       var s1x: Integer = Math.round(s1.getX());
-       var s1y: Integer = Math.round(s1.getY());
-       var s2x: Integer = Math.round(s2.getX());
-       var s2y: Integer = Math.round(s2.getY());
+       var s1x: Integer = s1.getX().round();
+       var s1y: Integer = s1.getY().round();
+       var s2x: Integer = s2.getX().round();
+       var s2y: Integer = s2.getY().round();
    
        // check if the two sprites' boundaries intersect
        return (s1x < s2x + s2.getWidth() && s2x < s1x + s1.getWidth() && 

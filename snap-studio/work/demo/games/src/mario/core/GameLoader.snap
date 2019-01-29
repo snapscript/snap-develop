@@ -25,7 +25,7 @@ import mario.util.ImageManipulator;
 
 class GameLoader {
    
-   private var plain: ArrayList;
+   private var plain: List;
    private var plainTiles: BufferedImage[];
    
    private var sloped_image: BufferedImage;
@@ -34,7 +34,7 @@ class GameLoader {
    
    public new() {
        
-      plain = new ArrayList();
+      plain = [];
       plainTiles = new SpriteMap("/mario/tiles/Plain_Tiles.png", 6, 17).getSprites();
       
       for (var bImage in plainTiles) {
@@ -64,7 +64,7 @@ class GameLoader {
     // is irrelevant. Why? I don't check collision on maps other than the main map. 
     public loadOtherMaps(filename: String): TileMap  {
       // lines is a list of strings, each element is a row of the map
-      var lines: ArrayList = new ArrayList();
+      var lines: List = [];
       var width: Integer = 0;
       var height: Integer = 0;
       
@@ -106,7 +106,7 @@ class GameLoader {
     // Use this to load the main map
    public loadMap(filename: String, soundManager: MarioSoundManager22050Hz): TileMap  {
       // lines is a list of strings, each element is a row of the map
-      var lines: ArrayList = new ArrayList();
+      var lines: List = [];
       var width: Integer = 0;
       var height: Integer = 0;
       

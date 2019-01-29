@@ -26,7 +26,7 @@ class GameRenderer {
    // the player jumping as a measure of significant change. Hides errors in my animations, 
    // keeping the screen from bobbing when there is a change in height of the player animation. 
    private var AdjustYScroll: Integer = 0;
-   private var maps: ArrayList = new ArrayList();
+   private var maps: List = [];
    private var lastLife: Integer = -5;
    private var df2: DecimalFormat = new DecimalFormat("#,###,###,##0.00");
 
@@ -39,7 +39,7 @@ class GameRenderer {
 
     // Converts a pixel position to a tile position.
     public static pixelsToTiles(pixels: Float): Integer {
-        return pixelsToTiles(Math.round(pixels));
+        return pixelsToTiles(pixels.round());
     }
 
     // Converts a pixel position to a tile position.
@@ -100,9 +100,9 @@ class GameRenderer {
     * @return A List of Points, where each Point corresponds to the location of a tile the sprite is 
     * colliding with in map.tiles().
     */
-   public static getTileCollisionAll(map: TileMap, sprite: Sprite, currX: Float, currY: Float, newX: Float, newY: Float): ArrayList {
+   public static getTileCollisionAll(map: TileMap, sprite: Sprite, currX: Float, currY: Float, newX: Float, newY: Float): List {
       
-      var collisionPoints: ArrayList = new ArrayList(); 
+      var collisionPoints: List = []; 
        var fromX: Float = Math.min(currX, newX);
        var fromY: Float = Math.min(currY, newY);
        var toX: Float = Math.max(currX, newX);
@@ -147,11 +147,11 @@ class GameRenderer {
         
         // get the scrolling position of the map based on player's position...
         
-        var offsetX: Integer = screenWidth/2 - Math.round(player.getX()) - TILE_SIZE;
+        var offsetX: Integer = screenWidth/2 - player.getX().round() - TILE_SIZE;
         offsetX = Math.min(offsetX, 0); // if this gets set to 0, player is within a screen width
         offsetX = Math.max(offsetX, screenWidth - mapWidth);
         
-        var round: Integer = Math.round(player.getY());
+        var round: Integer = player.getY().round();
         
         // initialize AdjustYScroll
         if (AdjustYScroll == 0) {
@@ -201,8 +201,8 @@ class GameRenderer {
              for(var i = 0; i < map.creatures().size(); i++) { 
                   
                 var c: Creature = map.creatures().get(i);
-                   var x: Integer = Math.round(c.getX()) + offsetX;
-                   var y: Integer = Math.round(c.getY()) + offsetY;
+                   var x: Integer = c.getX().round() + offsetX;
+                   var y: Integer = c.getY().round() + offsetY;
                    var tileX: Integer = pixelsToTiles(x);
                    var tileY: Integer = pixelsToTiles(y); 
                    
@@ -232,7 +232,7 @@ class GameRenderer {
                               
                    // Draw the player.
                    if(!player.isInvisible()) {
-                   player.draw(g, Math.round(player.getX()) + offsetX, Math.round(player.getY()) + offsetY,
+                   player.draw(g, player.getX().round() + offsetX, player.getY().round() + offsetY,
                          player.getOffsetX(), player.getOffsetY());
                    }
                }

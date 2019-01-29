@@ -17,7 +17,7 @@ import util.ArrayList;
 class Animation {
    
    // fields
-   private var frames: ArrayList;
+   private var frames: List;
    private var currFrameIndex: Integer = 0; // index of current frame
    private var animTime: Long = 0; // current time in animation
    private var totalDuration: Long = 0; // length of entire animation
@@ -28,7 +28,7 @@ class Animation {
     * Constructs a new Animation object with no frames.
     */
    public new() {
-      frames = new ArrayList();
+      frames = [];
       totalDuration = 0;
       defaultAnimLength = 0;
       start();
@@ -39,7 +39,7 @@ class Animation {
     * specified default animation length;
     */
    public new(defaultAnimLength: Long) {
-      frames = new ArrayList();
+      frames = [];
       totalDuration = 0;
       this.defaultAnimLength = defaultAnimLength;
       start();
@@ -49,7 +49,7 @@ class Animation {
     * Constructs a new Animation object with a termination task.
     */
    public new(endOfAnimation: Runnable) {
-      frames = new ArrayList();
+      frames = [];
       totalDuration = 0;
       this.defaultAnimLength = defaultAnimLength;
       this.endOfAnimation = endOfAnimation;

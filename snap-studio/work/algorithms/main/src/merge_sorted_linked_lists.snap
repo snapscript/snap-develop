@@ -1,0 +1,39 @@
+
+
+class ListNode {
+   let val;
+   let next;
+   
+   new(val) {
+      this.val = val;
+   }
+   
+   add(a: ListNode) {
+      let curr = next;
+      next = a;
+      a.next = curr;
+   }
+}
+
+func mergeLists(lists: ListNode){
+   for(n in 1 to lists.length-1) {
+      let src = list[n -1];
+      let dest = list[n];
+      
+      while(src.next && dest.next) {
+         if(src.val < dest.val){
+            let node = src.next;
+            dest.add(src);
+            src = node;
+         } else {
+            dest = dest.next;
+         }
+      }
+      while(src.next) {
+         let node = src.next;
+         dest.add(src);
+         src = node;
+      }
+   }
+   return lists[lists.length-1];
+}

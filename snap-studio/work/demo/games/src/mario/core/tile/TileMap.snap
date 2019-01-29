@@ -33,12 +33,12 @@ class TileMap {
     */
    public new(width: Integer, height: Integer) {
       this.tiles = new GameTile[width][height];
-      this.creatures = new ArrayList();
-      this.relevantCreatures = new ArrayList();
-      this.creaturesToAdd = new ArrayList();
-      this.platforms = new ArrayList();
-      this.animatedTiles = new ArrayList();
-      this.slopedTiles = new ArrayList();
+      this.creatures = [];
+      this.relevantCreatures = [];
+      this.creaturesToAdd = [];
+      this.platforms = [];
+      this.animatedTiles = [];
+      this.slopedTiles = [];
       this.width = width;
       this.height = height;
    }

@@ -19,7 +19,7 @@ class GameTile extends Tile {
     * and Image img.
     */
    public new(pixelX: Integer, pixelY: Integer, anim: Animation, img: BufferedImage): super(pixelX, pixelY, anim, img) {
-      collidingCreatures = new ArrayList();
+      collidingCreatures = [];
    }
    
    /**

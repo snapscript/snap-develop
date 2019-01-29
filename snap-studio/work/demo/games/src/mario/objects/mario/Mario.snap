@@ -301,7 +301,7 @@ class Mario extends CollidableObject{
    
    public update(map: TileMap, time: Float) {
       
-      jumpHeight = INITIAL_JUMP_HEIGHT - Math.abs(dx)*JUMP_MULTIPLIER; 
+      jumpHeight = INITIAL_JUMP_HEIGHT - dx.abs()*JUMP_MULTIPLIER; 
       
       if (!frictionLock && isLeftHeld && !isShiftHeld) {
          //toggleMovement(1);
@@ -371,8 +371,8 @@ class Mario extends CollidableObject{
       //if(platform != null) { newYCalc = platform.getY() - getHeight(); }
       
       // Calculate all the tile collisions.
-      var xTile: ArrayList = GameRenderer.getTileCollisionAll(map, this, getX(), getY(), newXCalc, getY());
-      var yTile: ArrayList = GameRenderer.getTileCollisionAll(map, this, getX(), getY(), getX(), newYCalc); 
+      var xTile: List = GameRenderer.getTileCollisionAll(map, this, getX(), getY(), newXCalc, getY());
+      var yTile: List = GameRenderer.getTileCollisionAll(map, this, getX(), getY(), getX(), newYCalc);
       var numOfXTiles: Integer = xTile.size();
       var numOfYTiles: Integer = yTile.size();
 
@@ -492,14 +492,14 @@ class Mario extends CollidableObject{
             if(creature instanceof Coin) {
                creature.kill();
                soundManager.playCoin();
-               map.creaturesToAdd().add(new Score(Math.round(creature.getX()), Math.round(creature.getY()+13)));
+               map.creaturesToAdd().add(new Score(creature.getX().round(), creature.getY().round()+13));
                
             } else if(creature instanceof Mushroom) {
                soundManager2.playCelebrate();
                creature.kill();
                if(health == 3) {
                soundManager.playBonusPoints();
-               map.creaturesToAdd().add(new Score(Math.round(creature.getX()), Math.round(creature.getY()+13)));
+               map.creaturesToAdd().add(new Score(creature.getX().round(), creature.getY().round()+13));
                } else {
                   soundManager.playHealthUp();
                   health++;
@@ -513,8 +513,8 @@ class Mario extends CollidableObject{
                creature.jumpedOn();
                creatureHop();
                soundManager.playKick();
-               map.creaturesToAdd().add(new RedShell(Math.round(creature.getX()), 
-                     Math.round(creature.getY()+13), map, soundManager, true));
+               map.creaturesToAdd().add(new RedShell(creature.getX().round(), 
+                     creature.getY().round()+13, map, soundManager, true));
             } else if(creature instanceof RedShell) {
                
                if(this.isJumping() && this.getdY() > 0) {
