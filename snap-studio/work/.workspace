@@ -4,8 +4,8 @@
     <!--variable name="PROJECT_ROOT">/Users/niallg/Work/development/snapscript/snap-develop/snap-studio/work</variable-->
   </environment>
   <arguments>
-    <argument>-Xmx500m</argument>
-    <argument>-Xms10m</argument>
+    <argument>-Xmx1000m</argument>
+    <argument>-Xms100m</argument>
     <argument>-XX:+UnlockCommercialFeatures</argument>
     <argument>-XX:+FlightRecorder</argument>
   </arguments>

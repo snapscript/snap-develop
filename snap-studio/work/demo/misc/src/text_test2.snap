@@ -1,8 +1,23 @@
-async func foo(n){
-   if(n <= 0){
-      throw new Exception('err');
+
+
+async func one<T: Number>(n: T): Promise<T> {
+   if(n > 0) {
+      await two<T>(n-1);
    }
-   await foo(n -1);
+   return 1;
 }
 
-foo(10).join().failure(e -> e.printStackTrace());
+
+async func two<T: Number>(n: T): Promise<T> {
+   if(n > 0) {
+      await one<T>(n-1);
+   }
+   return 1;
+}
+
+
+let promise: Promise<Integer> = one<Integer>(2000);
+
+promise.join()
+   .success(this::println)
+   .failure(this::println);
