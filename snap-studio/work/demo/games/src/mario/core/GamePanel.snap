@@ -28,6 +28,7 @@ import mario.objects.base.Creature;
 import mario.objects.creatures.Coin;
 import mario.objects.mario.Mario;
 import mario.util.ImageManipulator;
+import mario.util.SampleAverager;
 
 class GamePanel extends JPanel with Runnable {
 
@@ -43,7 +44,8 @@ class GamePanel extends JPanel with Runnable {
    
    private var animator: Thread;
    private var period: Integer = 20; 
-   
+   private var frames = 0l;
+
    private var mario: Mario;
    private var map: TileMap;
    private var backgroundMap: TileMap;
@@ -51,7 +53,7 @@ class GamePanel extends JPanel with Runnable {
    private var renderer: GameRenderer;
    private var manager: GameLoader;
    private var screen: BufferedImage;
-   
+   private var averager: SampleAverager;
    
    private var player: MidiPlayer;
    private var SM_22050_Hz: MarioSoundManager22050Hz;
@@ -66,6 +68,7 @@ class GamePanel extends JPanel with Runnable {
       SM_22050_Hz = new MarioSoundManager22050Hz(new AudioFormat(22050, 8, 1, true, true));
       SM_10512_Hz = new MarioSoundManager10512Hz(new AudioFormat(10512, 8, 1, true, true));
        mario = new Mario(SM_22050_Hz);
+       averager = new SampleAverager(100);
       
       try {
          manager = new GameLoader();
@@ -160,7 +163,13 @@ class GamePanel extends JPanel with Runnable {
             if(wait > 0) {
                Thread.sleep(wait);
             }
-            println(duration);
+            averager.sample(duration);
+            frames++;
+
+            if(frames % 100 == 0) {
+                var average = averager.average();
+                println(average);
+            }
          } catch(e: InterruptedException){}
       }
       System.exit(0); // so enclosing JFrame/JApplet exits

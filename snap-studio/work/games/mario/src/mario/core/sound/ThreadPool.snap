@@ -13,7 +13,7 @@ class ThreadPool extends ThreadGroup {
 
     private var isAlive; // tracks if this ThreadPool is still running
     private var taskQueue;
-    private var threadID; // give a number to each thread in a ThreadPool
+    private var threadID = 0; // give a number to each thread in a ThreadPool
     private static var threadPoolID = 0; // give a number to seperate ThreadPool
     /**
         Creates a new ThreadPool.
@@ -130,7 +130,7 @@ class ThreadPool extends ThreadGroup {
          const pool;
          const thread;
         public new(pool) {
-            this.thread = new Thread(pool, this /*, "PooledThread-" + (pool.threadID++)*/);
+            this.thread = new Thread(pool, this , "PooledThread-" + (pool.threadID++));
             this.pool = pool;
         }
         

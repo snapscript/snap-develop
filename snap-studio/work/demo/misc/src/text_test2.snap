@@ -1,3 +1,10 @@
-let entry = [];
-entry.list[entry.pos++];
-         
+
+async func foo(a, list){
+   list.add(Thread.currentThread().name);
+   if(a <= 1000) {
+      await foo(a+1, list);
+   }
+   return list;
+}
+
+foo(10, []).join().success(x -> println(x.length));
