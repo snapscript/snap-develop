@@ -1,10 +1,4 @@
 
-async func foo(a, list){
-   list.add(Thread.currentThread().name);
-   if(a <= 1000) {
-      await foo(a+1, list);
-   }
-   return list;
-}
+let x = 2L ** 64L;
 
-foo(10, []).join().success(x -> println(x.length)).success(_ -> println('x'));
+println(x.round);

@@ -1,4 +1,4 @@
-
+// https://leetcode.com/problems/maximal-square/
 
 let area = maximalSquare(
    [[1, 0, 1, 0, 0],
