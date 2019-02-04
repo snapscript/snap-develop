@@ -43,7 +43,7 @@ class GamePanel extends JPanel with Runnable {
    private var gameFreeze: Boolean = false;
    
    private var animator: Thread;
-   private var period: Integer = 20; 
+   private var period: Integer = 20;
    private var frames = 0l;
 
    private var mario: Mario;
