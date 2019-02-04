@@ -43,7 +43,7 @@ module SpriteStore {
          }
          
          // use ImageIO to read the image in
-         sourceImage=await ImageIO.read(stream);
+         sourceImage = await ImageIO.read(stream);
       } catch (e) {
          fail("Failed to load: "+ref);
       }
@@ -59,7 +59,7 @@ module SpriteStore {
       let sprite = new Sprite(image);
       sprites.put(ref,sprite);
       
-      return await sprite;
+      return sprite;
    }
    
    /**

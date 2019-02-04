@@ -80,9 +80,9 @@ class Camera {
    new(pos, lookAt) {
       var down = new Vec(0.0, -1.0, 0.0);
       this.pos = pos;
-      this.forward = Vec.norm(Vec.minus(lookAt, this.pos));
-      this.right = Vec.times(1.5, Vec.norm(Vec.cross(this.forward, down)));
-      this.up = Vec.times(1.5, Vec.norm(Vec.cross(this.forward, this.right)));
+      this.forward = Vec.norm(Vec.minus(lookAt, pos));
+      this.right = Vec.times(1.5, Vec.norm(Vec.cross(forward, down)));
+      this.up = Vec.times(1.5, Vec.norm(Vec.cross(forward, right)));
    }
 }
 
@@ -147,13 +147,13 @@ class Sphere extends Thing {
       this.center = center;
       this.surface = surface;
    }
-   override normal(pos) { return Vec.norm(Vec.minus(pos, this.center)); }
+   override normal(pos) { return Vec.norm(Vec.minus(pos, center)); }
    override intersect(ray) {
-      var eo = Vec.minus(this.center, ray.start);
+      var eo = Vec.minus(center, ray.start);
       var v = Vec.dot(eo, ray.dir);
       var dist = 0;
       if (v >= 0) {
-         var disc = this.radius2 - (Vec.dot(eo, eo) - v * v);
+         var disc = radius2 - (Vec.dot(eo, eo) - v * v);
          if (disc >= 0) {
             dist = v - Math.sqrt(disc);
          }

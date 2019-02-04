@@ -7,4 +7,4 @@ async func foo(a, list){
    return list;
 }
 
-foo(10, []).join().success(x -> println(x.length));
+foo(10, []).join().success(x -> println(x.length)).success(_ -> println('x'));
