@@ -1,4 +1,13 @@
-
-let x = 2L ** 64L;
-
-println(x.round);
+func get(): Double {
+  let as: Cell[] = cells; 
+  let a: Cell;
+  let result: Double = Double.longBitsToDouble(base);
+  if (as != null) {
+      for (let i = 0; i < as.length; ++i) {
+          if ((a = as[i]) != null)
+              result = function.applyAsDouble
+                  (result, Double.longBitsToDouble(a.value));
+      }
+  }
+  return result;
+}
