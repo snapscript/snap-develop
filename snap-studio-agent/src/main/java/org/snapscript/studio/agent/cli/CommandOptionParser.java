@@ -91,10 +91,16 @@ public class CommandOptionParser {
             while(names.hasMoreElements()) {
                Object name = names.nextElement();
                Object value = properties.get(name);
-               String token = String.valueOf(value);
-               
-               text = text.replace("$" + name, token);
-               text = text.replace("${" + name + "}", token);
+
+               if(value == null) {
+                  value = System.getenv("" + name);
+               }
+               if(value != null) {
+                  String token = String.valueOf(value);
+
+                  text = text.replace("$" + name, token);
+                  text = text.replace("${" + name + "}", token);
+               }
             }
          }
          return text;

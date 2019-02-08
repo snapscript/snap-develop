@@ -20,10 +20,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class StudioApplication {
 
    private static final String ABOUT_NAME = "Snap Develop";
+   private static final String[] SEARCH_FILES = {
+      "snapd.ini",
+      "snap-studio.ini"
+   };
 
    public static void main(String[] list) throws Exception {
       CommandLineBuilder builder = StudioOption.getBuilder();
-      CommandLine local = builder.build(list);
+      CommandLine local = builder.build(list, SEARCH_FILES);
       StudioCommandLine line = new StudioCommandLine(local);
       Map<String, Object> commands = local.getValues();
       Set<String> names = commands.keySet();

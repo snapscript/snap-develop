@@ -11,16 +11,23 @@ public class CommandLineBuilder {
    
    private final List<? extends CommandOption> options;
    private final CommandOptionParser parser;
+   private final String[] empty;
 
    public CommandLineBuilder(List<? extends CommandOption> options) {
       this.parser = new CommandOptionParser(options);
+      this.empty = new String[] {};
       this.options = options;
    }
-   
+
    public CommandLine build(String[] arguments) {
+      return build(arguments, empty);
+   }
+
+   public CommandLine build(String[] arguments, String[] path) {
       Map<String, Object> map = new LinkedHashMap<String, Object>();
       List<String> values = new ArrayList<String>();
       Set<String> done = new HashSet<String>();
+      CommandFile file = new CommandFile(path);
       
       for(CommandOption option : options){
          String name = option.getName();
@@ -33,7 +40,9 @@ public class CommandLineBuilder {
             throw new IllegalStateException("Option '" + code + "' declared twice");
          }
       }
-      for(String argument: arguments) {
+      String[] combined = file.combine(arguments);
+
+      for(String argument: combined) {
          if(argument.startsWith("--")) {
             CommandValue value = parser.parse(argument);
             Object object = value.getValue();
