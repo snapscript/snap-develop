@@ -5,8 +5,11 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -83,31 +86,43 @@ public class CommandOptionParser {
    public String interpolate(Object object) {
       if(object != null) {
          String text = String.valueOf(object);
-         
-         if(text.contains("$")) {
-            Properties properties = System.getProperties();
-            Enumeration<?> names = properties.propertyNames();
-            
-            while(names.hasMoreElements()) {
-               Object name = names.nextElement();
-               Object value = properties.get(name);
+         Map<Object, String> variables = variables(text);
+         Set<Object> keys = variables.keySet();
 
-               if(value == null) {
-                  value = System.getenv("" + name);
-               }
-               if(value != null) {
-                  String token = String.valueOf(value);
+         for(Object key : keys) {
+            String value = variables.get(key);
 
-                  text = text.replace("$" + name, token);
-                  text = text.replace("${" + name + "}", token);
-               }
-            }
+            text = text.replace("$" + key, value);
+            text = text.replace("${" + key + "}", value);
          }
          return text;
       }
       return null;
    }
-   
+
+   private Map<Object, String> variables(String text) {
+      Map<Object, String> map = new HashMap<Object, String>();
+
+      if (text.contains("$")) {
+         Properties properties = System.getProperties();
+         Enumeration<?> names = properties.propertyNames();
+
+         while (names.hasMoreElements()) {
+            Object name = names.nextElement();
+            Object value = properties.get(name);
+            String token = String.valueOf(value);
+
+            map.put(name, token);
+         }
+         Map<String, String> environment = System.getenv();
+
+         if(environment.isEmpty()) {
+            map.putAll(environment);
+         }
+      }
+      return map;
+   }
+
    public Object convert(Object object, Class type) {
       try {
          String value = interpolate(object);
